@@ -124,11 +124,9 @@ Config[ "NoobGear" ] = {
 	-- 3x Pistol ammo
 	["item_pistolammo"] = 3,
 
-	-- 1x Immunity Skill Upgrade
-	["upgradestatimmune"] = 1,
 }
 
--- what noobs will have in their vault
+-- what new players will have in their vault
 
 Config[ "NoobVault" ] = {
 ["weapon_zw_grenade_pipe"] = 3,

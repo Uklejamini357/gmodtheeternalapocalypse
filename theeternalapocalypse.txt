@@ -1,0 +1,22 @@
+"Gamemode"
+{
+	"base"		"base"
+	"title"		"The Eternal Apocalypse"
+	"maps"		"zw_"
+	"category"	"other"
+	"menusystem"	"1"
+
+	"settings"
+	{
+		1
+		{
+			"name"		"sk_grenades"
+			"text"		"Allow Grenades"
+			"help"		"If enabled ) then grenades are enabled"
+			"type"		"checkbox"
+			"default"	"1"
+		}
+
+	}
+
+}

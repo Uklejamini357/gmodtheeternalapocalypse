@@ -1,10 +1,10 @@
 function LoadPlayer( ply )
 
-if not file.IsDir("theeverlastingapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" )) .. "", "DATA") then
-   file.CreateDir("theeverlastingapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" ) .. ""))
+if not file.IsDir("theeternalapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" )) .. "", "DATA") then
+   file.CreateDir("theeternalapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" ) .. ""))
 end
-	if (file.Exists( "theeverlastingapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" ) .. "/profile.txt"), "DATA" )) then
-		local TheFile = file.Read( "theeverlastingapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" ) .. "/profile.txt"), "DATA" )
+	if (file.Exists( "theeternalapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" ) .. "/profile.txt"), "DATA" )) then
+		local TheFile = file.Read( "theeternalapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" ) .. "/profile.txt"), "DATA" )
 		local DataPieces = string.Explode( "\n", TheFile )
 
 		local Output = {}
@@ -17,7 +17,7 @@ end
 		end
 
 --		print( "Loaded player: " .. ply:Nick() .." ( "..ply:SteamID().." )" )
-		ate_DebugLog( "Loaded player: " .. ply:Nick() .." ( "..ply:SteamID().." ) from file: ".."theeverlastingapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" ) .. "/profile.txt") )
+		ate_DebugLog( "Loaded player: " .. ply:Nick() .." ( "..ply:SteamID().." ) from file: ".."theeternalapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" ) .. "/profile.txt") )
 
 		ply:SetNWInt( "PlyLevel", ply.Level )
 		ply:SetNWString("ArmorType", ply.EquippedArmor) -- i really shouldnt have 2 different vars for this but whatever, im beyond caring at this point
@@ -64,7 +64,7 @@ end
 		end
 
 		print( "Created a new profile for "..ply:Nick() .." ( "..ply:SteamID().." )" )
-		ate_DebugLog( "Created new data file for: " .. ply:Nick() .." ( "..ply:SteamID().." ) located at: ".."theeverlastingapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" ) .. "/profile.txt") )
+		ate_DebugLog( "Created new data file for: " .. ply:Nick() .." ( "..ply:SteamID().." ) located at: ".."theeternalapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" ) .. "/profile.txt") )
 
 		SavePlayer( ply )
 
@@ -137,11 +137,11 @@ local Data = {}
 	net.WriteFloat( ply.StatSurvivor )
 	net.Send( ply )
 
-	SystemMessage(ply, "✓ Your account has been saved.", Color(205,255,205,255), true)
+	print("✓ ".. ply:Nick() .." account saved into database")
 
 
-	file.Write( "theeverlastingapocalypse/players/" ..string.lower(string.gsub( ply:SteamID(), ":", "_" ) .. "/profile.txt"), StringToWrite )
-	ate_DebugLog( "Saved player: " .. ply:Nick() .." ( "..ply:SteamID().." ) to file: ".."theeverlastingapocalypse/players/" ..string.lower(string.gsub( ply:SteamID(), ":", "_" ) .. "/profile.txt") )
+	file.Write( "theeternalapocalypse/players/" ..string.lower(string.gsub( ply:SteamID(), ":", "_" ) .. "/profile.txt"), StringToWrite )
+	ate_DebugLog( "Saved player: " .. ply:Nick() .." ( "..ply:SteamID().." ) to file: ".."theeternalapocalypse/players/" ..string.lower(string.gsub( ply:SteamID(), ":", "_" ) .. "/profile.txt") )
 end
 
 
@@ -157,7 +157,7 @@ function PlayerGainLevel( ply )
 		ply.StatPoints = ply.StatPoints + 1
 		ply.Money = ply.Money + 62 + ((ply.Level ^ 1.046) * 19)
 		SendChat( ply, "Congratulations! You are now level " .. ply.Level .. ", you have gained 1 skill point and " .. 62 + ((ply.Level ^ 1.043) * 19) .. " cash!" )
-		ply:ConCommand( "playgamesound theeverlastingapocalypse/levelup.wav" )
+		ply:ConCommand( "playgamesound theeternalapocalypse/levelup.wav" )
 
 		ply:SetNWInt( "PlyLevel", ply.Level )
 

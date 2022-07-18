@@ -3,12 +3,12 @@ local DropData = ""
 
 
 function LoadAD()
-if not file.IsDir("theeverlastingapocalypse/spawns/airdrops", "DATA") then
-   file.CreateDir("theeverlastingapocalypse/spawns/airdrops")
+if not file.IsDir("theeternalapocalypse/spawns/airdrops", "DATA") then
+   file.CreateDir("theeternalapocalypse/spawns/airdrops")
 end
-	if file.Exists( "theeverlastingapocalypse/spawns/airdrops/" .. string.lower(game.GetMap()) .. ".txt", "DATA" ) then
+	if file.Exists( "theeternalapocalypse/spawns/airdrops/" .. string.lower(game.GetMap()) .. ".txt", "DATA" ) then
 		DropData = "" --reset it
-		DropData = file.Read( "theeverlastingapocalypse/spawns/airdrops/" .. string.lower(game.GetMap()) .. ".txt", "DATA" )
+		DropData = file.Read( "theeternalapocalypse/spawns/airdrops/" .. string.lower(game.GetMap()) .. ".txt", "DATA" )
 		print( "Airdrop spawnpoints loaded" )
 	else
 		DropData = "" --just in case
@@ -37,7 +37,7 @@ function AddAD( ply, cmd, args )
 		NewData = DropData .. "\n" .. tostring( hitp ) .. ";" .. tostring( ply:GetAngles() )
 	end
 	
-	file.Write( "theeverlastingapocalypse/spawns/airdrops/" .. string.lower(game.GetMap()) .. ".txt", NewData )
+	file.Write( "theeternalapocalypse/spawns/airdrops/" .. string.lower(game.GetMap()) .. ".txt", NewData )
 	
 	SendChat( ply, "Added an airdrop spawnpoint" )
 
@@ -53,8 +53,8 @@ if !SuperAdminCheck( ply ) then
 	return
 end
 
-if file.Exists(	"theeverlastingapocalypse/spawns/airdrops/" .. string.lower(game.GetMap()) .. ".txt", "DATA") then
-	file.Delete("theeverlastingapocalypse/spawns/airdrops/" .. string.lower(game.GetMap()) .. ".txt")
+if file.Exists(	"theeternalapocalypse/spawns/airdrops/" .. string.lower(game.GetMap()) .. ".txt", "DATA") then
+	file.Delete("theeternalapocalypse/spawns/airdrops/" .. string.lower(game.GetMap()) .. ".txt")
 end
 DropData = ""
 SendChat( ply, "Deleted all airdrop spawnpoints" )

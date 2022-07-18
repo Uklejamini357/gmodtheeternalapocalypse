@@ -26,8 +26,8 @@ ply.Inventory = {}
 local LoadedData
 if Config[ "FileSystem" ] == "Legacy" then
 
-	if (file.Exists( "theeverlastingapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" )) .. "/inventory.txt", "DATA" )) then
-		LoadedData = file.Read( "theeverlastingapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" ) .. "/inventory.txt"), "DATA" )
+	if (file.Exists( "theeternalapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" )) .. "/inventory.txt", "DATA" )) then
+		LoadedData = file.Read( "theeternalapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" ) .. "/inventory.txt"), "DATA" )
 	end
 elseif Config[ "FileSystem" ] == "PData" then
 		LoadedData = ply:GetPData( "ate_playerinventory" )
@@ -53,7 +53,7 @@ if !ply:IsValid() then return end
 
 if Config[ "FileSystem" ] == "Legacy" then
 	local data = util.TableToJSON(ply.Inventory)
-	file.Write( "theeverlastingapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" )) .. "/inventory.txt", data )
+	file.Write( "theeternalapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" )) .. "/inventory.txt", data )
 elseif Config[ "FileSystem" ] == "PData" then
 	local formatted = util.TableToJSON( ply.Inventory )
 	ply:SetPData( "ate_playerinventory", formatted )

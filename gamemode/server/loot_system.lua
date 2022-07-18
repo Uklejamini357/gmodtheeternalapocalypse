@@ -15,12 +15,12 @@ function LootCount()
 end
 
 function LoadLoot()
-if not file.IsDir("theeverlastingapocalypse/spawns/loot", "DATA") then
-   file.CreateDir("theeverlastingapocalypse/spawns/loot")
+if not file.IsDir("theeternalapocalypse/spawns/loot", "DATA") then
+   file.CreateDir("theeternalapocalypse/spawns/loot")
 end
-	if file.Exists( "theeverlastingapocalypse/spawns/loot/" .. string.lower(game.GetMap()) .. ".txt", "DATA" ) then
+	if file.Exists( "theeternalapocalypse/spawns/loot/" .. string.lower(game.GetMap()) .. ".txt", "DATA" ) then
 		LootData = "" --reset it
-		LootData = file.Read( "theeverlastingapocalypse/spawns/loot/" .. string.lower(game.GetMap()) .. ".txt", "DATA" )
+		LootData = file.Read( "theeternalapocalypse/spawns/loot/" .. string.lower(game.GetMap()) .. ".txt", "DATA" )
 		print( "Loot spawnpoints loaded" )
 	else
 		LootData = "" --just in case
@@ -41,7 +41,7 @@ function AddLoot( ply, cmd, args )
 		NewData = LootData .. "\n" .. tostring( ply:GetPos() ) .. ";" .. tostring( ply:GetAngles() )
 	end
 	
-	file.Write( "theeverlastingapocalypse/spawns/loot/" .. string.lower(game.GetMap()) .. ".txt", NewData )
+	file.Write( "theeternalapocalypse/spawns/loot/" .. string.lower(game.GetMap()) .. ".txt", NewData )
 	
 	LoadLoot() --reload them
 	
@@ -56,8 +56,8 @@ if !SuperAdminCheck( ply ) then
 	return
 end
 
-if file.Exists(	"theeverlastingapocalypse/spawns/loot/" .. string.lower(game.GetMap()) .. ".txt", "DATA") then
-	file.Delete("theeverlastingapocalypse/spawns/loot/" .. string.lower(game.GetMap()) .. ".txt")
+if file.Exists(	"theeternalapocalypse/spawns/loot/" .. string.lower(game.GetMap()) .. ".txt", "DATA") then
+	file.Delete("theeternalapocalypse/spawns/loot/" .. string.lower(game.GetMap()) .. ".txt")
 end
 SendChat( ply, "Deleted all loot spawnpoints" )
 end

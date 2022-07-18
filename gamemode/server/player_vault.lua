@@ -21,8 +21,8 @@ function LoadPlayerVault( ply )
 local LoadedData
 if Config[ "FileSystem" ] == "Legacy" then
 
-	if file.Exists( "theeverlastingapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" ) .. "/vault.txt"), "DATA" ) then
-		LoadedData = file.Read( "theeverlastingapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" ) .. "/vault.txt"), "DATA" )
+	if file.Exists( "theeternalapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" ) .. "/vault.txt"), "DATA" ) then
+		LoadedData = file.Read( "theeternalapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" ) .. "/vault.txt"), "DATA" )
 	end
 
 elseif Config[ "FileSystem" ] == "PData" then
@@ -49,7 +49,7 @@ function SavePlayerVault( ply )
 
 if Config[ "FileSystem" ] == "Legacy" then
 	local data = util.TableToJSON(ply.Vault)
-	file.Write( "theeverlastingapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" ) .. "/vault.txt"), data )
+	file.Write( "theeternalapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" ) .. "/vault.txt"), data )
 elseif Config[ "FileSystem" ] == "PData" then
 	local formatted = util.TableToJSON( ply.Vault )
 	ply:SetPData( "ate_playervault", formatted )

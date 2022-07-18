@@ -1,12 +1,12 @@
 TradersData = ""
 
 function LoadTraders()
-if not file.IsDir("theeverlastingapocalypse/spawns/traders", "DATA") then
-   file.CreateDir("theeverlastingapocalypse/spawns/traders")
+if not file.IsDir("theeternalapocalypse/spawns/traders", "DATA") then
+   file.CreateDir("theeternalapocalypse/spawns/traders")
 end
-	if file.Exists( "theeverlastingapocalypse/spawns/traders/" .. string.lower(game.GetMap()) .. ".txt", "DATA" ) then
+	if file.Exists( "theeternalapocalypse/spawns/traders/" .. string.lower(game.GetMap()) .. ".txt", "DATA" ) then
 		TradersData = ""
-		TradersData = file.Read( "theeverlastingapocalypse/spawns/traders/" .. string.lower(game.GetMap()) .. ".txt", "DATA" )
+		TradersData = file.Read( "theeternalapocalypse/spawns/traders/" .. string.lower(game.GetMap()) .. ".txt", "DATA" )
 		print( "Traders file loaded" )
 	else
 		TradersData = ""
@@ -49,7 +49,7 @@ function AddTrader( ply, cmd, args )
 		NewData = TradersData .. "\n" .. tostring( ply:GetPos() ) .. ";" .. tostring( ply:GetAngles() )
 	end
 	
-	file.Write( "theeverlastingapocalypse/spawns/traders/" .. string.lower(game.GetMap()) .. ".txt", NewData )
+	file.Write( "theeternalapocalypse/spawns/traders/" .. string.lower(game.GetMap()) .. ".txt", NewData )
 	
 	LoadTraders() --reload them
 	
@@ -65,8 +65,8 @@ if !SuperAdminCheck( ply ) then
 	return
 end
 
-if file.Exists(	"theeverlastingapocalypse/spawns/traders/" .. string.lower(game.GetMap()) .. ".txt", "DATA") then
-	file.Delete("theeverlastingapocalypse/spawns/traders/" .. string.lower(game.GetMap()) .. ".txt")
+if file.Exists(	"theeternalapocalypse/spawns/traders/" .. string.lower(game.GetMap()) .. ".txt", "DATA") then
+	file.Delete("theeternalapocalypse/spawns/traders/" .. string.lower(game.GetMap()) .. ".txt")
 end
 SendChat( ply, "Deleted all trader spawnpoints" )
 end

@@ -13,12 +13,12 @@ end
 
 
 function LoadZombies()
-if not file.IsDir("theeverlastingapocalypse/spawns/zombies", "DATA") then
-   file.CreateDir("theeverlastingapocalypse/spawns/zombies")
+if not file.IsDir("theeternalapocalypse/spawns/zombies", "DATA") then
+   file.CreateDir("theeternalapocalypse/spawns/zombies")
 end
-	if file.Exists( "theeverlastingapocalypse/spawns/zombies/" .. string.lower(game.GetMap()) .. ".txt", "DATA" ) then
+	if file.Exists( "theeternalapocalypse/spawns/zombies/" .. string.lower(game.GetMap()) .. ".txt", "DATA" ) then
 		ZombieData = "" --reset it
-		ZombieData = file.Read( "theeverlastingapocalypse/spawns/zombies/" .. string.lower(game.GetMap()) .. ".txt", "DATA" )
+		ZombieData = file.Read( "theeternalapocalypse/spawns/zombies/" .. string.lower(game.GetMap()) .. ".txt", "DATA" )
 		print( "Zombie spawnpoints loaded" )
 	else
 		ZombieData = "" --just in case
@@ -146,7 +146,7 @@ function AddZombie( ply, cmd, args )
 		NewData = ZombieData .. "\n" .. tostring( ply:GetPos() ) .. ";" .. tostring( ply:GetAngles() )
 	end
 	
-	file.Write( "theeverlastingapocalypse/spawns/zombies/" .. string.lower(game.GetMap()) .. ".txt", NewData )
+	file.Write( "theeternalapocalypse/spawns/zombies/" .. string.lower(game.GetMap()) .. ".txt", NewData )
 	
 	LoadZombies() --reload them
 	
@@ -159,8 +159,8 @@ if !SuperAdminCheck( ply ) then
 	SystemMessage(ply, "Only superadmins can use this command!", Color(255,205,205,255), true)
 	return
 end
-if file.Exists(	"theeverlastingapocalypse/spawns/zombies/" .. string.lower(game.GetMap()) .. ".txt", "DATA") then
-	file.Delete("theeverlastingapocalypse/spawns/zombies/" .. string.lower(game.GetMap()) .. ".txt")
+if file.Exists(	"theeternalapocalypse/spawns/zombies/" .. string.lower(game.GetMap()) .. ".txt", "DATA") then
+	file.Delete("theeternalapocalypse/spawns/zombies/" .. string.lower(game.GetMap()) .. ".txt")
 	ZombieData = ""
 end
 SendChat( ply, "Deleted all zombie spawnpoints" )

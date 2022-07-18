@@ -2,11 +2,14 @@ How does this work? It's simple: Place The Eternal Apocalypse into your gamemode
 Also need to rename entire file into theeternalapocalypse
 
 
-You will need to install these addons otherwise you'll get errors or some items won't just work:
+You will need to install these addons otherwise you'll get errors, missing sounds or some items won't work:
 
-https://steamcommunity.com/sharedfiles/filedetails/?id=247962324 (stalker playermodels for the built in armors)
-http://steamcommunity.com/sharedfiles/filedetails/?id=411284648 (gamemode content pack, basically just contains zombie models and suchlike)
-http://steamcommunity.com/sharedfiles/filedetails/?id=448170926 (gamemode sweps pack)
+https://steamcommunity.com/sharedfiles/filedetails/?id=1270991543 (stalker playermodels for the built in armors [the original was removed by author])
+https://steamcommunity.com/sharedfiles/filedetails/?id=411284648 (gamemode content pack, basically just contains zombie models and suchlike)
+https://steamcommunity.com/sharedfiles/filedetails/?id=448170926 (gamemode sweps pack)
+https://steamcommunity.com/sharedfiles/filedetails/?id=128093075 (m9k small arms pack)
+https://steamcommunity.com/sharedfiles/filedetails/?id=128089118 (m9k assault rifles)
+https://steamcommunity.com/sharedfiles/filedetails/?id=128091208 (m9k heavy weapons)
 
 WARNING: IF YOU ARE USING THE DEFAULT SWEPS PACK YOU WILL ABSOLUTELY NEED TO HAVE M9K SMALL ARMS, ASSAULT RIFLES AND HEAVY WEAPONS INSTALLED
 a lot of the default sweps use models and sounds from the m9k pack and will be errors if you dont have m9k installed on your server
@@ -21,7 +24,7 @@ This gamemode requires three things:
 (or just do nav_generate, if it can't generate, simply enable sv_cheats then give entity info_player_start to yourself at place you want
 to generate navmesh then do nav_generate [you can also use Navmesh tool])
 
-2. Your server must have counter strike source mounted
+2. Your server must have counter strike source mounted. Otherwise, some props, boss and faction loot caches will be errors.
 
 3. You need to create a config file for you map, this is literally as simple as going ingame and using these 3 commands:
 ate_addzombiespawn - creates spawnpoints for the zombies to appear at

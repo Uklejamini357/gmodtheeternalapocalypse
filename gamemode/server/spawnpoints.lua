@@ -2,12 +2,12 @@
 PlayerSpawnsData = ""
 
 function LoadPlayerSpawns()
-if not file.IsDir("theeverlastingapocalypse/spawns/players", "DATA") then
-   file.CreateDir("theeverlastingapocalypse/spawns/players")
+if not file.IsDir("theeternalapocalypse/spawns/players", "DATA") then
+   file.CreateDir("theeternalapocalypse/spawns/players")
 end
-	if file.Exists( "theeverlastingapocalypse/spawns/players/" .. string.lower(game.GetMap()) .. ".txt", "DATA" ) then
+	if file.Exists( "theeternalapocalypse/spawns/players/" .. string.lower(game.GetMap()) .. ".txt", "DATA" ) then
 		PlayerSpawnsData = ""
-		PlayerSpawnsData = file.Read( "theeverlastingapocalypse/spawns/players/" .. string.lower(game.GetMap()) .. ".txt", "DATA" )
+		PlayerSpawnsData = file.Read( "theeternalapocalypse/spawns/players/" .. string.lower(game.GetMap()) .. ".txt", "DATA" )
 		print( "Player spawns file loaded" )
 	else
 		PlayerSpawnsData = ""
@@ -63,7 +63,7 @@ function AddPlayerSpawn( ply, cmd, args, str )
 		NewData = PlayerSpawnsData .. "\n" .. tostring( PosAngName )
 	end
 	
-	file.Write( "theeverlastingapocalypse/spawns/players/" .. string.lower(game.GetMap()) .. ".txt", NewData )
+	file.Write( "theeternalapocalypse/spawns/players/" .. string.lower(game.GetMap()) .. ".txt", NewData )
 	
 	SendChat( ply, "Added a new player spawnpoint called '" .. str .. "'" )
 
@@ -77,8 +77,8 @@ if !SuperAdminCheck( ply ) then
 	return
 end
 
-if file.Exists(	"theeverlastingapocalypse/spawns/players/" .. string.lower(game.GetMap()) .. ".txt", "DATA") then
-	file.Delete("theeverlastingapocalypse/spawns/players/" .. string.lower(game.GetMap()) .. ".txt")
+if file.Exists(	"theeternalapocalypse/spawns/players/" .. string.lower(game.GetMap()) .. ".txt", "DATA") then
+	file.Delete("theeternalapocalypse/spawns/players/" .. string.lower(game.GetMap()) .. ".txt")
 end
 SendChat( ply, "Deleted all player spawnpoints" )
 end
