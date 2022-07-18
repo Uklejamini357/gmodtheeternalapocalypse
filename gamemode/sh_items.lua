@@ -120,12 +120,12 @@ ItemsList = {
 		["Name"] = "Can of Softdrink",
 		["Cost"] = 20,
 		["Model"] = "models/props_junk/PopCan01a.mdl",
-		["Description"] = "An old pre apocalyptic softdrink, it even still has bubbles left in it! Restores 8% hunger.\n(Item ID: item_soda)",
+		["Description"] = "An old pre apocalyptic softdrink, it even still has bubbles left in it! Restores 8% hunger, 5% of stamina and recovers 1% of sleep.\n(Item ID: item_soda)",
 		["Weight"] = 0.33,
 		["Supply"] = 0,
 		["Rarity"] = 1,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) local food = UseFunc_Eat(ply, 8, 5, 1, "comrade_vodka/inv_drink_can2.ogg") return food end,
+		["UseFunc"] = function(ply) local food = UseFunc_Eat(ply, 8, 5, -1, "comrade_vodka/inv_drink_can2.ogg") return food end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_soda") return drop end,
 	},
 
@@ -1257,7 +1257,7 @@ ItemsList = {
 		["Cost"] = 30000,
 		["Model"] = "models/weapons/w_pist_p228.mdl",
 		["Description"] = "Point away from face\n(Item ID: weapon_zw_fuckinator)",
-		["Weight"] = 6.14,
+		["Weight"] = 7.42,
 		["Supply"] = -1,
 		["Rarity"] = 7,
 		["Category"] = 3,
@@ -1267,7 +1267,7 @@ ItemsList = {
 
 	["weapon_zw_germanator"] = {
 		["Name"] = "The Germanator",
-		["Cost"] = 5800,
+		["Cost"] = 6800,
 		["Model"] = "models/weapons/w_mp40smg.mdl",
 		["Description"] = "An antique SMG that fires an unnecessarily large caliber bullet. Uses pistol ammo\n(Item ID: weapon_zw_germanator)",
 		["Weight"] = 3.34,

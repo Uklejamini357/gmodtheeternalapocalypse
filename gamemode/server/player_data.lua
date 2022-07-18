@@ -137,7 +137,7 @@ local Data = {}
 	net.WriteFloat( ply.StatSurvivor )
 	net.Send( ply )
 
-	print("✓ ".. ply:Nick() .." account saved into database")
+	print("✓ ".. ply:Nick() .." profile data saved into database")
 
 
 	file.Write( "theeternalapocalypse/players/" ..string.lower(string.gsub( ply:SteamID(), ":", "_" ) .. "/profile.txt"), StringToWrite )

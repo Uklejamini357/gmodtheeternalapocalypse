@@ -56,7 +56,7 @@ elseif Config[ "FileSystem" ] == "PData" then
 else
 	print("BOY YOU REALLY FUCKED UP THIS TIME WILLIS, SET YOUR DAMN FILESYSTEM OPTION TO A PROPER SETTING IN SH_CONFIG.LUA")
 end
-
+	print("✓ ".. ply:Nick() .." vault data saved into database")
 end
 
 

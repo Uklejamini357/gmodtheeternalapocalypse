@@ -1,21 +1,4 @@
-/*-------------------------------------------------------------------------------------------------
-
- ▄▄▄        █████▒▄▄▄█████▓▓█████  ██▀███     ▄▄▄█████▓ ██░ ██ ▓█████    ▓█████  ███▄    █ ▓█████▄ 
-▒████▄    ▓██   ▒ ▓  ██▒ ▓▒▓█   ▀ ▓██ ▒ ██▒   ▓  ██▒ ▓▒▓██░ ██▒▓█   ▀    ▓█   ▀  ██ ▀█   █ ▒██▀ ██▌
-▒██  ▀█▄  ▒████ ░ ▒ ▓██░ ▒░▒███   ▓██ ░▄█ ▒   ▒ ▓██░ ▒░▒██▀▀██░▒███      ▒███   ▓██  ▀█ ██▒░██   █▌
-░██▄▄▄▄██ ░▓█▒  ░ ░ ▓██▓ ░ ▒▓█  ▄ ▒██▀▀█▄     ░ ▓██▓ ░ ░▓█ ░██ ▒▓█  ▄    ▒▓█  ▄ ▓██▒  ▐▌██▒░▓█▄   ▌
- ▓█   ▓██▒░▒█░      ▒██▒ ░ ░▒████▒░██▓ ▒██▒     ▒██▒ ░ ░▓█▒░██▓░▒████▒   ░▒████▒▒██░   ▓██░░▒████▓ 
- ▒▒   ▓▒█░ ▒ ░      ▒ ░░   ░░ ▒░ ░░ ▒▓ ░▒▓░     ▒ ░░    ▒ ░░▒░▒░░ ▒░ ░   ░░ ▒░ ░░ ▒░   ▒ ▒  ▒▒▓  ▒ 
-  ▒   ▒▒ ░ ░          ░     ░ ░  ░  ░▒ ░ ▒░       ░     ▒ ░▒░ ░ ░ ░  ░    ░ ░  ░░ ░░   ░ ▒░ ░ ▒  ▒ 
-  ░   ▒    ░ ░      ░         ░     ░░   ░      ░       ░  ░░ ░   ░         ░      ░   ░ ░  ░ ░  ░ 
-      ░  ░                    ░  ░   ░                  ░  ░  ░   ░  ░      ░  ░         ░    ░    
-                                                                                            ░      
-
-
-An apocalyptic RPG gamemode created by LegendofRobbo
-Based on the ideas and concepts explored in Zombified World by Fizzadar and Chewgum
-
--------------------------------------------------------------------------------------------------*/
+-------------------------------- Scoreboard --------------------------------
 
 surface.CreateFont("QtyFont", {
     font = "Trebuchet MS",
@@ -642,7 +625,7 @@ surface.SetDrawColor(150, 0, 0 ,255)
 surface.DrawOutlinedRect(0, 0, w, h)
 
 draw.SimpleText( "Absolutely Ever True Lasting...", "TargetID", 15, 10, Color(255,255,255,255) )
-draw.SimpleText( "Welcome to The Everlasting Apocalypse. Also known as After The End Reborn.", "TargetID", 15, 30, Color(255,255,255,255) )
+draw.SimpleText( "Welcome to The Eternal Apocalypse. Also known as After The End Reborn.", "TargetID", 15, 30, Color(255,255,255,255) )
 draw.SimpleText( "In this gamemode:", "TargetID", 15, 60, Color(155,155,155,255) )
 draw.SimpleText( "Most zombies are overbuffed, new weapons are added. Unused/Cut items are added", "TargetID", 15, 90, Color(155,155,155,255) )
 draw.SimpleText( "back. Health Regen function is also changed, it regenerates less hp. So you gotta carry", "TargetID", 15, 110, Color(155,155,155,255) )
@@ -662,8 +645,9 @@ draw.SimpleText( "F3 (gm_showspare1): Open Drop Money Panel", "TargetID", 15, 42
 draw.SimpleText( "F4 (gm_showspare2): [Function Not Implemented]", "TargetID", 15, 440, Color(155,255,255,255) )
 draw.SimpleText( "Just a few more notes:", "TargetID", 15, 500, Color(155,255,155,255) )
 draw.SimpleText( "- Gamemode works the same as ZsRPG and AtE, but most of its' functions are changed", "TargetID", 15, 550, Color(255,255,155,255) )
-draw.SimpleText( "- A map may change once per every while. This depends on Owner's choice.", "TargetID", 15, 530, Color(255,255,155,255) )
-draw.SimpleText( "- If you encounter any problem, error, or any kind of mistranslation, report it to owner.", "TargetID", 15, 570, Color(255,155,155,255) )
+draw.SimpleText( "- A map may change once per every while. This depends on server Owner's choice.", "TargetID", 15, 530, Color(255,255,155,255) )
+draw.SimpleText( "- If you encounter any problem, error, or any kind of mistranslation, report it to the dev.", "TargetID", 15, 570, Color(255,155,155,255) )
+draw.SimpleText( "- Do not abuse any bugs. Especially to crash/lag servers. Report them to developer.", "TargetID", 15, 590, Color(255,155,155,255) )
 draw.SimpleText( "Good hunting.", "TargetID", 15, 630, Color(155,255,155,255) )
 end
 

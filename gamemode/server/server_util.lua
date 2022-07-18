@@ -153,7 +153,7 @@ function GM:DoPlayerDeath( ply, attacker, dmginfo )
 	ply:ConCommand( "play theeverlastingapocalypse/gameover_music.wav" )
 	
 	local tea_server_respawntime = GetConVar( "tea_server_respawntime" )
-	print( tea_server_respawntime:GetInt() )
+	print( "".. ply:Nick() .." has died, ".. tea_server_respawntime:GetInt() .." seconds until able to respawn" )
 
 	ply.RespawnTime = CurTime() + tea_server_respawntime:GetInt()
 
@@ -187,7 +187,7 @@ function GM:DoPlayerDeath( ply, attacker, dmginfo )
 	if attacker:IsPlayer() and attacker != ply then
 		attacker:AddFrags( 1 ) 
 
-	elseif (ply:Team() == attacker:Team()) and attacker != ply and not (ply:Team() == 1 or attacker:Team() == 1) then
+	elseif (ply:Team() == attacker:Team()) and attacker != ply and not attacker:IsNPC() and not (ply:Team() == 1 or attacker:Team() == 1) then
 		attacker:AddFrags( -1 )
 		attacker.XP = attacker.XP - 500
 		if tonumber(attacker.Money) <= 1000 then

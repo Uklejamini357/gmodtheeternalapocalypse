@@ -11,8 +11,8 @@ if Config[ "DebugLogging" ] != true then return end
 local TimeStr = "ate_log_"..os.date( "%d/%m/%Y" )
 local filename = string.Replace( TimeStr, "/", "_" )..".txt"
 
-if not file.IsDir( "theeverlastingapocalypse/logs", "DATA" ) then
-   file.CreateDir( "theeverlastingapocalypse/logs" )
+if not file.IsDir( "theeternalapocalypse/logs", "DATA" ) then
+   file.CreateDir( "theeternalapocalypse/logs" )
 end
 
 local StringToWrite = ""
@@ -24,13 +24,13 @@ for k, v in pairs( DebugLogs ) do
 	end
 end
 
-if file.Exists( "theeverlastingapocalypse/logs/"..filename, "DATA" ) then
-	file.Append("theeverlastingapocalypse/logs/"..filename, StringToWrite)
+if file.Exists( "theeternalapocalypse/logs/"..filename, "DATA" ) then
+	file.Append("theeternalapocalypse/logs/"..filename, StringToWrite)
 else
-	file.Write( "theeverlastingapocalypse/logs/"..filename, StringToWrite )
+	file.Write( "theeternalapocalypse/logs/"..filename, StringToWrite )
 end
 
-print("After the End: Saved debug logs to data/theeverlastingapocalypse/logs/"..filename)
+print("After the End: Saved debug logs to data/theeternalapocalypse/logs/"..filename)
 DebugLogs = {}
 end
 concommand.Add("ate_savelogs", SaveLog)

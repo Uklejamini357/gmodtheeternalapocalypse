@@ -1038,6 +1038,7 @@ LoadLoot()
 LoadZombies()
 LoadTraders()
 LoadPlayerSpawns()
+timer.Simple(1, function() SpawnTraders() end)
 SystemMessage(ply, "Refreshed all spawns.", Color(155,255,155,255), true)
 end
 concommand.Add("ate_sadmin_refresheverything", ATERefreshEverything)
