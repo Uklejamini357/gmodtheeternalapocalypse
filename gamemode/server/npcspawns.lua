@@ -32,6 +32,7 @@ function CreateZombie( class, pos, ang, xp, cash, isboss )
 local isboss = isboss or false
 local class = tostring(class)
 
+
 local SpawnZombie = ents.Create( class )
 SpawnZombie:SetPos( pos )
 SpawnZombie:SetAngles( ang )
@@ -224,9 +225,12 @@ end
 hook.Add("EntityTakeDamage", "StoreAttacker", StoreAttacker)
 
 function NPCReward( ent )
+local tea_server_xpreward = GetConVar( "tea_server_xpreward" )
+local tea_server_moneyreward = GetConVar( "tea_server_moneyreward" )
+
 	if ( ent.Type == "nextbot" or ent:IsNPC() ) and (ent.XPReward and ent.MoneyReward) then
 		if ent.LastAttacker and ent.LastAttacker:IsValid() then
-		Payout( ent.LastAttacker, ent.XPReward, ent.MoneyReward )
+		Payout( ent.LastAttacker, ent.XPReward * tea_server_xpreward:GetInt(), ent.MoneyReward * tea_server_moneyreward:GetInt() )
 		elseif ent.DamagedBy then
 			for k, v in pairs(ent.DamagedBy) do
 				local pay = tonumber(v / 4)

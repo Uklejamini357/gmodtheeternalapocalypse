@@ -102,6 +102,7 @@ local function RecvPlayerKilled()
 	if attacker == "worldspawn" then attacker = "World" end
 	if attacker == "trigger_hurt" then attacker = "An Unknown Cause" end
 	if attacker == "monster_nihilanth" then attacker = "Nihilanth" end
+	if attacker == "npc_vj_shadow" then attacker = "Your fate" end
 	
 
 	GAMEMODE:AddDeathNotice( attacker, -1, inflictor, victim:Name(), victim:Team() )

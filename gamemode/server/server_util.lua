@@ -72,8 +72,8 @@ local attacker, inflictor, dmg = dmginfo:GetAttacker(), dmginfo:GetInflictor(), 
 	dmginfo:ScaleDamage( 1.4 )
 	end
 
-	if attacker:IsNPC() then
-	dmginfo:ScaleDamage( 3 )
+	if (target:IsNPC() or target.Type == "nextbot") and attacker:IsPlayer() then
+	dmginfo:ScaleDamage( 1 + (0.025 * attacker.StatDamage) )
 	end
 
 
@@ -187,7 +187,7 @@ function GM:DoPlayerDeath( ply, attacker, dmginfo )
 	if attacker:IsPlayer() and attacker != ply then
 		attacker:AddFrags( 1 ) 
 
-	elseif (ply:Team() == attacker:Team()) and attacker != ply and not attacker:IsNPC() and not (ply:Team() == 1 or attacker:Team() == 1) then
+	elseif attacker:IsPlayer() and (ply:Team() == attacker:Team()) and attacker != ply and not (ply:Team() == 1 or attacker:Team() == 1) then
 		attacker:AddFrags( -1 )
 		attacker.XP = attacker.XP - 500
 		if tonumber(attacker.Money) <= 1000 then

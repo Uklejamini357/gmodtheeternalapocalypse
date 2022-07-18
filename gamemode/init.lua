@@ -1,22 +1,3 @@
-/*-------------------------------------------------------------------------------------------------
-
- ▄▄▄        █████▒▄▄▄█████▓▓█████  ██▀███     ▄▄▄█████▓ ██░ ██ ▓█████    ▓█████  ███▄    █ ▓█████▄ 
-▒████▄    ▓██   ▒ ▓  ██▒ ▓▒▓█   ▀ ▓██ ▒ ██▒   ▓  ██▒ ▓▒▓██░ ██▒▓█   ▀    ▓█   ▀  ██ ▀█   █ ▒██▀ ██▌
-▒██  ▀█▄  ▒████ ░ ▒ ▓██░ ▒░▒███   ▓██ ░▄█ ▒   ▒ ▓██░ ▒░▒██▀▀██░▒███      ▒███   ▓██  ▀█ ██▒░██   █▌
-░██▄▄▄▄██ ░▓█▒  ░ ░ ▓██▓ ░ ▒▓█  ▄ ▒██▀▀█▄     ░ ▓██▓ ░ ░▓█ ░██ ▒▓█  ▄    ▒▓█  ▄ ▓██▒  ▐▌██▒░▓█▄   ▌
- ▓█   ▓██▒░▒█░      ▒██▒ ░ ░▒████▒░██▓ ▒██▒     ▒██▒ ░ ░▓█▒░██▓░▒████▒   ░▒████▒▒██░   ▓██░░▒████▓ 
- ▒▒   ▓▒█░ ▒ ░      ▒ ░░   ░░ ▒░ ░░ ▒▓ ░▒▓░     ▒ ░░    ▒ ░░▒░▒░░ ▒░ ░   ░░ ▒░ ░░ ▒░   ▒ ▒  ▒▒▓  ▒ 
-  ▒   ▒▒ ░ ░          ░     ░ ░  ░  ░▒ ░ ▒░       ░     ▒ ░▒░ ░ ░ ░  ░    ░ ░  ░░ ░░   ░ ▒░ ░ ▒  ▒ 
-  ░   ▒    ░ ░      ░         ░     ░░   ░      ░       ░  ░░ ░   ░         ░      ░   ░ ░  ░ ░  ░ 
-      ░  ░                    ░  ░   ░                  ░  ░  ░   ░  ░      ░  ░         ░    ░    
-                                                                                            ░      
-
-
-An apocalyptic RPG gamemode created by LegendofRobbo
-Based on the ideas and concepts explored in Zombified World by Fizzadar and Chewgum
-
--------------------------------------------------------------------------------------------------*/
-
 
 AddCSLuaFile( "cl_init.lua" )
 AddCSLuaFile( "shared.lua" )
@@ -69,6 +50,8 @@ resource.AddWorkshop("448170926") -- swep pack
 --include("time_weather.lua")
 
 local tea_server_respawntime = CreateConVar( "tea_server_respawntime", 15, {FCVAR_NOTIFY}, "Modifies respawn time for players. Do not set it too high or players won't be able to respawn. Recommended values: 10 - 20" )
+local tea_server_moneyreward = CreateConVar( "tea_server_moneyreward", 1, {FCVAR_NOTIFY}, "Modifies Money gain rewards for killing zombies. This convar is dynamic (affects all zombies) and does not affect XP rewards for destroying faction structures. Useful for making events." )
+local tea_server_xpreward = CreateConVar( "tea_server_xpreward", 1, {FCVAR_NOTIFY}, "Modifies XP gain multiplier for killing zombies. This convar is dynamic (affects all zombies) and does not affect Money rewards for destroying faction structures. Useful for making events." )
 
 Factions = Factions or {}
 
@@ -106,14 +89,14 @@ function GM:Think()
 	for k, ply in pairs( player.GetAll() ) do
 	if !ply:IsValid() then continue end
 
-	local endurance = (ply.StatEndurance / 200) -- divide by 200 so you lose 5% less stamina per endurance level
+	local endurance = (ply.StatEndurance / 500)
 	-- hunger, fatigue, infection
 	ply.Hunger = math.Clamp( ply.Hunger - (0.065 * (1 - (ply.StatSurvivor * 0.04)) ), 0, 10000 )
 
 	if ply.Hunger <= 0 or ply.Fatigue >= 10000 or ply.Infection >= 10000 then
 	local d = DamageInfo()
 	d:SetDamage( 0.1 )
-	d:SetDamageType( DMG_SONIC )
+	d:SetDamageType( DMG_POISON ) -- tried other damage types that don't affect armor but screw it
 
 	ply:TakeDamageInfo( d )
 	end
@@ -133,14 +116,19 @@ function GM:Think()
 
 		if ply:WaterLevel() == 3 then
 			if ply.Stamina <= 0 then
-				ply:TakeDamage(0.2)
+				local drown = DamageInfo()
+				drown:SetDamage( 0.25 )
+				drown:SetDamageType( DMG_POISON ) -- same goes here
+				ply:TakeDamageInfo( drown )
 				else
-				ply.Stamina = math.Clamp( ply.Stamina - (0.15 - endurance), 0, 100 )
+				ply.Stamina = math.Clamp( ply.Stamina - (0.12 - endurance), 0, 100 )
 			end
-		elseif ( ply:KeyDown( IN_SPEED ) and PlayerIsMoving) then
-			ply.Stamina = math.Clamp( ply.Stamina - (0.15 - endurance), 0, 100 )
+		elseif ( ply:KeyDown( IN_SPEED ) and PlayerIsMoving and not ply:KeyDown(IN_DUCK) ) then
+			ply.Stamina = math.Clamp( ply.Stamina - (0.08 - endurance), 0, 100 )
+		elseif PlayerIsMoving then
+			ply.Stamina = math.Clamp( ply.Stamina + 0.0024, 0, 100 )
 		else
-			ply.Stamina = math.Clamp( ply.Stamina + 0.1, 0, 100 )
+			ply.Stamina = math.Clamp( ply.Stamina + 0.023, 0, 100 )
 		end
 		
 		if ply.Stamina > 30 then
@@ -189,6 +177,17 @@ end
 function GM:PlayerDisconnected( ply )
 
 	SystemBroadcast(ply:Nick().." has left the server", Color(255,255,155,255), false)
+
+	if ply.Bounty >= 5 then
+	local cashloss = ply.Bounty * 0.35
+
+	local EntDrop = ents.Create( "ate_cash" )
+		EntDrop:SetPos( ply:GetPos() + Vector(0, 0, 10))
+		EntDrop:SetAngles( Angle( 0, 0, 0 ) )
+		EntDrop:SetNWInt("CashAmount", math.floor(cashloss))
+		EntDrop:Spawn()
+		EntDrop:Activate()
+	end
 
 	SavePlayer( ply )
 	SavePlayerInventory( ply )
@@ -321,8 +320,6 @@ end
 
 function GM:PlayerSpawn( ply )
 	self.BaseClass:PlayerSpawn( ply )
-	player_manager.SetPlayerClass( ply, "player_ate" )
-
 
 	RecalcPlayerModel( ply )
 
@@ -335,7 +332,11 @@ function GM:PlayerSpawn( ply )
 
 	if timer.Exists("pvpnominge_"..ply:UniqueID()) then timer.Destroy("pvpnominge_"..ply:UniqueID()) end
 
-	timer.Simple(0.2, function()
+	timer.Simple(0.1, function()
+	RecalcPlayerSpeed(ply)
+	end)
+
+	timer.Simple(3, function()
 	RecalcPlayerSpeed(ply)
 	end)
 
@@ -460,4 +461,6 @@ print( "==============================================\n" )
 print( "The Eternal Apocalypse (After The End Reborn) Gamemode Loaded Successfully\n" )
 print( "Original Creator: LegendofRobbo\n" )
 print( "Edited by ???\n" )
+print( "Github: https://github.com/Uklejamini357/gmodtheeternalapocalypse\n" )
+print( "Be sure to check out github site for new updates\n" )
 print( "==============================================\n" )

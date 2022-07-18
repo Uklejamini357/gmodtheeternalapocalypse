@@ -2,12 +2,14 @@
 
 function TogglePVP( ply )
 if timer.Exists("pvptoggle_"..ply:UniqueID()) then SystemMessage(ply, "Don't spam the pvp command!", Color(255,205,205,255), true) return false end
-if timer.Exists("pvpnominge_"..ply:UniqueID()) then SystemMessage(ply, "Unable to toggle PvP: you have damaged or taken damage from another player within the last 60 seconds!", Color(255,205,205,255), true) return false end
+if timer.Exists("pvpnominge_"..ply:UniqueID()) then SystemMessage(ply, "Unable to toggle PvP: you have damaged or taken damage from another player within the last 60 seconds!", Color(255,205,205,255), true)
+print("".. ply:Nick() .." attempted to toggle pvp while damaged or taken damage from another player within the last 60 seconds!") return false end
 
 ply:SetPvPGuarded( 2 )
 
 SystemMessage(ply, "Toggling PvP in 5 seconds...", Color(205,205,255,255), true)
 ply:EmitSound("npc/attack_helicopter/aheli_mine_drop1.wav", 100, 100)
+print("".. ply:Nick() .." is toggling pvp")
 
 local nerds = ents.FindInSphere(ply:GetPos(), 800)
 
@@ -24,11 +26,14 @@ timer.Create( "pvptoggle_"..ply:UniqueID(), 5, 1, function()
 
 	if !ply:IsValid() or !ply:Alive() then return false end
 
-	if timer.Exists("pvpnominge_"..ply:UniqueID()) then SystemMessage(ply, "Unable to toggle PvP: you have damaged or taken damage from another player within the last 60 seconds!", Color(255,205,205,255), true) return false end
+	if timer.Exists("pvpnominge_"..ply:UniqueID()) then SystemMessage(ply, "Unable to toggle PvP: you have damaged or taken damage from another player within the last 60 seconds!", Color(255,205,205,255), true)
+	print("Cancelled toggling pvp for ".. ply:Nick() ..": player has damaged or taken damage from another player within the last 60 seconds!") return false end
 
 	if ply:GetNWBool("pvp") == true then ply:SetNWBool("pvp", false) SystemMessage(ply, "You have disabled PvP", Color(205,205,205,255), true)
+	print("".. ply:Nick() .." has disabled pvp")
 	else
 	ply:SetNWBool("pvp", true) SystemMessage(ply, "You have enabled PvP", Color(205,255,205,255), true)
+	print("".. ply:Nick() .." has enabled pvp")
 	end
 	ply:SetPvPGuarded( 0 )
 	timer.Destroy("pvptoggle_"..ply:UniqueID())
@@ -46,13 +51,15 @@ if !ply:IsValid() then return false end
 
 	ply:ConCommand("play physics/metal/metal_large_debris1.wav")
 	SystemMessage(ply, "You cleared all your props.", Color(205,205,255,255), true)
+	print("".. ply:Nick() .." has cleared all props")
 end
 concommand.Add( "ate_clearmyprops", TrashProps )
 
 
 function DropCash( ply, cmd, args )
 if !ply:IsValid() then return false end
-if timer.Exists("dropcashcooldown_"..ply:UniqueID()) then SystemMessage(ply, "Wait before you drop more money!", Color(255,205,205,255), true) return false end
+if timer.Exists("dropcashcooldown_"..ply:UniqueID()) then SystemMessage(ply, "Wait before you drop more money!", Color(255,205,205,255), true)
+print("".. ply:Nick() .." attempted to drop money while on cooldown!") return false end
 timer.Create( "dropcashcooldown_"..ply:UniqueID(), 2, 1, function()
 end)
 
@@ -65,6 +72,7 @@ if plycash < cash then SystemMessage(ply, "You don't have that many "..Config[ "
 
 ply.Money = plycash - cash
 
+print("".. ply:Nick() .." has dropped "..cash.." "..Config[ "Currency" ].."s!")
 
 local vStart = ply:GetShootPos()
 local vForward = ply:GetAimVector()
