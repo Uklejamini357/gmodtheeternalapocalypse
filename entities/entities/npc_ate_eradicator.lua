@@ -1,7 +1,7 @@
 AddCSLuaFile()
 
-ENT.Base = "base_nextbot"
-ENT.PrintName = "Shambler Zombie"
+ENT.Base = "npc_ate_basic"
+ENT.PrintName = "Eradicator Zombie" -- This is an unfinished and BETA zombie type, so it's not included in sh_config in the eternal apocalypse
 ENT.Category = ""
 ENT.Author = "LegendofRobbo"
 ENT.Spawnable = true
@@ -46,9 +46,7 @@ self.AttackSounds = {"npc/zombie/zo_attack1.wav",
 "npc/zombie/zo_attack2.wav"
 }
 
-self.AlertSounds = {"npc/zombie/zombie_alert1.wav", 
-"npc/zombie/zombie_alert2.wav", 
-"npc/zombie/zombie_alert3.wav"
+self.AlertSounds = {"npc/combine_gunship/gunship_moan.wav"
 }
 
 self.IdleSounds = {
@@ -63,17 +61,9 @@ self.IdleSounds = {
 "npc/zombie/zombie_voice_idle9.wav"
 }
 
-self.PainSounds = {"npc/zombie/zombie_pain1.wav",
-"npc/zombie/zombie_pain2.wav", 
-"npc/zombie/zombie_pain3.wav", 
-"npc/zombie/zombie_pain4.wav", 
-"npc/zombie/zombie_pain5.wav", 
-"npc/zombie/zombie_pain6.wav"
-}
-
-self.DieSounds = {"npc/zombie/zombie_die1.wav",
-"npc/zombie/zombie_die2.wav", 
-"npc/zombie/zombie_die3.wav"
+self.PainSounds = {"npc/combine_soldier/pain1.wav",
+"npc/combine_soldier/pain2.wav",
+"npc/combine_soldier/pain3.wav",
 }
 
 self.DoorBreak = Sound("npc/zombie/zombie_pound_door.wav")
@@ -264,7 +254,7 @@ self:MoveToPos(self:GetPos() + Vector(math.random(-256, 256), math.random(-256, 
 			if (v:Alive() and self:GetRangeTo(v) <= (1200 * self.RageLevel)) then
 				self.target = v
 				if self.CanScream == true then
-				self:EmitSound(table.Random(self.AlertSounds), 90, math.random(90, 110))
+				self:EmitSound(table.Random(self.AlertSounds), 75, math.random(70,75))
 				self.CanScream = false
 				end
 				break
@@ -287,12 +277,8 @@ end
 
 function ENT:OnKilled(damageInfo)
 	local attacker = damageInfo:GetAttacker()
-/*
-	if( attacker:IsPlayer() ) then
-		Payout(attacker, self.XPMin, self.XPMax, self.MoneyMin, self.MoneyMax)
-	end
-*/
-	self:EmitSound(table.Random(self.DieSounds), 100, math.random(75, 130))
+
+	self:EmitSound("npc/combine_gunship/gunship_pain.wav", 100, math.Rand(70, 75))
 	self:BecomeRagdoll(damageInfo)
 	timer.Simple(1, function()
 	self:Remove()
@@ -303,7 +289,9 @@ function ENT:OnInjured(damageInfo)
 	local attacker = damageInfo:GetAttacker()
 	local range = self:GetRangeTo(attacker)
 
-	self:EmitSound(table.Random(self.PainSounds), 100, math.random(90, 110))
+	self:EmitSound(table.Random(self.PainSounds), 75, math.Rand(60, 65))
+	self.NextPainSound = CurTime() + 0.5
+
 	if attacker:IsPlayer() then
 	self.target = attacker
 	end
@@ -415,36 +403,3 @@ end
 
 
 
-function ENT:ApplyPlayerDamage(ply, damage, hitforce, infection)
-local damageInfo = DamageInfo()
-local dmg1 = damage
-
-local armorvalue = 0
-local plyarmor = ply:GetNWString("ArmorType")
-
-if plyarmor and plyarmor != "none" then
-local armortype = ItemsList[plyarmor]
-armorvalue = tonumber((armortype["ArmorStats"]["reduction"]) / 100)
-end
-
-local armorbonus = dmg1 * armorvalue
-local defencebonus = dmg1 * (0.015 * ply.StatDefense)
-
-local dmg2 = dmg1 - (defencebonus + armorbonus)
-
-damageInfo:SetAttacker(self)
-damageInfo:SetDamage(dmg2)
-damageInfo:SetDamageType(DMG_CLUB)
-
-local force = ply:GetAimVector() * hitforce
-force.z = 32
-damageInfo:SetDamageForce(force)
-
-ply:TakeDamageInfo(damageInfo)
-ply:EmitSound(self.Hit, 100, math.random(80, 110))
-ply:ViewPunch(VectorRand():Angle() * 0.05)
-ply:SetVelocity(force)
-if math.random(0, 100) > (100 - infection) then
-	ply.Infection = ply.Infection + 100
-end
-end

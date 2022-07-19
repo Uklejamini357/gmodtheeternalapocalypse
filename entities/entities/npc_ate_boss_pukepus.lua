@@ -1,10 +1,10 @@
 AddCSLuaFile()
 
--- todo: recode this on new zombie base
+-- This is an unfinished and BETA zombie boss type, so it's not included in sh_config in the eternal apocalypse
 
 ENT.Base = "base_nextbot"
 ENT.PrintName = "The Tyrant"
-ENT.Category = "a"
+ENT.Category = "none"
 ENT.Author = "LegendofRobbo"
 ENT.Spawnable = true
 ENT.AdminOnly = true
@@ -84,22 +84,26 @@ end
 function ENT:Initialize()
 
 	self.DamagedBy = {}
-	self:SetModel("models/sin/quadralex.mdl")
---	self.breathing = CreateSound(self, "npc/zombie_poison/pz_breathe_loop1.wav")
---	self.breathing:Play()
+	self:SetModel("models/zombie/poison.mdl")
+	self:SetMaterial("models/flesh")
+	self:SetColor(Color(100,205,100,255))
+	self.breathing = CreateSound(self, "npc/zombie_poison/pz_breathe_loop1.wav")
+	self.breathing:Play()
 --	self.breathing:ChangePitch(60, 0)
---	self.breathing:ChangeVolume(0.3, 0)
+	self.breathing:ChangeVolume(0.3, 0)
 	self.loco:SetDeathDropHeight(700)
 	self.loco:SetAcceleration( 800 )
 	self:SetHealth(15000)
 	self:SetMaxHealth(15000)
-	self:SetModelScale( 0.8, 0.1 )
+	self:SetModelScale( 1.9, 0.1 )
 	self:SetCollisionBounds(Vector(-34,-34, 0), Vector(34, 34, 84))
 --	self:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
 --	self:SetSkin(math.random(0, self:SkinCount() - 1))
 
 	self.nexttoss = CurTime()
 	self.nextslam = CurTime()
+
+	for k, v in pairs(player.GetAll()) do v:PrintMessage(HUD_PRINTCENTER, "[BOSS]: The Pukepus appeared!") end
 
 	timer.Simple(900, function() if self:IsValid() then self:Remove() SystemBroadcast("[BOSS]: the Tyrant was not killed and has left the area", Color(255,105,105,255), false) end end)
 

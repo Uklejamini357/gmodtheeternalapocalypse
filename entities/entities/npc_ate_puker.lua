@@ -116,8 +116,8 @@ function ENT:OnKilled(damageInfo)
 
 	for _, v in pairs(nerds) do
 		if !v:IsPlayer() then continue end
-		timer.Create("Poison"..v:EntIndex(), 0.7, 10, function() v:TakeDamage(2, self) end)
-		v:TakeDamage(20, self)
+		timer.Create("Poison"..v:EntIndex(), 0.5, 30, function() v:TakeDamage(1, self) end)
+		v:TakeDamage(15, self)
 	end
 
 	self:EmitSound("physics/flesh/flesh_bloody_break.wav", 100, math.random(95, 105))

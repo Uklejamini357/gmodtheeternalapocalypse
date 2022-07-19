@@ -74,6 +74,12 @@ local attacker, inflictor, dmg = dmginfo:GetAttacker(), dmginfo:GetInflictor(), 
 
 	if (target:IsNPC() or target.Type == "nextbot") and attacker:IsPlayer() then
 	dmginfo:ScaleDamage( 1 + (0.025 * attacker.StatDamage) )
+	attacker:PrintMessage(HUD_PRINTCENTER, -(dmginfo:GetDamage() * (1 + (0.025 * attacker.StatDamage))))
+	end
+
+	if target:IsPlayer() and attacker:IsPlayer() and dmginfo:GetDamageType() == DMG_GENERIC then
+	dmginfo:ScaleDamage( 1 + (0.025 * attacker.StatDamage) )
+	attacker:PrintMessage(HUD_PRINTCENTER, "Damage: "..dmginfo:GetDamage().."")
 	end
 
 
@@ -91,35 +97,28 @@ function GM:ScalePlayerDamage( ply, group, dmginfo )
 
 	local attacker = dmginfo:GetAttacker()
 
-	local defencebonus = dmginfo:GetDamage() * (0.025 * ply.StatDefense) --taken from damage
+	local defencebonus = dmginfo:GetDamage() * (0.015 * ply.StatDefense) --taken from damage
 	local armorbonus = dmginfo:GetDamage() * armorvalue
 	local attackbonus = dmginfo:GetDamage() * (0.025 * attacker.StatDamage) --added to damage
 	
 	local TheTotalDamage = dmginfo:GetDamage() + attackbonus - (defencebonus + armorbonus)
-	
-	attacker:PrintMessage(HUD_PRINTCENTER, -TheTotalDamage)
-	attacker:ConCommand( "playgamesound buttons/button10.wav" )
+
 
 	if group == HITGROUP_HEAD then
 		dmginfo:SetDamage( 2 * TheTotalDamage )
-		attacker:PrintMessage(HUD_PRINTCENTER, -(2 * TheTotalDamage))
-		attacker:ConCommand( "playgamesound buttons/button10.wav" )
+		attacker:PrintMessage(HUD_PRINTCENTER, "Damage: "..dmginfo:GetDamage().."")
 	elseif group == HITGROUP_CHEST then
 		dmginfo:SetDamage( TheTotalDamage )
-		attacker:PrintMessage(HUD_PRINTCENTER, -TheTotalDamage)
-		attacker:ConCommand( "playgamesound buttons/button10.wav" )
+		attacker:PrintMessage(HUD_PRINTCENTER, "Damage: "..dmginfo:GetDamage().."")
 	elseif group == HITGROUP_STOMACH then
 		dmginfo:SetDamage( 0.8 * TheTotalDamage )
-		attacker:PrintMessage(HUD_PRINTCENTER, -(0.8 * TheTotalDamage))
-		attacker:ConCommand( "playgamesound buttons/button10.wav" )
+		attacker:PrintMessage(HUD_PRINTCENTER, "Damage: "..dmginfo:GetDamage().."")
 	elseif group == HITGROUP_LEG then
 		dmginfo:SetDamage( 0.4 * TheTotalDamage )
-		attacker:PrintMessage(HUD_PRINTCENTER, -(0.4 * TheTotalDamage))
-		attacker:ConCommand( "playgamesound buttons/button10.wav" )
+		attacker:PrintMessage(HUD_PRINTCENTER, "Damage: "..dmginfo:GetDamage().."")
 	else
 		dmginfo:SetDamage( 0.5 * TheTotalDamage )
-		attacker:PrintMessage(HUD_PRINTCENTER, -(0.5 * TheTotalDamage))
-		attacker:ConCommand( "playgamesound buttons/button10.wav" )
+		attacker:PrintMessage(HUD_PRINTCENTER, "Damage: "..dmginfo:GetDamage().."")
 	end
 
 	-- the other half of this logic is within the actual trader entity, should stop queerbaits from trader camping with pvp on
@@ -150,7 +149,7 @@ function GM:PlayerDeathThink( ply )
 end
 
 function GM:DoPlayerDeath( ply, attacker, dmginfo )
-	ply:ConCommand( "play theeverlastingapocalypse/gameover_music.wav" )
+	ply:ConCommand( "play theeternalapocalypse/gameover_music.wav" )
 	
 	local tea_server_respawntime = GetConVar( "tea_server_respawntime" )
 	print( "".. ply:Nick() .." has died, ".. tea_server_respawntime:GetInt() .." seconds until able to respawn" )
@@ -173,7 +172,7 @@ function GM:DoPlayerDeath( ply, attacker, dmginfo )
 	end
 
 	ply.Bounty = 0
-	
+	ply:SetNWInt( "PlyBounty", ply.Bounty )
 
 --	ply.Autorespawntime = CurTime() + 20
 	

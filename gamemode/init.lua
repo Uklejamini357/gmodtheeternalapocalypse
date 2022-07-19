@@ -52,6 +52,8 @@ resource.AddWorkshop("448170926") -- swep pack
 local tea_server_respawntime = CreateConVar( "tea_server_respawntime", 15, {FCVAR_NOTIFY}, "Modifies respawn time for players. Do not set it too high or players won't be able to respawn. Recommended values: 10 - 20" )
 local tea_server_moneyreward = CreateConVar( "tea_server_moneyreward", 1, {FCVAR_NOTIFY}, "Modifies Money gain rewards for killing zombies. This convar is dynamic (affects all zombies) and does not affect XP rewards for destroying faction structures. Useful for making events." )
 local tea_server_xpreward = CreateConVar( "tea_server_xpreward", 1, {FCVAR_NOTIFY}, "Modifies XP gain multiplier for killing zombies. This convar is dynamic (affects all zombies) and does not affect Money rewards for destroying faction structures. Useful for making events." )
+local tea_server_spawnprotection = CreateConVar( "tea_server_spawnprotection", 1, {FCVAR_NOTIFY}, "Enable god mode on spawning? 1 for true, 0 for false" )
+local tea_server_spawnprotection_duration = CreateConVar( "tea_server_spawnprotection_duration", 1, {FCVAR_NOTIFY}, "How long should god mode after spawning last? (in seconds)" )
 
 Factions = Factions or {}
 
@@ -332,7 +334,21 @@ function GM:PlayerSpawn( ply )
 
 	if timer.Exists("pvpnominge_"..ply:UniqueID()) then timer.Destroy("pvpnominge_"..ply:UniqueID()) end
 
-	timer.Simple(0.1, function()
+	local tea_server_spawnprotection = GetConVar( "tea_server_spawnprotection" )
+	local tea_server_spawnprotection_duration = GetConVar( "tea_server_spawnprotection_duration" )
+	if tea_server_spawnprotection:GetInt() >= 1 then
+	ply:GodEnable()
+	ply:PrintMessage(HUD_PRINTCENTER, "Spawn protection for "..tea_server_spawnprotection_duration:GetInt().." second(s)")
+	end
+
+	if tea_server_spawnprotection:GetInt() >= 1 then
+	timer.Simple(tea_server_spawnprotection_duration:GetInt(), function()
+	ply:GodDisable()
+	ply:PrintMessage(HUD_PRINTCENTER, "Spawn protection expired")
+	end)
+	end
+
+	timer.Simple(0.2, function()
 	RecalcPlayerSpeed(ply)
 	end)
 
@@ -346,7 +362,7 @@ function GM:PlayerSpawn( ply )
 	ply:SetHealth( 100 + ( ply.StatHealth * 5 ) )
 	ply:SetMaxHealth( 100 + ( ply.StatHealth * 5 ) )
 	ply:SetMaxArmor( 100 + (ply.StatEngineer * 2 ) )
-	ply:ConCommand( "play theeverlastingapocalypse/no_sound.wav" )
+	ply:ConCommand( "play common/null.wav" )
 	RecalcPlayerModel( ply )
 	PrepareStats( ply )
 
@@ -414,6 +430,7 @@ function RecalcPlayerSpeed(ply)
 local armorspeed = 0
 local plyarmor = ply:GetNWString("ArmorType")
 
+if !ply:IsValid() then return end
 if plyarmor and plyarmor != "none" then
 local armortype = ItemsList[plyarmor]
 armorspeed = tonumber(armortype["ArmorStats"]["speedloss"])

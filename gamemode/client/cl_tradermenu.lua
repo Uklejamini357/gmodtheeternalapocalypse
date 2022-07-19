@@ -98,10 +98,10 @@ end
 
     MyMoney = vgui.Create( "DLabel", TraderFrame )
     MyMoney:SetFont( "TargetID" )
-    MyMoney:SetPos( 300, TraderFrame:GetTall() - 42)
+    MyMoney:SetPos( 350, TraderFrame:GetTall() - 42)
     MyMoney:SetSize( 350, 25)
     MyMoney:SetColor( Color(155,255,155,255) )
-    MyMoney:SetText("Cash: "..Mymoney.." Bounty: "..Mybounty )
+    MyMoney:SetText("My Wallet: "..Mymoney)
 
     local CastBounty = vgui.Create("DButton", TraderFrame)
     CastBounty:SetSize( 120, 45 )
@@ -204,7 +204,7 @@ for k, v in SortedPairsByMemberValue( ItemsList, "Cost" ) do
             net.Start("BuyItem")
             net.WriteString(k)
             net.SendToServer()
-            timer.Simple(0.3, function() MyWeight:SetText("Currently Carrying: "..CalculateWeightClient().."kg / "..37.4 + ((Perks.Strength or 0) * 1.53).."kg") MyMoney:SetText("My Wallet: "..Mymoney) end)
+            timer.Simple(0.4, function() MyWeight:SetText("Currently Carrying: "..CalculateWeightClient().."kg / "..37.4 + ((Perks.Strength or 0) * 1.53).."kg") MyMoney:SetText("My Wallet: "..Mymoney) end)
             end
 
 

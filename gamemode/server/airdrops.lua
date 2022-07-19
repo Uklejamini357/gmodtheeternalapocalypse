@@ -74,7 +74,7 @@ RadioBroadcast(10, "Be careful survivors! That airdrop crate is fitted with an I
 RadioBroadcast(15, "If you go near it you'll need to watch your back or risk being shot by other loot hunters!", "Watchdog")
 
 
-timer.Simple(15, function()
+timer.Simple(20, function()
 
 local cratedropped = false
 

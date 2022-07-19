@@ -127,6 +127,7 @@ if client.Bounty < 0 then SystemMessage(client, "You don't have any bounty to ca
 client.Money = math.floor(tonumber(client.Money)) + tonumber(client.Bounty)
 SystemMessage(client, "You cashed in your bounty and received "..tonumber(client.Bounty).." "..Config[ "Currency" ].."s!", Color(205,255,205,255), true)
 client.Bounty = 0
+ply:SetNWInt( "PlyBounty", ply.Bounty )
 
 FullyUpdatePlayer( client )
 end)

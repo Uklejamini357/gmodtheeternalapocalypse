@@ -165,12 +165,12 @@ function ScoreBoard:Create()
     local armortype = ItemsList[armorstr]
     if armorstr and armortype then
     draw.SimpleText( "Armor: "..armortype.Name, "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 235, Color(255,255,255,255) )
-    draw.SimpleText( "Protection: "..armortype["ArmorStats"]["reduction"].."%  ("..armortype["ArmorStats"]["reduction"] + ((Perks.Defense or 0) * 2.5).."% total)", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 250, Color(205,255,205,255) )
+    draw.SimpleText( "Protection: "..armortype["ArmorStats"]["reduction"].."%  ("..armortype["ArmorStats"]["reduction"] + ((Perks.Defense or 0) * 1.5).."% total)", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 250, Color(205,255,205,255) )
     draw.SimpleText( "Speed Penalty: "..(armortype["ArmorStats"]["speedloss"] / 10), "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 265, Color(205,205,255,255) )
     draw.SimpleText( "Weight: "..armortype.Weight.."kg", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 280, Color(255,235,205,255) )
     else
     draw.SimpleText( "No Armor", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 235, Color(255,255,255,255) )
-    draw.SimpleText( "Protection: 0% ("..( Perks.Defense or 0) * 2.5 .."% total)", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 250, Color(205,255,205,255) )
+    draw.SimpleText( "Protection: 0% ("..( Perks.Defense or 0) * 1.5 .."% total)", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 250, Color(205,255,205,255) )
     draw.SimpleText( "Speed Penalty: 0", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 265, Color(205,205,255,255) )
     draw.SimpleText( "Weight: 0kg", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 280, Color(255,235,205,255) )
     end
