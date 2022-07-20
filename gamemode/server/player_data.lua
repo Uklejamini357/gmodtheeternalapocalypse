@@ -147,16 +147,19 @@ end
 
 --level up
 function PlayerGainLevel( ply )
-	if tonumber(ply.Level) >= 1000000000 then
+/*	if tonumber(ply.Level) >= 1000000000 then
 		SendChat( ply, "Level Maxed" )
 		return
-	end
+	end */
+--Haha no level limit go brr
+
 	if ply.XP >= GetReqXP( ply ) then
 		ply.XP = ply.XP - GetReqXP( ply )
+		print(""..ply:Nick().." has leveled up from Level "..ply.Level.." to Level ".. ply.Level + 1 .." with a reward of ".. 62 + ((ply.Level ^ 1.046) * 19) .." "..Config[ "Currency" ].."s and reduction of "..GetReqXP(ply).." XP! (XP now: "..ply.XP..")")
 		ply.Level = ply.Level + 1
 		ply.StatPoints = ply.StatPoints + 1
 		ply.Money = ply.Money + 62 + ((ply.Level ^ 1.046) * 19)
-		SendChat( ply, "Congratulations! You are now level " .. ply.Level .. ", you have gained 1 skill point and " .. 62 + ((ply.Level ^ 1.043) * 19) .. " cash!" )
+		SendChat( ply, "Congratulations! You are now level " .. ply.Level .. ", you have gained 1 skill point and " .. 62 + ((ply.Level ^ 1.046) * 19) .. " "..Config[ "Currency" ].."s!" )
 		ply:ConCommand( "playgamesound theeternalapocalypse/levelup.wav" )
 
 		ply:SetNWInt( "PlyLevel", ply.Level )
@@ -168,6 +171,9 @@ function PlayerGainLevel( ply )
 		net.WriteFloat( ply.StatPoints )
 		net.WriteFloat( ply.Bounty )
 		net.Send( ply )
+		timer.Simple(0.03, function() -- Timer was created to prevent Buffer Overflow if user has too much XP if user levels up
+		PlayerGainLevel(ply) -- This is so the user will gain another level if user has required xp for next level and will repeat
+		end)
 
 	end
 end

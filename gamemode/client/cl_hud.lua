@@ -532,8 +532,9 @@ if dohuddraw != 1 then return false end
 	DrawNames()
 	DrawMiscThings()
 
+
 	if ( LocalPlayer():Alive() ) then
-		Spawn = CurTime() + GetConVar( "tea_server_respawntime" ):GetInt()
+		Spawn = CurTime() + GetConVar( "tea_server_respawntime" ):GetString()
 	else
 	if LocalPlayer():IsValid() then
 		surface.SetDrawColor(255, 0, 0, 255)

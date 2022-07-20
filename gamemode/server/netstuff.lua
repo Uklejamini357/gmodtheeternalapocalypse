@@ -122,12 +122,12 @@ if v:GetClass() == "trader" then trader = true end
 end
 if trader == false then SystemMessage(client, "nice try faggot", Color(255,205,205,255), true) return false end
 
-if client.Bounty < 0 then SystemMessage(client, "You don't have any bounty to cash in!", Color(255,205,205,255), true) return false end
+if client.Bounty <= 0 then SystemMessage(client, "You don't have any bounty to cash in!", Color(255,205,205,255), true) return false end
 
 client.Money = math.floor(tonumber(client.Money)) + tonumber(client.Bounty)
 SystemMessage(client, "You cashed in your bounty and received "..tonumber(client.Bounty).." "..Config[ "Currency" ].."s!", Color(205,255,205,255), true)
 client.Bounty = 0
-ply:SetNWInt( "PlyBounty", ply.Bounty )
+client:SetNWInt( "PlyBounty", client.Bounty )
 
 FullyUpdatePlayer( client )
 end)

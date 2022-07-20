@@ -10,6 +10,10 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=448170926 (gamemode sweps
 https://steamcommunity.com/sharedfiles/filedetails/?id=128093075 (m9k small arms pack)
 https://steamcommunity.com/sharedfiles/filedetails/?id=128089118 (m9k assault rifles)
 https://steamcommunity.com/sharedfiles/filedetails/?id=128091208 (m9k heavy weapons)
+https://steamcommunity.com/sharedfiles/filedetails/?id=2438451886 (S.T.A.L.K.E.R. Item Models Pack)
+https://steamcommunity.com/sharedfiles/filedetails/?id=355101935 (Stalker playermodels)
+https://steamcommunity.com/sharedfiles/filedetails/?id=1680884607 (Project S.T.A.L.K.E.R. - Sounds)
+
 
 WARNING: IF YOU ARE USING THE DEFAULT SWEPS PACK YOU WILL ABSOLUTELY NEED TO HAVE M9K SMALL ARMS, ASSAULT RIFLES AND HEAVY WEAPONS INSTALLED
 a lot of the default sweps use models and sounds from the m9k pack and will be errors if you dont have m9k installed on your server

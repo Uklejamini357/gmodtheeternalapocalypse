@@ -512,22 +512,10 @@ if !SuperAdminCheck( ply ) then
 	return
 end
 
-	ply.XP = ply.XP - GetReqXP( ply )
-	ply.Level = ply.Level + 1
-	ply.StatPoints = ply.StatPoints + 1
-	ply.Money = ply.Money + 62 + ((ply.Level ^ 1.046) * 19)
-	SendChat( ply, "Congratulations! You are now level " .. ply.Level .. ", you have gained 1 skill point and " .. 62 + ((ply.Level ^ 1.043) * 19) .. " cash!" )
-	ply:ConCommand( "play theeternalapocalypse/levelup.wav" )
-
-	ply:SetNWInt( "PlyLevel", ply.Level )
-
-	net.Start("UpdatePeriodicStats")
-	net.WriteFloat( ply.Level )
-	net.WriteFloat( ply.Money )
-	net.WriteFloat( ply.XP )
-	net.WriteFloat( ply.StatPoints )
-	net.WriteFloat( ply.Bounty )
-	net.Send( ply )
+ply.XP = ply.XP + GetReqXP( ply )
+PlayerGainLevel( ply )
+ply.XP = ply.XP - GetReqXP( ply )
+FullyUpdatePlayer( ply )
 
 end
 concommand.Add("tea_dev_forcelevel", PlayerForceGainLevel)
@@ -539,21 +527,10 @@ if !SuperAdminCheck( ply ) then
 	ply:ConCommand( "play theeternalapocalypse/access_denied.wav" )
 	return
 end
-	ply.Level = ply.Level + 1
-	ply.StatPoints = ply.StatPoints + 1
-	ply.Money = ply.Money + 62 + ((ply.Level ^ 1.046) * 19)
-	SendChat( ply, "Congratulations! You are now level " .. ply.Level .. ", you have gained 1 skill point and " .. 62 + ((ply.Level ^ 1.043) * 19) .. " cash!" )
-	ply:ConCommand( "play theeternalapocalypse/levelup.wav" )
 
-	ply:SetNWInt( "PlyLevel", ply.Level )
-
-	net.Start("UpdatePeriodicStats")
-	net.WriteFloat( ply.Level )
-	net.WriteFloat( ply.Money )
-	net.WriteFloat( ply.XP )
-	net.WriteFloat( ply.StatPoints )
-	net.WriteFloat( ply.Bounty )
-	net.Send( ply )
+ply.XP = ply.XP + GetReqXP( ply )
+PlayerGainLevel( ply )
+FullyUpdatePlayer( ply )
 
 end
 concommand.Add("tea_dev_forcelevel_noxp", PlayerForceGainLevelNoXP)

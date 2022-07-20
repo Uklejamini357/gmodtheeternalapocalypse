@@ -42,7 +42,7 @@ function ENT:Initialize()
 	self.panel:SetSolid(SOLID_NONE)
 	self.panel:SetMoveType(MOVETYPE_NONE)
 
-	timer.Simple(900, function() if self:IsValid() then self:Remove() SystemBroadcast("Airdrop crate is gone!", Color(255,105,105,255), false) end end)
+	timer.Simple(1800, function() if self:IsValid() then self:Remove() SystemBroadcast("Airdrop crate is gone!", Color(255,105,105,255), false) end end)
 end
 
 function ENT:Use( ply, caller )

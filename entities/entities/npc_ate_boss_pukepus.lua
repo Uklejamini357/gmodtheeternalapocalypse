@@ -3,7 +3,7 @@ AddCSLuaFile()
 -- This is an unfinished and BETA zombie boss type, so it's not included in sh_config in the eternal apocalypse
 
 ENT.Base = "base_nextbot"
-ENT.PrintName = "The Tyrant"
+ENT.PrintName = "Puke Pus"
 ENT.Category = "none"
 ENT.Author = "LegendofRobbo"
 ENT.Spawnable = true
@@ -105,7 +105,7 @@ function ENT:Initialize()
 
 	for k, v in pairs(player.GetAll()) do v:PrintMessage(HUD_PRINTCENTER, "[BOSS]: The Pukepus appeared!") end
 
-	timer.Simple(900, function() if self:IsValid() then self:Remove() SystemBroadcast("[BOSS]: the Tyrant was not killed and has left the area", Color(255,105,105,255), false) end end)
+	timer.Simple(900, function() if self:IsValid() then self:Remove() SystemBroadcast("[BOSS]: The Puke Pus was not killed and has left the area!", Color(255,105,105,255), false) end end)
 
 	hook.Add("EntityRemoved", self, function()
 		if (self.breathing) then

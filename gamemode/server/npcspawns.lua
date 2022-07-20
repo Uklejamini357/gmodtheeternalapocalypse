@@ -230,7 +230,7 @@ local tea_server_moneyreward = GetConVar( "tea_server_moneyreward" )
 
 	if ( ent.Type == "nextbot" or ent:IsNPC() ) and (ent.XPReward and ent.MoneyReward) then
 		if ent.LastAttacker and ent.LastAttacker:IsValid() then
-		Payout( ent.LastAttacker, ent.XPReward * tea_server_xpreward:GetInt(), ent.MoneyReward * tea_server_moneyreward:GetInt() )
+		Payout( ent.LastAttacker, ent.XPReward * tea_server_xpreward:GetString(), ent.MoneyReward * tea_server_moneyreward:GetString() )
 		elseif ent.DamagedBy then
 			for k, v in pairs(ent.DamagedBy) do
 				local pay = tonumber(v / 4)
@@ -262,6 +262,9 @@ function Payout(ply, xp, cash)
 		ply.Bounty = ply.Bounty +  MoneyGain + MoneyBonus
 		ply:SetNWInt( "PlyBounty", ply.Bounty )
 		
+		print(""..ply:Nick().." gained "..XPGain + XPBonus.." XP ("..XPGain..", +"..XPBonus.." with Knowledge Skill level "..ply.StatKnowledge..", Total "..ply.XP..")")
+		print(""..ply:Nick().." gained "..MoneyGain + MoneyBonus.." "..Config[ "Currency" ].."s to their bounty ("..MoneyGain..", +"..MoneyBonus.." with Salvage Skill level "..ply.StatSalvage..", Total "..ply.Bounty..")")
+
 		if tonumber(ply.Level) >= 1000000000 then
 		else
 			PlayerGainLevel( ply )

@@ -49,15 +49,20 @@ resource.AddWorkshop("448170926") -- swep pack
 
 --include("time_weather.lua")
 
-local tea_server_respawntime = CreateConVar( "tea_server_respawntime", 15, {FCVAR_NOTIFY}, "Modifies respawn time for players. Do not set it too high or players won't be able to respawn. Recommended values: 10 - 20" )
-local tea_server_moneyreward = CreateConVar( "tea_server_moneyreward", 1, {FCVAR_NOTIFY}, "Modifies Money gain rewards for killing zombies. This convar is dynamic (affects all zombies) and does not affect XP rewards for destroying faction structures. Useful for making events." )
-local tea_server_xpreward = CreateConVar( "tea_server_xpreward", 1, {FCVAR_NOTIFY}, "Modifies XP gain multiplier for killing zombies. This convar is dynamic (affects all zombies) and does not affect Money rewards for destroying faction structures. Useful for making events." )
-local tea_server_spawnprotection = CreateConVar( "tea_server_spawnprotection", 1, {FCVAR_NOTIFY}, "Enable god mode on spawning? 1 for true, 0 for false" )
-local tea_server_spawnprotection_duration = CreateConVar( "tea_server_spawnprotection_duration", 1, {FCVAR_NOTIFY}, "How long should god mode after spawning last? (in seconds)" )
+
+
 
 Factions = Factions or {}
 
 DEBUG = false
+
+function GM:Shutdown()
+for k, v in pairs(player.GetAll()) do
+SavePlayer(v)
+SavePlayerInventory(v)
+SavePlayerVault(v)
+end
+end
 
 function GM:ShowHelp( ply )
 
@@ -95,7 +100,7 @@ function GM:Think()
 	-- hunger, fatigue, infection
 	ply.Hunger = math.Clamp( ply.Hunger - (0.065 * (1 - (ply.StatSurvivor * 0.04)) ), 0, 10000 )
 
-	if ply.Hunger <= 0 or ply.Fatigue >= 10000 or ply.Infection >= 10000 then
+	if (ply.Hunger <= 0 or ply.Fatigue >= 10000 or ply.Infection >= 10000) and ply:Alive() then
 	local d = DamageInfo()
 	d:SetDamage( 0.1 )
 	d:SetDamageType( DMG_POISON ) -- tried other damage types that don't affect armor but screw it
@@ -116,7 +121,7 @@ function GM:Think()
 			PlayerIsMoving = false
 		end
 
-		if ply:WaterLevel() == 3 then
+		if ply:WaterLevel() == 3 and ply:Alive() then
 			if ply.Stamina <= 0 then
 				local drown = DamageInfo()
 				drown:SetDamage( 0.25 )
@@ -127,8 +132,12 @@ function GM:Think()
 			end
 		elseif ( ply:KeyDown( IN_SPEED ) and PlayerIsMoving and not ply:KeyDown(IN_DUCK) ) then
 			ply.Stamina = math.Clamp( ply.Stamina - (0.08 - endurance), 0, 100 )
+		elseif PlayerIsMoving and ply:KeyDown( IN_DUCK ) then
+			ply.Stamina = math.Clamp( ply.Stamina + 0.0037, 0, 100 )
 		elseif PlayerIsMoving then
 			ply.Stamina = math.Clamp( ply.Stamina + 0.0024, 0, 100 )
+		elseif ply:KeyDown( IN_DUCK ) then
+			ply.Stamina = math.Clamp( ply.Stamina + 0.002, 0, 100 )
 		else
 			ply.Stamina = math.Clamp( ply.Stamina + 0.023, 0, 100 )
 		end
@@ -338,11 +347,11 @@ function GM:PlayerSpawn( ply )
 	local tea_server_spawnprotection_duration = GetConVar( "tea_server_spawnprotection_duration" )
 	if tea_server_spawnprotection:GetInt() >= 1 then
 	ply:GodEnable()
-	ply:PrintMessage(HUD_PRINTCENTER, "Spawn protection for "..tea_server_spawnprotection_duration:GetInt().." second(s)")
+	ply:PrintMessage(HUD_PRINTCENTER, "Spawn protection enabled for "..tea_server_spawnprotection_duration:GetString().." second(s)")
 	end
 
-	if tea_server_spawnprotection:GetInt() >= 1 then
-	timer.Simple(tea_server_spawnprotection_duration:GetInt(), function()
+	if tea_server_spawnprotection:GetInt() > 0 then
+	timer.Simple(tea_server_spawnprotection_duration:GetString(), function()
 	ply:GodDisable()
 	ply:PrintMessage(HUD_PRINTCENTER, "Spawn protection expired")
 	end)
@@ -470,9 +479,6 @@ function GM:ShowSpare1( ply )
 	ply:SendLua( "DropGoldMenu()" )
 
 end
-
-
-
 
 print( "==============================================\n" )
 print( "The Eternal Apocalypse (After The End Reborn) Gamemode Loaded Successfully\n" )
