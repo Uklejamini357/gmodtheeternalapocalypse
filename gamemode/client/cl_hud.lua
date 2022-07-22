@@ -119,6 +119,8 @@ end)
 
 
 local function GetMyPvP()
+local tea_server_voluntarypvp = GetConVar("tea_server_voluntarypvp")
+if tea_server_voluntarypvp:GetInt() < 1 then return 4 end
 if LocalPlayer():IsPvPGuarded() then return 1 end
 if LocalPlayer():Team() == 1 and LocalPlayer():GetNWBool("pvp") then return 2 end
 if LocalPlayer():Team() != 1 then return 2 end
@@ -134,7 +136,8 @@ local function DrawNames( )
 	trace.start = LocalPlayer():EyePos()
 	trace.endpos = trace.start + LocalPlayer():GetAimVector() * 1500
 	trace.filter = LocalPlayer()
-	
+
+	local tea_server_voluntarypvp = GetConVar("tea_server_voluntarypvp")	
 	local tr = util.TraceLine( trace )
 	local ply = tr.Entity
 	if ply:IsValid( ) and ply:IsPlayer() and ply != LocalPlayer() and ply:Alive() then
@@ -160,7 +163,7 @@ local function DrawNames( )
 
 				if ply:IsPvPGuarded() then
 				draw.SimpleTextOutlined(  "p", "CounterShit", headPos.x - 15, headPos.y - 62, Color( 50, 250, 0, 255 ), 0, 0, 2, Color( 0, 50, 0, 255 ) )
-				elseif ply:IsPvPForced() or (ply:Team() == 1 and ply:GetNWBool("pvp") == true) or ( ply:Team() != 1 and ply:Team() != LocalPlayer():Team() ) then
+				elseif ply:IsPvPForced() or (ply:Team() == 1 and ply:GetNWBool("pvp") == true) or ( (ply:Team() != 1 and ply:Team() != LocalPlayer():Team()) or (ply:Team() == 1 and tea_server_voluntarypvp:GetInt() < 1 )) then
 				draw.SimpleTextOutlined(  "C", "CounterShit", headPos.x - 25, headPos.y - 60, Color( 255, 50, 0, 255 ), 0, 0, 2, Color( 50, 0, 0, 255 ) )
 				end
 
@@ -457,19 +460,20 @@ local wy = 40*math.sin(-wang) + 80
 		[1] = "Guarded",
 		[2] = "Enabled",
 		[3] = "Forced",
+		[4] = "Force-Enabled",
 	}
 
-	if mpvp == 3 then
+	if mpvp == 3 or mpvp == 4 then
 	surface.SetDrawColor(100,0,0,200)
 	else
 	surface.SetDrawColor(0,0,0,200)
 	end
-	surface.DrawRect( 135, 70, 150, 27)
+	surface.DrawRect( 135, 70, 200, 27)
 	surface.SetDrawColor(40,0,40,255)
-	surface.DrawOutlinedRect( 135, 70, 150, 27)
+	surface.DrawOutlinedRect( 135, 70, 200, 27)
 
 	draw.SimpleText( "PvP: "..mpvptab[mpvp], "TargetID", 175, 75, Color(205,205,205,255), 0, 0 )
-	if mpvp == 2 or mpvp == 3 then
+	if mpvp == 2 or mpvp == 3 or mpvp == 4 then
 	draw.SimpleTextOutlined(  "C", "CounterShit", 130, 75, Color( 255, 50, 0, 255 ), 0, 0, 2, Color( 50, 0, 0, 255 ) )
 	elseif mpvp == 1 then
 	draw.SimpleTextOutlined(  "p", "CounterShit", 140, 73, Color( 50, 250, 0, 255 ), 0, 0, 2, Color( 0, 50, 0, 255 ) )
@@ -572,14 +576,14 @@ function GM:RenderScreenspaceEffects( )
 	local modify = {}
 	local color = 1
 	
-	if ( LocalPlayer():Health() < 50 ) then
+	if ( LocalPlayer():Health() < (LocalPlayer():GetMaxHealth() * 0.5) ) then
 		if ( LocalPlayer():Alive() ) then
-			color = math.Clamp( color - ( ( 50 - LocalPlayer():Health() ) * 0.025 ), 0, color )
+			color = math.Clamp( color - ( ( (LocalPlayer():GetMaxHealth() * 0.5) - LocalPlayer():Health() ) * ( 1 / (LocalPlayer():GetMaxHealth() * 0.5) )), 0, color )
 		else
 			color = 0
 		end
 		
-		DrawMotionBlur( math.Clamp( 1 - ( ( 50 - LocalPlayer():Health() ) * 0.025 ), 0.1, 1 ), 1, 0 )
+		DrawMotionBlur( math.Clamp( 1 - ( ( (LocalPlayer():GetMaxHealth() * 0.5) - LocalPlayer():Health() ) * ( 1 / (LocalPlayer():GetMaxHealth() * 0.5) )), 0.1, 1 ), 1, 0 )
 	end
 
 	if wralpha > 220 then DrawMotionBlur(0.4, 0.8, 0.01) end

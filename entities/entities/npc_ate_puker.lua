@@ -44,7 +44,7 @@ self.ZombieStats = {
 
 ["Ability1"] = true,
 ["Ability1Range"] = 800,
-["Ability1Cooldown"] = 0.1,
+["Ability1Cooldown"] = 1,
 ["Ability1TrigDelay"] = 0.4,
 
 }
@@ -92,7 +92,7 @@ local trace = util.TraceLine(tracedata)
 
 self:EmitSound("npc/headcrab_poison/ph_hiss1.wav", 100, 60)
 
-for i=1,8 do
+for i=1,6 do
 local spit = ents.Create("obj_fleshbomb")
 if !spit:IsValid() then return false end
 spit:SetAngles(self:GetAngles())

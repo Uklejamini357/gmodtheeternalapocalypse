@@ -159,6 +159,7 @@ if ptype == 2 and ply:Team() == 1 then SystemMessage(ply, "You must be in a fact
 	local cash = tonumber(ply.Money)
 	local pcost = checktable[model]["COST"]
 	local discount = 1 - (ply.StatEngineer * 0.02)
+	local tea_server_maxprops = GetConVar("tea_server_maxprops")
 
 	if (cash < (pcost * discount)) then SystemMessage(ply, "Unable to spawn prop due to insufficient Gold!", Color(255,205,205,255), true) return false end
 
@@ -166,8 +167,8 @@ if ptype == 2 and ply:Team() == 1 then SystemMessage(ply, "You must be in a fact
 		if pos:Distance(v:GetPos()) < 200 then SystemMessage(ply, "Unable to spawn prop! Too close to a trader!", Color(255,205,205,255), true) return false end
 	end
 
-	if CountProps(ply) >= Config[ "MaxProps" ] then 
-	SendChat( ply, "You cannot have more than ".. Config[ "MaxProps" ] .." props!" )
+	if CountProps(ply) >= tea_server_maxprops:GetInt() then 
+	SendChat( ply, "You cannot have more than ".. tea_server_maxprops:GetInt() .." prop(s)!" )
 		return false
 	end
 

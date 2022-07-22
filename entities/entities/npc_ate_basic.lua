@@ -408,7 +408,7 @@ if(skin) then
 end
 
 ent:Spawn()
-timer.Simple( 30 , function() ResetDoor(target, ent) end)
+timer.Simple( 30, function() ResetDoor(target, ent) end)
 coroutine.wait(self.ZombieStats["AfterStrikeDelay"])
 self:StartActivity( self.WalkAnim )
 end
@@ -444,7 +444,7 @@ ply:TakeDamageInfo(damageInfo)
 ply:EmitSound(self.Hit, 100, math.random(80, 110))
 ply:ViewPunch(VectorRand():Angle() * 0.05)
 ply:SetVelocity(force)
-if math.random(0, 100) > (100 - infection) then
-	ply.Infection = ply.Infection + 100
+if math.random(0, 100) > (100 - infection * (1 - (0.04 * ply.StatImmunity))) then
+	ply.Infection = ply.Infection + math.random(60,300)
 end
 end

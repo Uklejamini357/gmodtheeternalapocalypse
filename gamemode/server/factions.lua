@@ -62,10 +62,11 @@ end)
 
 
 function CreateFaction( ply, name, col, public )
+	local tea_server_factioncost = GetConVar("tea_server_factioncost")
 	if !ply:IsValid() then return false end
 	if name == "" then SystemMessage(ply, "You can't create a faction with no name!", Color(255,205,205,255), true) return false end
 	if ((col.r + col.g + col.b) < 75) then SystemMessage(ply, "You can't create a faction with a black colour! Try a brighter colour instead!", Color(255,205,205,255), true) return false end
-	if (tonumber(ply.Money) < Config[ "FactionCost" ]) then SystemMessage(ply, "You can't afford to make a faction! making a faction costs "..Config[ "FactionCost" ].." "..Config[ "Currency" ].."s", Color(255,205,205,255), true) return false end
+	if (tonumber(ply.Money) <= tea_server_factioncost:GetInt()) then SystemMessage(ply, "You can't afford to make a faction! making a faction costs "..tea_server_factioncost:GetInt().." "..Config[ "Currency" ].."s", Color(255,205,205,255), true) return false end
 	if string.len(name) > 20 then SystemMessage(ply, "Your faction name cannot be longer than 20 characters!", Color(255,205,205,255), true) return false end
 --	ply.Money = ply.Money - 250
 
@@ -83,8 +84,10 @@ function CreateFaction( ply, name, col, public )
 	
 	team.SetUp( FactionIndex, tostring( name ), Color( col.r, col.g, col.b, 255 ) )
 	ply:SetTeam( FactionIndex )
-	ply.Money = ply.Money - Config[ "FactionCost" ]
+	ply.Money = ply.Money - tea_server_factioncost:GetInt()
+	print(ply:Nick().." has created a faction for "..tea_server_factioncost:GetInt().." "..Config[ "Currency" ].."s named: "..tostring(name))
 	SystemBroadcast(ply:Nick().." has created a faction named: "..tostring(name), Color(205,205,255,255), true)
+	FullyUpdatePlayer(ply)
 
 	net.Start("RecvFactions")
 	net.WriteTable(Factions)
@@ -138,8 +141,10 @@ if timer.Exists("pvpnominge_"..ply:UniqueID()) then SystemMessage(ply, "You cann
 
 	local plyfaction = team.GetName(ply:Team())
 	if team.NumPlayers(ply:Team()) > 1 && Factions[plyfaction]["leader"] == ply then
-		ply:SetTeam( 1 ) -- hopefully this works
+		timer.Simple(0.25, function() -- hopefully that will work
+		ply:SetTeam( 1 )
 		SelectRandomLeader(plyfaction)
+		end)
 	elseif team.NumPlayers(ply:Team()) <= 1 then
 		AutoDisbandFaction( plyfaction )
 	end

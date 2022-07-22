@@ -92,7 +92,6 @@ net.Receive( "UpgradePerk", function( length, client )
 local ply = client
 local perk = net.ReadString()
 local perk2 = "Stat"..perk
-print(tonumber(ply.StatPoints))
 	if( tonumber(ply.StatPoints) < 1 ) then
 		SendChat( ply, "You need more stat points to upgrade a skill!" )
 		return false
@@ -106,6 +105,7 @@ print(tonumber(ply.StatPoints))
 		ply.StatPoints = ply.StatPoints - 1
 		ply:SetMaxHealth( 100 + ( ply.StatHealth * 5 ) )
 		ply:SetMaxArmor( 100 + ( ply.StatEngineer * 2 ) )
+		print(ply:Nick().." used 1 skill point on "..perk.." skill ("..tonumber(ply.StatPoints).." skill points remaining)")
 		SendChat( ply, "You increased your " .. perk .. " skill by 1 point!" )
  		RecalcPlayerSpeed(ply)
 		FullyUpdatePlayer( ply )

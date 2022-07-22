@@ -265,10 +265,10 @@ function Payout(ply, xp, cash)
 		print(""..ply:Nick().." gained "..XPGain + XPBonus.." XP ("..XPGain..", +"..XPBonus.." with Knowledge Skill level "..ply.StatKnowledge..", Total "..ply.XP..")")
 		print(""..ply:Nick().." gained "..MoneyGain + MoneyBonus.." "..Config[ "Currency" ].."s to their bounty ("..MoneyGain..", +"..MoneyBonus.." with Salvage Skill level "..ply.StatSalvage..", Total "..ply.Bounty..")")
 
-		if tonumber(ply.Level) >= 1000000000 then
-		else
+--		if tonumber(ply.Level) >= 1000000000 then -- No Level limit temporarily
+--		else
 			PlayerGainLevel( ply )
-		end
+--		end
 		
 		net.Start("Payout")
 		net.WriteFloat( XPGain + XPBonus )
@@ -316,7 +316,7 @@ ply:EmitSound("npc/zombie/zombie_hit.wav", 100, math.random(80, 110))
 ply:ViewPunch(VectorRand():Angle() * 0.05)
 ply:SetVelocity(force)
 if math.random(0, 100) > (100 - (infection * (1 - (0.04 * ply.StatImmunity)))) then
-	ply.Infection = ply.Infection + math.random(60, 200)
+	ply.Infection = ply.Infection + math.random(60,300)
 end
 end
 

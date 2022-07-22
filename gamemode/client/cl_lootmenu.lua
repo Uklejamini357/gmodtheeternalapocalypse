@@ -94,12 +94,12 @@ end
 	local weightlabel = vgui.Create( "DLabel", lootpanel )
 	weightlabel:SetPos( 20, 560 )
 	weightlabel:SetFont( "TargetIDSmall" )
-	weightlabel:SetText( "Total item weight: "..CalculateWeightClient().."kg    maximum carry capacity: "..37.4 + ((Perks.Strength or 0) * 2.53).."kg" )
+	weightlabel:SetText( "Total item weight: "..CalculateWeightClient().."kg    maximum carry capacity: "..37.4 + ((Perks.Strength or 0) * 1.53).."kg" )
 	weightlabel:SizeToContents()
 
 
 local function uwotm8( tab, parent )
---    InvForm:SetName("Total item weight: "..CalculateWeightClient().."kg    maximum carry capacity: "..40 + ((Perks.Strength or 0) * 2).."kg")
+--    InvForm:SetName("Total item weight: "..CalculateWeightClient().."kg    maximum carry capacity: "..37.4 + ((Perks.Strength or 0) * 1.53).."kg")
 
     for k, v in SortedPairsByMemberValue( tab, "Weight", true ) do
 
@@ -155,7 +155,7 @@ local function uwotm8( tab, parent )
             	if currentcrate:IsValid() then
             		-- this distance check exists on the server too so don't even try being a smartarse with net messages m8
             		if LocalPlayer():GetPos():Distance( currentcrate:GetPos() ) > 120 then chat.AddText( Color(255,200,200), "You have moved too far away from this crate!" ) lootpanel:Remove() return end
-                    if CalculateWeightClient() > 37.4 + ( (Perks.Strength or 0) * 2.53) then chat.AddText( Color(255,200,200), "You don't have enough free space to carry that!" ) return end
+                    if (CalculateWeightClient() + v.Weight) > 37.4 + ( (Perks.Strength or 0) * 1.53) then chat.AddText( Color(255,200,200), "You don't have enough free space to carry that!" ) return end
             		net.Start( "UseCrate" )
             		net.WriteEntity( currentcrate )
             		net.WriteString( k )
@@ -169,7 +169,8 @@ local function uwotm8( tab, parent )
                             TheListPanel:Clear()
                             uwotm8( tab, parent )
                         end
-                    end)
+		weightlabel:SetText( "Total item weight: "..CalculateWeightClient().."kg    maximum carry capacity: "..37.4 + ((Perks.Strength or 0) * 1.53).."kg" )
+			end)
 
             	end
             end

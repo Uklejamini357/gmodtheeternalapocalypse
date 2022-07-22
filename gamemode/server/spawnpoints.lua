@@ -38,7 +38,7 @@ function SpawnPlayer( ply )
                 
                 ply:SetPos( pos )
 			    ply:SetAngles( ang )
-			    SystemMessage(ply, "You have spawned in " .. name .. "!", Color(205,255,205,255), true)
+--			    SystemMessage(ply, "You have spawned in " .. name .. "!", Color(205,255,205,255), true)
 	    
 	    end
     end

@@ -42,7 +42,7 @@ function ENT:Initialize()
 	self.panel:SetSolid(SOLID_NONE)
 	self.panel:SetMoveType(MOVETYPE_NONE)
 
-	timer.Simple(1800, function() if self:IsValid() then self:Remove() SystemBroadcast("Airdrop crate is gone!", Color(255,105,105,255), false) end end)
+	timer.Simple(1800, function() if self:IsValid() then self:Remove() SystemBroadcast("Airdrop crate is gone!", Color(255,105,105,255), true) end end)
 end
 
 function ENT:Use( ply, caller )
@@ -57,7 +57,7 @@ if !self.Decoded and !self.Decoder then
 		if !self.Decoder:IsValid() or !self.Decoder:Alive() or self.Decoder:GetPos():Distance( self:GetPos() ) > 120 then self.Decoder = nil return end
 		SystemBroadcast( self.Decoder:Nick().." has opened an air drop crate!", Color(255,255,255,255), false)
 		self.Decoded = true
-		self:EmitSound("npc/scanner/scanner_pain1.wav", 100, 100)
+		self:EmitSound("npc/scanner/scanner_pain1.wav", 85, 90)
 		if self.panel:IsValid() then self.panel:Remove() end
 	end)
 elseif self.Decoded then

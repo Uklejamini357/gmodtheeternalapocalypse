@@ -46,7 +46,7 @@ local damagedents = ents.FindInSphere(self:GetPos(),50)
 
 for _,v in pairs(damagedents) do
 	if v:IsPlayer() or v:GetClass() == "prop_flimsy" or v:GetClass() == "prop_strong" then
-	v:TakeDamage(5,self.Entity)
+	v:TakeDamage(4.2,self.Entity)
 	end
 end
 	self:Remove()

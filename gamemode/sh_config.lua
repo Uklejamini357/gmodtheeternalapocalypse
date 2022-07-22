@@ -2,26 +2,27 @@ Config = {  }
 
 Config[ "DebugLogging" ] = true -- do we want to save debug logs? logs are found in garrysmod/data/theeverlastingapocalypse/logs and can be sent to the developer to find and fix malfunctions within the gamemode
 
-Config[ "WalkSpeed" ] = 120
-Config[ "RunSpeed" ] = 250 -- remember that the speed skill increases your sprint speed by 10 for each level, so at 300 runspeed players can reach a possible maximum of 400 sprint speed
+--Configs that are started with -- are not included due to introduction of ConVars but still exist here
+--Config[ "WalkSpeed" ] = 120
+--Config[ "RunSpeed" ] = 250 -- remember that the speed skill increases your sprint speed by 10 for each level, so at 300 runspeed players can reach a possible maximum of 400 sprint speed
 
-Config[ "MaxProps" ] = 60
+--Config[ "MaxProps" ] = 60
 
-Config[ "FactionCost" ] = 1000 -- do you want faction making to cost money?
-Config[ "VoluntaryPVP" ] = true -- is PvP voluntary? set to false to always force pvp, useful on gigantic maps like rp_stalker or if you just enjoy a more day-z ish experience
+--Config[ "FactionCost" ] = 1000 -- do you want faction making to cost money?
+--Config[ "VoluntaryPVP" ] = true -- (not used anymore due to addition of CVars) is PvP voluntary? set to false to always force pvp, useful on gigantic maps like rp_stalker or if you just enjoy a more day-z ish experience
 
 Config[ "Currency" ] = "Dollar" -- the s is added onto strings where needed, for example if you put the currency as "Dollar" it will come out as "Dollars" as needed
 
 Config[ "NoobLevel" ] = 15 -- people who are this level or below are considered noobs
 Config[ "NoobWeapon" ] = "weapon_zw_noobcannon" -- what gun to give to players if they are under the noob level and if they lost their previous one
-Config[ "StartMoney" ] = 500 -- noob fund
+--Config[ "StartMoney" ] = 500 -- noob fund
 
 Config[ "MaxZombies" ] = 35 -- how many standard zombies can exist at any given time, turn this down if your server is lagging from the zombie ai
-Config[ "ZombieSpawnRate" ] = 14 -- fresh zombies will be spawned in every x seconds
+Config[ "ZombieSpawnRate" ] = 3 -- fresh zombies will be spawned in every x seconds
 Config[ "BossSpawnRate" ] = 3000 -- how fast the boss spawn timer will be run in seconds (3600 seconds = 1 hour).  Keep in mind that if there is less than 3 players online then the boss will never spawn regardless of spawn rate
 Config[ "AirdropSpawnRate" ] = 3750 -- same as boss spawn rate but for airdrops
 
-Config[ "MaxCaches" ] = 10 -- how many loot caches can exist in the map at any given time?
+--Config[ "MaxCaches" ] = 10 -- how many loot caches can exist in the map at any given time?
 
 Config[ "VaultSize" ] = 200 -- vault size in kg
 Config[ "FileSystem" ] = "Legacy" -- set to Legacy or PData
@@ -78,8 +79,8 @@ Config[ "BossClasses" ] = {
 
 	["npc_nextbot_boss_tyrant"] = {
 		["SpawnChance"] = 100,
-		["XPReward"] = 4000, -- remember that xp and money for bosses is distributed by who damaged them, if you did all of the damage you would get 2,500 cash and xp in this case
-		["MoneyReward"] = 4000,
+		["XPReward"] = 5000, -- remember that xp and money for bosses is distributed by who damaged them, if you did all of the damage you would get 2,500 cash and xp in this case
+		["MoneyReward"] = 4500,
 		["SpawnDelay"] = 20, -- how long to wait before actually spawning it, gives the radio message time to play out
 		["AnnounceMessage"] = "[BOSS]: The Tyrant has appeared!",
 		["BroadCast"] = function()

@@ -2,7 +2,6 @@
 {
 	"base"		"base"
 	"title"		"The Eternal Apocalypse"
-	"maps"		"zw_"
 	"category"	"other"
 	"menusystem"	"1"
 

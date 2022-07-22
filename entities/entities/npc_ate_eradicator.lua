@@ -21,18 +21,18 @@ self.FallAnim = (ACT_IDLE_ON_FIRE)
 self.ZombieStats = {
 ["Model"] = "models/zombie/classic.mdl",
 
-["Damage"] = 35, -- how much damage per strike?
+["Damage"] = 40, -- how much damage per strike?
 ["Force"] = 400, -- how far to knock the player back upon striking them
-["Infection"] = 8, -- percentage chance to infect them
-["Reach"] = 60, -- how far can the zombies attack reach? in source units
+["Infection"] = 20, -- percentage chance to infect them
+["Reach"] = 65, -- how far can the zombies attack reach? in source units
 ["StrikeDelay"] = 0.8, -- how long does it take for the zombie to deal damage after beginning an attack
 ["AfterStrikeDelay"] = 1, -- how long should the zombie wait after a strike lands until reverting to its behaviour cycle
 
-["Health"] = 180, -- self explanatory
+["Health"] = 420, -- self explanatory
 ["MoveSpeedWalk"] = 50, -- zombies move speed when idly wandering around
-["MoveSpeedRun"] = 115, -- zombies move speed when moving towards a target
-["VisionRange"] = 1200, -- how far is the zombies standard sight range in source units, this will be tripled when they are frenzied
-["LoseTargetRange"] = 1500, -- how far must the target be from the zombie before it will lose interest and revert to wandering, this will be tripled when the zombie is frenzied
+["MoveSpeedRun"] = 135, -- zombies move speed when moving towards a target
+["VisionRange"] = 1250, -- how far is the zombies standard sight range in source units, this will be tripled when they are frenzied
+["LoseTargetRange"] = 1750, -- how far must the target be from the zombie before it will lose interest and revert to wandering, this will be tripled when the zombie is frenzied
 
 ["Ability1"] = false, -- does the zombie have a special ability?
 ["Ability1Range"] = 0, -- at what range from the player will this ability be triggered
@@ -383,22 +383,39 @@ local function ResetDoor(door, fakedoor)
 	fakedoor:Remove()
 end
 
-local push = self:GetPos():Normalize()
-local ent = ents.Create("prop_physics")
+function ENT:ApplyPlayerDamage(ply, damage, hitforce, infection)
+local damageInfo = DamageInfo()
+local dmg1 = damage
 
-ent:SetPos(pos)
-ent:SetAngles(ang)
-ent:SetModel(model)
-ent:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
-			
-if(skin) then
-	ent:SetSkin(skin)
+local armorvalue = 0
+local plyarmor = ply:GetNWString("ArmorType")
+
+if plyarmor and plyarmor != "none" then
+local armortype = ItemsList[plyarmor]
+armorvalue = tonumber((armortype["ArmorStats"]["reduction"]) / 100)
 end
 
-ent:Spawn()
-timer.Simple( 30 , function() ResetDoor(target, ent) end)
-coroutine.wait(self.ZombieStats["AfterStrikeDelay"])
-self:StartActivity( self.WalkAnim )
+local armorbonus = dmg1 * armorvalue
+local defencebonus = dmg1 * (0.015 * ply.StatDefense)
+
+local dmg2 = dmg1 - (defencebonus + armorbonus)
+
+damageInfo:SetAttacker(self)
+damageInfo:SetDamage(dmg2)
+damageInfo:SetDamageType(DMG_CLUB)
+
+local force = ply:GetAimVector() * hitforce
+force.z = 32
+damageInfo:SetDamageForce(force)
+
+ply:TakeDamageInfo(damageInfo)
+ply:EmitSound(self.Hit, 100, math.random(80, 110))
+ply:ViewPunch(VectorRand():Angle() * 0.05)
+ply:SetVelocity(force)
+if math.random(0, 100) > (100 - infection * (1 - (0.04 * ply.StatImmunity))) then
+	ply.Infection = ply.Infection + math.random(120,500)
+end
+end
 end
 
 

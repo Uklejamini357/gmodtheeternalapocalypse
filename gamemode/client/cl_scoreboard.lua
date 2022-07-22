@@ -280,7 +280,6 @@ function ScoreBoard:Create()
             draw.RoundedBox( 2, 0, 0, EquipButton:GetWide(), EquipButton:GetTall(), Color(0, 50, 0, 130) )
             end
             EquipButton.DoClick = function()
-		surface.PlaySound("theeverlastingapocalypse/use.wav")
                 net.Start("UseItem")
                 net.WriteString(k)
                 net.WriteBool(true)
@@ -786,17 +785,17 @@ local function DoStatsList()
 end
 DoStatsList()
 	
------------------------------------------PlayerModelSelect---------------------------------------------------------------
+/*-----------------------------------------PlayerModelSelect---------------------------------------------------------------
 	local ArmorForm = vgui.Create( "DForm", ScoreBoardFrame )
 	ArmorForm:SetSize( 675, 617 )
 	ArmorForm:SetPadding( 4 )
 	ArmorForm:SetName( "" )
  
 	
-	
+*/	
 -----------------------------------------Sheet List---------------------------------------------------------------
 	SecondarySheet:AddSheet( "My Skills", StatsForm, "icon16/heart.png", false, false, "Upgrade your stats" )
-	SecondarySheet:AddSheet( "Armor and Attachments", ArmorForm, "icon16/shield.png", false, false, "Change your model" )
+--	SecondarySheet:AddSheet( "Armor and Attachments", ArmorForm, "icon16/shield.png", false, false, "Change your model" )
 end
 
 function GM:CreateScoreboard()

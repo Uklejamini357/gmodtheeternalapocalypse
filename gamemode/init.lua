@@ -50,8 +50,6 @@ resource.AddWorkshop("448170926") -- swep pack
 --include("time_weather.lua")
 
 
-
-
 Factions = Factions or {}
 
 DEBUG = false
@@ -190,7 +188,9 @@ function GM:PlayerDisconnected( ply )
 	SystemBroadcast(ply:Nick().." has left the server", Color(255,255,155,255), false)
 
 	if ply.Bounty >= 5 then
-	local cashloss = ply.Bounty * 0.35
+	local cashloss = ply.Bounty * math.Rand(0.3, 0.4)
+	local bountyloss = ply.Bounty - cashloss
+	print( "".. ply:Nick() .." has left the server with "..ply.Bounty.." bounty and dropped money worth of "..math.floor(cashloss).." "..Config[ "Currency" ].."s!" )
 
 	local EntDrop = ents.Create( "ate_cash" )
 		EntDrop:SetPos( ply:GetPos() + Vector(0, 0, 10))
@@ -331,6 +331,7 @@ end
 
 function GM:PlayerSpawn( ply )
 	self.BaseClass:PlayerSpawn( ply )
+	player_manager.SetPlayerClass( ply, "player_ate" ) -- tried to remove it but then it creats new bug without thirdperson camera when doing emote or so
 
 	RecalcPlayerModel( ply )
 
@@ -346,12 +347,14 @@ function GM:PlayerSpawn( ply )
 	local tea_server_spawnprotection = GetConVar( "tea_server_spawnprotection" )
 	local tea_server_spawnprotection_duration = GetConVar( "tea_server_spawnprotection_duration" )
 	if tea_server_spawnprotection:GetInt() >= 1 then
+	if !ply:Alive() then return end
 	ply:GodEnable()
 	ply:PrintMessage(HUD_PRINTCENTER, "Spawn protection enabled for "..tea_server_spawnprotection_duration:GetString().." second(s)")
 	end
 
 	if tea_server_spawnprotection:GetInt() > 0 then
 	timer.Simple(tea_server_spawnprotection_duration:GetString(), function()
+	if !ply:Alive() then return end
 	ply:GodDisable()
 	ply:PrintMessage(HUD_PRINTCENTER, "Spawn protection expired")
 	end)
@@ -374,6 +377,7 @@ function GM:PlayerSpawn( ply )
 	ply:ConCommand( "play common/null.wav" )
 	RecalcPlayerModel( ply )
 	PrepareStats( ply )
+	FullyUpdatePlayer(ply)
 
 	-- give them a new noob cannon if they are still a noob
 	local noobgun = Config[ "NoobWeapon" ]
@@ -438,6 +442,8 @@ end
 function RecalcPlayerSpeed(ply)
 local armorspeed = 0
 local plyarmor = ply:GetNWString("ArmorType")
+local tea_server_walkspeed = GetConVar("tea_server_walkspeed")
+local tea_server_runspeed = GetConVar("tea_server_runspeed")
 
 if !ply:IsValid() then return end
 if plyarmor and plyarmor != "none" then
@@ -445,7 +451,7 @@ local armortype = ItemsList[plyarmor]
 armorspeed = tonumber(armortype["ArmorStats"]["speedloss"])
 end
 
-GAMEMODE:SetPlayerSpeed( ply, (Config[ "WalkSpeed" ] - (armorspeed / 2)) + ply.StatSpeed * 3.5, (Config[ "RunSpeed" ] - armorspeed) + ply.StatSpeed * 7 )
+GAMEMODE:SetPlayerSpeed( ply, (tea_server_walkspeed:GetInt() - (armorspeed / 2)) + ply.StatSpeed * 3.5, (tea_server_runspeed:GetInt() - armorspeed) + ply.StatSpeed * 7 )
 
 end
 

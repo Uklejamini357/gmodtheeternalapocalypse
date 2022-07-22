@@ -68,12 +68,13 @@ concommand.Add( "ate_clearlootspawns", ClearLoot )
 
 
 function SpawnLoot()
-if ( LootCount() >= Config[ "MaxCaches" ] ) then return false end -- dont even bother running any checks if theres already too much loot
+local tea_server_maxcaches = GetConVar("tea_server_maxcaches")
+if ( LootCount() >= tea_server_maxcaches:GetInt() ) then return false end -- dont even bother running any checks if theres already too much loot
 		if ( LootData != "" ) then
 
 			local LootList = string.Explode( "\n", LootData )
 			for k, v in RandomPairs( LootList ) do
-			if ( LootCount() >= Config[ "MaxCaches" ] ) then break end
+			if ( LootCount() >= tea_server_maxcaches:GetInt() ) then break end
 				local Booty = string.Explode( ";", v )
 				local pos = util.StringToType( Booty[1], "Vector" )
 				local ang = util.StringToType( Booty[2], "Angle" )
