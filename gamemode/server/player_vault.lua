@@ -28,14 +28,14 @@ if Config[ "FileSystem" ] == "Legacy" then
 elseif Config[ "FileSystem" ] == "PData" then
 		LoadedData = ply:GetPData( "ate_playervault" )
 else
-print("BOY YOU REALLY FUCKED UP THIS TIME WILLIS, SET YOUR DAMN FILESYSTEM OPTION TO A PROPER SETTING IN SH_CONFIG.LUA")
+	print("Bruh, did you try to setup incorrectly? Set your damned filesystem option to a proper setting in sh_config.lua")
 end
 
 if LoadedData then 
 	local formatted = util.JSONToTable( LoadedData )
 	ply.Vault = formatted
 else
-	ply.Vault = table.Copy( Config[ "NoobVault" ] )
+	ply.Vault = table.Copy( Config[ "RookieVault" ] )
 end
 
 timer.Simple( 1, function() SendVault(ply) end )
@@ -46,6 +46,8 @@ end
 
 
 function SavePlayerVault( ply )
+local tea_server_dbsaving = GetConVar("tea_server_dbsaving")
+if AllowSave != 1 and tea_server_dbsaving:GetInt() < 1 then return end
 
 if Config[ "FileSystem" ] == "Legacy" then
 	local data = util.TableToJSON(ply.Vault)
@@ -54,15 +56,16 @@ elseif Config[ "FileSystem" ] == "PData" then
 	local formatted = util.TableToJSON( ply.Vault )
 	ply:SetPData( "ate_playervault", formatted )
 else
-	print("BOY YOU REALLY FUCKED UP THIS TIME WILLIS, SET YOUR DAMN FILESYSTEM OPTION TO A PROPER SETTING IN SH_CONFIG.LUA")
+	print("Bruh, did you try to setup incorrectly? Set your damned filesystem option to a proper setting in sh_config.lua")
 end
-	print("✓ ".. ply:Nick() .." vault data saved into database")
+	print("✓ ".. ply:Nick() .." vault saved into database")
 end
 
 
 function AddToVault( ply, str )
 if !ply:IsValid() then return end
 if !ItemsList[str] then return end
+if timer.Exists("Isplyequippingarmor"..ply:UniqueID()) then print(ply:Nick().." tried to place item into vault while equipping armor!") SystemMessage(ply, "Bruh, did you try to place item into vault when equipping armor? You lil' bitch, play the gamemode like it was meant to be played.", Color(255,155,155,255), true) return false end
 
 local item = ItemsList[str]
 if (CalculateVaultWeight(ply) + item["Weight"]) > Config[ "VaultSize" ] then SystemMessage(ply, "Your vault doesn't have enough space for that! It can only hold "..Config[ "VaultSize" ].."kg of items!", Color(255,205,205,255), true) return false end
@@ -83,7 +86,7 @@ if !ply.Vault[str] then return end
 
 local item = ItemsList[str]
 
-if ((CalculateWeight(ply) + item["Weight"]) > (37.4 + ((ply.StatStrength or 0) * 1.53))) then SystemMessage(client, "You don't have enough space for that!", Color(255,205,205,255), true) return false end
+if ((CalculateWeight(ply) + item["Weight"]) > (CalculateMaxWeight(ply))) then SystemMessage(client, "You don't have enough space for that!", Color(255,205,205,255), true) return false end
 
 
 ply.Vault[str] = ply.Vault[str] - 1

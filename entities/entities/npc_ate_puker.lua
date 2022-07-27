@@ -29,7 +29,7 @@ self.FallAnim = (ACT_IDLE_ON_FIRE)
 self.ZombieStats = {
 ["Model"] = "models/zombie/poison.mdl",
 
-["Damage"] = 35, -- how much damage per strike?
+["Damage"] = 25, -- how much damage per strike?
 ["Force"] = 300, -- how far to knock the player back upon striking them
 ["Infection"] = 100, -- percentage chance to infect them
 ["Reach"] = 73, -- how far can the zombies attack reach? in source units

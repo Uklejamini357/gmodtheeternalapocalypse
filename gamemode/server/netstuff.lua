@@ -29,6 +29,7 @@ util.AddNetworkString("KickFromFaction")
 util.AddNetworkString("DisbandFaction")
 util.AddNetworkString("WraithBlind") -- rape your vision when you get hit by a wraith
 util.AddNetworkString("Payout") -- sell cl_hud and server/npcspawns
+util.AddNetworkString("Prestige") -- see player_data.lua
 
 
 function SystemBroadcast(msg, color, sys) -- same as system message, just broadcasts it to everybody instead of accepting a ply argument
@@ -76,14 +77,19 @@ end)
 
 net.Receive( "ChangeModel", function( length, client )
 if !client:IsValid() or !client:Alive() then return false end
+if timer.Exists("changemodelcooldown_"..client:UniqueID()) then SystemMessage(client, "You can't change your model since you already have changed your model in the last 120 seconds!", Color(255,155,155,255), true) return false end
 local model = net.ReadString()
 local col = net.ReadVector()
 client.ChosenModel = model
 client.ChosenModelColor = col
 
-SendUseDelay( client, 3 )
+SendUseDelay( client, 1 )
+timer.Create( "changemodelcooldown_"..client:UniqueID(), 120, 0, function()
+	if !client:IsValid() then return false end
+	timer.Destroy("changemodelcooldown_"..client:UniqueID())
+end ) 
 
-timer.Simple(2, function() RecalcPlayerModel( client ) end)
+timer.Simple(1, function() RecalcPlayerModel( client ) end)
 
 end)
 
@@ -103,8 +109,9 @@ local perk2 = "Stat"..perk
 
 		ply[perk2] = ply[perk2] + 1
 		ply.StatPoints = ply.StatPoints - 1
-		ply:SetMaxHealth( 100 + ( ply.StatHealth * 5 ) )
-		ply:SetMaxArmor( 100 + ( ply.StatEngineer * 2 ) )
+		CalculateMaxHealth( ply )
+		CalculateMaxArmor(ply)
+		CalculateJumpPower(ply)
 		print(ply:Nick().." used 1 skill point on "..perk.." skill ("..tonumber(ply.StatPoints).." skill points remaining)")
 		SendChat( ply, "You increased your " .. perk .. " skill by 1 point!" )
  		RecalcPlayerSpeed(ply)
@@ -120,11 +127,12 @@ local plycheck = ents.FindInSphere(client:GetPos(), 200)
 for k, v in pairs(plycheck) do
 if v:GetClass() == "trader" then trader = true end
 end
-if trader == false then SystemMessage(client, "nice try faggot", Color(255,205,205,255), true) return false end
+if trader == false then SystemMessage(client, "Bruh, did you try to cash in your bounty when you're not in trader area?", Color(255,205,205,255), true) return false end
 
 if client.Bounty <= 0 then SystemMessage(client, "You don't have any bounty to cash in!", Color(255,205,205,255), true) return false end
 
 client.Money = math.floor(tonumber(client.Money)) + tonumber(client.Bounty)
+print(client:Nick().." has cashed in their bounty and received "..tonumber(client.Bounty).." "..Config[ "Currency" ].."s!")
 SystemMessage(client, "You cashed in your bounty and received "..tonumber(client.Bounty).." "..Config[ "Currency" ].."s!", Color(205,255,205,255), true)
 client.Bounty = 0
 client:SetNWInt( "PlyBounty", client.Bounty )

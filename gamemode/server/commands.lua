@@ -92,6 +92,7 @@ SystemMessage(ply, "You dropped "..cash.." "..Config[ "Currency" ].."s!", Color(
 
 net.Start("UpdatePeriodicStats")
 net.WriteFloat( ply.Level )
+net.WriteFloat( ply.Prestige )
 net.WriteFloat( ply.Money )
 net.WriteFloat( ply.XP )
 net.WriteFloat( ply.StatPoints )

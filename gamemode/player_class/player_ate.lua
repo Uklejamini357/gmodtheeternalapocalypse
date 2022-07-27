@@ -3,24 +3,44 @@ AddCSLuaFile()
 
 include( 'taunt_camera.lua' )
 
+-- BUG FINALLY FIXED!
 local PLAYER = {}
 
 PLAYER.DisplayName			= "AtE Playerclass"
 
-PLAYER.WalkSpeed			= 400		-- How fast to move when not running
-PLAYER.RunSpeed				= 600		-- How fast to move when running
+PLAYER.WalkSpeed			= 120		-- How fast to move when not running
+PLAYER.RunSpeed				= 250		-- How fast to move when running
 PLAYER.CrouchedWalkSpeed	= 0.3		-- Multiply move speed by this when crouching
-PLAYER.DuckSpeed			= 0.3		-- How fast to go from not ducking, to ducking
-PLAYER.UnDuckSpeed			= 0.3		-- How fast to go from ducking, to not ducking
-PLAYER.JumpPower			= 200		-- How powerful our jump should be
+PLAYER.DuckSpeed			= 0.5		-- How fast to go from not ducking, to ducking
+PLAYER.UnDuckSpeed			= 0.5		-- How fast to go from ducking, to not ducking
+PLAYER.JumpPower			= 160		-- How powerful our jump should be
 PLAYER.CanUseFlashlight		= true		-- Can we use the flashlight
 PLAYER.MaxHealth			= 100		-- Max health we can have
+PLAYER.MaxArmor 			= 100		-- Max armor we can have
 PLAYER.StartHealth			= 100		-- How much health we start with
-PLAYER.StartArmor			= 0			-- How much armour we start with
+PLAYER.StartArmor			= 0		-- How much armour we start with
 PLAYER.DropWeaponOnDie		= false		-- Do we drop our weapon when we die
 PLAYER.TeammateNoCollide	= true		-- Do we collide with teammates or run straight through them
 PLAYER.AvoidPlayers			= true		-- Automatically swerves around other players
 PLAYER.UseVMHands			= true		-- Uses viewmodel hands
+
+/*
+PLAYER.WalkSpeed			= 400
+PLAYER.RunSpeed				= 600
+PLAYER.CrouchedWalkSpeed	= 0.3
+PLAYER.DuckSpeed			= 0.3
+PLAYER.UnDuckSpeed			= 0.3
+PLAYER.JumpPower			= 200
+PLAYER.CanUseFlashlight		= true
+PLAYER.MaxHealth			= 100
+PLAYER.MaxArmor 			= 100 
+PLAYER.StartHealth			= 100
+PLAYER.StartArmor			= 0
+PLAYER.DropWeaponOnDie		= false
+PLAYER.TeammateNoCollide	= true
+PLAYER.AvoidPlayers			= true
+PLAYER.UseVMHands			= true
+*/
 
 PLAYER.TauntCam = TauntCamera()
 
@@ -99,6 +119,8 @@ function PLAYER:CalcView( view )
 
 end
 
+function PLAYER:Death( inflictor, attacker )
+end
 
 -- Shared
 function PLAYER:StartMove( cmd, mv ) end	-- Copies from the user command to the move

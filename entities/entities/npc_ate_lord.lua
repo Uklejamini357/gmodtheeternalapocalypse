@@ -91,7 +91,7 @@ self:EmitSound("ambient/machines/thumper_hit.wav", 120, 70)
 	for k, v in pairs(ents.FindInSphere(self:GetPos(), 2000)) do
 		if (self != v and v.Type == "nextbot") then
 			v.RageLevel = 3
-			v.SpeedBuff = 1.3
+			v.SpeedBuff = 1.25
 			local effectdata = EffectData()
 			effectdata:SetOrigin(v:GetPos() + Vector(0, 0, 60))
 			util.Effect("zw_master_strike", effectdata)

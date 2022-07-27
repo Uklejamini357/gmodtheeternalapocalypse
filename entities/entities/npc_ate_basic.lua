@@ -21,7 +21,7 @@ self.FallAnim = (ACT_IDLE_ON_FIRE)
 self.ZombieStats = {
 ["Model"] = "models/zombie/classic.mdl",
 
-["Damage"] = 35, -- how much damage per strike?
+["Damage"] = 31, -- how much damage per strike?
 ["Force"] = 400, -- how far to knock the player back upon striking them
 ["Infection"] = 8, -- percentage chance to infect them
 ["Reach"] = 60, -- how far can the zombies attack reach? in source units
@@ -30,7 +30,7 @@ self.ZombieStats = {
 
 ["Health"] = 180, -- self explanatory
 ["MoveSpeedWalk"] = 50, -- zombies move speed when idly wandering around
-["MoveSpeedRun"] = 115, -- zombies move speed when moving towards a target
+["MoveSpeedRun"] = 85, -- zombies move speed when moving towards a target
 ["VisionRange"] = 1200, -- how far is the zombies standard sight range in source units, this will be tripled when they are frenzied
 ["LoseTargetRange"] = 1500, -- how far must the target be from the zombie before it will lose interest and revert to wandering, this will be tripled when the zombie is frenzied
 
@@ -294,7 +294,7 @@ function ENT:OnKilled(damageInfo)
 */
 	self:EmitSound(table.Random(self.DieSounds), 100, math.random(75, 130))
 	self:BecomeRagdoll(damageInfo)
-	timer.Simple(1, function()
+	timer.Simple(0.05, function() -- hope that no zombies will instantly disappear without leaving corpses
 	self:Remove()
 	end)
 end
@@ -307,8 +307,9 @@ function ENT:OnInjured(damageInfo)
 	if attacker:IsPlayer() then
 	self.target = attacker
 	end
-
-	self.RageLevel = 3
+	if self.RageLevel <= 2 then
+	self.RageLevel = 2
+	end
 end
 
 

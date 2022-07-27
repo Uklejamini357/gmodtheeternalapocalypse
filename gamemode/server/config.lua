@@ -14,4 +14,5 @@ StatsListServer =
 	"StatEngineer;Engineer;-3% prop cost/+3HP repaired per swing",
 	"StatImmunity;Immunity;Reduces infection progressing by 5%",
 	"StatSurvivor;Survivor;4% slower hunger/fatigue loss",
+	"StatAgility;Agility;+2 jump power (in source units)",
 }

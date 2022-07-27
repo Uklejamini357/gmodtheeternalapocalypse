@@ -10,7 +10,8 @@ ENT.AdminOnly = true
 
 function ENT:SetUpStats()
 
-self:SetColor(Color(100,100,100,255))
+--Wraith is 30% visible now
+self:SetColor(Color(76,76,76,255))
 self:SetMaterial("models/effects/vol_lightmask01")
 
 self.loco:SetAcceleration(900)
@@ -32,14 +33,14 @@ self.FallAnim = (ACT_IDLE_ON_FIRE)
 self.ZombieStats = {
 ["Model"] = "models/zombie/fast.mdl",
 
-["Damage"] = 40, -- how much damage per strike?
+["Damage"] = 27, -- how much damage per strike?
 ["Force"] = 180, -- how far to knock the player back upon striking them
 ["Infection"] = 12, -- percentage chance to infect them
 ["Reach"] = 60, -- how far can the zombies attack reach? in source units
 ["StrikeDelay"] = 0.4, -- how long does it take for the zombie to deal damage after beginning an attack
-["AfterStrikeDelay"] = 1.3, -- how long should the zombie wait after a strike lands until reverting to its behaviour cycle
+["AfterStrikeDelay"] = 1.4, -- how long should the zombie wait after a strike lands until reverting to its behaviour cycle
 
-["Health"] = 100, -- self explanatory
+["Health"] = 130, -- self explanatory
 ["MoveSpeedWalk"] = 55, -- zombies move speed when idly wandering around
 ["MoveSpeedRun"] = 220, -- zombies move speed when moving towards a target
 ["VisionRange"] = 1200, -- how far is the zombies standard sight range in source units, this will be tripled when they are frenzied

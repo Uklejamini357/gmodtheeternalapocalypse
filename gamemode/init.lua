@@ -15,6 +15,10 @@ AddCSLuaFile( "client/cl_spawnmenu.lua" )
 AddCSLuaFile( "client/cl_tradermenu.lua" )
 AddCSLuaFile( "client/cl_dermahooks.lua" )
 AddCSLuaFile( "client/cl_lootmenu.lua" )
+AddCSLuaFile( "client/cl_adminmenu.lua" )
+AddCSLuaFile( "client/cl_deathscreen.lua" )
+AddCSLuaFile( "client/cl_net.lua" )
+
 
 
 include( "shared.lua" )
@@ -40,12 +44,19 @@ include( "server/debug.lua" )
 include( "server/weather_events.lua" )
 include( "server/specialstuff.lua" )
 include( "server/spawnpoints.lua" )
-include( "lua/includes/modules/player_manager.lua" )
-include( "lua/autorun/nodeathsound.lua" )
+--include( "lua/includes/modules/player_manager.lua" ) --you don't need that anymore
+include( "server/nodeathsound.lua" )
 
-resource.AddWorkshop("411284648") -- content pack
-resource.AddWorkshop("247962324") -- armor models
+resource.AddWorkshop("128089118") -- m9k assault rifles
+resource.AddWorkshop("128091208") -- m9k heavy weapons
+resource.AddWorkshop("128093075") -- m9k small arms pack
+resource.AddWorkshop("355101935") -- stalker playermodels
+resource.AddWorkshop("411284648") -- gamemode content pack
 resource.AddWorkshop("448170926") -- swep pack
+resource.AddWorkshop("1270991543") -- armor models
+resource.AddWorkshop("1680884607") -- project stalker sounds 
+resource.AddWorkshop("2438451886") -- stalker item models pack
+
 
 --include("time_weather.lua")
 
@@ -54,13 +65,6 @@ Factions = Factions or {}
 
 DEBUG = false
 
-function GM:Shutdown()
-for k, v in pairs(player.GetAll()) do
-SavePlayer(v)
-SavePlayerInventory(v)
-SavePlayerVault(v)
-end
-end
 
 function GM:ShowHelp( ply )
 
@@ -68,20 +72,69 @@ function GM:ShowHelp( ply )
 
 end
 
+function GM:ShowTeam( ply )
+
+	if !SuperAdminCheck(ply) then return false end
+	ply:SendLua( "AdminMenu()" )
+	ply:ConCommand( "playgamesound buttons/button24.wav" )
+
+end
+
+function GM:ShowSpare1( ply )
+
+	ply:SendLua( "DropGoldMenu()" )
+
+end
+
+function CalculateStartingHealth(ply)
+if tonumber(ply.Prestige) >= 2 then
+	ply:SetHealth(105 + (5 * ply.StatHealth))
+	ply:SetMaxHealth(105 + (5 * ply.StatHealth))
+else
+	ply:SetHealth(100 + (5 * ply.StatHealth))
+	ply:SetMaxHealth(100 + (5 * ply.StatHealth))
+end
+end
+
+function CalculateMaxHealth(ply)
+if tonumber(ply.Prestige) >= 2 then
+	ply:SetMaxHealth(105 + (5 * ply.StatHealth))
+else
+	ply:SetMaxHealth(100 + (5 * ply.StatHealth))
+end
+end
+
+function CalculateMaxArmor(ply)
+if tonumber(ply.Prestige) >= 5 then
+	ply:SetMaxArmor(105 + (2 * ply.StatEngineer))
+else
+	ply:SetMaxArmor(100 + (2 * ply.StatEngineer))
+end
+end
+
+function CalculateJumpPower(ply)
+	if tonumber(ply.Prestige) >= 4 then
+		ply:SetJumpPower(170 + (2 * ply.StatAgility))
+	else
+		ply:SetJumpPower(160 + (2 * ply.StatAgility))
+	end
+end
+
 function GM:OnPlayerHitGround( ply, inWater, onFloater, speed )
 
-    if speed > 500 then
+    if speed > (400 + (2 * ply.StatAgility)) then
         ply:ViewPunch(Angle(5, 0, 0))
-        ply.Stamina = math.Clamp( ply.Stamina - (20 * (1 - (ply.StatEndurance * 0.04)) ), 0, 100 )
-    elseif speed > 150 then
+        ply.Stamina = math.Clamp( ply.Stamina - (15 * (1 - (ply.StatAgility * 0.01) - (ply.StatEndurance * 0.045)) ), 0, 100 )
+    elseif speed > (140 + (2 * ply.StatAgility)) then
 		ply:ViewPunch(Angle(math.random(1, 1.2), 0, math.random(-0.2, 0.2)))
-		ply.Stamina = math.Clamp( ply.Stamina - (10 * (1 - (ply.StatEndurance * 0.04)) ), 0, 100 )
+		ply.Stamina = math.Clamp( ply.Stamina - (7.5 * (1 - (ply.StatAgility * 0.01) - (ply.StatEndurance * 0.045)) ), 0, 100 )
     end
 end
 
+--You will no longer be able to regenerate your health when having either 40%< Hunger, 35%< Thirst, >65% Fatigue or >40% Infection (dependent on "Immunity" and "Survivor" skills' values)
 function HealthRegen()
 	for k, ply in pairs( player.GetAll() ) do
-		if ply:Alive() then
+		if ply:Alive() and ply.Thirst >= (3000 - (125 * ply.StatSurvivor)) and ply.Hunger >= (3000 - (150 * ply.StatSurvivor)) and ply.Fatigue <= (7000 + (150 * ply.StatSurvivor)) and ply.Infection <= (5000 - (100 * ply.StatImmunity)) then
 			ply:SetHealth( math.Clamp( ply:Health() + 1 + (ply.StatMedSkill * 0.1), 5, ply:GetMaxHealth() ) )
 		end
 	end
@@ -94,48 +147,62 @@ function GM:Think()
 	for k, ply in pairs( player.GetAll() ) do
 	if !ply:IsValid() then continue end
 
-	local endurance = (ply.StatEndurance / 500)
-	-- hunger, fatigue, infection
+	local endurance = ((ply.StatEndurance - (0.15 * ply.StatSpeed)) / 500)
+	-- hunger, thirst, fatigue, infection
 	ply.Hunger = math.Clamp( ply.Hunger - (0.065 * (1 - (ply.StatSurvivor * 0.04)) ), 0, 10000 )
+	ply.Thirst = math.Clamp( ply.Thirst - (0.0782 * (1 - (ply.StatSurvivor * 0.0425)) ), 0, 10000 )
 
-	if (ply.Hunger <= 0 or ply.Fatigue >= 10000 or ply.Infection >= 10000) and ply:Alive() then
+	if (ply.Thirst <= 0 or ply.Hunger <= 0 or ply.Fatigue >= 10000 or ply.Infection >= 10000) and ply:Alive() then
 	local d = DamageInfo()
 	d:SetDamage( 0.1 )
-	d:SetDamageType( DMG_POISON ) -- tried other damage types that don't affect armor but screw it
-
+	d:SetDamageType( DMG_FALL ) -- tried other damage types that don't affect armor but screw it
+	d:SetAttacker(ply)
 	ply:TakeDamageInfo( d )
 	end
 
 	ply.Fatigue = math.Clamp( ply.Fatigue + (0.045 * (1 - (ply.StatSurvivor * 0.035)) ), 0, 10000 )
 
-	if ply.Infection > 1 then
-	ply.Infection = math.Clamp( ply.Infection + (0.12 * (1 - (ply.StatImmunity * 0.05)) ), 0, 10000 )
+	--random chance of getting infected per tick is extremely rare, but has chance if survived for more than 20 minutes, can decrease chance by increasing immunity skill level
+	local infectionchance = math.random(0, 2000000 + (100000 * ply.StatImmunity) - (CurTime() - ply.SurvivalTime))
+	if (infectionchance <= 0 and math.floor(CurTime() - ply.SurvivalTime) >= 600) and ply.Infection <= 0 and ply:Alive() then
+	print(ply:Nick().." has caught infection randomly!")
+	SendChat(ply, "You have caught infection randomly!")
+	end
+	if (ply.Infection > 0 or (infectionchance <= 0 and math.floor(CurTime() - ply.SurvivalTime) >= 600)) and ply:Alive() then
+	ply.Infection = math.Clamp( ply.Infection + (0.1176 * (1 - (ply.StatImmunity * 0.04)) ), 0, 10000 )
 	end
 
 	if ply:GetMoveType() != MOVETYPE_NOCLIP then
-		if( ply:KeyDown( IN_FORWARD ) or ply:KeyDown( IN_BACK ) or ply:KeyDown( IN_MOVELEFT ) or ply:KeyDown( IN_MOVERIGHT ) ) then
+		if ( ply:KeyDown( IN_FORWARD ) or ply:KeyDown( IN_BACK ) or ply:KeyDown( IN_MOVELEFT ) or ply:KeyDown( IN_MOVERIGHT ) ) then
 			PlayerIsMoving = true
 		else
 			PlayerIsMoving = false
 		end
 
+/*		if ply:KeyPressed( IN_JUMP ) then
+			ply.Stamina = ply.Stamina - 5
+		end
+*/ -- Trying to find function that drains stamina on jumping, but this one doesn't really work
+
 		if ply:WaterLevel() == 3 and ply:Alive() then
-			if ply.Stamina <= 0 then
+			ply.Thirst = math.Clamp( ply.Thirst + 0.243 , 0, 10000)
+			if tonumber(ply.Stamina) <= 0 then
 				local drown = DamageInfo()
-				drown:SetDamage( 0.25 )
-				drown:SetDamageType( DMG_POISON ) -- same goes here
+				drown:SetDamage( 0.2 )
+				drown:SetDamageType( DMG_FALL ) -- same goes here
+				drown:SetAttacker(ply) --to prevent lua error
 				ply:TakeDamageInfo( drown )
-				else
+			else
 				ply.Stamina = math.Clamp( ply.Stamina - (0.12 - endurance), 0, 100 )
 			end
 		elseif ( ply:KeyDown( IN_SPEED ) and PlayerIsMoving and not ply:KeyDown(IN_DUCK) ) then
-			ply.Stamina = math.Clamp( ply.Stamina - (0.08 - endurance), 0, 100 )
+			ply.Stamina = math.Clamp( ply.Stamina - (0.0655 - endurance), 0, 100 )
 		elseif PlayerIsMoving and ply:KeyDown( IN_DUCK ) then
-			ply.Stamina = math.Clamp( ply.Stamina + 0.0037, 0, 100 )
+			ply.Stamina = math.Clamp( ply.Stamina + 0.0057, 0, 100 )
 		elseif PlayerIsMoving then
-			ply.Stamina = math.Clamp( ply.Stamina + 0.0024, 0, 100 )
+			ply.Stamina = math.Clamp( ply.Stamina + 0.00251, 0, 100 )
 		elseif ply:KeyDown( IN_DUCK ) then
-			ply.Stamina = math.Clamp( ply.Stamina + 0.002, 0, 100 )
+			ply.Stamina = math.Clamp( ply.Stamina + 0.02, 0, 100 )
 		else
 			ply.Stamina = math.Clamp( ply.Stamina + 0.023, 0, 100 )
 		end
@@ -157,8 +224,10 @@ function GM:Think()
 		net.Start("UpdateStats")
 		net.WriteFloat( math.Round(ply.Stamina) )
 		net.WriteFloat( math.Round(ply.Hunger) )
+		net.WriteFloat( math.Round(ply.Thirst) )
 		net.WriteFloat( math.Round(ply.Fatigue) )
 		net.WriteFloat( math.Round(ply.Infection) )
+		net.WriteFloat( math.Round(ply.SurvivalTime) )
 		net.Send( ply )
 
 	end
@@ -168,6 +237,7 @@ function GM:InitPostEntity( )
 	RunConsoleCommand( "mp_falldamage", "1" )
 	RunConsoleCommand( "sbox_godmode", "0" )
 	RunConsoleCommand( "sbox_plpldamage", "0" )
+--/*--Don't disable this function unless you want to have some fun
 	for k, v in pairs( ents.FindByClass( "npc_*" ) ) do
 		v:Remove()
 	end
@@ -181,6 +251,7 @@ function GM:InitPostEntity( )
 		v.maxhealth = 2000
 		v:SetHealth( 2000 )
 	end
+--*/
 end
 
 function GM:PlayerDisconnected( ply )
@@ -251,10 +322,11 @@ function GM:PlayerInitialSpawn( ply )
 	ply:AllowFlashlight( true )
 
 	------------------
-	--need to define all this shit on initialspawn or lua goes boom, this all gets overwritten by the loadplayer function anyway
 
+	ply.SurvivalTime = math.floor(CurTime())
 	ply.Stamina = 100
 	ply.Hunger = 10000
+	ply.Thirst = 10000
 	ply.Fatigue = 0
 	ply.Infection = 0
 	ply.Battery = 0
@@ -290,7 +362,7 @@ function GM:PlayerInitialSpawn( ply )
 	net.Send(ply)
 	
 	SystemBroadcast(ply:Nick().." has spawned into the game", Color(255,255,155,255), false)
-	UseFunc_EquipArmor(ply, ply.EquippedArmor)
+	ForceEquipArmor(ply, ply.EquippedArmor)
 
 end
 
@@ -331,7 +403,7 @@ end
 
 function GM:PlayerSpawn( ply )
 	self.BaseClass:PlayerSpawn( ply )
-	player_manager.SetPlayerClass( ply, "player_ate" ) -- tried to remove it but then it creats new bug without thirdperson camera when doing emote or so
+	player_manager.SetPlayerClass( ply, "player_ate" )
 
 	RecalcPlayerModel( ply )
 
@@ -346,18 +418,19 @@ function GM:PlayerSpawn( ply )
 
 	local tea_server_spawnprotection = GetConVar( "tea_server_spawnprotection" )
 	local tea_server_spawnprotection_duration = GetConVar( "tea_server_spawnprotection_duration" )
-	if tea_server_spawnprotection:GetInt() >= 1 then
-	if !ply:Alive() then return end
-	ply:GodEnable()
-	ply:PrintMessage(HUD_PRINTCENTER, "Spawn protection enabled for "..tea_server_spawnprotection_duration:GetString().." second(s)")
-	end
 
-	if tea_server_spawnprotection:GetInt() > 0 then
-	timer.Simple(tea_server_spawnprotection_duration:GetString(), function()
-	if !ply:Alive() then return end
-	ply:GodDisable()
-	ply:PrintMessage(HUD_PRINTCENTER, "Spawn protection expired")
-	end)
+	if tea_server_spawnprotection_duration:GetInt() > 0 and tea_server_spawnprotection:GetInt() >= 1 then
+		if !ply:Alive() then return end
+		ply:GodEnable()
+		ply:PrintMessage(HUD_PRINTCENTER, "Spawn protection enabled for "..tea_server_spawnprotection_duration:GetString().." second(s)")
+	end
+	if tea_server_spawnprotection_duration:GetInt() > 0 and tea_server_spawnprotection:GetInt() > 0 then
+		timer.Create("IsSpawnProtectionTimerEnabled"..ply:UniqueID(), tea_server_spawnprotection_duration:GetString(), 1, function()
+		if !ply:Alive() then return end
+		ply:GodDisable()
+		ply:PrintMessage(HUD_PRINTCENTER, "Spawn protection expired")
+		timer.Destroy("IsSpawnProtectionTimerEnabled"..ply:UniqueID())
+		end)
 	end
 
 	timer.Simple(0.2, function()
@@ -371,18 +444,19 @@ function GM:PlayerSpawn( ply )
 	ply:SetNWBool("pvp", false)
 	ply:SetPvPGuarded( 0 )
 	ply:SetPlayerColor( Vector(cl_playercolor) )
-	ply:SetHealth( 100 + ( ply.StatHealth * 5 ) )
-	ply:SetMaxHealth( 100 + ( ply.StatHealth * 5 ) )
-	ply:SetMaxArmor( 100 + (ply.StatEngineer * 2 ) )
+	CalculateStartingHealth( ply )
+	CalculateMaxArmor(ply)
+	CalculateJumpPower(ply)
 	ply:ConCommand( "play common/null.wav" )
 	RecalcPlayerModel( ply )
-	PrepareStats( ply )
+	PrepareStats(ply)
 	FullyUpdatePlayer(ply)
 
-	-- give them a new noob cannon if they are still a noob
-	local noobgun = Config[ "NoobWeapon" ]
-	if tonumber(ply.Level) <= tonumber(Config[ "NoobLevel" ]) and !ply.Inventory[noobgun] then
-	SystemGiveItem( ply, noobgun )
+	-- give them a new noob cannon if they are still levels under Rookie Level and are at prestige 0
+	local tea_config_rookielevel = GetConVar("tea_config_rookielevel")
+	local newgun = Config[ "RookieWeapon" ]
+	if tonumber(ply.Level) <= tonumber(tea_config_rookielevel:GetInt()) and tonumber(ply.Prestige) <= 0 and !ply.Inventory[newgun] then
+	SystemGiveItem( ply, newgun )
 	SendInventory(ply)
 	end
 end
@@ -418,6 +492,9 @@ end
 function GM:PlayerLoadout( ply )
 	ply:Give( "ate_fists" )
 	ply:Give( "ate_buildtool" )
+	if SuperAdminCheck(ply) then -- Superadmins are given physgun on their spawn
+		ply:Give("weapon_physgun")
+	end
 	
 	ply:SelectWeapon( "ate_fists" )
 end
@@ -480,16 +557,12 @@ local chance = 0
 end
 CheckForDerp()
 
-function GM:ShowSpare1( ply )
 
-	ply:SendLua( "DropGoldMenu()" )
-
-end
-
-print( "==============================================\n" )
-print( "The Eternal Apocalypse (After The End Reborn) Gamemode Loaded Successfully\n" )
+print( "\n==============================================\n" )
+print( GM.Name.." ("..GM.AltName..") Gamemode Loaded Successfully\n" )
+print( "Made by "..GM.Author.."\n" )
 print( "Original Creator: LegendofRobbo\n" )
-print( "Edited by ???\n" )
+print( "Version: "..GM.Version.."\n")
 print( "Github: https://github.com/Uklejamini357/gmodtheeternalapocalypse\n" )
 print( "Be sure to check out github site for new updates\n" )
 print( "==============================================\n" )

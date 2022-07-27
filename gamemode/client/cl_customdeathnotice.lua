@@ -41,7 +41,11 @@ local RDtext = {
 "chopped up",
 "sliced and diced",
 "dominated",
-"kicked out of the reality"
+"blasted",
+"wiped out of the reality",
+"die'ed",
+"no mercified",
+"destroyed"
 }
 
 local function PlayerIDOrNameToString( var )
@@ -104,7 +108,9 @@ local function RecvPlayerKilled()
 	if attacker == "worldspawn" then attacker = "World" end
 	if attacker == "trigger_hurt" then attacker = "An Unknown Cause" end
 	if attacker == "monster_nihilanth" then attacker = "Nihilanth" end
-	if attacker == "npc_vj_shadow" then attacker = "Your fate" end
+	if attacker == "env_explosion" then attacker = "An Explosion" end
+	if attacker == "func_pushable" then attacker = "Object" end
+	if attacker == "npc_handgrenade" then attacker = "This Grenade..." end
 
 
 	GAMEMODE:AddDeathNotice( attacker, -1, inflictor, victim:Name(), victim:Team() )
@@ -179,10 +185,10 @@ function GM:AddDeathNotice( Victim, team1, Inflictor, Attacker, team2 )
 	if ( team2 == -1 ) then Death.color2 = table.Copy( NPC_Color )
 	else Death.color2 = table.Copy( team.GetColor( team2 ) ) end
 
-	if ( team1 == -1 ) then Death.pteam1 = ""
+	if ( team1 == -1 ) then Death.pteam1 = "The Horde?"
 	else Death.pteam1 = team.GetName( team1 ) end
 	
-	if ( team2 == -1 ) then Death.pteam2 = ""
+	if ( team2 == -1 ) then Death.pteam2 = "Killed NPC"
 	else Death.pteam2 = team.GetName( team2 ) end
 	
 	if (Death.left == Death.right) then
@@ -210,12 +216,12 @@ local function DrawDeath( x, y, death, hud_deathnotice_time )
 	
 	-- Draw KILLER
 	if ( death.left ) then
-		draw.SimpleText( "Death: "..death.right.." ["..death.pteam2.."] was "..death.Message.." by "..death.left.." ["..death.pteam1.."]" ,	"ChatFont", x - ( w / 2 ) + 230, y, Color(255,150,100,alpha), TEXT_ALIGN_RIGHT )
+		draw.SimpleText( "Death: "..death.right.." ["..death.pteam2.."] was "..death.Message.." by "..death.left.." ["..death.pteam1.."]" ,	"ChatFont", x - ( w / 2 ) + 230, y, Color(255,75,75,alpha), TEXT_ALIGN_RIGHT )
 	end
 	
 	-- Draw VICTIM
 --	draw.SimpleText( death.right,		"ChatFont", x + ( w / 2 ) + 16, y, death.color2, TEXT_ALIGN_LEFT )
-	
+
 	return ( y + h * 0.70 )
 
 end

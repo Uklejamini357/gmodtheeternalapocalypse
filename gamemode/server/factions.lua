@@ -62,11 +62,11 @@ end)
 
 
 function CreateFaction( ply, name, col, public )
-	local tea_server_factioncost = GetConVar("tea_server_factioncost")
+	local tea_config_factioncost = GetConVar("tea_config_factioncost")
 	if !ply:IsValid() then return false end
 	if name == "" then SystemMessage(ply, "You can't create a faction with no name!", Color(255,205,205,255), true) return false end
 	if ((col.r + col.g + col.b) < 75) then SystemMessage(ply, "You can't create a faction with a black colour! Try a brighter colour instead!", Color(255,205,205,255), true) return false end
-	if (tonumber(ply.Money) <= tea_server_factioncost:GetInt()) then SystemMessage(ply, "You can't afford to make a faction! making a faction costs "..tea_server_factioncost:GetInt().." "..Config[ "Currency" ].."s", Color(255,205,205,255), true) return false end
+	if (tonumber(ply.Money) <= tea_config_factioncost:GetInt()) then SystemMessage(ply, "You can't afford to make a faction! making a faction costs "..tea_config_factioncost:GetInt().." "..Config[ "Currency" ].."s", Color(255,205,205,255), true) return false end
 	if string.len(name) > 20 then SystemMessage(ply, "Your faction name cannot be longer than 20 characters!", Color(255,205,205,255), true) return false end
 --	ply.Money = ply.Money - 250
 
@@ -84,8 +84,8 @@ function CreateFaction( ply, name, col, public )
 	
 	team.SetUp( FactionIndex, tostring( name ), Color( col.r, col.g, col.b, 255 ) )
 	ply:SetTeam( FactionIndex )
-	ply.Money = ply.Money - tea_server_factioncost:GetInt()
-	print(ply:Nick().." has created a faction for "..tea_server_factioncost:GetInt().." "..Config[ "Currency" ].."s named: "..tostring(name))
+	ply.Money = ply.Money - tea_config_factioncost:GetInt()
+	print(ply:Nick().." has created a faction for "..tea_config_factioncost:GetInt().." "..Config[ "Currency" ].."s named: "..tostring(name))
 	SystemBroadcast(ply:Nick().." has created a faction named: "..tostring(name), Color(205,205,255,255), true)
 	FullyUpdatePlayer(ply)
 

@@ -98,6 +98,7 @@ SystemMessage(activator, "You picked up a box containing "..cash.." Dollars!", C
 
 net.Start("UpdatePeriodicStats")
 net.WriteFloat( activator.Level )
+net.WriteFloat( activator.Prestige )
 net.WriteFloat( activator.Money )
 net.WriteFloat( activator.XP )
 net.WriteFloat( activator.StatPoints )

@@ -192,7 +192,7 @@ end
 
     if not (self.Weapon:GetNextPrimaryFire() > CurTime() ) then
     MakeProp(self.Owner, self.Owner.SelectedProp, tr.HitPos, ang, 1)
-    self:SetNextPrimaryFire(CurTime() + 0.8)
+    self:SetNextPrimaryFire(CurTime() + 0.7)
 	end
 
 --    self:SendProp(pmodel, tr.HitPos, ang)

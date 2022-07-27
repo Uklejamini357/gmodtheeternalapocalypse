@@ -17,29 +17,24 @@ local attacker, inflictor, dmg = dmginfo:GetAttacker(), dmginfo:GetInflictor(), 
 		end
 	end
 
-	if target:IsPlayer() and attacker:IsPlayer() and target != attacker and !target:IsPvPForced() and target.Territory != team.GetName(attacker:Team()) and Config[ "VoluntaryPVP" ] == true then
+	local tea_server_voluntarypvp = GetConVar("tea_server_voluntarypvp")
+	if target:IsPlayer() and attacker:IsPlayer() and target != attacker and !target:IsPvPForced() and target.Territory != team.GetName(attacker:Team()) and tea_server_voluntarypvp:GetInt() > 0 then
 
-		if attacker:Team() == 1 and attacker:GetNWBool("pvp") == false then
+		if target:Alive() and attacker:Team() == 1 and attacker:GetNWBool("pvp") == false then
 			SystemMessage(attacker, "Your PvP is not enabled!", Color(255,205,205,255), true)
 			dmginfo:SetDamage( 0 )
 			return false
 
-		elseif target:Team() == 1 and target:GetNWBool("pvp") == false then
+		elseif target:Alive() and target:Team() == 1 and target:GetNWBool("pvp") == false then
 			SystemMessage(attacker, "You can't attack loners unless they have PvP enabled!", Color(255,205,205,255), true)
 			dmginfo:SetDamage( 0 )
 			return false
 		
-		elseif (target:Team() == attacker:Team()) and not (target:Team() == 1 or attacker:Team() == 1) then
+		elseif target:Alive() and (target:Team() == attacker:Team()) and not (target:Team() == 1 or attacker:Team() == 1) then
 			SystemMessage(attacker, "You can't attack your factionmates!", Color(255,205,205,255), true)
 			dmginfo:SetDamage( 0 )
 			return false
 
-/*		elseif target:HasGodEnabled() then
-			SystemMessage(attacker, "You can't attack your factionmates!", Color(255,205,205,255), true)
-			dmginfo:SetDamage( 0 )
-			attacker:PrintMessage(HUD_PRINTCENTER, "Damage: "..dmginfo:GetDamage().."")
-			attacker:ConCommand("playgamesound buttons/button10.wav")
-			return false */
 		end
 
 
@@ -66,38 +61,50 @@ local attacker, inflictor, dmg = dmginfo:GetAttacker(), dmginfo:GetInflictor(), 
 	local tea_server_debugging = GetConVar( "tea_server_debugging" )
 
 	if dmginfo:GetDamageType() == DMG_CRUSH and target:IsPlayer() then
-		dmginfo:SetDamage( 0.5 )
+		dmginfo:SetDamage((dmginfo:GetDamage() * 0.01) + 1 )
 	end
 
-	if dmginfo:GetDamageType() == DMG_BLAST and (target.Type == "nextbot" or target:IsNPC()) then
-		dmginfo:ScaleDamage( 2.5 )
+	if dmginfo:GetDamageType() == DMG_BLAST and (target.Type == "nextbot" or target:IsNPC()) then --AI NPCs and nextbots need to take more damage if they take explosive damage so it will be much better and explosives will be more useful
+		dmginfo:ScaleDamage( 2.7 )
 	end
 /*
-	if target.Type == "trigger_hurt" then
-		dmginfo:ScaleDamage( 999 )
+	if attacker:GetClass() == "trigger_hurt" then
+		dmginfo:ScaleDamage( 0.5 )
 	end
 */
-	if dmginfo:GetDamageType() == DMG_BLAST and target:IsPlayer() then
-		dmginfo:ScaleDamage( 1.4 )
+	if dmginfo:GetDamageType() == DMG_BLAST and target:IsPlayer() then --Players need to take more damage from explosions since thanks to armor they can tank some big damage
+		dmginfo:ScaleDamage( 1.55 )
 	end
 
 	if !target:IsPlayer() and attacker:IsPlayer() then
-		dmginfo:ScaleDamage( 1 + (0.025 * attacker.StatDamage) )
+		dmginfo:ScaleDamage( 1 + (0.01 * attacker.StatDamage) )
 		if target:IsPlayer() or target.Type == "nextbot" or target:IsNPC() then
 			attacker:PrintMessage(HUD_PRINTCENTER, "Damage: "..dmginfo:GetDamage())
+			if tea_server_debugging:GetInt() >= 1 then
+				attacker:ConCommand("playgamesound buttons/button10.wav")
+			end
+		end
+	end
+
+	if target:IsPlayer() and target:Alive() and attacker != target and attacker:IsPlayer() and dmginfo:GetDamageType() == DMG_GENERIC then
+		dmginfo:ScaleDamage( 1 + (0.01 * attacker.StatDamage) )
+		attacker:PrintMessage(HUD_PRINTCENTER, "Damage: "..dmginfo:GetDamage().."")
+		print(attacker:Nick().." has damaged "..target:Nick().." for "..dmginfo:GetDamage().." damage!")
+		if tea_server_debugging:GetInt() >= 1 then
+			attacker:ConCommand("playgamesound buttons/button10.wav")
+		end
+	elseif target:IsPlayer() and target:Alive() and attacker != target and attacker:IsPlayer() then
+		attacker:PrintMessage(HUD_PRINTCENTER, "Damage: "..dmginfo:GetDamage().."")
+		print(attacker:Nick().." has damaged "..target:Nick().." for "..dmginfo:GetDamage().." damage!")
+		if tea_server_debugging:GetInt() >= 1 then
 			attacker:ConCommand("playgamesound buttons/button10.wav")
 		end
 	end
 
-	if target:IsPlayer() and attacker:IsPlayer() and dmginfo:GetDamageType() == DMG_GENERIC then
-		dmginfo:ScaleDamage( 1 + (0.025 * attacker.StatDamage) )
-		attacker:PrintMessage(HUD_PRINTCENTER, "Damage: "..dmginfo:GetDamage().."")
-		print(attacker:Nick().." has damaged "..target:Nick().." for "..dmginfo:GetDamage().." damage!")
-		attacker:ConCommand("playgamesound buttons/button10.wav")
-	elseif target:IsPlayer() and attacker:IsPlayer() then
-		attacker:PrintMessage(HUD_PRINTCENTER, "Damage: "..dmginfo:GetDamage().."")
-		print(attacker:Nick().." has damaged "..target:Nick().." for "..dmginfo:GetDamage().." damage!")
-		attacker:ConCommand("playgamesound buttons/button10.wav")
+	for _, ent in pairs (ents.FindByClass("trader")) do
+		if target:IsPlayer() and ent:GetPos():Distance(target:GetPos()) < 120 then
+			dmginfo:ScaleDamage( 0.9 )
+		end
 	end
 
 	if tea_server_debugging:GetInt() >= 1 then
@@ -107,7 +114,6 @@ local attacker, inflictor, dmg = dmginfo:GetAttacker(), dmginfo:GetInflictor(), 
 		print(""..target:Nick().." has taken "..dmginfo:GetDamage().." damage!")
 		end
 	end
-
 
 end
 hook.Add( "EntityTakeDamage", "damagemodshook", Damagemods )
@@ -126,7 +132,7 @@ function GM:ScalePlayerDamage( ply, group, dmginfo )
 	if attacker:IsPlayer() then
 	local defencebonus = dmginfo:GetDamage() * (0.015 * ply.StatDefense) --taken from damage
 	local armorbonus = dmginfo:GetDamage() * armorvalue
-	local attackbonus = dmginfo:GetDamage() * (0.025 * attacker.StatDamage) --added to damage
+	local attackbonus = dmginfo:GetDamage() * (0.01 * attacker.StatDamage) --added to damage
 
 	local TheTotalDamage = dmginfo:GetDamage() + attackbonus - (defencebonus + armorbonus)
 
@@ -175,14 +181,13 @@ function GM:DoPlayerDeath( ply, attacker, dmginfo )
 	ply:ConCommand( "play theeternalapocalypse/gameover_music.wav" )
 	
 	local tea_server_respawntime = GetConVar( "tea_server_respawntime" )
-	
 
 	ply.RespawnTime = CurTime() + tea_server_respawntime:GetString()
 
 	if tonumber(ply.Bounty) >= 5 then
 	local cashloss = ply.Bounty * math.Rand(0.3, 0.4)
 	local bountyloss = ply.Bounty - cashloss
-	print( "".. ply:Nick() .." has died with "..ply.Bounty.." bounty and dropped money worth of "..math.floor(cashloss).." "..Config[ "Currency" ].."s! ".. tea_server_respawntime:GetString() .." seconds until able to respawn" )
+	print( "".. ply:Nick() .." has died with "..ply.Bounty.." bounty, dropped money worth of "..math.floor(cashloss).." "..Config[ "Currency" ].."s and survived for "..math.floor(CurTime() - ply.SurvivalTime).." seconds! ".. tea_server_respawntime:GetString() .." seconds until able to respawn" )
 
 	local EntDrop = ents.Create( "ate_cash" )
 		EntDrop:SetPos( ply:GetPos() + Vector(0, 0, 10))
@@ -191,27 +196,25 @@ function GM:DoPlayerDeath( ply, attacker, dmginfo )
 		EntDrop:Spawn()
 		EntDrop:Activate()
 
-	SystemMessage(ply, "You died and dropped your bounty cash worth of "..math.floor(cashloss).." "..Config[ "Currency" ].."s! The remaining "..math.floor(bountyloss + 1).." "..Config[ "Currency" ].."s is lost forever! Always remember to cash in your bounty at traders, especially when having high bounty.", Color(255,205,205,255), true)
+	SystemMessage(ply, "You died and dropped your bounty cash worth of "..math.floor(cashloss).." "..Config[ "Currency" ].."s! The remaining "..math.ceil(bountyloss).." "..Config[ "Currency" ].."s is lost forever! Always remember to cash in your bounty at traders, especially when having high bounty.", Color(255,205,205,255), true)
 	else
-	print( "".. ply:Nick() .." has died with "..ply.Bounty.." bounty! ".. tea_server_respawntime:GetString() .." seconds until able to respawn" )
+	print( "".. ply:Nick() .." has died with "..ply.Bounty.." bounty and survived for "..math.floor(CurTime() - ply.SurvivalTime).." seconds! ".. tea_server_respawntime:GetString() .." seconds until able to respawn" )
 	end
 
+	SendChat(ply, "You survived for "..math.floor(CurTime() - ply.SurvivalTime).." seconds before getting killed")
 	ply.Bounty = 0
 	ply:SetNWInt( "PlyBounty", ply.Bounty )
 
 --	ply.Autorespawntime = CurTime() + 20
-	
+
 	ply:Flashlight( false )
 	ply:Freeze( false )
-	
+
 	ply:CreateRagdoll()
-	
+
 	ply:AddDeaths( 1 )
 
-	if attacker:IsPlayer() and attacker != ply then
-		attacker:AddFrags( 1 ) 
-
-	elseif attacker:IsPlayer() and (ply:Team() == attacker:Team()) and attacker != ply and not (ply:Team() == 1 or attacker:Team() == 1) then
+/*	if attacker:IsPlayer() and (ply:Team() == attacker:Team()) and attacker != ply and not (ply:Team() == 1 or attacker:Team() == 1) then
 		attacker:AddFrags( -1 )
 		attacker.XP = attacker.XP - 500
 		if tonumber(attacker.Money) <= 1000 then
@@ -224,10 +227,14 @@ function GM:DoPlayerDeath( ply, attacker, dmginfo )
 		FullyUpdatePlayer(attacker)
 		return false
 
+	else*/if attacker:IsPlayer() and attacker != ply then
+		attacker:AddFrags( 1 ) 
+
 
 	end
 
-	if( ply:GetActiveWeapon():GetClass() != "gmod_tool" and ply:GetActiveWeapon():GetClass() != "weapon_physgun" and ply:GetActiveWeapon():GetClass() != "ate_fists" and ply:GetActiveWeapon():GetClass() != "ate_buildtool") then
+	if ply:GetActiveWeapon() == NULL then return end --you don't need to worry about it, you still drop the weapon you held from your inventory when you die
+	if (ply:GetActiveWeapon():GetClass() != "gmod_tool" and ply:GetActiveWeapon():GetClass() != "weapon_physgun" and ply:GetActiveWeapon():GetClass() != "ate_fists" and ply:GetActiveWeapon():GetClass() != "ate_buildtool") then
 		local weapon_name = ply:GetActiveWeapon():GetClass()
 		
 		if ItemsList[weapon_name] and ply.Inventory[weapon_name] then

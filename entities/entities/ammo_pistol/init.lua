@@ -22,14 +22,10 @@ function ENT:SpawnFunction( userid, tr )
 end
 
 function ENT:Use( activator, caller )
-	if caller.inventoryitems then
-		table.insert( caller.inventoryitems, "ammo_pistol;models/Items/BoxSRounds.mdl;100 Pistol Rounds" )
-		SendInventory( caller )
-		self:EmitSound("items/itempickup.wav", 100, 100)
-		self.Entity:Remove()
-	else
-	SendChat( caller, "your inventory appears to be broken" )
-end
+	caller:GiveAmmo(100, "Pistol")
+	SendInventory( caller )
+	self:EmitSound("items/itempickup.wav", 100, 100)
+	self.Entity:Remove()
 end
 
 function ENT:AcceptInput( input, ply )

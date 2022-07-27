@@ -20,9 +20,9 @@ ModelFrame.Paint = function()
 	draw.RoundedBox( 2,  0,  0, ModelFrame:GetWide(), ModelFrame:GetTall(), Color( 0, 0, 0, 200 ) )
 	surface.SetDrawColor(150, 0, 0 ,255)
 	surface.DrawOutlinedRect(0, 0, ModelFrame:GetWide(), ModelFrame:GetTall())
-    surface.DrawOutlinedRect(25, 25, 300, 300)
-    surface.SetDrawColor(0, 0, 0 ,100)
-    surface.DrawRect(25, 350, 550, 300)
+	surface.DrawOutlinedRect(25, 25, 300, 300)
+	surface.SetDrawColor(0, 0, 0 ,100)
+	surface.DrawRect(25, 350, 550, 300)
 end
 
 local function refreshmodel()
@@ -63,19 +63,19 @@ tab = ItemsList[armor]["ArmorStats"]["allowmodels"]
 end
 end
 
-    for n = 1, table.getn( tab ) do
-        
-        local SpawnIcon = vgui.Create( "SpawnIcon" )
-        SpawnIcon:SetPos( x, y )
-        SpawnIcon:SetSize( 64, 64 )
-        SpawnIcon:SetModel( tab[n] )
+	for n = 1, table.getn( tab ) do
+		
+		local SpawnIcon = vgui.Create( "SpawnIcon" )
+		SpawnIcon:SetPos( x, y )
+		SpawnIcon:SetSize( 64, 64 )
+		SpawnIcon:SetModel( tab[n] )
 
-        SpawnIcon.DoClick = function()
-        ModelInfo:SetModel( tab[n] )
-        plymodel = tab[n]
-        end
-        ModelList:AddItem( SpawnIcon )
-    end
+		SpawnIcon.DoClick = function()
+		ModelInfo:SetModel( tab[n] )
+		plymodel = tab[n]
+		end
+		ModelList:AddItem( SpawnIcon )
+	end
 end
 refreshmodel()
 

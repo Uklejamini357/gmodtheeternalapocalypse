@@ -2,9 +2,8 @@ Config = {  }
 
 Config[ "DebugLogging" ] = true -- do we want to save debug logs? logs are found in garrysmod/data/theeverlastingapocalypse/logs and can be sent to the developer to find and fix malfunctions within the gamemode
 
---Configs that are started with -- are not included due to introduction of ConVars but still exist here
---Config[ "WalkSpeed" ] = 120
---Config[ "RunSpeed" ] = 250 -- remember that the speed skill increases your sprint speed by 10 for each level, so at 300 runspeed players can reach a possible maximum of 400 sprint speed
+--Config[ "WalkSpeed" ] = 120 -- remember that the speed skill increases your walk speed by 3.5 for each level, so at 200 walkspeed players can reach a possible maximum of 235 sprint speed
+--Config[ "RunSpeed" ] = 250 -- speed skill increases your running speed by 7 per skill level, so if default is 300, players can reach max of 370 run speed
 
 --Config[ "MaxProps" ] = 60
 
@@ -13,12 +12,12 @@ Config[ "DebugLogging" ] = true -- do we want to save debug logs? logs are found
 
 Config[ "Currency" ] = "Dollar" -- the s is added onto strings where needed, for example if you put the currency as "Dollar" it will come out as "Dollars" as needed
 
-Config[ "NoobLevel" ] = 15 -- people who are this level or below are considered noobs
-Config[ "NoobWeapon" ] = "weapon_zw_noobcannon" -- what gun to give to players if they are under the noob level and if they lost their previous one
---Config[ "StartMoney" ] = 500 -- noob fund
+--Config[ "RookieLevel" ] = 15 -- people who are this level or below are considered Rookies
+Config[ "RookieWeapon" ] = "weapon_zw_noobcannon" -- what gun to give to players if they are under the Rookie level and if they lost their previous one
+Config[ "StartMoney" ] = 500 -- Rookie fund
 
 Config[ "MaxZombies" ] = 35 -- how many standard zombies can exist at any given time, turn this down if your server is lagging from the zombie ai
-Config[ "ZombieSpawnRate" ] = 3 -- fresh zombies will be spawned in every x seconds
+Config[ "ZombieSpawnRate" ] = 13 -- fresh zombies will be spawned in every x seconds
 Config[ "BossSpawnRate" ] = 3000 -- how fast the boss spawn timer will be run in seconds (3600 seconds = 1 hour).  Keep in mind that if there is less than 3 players online then the boss will never spawn regardless of spawn rate
 Config[ "AirdropSpawnRate" ] = 3750 -- same as boss spawn rate but for airdrops
 
@@ -93,11 +92,11 @@ Config[ "BossClasses" ] = {
 }
 
 
------------------------------NOOB GEAR-----------------------------
+-----------------------------ROOKIE GEAR-----------------------------
 
 -- what to give to players when they join the server for the first time
 
-Config[ "NoobGear" ] = {
+Config[ "RookieGear" ] = {
 
 	-- behold the beautiful new inventory format
 
@@ -129,7 +128,7 @@ Config[ "NoobGear" ] = {
 
 -- what new players will have in their vault
 
-Config[ "NoobVault" ] = {
+Config[ "RookieVault" ] = {
 ["weapon_zw_grenade_pipe"] = 3,
 }
 

@@ -62,7 +62,7 @@ function SWEP:UpdateNextIdle()
 	
 end
 
-function SWEP:PrimaryAttack( )
+function SWEP:PrimaryAttack()
 
 if self.Owner:KeyDown(IN_USE) then
 self:SetNextPrimaryFire( CurTime() + 0.8 )
@@ -84,6 +84,23 @@ else
 
 	if ( self:GetCombo() >= 2 ) then
 		anim = "fists_uppercut"
+		self:SetNextPrimaryFire( CurTime() + 0.85 )
+		self:SetNextSecondaryFire( CurTime() + 0.85 )
+		if (SERVER) then
+		self.Owner.Stamina = math.Clamp(self.Owner.Stamina - math.Rand(0.1, 0.3), 0, 100)
+		timer.Simple(0.15, function()
+		self.Owner.Stamina = math.Clamp(self.Owner.Stamina - math.Rand(0.7, 2.5), 0, 100)
+		end)
+		end
+	else
+		self:SetNextPrimaryFire( CurTime() + 0.375 )
+		self:SetNextSecondaryFire( CurTime() + 0.375 )
+		if (SERVER) then
+		self.Owner.Stamina = math.Clamp(self.Owner.Stamina - math.Rand(0.14, 0.4), 0, 100)
+		timer.Simple(0.15, function()
+		self.Owner.Stamina = math.Clamp(self.Owner.Stamina - math.Rand(0.4, 1.1), 0, 100)
+		end)
+		end
 	end
 
 	self.Owner:ViewPunch( Angle(math.random(0.5, 1.5), math.random(0.5, 1.5), math.random(0.5, 1.5)) )
@@ -93,11 +110,10 @@ else
 
 	self:EmitSound( SwingSound )
 
+
 	self:UpdateNextIdle()
-	self:SetNextMeleeAttack( CurTime() + 0.2 )
-	
-	self:SetNextPrimaryFire( CurTime() + 0.9 )
-	self:SetNextSecondaryFire( CurTime() + 0.9 )
+	self:SetNextMeleeAttack( CurTime() + 0.15 )
+
 end
 
 end
@@ -151,8 +167,8 @@ function SWEP:SecondaryAttack()
 	if (SERVER and IsValid(entity)) then
 		local distance = self.Owner:EyePos():Distance(trace.HitPos)
 
-		if (distance > 100) then
-			return
+		if (distance > 90) then
+		return
 		end
 
 		if (!entity:IsPlayer() and !entity:IsNPC() and self:CanCarry(entity)) then
@@ -207,7 +223,7 @@ function SWEP:DealDamage()
 		dmginfo:SetAttacker( attacker )
 
 		dmginfo:SetInflictor( self )
-		dmginfo:SetDamage( math.random( 8, 12 ) )
+		dmginfo:SetDamage( math.Rand( 8, 11 ) )
 
 		if ( anim == "fists_left" ) then
 			dmginfo:SetDamageForce( self.Owner:GetRight() * 4912 + self.Owner:GetForward() * 9998 ) -- Yes we need those specific numbers
@@ -215,7 +231,7 @@ function SWEP:DealDamage()
 			dmginfo:SetDamageForce( self.Owner:GetRight() * -4912 + self.Owner:GetForward() * 9989 )
 		elseif ( anim == "fists_uppercut" ) then
 			dmginfo:SetDamageForce( self.Owner:GetUp() * 5158 + self.Owner:GetForward() * 10012 )
-			dmginfo:SetDamage( math.random( 12, 24 ) )
+			dmginfo:SetDamage( math.Rand( 14, 27 ) )
 		end
 
 		tr.Entity:TakeDamageInfo( dmginfo )
@@ -299,13 +315,14 @@ function SWEP:Think()
 		self:SetNextMeleeAttack( 0 )
 
 	end
-	
-	if ( SERVER && CurTime() > self:GetNextPrimaryFire() + 0.1 ) then
-		
+
+
+	if ( SERVER && CurTime() > self:GetNextPrimaryFire() + 0.27 + (0.07 * self:GetCombo()) ) and self:GetCombo() > 0 then
+
+		if self:GetCombo() >= 1 then
 		self:SetCombo( 0 )
-		
+		end
 	end
-	
 end
 
 function SWEP:DrawHUD()

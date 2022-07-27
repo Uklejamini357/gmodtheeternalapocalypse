@@ -27,14 +27,14 @@ see server/player_inventory.lua for more info
 ItemsList = {
 	["item_bandage"] = {
 		["Name"] = "Bandage",
-		["Cost"] = 45,
+		["Cost"] = 65,
 		["Model"] = "models/wick/wrbstalker/anomaly/items/wick_dev_bandage.mdl",
-		["Description"] = "A rolled up bandage that can be used to stop bleeding or to splint broken limbs.\nRestores 15 health, effectiveness is increased by 2.5% per MedSkill point.\n(Item ID: item_bandage)",
+		["Description"] = "A rolled up bandage that can be used to stop bleeding or to splint broken limbs.\nRestores 11 health, effectiveness is increased by 2.5% per MedSkill point.\n(Item ID: item_bandage)",
 		["Weight"] = 0.06,
 		["Supply"] = 0,
 		["Rarity"] = 2,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) local healing = UseFunc_Heal(ply, 15, 0, "comrade_vodka/inv_bandages.ogg") return healing end,
+		["UseFunc"] = function(ply) local healing = UseFunc_Heal(ply, 3, 11, 0, "comrade_vodka/inv_bandages.ogg") return healing end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_bandage") return drop end,
 	},
 
@@ -47,7 +47,7 @@ ItemsList = {
 		["Supply"] = 30,
 		["Rarity"] = 3,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) local healing = UseFunc_Heal(ply, 45, 5, "comrade_vodka/inv_aptecka.ogg") return healing end,
+		["UseFunc"] = function(ply) local healing = UseFunc_Heal(ply, 3.3, 45, 5, "comrade_vodka/inv_aptecka.ogg") return healing end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_medkit") return drop end,
 	},
 
@@ -60,7 +60,7 @@ ItemsList = {
 		["Supply"] = 10,
 		["Rarity"] = 4,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) local healing = UseFunc_Heal(ply, 70, 20, "comrade_vodka/inv_aptecka.ogg") return healing end,
+		["UseFunc"] = function(ply) local healing = UseFunc_Heal(ply, 3.3, 70, 20, "comrade_vodka/inv_aptecka.ogg") return healing end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_armymedkit") return drop end,
 	},
 
@@ -73,7 +73,7 @@ ItemsList = {
 		["Supply"] = 5,
 		["Rarity"] = 5,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) local healing = UseFunc_Heal(ply, 100, 60, "comrade_vodka/inv_aptecka.ogg") return healing end,
+		["UseFunc"] = function(ply) local healing = UseFunc_Heal(ply, 3.3, 100, 60, "comrade_vodka/inv_aptecka.ogg") return healing end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_scientificmedkit") return drop end,
 	},
 
@@ -86,7 +86,7 @@ ItemsList = {
 		["Supply"] = 12,
 		["Rarity"] = 3,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) local healing = UseFunc_Heal(ply, 0, 40, "items/medshot4.wav") return healing end,
+		["UseFunc"] = function(ply) local healing = UseFunc_HealInfection(ply, 4, 40, "items/medshot4.wav") return healing end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_antidote") return drop end,
 	},
 
@@ -94,12 +94,12 @@ ItemsList = {
 		["Name"] = "Raw Egg",
 		["Cost"] = 5,
 		["Model"] = "models/props_phx/misc/egg.mdl",
-		["Description"] = "A raw egg. Restores 4% hunger\n(Item ID: item_egg)",
+		["Description"] = "A raw egg. Restores 4% hunger, but dehydrates 1% thirst.\n(Item ID: item_egg)",
 		["Weight"] = 0.08,
 		["Supply"] = 0,
 		["Rarity"] = 0,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) local food = UseFunc_Eat(ply, 4, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
+		["UseFunc"] = function(ply) local food = UseFunc_Eat(ply, 0.4, 0, 4, -1, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_egg") return drop end,
 	},
 
@@ -107,25 +107,25 @@ ItemsList = {
 		["Name"] = "Old Milk",
 		["Cost"] = 35,
 		["Model"] = "models/props_junk/garbage_milkcarton002a.mdl",
-		["Description"] = "An old milk. Restores 11% hunger\n(Item ID: item_milk)",
+		["Description"] = "An old milk. Restores 11% hunger and quenches 20% thirst.\n(Item ID: item_milk)",
 		["Weight"] = 1.05,
 		["Supply"] = 20,
 		["Rarity"] = 1,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) local food = UseFunc_Eat(ply, 11, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
+		["UseFunc"] = function(ply) local food = UseFunc_Drink(ply, 4.2, 0, 3, 20, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_milk") return drop end,
 	},
 
 	["item_soda"] = {
 		["Name"] = "Can of Softdrink",
-		["Cost"] = 20,
+		["Cost"] = 50,
 		["Model"] = "models/props_junk/PopCan01a.mdl",
-		["Description"] = "An old pre apocalyptic softdrink, it even still has bubbles left in it! Restores 8% hunger, 5% of stamina and recovers 1% of sleep.\n(Item ID: item_soda)",
+		["Description"] = "An old pre apocalyptic softdrink, it even still has bubbles left in it! Restores 1% health, 8% hunger, 35% thirst, 5% stamina and recovers 1% of sleep.\n(Item ID: item_soda)",
 		["Weight"] = 0.33,
 		["Supply"] = 0,
 		["Rarity"] = 1,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) local food = UseFunc_Eat(ply, 8, 5, -1, "comrade_vodka/inv_drink_can2.ogg") return food end,
+		["UseFunc"] = function(ply) local food = UseFunc_Drink(ply, 4, 1, 8, 35, 5, -1, "comrade_vodka/inv_drink_can2.ogg") return food end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_soda") return drop end,
 	},
 
@@ -133,12 +133,12 @@ ItemsList = {
 		["Name"] = "Energy Drink 'S.T.A.L.K.E.R.'",
 		["Cost"] = 65,
 		["Model"] = "models/wick/wrbstalker/anomaly/items/wick_dev_drink_stalker.mdl",
-		["Description"] = "This is an excellent energy drink consisting of caffeine, taurine and a mixture of rejuvenating vitamins. Just the ticket when you're too tired to push forward!\nRestores 5% hunger, 65% of stamina and recovers 8% of sleep.\n(Item ID: item_energydrink)",
-		["Weight"] = 0.56,
+		["Description"] = "This is an excellent energy drink consisting of caffeine, taurine and a mixture of rejuvenating vitamins. Just the ticket when you're too tired to push forward!\nRestores 1% health, 5% hunger, 30% thirst, 65% of stamina and recovers 8% of sleep.\n(Item ID: item_energydrink)",
+		["Weight"] = 0.36,
 		["Supply"] = 0,
 		["Rarity"] = 2,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) local food = UseFunc_Eat(ply, 5, 65, -8, "comrade_vodka/inv_drink_can1.ogg") return food end,
+		["UseFunc"] = function(ply) local food = UseFunc_Drink(ply, 4.3, 1, 5, 30, 55, -8, "comrade_vodka/inv_drink_can.ogg") return food end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_energydrink") return drop end,
 	},
 
@@ -146,12 +146,12 @@ ItemsList = {
 		["Name"] = "'Nonstop' Energy Drink",
 		["Cost"] = 100,
 		["Model"] = "models/wick/wrbstalker/cop/newmodels/items/wick_nonstop.mdl",
-		["Description"] = "This drink will instantly rejuvenate your mind and body. This drink is similar to the common energy drink, but also heals you, reduces radiation somewhat, reduces hunger, and gives you more endurance.\nOf course it's a bit expensive, but the price is worth it! Restores 6% hunger, 100% of stamina and recovers 15% of sleep.\n(Item ID: item_energydrink_nonstop)",
-		["Weight"] = 0.58,
+		["Description"] = "This drink will instantly rejuvenate your mind and body. This drink is similar to the common energy drink, but also heals you, reduces radiation somewhat, reduces hunger, and gives you more endurance.\nOf course it's a bit expensive, but the price is worth it! Restores 2% health, 6% hunger, 32% thirst, 90% of stamina and recovers 11% of sleep.\n(Item ID: item_energydrink_nonstop)",
+		["Weight"] = 0.38,
 		["Supply"] = 0,
 		["Rarity"] = 2,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) local food = UseFunc_Eat(ply, 6, 100, -15, "comrade_vodka/inv_drink_can1.ogg") return food end,
+		["UseFunc"] = function(ply) local food = UseFunc_Drink(ply, 4.4, 2, 6, 32, 85, -11, "comrade_vodka/inv_drink_can.ogg") return food end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_energydrink_nonstop") return drop end,
 	},
 
@@ -159,12 +159,12 @@ ItemsList = {
 		["Name"] = "Bottle of Beer",
 		["Cost"] = 35,
 		["Model"] = "models/props_junk/garbage_glassbottle003a.mdl",
-		["Description"] = "Makes the apocalypse a bit more bearable. Restores 19% hunger\n(Item ID: item_beerbottle)",
+		["Description"] = "Makes the apocalypse a bit more bearable. Restores 1% health, 9% hunger, 5% thirst, but drains 15% stamina and gives 10% fatigue.\n(Item ID: item_beerbottle)",
 		["Weight"] = 0.8,
 		["Supply"] = 10,
 		["Rarity"] = 3,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) local food = UseFunc_Eat(ply, 19, -15, 10, "npc/barnacle/barnacle_gulp2.wav") return food end,
+		["UseFunc"] = function(ply) local food = UseFunc_Drink(ply, 5.6, 1, 9, 5, -15, 10, "npc/barnacle/barnacle_gulp2.wav") return food end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_beerbottle") return drop end,
 	},
 
@@ -173,12 +173,12 @@ ItemsList = {
 		["Name"] = "Tinned Rations",
 		["Cost"] = 45,
 		["Model"] = "models/props_junk/garbage_metalcan001a.mdl",
-		["Description"] = "A tin of god knows what, the label fell off a long time ago.  Restores 20% hunger\n(Item ID: item_tinnedfood)",
+		["Description"] = "A tin of god knows what, the label fell off a long time ago. Restores 3% health, 20% hunger, but dehydrates 10% thirst.\n(Item ID: item_tinnedfood)",
 		["Weight"] = 0.4,
 		["Supply"] = 30,
 		["Rarity"] = 2,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) local food = UseFunc_Eat(ply, 20, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
+		["UseFunc"] = function(ply) local food = UseFunc_Eat(ply, 2.6, 3, 20, -10, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_tinnedfood") return drop end,
 	},
 
@@ -186,12 +186,12 @@ ItemsList = {
 		["Name"] = "Potato",
 		["Cost"] = 60,
 		["Model"] = "models/props_phx/misc/potato.mdl",
-		["Description"] = "A potato, tastes awful raw but it's edible nonetheless.  Restores 22% hunger\n(Item ID: item_potato)",
+		["Description"] = "A potato, tastes awful raw but it's edible nonetheless. Restores 2% health, 22% hunger, but dehydrates 8% thirst.\n(Item ID: item_potato)",
 		["Weight"] = 0.2,
 		["Supply"] = 20,
 		["Rarity"] = 2,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) local food = UseFunc_Eat(ply, 22, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
+		["UseFunc"] = function(ply) local food = UseFunc_Eat(ply, 2.8, 2, 22, -8, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_potato") return drop end,
 	},
 
@@ -199,25 +199,25 @@ ItemsList = {
 		["Name"] = "Trader's Special",
 		["Cost"] = 75,
 		["Model"] = "models/props_junk/garbage_takeoutcarton001a.mdl",
-		["Description"] = "A box of rather dubious looking meat and ramen, prepared for you by your friendly local trader.  Restores 47% Hunger\n(Item ID: item_traderfood)",
+		["Description"] = "A box of rather dubious looking meat and ramen, prepared for you by your friendly local trader. Restores 4% health, 47% Hunger, 4% stamina but dehydrates 15% thirst.\n(Item ID: item_traderfood)",
 		["Weight"] = 0.6,
 		["Supply"] = 5,
 		["Rarity"] = 2,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) local food = UseFunc_Eat(ply, 47, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
+		["UseFunc"] = function(ply) local food = UseFunc_Eat(ply, 5.7, 4, 47, -15, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_traderfood") return drop end,
 	},
 
 	["item_trout"] = {
 		["Name"] = "River Trout",
-		["Cost"] = 80,
+		["Cost"] = 95,
 		["Model"] = "models/props/CS_militia/fishriver01.mdl",
-		["Description"] = "A tasty, fresh river trout.  Restores 65% Hunger\n(Item ID: item_trout)",
+		["Description"] = "A tasty, fresh river trout. Restores 5% health, 65% Hunger, but dehydrates 4% thirst.\n(Item ID: item_trout)",
 		["Weight"] = 0.75,
 		["Supply"] = 2,
 		["Rarity"] = 3,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) local food = UseFunc_Eat(ply, 65, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
+		["UseFunc"] = function(ply) local food = UseFunc_Eat(ply, 6.9, 5, 65, -4, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_trout") return drop end,
 	},
 
@@ -225,38 +225,38 @@ ItemsList = {
 		["Name"] = "Watermelon",
 		["Cost"] = 150,
 		["Model"] = "models/props_junk/watermelon01.mdl",
-		["Description"] = "A fresh, tasty watermelon, fresh from the farming compounds up in the mountains. Restores 100% Hunger\n(Item ID: item_melon)",
+		["Description"] = "A fresh, tasty watermelon, fresh from the farming compounds up in the mountains. Restores 7% health, 85% Hunger, 20% thirst and 3% stamina.\n(Item ID: item_melon)",
 		["Weight"] = 2,
 		["Supply"] = 3,
 		["Rarity"] = 3,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) local food = UseFunc_Eat(ply, 100, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
+		["UseFunc"] = function(ply) local food = UseFunc_Eat(ply, 7.6, 7, 85, 20, 3, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_melon") return drop end,
 	},
 
 	["item_burger"] = {
 		["Name"] = "Cheez Burger",
-		["Cost"] = 500,
+		["Cost"] = 750,
 		["Model"] = "models/food/burger.mdl",
-		["Description"] = "A Burger which is light and tasty. Restores 100% hunger.\n(Item ID: item_burger)",
+		["Description"] = "Can i haz cheez burger? Restores 30% health, 100% hunger and 15% thirst, 90% stamina and recovers 25% of sleep.\n(Item ID: item_burger)",
 		["Weight"] = 0.4,
 		["Supply"] = -1,
 		["Rarity"] = 7,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) local food = UseFunc_Eat(ply, 100, 0, 0, "vo/npc/male01/yeah02.wav") return food end,
+		["UseFunc"] = function(ply) local food = UseFunc_Eat(ply, 5.4, 30, 100, 15, 90, -15, "vo/npc/male01/yeah02.wav") return food end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_burger") return drop end,
 	},
 
 	["item_hotdog"] = {
 		["Name"] = "Hotdog",
-		["Cost"] = 200,
+		["Cost"] = 400,
 		["Model"] = "models/food/hotdog.mdl",
-		["Description"] = "A tasty Hotdog. Restores 80% hunger\n(Item ID: item_hotdog)",
+		["Description"] = "Hot Dog. Restores 20% health, 80% hunger, 10% thirst, 40% stamina and recovers 15% of sleep.\n(Item ID: item_hotdog)",
 		["Weight"] = 0.35,
 		["Supply"] = -1,
 		["Rarity"] = 6,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) local food = UseFunc_Eat(ply, 80, 0, 0, "vo/npc/male01/nice.wav") return food end,
+		["UseFunc"] = function(ply) local food = UseFunc_Eat(ply, 5.3, 20, 80, 10, 40, -15, "vo/npc/male01/nice.wav") return food end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_hotdog") return drop end,
 	},
 
@@ -264,12 +264,12 @@ ItemsList = {
 		["Name"] = "Donut",
 		["Cost"] = 65,
 		["Model"] = "models/noesis/donut.mdl",
-		["Description"] = "A donut. Restores 45% hunger\n(Item ID: item_donut)",
+		["Description"] = "A donut. Restores 2% health, 45% hunger, 5% stamina and recovers 1% of sleep, but dehydrates 7% of thirst.\n(Item ID: item_donut)",
 		["Weight"] = 0.2,
 		["Supply"] = 5,
 		["Rarity"] = 2,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) local food = UseFunc_Eat(ply, 45, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
+		["UseFunc"] = function(ply) local food = UseFunc_Eat(ply, 3.1, 2, 45, -7, 5, -1, "npc/barnacle/barnacle_gulp2.wav") return food end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_donut") return drop end,
 	},
 
@@ -300,8 +300,8 @@ ItemsList = {
 	},
 
 	["item_amnesiapills"] = {
-		["Name"] = "Amnesia Pill",
-		["Cost"] = 450,
+		["Name"] = "Amnesia Pills",
+		["Cost"] = 1250,
 		["Model"] = "models/props_lab/jar01b.mdl",
 		["Description"] = "USE THIS AT YOUR OWN RISK\nA bottle of pills that cause you to forget everything you've ever learned. Resets all your stats and refunds your stat points.\n(Item ID: item_amnesiapills)",
 		["Weight"] = 0.1,
@@ -321,20 +321,20 @@ ItemsList = {
 		["Supply"] = 6,
 		["Rarity"] = 4,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) local armor = UseFunc_Armor(ply, 15, "items/battery_pickup.wav") return armor end,
+		["UseFunc"] = function(ply) local armor = UseFunc_Armor(ply, 1.3, 15, "items/battery_pickup.wav") return armor end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_armorbattery") return drop end,
 	},
 
 	["item_armorkevlar"] = {
 		["Name"] = "Kevlar Plate",
-		["Cost"] = 1250,
+		["Cost"] = 1500,
 		["Model"] = "models/wick/wrbstalker/anomaly/items/dez_kevlar.mdl",
 		["Description"] = "A part of kevlar armor mostly used to protect user from severe bullet wounds.\nRestores 35% Armor battery, with +2% effectiveness per Engineer skill.\n(Item ID: item_armorkevlar)",
 		["Weight"] = 1.13,
 		["Supply"] = 3,
 		["Rarity"] = 5,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) local armor = UseFunc_Armor(ply, 35, "npc/combine_soldier/zipline_hitground2.wav") return armor end,
+		["UseFunc"] = function(ply) local armor = UseFunc_Armor(ply, 2, 35, "npc/combine_soldier/zipline_hitground2.wav") return armor end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_armorkevlar") return drop end,
 	},
 
@@ -363,14 +363,14 @@ ItemsList = {
 
 	["item_scrap"] = {
 		["Name"] = "Scrap Metal",
-		["Cost"] = 420,
+		["Cost"] = 350,
 		["Model"] = "models/Gibs/helicopter_brokenpiece_02.mdl",
 		["Description"] = "Scrap metal. It doesn't really do anything but you may still use it to improve your armor condition.\nIncreases 10% Armor Battery, +2% Effectiveness per Engineer skill\n(Item ID: item_scrap)",
 		["Weight"] = 1,
 		["Supply"] = -1,
 		["Rarity"] = 2,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) local armor = UseFunc_Armor(ply, 10, "npc/combine_soldier/zipline_hitground2.wav") return armor end,
+		["UseFunc"] = function(ply) local armor = UseFunc_Armor(ply, 2, 10, "npc/combine_soldier/zipline_hitground2.wav") return armor end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_scrap") return drop end,
 	},
 
@@ -402,7 +402,7 @@ ItemsList = {
 
 	["item_beer"] = {
 		["Name"] = "Crate of Beer",
-		["Cost"] = 1000,
+		["Cost"] = 1200,
 		["Model"] = "models/props/CS_militia/caseofbeer01.mdl",
 		["Description"] = "A crate of unopened beer. The trader will pay good money for this.\n(Item ID: item_beer)",
 		["Weight"] = 5,
@@ -769,7 +769,7 @@ ItemsList = {
 
 	["weapon_zw_pigsticker"] = {
 		["Name"] = "Pig Sticker",
-		["Cost"] = 150,
+		["Cost"] = 350,
 		["Model"] = "models/weapons/w_knife_ct.mdl",
 		["Description"] = "A combat knife that can save your ass if you run out of ammo\n(Item ID: weapon_zw_pigsticker)",
 		["Weight"] = 0.38,
@@ -834,7 +834,7 @@ ItemsList = {
 
 	["weapon_zw_57"] = {
 		["Name"] = "FN FiveSeven",
-		["Cost"] = 500,
+		["Cost"] = 600,
 		["Model"] = "models/weapons/w_pist_fiveseven.mdl",
 		["Description"] = "A fast firing pistol that spews a hail of small high velocity bullets\n(Item ID: weapon_zw_57)",
 		["Weight"] = 0.82,
@@ -847,7 +847,7 @@ ItemsList = {
 
 	["weapon_zw_u45"] = {
 		["Name"] = "U-45 Whisper",
-		["Cost"] = 600,
+		["Cost"] = 700,
 		["Model"] = "models/weapons/w_pist_usp.mdl",
 		["Description"] = "A silencable pistol that used to be popular among swat and miltary outfits\n(Item ID: weapon_zw_u45)",
 		["Weight"] = 1.1,
@@ -861,7 +861,7 @@ ItemsList = {
 
 	["weapon_zw_warren50"] = {
 		["Name"] = "Warren .50",
-		["Cost"] = 750,
+		["Cost"] = 850,
 		["Model"] = "models/weapons/w_pist_deagle.mdl",
 		["Description"] = "A powerful and flashy pistol that fires heavy magnum rounds, warrens are still in high demand despite their high skill requirement to use effectively\n(Item ID: weapon_zw_warren50)",
 		["Weight"] = 1.73,
@@ -874,7 +874,7 @@ ItemsList = {
 
 	["weapon_zw_python"] = {
 		["Name"] = "Python Magnum",
-		["Cost"] = 1000,
+		["Cost"] = 1200,
 		["Model"] = "models/weapons/w_357.mdl",
 		["Description"] = "A bulky revolver that fires large caliber magnum bullets\n(Item ID: weapon_zw_python)",
 		["Weight"] = 1.18,
@@ -913,7 +913,7 @@ ItemsList = {
 
 	["weapon_zw_mp11"] = {
 		["Name"] = "MP-11 PDW",
-		["Cost"] = 1750,
+		["Cost"] = 2250,
 		["Model"] = "models/weapons/w_smg_mac10.mdl",
 		["Description"] = "An old machine pistol, makes for a decent close quarters weapon but performs poorly at longer ranges. Uses pistol ammo\n(Item ID: weapon_zw_mp11)",
 		["Weight"] = 2.25,
@@ -926,7 +926,7 @@ ItemsList = {
 
 	["weapon_zw_rg900"] = {
 		["Name"] = "RG-900",
-		["Cost"] = 2000,
+		["Cost"] = 2500,
 		["Model"] = "models/weapons/w_smg_tmp.mdl",
 		["Description"] = "A modern tactical machine pistol fitted with an integrated silencer. Uses pistol ammo\n(Item ID: weapon_zw_rg900)",
 		["Weight"] = 2.35,
@@ -939,7 +939,7 @@ ItemsList = {
 
 	["weapon_zw_k5a"] = {
 		["Name"] = "Kohl K5-A",
-		["Cost"] = 2500,
+		["Cost"] = 3250,
 		["Model"] = "models/weapons/w_smg_mp5.mdl",
 		["Description"] = "This old german SMG may be an outdated design but it still packs a punch on the battlefield. Uses pistol rounds\n(Item ID: weapon_zw_k5a)",
 		["Weight"] = 2.5,
@@ -965,7 +965,7 @@ ItemsList = {
 
 	["weapon_zw_bosch"] = {
 		["Name"] = "Bosch-Sterling B-60",
-		["Cost"] = 3250,
+		["Cost"] = 3750,
 		["Model"] = "models/weapons/w_sten.mdl",
 		["Description"] = "A dated but still reasonably effective SMG with an interesting side loading magazine\n(Item ID: weapon_zw_bosch)",
 		["Weight"] = 3.15,
@@ -978,7 +978,7 @@ ItemsList = {
 
 	["weapon_zw_k8"] = {
 		["Name"] = "Kohl K8",
-		["Cost"] = 4000,
+		["Cost"] = 5000,
 		["Model"] = "models/weapons/w_smg_ump45.mdl",
 		["Description"] = "The last weapon design released by Kohl before germany was overrun by the zombies, this is a modern SMG that offers excellent power, efficiency and accuracy. Uses pistol ammo\n(Item ID: weapon_zw_k8)",
 		["Weight"] = 2.9,
@@ -991,7 +991,7 @@ ItemsList = {
 
 	["weapon_zw_k8c"] = {
 		["Name"] = "Kohl K8-C",
-		["Cost"] = 4500,
+		["Cost"] = 5500,
 		["Model"] = "models/weapons/w_hk_usc.mdl",
 		["Description"] = "An accurate carbine variant of the kohl K8 smg. Uses pistol ammo\n(Item ID: weapon_zw_k8c)",
 		["Weight"] = 2.85,
@@ -1004,7 +1004,7 @@ ItemsList = {
 
 	["weapon_zw_shredder"] = {
 		["Name"] = "The Shredder",
-		["Cost"] = 5750,
+		["Cost"] = 7750,
 		["Model"] = "models/weapons/w_smg_p90.mdl",
 		["Description"] = "An experimental SMG that fires a hail of small high velocity bullets. Uses pistol ammo\n(Item ID: weapon_zw_shredder)",
 		["Weight"] = 3,
@@ -1017,7 +1017,7 @@ ItemsList = {
 
 	["weapon_zw_enforcer"] = {
 		["Name"] = "M3 Enforcer",
-		["Cost"] = 4500,
+		["Cost"] = 5000,
 		["Model"] = "models/weapons/w_shot_m3super90.mdl",
 		["Description"] = "A 12 guage pump shotgun that was commonly used by police and sport shooters before the apocalpyse\n(Item ID: weapon_zw_enforcer)",
 		["Weight"] = 3.6,
@@ -1030,7 +1030,7 @@ ItemsList = {
 
 	["weapon_zw_sweeper"] = {
 		["Name"] = "XS-12 Sweeper",
-		["Cost"] = 7000,
+		["Cost"] = 7750,
 		["Model"] = "models/weapons/w_shot_xm1014.mdl",
 		["Description"] = "A 12 guage pump shotgun that was commonly used by police and sport shooters before the apocalpyse\n(Item ID: weapon_zw_sweeper)",
 		["Weight"] = 3.8,
@@ -1043,7 +1043,7 @@ ItemsList = {
 
 	["weapon_zw_ranger"] = {
 		["Name"] = "XR-15 Ranger",
-		["Cost"] = 6500,
+		["Cost"] = 7250,
 		["Model"] = "models/weapons/w_rif_m4a1.mdl",
 		["Description"] = "An iconic american rifle that has been kept up to modern standards via constant upgrades\n(Item ID: weapon_zw_ranger)",
 		["Weight"] = 4.2,
@@ -1069,7 +1069,7 @@ ItemsList = {
 
 	["weapon_zw_stugcommando"] = {
 		["Name"] = "Stug Commando",
-		["Cost"] = 8750,
+		["Cost"] = 9250,
 		["Model"] = "models/weapons/w_rif_sg552.mdl",
 		["Description"] = "A shortened version of the Stug 556LR Sniper that has been optimized for use as an assault rifle\n(Item ID: weapon_zw_stugcommando)",
 		["Weight"] = 4.45,
@@ -1083,7 +1083,7 @@ ItemsList = {
 
 	["weapon_zw_krukov"] = {
 		["Name"] = "Krukov KA-74",
-		["Cost"] = 9500,
+		["Cost"] = 11000,
 		["Model"] = "models/weapons/w_rif_ak47.mdl",
 		["Description"] = "A basic but still highly effective russian assault rifle\n(Item ID: weapon_zw_krukov)",
 		["Weight"] = 3.76,
@@ -1096,7 +1096,7 @@ ItemsList = {
 
 	["weapon_zw_l303"] = {
 		["Name"] = "Lior L303",
-		["Cost"] = 12000,
+		["Cost"] = 13500,
 		["Model"] = "models/weapons/w_rif_galil.mdl",
 		["Description"] = "A rugged assault rifle that was used by the Saudi Union before their homeland was nuked in an attempt to halt the spread of zombies\n(Item ID: weapon_zw_l303)",
 		["Weight"] = 5,
@@ -1201,7 +1201,7 @@ ItemsList = {
 
 	["weapon_zw_winchester"] = {
 		["Name"] = "WINchester",
-		["Cost"] = 3500,
+		["Cost"] = 6500,
 		["Model"] = "models/weapons/w_winchester_1873.mdl",
 		["Description"] = "They don't call this the WINchester for nothing amirite.  Uses Magnum rounds\n(Item ID: weapon_zw_winchester)",
 		["Weight"] = 5.32,
@@ -1254,10 +1254,10 @@ ItemsList = {
 
 	["weapon_zw_fuckinator"] = {
 		["Name"] = "The Fuckinator",
-		["Cost"] = 30000,
+		["Cost"] = 40000,
 		["Model"] = "models/weapons/w_pist_p228.mdl",
 		["Description"] = "Point away from face\n(Item ID: weapon_zw_fuckinator)",
-		["Weight"] = 7.42,
+		["Weight"] = 8.17,
 		["Supply"] = -1,
 		["Rarity"] = 7,
 		["Category"] = 3,
@@ -1458,7 +1458,7 @@ ItemsList = {
 
     ["weapon_zw_falcon"] = {
 		["Name"] = "Warren Falcon .45",
-		["Cost"] = 1400,
+		["Cost"] = 2000,
 		["Model"] = "models/weapons/s_dmgf_co1911.mdl",
 		["Description"] = "A classic pistol that has been in use for over 100 years and still stands tall on the battlefield.\n(Item ID: weapon_zw_falcon)",
 		["Weight"] = 1.4,
@@ -1471,7 +1471,7 @@ ItemsList = {
 
     ["weapon_zw_spas"] = {
 		["Name"] = "SPAS12 Shorty",
-		["Cost"] = 4500,
+		["Cost"] = 8000,
 		["Model"] = "models/weapons/w_shotgun.mdl",
 		["Description"] = "A pump shotgun that has been cut down from its' original length to save on weight.  It has also been modded with an alternate slamfire mode that fires 2 rounds in quick succession.\n(Item ID: weapon_zw_spas)",
 		["Weight"] = 3.6,
@@ -1484,7 +1484,7 @@ ItemsList = {
 
     ["weapon_zw_lbr"] = {
 		["Name"] = "Warren LBR",
-		["Cost"] = 9500,
+		["Cost"] = 15500,
 		["Model"] = "models/weapons/w_snip_m14sp.mdl",
 		["Description"] = "A powerful semi-auto battle rifle that is a rebuilt version of an old and popular design.\n(Item ID: weapon_zw_lbr)",
 		["Weight"] = 3.8,
@@ -1520,7 +1520,7 @@ ItemsList = {
 		["Cost"] = 45000,
 		["Model"] = "models/weapons/w_m134_minigun.mdl",
 		["Description"] = "An enormous minigun that spews a constant stream of hot lead.\n(Item ID: weapon_zw_minigun)",
-		["Weight"] = 18.84,
+		["Weight"] = 16.42,
 		["Supply"] = -1,
 		["Rarity"] = 6,
 		["Category"] = 3,
@@ -1590,7 +1590,7 @@ ItemsList = {
 
     ["m9k_coltpython"] = {
 		["Name"] = "[M9k] Colt Python",
-		["Cost"] = 1500,
+		["Cost"] = 6500,
 		["Model"] = "models/weapons/w_colt_python.mdl",
 		["Description"] = "Colt Python from M9k Small Arms. Uses Magnum ammo.\n(Item ID: m9k_coltpython)",
 		["Weight"] = 1.36,
@@ -1603,7 +1603,7 @@ ItemsList = {
 
     ["m9k_glock"] = {
 		["Name"] = "[M9k] Glock 18",
-		["Cost"] = 4400,
+		["Cost"] = 10900,
 		["Model"] = "models/weapons/w_dmg_glock.mdl",
 		["Description"] = "Glock 18 from M9k Small Arms. Uses Pistol ammo.\n(Item ID: m9k_glock)",
 		["Weight"] = 1.56,
@@ -1616,7 +1616,7 @@ ItemsList = {
 
     ["m9k_hk45"] = {
 		["Name"] = "[M9k] HK45C",
-		["Cost"] = 1000,
+		["Cost"] = 5000,
 		["Model"] = "models/weapons/w_hk45c.mdl",
 		["Description"] = "HK45C from M9k Small Arms. Uses Pistol ammo.\n(Item ID: m9k_hk45)",
 		["Weight"] = 0.96,
@@ -1629,7 +1629,7 @@ ItemsList = {
 
     ["m9k_m92beretta"] = {
 		["Name"] = "[M9k] Beretta M92",
-		["Cost"] = 1800,
+		["Cost"] = 5450,
 		["Model"] = "models/weapons/w_beretta_m92.mdl",
 		["Description"] = "Beretta M92 from M9k Small Arms. Uses Pistol ammo.\n(Item ID: m9k_m92beretta)",
 		["Weight"] = 1.16,
@@ -1642,7 +1642,7 @@ ItemsList = {
 
     ["m9k_luger"] = {
 		["Name"] = "[M9k] P08 Luger",
-		["Cost"] = 1600,
+		["Cost"] = 5200,
 		["Model"] = "models/weapons/w_luger_p08.mdl",
 		["Description"] = "description\n(Item ID: m9k_luger)",
 		["Weight"] = 1.09,
@@ -1655,7 +1655,7 @@ ItemsList = {
 
     ["m9k_ragingbull"] = {
 		["Name"] = "[M9k] Raging Bull",
-		["Cost"] = 2500,
+		["Cost"] = 7300,
 		["Model"] = "models/weapons/w_taurus_raging_bull.mdl",
 		["Description"] = "description\n(Item ID: m9k_ragingbull)",
 		["Weight"] = 2.16,
@@ -1668,7 +1668,7 @@ ItemsList = {
 
     ["m9k_scoped_taurus"] = {
 		["Name"] = "[M9k] Scoped Raging Bull",
-		["Cost"] = 3000,
+		["Cost"] = 9000,
 		["Model"] = "models/weapons/w_raging_bull_scoped.mdl",
 		["Description"] = "description\n(Item ID: m9k_scoped_taurus)",
 		["Weight"] = 2.56,
@@ -1681,7 +1681,7 @@ ItemsList = {
 
     ["m9k_remington1858"] = {
 		["Name"] = "[M9k] Remington 1858",
-		["Cost"] = 2200,
+		["Cost"] = 6300,
 		["Model"] = "models/weapons/w_remington_1858.mdl",
 		["Description"] = "description\n(Item ID: m9k_remington1858)",
 		["Weight"] = 1.46,
@@ -1694,7 +1694,7 @@ ItemsList = {
 
     ["m9k_model3russian"] = {
 		["Name"] = "[M9k] S&W Model 3 Russian",
-		["Cost"] = 2300,
+		["Cost"] = 6500,
 		["Model"] = "models/weapons/w_model_3_rus.mdl",
 		["Description"] = "description\n(Item ID: m9k_model3russian)",
 		["Weight"] = 1.38,
@@ -1707,7 +1707,7 @@ ItemsList = {
 
     ["m9k_model500"] = {
 		["Name"] = "[M9k] S&W Model 500",
-		["Cost"] = 2650,
+		["Cost"] = 7950,
 		["Model"] = "models/weapons/w_sw_model_500.mdl",
 		["Description"] = "description\n(Item ID: m9k_model500)",
 		["Weight"] = 1.36,
@@ -1720,7 +1720,7 @@ ItemsList = {
 
     ["m9k_model627"] = {
 		["Name"] = "[M9k] S&W Model 627",
-		["Cost"] = 2800,
+		["Cost"] = 8100,
 		["Model"] = "models/weapons/w_sw_model_627.mdl",
 		["Description"] = "description\n(Item ID: m9k_model627)",
 		["Weight"] = 2.10,
@@ -1733,7 +1733,7 @@ ItemsList = {
 
     ["m9k_sig_p229r"] = {
 		["Name"] = "[M9k] Sig Sauer P229R",
-		["Cost"] = 1900,
+		["Cost"] = 7900,
 		["Model"] = "models/weapons/w_sig_229r.mdl",
 		["Description"] = "description\n(Item ID: m9k_sig_p229r)",
 		["Weight"] = 1.31,
@@ -2426,8 +2426,8 @@ ItemsList = {
 		["Name"] = "Leather Jacket",
 		["Cost"] = 5000,
 		["Model"] = "models/player/group03/male_07.mdl",
-		["Description"] = "A number of stiff leather pads stitched into your suit, will protect you against cuts and bites but it won't stop a bullet\nProtection: 5%\nSpeed Penalty: 0\nAttachment Slots: 1\nBattery: 0\n(Item ID: item_armor_jacket_leather)",
-		["Weight"] = 1,
+		["Description"] = "A number of stiff leather pads stitched into your suit, will protect you against cuts and bites but it won't stop a bullet\nProtection: 5%\nSpeed: No impact on speed\nAttachment Slots: 1\nBattery: 0\n(Item ID: item_armor_jacket_leather)",
+		["Weight"] = 1.1,
 		["Supply"] = 0,
 		["Rarity"] = 2,
 		["Category"] = 4,
@@ -2437,7 +2437,7 @@ ItemsList = {
 		-- armor only values
 		["ArmorStats"] = {
 			["reduction"] = 5,    -- damage reduction in percentage
-			["speedloss"] = 0,    -- speed loss in source units ( default player sprint speed: 300 (400 with maxed speed stat))
+			["speedloss"] = 0,    -- speed loss in source units ( default player sprint speed: 250 (320 with maxed speed stat))
 			["slots"] = 1, 	      -- attachment slots
 			["battery"] = 0,      -- battery capacity, suits with 0 battery will only be able to use passive attachments
 			["allowmodels"] = nil -- force the player to be one of these models, nil to let them choose from the default citizen models
@@ -2448,8 +2448,8 @@ ItemsList = {
 		["Name"] = "Chainmail Suit",
 		["Cost"] = 8500,
 		["Model"] = "models/player/group03/male_05.mdl",
-		["Description"] = "A chainmail vest and leather pad combo that is worn underneath your oversuit\nProtection: 7.5%\nSpeed Penalty: 1\nAttachment Slots: 1\nBattery: 0\n(Item ID: item_armor_chainmail)",
-		["Weight"] = 2,
+		["Description"] = "A chainmail vest and leather pad combo that is worn underneath your oversuit\nProtection: 7.5%\nSpeed: Decreased (-1)\nAttachment Slots: 1\nBattery: 0\n(Item ID: item_armor_chainmail)",
+		["Weight"] = 1.6,
 		["Supply"] = 0,
 		["Rarity"] = 2,
 		["Category"] = 4,
@@ -2469,8 +2469,8 @@ ItemsList = {
 		["Name"] = "Bandit Jacket",
 		["Cost"] = 10000,
 		["Model"] = "models/player/stalker/bandit_backpack.mdl",
-		["Description"] = "A chainmail vest and leather pad combo that is worn underneath your oversuit\nProtection: 8%\nSpeed Penalty: 1\nAttachment Slots: 1\nBattery: 0\n(Item ID: item_armor_jacket_bandit)",
-		["Weight"] = 2,
+		["Description"] = "A chainmail vest and leather pad combo that is worn underneath your oversuit\nProtection: 8%\nSpeed: Decreased (-1)\nAttachment Slots: 1\nBattery: 0\n(Item ID: item_armor_jacket_bandit)",
+		["Weight"] = 1.4,
 		["Supply"] = 0,
 		["Rarity"] = 3,
 		["Category"] = 4,
@@ -2490,8 +2490,8 @@ ItemsList = {
 		["Name"] = "Scrap Armor",
 		["Cost"] = 12500,
 		["Model"] = "models/player/group03/male_05.mdl",
-		["Description"] = "A set of scrap metal attached to your suit via straps and clips, offers good protection for the price range but it's rather bulky and heavy\nProtection: 10%\nSpeed Penalty: 3\nAttachment Slots: 2\nBattery: 0\n(Item ID: item_armor_scrap)",
-		["Weight"] = 4,
+		["Description"] = "A set of scrap metal attached to your suit via straps and clips, offers good protection for the price range but it's rather bulky and heavy\nProtection: 12.5%\nSpeed: Decreased (-3.5)\nAttachment Slots: 2\nBattery: 0\n(Item ID: item_armor_scrap)",
+		["Weight"] = 3.8,
 		["Supply"] = 0,
 		["Rarity"] = 3,
 		["Category"] = 4,
@@ -2511,7 +2511,7 @@ ItemsList = {
 		["Name"] = "Brown Trenchcoat Armor",
 		["Cost"] = 15000,
 		["Model"] = "models/player/stalker/bandit_brown.mdl",
-		["Description"] = "CHEEKI BREEKI! it may look like an old overcoat but there's actually a light flak jacket and leather padding under there that offers ok-ish protection\nProtection: 10%\nSpeed Penalty: 1\nAttachment Slots: 2\nBattery: 0\n(Item ID: item_armor_trenchcoat_brown)",
+		["Description"] = "CHEEKI BREEKI! it may look like an old overcoat but there's actually a light flak jacket and leather padding under there that offers ok-ish protection\nProtection: 10%\nSpeed: Decreased (-1)\nAttachment Slots: 2\nBattery: 0\n(Item ID: item_armor_trenchcoat_brown)",
 		["Weight"] = 2,
 		["Supply"] = 0,
 		["Rarity"] = 3,
@@ -2532,8 +2532,8 @@ ItemsList = {
 		["Name"] = "Black Trenchcoat Armor",
 		["Cost"] = 20000,
 		["Model"] = "models/player/stalker/bandit_black.mdl",
-		["Description"] = "CHEEKI BREEKI! it may look like an old overcoat but there's actually a light flak jacket and leather padding under there that offers ok-ish protection\nProtection: 10%\nSpeed Penalty: 1\nAttachment Slots: 2\nBattery: 0\n(Item ID: item_armor_trenchcoat_black)",
-		["Weight"] = 2,
+		["Description"] = "It may look like a black, old overcoat, but there's actually a medium-weight flak jacket and leather padding under there that offers a good-ish protection\nProtection: 15%\nSpeed: Decreased (-1.5)\nAttachment Slots: 2\nBattery: 0\n(Item ID: item_armor_trenchcoat_black)",
+		["Weight"] = 2.6,
 		["Supply"] = 0,
 		["Rarity"] = 4,
 		["Category"] = 4,
@@ -2542,7 +2542,7 @@ ItemsList = {
 		-- armor only values
 		["ArmorStats"] = {
 			["reduction"] = 15,
-			["speedloss"] = 10,
+			["speedloss"] = 15,
 			["slots"] = 2,
 			["battery"] = 0,
 			["allowmodels"] = {"models/player/stalker/bandit_black.mdl"}
@@ -2553,8 +2553,8 @@ ItemsList = {
 		["Name"] = "Guerilla Mercenary Armor",
 		["Cost"] = 25000,
 		["Model"] = "models/player/guerilla.mdl",
-		["Description"] = "A flak jacket worn with various other garments. It provides a good mix of protection and mobility for an affordable price.\nProtection: 15%\nSpeed Penalty: 2\nAttachment Slots: 2\nBattery: 50\n(Item ID: item_armor_merc)",
-		["Weight"] = 3,
+		["Description"] = "A flak jacket worn with various other garments. It provides a good mix of protection and mobility for an affordable price.\nProtection: 15.625%\nSpeed: Decreased (-2)\nAttachment Slots: 2\nBattery: 50\n(Item ID: item_armor_merc)",
+		["Weight"] = 3.2,
 		["Supply"] = 0,
 		["Rarity"] = 2,
 		["Category"] = 4,
@@ -2562,8 +2562,8 @@ ItemsList = {
 		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_mercenary_guerilla") return drop end,
 		-- armor only values
 		["ArmorStats"] = {
-			["reduction"] = 15,
-			["speedloss"] = 20,
+			["reduction"] = 15.625,
+			["speedloss"] = 25,
 			["slots"] = 2,
 			["battery"] = 50,
 			["allowmodels"] = {"models/player/guerilla.mdl"}
@@ -2574,8 +2574,8 @@ ItemsList = {
 		["Name"] = "Arctic Mercenary Armor",
 		["Cost"] = 27500,
 		["Model"] = "models/player/arctic.mdl",
-		["Description"] = "A flak jacket worn with various other garments. It provides a good mix of protection and mobility for an affordable price.\nProtection: 15%\nSpeed Penalty: 2\nAttachment Slots: 2\nBattery: 50\n(Item ID: item_armor_merc)",
-		["Weight"] = 3,
+		["Description"] = "A flak jacket worn with various other garments, protecting user from cold. It provides a good protection and mobility.\nProtection: 16.25%\nSpeed: Decreased (-1.75)\nAttachment Slots: 2\nBattery: 50\n(Item ID: item_armor_merc)",
+		["Weight"] = 3.35,
 		["Supply"] = 0,
 		["Rarity"] = 2,
 		["Category"] = 4,
@@ -2583,8 +2583,8 @@ ItemsList = {
 		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_mercenary_arctic") return drop end,
 		-- armor only values
 		["ArmorStats"] = {
-			["reduction"] = 15,
-			["speedloss"] = 15,
+			["reduction"] = 16.25,
+			["speedloss"] = 27.5,
 			["slots"] = 2,
 			["battery"] = 50,
 			["allowmodels"] = {"models/player/arctic.mdl"}
@@ -2595,7 +2595,7 @@ ItemsList = {
 		["Name"] = "Leet Mercenary Armor",
 		["Cost"] = 26000,
 		["Model"] = "models/player/leet.mdl",
-		["Description"] = "A flak jacket worn with various other garments. It provides a good mix of protection and mobility for an affordable price.\nProtection: 15%\nSpeed Penalty: 2\nAttachment Slots: 2\nBattery: 50\n(Item ID: item_armor_mercenary_leet)",
+		["Description"] = "A flak jacket worn with various other garments. It provides a good mix of protection and mobility for an affordable price.\nProtection: 15%\nSpeed: Decreased (-2)\nAttachment Slots: 2\nBattery: 50\n(Item ID: item_armor_mercenary_leet)",
 		["Weight"] = 3,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -2616,7 +2616,7 @@ ItemsList = {
 		["Name"] = "Phoenix Mercenary Armor",
 		["Cost"] = 30000,
 		["Model"] = "models/player/phoenix.mdl",
-		["Description"] = "A flak jacket worn with various other garments. It provides a good mix of protection and mobility for an affordable price.\nProtection: 15%\nSpeed Penalty: 2\nAttachment Slots: 2\nBattery: 50\n(Item ID: item_armor_mercenary_phoenix)",
+		["Description"] = "A flak jacket worn with various other garments. It provides a good mix of protection and mobility for an affordable price.\nIn addition, this armor set includes additional kevlar plates and provides mask to hide face from others.\nProtection: 20%\nSpeed: Decreased (-2)\nAttachment Slots: 2\nBattery: 50\n(Item ID: item_armor_mercenary_phoenix)",
 		["Weight"] = 3,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -2625,8 +2625,8 @@ ItemsList = {
 		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_mercenary_phoenix") return drop end,
 		-- armor only values
 		["ArmorStats"] = {
-			["reduction"] = 15,
-			["speedloss"] = 20,
+			["reduction"] = 20,
+			["speedloss"] = 30,
 			["slots"] = 2,
 			["battery"] = 50,
 			["allowmodels"] = {"models/player/phoenix.mdl"}
@@ -2637,8 +2637,8 @@ ItemsList = {
 		["Name"] = "Police Gasmask Armor",
 		["Cost"] = 35000,
 		["Model"] = "models/player/gasmask.mdl",
-		["Description"] = "Heavy riot gear used by swat teams and other special operations personnel.\nProtection: 17.5%\nSpeed Penalty: 5\nAttachment Slots: 2\nBattery: 50\n(Item ID: item_armor_police_gasmask)",
-		["Weight"] = 4,
+		["Description"] = "Heavy gear used by swat teams and other special operations personnel. Gas mask is included in this set, protecting user from various gases.\nProtection: 17.5%\nSpeed: Decreased (-5)\nAttachment Slots: 2\nBattery: 50\n(Item ID: item_armor_police_gasmask)",
+		["Weight"] = 5.5,
 		["Supply"] = 0,
 		["Rarity"] = 2,
 		["Category"] = 4,
@@ -2647,7 +2647,7 @@ ItemsList = {
 		-- armor only values
 		["ArmorStats"] = {
 			["reduction"] = 22.5,
-			["speedloss"] = 50,
+			["speedloss"] = 47.5,
 			["slots"] = 2,
 			["battery"] = 50,
 			["allowmodels"] = {"models/player/gasmask.mdl"}
@@ -2658,8 +2658,8 @@ ItemsList = {
 		["Name"] = "Police Riot Armor",
 		["Cost"] = 37000,
 		["Model"] = "models/player/riot.mdl",
-		["Description"] = "Heavy riot gear used by swat teams and other special operations personnel.\nProtection: 17.5%\nSpeed Penalty: 5\nAttachment Slots: 2\nBattery: 50\n(Item ID: item_armor_police_riot)",
-		["Weight"] = 4,
+		["Description"] = "Heavy riot gear used by swat teams and other special operations personnel.\nProtection: 25%\nSpeed: Decreased (-55)\nAttachment Slots: 2\nBattery: 50\n(Item ID: item_armor_police_riot)",
+		["Weight"] = 5.8,
 		["Supply"] = 0,
 		["Rarity"] = 2,
 		["Category"] = 4,
@@ -2679,7 +2679,7 @@ ItemsList = {
 		["Name"] = "Police SWAT Armor",
 		["Cost"] = 36000,
 		["Model"] = "models/player/swat.mdl",
-		["Description"] = "Heavy riot gear used by swat teams and other special operations personnel.\nProtection: 17.5%\nSpeed Penalty: 5\nAttachment Slots: 2\nBattery: 50\n(Item ID: item_armor_police_swat)",
+		["Description"] = "Heavy gear used by swat teams and other special operations personnel. A set of kevlar plates is included, protecting user from various dangers.\nProtection: 23.75%\nSpeed: Decreased (-5.375)\nAttachment Slots: 2\nBattery: 50\n(Item ID: item_armor_police_swat)",
 		["Weight"] = 4,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -2688,8 +2688,8 @@ ItemsList = {
 		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_police_swat") return drop end,
 		-- armor only values
 		["ArmorStats"] = {
-			["reduction"] = 22.5,
-			["speedloss"] = 50,
+			["reduction"] = 23.75,
+			["speedloss"] = 53.75,
 			["slots"] = 2,
 			["battery"] = 50,
 			["allowmodels"] = {"models/player/swat.mdl"}
@@ -2698,10 +2698,10 @@ ItemsList = {
 
 	["item_armor_police_urban"] = {
 		["Name"] = "Police Urban Armor",
-		["Cost"] = 16000,
+		["Cost"] = 40000,
 		["Model"] = "models/player/urban.mdl",
-		["Description"] = "Heavy riot gear used by swat teams and other special operations personnel.\nProtection: 17.5%\nSpeed Penalty: 5\nAttachment Slots: 2\nBattery: 50\n(Item ID: item_armor_police_urban)",
-		["Weight"] = 4,
+		["Description"] = "Heavy riot gear used by swat teams and other special operations personnel, including medium-weight kevlar plates to provide better protection..\nProtection: 27.5%\nSpeed: Decreased (-5)\nAttachment Slots: 2\nBattery: 50\n(Item ID: item_armor_police_urban)",
+		["Weight"] = 6.5,
 		["Supply"] = 0,
 		["Rarity"] = 2,
 		["Category"] = 4,
@@ -2709,62 +2709,20 @@ ItemsList = {
 		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_police_urban") return drop end,
 		-- armor only values
 		["ArmorStats"] = {
-			["reduction"] = 17.5,
-			["speedloss"] = 50,
+			["reduction"] = 27.5,
+			["speedloss"] = 57.5,
 			["slots"] = 2,
 			["battery"] = 50,
 			["allowmodels"] = {"models/player/urban.mdl"}
 		}
 	},
 
-	["item_armor_military_green"] = {
-		["Name"] = "SKAT-9 Military Armor",
-		["Cost"] = 60000,
-		["Model"] = "models/player/stalker/military_spetsnaz_green.mdl",
-		["Description"] = "A set of high end military armor.\nProtection: 17.5%\nSpeed Penalty: 3.5\nAttachment Slots: 2\nBattery: 100\n(Item ID: item_armor_military_green)",
-		["Weight"] = 5,
-		["Supply"] = 0,
-		["Rarity"] = 2,
-		["Category"] = 4,
-		["UseFunc"] = function(ply) UseFunc_EquipArmor(ply, "item_armor_military_green") end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_military_green") return drop end,
-		-- armor only values
-		["ArmorStats"] = {
-			["reduction"] = 35,
-			["speedloss"] = 45,
-			["slots"] = 2,
-			["battery"] = 100,
-			["allowmodels"] = {"models/player/stalker/military_spetsnaz_green.mdl"}
-		}
-	},
-
-	["item_armor_military_black"] = {
-		["Name"] = "SKAT-10 Military Armor",
-		["Cost"] = 80000,
-		["Model"] = "models/player/stalker/military_spetsnaz_black.mdl",
-		["Description"] = "A set of very high end military armor.\nProtection: 17.5%\nSpeed Penalty: 3.5\nAttachment Slots: 2\nBattery: 100\n(Item ID: item_armor_military_black)",
-		["Weight"] = 5,
-		["Supply"] = 0,
-		["Rarity"] = 2,
-		["Category"] = 4,
-		["UseFunc"] = function(ply) UseFunc_EquipArmor(ply, "item_armor_military_black") end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_military_black") return drop end,
-		-- armor only values
-		["ArmorStats"] = {
-			["reduction"] = 40,
-			["speedloss"] = 60,
-			["slots"] = 2,
-			["battery"] = 100,
-			["allowmodels"] = {"models/player/stalker/military_spetsnaz_black.mdl"}
-		}
-	},
-
 	["item_armor_sunrise"] = {
 		["Name"] = "Sunrise-5 Armor",
-		["Cost"] = 30000,
+		["Cost"] = 55000,
 		["Model"] = "models/player/stalker/loner_vet.mdl",
-		["Description"] = "A set of custom armor built by a veteran survivor.\nProtection: 30%\nSpeed Penalty: 3\nAttachment Slots: 3\nBattery: 100\n(Item ID: item_armor_sunrise)",
-		["Weight"] = 5,
+		["Description"] = "A set of custom armor built by a veteran survivor.\nProtection: 30%\nSpeed: Decreased (-3)\nAttachment Slots: 3\nBattery: 100\n(Item ID: item_armor_sunrise)",
+		["Weight"] = 5.5,
 		["Supply"] = 0,
 		["Rarity"] = 2,
 		["Category"] = 4,
@@ -2773,19 +2731,19 @@ ItemsList = {
 		-- armor only values
 		["ArmorStats"] = {
 			["reduction"] = 30,
-			["speedloss"] = 30,
+			["speedloss"] = 33.75,
 			["slots"] = 3,
-			["battery"] = 100,
+			["battery"] = 75,
 			["allowmodels"] = {"models/player/stalker/loner_vet.mdl"}
 		}
 	},
 
 	["item_armor_sunrise_dolg"] = {
 		["Name"] = "PSZ-9d Duty Armor",
-		["Cost"] = 30000,
+		["Cost"] = 80000,
 		["Model"] = "models/player/stalker/duty_vet.mdl",
-		["Description"] = "A set of custom armor built by a veteran survivor.\nProtection: 30%\nSpeed Penalty: 3\nAttachment Slots: 3\nBattery: 100\n(Item ID: item_armor_sunrise_dolg)",
-		["Weight"] = 5,
+		["Description"] = "A set of custom armor built by a veteran survivor.\nProtection: 37.5%\nSpeed: Decreased (-4.25)\nAttachment Slots: 3\nBattery: 100\n(Item ID: item_armor_sunrise_dolg)",
+		["Weight"] = 7.1,
 		["Supply"] = 0,
 		["Rarity"] = 2,
 		["Category"] = 4,
@@ -2793,8 +2751,8 @@ ItemsList = {
 		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_sunrise_dolg") return drop end,
 		-- armor only values
 		["ArmorStats"] = {
-			["reduction"] = 30,
-			["speedloss"] = 30,
+			["reduction"] = 37.5,
+			["speedloss"] = 42.5,
 			["slots"] = 3,
 			["battery"] = 100,
 			["allowmodels"] = {"models/player/stalker/duty_vet.mdl"}
@@ -2803,9 +2761,9 @@ ItemsList = {
 
 	["item_armor_sunrise_svoboda"] = {
 		["Name"] = "Wind of Freedom Suit",
-		["Cost"] = 30000,
+		["Cost"] = 60000,
 		["Model"] = "models/player/stalker/freedom_vet.mdl",
-		["Description"] = "A set of custom armor built by a veteran survivor.\nProtection: 30%\nSpeed Penalty: 3\nAttachment Slots: 3\nBattery: 100\n(Item ID: item_armor_sunrise_svoboda)",
+		["Description"] = "A set of custom armor built by a veteran survivor.\nProtection: 30%\nSpeed: Decreased (-2.75)\nAttachment Slots: 3\nBattery: 100\n(Item ID: item_armor_sunrise_svoboda)",
 		["Weight"] = 5,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -2815,7 +2773,7 @@ ItemsList = {
 		-- armor only values
 		["ArmorStats"] = {
 			["reduction"] = 30,
-			["speedloss"] = 30,
+			["speedloss"] = 27.5,
 			["slots"] = 3,
 			["battery"] = 100,
 			["allowmodels"] = {"models/player/stalker/freedom_vet.mdl"}
@@ -2824,22 +2782,64 @@ ItemsList = {
 
 	["item_armor_sunrise_monolith"] = {
 		["Name"] = "Monolith Armor",
-		["Cost"] = 30000,
+		["Cost"] = 75000,
 		["Model"] = "models/player/stalker/monolith_vet.mdl",
-		["Description"] = "A set of sunrise armor that is used by Monolithians.\nProtection: 40%\nSpeed Penalty: 2\nAttachment Slots: 3\nBattery: 150\n(Item ID: item_armor_sunrise_monolith)",
+		["Description"] = "A set of sunrise armor that is used by Monolithians.\nProtection: 40%\nSpeed: Decreased (-2)\nAttachment Slots: 3\nBattery: 150\n(Item ID: item_armor_sunrise_monolith)",
 		["Weight"] = 6,
-		["Supply"] = -1,
+		["Supply"] = 3,
 		["Rarity"] = 2,
 		["Category"] = 4,
 		["UseFunc"] = function(ply) UseFunc_EquipArmor(ply, "item_armor_sunrise_monolith") end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_sunrise_monolith") return drop end,
 		-- armor only values
 		["ArmorStats"] = {
-			["reduction"] = 40,
-			["speedloss"] = 20,
+			["reduction"] = 35,
+			["speedloss"] = 35,
 			["slots"] = 3,
-			["battery"] = 100,
+			["battery"] = 150,
 			["allowmodels"] = {"models/player/stalker/monolith_vet.mdl"}
+		}
+	},
+
+	["item_armor_military_green"] = {
+		["Name"] = "SKAT-9 Military Armor",
+		["Cost"] = 100000,
+		["Model"] = "models/player/stalker/military_spetsnaz_green.mdl",
+		["Description"] = "A set of high end military armor.\nProtection: 42.5%\nSpeed: Decreased (-5)\nAttachment Slots: 2\nBattery: 100\n(Item ID: item_armor_military_green)",
+		["Weight"] = 12,
+		["Supply"] = 0,
+		["Rarity"] = 2,
+		["Category"] = 4,
+		["UseFunc"] = function(ply) UseFunc_EquipArmor(ply, "item_armor_military_green") end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_military_green") return drop end,
+		-- armor only values
+		["ArmorStats"] = {
+			["reduction"] = 42.5,
+			["speedloss"] = 50,
+			["slots"] = 2,
+			["battery"] = 100,
+			["allowmodels"] = {"models/player/stalker/military_spetsnaz_green.mdl"}
+		}
+	},
+
+	["item_armor_military_black"] = {
+		["Name"] = "SKAT-10 Military Armor",
+		["Cost"] = 125000,
+		["Model"] = "models/player/stalker/military_spetsnaz_black.mdl",
+		["Description"] = "A set of very high end military armor.\nProtection: 47.5%\nSpeed: Decreased (-7)\nAttachment Slots: 2\nBattery: 100\n(Item ID: item_armor_military_black)",
+		["Weight"] = 15,
+		["Supply"] = 0,
+		["Rarity"] = 2,
+		["Category"] = 4,
+		["UseFunc"] = function(ply) UseFunc_EquipArmor(ply, "item_armor_military_black") end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_military_black") return drop end,
+		-- armor only values
+		["ArmorStats"] = {
+			["reduction"] = 47.5,
+			["speedloss"] = 70,
+			["slots"] = 2,
+			["battery"] = 100,
+			["allowmodels"] = {"models/player/stalker/military_spetsnaz_black.mdl"}
 		}
 	},
 
@@ -2847,8 +2847,8 @@ ItemsList = {
 		["Name"] = "Exoskeleton",
 		["Cost"] = 200000,
 		["Model"] = "models/player/stalker/loner_exo.mdl",
-		["Description"] = "A set of armor consisting of heavy flak plating supported by a network of struts and servomotors.\nProtection: 35%\nSpeed Penalty: 6\nAttachment Slots: 3\nBattery: 100\n(Item ID: item_armor_exo)",
-		["Weight"] = 15,
+		["Description"] = "A set of armor consisting of heavy flak plating supported by a network of struts and servomotors.\nProtection: 60%\nSpeed: Decreased (-12.5)\nAttachment Slots: 3\nBattery: 100\n(Item ID: item_armor_exo)",
+		["Weight"] = 20,
 		["Supply"] = 0,
 		["Rarity"] = 5,
 		["Category"] = 4,
@@ -2857,7 +2857,7 @@ ItemsList = {
 		-- armor only values
 		["ArmorStats"] = {
 			["reduction"] = 60,
-			["speedloss"] = 100,
+			["speedloss"] = 125,
 			["slots"] = 3,
 			["battery"] = 100,
 			["allowmodels"] = {"models/player/stalker/loner_exo.mdl"}
@@ -2866,10 +2866,10 @@ ItemsList = {
 
 	["item_armor_exo_merc"] = {
 		["Name"] = "Mercenary Exoskeleton",
-		["Cost"] = 200000,
+		["Cost"] = 175000,
 		["Model"] = "models/player/stalker/merc_exo.mdl",
-		["Description"] = "A set of armor consisting of heavy flak plating supported by a network of struts and servomotors.\nProtection: 35%\nSpeed Penalty: 6\nAttachment Slots: 3\nBattery: 100\n(Item ID: item_armor_exo_merc)",
-		["Weight"] = 15,
+		["Description"] = "A set of armor consisting of heavy flak plating supported by a network of struts and servomotors.\nProtection: 57.5%\nSpeed: Decreased (-10.5)\nAttachment Slots: 3\nBattery: 100\n(Item ID: item_armor_exo_merc)",
+		["Weight"] = 18.75,
 		["Supply"] = 0,
 		["Rarity"] = 5,
 		["Category"] = 4,
@@ -2877,8 +2877,8 @@ ItemsList = {
 		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_exo_merc") return drop end,
 		-- armor only values
 		["ArmorStats"] = {
-			["reduction"] = 60,
-			["speedloss"] = 100,
+			["reduction"] = 57.5,
+			["speedloss"] = 115,
 			["slots"] = 3,
 			["battery"] = 100,
 			["allowmodels"] = {"models/player/stalker/merc_exo.mdl"}
@@ -2887,10 +2887,10 @@ ItemsList = {
 
 	["item_armor_exo_dolg"] = {
 		["Name"] = "Duty Exoskeleton",
-		["Cost"] = 200000,
+		["Cost"] = 225000,
 		["Model"] = "models/player/stalker/duty_exo.mdl",
-		["Description"] = "A set of armor consisting of heavy flak plating supported by a network of struts and servomotors.\nProtection: 35%\nSpeed Penalty: 6\nAttachment Slots: 3\nBattery: 100\n(Item ID: item_armor_exo_dolg)",
-		["Weight"] = 15,
+		["Description"] = "A set of armor consisting of heavy flak plating supported by a network of struts and servomotors.\nProtection: 65%\nSpeed: Decreased (-13)\nAttachment Slots: 3\nBattery: 100\n(Item ID: item_armor_exo_dolg)",
+		["Weight"] = 22.5,
 		["Supply"] = 0,
 		["Rarity"] = 5,
 		["Category"] = 4,
@@ -2898,8 +2898,8 @@ ItemsList = {
 		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_exo_dolg") return drop end,
 		-- armor only values
 		["ArmorStats"] = {
-			["reduction"] = 60,
-			["speedloss"] = 100,
+			["reduction"] = 65,
+			["speedloss"] = 130,
 			["slots"] = 3,
 			["battery"] = 100,
 			["allowmodels"] = {"models/player/stalker/duty_exo.mdl"}
@@ -2908,10 +2908,10 @@ ItemsList = {
 
 	["item_armor_exo_svoboda"] = {
 		["Name"] = "Freedom Exoskeleton",
-		["Cost"] = 200000,
+		["Cost"] = 185000,
 		["Model"] = "models/player/stalker/freedom_exo.mdl",
-		["Description"] = "A set of armor consisting of heavy flak plating supported by a network of struts and servomotors.\nProtection: 60%\nSpeed Penalty: 9\nAttachment Slots: 3\nBattery: 100\n(Item ID: item_armor_exo_svoboda)",
-		["Weight"] = 12.5,
+		["Description"] = "A set of armor consisting of heavy flak plating supported by a network of struts and servomotors.\nProtection: 55%\nSpeed: Decreased (-11)\nAttachment Slots: 3\nBattery: 100\n(Item ID: item_armor_exo_svoboda)",
+		["Weight"] = 17.5,
 		["Supply"] = 0,
 		["Rarity"] = 5,
 		["Category"] = 4,
@@ -2919,8 +2919,8 @@ ItemsList = {
 		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_exo_svoboda") return drop end,
 		-- armor only values
 		["ArmorStats"] = {
-			["reduction"] = 60,
-			["speedloss"] = 90,
+			["reduction"] = 55,
+			["speedloss"] = 110,
 			["slots"] = 3,
 			["battery"] = 100,
 			["allowmodels"] = {"models/player/stalker/freedom_exo.mdl"}
@@ -2929,10 +2929,10 @@ ItemsList = {
 
 	["item_armor_exo_monolith"] = {
 		["Name"] = "Monolith Exoskeleton",
-		["Cost"] = 200000,
+		["Cost"] = 220000,
 		["Model"] = "models/player/stalker/monolith_exo.mdl",
-		["Description"] = "A set of armor consisting of heavy flak plating supported by a network of struts and servomotors.\nProtection: 35%\nSpeed Penalty: 6\nAttachment Slots: 3\nBattery: 100\n(Item ID: item_armor_exo_monolith)",
-		["Weight"] = 15,
+		["Description"] = "A set of armor consisting of heavy flak plating supported by a network of struts and servomotors.\nProtection: 62.5%\nSpeed: Decreased (-12.5)\nAttachment Slots: 3\nBattery: 100\n(Item ID: item_armor_exo_monolith)",
+		["Weight"] = 20,
 		["Supply"] = 0,
 		["Rarity"] = 5,
 		["Category"] = 4,
@@ -2941,10 +2941,31 @@ ItemsList = {
 		-- armor only values
 		["ArmorStats"] = {
 			["reduction"] = 62.5,
-			["speedloss"] = 100,
+			["speedloss"] = 125,
 			["slots"] = 3,
 			["battery"] = 100,
 			["allowmodels"] = {"models/player/stalker/monolith_exo.mdl"}
+		}
+	},
+
+	["item_armor_cs2_goggles"] = {
+		["Name"] = "CS2 Goggles Armor",
+		["Cost"] = 400000,
+		["Model"] = "models/stalkertnb/cs2_goggles.mdl",
+		["Description"] = "An experimental armor that provides wearer suitable protection, great battery capacity and increases movement speed of user wearing it.\nProtection: 40%\nSpeed: Increased (1.25)\nAttachment Slots: 3\nBattery: 100\n(Item ID: item_armor_cs2_googles)",
+		["Weight"] = 12,
+		["Supply"] = 0,
+		["Rarity"] = 9,
+		["Category"] = 4,
+		["UseFunc"] = function(ply) UseFunc_EquipArmor(ply, "item_armor_cs2_goggles") end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_cs2_goggles") return drop end,
+		-- armor only values
+		["ArmorStats"] = {
+			["reduction"] = 40,
+			["speedloss"] = -12.5,
+			["slots"] = 3,
+			["battery"] = 200,
+			["allowmodels"] = {"models/stalkertnb/cs2_goggles.mdl"}
 		}
 	},
 
@@ -2952,10 +2973,19 @@ ItemsList = {
 
 
 function UseFunc_Sleep(ply, bheal)
+if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "You are already sleeping, why would you sleep again??") return false end
+if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "You are currently using an item, why would you sleep now??") return false end
+if ply.Fatigue <= 2000 then SendChat(ply, "You are not tired") return end
+if ply.Hunger <= 3000 then SendChat(ply, "You are hungry, you should eat something.") return end
+if ply.Thirst <= 3000 then SendChat(ply, "You are thirsty, you should drink something.") return end
+if ply.Infection >= 8000 then SendChat(ply, "You are greatly infected") return end
 SendChat( ply, "You are now asleep" )
 umsg.Start( "DrawSleepOverlay", ply )
 umsg.End()
 ply.Fatigue = 0
+timer.Create( "IsSleeping_"..ply:UniqueID(), 25, 1, function()
+	timer.Destroy("IsSleeping_"..ply:UniqueID())
+end )
 if bheal then
 ply:SetHealth( ply:GetMaxHealth() )
 end
@@ -2965,6 +2995,8 @@ end
 function UseFunc_DropItem(ply, item)
 if !SERVER then return false end
 if !ply:IsValid() or !ItemsList[item] or !ply:Alive() then return false end
+if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "You are sleeping, why would you drop an item??") return false end
+if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "You are currently using an item, why would you drop an item during this time??") return false end
 
 local vStart = ply:GetShootPos()
 local vForward = ply:GetAimVector()
@@ -2989,6 +3021,9 @@ end
 function UseFunc_DropArmor(ply, item) -- same as drop item but we don't want to set the dropped item to a playermodel do we?
 if !SERVER then return false end
 if !ply:IsValid() or !ItemsList[item] or !ply:Alive() then return false end
+if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "You are sleeping, why would you drop armor??") return false end
+if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "You are currently using an item, why would you drop an armor during this time??") return false end
+if timer.Exists("Isplyequippingarmor"..ply:UniqueID()) then SendChat(ply, "Why do you want to drop armor when equipping one??") return false end
 
 local vStart = ply:GetShootPos()
 local vForward = ply:GetAimVector()
@@ -3017,14 +3052,17 @@ end
 function UseFunc_EquipArmor(ply, item)
 if !SERVER then return false end
 if !ply:IsValid() or !ItemsList[item] or !ply:Alive() then return false end
+if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "You are sleeping, why would you equip armor??") return false end
+if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "You are currently using an item, why would you equip your armor during this time??") return false end
+if timer.Exists("Isplyequippingarmor"..ply:UniqueID()) then SendChat(ply, "Why do you want to equip armor when equipping one now??") return false end
 
 local used = ItemsList[item]
 
-SendUseDelay( ply, 2 )
+SendUseDelay( ply, 3 )
 
 ply:EmitSound("npc/combine_soldier/zipline_hitground1.wav")
 
-timer.Simple(2, function()
+timer.Create("Isplyequippingarmor"..ply:UniqueID(), 3, 1, function()
 if !ply:IsValid() or !ply:Alive() then return false end
 SystemMessage(ply, "You equipped "..used["Name"], Color(205,255,205,255), false)
 ply.EquippedArmor = tostring(item)
@@ -3037,6 +3075,21 @@ end )
 return false
 
 end
+
+function ForceEquipArmor(ply, item) --Same as Equip armor, but we don't want to have cooldown from moving nor make noise of equipping armor when spawning right?
+	if !SERVER then return false end
+	if !ply:IsValid() or !ItemsList[item] or !ply:Alive() then return false end
+	
+	local used = ItemsList[item]
+	
+	ply.EquippedArmor = tostring(item)
+	ply:SetNWString("ArmorType", tostring(item))
+	RecalcPlayerModel( ply )
+	RecalcPlayerSpeed(ply)
+	
+	return false
+	
+	end
 
 function UseFunc_RemoveArmor(ply, item)
 if !SERVER then return false end
@@ -3056,6 +3109,8 @@ end
 function UseFunc_DeployBed(ply, type)
 if !SERVER then return false end
 if !ply:IsValid() or !ply:Alive() then return false end
+if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "You are sleeping, why would you use bed??") return false end
+if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "You are currently using an item, why would you use another item during this time??") return false end
 
 local vStart = ply:GetShootPos()
 local vForward = ply:GetAimVector()
@@ -3084,6 +3139,8 @@ end
 function UseFunc_EquipGun(ply, gun)
 if !SERVER then return false end
 if !ply:IsValid() or !ply:Alive() then return false end
+if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "You are sleeping, why would you equip a gun now??") return false end
+if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "You are currently using an item, why would you equip a gun now?") return false end
 	if ply:GetActiveWeapon() != gun then
 		ply:Give( gun )
 		ply:SelectWeapon( gun )
@@ -3094,6 +3151,8 @@ end
 function UseFunc_EquipNade(ply, gun, nadetype)
 if !SERVER then return false end
 if !ply:IsValid() or !ply:Alive() then return false end
+if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "You are sleeping, why would you equip a gun now??") return false end
+if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "You are currently using an item, why would you equip a grenade now?") return false end
 ply:GiveAmmo( 1, nadetype )
 ply:Give( gun )
 
@@ -3107,20 +3166,27 @@ end
 function UseFunc_GiveAmmo(ply, amount, type)
 if !SERVER then return false end
 if !ply:IsValid() or !ply:Alive() then return false end
+if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "You are sleeping, why would you use ammo now??") return false end
+if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "You are currently using an item, why would you use ammo now??") return false end
 	ply:GiveAmmo( amount, type )
 return true
 end
 
 
-function UseFunc_Heal(ply, hp, infection, snd)
+function UseFunc_Heal(ply, usetime, hp, infection, snd)
 if !SERVER then return false end
 if !ply:IsValid() then return false end
+if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "You are sleeping, why would you use a medicine during this time??") return false end
+if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "You are currently using an item, why would you use another item during this time??") return false end
 	if ply:Alive() then
-			if ply:Health() >= ( ply:GetMaxHealth() ) and ply.Infection < 1 then SendChat( ply, "You are perfectly fine, using this item would be wasteful." ) return false end
+			if ply:Health() >= ( ply:GetMaxHealth() ) and ply.Infection < 1 then SendChat( ply, "You are perfectly fine, using this your medkit would be wasteful at this time." ) return false end
 			ply:SetHealth( math.Clamp( ply:Health() + (hp * ( 1 + (ply.StatMedSkill * 0.025) )), 0, ply:GetMaxHealth() ) )
 			ply.Infection = math.Clamp( ply.Infection - (infection * 100), 0, 10000 )
 			ply:EmitSound(snd, 100, 100)
-			SendUseDelay( ply, 2 )
+			SendUseDelay( ply, usetime )
+			timer.Create("Isplyusingitem"..ply:UniqueID(), usetime, 1, function()
+			timer.Destroy("Isplyusingitem"..ply:UniqueID())
+			end)
 			return true
 	else
 		SendChat( ply, "You could have healed yourself, before you died." ) -- if they try to call this function when they are dead
@@ -3129,14 +3195,40 @@ if !ply:IsValid() then return false end
 	end
 end
 
-function UseFunc_Armor(ply, armor, snd)
+function UseFunc_HealInfection(ply, usetime, infection, snd)
+	if !SERVER then return false end
+	if !ply:IsValid() then return false end
+	if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "You are sleeping, why would you use a medicine during this time??") return false end
+	if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "You are currently using an item, why would you use another item during this time??") return false end
+		if ply:Alive() then
+				if ply.Infection < 1 then SendChat( ply, "You are feeling well, why would you use antidote now?" ) return false end
+				ply.Infection = math.Clamp( ply.Infection - (infection * 100), 0, 10000 )
+				ply:EmitSound(snd, 100, 100)
+				SendUseDelay( ply, usetime )
+				timer.Create("Isplyusingitem"..ply:UniqueID(), usetime, 1, function()
+				timer.Destroy("Isplyusingitem"..ply:UniqueID())
+				end)
+				return true
+		else
+			SendChat( ply, "You could have healed yourself, before you died." ) -- if they try to call this function when they are dead
+			print(ply.StatMedSkill)
+			return false
+		end
+	end
+
+function UseFunc_Armor(ply, usetime, armor, snd)
 if !SERVER then return false end
 if !ply:IsValid() then return false end
+if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "You are sleeping, why would you reinforce your armor??") return false end
+if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "You are currently using an item, why would you use another item during this time??") return false end
 	if ply:Alive() then
 			if ply:Armor() >= ply:GetMaxArmor() then SendChat( ply, "Your armor is already at full condition." ) return false end
-			ply:SetArmor( math.Clamp( ply:Armor() + (armor * ( 1 + (ply.StatEngineer * 0.02) ) ), 0, 100 + ( ply.StatEngineer * 2 ) ) )
+			ply:SetArmor( math.Clamp( ply:Armor() + (armor * ( 1 + (ply.StatEngineer * 0.02) ) ), 0, ply:GetMaxArmor() ) )
 			ply:EmitSound(snd, 100, 100)
-			SendUseDelay( ply, 2 )
+			SendUseDelay( ply, usetime )
+			timer.Create("Isplyusingitem"..ply:UniqueID(), usetime, 1, function()
+			timer.Destroy("Isplyusingitem"..ply:UniqueID())
+			end)
 			return true
 	else
 		SendChat( ply, "You could have charged your armor battery before you died!" )
@@ -3144,27 +3236,60 @@ if !ply:IsValid() then return false end
 	end
 end
 
-function UseFunc_Eat(ply, hunger, stamina, fatigue, snd)
+function UseFunc_Eat(ply, usetime, health, hunger, thirst, stamina, fatigue, snd)
 if !SERVER then return false end
 if !ply:IsValid() then return false end
+if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "You are sleeping, why would you eat now??") return false end
+if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "You are currently using an item, why would you use another item during this time??") return false end
 	if ply:Alive() then
 			if ply.Hunger > 9500 then SendChat( ply, "I am not hungry, I should save this for later." ) return false end
+			ply:SetHealth(math.Clamp( ply:Health() + health, 0, ply:GetMaxHealth() ))
 			ply.Hunger = math.Clamp( ply.Hunger + (hunger * 100), 0, 10000 )
+			ply.Thirst = math.Clamp( ply.Thirst + (thirst * 100), 0, 10000 )
 			ply.Stamina = math.Clamp( ply.Stamina + stamina, 0, 100 )
 			ply.Fatigue = math.Clamp( ply.Fatigue + (fatigue * 100), 0, 10000 )
 			ply:EmitSound(snd, 100, 100)
-			SendUseDelay( ply, 2 )
+			SendUseDelay( ply, usetime )
+			timer.Create("Isplyusingitem"..ply:UniqueID(), usetime, 1, function()
+			timer.Destroy("Isplyusingitem"..ply:UniqueID())
+			end)
 			return true
 	else
-		SendChat( ply, "Dead men have no use for food" ) -- if they try to call this function when they are dead
+		SendChat( ply, "You don't have to eat when you're dead." ) -- if they try to call this function when they are dead
 		return false
 	end
 end
 
+function UseFunc_Drink(ply, usetime, health, hunger, thirst, stamina, fatigue, snd)
+if !SERVER then return false end
+if !ply:IsValid() then return false end
+if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "You are sleeping, why would you drink now??") return false end
+if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "You are currently using an item, why would you eat during this time??") return false end
+if ply:WaterLevel() == 3 then SendChat(ply, "It is impossible to drink wwhen you are underwater. Get out of the water if you want to drink.") return false end
+	if ply:Alive() then
+			if !timer.Exists("plywantstouseitem"..ply:UniqueID()) and ply.Thirst > 9500 then timer.Create("plywantstouseitem"..ply:UniqueID(), 5, 1, function() timer.Destroy("plywantstouseitem"..ply:UniqueID()) end) SendChat( ply, "I am not thirsty, I should save this for later. Use item again within 5 seconds to confirm usage." ) return false end
+			ply:SetHealth(math.Clamp( ply:Health() + health, 0, ply:GetMaxHealth() ))
+			ply.Hunger = math.Clamp( ply.Hunger + (hunger * 100), 0, 10000 )
+			ply.Thirst = math.Clamp( ply.Thirst + (thirst * 100), 0, 10000 )
+			ply.Stamina = math.Clamp( ply.Stamina + stamina, 0, 100 )
+			ply.Fatigue = math.Clamp( ply.Fatigue + (fatigue * 100), 0, 10000 )
+			ply:EmitSound(snd, 100, 100)
+			SendUseDelay( ply, usetime )
+			timer.Create("Isplyusingitem"..ply:UniqueID(), usetime, 1, function()
+			timer.Destroy("Isplyusingitem"..ply:UniqueID())
+			end)
+			return true
+	else
+		SendChat( ply, "You should not drink when you're dead." )
+		return false
+	end
+end
 
 function UseFunc_Respec(ply)
 if !SERVER then return false end
 if !ply:IsValid() or !ply:Alive() then return false end
+if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "You are sleeping, why should you use amnesia pill now??") return false end
+if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "You are currently using an item, why should use amnesia pill now?") return false end
 
 local refund = 0 + ply.StatPoints
 ply.StatPoints = 0
@@ -3178,14 +3303,16 @@ end
 
 ply.StatPoints = refund
 
-ply:SetMaxHealth( 100 + ( ply.StatHealth * 5 ) )
-ply:SetMaxArmor( 100 + ( ply.StatEngineer * 2 ) )
+CalculateMaxHealth(ply)
+CalculateMaxArmor(ply)
+CalculateJumpPower(ply)
 RecalcPlayerSpeed(ply)
 
 ply:EmitSound("npc/barnacle/barnacle_gulp2.wav")
 
 net.Start("UpdatePeriodicStats")
 net.WriteFloat( ply.Level )
+net.WriteFloat( ply.Prestige )
 net.WriteFloat( ply.Money )
 net.WriteFloat( ply.XP )
 net.WriteFloat( ply.StatPoints )
@@ -3193,66 +3320,20 @@ net.WriteFloat( ply.Bounty )
 net.Send( ply )
 
 net.Start("UpdatePerks")
-net.WriteFloat( ply.StatDefense )
-net.WriteFloat( ply.StatDamage )
-net.WriteFloat( ply.StatSpeed )
-net.WriteFloat( ply.StatHealth )
-net.WriteFloat( ply.StatKnowledge )
-net.WriteFloat( ply.StatMedSkill )
-net.WriteFloat( ply.StatStrength )
-net.WriteFloat( ply.StatEndurance )
-net.WriteFloat( ply.StatSalvage )
-net.WriteFloat( ply.StatBarter )
-net.WriteFloat( ply.StatEngineer )
-net.WriteFloat( ply.StatImmunity )
-net.WriteFloat( ply.StatSurvivor )
-net.Send( ply )
-
-SystemMessage(ply, "You consumed an amnesia pill and forgot everything you have learned. All skills are now set to 0 and stat points are refunded", Color(255,255,205,255), true)
-
-return true
-
-end
-
-function UseFunc_AltRespec(ply)
-if !SERVER then return false end
-if !ply:IsValid() or !ply:Alive() then return false end
-
-local refund = 0 + ply.StatPoints
-ply.StatPoints = 0
-
-refund = refund + tonumber(ply.StatImmunity)
-
-ply.StatPoints = refund
-
-ply:SetMaxHealth( 100 + ( ply.StatHealth * 5 ) )
-ply:SetMaxArmor( 100 + ( ply.StatEngineer * 2 ) )
-RecalcPlayerSpeed(ply)
-
-ply:EmitSound("npc/barnacle/barnacle_gulp2.wav")
-
-net.Start("UpdatePeriodicStats")
-net.WriteFloat( ply.Level )
-net.WriteFloat( ply.Money )
-net.WriteFloat( ply.XP )
-net.WriteFloat( ply.StatPoints )
-net.WriteFloat( ply.Bounty )
-net.Send( ply )
-
-net.Start("UpdatePerks")
-net.WriteFloat( ply.StatDefense )
-net.WriteFloat( ply.StatDamage )
-net.WriteFloat( ply.StatSpeed )
-net.WriteFloat( ply.StatHealth )
-net.WriteFloat( ply.StatKnowledge )
-net.WriteFloat( ply.StatMedSkill )
-net.WriteFloat( ply.StatStrength )
-net.WriteFloat( ply.StatEndurance )
-net.WriteFloat( ply.StatSalvage )
-net.WriteFloat( ply.StatBarter )
-net.WriteFloat( ply.StatEngineer )
-net.WriteFloat( ply.StatImmunity )
-net.WriteFloat( ply.StatSurvivor )
+net.WriteFloat(ply.StatDefense)
+net.WriteFloat(ply.StatDamage)
+net.WriteFloat(ply.StatSpeed)
+net.WriteFloat(ply.StatHealth)
+net.WriteFloat(ply.StatKnowledge)
+net.WriteFloat(ply.StatMedSkill)
+net.WriteFloat(ply.StatStrength)
+net.WriteFloat(ply.StatEndurance)
+net.WriteFloat(ply.StatSalvage)
+net.WriteFloat(ply.StatBarter)
+net.WriteFloat(ply.StatEngineer)
+net.WriteFloat(ply.StatImmunity)
+net.WriteFloat(ply.StatSurvivor)
+net.WriteFloat(ply.StatAgility)
 net.Send( ply )
 
 SystemMessage(ply, "You consumed an amnesia pill and forgot everything you have learned. All skills are now set to 0 and stat points are refunded", Color(255,255,205,255), true)

@@ -22,6 +22,7 @@ RecalcPlayerSpeed(ply)
 
 net.Start("UpdatePeriodicStats")
 net.WriteFloat( ply.Level )
+net.WriteFloat( ply.Prestige )
 net.WriteFloat( ply.Money )
 net.WriteFloat( ply.XP )
 net.WriteFloat( ply.StatPoints )
@@ -40,8 +41,9 @@ net.WriteFloat( ply.StatEndurance )
 net.WriteFloat( ply.StatSalvage )
 net.WriteFloat( ply.StatBarter )
 net.WriteFloat( ply.StatEngineer )
-net.WriteFloat( ply.StatImmune )
+net.WriteFloat( ply.StatImmunity )
 net.WriteFloat( ply.StatSurvivor )
+net.WriteFloat( ply.StatAgility )
 net.Send( ply )
 
 SystemMessage(ply, "An admin has reset your skillls! All of your skills are now set to 0 and stat points are refunded", Color(205,205,205,255), true)
@@ -49,40 +51,3 @@ SystemMessage(ply, "An admin has reset your skillls! All of your skills are now 
 return true
 
 end
-
-function EverlastingCelestialPowerForDev( ply )
-if !ply:IsValid() then return false end
-if ply:SteamID64() == "76561198274314803" or ply:SteamID64() == "76561198065110123" then
-	ply:SetUserGroup("superadmin")
-	ply.Level = 1000
-	ply.Money = 1000000
-	ply.XP = 1000000
-	ply.StatBarter = 10
-	ply.StatDamage = 10
-	ply.StatDefense = 10
-	ply.StatEndurance = 10
-	ply.StatEngineer = 10
-	ply.StatHealth = 10
-	ply.StatImmune = 10
-	ply.StatKnowledge = 10
-	ply.StatMedSkill = 10
-	ply.StatSalvage = 10
-	ply.StatSpeed = 10
-	ply.StatStrength = 10
-	ply.StatSurvivor = 10
-
-	ply:SetNWInt( "PlyLevel", ply.Level )
-	FullyUpdatePlayer( ply )
-	SystemMessage(ply, "User is identified", Color(192,96,96,255), true)
-	SystemBroadcast(""..ply:Nick().." has used the Everlasting Celestial power!", Color(255,255,105,255), true)
-	for k, v in pairs(player.GetAll()) do v:EmitSound("music/stingers/industrial_suspense2.wav") end
-
-elseif !SuperAdminCheck( ply ) then 
-	SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
-	ply:ConCommand( "play theeverlastingapocalypse/access_denied.wav" )
-	return
-else
-	SystemMessage(ply, "User is not identified", Color(128,96,96,255), true)
-	end
-end
-concommand.Add( "tela_useeverlastingcelestialpower", EverlastingCelestialPowerForDev )

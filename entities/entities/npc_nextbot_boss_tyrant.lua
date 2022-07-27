@@ -63,6 +63,7 @@ for i = 2, 4 do
 end
 */
 
+
 function ENT:HasLOS()
 if !self:IsValid() or !self.target:IsValid() then return false end
 if self.target != nil then
@@ -89,11 +90,11 @@ function ENT:Initialize()
 --	self.breathing:Play()
 --	self.breathing:ChangePitch(60, 0)
 --	self.breathing:ChangeVolume(0.3, 0)
-	self.loco:SetDeathDropHeight(700)
+	self.loco:SetDeathDropHeight(700) --removing this won't help much
 	self.loco:SetAcceleration( 800 )
 	self:SetHealth(30000)
 	self:SetMaxHealth(30000)
-	self:SetModelScale( 0.8, 0.1 )
+	self:SetModelScale( 0.8, 0 )
 	self:SetCollisionBounds(Vector(-34,-34, 0), Vector(34, 34, 84))
 --	self:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
 --	self:SetSkin(math.random(0, self:SkinCount() - 1))
@@ -101,7 +102,7 @@ function ENT:Initialize()
 	self.nexttoss = CurTime()
 	self.nextslam = CurTime()
 
-	timer.Simple(1200, function() if self:IsValid() then self:Remove() SystemBroadcast("[BOSS]: The Tyrant was not killed and has left the area", Color(255,105,105,255), false) end end)
+	timer.Simple(1200, function() if self:IsValid() then self:Remove() SystemBroadcast("[BOSS]: The Tyrant was not killed and has left the area!", Color(255,105,105,255), false) end end)
 
 	hook.Add("EntityRemoved", self, function()
 		if (self.breathing) then
@@ -359,8 +360,11 @@ local deathSounds = {
 function ENT:OnKilled(damageInfo)
 	local attacker = damageInfo:GetAttacker()
 
+	if attacker:IsPlayer() then
 	SystemBroadcast("[BOSS]: "..attacker:Nick().." has slain the Tyrant!", Color(255,105,105,255), false)
-
+	else
+	SystemBroadcast("[BOSS]: The Tyrant has been slain by an unknown cause!", Color(255,105,105,255), false)
+	end
 /*
 	if !attacker:IsWorld() then 
 	if (IsValid(attacker) and self:GetRangeTo(attacker) <= 4800) then

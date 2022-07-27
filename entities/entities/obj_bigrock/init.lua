@@ -24,7 +24,7 @@ function ENT:Initialize()
 		phys:Wake()
 		phys:SetBuoyancyRatio(0)
 	end
-	self.delayRemove = CurTime() +8
+	self.delayRemove = CurTime() + 8
 	util.SpriteTrail(self.Entity, 0, Color(155, 155, 155, 55), false, 50, 20, 0.2, 5 / ((2 + 10) * 0.5), "trails/smoke.vmt")
 end
 
@@ -54,7 +54,7 @@ local damagedents = ents.FindInSphere(self:GetPos(),200)
 
 for _,v in pairs(damagedents) do
 	if v:IsPlayer() then
-	v:TakeDamage(50 * ( 1 - (v.StatDefense * 0.025)), self.Entity)
+	v:TakeDamage(50 * ( 1 - (v.StatDefense * 0.015)), self.Entity)
 	elseif v:GetClass() == "prop_flimsy" or v:GetClass() == "prop_strong" then
 	v:TakeDamage(500,self.Entity)
 	end
@@ -65,7 +65,7 @@ end
 
 function ENT:PhysicsCollide(data, physobj)
 	if data.HitEntity:IsPlayer() then
-	data.HitEntity:TakeDamage(10 * ( 1 - (data.HitEntity.StatDefense * 0.025)) ,self.Entity)
+	data.HitEntity:TakeDamage(10 * ( 1 - (data.HitEntity.StatDefense * 0.015)) ,self.Entity)
 	end
 
 	local gas = EffectData()

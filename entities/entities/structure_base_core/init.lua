@@ -132,7 +132,7 @@ function ENT:OnTakeDamage( dmg )
 	return false 
 	end
 
-	if attacker:Team() == owner:Team() then SystemMessage(attacker, "You cannot damage your own factions base core!", Color(255,205,205,255), true) return false end
+	if attacker:IsPlayer() and attacker:Team() == owner:Team() then SystemMessage(attacker, "You cannot damage your own factions base core!", Color(255,205,205,255), true) return false end --beware, even zombies can destroy your faction base cores
 
 
 	local currenthealth = self.integrity

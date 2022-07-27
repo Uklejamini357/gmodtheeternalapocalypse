@@ -55,12 +55,12 @@ end
 end)
 
 
--- delete ourself if theres no players nearby
+-- delete zombies every 30 seconds if there are no players nearby within radius of 5500 (in source units)
 function CheckIfDesertedArea( ent )
 if !ent:IsValid() then return end
 
 local deserted = true
-local plycheck = ents.FindInSphere(ent:GetPos(), 5000)
+local plycheck = ents.FindInSphere(ent:GetPos(), 5500)
 for k, v in pairs(plycheck) do
 if v:IsPlayer() then deserted = false end
 end
@@ -104,6 +104,7 @@ function SpawnZombies()
 --if ( ZombieCount() > Config[ "MaxZombies" ] ) then return false end
 	if( ZombieData != "" ) then
 
+		local tea_config_zombiespawning = GetConVar( "tea_config_zombiespawning" )
 		local ZombiesList = string.Explode( "\n", ZombieData )
 		for k, v in RandomPairs( ZombiesList ) do
 			Zed = string.Explode( ";", v )
@@ -123,7 +124,7 @@ function SpawnZombies()
 			end
 
 			if inplyrange == false or inzedrange == false then continue end
-			if ( ZombieCount() > Config[ "MaxZombies" ] ) then break end
+			if ( ZombieCount() > Config[ "MaxZombies" ] ) or tea_config_zombiespawning:GetInt() < 1 then break end
 
 
 
@@ -137,7 +138,8 @@ timer.Create( "ZombieSpawnTimer", tonumber(Config[ "ZombieSpawnRate" ]), 0, Spaw
 
 function AddZombie( ply, cmd, args )
 	if !SuperAdminCheck( ply ) then 
-		SystemMessage(ply, "Only superadmins can use this command!", Color(255,205,205,255), true)
+		SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
+		ply:ConCommand( "playgamesound buttons/button8.wav" )
 		return
 	end
 
@@ -151,20 +153,27 @@ function AddZombie( ply, cmd, args )
 	
 	LoadZombies() --reload them
 	
-	SendChat( ply, "Added a zombie spawnpoint" )
+	SendChat( ply, "Added a zombie spawnpoint at position "..tostring(ply:GetPos()).."!" )
+	print("[SPAWNPOINTS MODIFIED] "..ply:Nick().." has added a zombie spawnpoint at position "..tostring(ply:GetPos()).."!")
+	ate_DebugLog("[SPAWNPOINTS MODIFIED] "..ply:Nick().." has added a zombie spawnpoint at position "..tostring(ply:GetPos()).."!")
+	ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
 concommand.Add( "ate_addzombiespawn", AddZombie )
 
 function ClearZombies( ply, cmd, args )
 if !SuperAdminCheck( ply ) then 
-	SystemMessage(ply, "Only superadmins can use this command!", Color(255,205,205,255), true)
-	return
+		SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
+		ply:ConCommand( "playgamesound buttons/button8.wav" )
+		return
 end
 if file.Exists(	"theeternalapocalypse/spawns/zombies/" .. string.lower(game.GetMap()) .. ".txt", "DATA") then
 	file.Delete("theeternalapocalypse/spawns/zombies/" .. string.lower(game.GetMap()) .. ".txt")
 	ZombieData = ""
 end
 SendChat( ply, "Deleted all zombie spawnpoints" )
+print("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all zombie spawnpoints!")
+ate_DebugLog("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all zombie spawnpoints!")
+ply:ConCommand( "playgamesound buttons/button15.wav" )
 end
 concommand.Add( "ate_clearzombiespawns", ClearZombies )
 
@@ -174,7 +183,7 @@ concommand.Add( "ate_clearzombiespawns", ClearZombies )
 
 
 function SpawnBoss()
-if table.Count(player.GetAll()) < 1 then return end
+if CanSpawnBoss != 1 and table.Count(player.GetAll()) < 2 then return end
 
 local bspawned = false
 
@@ -203,7 +212,6 @@ end
 timer.Create( "BossSpawnTimer", tonumber(Config[ "BossSpawnRate" ]), 0, SpawnBoss )
 
 
--- this is hacky and terrible but there isnt a gamemode hook for nextbots being killed so fuck it
 function StoreAttacker( target, dmginfo )
 if ( target.Type == "nextbot" or target:IsNPC() ) and dmginfo:GetAttacker():IsPlayer() then 
 
@@ -234,7 +242,7 @@ local tea_server_moneyreward = GetConVar( "tea_server_moneyreward" )
 		elseif ent.DamagedBy then
 			for k, v in pairs(ent.DamagedBy) do
 				local pay = tonumber(v / 4)
-				Payout(k, pay, pay)
+				Payout(k, pay * tea_server_xpreward:GetString(), pay * tea_server_moneyreward:GetString())
 			end
 
 			local EntDrop = ents.Create( "loot_cache_boss" )
@@ -250,25 +258,24 @@ hook.Add("EntityRemoved", "killpayouts", NPCReward)
 
 
 function Payout(ply, xp, cash)
-	if( ply:IsPlayer() and ply:IsValid() ) then
+	if( ply:IsPlayer() and ply:IsValid() ) and tonumber(ply.Prestige) >= 1 then
 		local CurXP = ply.XP
 		local CurMoney = ply.Money
 		local XPGain = xp
-		local MoneyGain = cash
-		local XPBonus = math.floor( XPGain * ply.StatKnowledge * 0.02 )
+		local MoneyGain = cash * 1.05
+		local XPBonus = math.floor( XPGain * (ply.StatKnowledge * 0.02) )
 		local MoneyBonus = math.floor( MoneyGain * (ply.StatSalvage * 0.02) )
-		
+
 		ply.XP = CurXP + XPGain + XPBonus
-		ply.Bounty = ply.Bounty +  MoneyGain + MoneyBonus
+		ply.Bounty = ply.Bounty + MoneyGain + MoneyBonus
 		ply:SetNWInt( "PlyBounty", ply.Bounty )
 		
 		print(""..ply:Nick().." gained "..XPGain + XPBonus.." XP ("..XPGain..", +"..XPBonus.." with Knowledge Skill level "..ply.StatKnowledge..", Total "..ply.XP..")")
 		print(""..ply:Nick().." gained "..MoneyGain + MoneyBonus.." "..Config[ "Currency" ].."s to their bounty ("..MoneyGain..", +"..MoneyBonus.." with Salvage Skill level "..ply.StatSalvage..", Total "..ply.Bounty..")")
 
---		if tonumber(ply.Level) >= 1000000000 then -- No Level limit temporarily
---		else
+		if tonumber(ply.Level) < 50 + (10 * ply.Prestige) then
 			PlayerGainLevel( ply )
---		end
+		end
 		
 		net.Start("Payout")
 		net.WriteFloat( XPGain + XPBonus )
@@ -277,6 +284,39 @@ function Payout(ply, xp, cash)
 
 		net.Start("UpdatePeriodicStats")
 		net.WriteFloat( ply.Level )
+		net.WriteFloat( ply.Prestige )
+		net.WriteFloat( ply.Money )
+		net.WriteFloat( ply.XP )
+		net.WriteFloat( ply.StatPoints )
+		net.WriteFloat( ply.Bounty )
+		net.Send( ply )
+	elseif ( ply:IsPlayer() and ply:IsValid() ) then
+		local CurXP = ply.XP
+		local CurMoney = ply.Money
+		local XPGain = xp
+		local MoneyGain = cash
+		local XPBonus = math.floor( XPGain * (ply.StatKnowledge * 0.02) )
+		local MoneyBonus = math.floor( MoneyGain * (ply.StatSalvage * 0.02) )
+
+		ply.XP = CurXP + XPGain + XPBonus
+		ply.Bounty = ply.Bounty + MoneyGain + MoneyBonus
+		ply:SetNWInt( "PlyBounty", ply.Bounty )
+		
+		print(""..ply:Nick().." gained "..XPGain + XPBonus.." XP ("..XPGain..", +"..XPBonus.." with Knowledge Skill level "..ply.StatKnowledge..", Total "..ply.XP..")")
+		print(""..ply:Nick().." gained "..MoneyGain + MoneyBonus.." "..Config[ "Currency" ].."s to their bounty ("..MoneyGain..", +"..MoneyBonus.." with Salvage Skill level "..ply.StatSalvage..", Total "..ply.Bounty..")")
+
+		if tonumber(ply.Level) < 50 + (10 * ply.Prestige) then
+			PlayerGainLevel( ply )
+		end
+		
+		net.Start("Payout")
+		net.WriteFloat( XPGain + XPBonus )
+		net.WriteFloat( MoneyGain + MoneyBonus )
+		net.Send( ply )
+
+		net.Start("UpdatePeriodicStats")
+		net.WriteFloat( ply.Level )
+		net.WriteFloat( ply.Prestige )
 		net.WriteFloat( ply.Money )
 		net.WriteFloat( ply.XP )
 		net.WriteFloat( ply.StatPoints )
@@ -299,7 +339,7 @@ armorvalue = tonumber((armortype["ArmorStats"]["reduction"]) / 100)
 end
 
 local armorbonus = dmg1 * armorvalue
-local defencebonus = dmg1 * (0.025 * ply.StatDefense)
+local defencebonus = dmg1 * (0.015 * ply.StatDefense)
 
 local dmg2 = dmg1 - (defencebonus + armorbonus)
 
@@ -325,7 +365,8 @@ function TestZombies( ply, cmd, args )
 local class = tostring(args[1]) or "npc_ate_basic"
 
 if !SuperAdminCheck( ply ) then 
-	SystemMessage(ply, "Only superadmins can use this command!", Color(255,205,205,255), true)
+	SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
+	ply:ConCommand( "playgamesound buttons/button8.wav" )
 	return
 end
 
@@ -353,6 +394,8 @@ undo.AddEntity (SpawnZombie)
 undo.SetPlayer (ply)
 undo.Finish()
 
+ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has spawned a zombie "..class.."!")
+print("[ADMIN COMMAND USED] "..ply:Nick().." has spawned a zombie "..class.."!")
 end
 concommand.Add( "ate_debug_createzombie", TestZombies )
 

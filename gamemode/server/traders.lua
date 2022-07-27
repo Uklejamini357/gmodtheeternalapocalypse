@@ -39,7 +39,8 @@ timer.Simple(1, function() SpawnTraders() end) --spawn them right away
 
 function AddTrader( ply, cmd, args )
 	if !SuperAdminCheck( ply ) then 
-		SystemMessage(ply, "Only superadmins can use this command!", Color(255,205,205,255), true)
+		SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
+		ply:ConCommand( "playgamesound buttons/button8.wav" )
 		return
 	end
 
@@ -52,9 +53,10 @@ function AddTrader( ply, cmd, args )
 	file.Write( "theeternalapocalypse/spawns/traders/" .. string.lower(game.GetMap()) .. ".txt", NewData )
 	
 	LoadTraders() --reload them
-	
-	SendChat( ply, "Added a Trader Spawnpoint" )
-
+	SendChat( ply, "Added a trader spawnpoint at position "..tostring(ply:GetPos()).."!" )
+	print("[SPAWNPOINTS MODIFIED] "..ply:Nick().." has added a trader spawnpoint at position "..tostring(ply:GetPos()).."!")
+	ate_DebugLog("[SPAWNPOINTS MODIFIED] "..ply:Nick().." has added a trader spawnpoint at position "..tostring(ply:GetPos()).."!")
+	ply:ConCommand("playgamesound buttons/button3.wav")
 	timer.Simple(1, function() SpawnTraders() end)
 end
 concommand.Add( "ate_addtrader", AddTrader )
@@ -68,13 +70,17 @@ end
 if file.Exists(	"theeternalapocalypse/spawns/traders/" .. string.lower(game.GetMap()) .. ".txt", "DATA") then
 	file.Delete("theeternalapocalypse/spawns/traders/" .. string.lower(game.GetMap()) .. ".txt")
 end
-SendChat( ply, "Deleted all trader spawnpoints" )
+SendChat( ply, "Deleted all trader spawnpoints!" )
+print("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all trader spawnpoints!")
+ate_DebugLog("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all trader spawnpoints!")
+ply:ConCommand("playgamesound buttons/button15.wav")
 end
 concommand.Add( "ate_cleartraderspawns", ClearTraders )
 
 function RefreshTraders(ply, cmd, args)
 if !SuperAdminCheck( ply ) then 
-	SystemMessage(ply, "Only superadmins can use this command!", Color(255,205,205,255), true)
+	SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
+	ply:ConCommand( "playgamesound buttons/button8.wav" )
 	return
 end
 LoadTraders()

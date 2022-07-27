@@ -19,7 +19,8 @@ LoadAD()
 
 function AddAD( ply, cmd, args )
 	if !SuperAdminCheck( ply ) then 
-		SystemMessage(ply, "Only superadmins can use this command!", Color(255,205,205,255), true)
+		SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
+		ply:ConCommand( "playgamesound buttons/button8.wav" )
 		return
 	end
 
@@ -38,10 +39,13 @@ function AddAD( ply, cmd, args )
 	end
 	
 	file.Write( "theeternalapocalypse/spawns/airdrops/" .. string.lower(game.GetMap()) .. ".txt", NewData )
-	
-	SendChat( ply, "Added an airdrop spawnpoint" )
 
 	LoadAD() --reload them
+
+	SendChat( ply, "Added an airdrop spawnpoint at position "..tostring(hitp).."!")
+	print("[SPAWNPOINTS MODIFIED] "..ply:Nick().." has added an airdrop spawnpoint at position "..tostring(hitp).."!")
+	ate_DebugLog("[SPAWNPOINTS MODIFIED] "..ply:Nick().." has added an airdrop spawnpoint at position "..tostring(hitp).."!")
+	ply:ConCommand( "playgamesound buttons/button3.wav" )
 
 end
 concommand.Add( "ate_addairdropspawn", AddAD )
@@ -49,7 +53,8 @@ concommand.Add( "ate_addairdropspawn", AddAD )
 
 function ClearAD( ply, cmd, args )
 if !SuperAdminCheck( ply ) then 
-	SystemMessage(ply, "Only superadmins can use this command!", Color(255,205,205,255), true)
+	SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
+	ply:ConCommand( "playgamesound buttons/button8.wav" )
 	return
 end
 
@@ -58,6 +63,9 @@ if file.Exists(	"theeternalapocalypse/spawns/airdrops/" .. string.lower(game.Get
 end
 DropData = ""
 SendChat( ply, "Deleted all airdrop spawnpoints" )
+print("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all airdrop spawnpoints!")
+ate_DebugLog("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all airdrop spawnpoints!")
+ply:ConCommand( "playgamesound buttons/button15.wav" )
 end
 concommand.Add( "ate_clearairdropspawns", ClearAD )
 
@@ -66,7 +74,8 @@ concommand.Add( "ate_clearairdropspawns", ClearAD )
 
 function SpawnAirdrop()
 
-if table.Count(player.GetAll()) < 1 then return end
+if CanSpawnAirdrop != 1 and table.Count(player.GetAll()) < 5 then return end
+
 
 RadioBroadcast(1, "Attention survivors! This announcement might be important.", "Shamus")
 RadioBroadcast(5, "I got a little present for y'all to entertain yourselves with!", "Shamus")
@@ -98,10 +107,13 @@ if  DropData == "" then return end
 			["Sellables"] = {math.random(0, 1), 1, 2},
 		}
 
-		if math.random(1, 100) > 50 then
+		local dropchance = math.random(1, 150)
+		if dropchance > 100 then
 			testinv["TyrantWeapons"] = {1, 1, 1}
-		else
+		elseif dropchance > 40 then
 			testinv["FactionWeapons"] = {1, 1, 1}
+		else
+			testinv["RookieWeapons"] = {1, 1, 1}
 		end
 
 		local loot = RollLootTable( testinv )

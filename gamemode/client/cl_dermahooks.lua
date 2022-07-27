@@ -1,8 +1,8 @@
 -------------------------------- Dermahooks --------------------------------
 
 
-function DrawSleepOverlay() 
-  
+function DrawSleepOverlay()
+ 
 local LDFrame = vgui.Create( "DFrame" )  
 LDFrame:SetPos( ScrW() / 2 - 350,ScrH() / 2 -125)  
 LDFrame:SetSize( 700, 250 )  
@@ -17,25 +17,29 @@ surface.SetDrawColor(0, 0, 0, 200)
 surface.DrawRect(0, 0, LDFrame:GetWide(), LDFrame:GetTall())
 Derma_DrawBackgroundBlur( LDFrame, CurTime() )
 end
-  
+
+
 local PaintPanel = vgui.Create( "DPanel", LDFrame )  
+local LastSleep = CurTime() + 25
   
 PaintPanel:SetPos( 15, 30 )  
 PaintPanel:SetSize( 670, 190 )  
-PaintPanel.Paint = function()      
+PaintPanel.Paint = function()  
 draw.RoundedBox(12, 0, 0, PaintPanel:GetWide(), PaintPanel:GetTall(), Color(30,30,30,150))
-draw.SimpleText( "You will wake up in 35 seconds", "TargetID", 205, 70, Color( 255, 255, 255, 255 ), 0, 1 )
---surface.SetDrawColor( 50, 50, 50, 255 )      
+draw.DrawText( "You will wake up in " .. math.Clamp( math.floor( (LastSleep - CurTime()) + 1 ), 0, 2147483647 ) .. " seconds", "TargetID", 205, 70, Color( 255,255,255,255 ), 0, 1 )
+--draw.SimpleText( "You will wake up in 20 seconds", "TargetID", 205, 70, Color( 255, 255, 255, 255 ), 0, 1 )
+--surface.SetDrawColor( 50, 50, 50, 255 )  
 --surface.DrawRect( 0, 0, PaintPanel:GetWide(), PaintPanel:GetTall() ) 
 --PaintPanel:SetCursor("hand"); 
 end 
-  
-local Dlabel = vgui.Create("DLabel", PaintPanel); 
-    Dlabel:SetText( "Even if you died, you would still be sleeping." ) 
-    Dlabel:SetSize(490, 30); 
-    Dlabel:SetPos(225, 75); 
 
-timer.Simple( 35, function()
+local Dlabel = vgui.Create("DLabel", PaintPanel); 
+	Dlabel:SetText( "unless you died in your sleep" ) 
+	Dlabel:SetSize(490, 30); 
+	Dlabel:SetPos(250, 85); 
+
+
+timer.Simple( 25, function()
 	LDFrame:Close()
 end )
 
@@ -79,10 +83,10 @@ draw.DrawText( "Please wait...", "TargetID", 100, 5, Color(250, 250, 250), TEXT_
 end
 /*
 local Dlabel = vgui.Create("DLabel", DelayFrame)
-    Dlabel:SetText( "Wait" ) 
-    Dlabel:SetFont( "TargetID" )
-    Dlabel:SizeToContents()
-    Dlabel:SetPos(45, 5)
+	Dlabel:SetText( "Wait" ) 
+	Dlabel:SetFont( "TargetID" )
+	Dlabel:SizeToContents()
+	Dlabel:SetPos(45, 5)
 */
 
 timer.Simple( delay, function()

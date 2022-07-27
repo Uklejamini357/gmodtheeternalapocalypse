@@ -32,7 +32,7 @@ if !caller:IsValid() or !caller:IsPlayer() or !self.LootType or !caller:Alive() 
 	if !name or !item or !weightcheck or !qtycheck then SendChat(caller, "Sorry, this loot cache was bugged and was auto removed to avoid breaking the game, please tell an admin or developer") return false end
 
 	if !item then return false end
-	if (CalculateWeight(caller) + weightcheck) > (37.4 + ((caller.StatStrength or 0) * 1.53)) then SendChat(caller, "You don't have enough space for this item! It weighs: "..weightcheck.."kg") return false end
+	if (CalculateWeight(caller) + weightcheck) > CalculateMaxWeight(caller) then SendChat(caller, "You don't have enough space for this item! It weighs: "..weightcheck.."kg") return false end
 
 	SystemGiveItem( caller, name, qtycheck )
 

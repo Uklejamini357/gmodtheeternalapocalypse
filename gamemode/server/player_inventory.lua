@@ -3,11 +3,23 @@ local playa = FindMetaTable("Player")
 function CalculateWeight(ply)
 local totalweight = 0
 	for k, v in pairs(ply.Inventory) do
-	if !ItemsList[k] then ErrorNoHalt( "CalculateWeight error on "..ply:Nick()..", they must have a corrupt inventory file or something" ) continue end
-	local ref = ItemsList[k]
-	totalweight = totalweight + (ref.Weight * v)
+		if !ItemsList[k] then ErrorNoHalt( "CalculateWeight error on "..ply:Nick()..", they must have a corrupt inventory file or something" ) continue end	
+		local ref = ItemsList[k]
+		totalweight = totalweight + (ref.Weight * v)
 	end
 return totalweight
+end
+
+function CalculateMaxWeight(ply)
+local maxweight = 0
+	if tonumber(ply.Prestige) >= 10 then
+		maxweight = 42.4 + ((ply.StatStrength or 0) * 1.53)
+	elseif tonumber(ply.Prestige) >= 3 then
+		maxweight = 39.4 + ((ply.StatStrength or 0) * 1.53)
+	else
+		maxweight = 37.4 + ((ply.StatStrength or 0) * 1.53)
+	end
+return maxweight
 end
 
 function SendInventory( ply )
@@ -32,14 +44,14 @@ if Config[ "FileSystem" ] == "Legacy" then
 elseif Config[ "FileSystem" ] == "PData" then
 		LoadedData = ply:GetPData( "ate_playerinventory" )
 else
-	print("BOY YOU REALLY FUCKED UP THIS TIME WILLIS, SET YOUR DAMN FILESYSTEM OPTION TO A PROPER SETTING IN SH_CONFIG.LUA")
+	print("Bruh, did you try to setup incorrectly? Set your damned filesystem option to a proper setting in sh_config.lua")
 end
 
 	if LoadedData then 
 		local formatted = util.JSONToTable( LoadedData )
 		ply.Inventory = formatted
 	else
-		ply.Inventory = table.Copy( Config[ "NoobGear" ] )
+		ply.Inventory = table.Copy( Config[ "RookieGear" ] )
 	end
 
 	timer.Simple( 1, function() SendInventory(ply) end )
@@ -49,6 +61,8 @@ end
 
 
 function SavePlayerInventory( ply )
+local tea_server_dbsaving = GetConVar("tea_server_dbsaving")
+if AllowSave != 1 and tea_server_dbsaving:GetInt() < 1 then return end
 if !ply:IsValid() then return end
 
 if Config[ "FileSystem" ] == "Legacy" then
@@ -58,9 +72,9 @@ elseif Config[ "FileSystem" ] == "PData" then
 	local formatted = util.TableToJSON( ply.Inventory )
 	ply:SetPData( "ate_playerinventory", formatted )
 else
-	print("BOY YOU REALLY FUCKED UP THIS TIME WILLIS, SET YOUR DAMN FILESYSTEM OPTION TO A PROPER SETTING IN SH_CONFIG.LUA")
+	print("Bruh, did you try to setup incorrectly? Set your damned filesystem option to a proper setting in sh_config.lua")
 end
-	print("✓ ".. ply:Nick() .." inventory data saved into database")
+	print("✓ ".. ply:Nick() .." inventory saved into database")
 end
 
 function SaveTimer()
@@ -88,7 +102,7 @@ if !ItemsList[str] or !ply.Inventory then return end
 qty = tonumber(qty) or 1
 
 local item = ItemsList[str]
-if ((CalculateWeight(ply) + item["Weight"]) > (37.4 + ((ply.StatStrength or 0) * 1.53))) then SendChat(ply, "You don't have any inventory space left for this item!") return false end -- dont need to pester them with notifications from a system function, just return false
+if ((CalculateWeight(ply) + item["Weight"]) > (CalculateMaxWeight(ply))) then SendChat(ply, "You don't have any inventory space left for this item!") return false end -- dont need to pester them with notifications from a system function, just return false
 
 	if ply.Inventory[str] then
 		ply.Inventory[str] = ply.Inventory[str] + qty
@@ -168,7 +182,7 @@ if !ItemsList[str] then SendChat(self, "ERROR: this item does not exist on the s
 local item = ItemsList[str]
 
 local stockcheck = ItemsList[str]["Supply"]
-if stockcheck == -1 then SendChat(self, "Nice try faggot") return end -- people may try to hack and send faked netmessages to buy stuff the trader isnt meant to sell
+if stockcheck == -1 then SendChat(self, "Bruh, did you just try to buy stuff that trader doesn't even sell? You should play the gamemode like it was meant to be played.") return end -- people may try to hack and send faked netmessages to buy stuff the trader isnt meant to sell
 
 local cash = tonumber(self.Money)
 
@@ -179,12 +193,13 @@ if ((CalculateWeight(self) + item["Weight"]) > (37.4 + ((self.StatStrength or 0)
 SystemGiveItem( self, str )
 
 
-self.Money = math.floor(self.Money - (item["Cost"] * (1 - (self.StatBarter * 0.015)))) -- reduce buy cost by 2% per barter level
+self.Money = math.floor(self.Money - (item["Cost"] * (1 - (self.StatBarter * 0.015)))) -- reduce buy cost by 1.5% per barter level
 SendInventory(self)
 self:EmitSound("items/ammopickup.wav", 100, 100)
 
 net.Start("UpdatePeriodicStats")
 net.WriteFloat( self.Level )
+net.WriteFloat( self.Prestige )
 net.WriteFloat( self.Money )
 net.WriteFloat( self.XP )
 net.WriteFloat( self.StatPoints )
@@ -201,6 +216,7 @@ net.Receive( "SellItem", function( length, client )
 local str = net.ReadString()
 
 if !ItemsList[str] then SendChat(client, "ERROR: this item does not exist on the server!") return false end -- if the item doenst exist
+if timer.Exists("Isplyequippingarmor"..client:UniqueID()) then SystemMessage(client, "Bruh, did you try to sell item when equipping armor? You lil' bitch, play the gamemode like it was meant to be played.", Color(255,155,155,255), true) return false end
 
 local item = ItemsList[str]
 local cash = tonumber(client.Money)
@@ -216,12 +232,13 @@ local cash = tonumber(client.Money)
 		UseFunc_RemoveArmor(client, str)
 	end
 
-	client.Money = math.floor(client.Money + (item["Cost"] * (0.2 + (client.StatBarter * 0.005)))) -- base sell price 30% of the original buy price plus 2% per barter level to max of 50%
+	client.Money = math.floor(client.Money + (item["Cost"] * (0.2 + (client.StatBarter * 0.005)))) -- base sell price 20% of the original buy price plus 0.5% per barter level to max of 25%
 	SendInventory(client)
 	client:EmitSound("physics/cardboard/cardboard_box_break3.wav", 100, 100)
 
 	net.Start("UpdatePeriodicStats")
 	net.WriteFloat( client.Level )
+	net.WriteFloat( client.Prestige )
 	net.WriteFloat( client.Money )
 	net.WriteFloat( client.XP )
 	net.WriteFloat( client.StatPoints )

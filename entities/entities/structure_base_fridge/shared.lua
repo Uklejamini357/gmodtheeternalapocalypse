@@ -79,10 +79,12 @@ if self.UseTimer > CurTime() then return false end
 if activator:Team() != owner:Team() then SystemMessage(activator, "This doesn't belong to your faction!", Color(255,205,205,255), true) return false end
 
 activator.Hunger = 10000
+activator.Thirst = 10000
 
 activator:EmitSound("npc/barnacle/barnacle_gulp2.wav")
 SystemMessage(activator, "That was delicious!", Color(205,255,205,255), false)
-self.UseTimer = CurTime() + 1
+SendUseDelay(activator, 2)
+self.UseTimer = CurTime() + 5
 
 end 
 

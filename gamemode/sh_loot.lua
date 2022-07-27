@@ -1,9 +1,9 @@
 -- tier 1 loot aka junk
 LootTable1 = {
 	["item_bandage"] = {
-		["Name"] = "3x Bandages",
-		["Weight"] = 0.18, -- base item x3
-		["Qty"] = 3,
+		["Name"] = "2x Bandages",
+		["Weight"] = 0.12, -- base item x3
+		["Qty"] = 2,
 		["Class"] = "item_bandage",
 	},
 
@@ -22,9 +22,9 @@ LootTable1 = {
 	},
 
 	["item_soda"] = {
-		["Name"] = "3x Softdrinks",
-		["Weight"] = 0.9,
-		["Qty"] = 3,
+		["Name"] = "2x Softdrinks",
+		["Weight"] = 0.66,
+		["Qty"] = 2,
 		["Class"] = "item_soda",
 	},
 
@@ -37,8 +37,8 @@ LootTable1 = {
 
 	["item_melon"] = {
 		["Name"] = "1x Melon",
-		["Weight"] = 1,
-		["Qty"] = 2,
+		["Weight"] = 2,
+		["Qty"] = 1,
 		["Class"] = "item_melon",
 	},
 
@@ -386,7 +386,7 @@ LootTable.Ammo = {
 "weapon_zw_grenade_frag",
 }
 
-LootTable.NoobWeapons = {
+LootTable.RookieWeapons = {
 "weapon_zw_pigsticker",
 "weapon_zw_axe",
 "weapon_zw_wrench",

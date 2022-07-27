@@ -20,7 +20,7 @@ end
 function PropMenu()
 	PropsFrame = vgui.Create( "DFrame" )
 	PropsFrame:SetSize( 1000, 700 )
-    PropsFrame:Center()
+	PropsFrame:Center()
 	PropsFrame:SetTitle ( "" )
 	PropsFrame:SetDraggable( false )
 	PropsFrame:SetVisible( true )
@@ -61,79 +61,79 @@ local discount = 1 - ((Perks.Engineer or 0) * 0.02)
 
 for k, v in SortedPairsByMemberValue( FLIMSYPROPS, "COST" ) do
 
-    local ItemBackground = vgui.Create( "DPanel" )
-    ItemBackground:SetPos( 5, 5 )
-    ItemBackground:SetSize( 150, 150 )
-    ItemBackground.Paint = function() -- Paint function
-        draw.RoundedBoxEx(8,1,1,ItemBackground:GetWide()-2,ItemBackground:GetTall()-2,Color(0, 0, 0, 50), false, false, false, false)
+	local ItemBackground = vgui.Create( "DPanel" )
+	ItemBackground:SetPos( 5, 5 )
+	ItemBackground:SetSize( 150, 150 )
+	ItemBackground.Paint = function() -- Paint function
+		draw.RoundedBoxEx(8,1,1,ItemBackground:GetWide()-2,ItemBackground:GetTall()-2,Color(0, 0, 0, 50), false, false, false, false)
 	surface.SetDrawColor(50, 50, 50 ,255)
 	surface.DrawOutlinedRect(0, 0, ItemBackground:GetWide(), ItemBackground:GetTall())
-    end
-
-    local ItemDisplay = vgui.Create( "SpawnIcon", ItemBackground )
-    ItemDisplay:SetPos( 35, 5 )
-    ItemDisplay:SetModel( k )
-    ItemDisplay:SetToolTip(false)
-    ItemDisplay:SetSize(75,75)
-    ItemDisplay.PaintOver = function()
-        return
-    end
-    ItemDisplay.OnMousePressed = function()
-        return false
-    end
-
-    local ItemName = vgui.Create( "DLabel", ItemBackground )
-    ItemName:SetFont( "TargetIDSmall" )
-    ItemName:SetColor( Color(205,205,205,255) )
-    ItemName:SetText( v.NAME )
-    ItemName:SizeToContents()
-    ItemName:Center()
-    local x,y = ItemName:GetPos();
-    ItemName:SetPos( x, y + 20)
-
-    local ItemCost = vgui.Create( "DLabel", ItemBackground )
-    ItemCost:SetFont( "TargetIDSmall" )
-    ItemCost:SetColor( Color(155,255,155,255) )
-    ItemCost:SetText( "Cost: ".. math.floor(v.COST * discount).." "..Config[ "Currency" ].."s" )
-    ItemCost:SizeToContents()
-    ItemCost:Center()
-    local x,y = ItemCost:GetPos();
-    ItemCost:SetPos( x, y + 40)
-
-    local ItemToughness = vgui.Create( "DLabel", ItemBackground )
-    ItemToughness:SetFont( "TargetIDSmall" )
-    if v.TOUGHNESS == 1 then
-    ItemToughness:SetText( "Strength: Weak" )
-    ItemToughness:SetColor( Color(255,255,155,155) )
-    elseif v.TOUGHNESS == 2 then
-    ItemToughness:SetText( "Strength: Medium" )
-    ItemToughness:SetColor( Color(255,205,155,155) )
-    elseif v.TOUGHNESS == 3 then
-    ItemToughness:SetText( "Strength: Strong" )
-    ItemToughness:SetColor( Color(255,155,155,155) )
-    elseif v.TOUGHNESS == 4 then
-    ItemToughness:SetText( "Strength: Very Strong" )
-    ItemToughness:SetColor( Color(255,105,155,155) )
-    elseif v.TOUGHNESS == 5 then
-    ItemToughness:SetText( "Strength: Maximal" )
-    ItemToughness:SetColor( Color(255,55,155,155) )
-    else
-    ItemToughness:SetText( "Strength: ???" )
-    ItemToughness:SetColor( Color(155,155,155,155) )
 	end
-    ItemToughness:SizeToContents()
-    ItemToughness:Center()
-    local x,y = ItemToughness:GetPos();
-    ItemToughness:SetPos( x, y + 60)
+
+	local ItemDisplay = vgui.Create( "SpawnIcon", ItemBackground )
+	ItemDisplay:SetPos( 35, 5 )
+	ItemDisplay:SetModel( k )
+	ItemDisplay:SetToolTip(false)
+	ItemDisplay:SetSize(75,75)
+	ItemDisplay.PaintOver = function()
+		return
+	end
+	ItemDisplay.OnMousePressed = function()
+		return false
+	end
+
+	local ItemName = vgui.Create( "DLabel", ItemBackground )
+	ItemName:SetFont( "TargetIDSmall" )
+	ItemName:SetColor( Color(205,205,205,255) )
+	ItemName:SetText( v.NAME )
+	ItemName:SizeToContents()
+	ItemName:Center()
+	local x,y = ItemName:GetPos();
+	ItemName:SetPos( x, y + 20)
+
+	local ItemCost = vgui.Create( "DLabel", ItemBackground )
+	ItemCost:SetFont( "TargetIDSmall" )
+	ItemCost:SetColor( Color(155,255,155,255) )
+	ItemCost:SetText( "Cost: ".. math.floor(v.COST * discount).." "..Config[ "Currency" ].."s" )
+	ItemCost:SizeToContents()
+	ItemCost:Center()
+	local x,y = ItemCost:GetPos();
+	ItemCost:SetPos( x, y + 40)
+
+	local ItemToughness = vgui.Create( "DLabel", ItemBackground )
+	ItemToughness:SetFont( "TargetIDSmall" )
+	if v.TOUGHNESS == 1 then
+	ItemToughness:SetText( "Strength: Weak" )
+	ItemToughness:SetColor( Color(255,255,155,155) )
+	elseif v.TOUGHNESS == 2 then
+	ItemToughness:SetText( "Strength: Medium" )
+	ItemToughness:SetColor( Color(255,205,155,155) )
+	elseif v.TOUGHNESS == 3 then
+	ItemToughness:SetText( "Strength: Strong" )
+	ItemToughness:SetColor( Color(255,155,155,155) )
+	elseif v.TOUGHNESS == 4 then
+	ItemToughness:SetText( "Strength: Very Strong" )
+	ItemToughness:SetColor( Color(255,105,155,155) )
+	elseif v.TOUGHNESS == 5 then
+	ItemToughness:SetText( "Strength: Maximal" )
+	ItemToughness:SetColor( Color(255,55,155,155) )
+	else
+	ItemToughness:SetText( "Strength: ???" )
+	ItemToughness:SetColor( Color(155,155,155,155) )
+	end
+	ItemToughness:SizeToContents()
+	ItemToughness:Center()
+	local x,y = ItemToughness:GetPos();
+	ItemToughness:SetPos( x, y + 60)
 
 
-    local ItemClicker = vgui.Create( "DButton", ItemBackground )
-    ItemClicker:SetText("")
-    ItemClicker:SetPos( 0, 0 )
-    ItemClicker:SetSize( ItemBackground:GetWide(), ItemBackground:GetTall() )
-    ItemClicker.Paint = function() -- Paint function
+	local ItemClicker = vgui.Create( "DButton", ItemBackground )
+	ItemClicker:SetText("")
+	ItemClicker:SetPos( 0, 0 )
+	ItemClicker:SetSize( ItemBackground:GetWide(), ItemBackground:GetTall() )
+	ItemClicker.Paint = function() -- Paint function
 	return false
-    end
+	end
 	ItemClicker.DoClick = function() RunConsoleCommand("use","zw_buildtool")
 	ChooseProp( tostring(k) )
 	end
@@ -156,79 +156,79 @@ StrongPanel:SetSpacing( 5 )
 
 for k, v in SortedPairsByMemberValue( TOUGHPROPS, "COST" ) do
 
-    local ItemBackground = vgui.Create( "DPanel" )
-    ItemBackground:SetPos( 5, 5 )
-    ItemBackground:SetSize( 150, 150 )
-    ItemBackground.Paint = function() -- Paint function
-        draw.RoundedBoxEx(8,1,1,ItemBackground:GetWide()-2,ItemBackground:GetTall()-2,Color(0, 0, 0, 50), false, false, false, false)
+	local ItemBackground = vgui.Create( "DPanel" )
+	ItemBackground:SetPos( 5, 5 )
+	ItemBackground:SetSize( 150, 150 )
+	ItemBackground.Paint = function() -- Paint function
+		draw.RoundedBoxEx(8,1,1,ItemBackground:GetWide()-2,ItemBackground:GetTall()-2,Color(0, 0, 0, 50), false, false, false, false)
 	surface.SetDrawColor(50, 50, 50 ,255)
 	surface.DrawOutlinedRect(0, 0, ItemBackground:GetWide(), ItemBackground:GetTall())
-    end
-
-    local ItemDisplay = vgui.Create( "SpawnIcon", ItemBackground )
-    ItemDisplay:SetPos( 35, 5 )
-    ItemDisplay:SetModel( k )
-    ItemDisplay:SetToolTip(false)
-    ItemDisplay:SetSize(75,75)
-    ItemDisplay.PaintOver = function()
-        return
-    end
-    ItemDisplay.OnMousePressed = function()
-        return false
-    end
-
-    local ItemName = vgui.Create( "DLabel", ItemBackground )
-    ItemName:SetFont( "TargetIDSmall" )
-    ItemName:SetColor( Color(205,205,205,255) )
-    ItemName:SetText( v.NAME )
-    ItemName:SizeToContents()
-    ItemName:Center()
-    local x,y = ItemName:GetPos();
-    ItemName:SetPos( x, y + 20)
-
-    local ItemCost = vgui.Create( "DLabel", ItemBackground )
-    ItemCost:SetFont( "TargetIDSmall" )
-    ItemCost:SetColor( Color(155,255,155,255) )
-    ItemCost:SetText( "Cost: ".. math.floor(v.COST * discount).." "..Config[ "Currency" ].."s" )
-    ItemCost:SizeToContents()
-    ItemCost:Center()
-    local x,y = ItemCost:GetPos();
-    ItemCost:SetPos( x, y + 40)
-
-    local ItemToughness = vgui.Create( "DLabel", ItemBackground )
-    ItemToughness:SetFont( "TargetIDSmall" )
-    if v.TOUGHNESS == 1 then
-    ItemToughness:SetText( "Strength: Weak" )
-    ItemToughness:SetColor( Color(255,255,155,155) )
-    elseif v.TOUGHNESS == 2 then
-    ItemToughness:SetText( "Strength: Medium" )
-    ItemToughness:SetColor( Color(255,205,155,155) )
-    elseif v.TOUGHNESS == 3 then
-    ItemToughness:SetText( "Strength: Strong" )
-    ItemToughness:SetColor( Color(255,155,155,155) )
-    elseif v.TOUGHNESS == 4 then
-    ItemToughness:SetText( "Strength: Very Strong" )
-    ItemToughness:SetColor( Color(255,105,155,155) )
-    elseif v.TOUGHNESS == 5 then
-    ItemToughness:SetText( "Strength: Maximal" )
-    ItemToughness:SetColor( Color(255,55,155,155) )
-    else
-    ItemToughness:SetText( "Strength: ???" )
-    ItemToughness:SetColor( Color(155,155,155,155) )
 	end
-    ItemToughness:SizeToContents()
-    ItemToughness:Center()
-    local x,y = ItemToughness:GetPos();
-    ItemToughness:SetPos( x, y + 60)
+
+	local ItemDisplay = vgui.Create( "SpawnIcon", ItemBackground )
+	ItemDisplay:SetPos( 35, 5 )
+	ItemDisplay:SetModel( k )
+	ItemDisplay:SetToolTip(false)
+	ItemDisplay:SetSize(75,75)
+	ItemDisplay.PaintOver = function()
+		return
+	end
+	ItemDisplay.OnMousePressed = function()
+		return false
+	end
+
+	local ItemName = vgui.Create( "DLabel", ItemBackground )
+	ItemName:SetFont( "TargetIDSmall" )
+	ItemName:SetColor( Color(205,205,205,255) )
+	ItemName:SetText( v.NAME )
+	ItemName:SizeToContents()
+	ItemName:Center()
+	local x,y = ItemName:GetPos();
+	ItemName:SetPos( x, y + 20)
+
+	local ItemCost = vgui.Create( "DLabel", ItemBackground )
+	ItemCost:SetFont( "TargetIDSmall" )
+	ItemCost:SetColor( Color(155,255,155,255) )
+	ItemCost:SetText( "Cost: ".. math.floor(v.COST * discount).." "..Config[ "Currency" ].."s" )
+	ItemCost:SizeToContents()
+	ItemCost:Center()
+	local x,y = ItemCost:GetPos();
+	ItemCost:SetPos( x, y + 40)
+
+	local ItemToughness = vgui.Create( "DLabel", ItemBackground )
+	ItemToughness:SetFont( "TargetIDSmall" )
+	if v.TOUGHNESS == 1 then
+	ItemToughness:SetText( "Strength: Weak" )
+	ItemToughness:SetColor( Color(255,255,155,155) )
+	elseif v.TOUGHNESS == 2 then
+	ItemToughness:SetText( "Strength: Medium" )
+	ItemToughness:SetColor( Color(255,205,155,155) )
+	elseif v.TOUGHNESS == 3 then
+	ItemToughness:SetText( "Strength: Strong" )
+	ItemToughness:SetColor( Color(255,155,155,155) )
+	elseif v.TOUGHNESS == 4 then
+	ItemToughness:SetText( "Strength: Very Strong" )
+	ItemToughness:SetColor( Color(255,105,155,155) )
+	elseif v.TOUGHNESS == 5 then
+	ItemToughness:SetText( "Strength: Maximal" )
+	ItemToughness:SetColor( Color(255,55,155,155) )
+	else
+	ItemToughness:SetText( "Strength: ???" )
+	ItemToughness:SetColor( Color(155,155,155,155) )
+	end
+	ItemToughness:SizeToContents()
+	ItemToughness:Center()
+	local x,y = ItemToughness:GetPos();
+	ItemToughness:SetPos( x, y + 60)
 
 
-    local ItemClicker = vgui.Create( "DButton", ItemBackground )
-    ItemClicker:SetText("")
-    ItemClicker:SetPos( 0, 0 )
-    ItemClicker:SetSize( ItemBackground:GetWide(), ItemBackground:GetTall() )
-    ItemClicker.Paint = function() -- Paint function
+	local ItemClicker = vgui.Create( "DButton", ItemBackground )
+	ItemClicker:SetText("")
+	ItemClicker:SetPos( 0, 0 )
+	ItemClicker:SetSize( ItemBackground:GetWide(), ItemBackground:GetTall() )
+	ItemClicker.Paint = function() -- Paint function
 	return false
-    end
+	end
 	ItemClicker.DoClick = function() RunConsoleCommand("use","zw_buildtool")
 	ChooseProp( tostring(k) )
 	end
@@ -249,58 +249,58 @@ SpecialPanel:SetSpacing( 5 )
 
 for k, v in SortedPairsByMemberValue( SpecialSpawns, "Cost" ) do
 
-    local ItemBackground = vgui.Create( "DPanel" )
-    ItemBackground:SetPos( 5, 5 )
-    ItemBackground:SetSize( 150, 150 )
-    ItemBackground.Paint = function() -- Paint function
-        draw.RoundedBoxEx(8,1,1,ItemBackground:GetWide()-2,ItemBackground:GetTall()-2,Color(0, 0, 0, 50), false, false, false, false)
+	local ItemBackground = vgui.Create( "DPanel" )
+	ItemBackground:SetPos( 5, 5 )
+	ItemBackground:SetSize( 150, 150 )
+	ItemBackground.Paint = function() -- Paint function
+		draw.RoundedBoxEx(8,1,1,ItemBackground:GetWide()-2,ItemBackground:GetTall()-2,Color(0, 0, 0, 50), false, false, false, false)
 	surface.SetDrawColor(50, 50, 50 ,255)
 	surface.DrawOutlinedRect(0, 0, ItemBackground:GetWide(), ItemBackground:GetTall())
-    end
+	end
 
-    local ItemDisplay = vgui.Create( "SpawnIcon", ItemBackground )
-    ItemDisplay:SetPos( 35, 5 )
-    ItemDisplay:SetModel( v.Model )
-    ItemDisplay:SetToolTip(v.Description)
-    ItemDisplay:SetSize(75,75)
-    ItemDisplay.PaintOver = function()
-        return
-    end
-    ItemDisplay.OnMousePressed = function()
-        return false
-    end
+	local ItemDisplay = vgui.Create( "SpawnIcon", ItemBackground )
+	ItemDisplay:SetPos( 35, 5 )
+	ItemDisplay:SetModel( v.Model )
+	ItemDisplay:SetToolTip(v.Description)
+	ItemDisplay:SetSize(75,75)
+	ItemDisplay.PaintOver = function()
+		return
+	end
+	ItemDisplay.OnMousePressed = function()
+		return false
+	end
 
-    local ItemName = vgui.Create( "DLabel", ItemBackground )
-    ItemName:SetFont( "TargetIDSmall" )
-    ItemName:SetColor( Color(205,205,205,255) )
-    ItemName:SetText( v.Name )
-    ItemName:SizeToContents()
-    ItemName:Center()
-    local x,y = ItemName:GetPos();
-    ItemName:SetPos( x, y + 20)
+	local ItemName = vgui.Create( "DLabel", ItemBackground )
+	ItemName:SetFont( "TargetIDSmall" )
+	ItemName:SetColor( Color(205,205,205,255) )
+	ItemName:SetText( v.Name )
+	ItemName:SizeToContents()
+	ItemName:Center()
+	local x,y = ItemName:GetPos();
+	ItemName:SetPos( x, y + 20)
 
-    local ItemCost = vgui.Create( "DLabel", ItemBackground )
-    ItemCost:SetFont( "TargetIDSmall" )
-    ItemCost:SetColor( Color(155,255,155,255) )
-    ItemCost:SetText( "Cost: ".. v.Cost.." "..Config[ "Currency" ].."s" )
-    ItemCost:SizeToContents()
-    ItemCost:Center()
-    local x,y = ItemCost:GetPos();
-    ItemCost:SetPos( x, y + 40)
+	local ItemCost = vgui.Create( "DLabel", ItemBackground )
+	ItemCost:SetFont( "TargetIDSmall" )
+	ItemCost:SetColor( Color(155,255,155,255) )
+	ItemCost:SetText( "Cost: ".. v.Cost.." "..Config[ "Currency" ].."s" )
+	ItemCost:SizeToContents()
+	ItemCost:Center()
+	local x,y = ItemCost:GetPos();
+	ItemCost:SetPos( x, y + 40)
 
 
-    local ItemClicker = vgui.Create( "DButton", ItemBackground )
-    ItemClicker:SetText("")
-    ItemClicker:SetPos( 15, 125 )
-    ItemClicker:SetTextColor( Color(255,255,255,255) )
-    ItemClicker:SetText( "Place Blueprint" )
-    ItemClicker:SetSize( 120, 20 )
-    ItemClicker.Paint = function() -- Paint function
+	local ItemClicker = vgui.Create( "DButton", ItemBackground )
+	ItemClicker:SetText("")
+	ItemClicker:SetPos( 15, 125 )
+	ItemClicker:SetTextColor( Color(255,255,255,255) )
+	ItemClicker:SetText( "Place Blueprint" )
+	ItemClicker:SetSize( 120, 20 )
+	ItemClicker.Paint = function() -- Paint function
 	surface.SetDrawColor(20, 20, 60 ,200)
 	surface.DrawRect( 0, 0, ItemClicker:GetWide(), ItemClicker:GetTall() )
 	surface.SetDrawColor(0, 0, 150 ,255)
 	surface.DrawOutlinedRect( 0, 0, ItemClicker:GetWide(), ItemClicker:GetTall() )
-    end
+	end
 	ItemClicker.DoClick = function() RunConsoleCommand("use","zw_buildtool")
 	ChooseStructure( k )
 	end

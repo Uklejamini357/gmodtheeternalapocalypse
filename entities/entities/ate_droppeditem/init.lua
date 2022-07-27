@@ -27,7 +27,7 @@ function ENT:Use( activator, caller )
 if !activator:IsValid() or !activator:IsPlayer() or !self:GetNWString("ItemClass") or !activator:Alive() then return false end
 local name = self:GetNWString("ItemClass")
 local ref = ItemsList[name]
-if (CalculateWeight(activator) + ref.Weight) > (37.4 + ((activator.StatStrength or 0) * 1.53)) then SendChat(activator, "You don't have enough space for this item!") return false end
+if (CalculateWeight(activator) + ref.Weight) > CalculateMaxWeight(activator) then SendChat(activator, "You don't have enough space for this item!") return false end
 
 SystemGiveItem( activator, name )
 
