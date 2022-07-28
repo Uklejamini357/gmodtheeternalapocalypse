@@ -10,11 +10,12 @@ ENT.AdminOnly = true
 
 function ENT:SetUpStats()
 self:SetColor(Color(255,0,255,255))
-self:SetModelScale( 1.3, 0 )
+self:SetModelScale( 1.35, 0 )
 -- dont bother changing any of this unless you like derpy shit
 self.CanScream = true
 self.RageLevel = 1
 self.SpeedBuff = 1
+self.IsEnraged = 0
 self.Ouchies = 0
 
 -- animations for the StartActivity function
@@ -28,14 +29,14 @@ self.FallAnim = (ACT_IDLE_ON_FIRE)
 self.ZombieStats = {
 ["Model"] = "models/undead/undead.mdl",
 
-["Damage"] = 50, -- how much damage per strike?
-["Force"] = 1000, -- how far to knock the player back upon striking them
+["Damage"] = 75, -- how much damage per strike?
+["Force"] = 1125, -- how far to knock the player back upon striking them
 ["Infection"] = 100, -- percentage chance to infect them
-["Reach"] = 120, -- how far can the zombies attack reach? in source units
+["Reach"] = 140, -- how far can the zombies attack reach? in source units
 ["StrikeDelay"] = 0.6, -- how long does it take for the zombie to deal damage after beginning an attack
-["AfterStrikeDelay"] = 1, -- how long should the zombie wait after a strike lands until reverting to its behaviour cycle
+["AfterStrikeDelay"] = 1.5, -- how long should the zombie wait after a strike lands until reverting to its behaviour cycle
 
-["Health"] = 3500, -- self explanatory
+["Health"] = 4500, -- self explanatory
 ["MoveSpeedWalk"] = 65, -- zombies move speed when idly wandering around
 ["MoveSpeedRun"] = 95, -- zombies move speed when moving towards a target
 ["VisionRange"] = 1200, -- how far is the zombies standard sight range in source units, this will be tripled when they are frenzied
@@ -141,9 +142,7 @@ ply:TakeDamageInfo(damageInfo)
 --ply:EmitSound(self.Hit, 100, math.random(80, 110))
 ply:ViewPunch(VectorRand():Angle() * 0.05)
 ply:SetVelocity(force)
-if math.random(0, 100) > (100 - infection) then
-	ply.Infection = ply.Infection + 100
-end
+ply.Infection = ply.Infection + math.random(60,1000)
 end
 
 
@@ -158,12 +157,20 @@ function ENT:OnInjured(damageInfo)
 	if attacker:IsPlayer() then
 	self.target = attacker
 	end
-	if self.Ouchies > 250 then
+	if self.Ouchies > 300 then
 	self:Teleport()
 	self.Ouchies = 0
 	end
-
-	self.RageLevel = 3
+	if self:Health() <= 2000 and self.IsEnraged == 0 then
+	for k,v in pairs(ents.FindInSphere(self:GetPos(), 1000)) do
+		if v:IsPlayer() then
+			SystemMessage(v, "Superlord has enraged!", Color(255,230,230,255), false)
+		end
+	end
+	self.RageLevel = 5
+	self.SpeedBuff = 2
+	self.IsEnraged = 1
+	end
 end
 
 function ENT:Teleport()

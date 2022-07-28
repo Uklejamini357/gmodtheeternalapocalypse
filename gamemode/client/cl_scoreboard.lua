@@ -264,7 +264,7 @@ function ScoreBoard:Create()
 			local ItemDisplay = vgui.Create( "SpawnIcon", ItemBackground )
 			ItemDisplay:SetPos( 5, 5 )
 			ItemDisplay:SetModel( v.Model )
-			ItemDisplay:SetToolTip(v.Description)
+			ItemDisplay:SetToolTip(v.Description.."\n(Item ID: "..k..")")
 			ItemDisplay:SetSize(60,60)
 			ItemDisplay.PaintOver = function()
 				return
@@ -282,7 +282,7 @@ function ScoreBoard:Create()
 			ItemName:SizeToContents()
 
 			local ItemQty = vgui.Create( "DLabel", ItemBackground )
-			ItemQty:SetPos( 300, 10 )
+			ItemQty:SetPos( 300, 25 )
 			ItemQty:SetFont( "QtyFont" )
 			ItemQty:SetColor( Color(255,255,255,255) )
 			ItemQty:SetText( v.Qty.."x" )
@@ -424,8 +424,8 @@ for k, v in pairs( player.GetAll() ) do
 
 
 	local mutechat = vgui.Create("DButton", plypanel)
-		mutechat:SetSize( 45, 25 )
-		mutechat:SetPos( 628, 8 )
+		mutechat:SetSize( 45, 24 )
+		mutechat:SetPos( 655, 7 )
 		mutechat:SetText("Mute")
 		mutechat:SetTextColor(Color(255, 255, 255, 255))
 		mutechat.Paint = function(panel)
@@ -448,8 +448,8 @@ for k, v in pairs( player.GetAll() ) do
 		end
 
 	local invfaction = vgui.Create("DButton", plypanel)
-		invfaction:SetSize( 45, 25 )
-		invfaction:SetPos( 580, 8 )
+		invfaction:SetSize( 45, 22 )
+		invfaction:SetPos( 655, 33 )
 		invfaction:SetText("Profile")
 		invfaction:SetTextColor(Color(255, 255, 255, 255))
 		invfaction.Paint = function(panel)
@@ -465,8 +465,8 @@ for k, v in pairs( player.GetAll() ) do
 
 
 	local pvp = vgui.Create( "DPanel", plypanel )
-	pvp:SetPos( 675, 8  )
-	pvp:SetSize( 25, 25 )
+	pvp:SetPos( 625, 7  )
+	pvp:SetSize( 25, 24 )
 	pvp.Paint = function() -- Paint function
 		surface.SetDrawColor(150, 0, 0 ,255)
 		surface.DrawOutlinedRect(1, 1, pvp:GetWide() - 1 , pvp:GetTall() - 1)

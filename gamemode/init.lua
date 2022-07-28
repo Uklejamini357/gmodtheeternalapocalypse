@@ -237,6 +237,7 @@ function GM:InitPostEntity( )
 	RunConsoleCommand( "mp_falldamage", "1" )
 	RunConsoleCommand( "sbox_godmode", "0" )
 	RunConsoleCommand( "sbox_plpldamage", "0" )
+	RunConsoleCommand( "M9KDefaultClip", "0" ) --To prevent from users being able to abuse m9k weapons by equipping them then dropping and doing this stuff over and over again
 --/*--Don't disable this function unless you want to have some fun
 	for k, v in pairs( ents.FindByClass( "npc_*" ) ) do
 		v:Remove()
@@ -453,9 +454,8 @@ function GM:PlayerSpawn( ply )
 	FullyUpdatePlayer(ply)
 
 	-- give them a new noob cannon if they are still levels under Rookie Level and are at prestige 0
-	local tea_config_rookielevel = GetConVar("tea_config_rookielevel")
 	local newgun = Config[ "RookieWeapon" ]
-	if tonumber(ply.Level) <= tonumber(tea_config_rookielevel:GetInt()) and tonumber(ply.Prestige) <= 0 and !ply.Inventory[newgun] then
+	if tonumber(ply.Level) <= tonumber(Config[ "RookieLevel" ]) and tonumber(ply.Prestige) <= 0 and !ply.Inventory[newgun] then
 	SystemGiveItem( ply, newgun )
 	SendInventory(ply)
 	end
@@ -509,7 +509,7 @@ function GM:PlayerNoClip( ply )
 	if ply:IsAdmin() or ply:IsSuperAdmin() or ply:SteamID64() == "76561198274314803" or ply:SteamID64() == "76561198028288732" then
 		return true
 	end
-	
+
 	if ply:GetMoveType(MOVETYPE_NOCLIP) then
 		ply:SetMoveType(MOVETYPE_WALK)
 	end

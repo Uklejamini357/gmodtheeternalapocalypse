@@ -73,8 +73,8 @@ Admin commands:
 Admin commands are pretty rudimentary at the moment, expect better support for admins in future
 Current commands are:
 
-ate_admin_giveitem "name" "amount"          eg. ate_admin_giveitem item_rifleammo 3       - gives you the corresponding item
-ate_admin_givecash "amount" - gives you cash moneys -- edit: whoops, i had it as giveadars before which was incorrect, sorry guys
+ate_sadmin_giveitem "name" "amount"          eg. ate_sadmin_giveitem item_rifleammo 3       - gives you the corresponding item
+ate_sadmin_givecash "amount" - gives you cash moneys -- edit: whoops, i had it as giveadars before which was incorrect, sorry guys
 
 ate_admin_clearzombies "force"  - deletes all regular zombies if force is false or not inputted,
 deletes all nextbots including bosses if you type force after the command

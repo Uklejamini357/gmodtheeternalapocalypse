@@ -151,7 +151,7 @@ if client.Inventory[item] then
 		if func == true then
 			SystemRemoveItem( client, item, false ) -- leave this as false otherwise grenades are unusable
 			client.CanUseItem = false
-			timer.Simple(1, function() if client:IsValid() then client.CanUseItem = true end end)
+			timer.Simple(0.7, function() if client:IsValid() then client.CanUseItem = true end end)
 		end
 	SendInventory(client)
 	else

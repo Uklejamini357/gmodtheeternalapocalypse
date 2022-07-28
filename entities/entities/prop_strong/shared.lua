@@ -103,9 +103,12 @@ function ENT:OnTakeDamage( dmg )
 
 	local currenthealth = self:GetStructureHealth()
 	local maxhealth = self:GetStructureMaxHealth()
-	if dmg:IsBulletDamage() then return end
-	currenthealth = (currenthealth - (damage * 0.5))
-
+	if dmg:IsBulletDamage() then
+		currenthealth = (currenthealth - (damage * 0.05))
+	else
+		currenthealth = (currenthealth - (damage * 0.75))
+	end
+	
 	self:SetStructureHealth( currenthealth )
 
 		local shit = math.floor(maxhealth / 500)

@@ -23,7 +23,7 @@ SystemMessage(ply, "You gave yourself "..addqty.."x "..item["Name"], Color(155,2
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("ate_sadmin_give_item", AdminGiveItem)
+concommand.Add("ate_sadmin_giveitem", AdminGiveItem)
 
 function AdminGiveCash( ply, cmd, args )
 if !ply:IsValid() then return false end
@@ -1031,7 +1031,7 @@ local setqty = args[1] or 1
 ply.Stamina = setqty
 ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." set their Stamina to "..setqty.."%!")
 print("[ADMIN COMMAND USED] "..ply:Nick().." set their Stamina to "..setqty.."%!")
-SystemMessage(ply, "You set your Stamina to "..setqty.."!%", Color(155,255,155,255), true)
+SystemMessage(ply, "You set your Stamina to "..setqty.."%!", Color(155,255,155,255), true)
 
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
@@ -1052,7 +1052,7 @@ local setqty = args[1] or 1
 ply.Hunger = setqty * 100
 ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." set their Hunger to "..setqty.."%!")
 print("[ADMIN COMMAND USED] "..ply:Nick().." set their Hunger to "..setqty.."%!")
-SystemMessage(ply, "You set your Hunger to "..setqty.."!%", Color(155,255,155,255), true)
+SystemMessage(ply, "You set your Hunger to "..setqty.."%!", Color(155,255,155,255), true)
 
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
@@ -1073,7 +1073,7 @@ local setqty = args[1] or 1
 ply.Thirst = setqty * 100
 ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." set their Thirst to "..setqty.."%!")
 print("[ADMIN COMMAND USED] "..ply:Nick().." set their Thirst to "..setqty.."%!")
-SystemMessage(ply, "You set your Thirst to "..setqty.."!%", Color(155,255,155,255), true)
+SystemMessage(ply, "You set your Thirst to "..setqty.."%!", Color(155,255,155,255), true)
 
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
@@ -1094,7 +1094,7 @@ local setqty = args[1] or 1
 ply.Fatigue = setqty * 100
 ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." set their Fatigue to "..setqty.."%!")
 print("[ADMIN COMMAND USED] "..ply:Nick().." set their Fatigue to "..setqty.."%!")
-SystemMessage(ply, "You set your Fatigue to "..setqty.."!%", Color(155,255,155,255), true)
+SystemMessage(ply, "You set your Fatigue to "..setqty.."%!", Color(155,255,155,255), true)
 
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
@@ -1115,7 +1115,7 @@ local setqty = args[1] or 1
 ply.Infection = setqty * 100
 ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." set their Infection to "..setqty.."%!")
 print("[ADMIN COMMAND USED] "..ply:Nick().." set their Infection to "..setqty.."%!")
-SystemMessage(ply, "You set your Infection to "..setqty.."!%", Color(155,255,155,255), true)
+SystemMessage(ply, "You set your Infection to "..setqty.."%!", Color(155,255,155,255), true)
 
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
@@ -1218,3 +1218,53 @@ ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has refreshed all spawns and
 print("[ADMIN COMMAND USED] "..ply:Nick().." has refreshed all spawns and traders!")
 end
 concommand.Add("ate_sadmin_refresheverything", ATERefreshEverything)
+
+function ATESpawnItem(ply, cmd, args) 
+if !ply:IsValid() then return false end
+
+if !SuperAdminCheck( ply ) then 
+	SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
+	ply:ConCommand( "playgamesound buttons/button8.wav" )
+	return
+end
+
+local name = args[1]
+local item = ItemsList[name]
+if item == nil then SendChat(ply, "Usage: ate_sadmin_spawnitem [Item ID] (Spawn a dropped item in front of you)") return false end
+if !item then SystemMessage(ply, "ERROR! This item does not exist!", Color(255,205,205,255), true) 
+ply:ConCommand( "playgamesound buttons/button8.wav" ) return false end
+
+local vStart = ply:GetShootPos()
+local vForward = ply:GetAimVector()
+local trace = {}
+trace.start = vStart
+trace.endpos = vStart + (vForward * 70)
+trace.filter = ply
+local tr = util.TraceLine( trace )
+if item.Category == 4 then --it will remain as category 4 so it will detect if it is armor, as long as it doesn't have flaws
+local EntDrop = ents.Create( "ate_droppeditem" )
+			EntDrop:SetPos( tr.HitPos )
+			EntDrop:SetAngles( Angle( 0, 0, 0 ) )
+			EntDrop:SetModel("models/props/cs_office/cardboard_box01.mdl")
+			EntDrop:SetNWString("ItemClass", name)
+			EntDrop:Spawn()
+			EntDrop:Activate()
+			EntDrop:SetVelocity(ply:GetForward() * 80 + Vector(0,0,50))
+else
+	local EntDrop = ents.Create( "ate_droppeditem" )
+			EntDrop:SetPos( tr.HitPos )
+			EntDrop:SetAngles( Angle( 0, 0, 0 ) )
+			EntDrop:SetModel(ItemsList[name]["Model"])
+			EntDrop:SetNWString("ItemClass", name)
+			EntDrop:Spawn()
+			EntDrop:Activate()
+			EntDrop:SetVelocity(ply:GetForward() * 80 + Vector(0,0,50))
+end
+
+ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." spawned a dropped item: "..item["Name"].."!")
+print("[ADMIN COMMAND USED] "..ply:Nick().." spawned a dropped item: "..item["Name"].."!")
+SystemMessage(ply, "You spawned a dropped item: "..item["Name"].."!", Color(155,255,155,255), true)
+FullyUpdatePlayer( ply )
+ply:ConCommand( "playgamesound buttons/button3.wav" )
+end
+concommand.Add("ate_sadmin_spawnitem", ATESpawnItem)

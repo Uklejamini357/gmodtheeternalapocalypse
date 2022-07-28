@@ -28,10 +28,10 @@ function ENT:Use( ply, caller )
 	if self.UseTimer > CurTime() then return false end
 	self.UseTimer = CurTime() + 1
 if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "You are already sleeping, why would you sleep again??") return false end
-if ply.Fatigue <= 2000 then SendChat(ply, "You are not tired") return end
-if ply.Hunger <= 3000 then SendChat(ply, "You are hungry, you should eat something.") return end
-if ply.Thirst <= 3000 then SendChat(ply, "You are thirsty, you should drink something.") return end
-if ply.Infection >= 8000 then SendChat(ply, "You are infected, find a cure.") return end
+if ply.Fatigue <= 2000 then SendChat(ply, "You are not tired") return false end
+if ply.Hunger <= 3000 then SendChat(ply, "You are hungry, you should eat something.") return false end
+if ply.Thirst <= 3000 then SendChat(ply, "You are thirsty, you should drink something.") return false end
+if ply.Infection >= 8000 then SendChat(ply, "You are infected, find a cure.") return false end
 	SendChat( ply, "You are now asleep" )
 	umsg.Start( "DrawSleepOverlay", ply )
 	umsg.End()
@@ -39,5 +39,5 @@ if ply.Infection >= 8000 then SendChat(ply, "You are infected, find a cure.") re
 	timer.Create( "IsSleeping_"..ply:UniqueID(), 25, 1, function()
 		timer.Destroy("IsSleeping_"..ply:UniqueID())
 	end )
-	ply:SetHealth( ply:GetMaxHealth() )
+	ply:SetHealth( math.Clamp(ply:Health() + (0.05 * ply:GetMaxHealth()), 1, ply:GetMaxHealth()) )
 end

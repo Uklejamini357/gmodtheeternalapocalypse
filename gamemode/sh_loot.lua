@@ -114,9 +114,16 @@ LootTable1 = {
 
 	["weapon_zw_grenade_pipe"] = {
 		["Name"] = "2x Pipe Bomb",
-		["Weight"] = 0.5,
+		["Weight"] = 0.68,
 		["Qty"] = 2,
 		["Class"] = "weapon_zw_grenade_pipe",
+	},
+
+	["weapon_zw_grenade_flare"] = {
+		["Name"] = "2x Distress Flare",
+		["Weight"] = 0.8,
+		["Qty"] = 2,
+		["Class"] = "weapon_zw_grenade_flare",
 	},
 
 	["weapon_zw_grenade_frag"] = {
@@ -135,6 +142,13 @@ LootTable2 = {
 		["Weight"] = 2.2,
 		["Qty"] = 1,
 		["Class"] = "item_sleepingbag",
+	},
+
+	["item_armorbattery"] = {
+		["Name"] = "1x Armor Battery",
+		["Weight"] = 0.55,
+		["Qty"] = 1,
+		["Class"] = "item_armorbattery",
 	},
 
 	["weapon_zw_axe"] = {
@@ -181,7 +195,7 @@ LootTable2 = {
 
 	["weapon_zw_l303"] = {
 		["Name"] = "1x Lior L303",
-		["Weight"] = 5,
+		["Weight"] = 5.35,
 		["Qty"] = 1,
 		["Class"] = "weapon_zw_l303",
 	},
@@ -242,7 +256,7 @@ LootTableBoss = {
 
 	["weapon_zw_minigun"] = {
 		["Name"] = "1x GAU-8C Chaingun",
-		["Weight"] = 18.84,
+		["Weight"] = 16.62,
 		["Qty"] = 1,
 		["Class"] = "weapon_zw_minigun",
 	},

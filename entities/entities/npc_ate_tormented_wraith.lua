@@ -40,15 +40,15 @@ self.ZombieStats = {
 ["StrikeDelay"] = 0.4, -- how long does it take for the zombie to deal damage after beginning an attack
 ["AfterStrikeDelay"] = 1, -- how long should the zombie wait after a strike lands until reverting to its behaviour cycle
 
-["Health"] = 130, -- self explanatory
-["MoveSpeedWalk"] = 55, -- zombies move speed when idly wandering around
-["MoveSpeedRun"] = 220, -- zombies move speed when moving towards a target
+["Health"] = 400, -- self explanatory
+["MoveSpeedWalk"] = 65, -- zombies move speed when idly wandering around
+["MoveSpeedRun"] = 200, -- zombies move speed when moving towards a target
 ["VisionRange"] = 1200, -- how far is the zombies standard sight range in source units, this will be tripled when they are frenzied
 ["LoseTargetRange"] = 1500, -- how far must the target be from the zombie before it will lose interest and revert to wandering, this will be tripled when the zombie is frenzied
 
-["Ability1"] = false,
-["Ability1Range"] = 0,
-["Ability1Cooldown"] = 0,
+["Ability1"] = true,
+["Ability1Range"] = 500,
+["Ability1Cooldown"] = 5,
 ["Ability1TrigDelay"] = 0,
 
 }
@@ -80,9 +80,18 @@ self.DoorBreak = Sound("npc/zombie/zombie_pound_door.wav")
 self.Hit = Sound("npc/zombie/zombie_hit.wav")
 self.Miss = Sound("npc/zombie/claw_miss1.wav")
 
+self.Ability1CD = CurTime()
+
 end
 
-
+function ENT:SpecialSkill1()
+	if !self:IsValid() then return false end
+	
+	local effectdata = EffectData()
+	effectdata:SetOrigin(self:GetPos() + Vector(0, 0, 60))
+	util.Effect("zw_master_pulse", effectdata)
+	self:EmitSound("ambient/machines/thumper_hit.wav", 120, 70)
+end
 
 function ENT:AttackPlayer(ply)
 if !ply:IsValid() or !self:IsValid() then return false end

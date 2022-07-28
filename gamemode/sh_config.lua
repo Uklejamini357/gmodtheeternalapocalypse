@@ -12,7 +12,7 @@ Config[ "DebugLogging" ] = true -- do we want to save debug logs? logs are found
 
 Config[ "Currency" ] = "Dollar" -- the s is added onto strings where needed, for example if you put the currency as "Dollar" it will come out as "Dollars" as needed
 
---Config[ "RookieLevel" ] = 15 -- people who are this level or below are considered Rookies
+Config[ "RookieLevel" ] = 100 -- people who are this level or below are considered Rookies
 Config[ "RookieWeapon" ] = "weapon_zw_noobcannon" -- what gun to give to players if they are under the Rookie level and if they lost their previous one
 Config[ "StartMoney" ] = 500 -- Rookie fund
 
@@ -23,7 +23,7 @@ Config[ "AirdropSpawnRate" ] = 3750 -- same as boss spawn rate but for airdrops
 
 --Config[ "MaxCaches" ] = 10 -- how many loot caches can exist in the map at any given time?
 
-Config[ "VaultSize" ] = 200 -- vault size in kg
+Config[ "VaultSize" ] = 175 -- vault size in kg
 Config[ "FileSystem" ] = "Legacy" -- set to Legacy or PData
 -- legacy saves player data as text files under garrysmod/data/theeverlastingapocalypse/profiles/(players steamid)/
 -- Pdata saves their data to the servers sql file (garrysmod/sv.db)

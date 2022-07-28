@@ -122,6 +122,7 @@ function ENT:Initialize()
 	self.NextVehicleCollide = CurTime()
 	self.loco:SetDeathDropHeight(700)
 	self:SetHealth(self.ZombieStats["Health"])
+	self:SetMaxHealth(self.ZombieStats["Health"])
 	self:SetCollisionBounds(Vector(-12,-12, 0), Vector(12, 12, 64))
 	self.NxtTick = 5
 end

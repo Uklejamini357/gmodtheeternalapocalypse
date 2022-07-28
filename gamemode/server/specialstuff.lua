@@ -1,4 +1,5 @@
 -- This stuff i added here doesn't appear normally in game instead it is possible to run functions via something else such as lua_run
+-- Also it is the right place to add new functions if you're planning to add The Eternal Apocalypse ULX commands
 
 function ULXResetSkills(ply)
 if !SERVER then return false end

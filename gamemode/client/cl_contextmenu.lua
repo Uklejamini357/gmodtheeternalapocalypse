@@ -118,7 +118,7 @@ function CMenu()
 	end
 	VersionButton.DoClick = function()
 	RunConsoleCommand("-menu_context")
-	chat.AddText(Color(255,255,155,255), "Gamemode '"..GAMEMODE.Name.."' made by "..GAMEMODE.Author.." \nOriginal Creator of After The End (LegendofRobbo) \nVersion "..GAMEMODE.Version.." ("..GAMEMODE.Website..")")
+	chat.AddText(Color(255,255,155,255), "Gamemode '"..GAMEMODE.Name.."' ("..GAMEMODE.AltName..") made by "..GAMEMODE.Author.." \nOriginal Creator of After The End (LegendofRobbo) \nVersion "..GAMEMODE.Version.." ("..GAMEMODE.Website..")")
 	end
 
 	local CashButton = vgui.Create("DButton", ContextMenu)

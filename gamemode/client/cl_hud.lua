@@ -238,7 +238,7 @@ local function DrawVitals( )
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------HEALTH
 	--Health Box
-	draw.RoundedBox( 1,  10,  ScrH() - 110, 180, 100, Color( 0, 0, 0, 200 ) )
+	draw.RoundedBox( 1,  10,  ScrH() - 110, 180, 100, Color( 0, 0, 0, 175 ) )
 	surface.SetDrawColor(90, 0, 0 ,255)
 	surface.DrawOutlinedRect(10, ScrH() - 110, 180, 100)
 
@@ -288,7 +288,7 @@ local function DrawVitals( )
 	IsAmmoBox = true
 	--Ammo Box
 --	draw.RoundedBox( 1,  ScrW() - 240,  ScrH() - 180, 180, 50, Color( 0, 0, 0, 160 ) )
-	draw.RoundedBox( 1,  ScrW() - 270,  ScrH() - 140, 250, 70, Color( 0, 0, 0, 200 ) )
+	draw.RoundedBox( 1,  ScrW() - 270,  ScrH() - 140, 250, 70, Color( 0, 0, 0, 175 ) )
 	surface.SetDrawColor(200, 100, 0 ,255)
 	surface.DrawOutlinedRect(ScrW() - 270,  ScrH() - 140, 250, 70)
 	
@@ -314,8 +314,8 @@ local function DrawVitals( )
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------XP
 	--XP Box
-	draw.RoundedBox( 1,  ScrW() - 270,  ScrH() - 60, 250, 50, Color( 0, 0, 0, 200 ) )
-	draw.RoundedBox( 1,  ScrW() - 520,  ScrH() - 60, 240, 50, Color( 0, 0, 0, 200 ) )
+	draw.RoundedBox( 1,  ScrW() - 270,  ScrH() - 60, 250, 50, Color( 0, 0, 0, 175 ) )
+	draw.RoundedBox( 1,  ScrW() - 520,  ScrH() - 60, 240, 50, Color( 0, 0, 0, 175 ) )
 	surface.SetDrawColor(90, 0, 0 ,255)
 	surface.DrawOutlinedRect(ScrW() - 270,  ScrH() - 60, 250, 50)
 	surface.SetDrawColor(40, 90, 0 ,255)
@@ -340,7 +340,7 @@ local function DrawVitals( )
 	
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------Stamina
 
-	draw.RoundedBox( 1,  200,  ScrH() - 200, 180, 190, Color( 0, 0, 0, 200 ) )
+	draw.RoundedBox( 1,  200,  ScrH() - 200, 180, 190, Color( 0, 0, 0, 175 ) )
 	surface.SetDrawColor(125, 125, 55 ,255)
 	surface.DrawOutlinedRect(200,  ScrH() - 200, 180, 190)
 	
@@ -349,7 +349,7 @@ local function DrawVitals( )
 
 
 	--Stamina bar base
-	draw.RoundedBox( 2, 210, ScrH() - 176, 160, 15, Color( 50, 50, 0, 160 ) )
+	draw.RoundedBox( 2, 210, ScrH() - 176, 160, 15, Color( 50, 50, 0, 100 ) )
 	
 	if Mystamina > 0 then
 		--Stamina Bar
@@ -363,7 +363,7 @@ local function DrawVitals( )
 
 
 	--Hunger bar base
-	draw.RoundedBox( 2, 210, ScrH() - 104, 160, 15, Color( 50, 0, 50, 160 ) )
+	draw.RoundedBox( 2, 210, ScrH() - 140, 160, 15, Color( 50, 0, 50, 100 ) )
 
 	--hunger bar
 	if math.Round(Myhunger / 100) > 0 then
@@ -378,7 +378,7 @@ local function DrawVitals( )
 
 
 	--Thirst bar base
-	draw.RoundedBox( 2, 210, ScrH() - 104, 160, 15, Color( 45, 45, 75, 160 ) )
+	draw.RoundedBox( 2, 210, ScrH() - 104, 160, 15, Color( 45, 45, 75, 100 ) )
 
 	--Thirst bar
 	if math.Round(Mythirst / 100) > 0 then
@@ -393,7 +393,7 @@ local function DrawVitals( )
 
 
 	--Fatigue bar base
-	draw.RoundedBox( 2, 210, ScrH() - 68, 160, 15, Color( 0, 50, 50, 160 ) )
+	draw.RoundedBox( 2, 210, ScrH() - 68, 160, 15, Color( 0, 50, 50, 100 ) )
 
 	--Fatigue bar
 	if math.Round(Myfatigue / 100) > 0 then
@@ -412,7 +412,7 @@ local function DrawVitals( )
 
 
 	--Infection bar base
-	draw.RoundedBox( 2, 210, ScrH() - 32, 160, 15, Color( 80, 0, 0, 160 ) )
+	draw.RoundedBox( 2, 210, ScrH() - 32, 160, 15, Color( 80, 0, 0, 100 ) )
 
 	--Infection bar
 	if math.Round(Myinfection / 100) > 0 then
@@ -429,7 +429,7 @@ local function DrawVitals( )
 
 
 	--Levels & cash box
-	draw.RoundedBox( 1,  10,  ScrH() - 200, 180, 85, Color( 0, 0, 0, 200 ) )
+	draw.RoundedBox( 1,  10,  ScrH() - 200, 180, 85, Color( 0, 0, 0, 175 ) )
 	surface.SetDrawColor(55, 55, 155 ,255)
 	surface.DrawOutlinedRect(10,  ScrH() - 200, 180, 85)
 
@@ -511,7 +511,7 @@ local wy = 40*math.sin(-wang) + 80
 	}
 
 	if mpvp == 3 or mpvp == 4 then
-	surface.SetDrawColor(100,0,0,200)
+	surface.SetDrawColor(100,0,0,175)
 	else
 	surface.SetDrawColor(0,0,0,200)
 	end
@@ -532,7 +532,7 @@ for _, ent in pairs (ents.FindByClass("trader")) do
 
 	if ent:GetPos():Distance(me:GetPos()) < 120 then
 
-	draw.RoundedBox( 2, ScrW() / 2 - 230, 20, 460, 75, Color( 0, 0, 0, 200 ) )
+	draw.RoundedBox( 2, ScrW() / 2 - 230, 20, 460, 75, Color( 0, 0, 0, 175 ) )
 	surface.SetDrawColor(155, 0, 0 ,255)
 	surface.DrawOutlinedRect(ScrW() / 2 - 230, 20, 460, 75)
 	draw.SimpleText( "You are in a trader protection zone", "TargetID", ScrW() / 2 - 135, 40, Color( 255, 255, 255, 255 ), 0, 1 )

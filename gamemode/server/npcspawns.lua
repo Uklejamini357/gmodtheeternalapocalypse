@@ -394,10 +394,11 @@ undo.AddEntity (SpawnZombie)
 undo.SetPlayer (ply)
 undo.Finish()
 
+SystemMessage(ply, "Spawned zombie "..class, Color(205,255,205,255), true)
 ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has spawned a zombie "..class.."!")
 print("[ADMIN COMMAND USED] "..ply:Nick().." has spawned a zombie "..class.."!")
 end
-concommand.Add( "ate_debug_createzombie", TestZombies )
+concommand.Add( "tea_dev_createzombie", TestZombies )
 
 
 

@@ -8,7 +8,7 @@ GM.AltName	= "After The End Reborn"
 GM.Author 	= "Uklejamini"
 GM.Email 	= "no"
 GM.Website 	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.10.0a"
+GM.Version	= "0.10.0b"
 
 team.SetUp( 1, "Loner", Color( 100, 50, 50, 255 ) ) --loner basic team
 

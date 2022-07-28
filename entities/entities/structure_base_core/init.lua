@@ -28,6 +28,7 @@ function ENT:Initialize()
 	local selfent = self.Entity
 	self.IsBuilt = false
 	self.BuildLevel = 1
+	self.Attacked = 0
 	self.integrity = 2000
 	self.maxinteg = 2000
 	self.Entity:PhysicsInit( SOLID_VPHYSICS )
@@ -133,8 +134,25 @@ function ENT:OnTakeDamage( dmg )
 	end
 
 	if attacker:IsPlayer() and attacker:Team() == owner:Team() then SystemMessage(attacker, "You cannot damage your own factions base core!", Color(255,205,205,255), true) return false end --beware, even zombies can destroy your faction base cores
-
-
+	if attacker:IsPlayer() and attacker:Team() != owner:Team() then
+		for k,v in pairs(player.GetAll()) do
+			if v:Team() == owner:Team() and self.Attacked == 0 then
+				SystemMessage(v, "Your faction's base core is under attack!", Color(255,230,230,255), true)
+			end
+		end
+	end
+	self.Attacked = 1
+	if !timer.Exists("basecoreattacked"..owner:Team()) then
+		timer.Create("basecoreattacked"..owner:Team(), 20, 1, function() --the functionality of this timer is to checked if it exists so it doesn't spam in chat everytime it gets attacked by player
+			self.Attacked = 0
+			timer.Destroy("basecoreattacked"..owner:Team()) 
+		end)
+	end
+	if attacker:IsPlayer() then
+		print(attacker:Nick().." is attacking base core of team "..owner:Team().."! (Damage: "..damage..")")
+	else
+		print("An Unknown cause is attacking the base core of team "..owner:Team().."! (Damage: "..damage..")")
+	end
 	local currenthealth = self.integrity
 	if dmg:IsBulletDamage() then 
 		self.integrity = (self.integrity - damage / 2)
