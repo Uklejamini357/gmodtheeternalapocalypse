@@ -36,7 +36,7 @@ LANGUAGE.Second = "second"
 LANGUAGE.NeedToEatHunger = "WARNING! You are starving, you need to eat something!"
 LANGUAGE.NeedToDrinkThirst = "WARNING! You are dying from dehydration, drink something!"
 LANGUAGE.NeedToSleepFatigue = "WARNING! You are about to die from fatigue, find somewhere to sleep!"
-LANGUAGE.NeedToCureInfction = "WARNING! You are about to die from infection, find a cure!"
+LANGUAGE.NeedToCureInfection = "WARNING! You are about to die from infection, find a cure!"
 
 --Inventory
 

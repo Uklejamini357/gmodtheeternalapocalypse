@@ -32,7 +32,7 @@ LANGUAGE.Second = "секунды"
 LANGUAGE.NeedToEatHunger = "ПРЕДУПРЕЖДЕНИЕ! Вы голодаете, вам надо что-то съесть!"
 LANGUAGE.NeedToDrinkThirst = "ПРЕДУПРЕЖДЕНИЕ! Вы умрете от обезвоживания , выпей что-то!"
 LANGUAGE.NeedToSleepFatigue = "ПРЕДУПРЕЖДЕНИЕ! Вы умрете от усталости,найдите место чтобы поспать!"
-LANGUAGE.NeedToCureInfction = "ПРЕДУПРЕЖДЕНИЕ! Вы умрете от инфекции, найдите лекарство!"
+LANGUAGE.NeedToCureInfection = "ПРЕДУПРЕЖДЕНИЕ! Вы умрете от инфекции, найдите лекарство!"
 
 --Inventory
 
