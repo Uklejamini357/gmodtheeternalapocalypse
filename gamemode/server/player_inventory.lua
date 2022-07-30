@@ -11,7 +11,10 @@ return totalweight
 end
 
 function CalculateMaxWeight(ply)
+local armorstr = ply:GetNWString("ArmorType") or "none"
+local armortype = ItemsList[armorstr]
 local maxweight = 0
+if ply:GetNWString("ArmorType") == "none" then
 	if tonumber(ply.Prestige) >= 10 then
 		maxweight = 42.4 + ((ply.StatStrength or 0) * 1.53)
 	elseif tonumber(ply.Prestige) >= 3 then
@@ -19,6 +22,16 @@ local maxweight = 0
 	else
 		maxweight = 37.4 + ((ply.StatStrength or 0) * 1.53)
 	end
+else
+	local additionalcarryweight = armortype["ArmorStats"]["carryweight"]
+	if tonumber(ply.Prestige) >= 10 then
+		maxweight = 42.4 + ((ply.StatStrength or 0) * 1.53) + armortype["ArmorStats"]["carryweight"]
+	elseif tonumber(ply.Prestige) >= 3 then
+		maxweight = 39.4 + ((ply.StatStrength or 0) * 1.53) + armortype["ArmorStats"]["carryweight"]
+	else
+		maxweight = 37.4 + ((ply.StatStrength or 0) * 1.53) + armortype["ArmorStats"]["carryweight"]
+	end
+end
 return maxweight
 end
 
@@ -151,7 +164,7 @@ if client.Inventory[item] then
 		if func == true then
 			SystemRemoveItem( client, item, false ) -- leave this as false otherwise grenades are unusable
 			client.CanUseItem = false
-			timer.Simple(0.7, function() if client:IsValid() then client.CanUseItem = true end end)
+			timer.Simple(0, function() if client:IsValid() then client.CanUseItem = true end end)
 		end
 	SendInventory(client)
 	else
@@ -187,7 +200,7 @@ if stockcheck == -1 then SendChat(self, "Bruh, did you just try to buy stuff tha
 local cash = tonumber(self.Money)
 
 if (cash < (item["Cost"] * (1 - (self.StatBarter * 0.015)))) then SendChat(self, "You cannot afford that!") return false end
-if ((CalculateWeight(self) + item["Weight"]) > (37.4 + ((self.StatStrength or 0) * 1.53))) then SendChat(self, "You do not have enough space for that!") return false end
+if ((CalculateWeight(self) + item["Weight"]) > CalculateMaxWeight(self)) then SendChat(self, "You do not have enough space for that!") return false end
 
 
 SystemGiveItem( self, str )

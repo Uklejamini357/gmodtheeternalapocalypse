@@ -158,19 +158,19 @@ local function DrawNames( )
 
 				surface.SetFont( "TargetIDSmall" )
 
-				local message2 = "Health: " .. ply:Health() .." / " .. ply:GetMaxHealth() .. ""
+				local message2 = translate.Get("Health")..": " .. ply:Health() .." / " .. ply:GetMaxHealth() .. ""
 				local wo2, ho2 = surface.GetTextSize( message2 )
 
-				local message3 = "Armor: " .. ply:Armor() .." / " .. ply:GetMaxArmor() .. ""
+				local message3 = translate.Get("Armor")..": " .. ply:Armor() .." / " .. ply:GetMaxArmor() .. ""
 				local wo3, ho3 = surface.GetTextSize( message3 )
  
-				local message4 = "Level: " .. ply:GetNWInt( "PlyLevel", 1 )
+				local message4 = translate.Get("Level")..": " .. ply:GetNWInt( "PlyLevel", 1 )
 				local wo4, ho4 = surface.GetTextSize( message4 )
  
-				local message5 = "Bounty: " .. math.floor(ply:GetNWInt( "PlyBounty", 0 ))
+				local message5 = translate.Get("Bounty")..": " .. math.floor(ply:GetNWInt( "PlyBounty", 0 ))
 				local wo5, ho5 = surface.GetTextSize( message5 )
 
-				local message6 = "Faction: "..team.GetName(ply:Team())
+				local message6 = translate.Get("Faction")..": "..team.GetName(ply:Team())
 				local wo6, ho6 = surface.GetTextSize( message6 )
 
 				if ply:IsPvPGuarded() then
@@ -180,11 +180,11 @@ local function DrawNames( )
 				end
 
 				draw.SimpleTextOutlined(  ply:Name(), "TargetID", headPos.x - (wo /2 ), headPos.y - 40, Color( 255, 255, 255, 255 ), 0, 0, 2, Color( 0, 0, 0, 255 ) )
-				draw.SimpleTextOutlined(  "Health: " .. ply:Health() .." / " .. ply:GetMaxHealth() .. "", "TargetIDSmall", headPos.x - (wo2 / 2), headPos.y - 20, Color( 255, math.Clamp(((ply:Health() * 100) / ply:GetMaxHealth()) * 2.5, 0, 255), math.Clamp(((ply:Health() * 100) / ply:GetMaxHealth()) * 2.5, 0, 255), 255 ), 0, 0, 1, Color( 0, 0, 0, 255 ) )
-				draw.SimpleTextOutlined(  "Armor: " .. ply:Armor() .." / " .. ply:GetMaxArmor() .. "", "TargetIDSmall", headPos.x - (wo3 / 2), headPos.y - 7, Color( math.Clamp((50 + (ply:Armor() * 100) / ply:GetMaxArmor()), 0, 255), math.Clamp((50 + (ply:Armor() * 100) / ply:GetMaxArmor()), 0, 255), 255, 255 ), 0, 0, 1, Color( 0, 0, 0, 255 ) )
-				draw.SimpleTextOutlined(  "Level: " .. ply:GetNWInt( "PlyLevel", 1 ) , "TargetIDSmall", headPos.x - (wo4 / 2 ) - 2, headPos.y + 7, Color( 255, 205, 255, 255 ), 0, 0, 1, Color( 0, 0, 0, 255 ) )
-				draw.SimpleTextOutlined(  "Bounty: " .. math.floor(ply:GetNWInt( "PlyBounty", 0 )) , "TargetIDSmall", headPos.x - (wo5 / 2 ) - 2, headPos.y + 20, Color( 255, 64, 64, 255 ), 0, 0, 1, Color( 0, 0, 0, 255 ) )
-				draw.SimpleTextOutlined(  "Faction: "..team.GetName(ply:Team()), "TargetIDSmall", headPos.x - (wo6 / 2 ) - 2, headPos.y + 33, team.GetColor(ply:Team()), 0, 0, 1, Color( 0, 0, 0, 255 ) )
+				draw.SimpleTextOutlined(  translate.Get("Health")..": " .. ply:Health() .." / " .. ply:GetMaxHealth() .. "", "TargetIDSmall", headPos.x - (wo2 / 2), headPos.y - 20, Color( 255, math.Clamp(((ply:Health() * 100) / ply:GetMaxHealth()) * 2.5, 0, 255), math.Clamp(((ply:Health() * 100) / ply:GetMaxHealth()) * 2.5, 0, 255), 255 ), 0, 0, 1, Color( 0, 0, 0, 255 ) )
+				draw.SimpleTextOutlined(  translate.Get("Armor")..": " .. ply:Armor() .." / " .. ply:GetMaxArmor() .. "", "TargetIDSmall", headPos.x - (wo3 / 2), headPos.y - 7, Color( math.Clamp((50 + (ply:Armor() * 100) / ply:GetMaxArmor()), 0, 255), math.Clamp((50 + (ply:Armor() * 100) / ply:GetMaxArmor()), 0, 255), 255, 255 ), 0, 0, 1, Color( 0, 0, 0, 255 ) )
+				draw.SimpleTextOutlined(  translate.Get("Level")..": " .. ply:GetNWInt( "PlyLevel", 1 ) , "TargetIDSmall", headPos.x - (wo4 / 2 ) - 2, headPos.y + 7, Color( 255, 205, 255, 255 ), 0, 0, 1, Color( 0, 0, 0, 255 ) )
+				draw.SimpleTextOutlined(  translate.Get("Bounty")..": " .. math.floor(ply:GetNWInt( "PlyBounty", 0 )) , "TargetIDSmall", headPos.x - (wo5 / 2 ) - 2, headPos.y + 20, Color( 255, 64, 64, 255 ), 0, 0, 1, Color( 0, 0, 0, 255 ) )
+				draw.SimpleTextOutlined(  translate.Get("Faction")..": "..team.GetName(ply:Team()), "TargetIDSmall", headPos.x - (wo6 / 2 ) - 2, headPos.y + 33, team.GetColor(ply:Team()), 0, 0, 1, Color( 0, 0, 0, 255 ) )
 
 	end
 
@@ -219,19 +219,19 @@ local function DrawVitals( )
 	local glow = math.abs(math.sin(CurTime() * 2.5) * 255)
 
 	if Myhunger < 1000 then
-	draw.SimpleText( "You are hungry, you need to eat something", "TargetID", 21, ScrH() - 360, Color( 255, glow, glow, 255 ), 0, 1 )
+	draw.SimpleText( translate.Get("NeedToEatHunger"), "TargetID", 21, ScrH() - 360, Color( 255, glow, glow, 255 ), 0, 1 )
 	end
 
 	if Mythirst < 1000 then
-	draw.SimpleText( "You are thirsty, drink something.", "TargetID", 21, ScrH() - 340, Color( 255, glow, glow, 255 ), 0, 1 )
+	draw.SimpleText( translate.Get("NeedToDrinkThirst"), "TargetID", 21, ScrH() - 340, Color( 255, glow, glow, 255 ), 0, 1 )
 	end
 
 	if Myfatigue > 9000 then
-	draw.SimpleText( "You are very tired, find somewhere to sleep!", "TargetID", 21, ScrH() - 320, Color( 255, glow, glow, 255 ), 0, 1 )
+	draw.SimpleText( translate.Get("NeedToSleepFatigue"), "TargetID", 21, ScrH() - 320, Color( 255, glow, glow, 255 ), 0, 1 )
 	end
 
 	if Myinfection > 9000 then
-	draw.SimpleText( "You are about to die from infection, find a cure!", "TargetID", 21, ScrH() - 300, Color( 255, glow, glow, 255 ), 0, 1 )
+	draw.SimpleText( translate.Get("NeedToCureInfection"), "TargetID", 21, ScrH() - 300, Color( 255, glow, glow, 255 ), 0, 1 )
 	end
 
 
@@ -244,7 +244,7 @@ local function DrawVitals( )
 
 
 	--Health Text
-	draw.SimpleText( "Health: " .. Health .. "/" .. MaxHealth .."", "TargetIDSmall", 21, ScrH() - 96, Color( 255, 96, 96, 255 ), 0, 1 )
+	draw.SimpleText( translate.Get("Health")..": " .. Health .. "/" .. MaxHealth .."", "TargetIDSmall", 21, ScrH() - 96, Color( 255, 96, 96, 255 ), 0, 1 )
 
 	--Health bar base
 	draw.RoundedBox( 2, 20, ScrH() - 86, 160, 20, Color( 50, 0, 0, 160 ) )	
@@ -261,7 +261,7 @@ local function DrawVitals( )
 	
 	--Armor
 	--Armor Text
-	draw.SimpleText( "Armor: " .. Armor .. "/" .. MaxArmor .."", "TargetIDSmall", 21, ScrH() - 50, Color( 96, 96, 255, 255 ), 0, 1 )
+	draw.SimpleText( translate.Get("Armor")..": " .. Armor .. "/" .. MaxArmor .."", "TargetIDSmall", 21, ScrH() - 50, Color( 96, 96, 255, 255 ), 0, 1 )
 	
 	--Armor bar base
 	draw.RoundedBox( 2, 20, ScrH() - 36, 160, 20, Color( 0, 0, 50, 160 ) )
@@ -331,11 +331,11 @@ local function DrawVitals( )
 	draw.RoundedBox( 4, ScrW() - 250, ScrH() - 36, math.Clamp( 210 * ( Myxp / GetReqXPClient( me ) ), 3, 210), 20, Color( 150, 0, 0, 160 ) )
 	
 	--Show points too
-	draw.SimpleText( "Pts: " .. math.floor(Mypoints), "TargetIDSmall", ScrW() - 401, ScrH() - 36, Color( 255, 255, 255, 255 ), 0, 1 )
+	draw.SimpleText( translate.Get("Pts")..": " .. math.floor(Mypoints), "TargetIDSmall", ScrW() - 401, ScrH() - 36, Color( 255, 255, 255, 255 ), 0, 1 )
 
 	--Bounty Text
 
-	draw.SimpleText( "Bounty: " .. math.floor(Mybounty), "TargetIDSmall", ScrW() - 509, ScrH() - 36, Color( 255, math.Clamp(128 - (Mybounty / 60), 0, 255), math.Clamp(256 - (Mybounty / 30), 0, 255), 255 ), 0, 1 )
+	draw.SimpleText( translate.Get("Bounty")..": " .. math.floor(Mybounty), "TargetIDSmall", ScrW() - 509, ScrH() - 36, Color( 255, math.Clamp(128 - (Mybounty / 60), 0, 255), math.Clamp(256 - (Mybounty / 30), 0, 255), 255 ), 0, 1 )
 
 	
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------Stamina
@@ -345,7 +345,7 @@ local function DrawVitals( )
 	surface.DrawOutlinedRect(200,  ScrH() - 200, 180, 190)
 	
 	--Stamina Text  
-	draw.SimpleText( "Stamina: " .. Mystamina.."%", "TargetIDTiny", 210, ScrH() - 186, Color( 205, 255, 205, 255 ), 0, 1 )
+	draw.SimpleText( translate.Get("Stamina")..": " .. Mystamina.."%", "TargetIDTiny", 210, ScrH() - 186, Color( 205, 255, 205, 255 ), 0, 1 )
 
 
 	--Stamina bar base
@@ -373,7 +373,7 @@ local function DrawVitals( )
 
 
 	--Hunger Text
-	draw.SimpleText( "Hunger: "..math.Clamp(Myhunger / 100, 0, 100).."%", "TargetIDTiny", 210, ScrH() - 150, Color( 255, 205, 255, 255 ), 0, 1 )
+	draw.SimpleText( translate.Get("Hunger")..": "..math.Clamp(Myhunger / 100, 0, 100).."%", "TargetIDTiny", 210, ScrH() - 150, Color( 255, 205, 255, 255 ), 0, 1 )
 --	draw.SimpleText( "Hunger: "..math.Round(Myhunger / 100).."%", "TargetIDTiny", 210, ScrH() - 150, Color( 255, 205, 255, 255 ), 0, 1 )
 
 
@@ -388,7 +388,7 @@ local function DrawVitals( )
 
 
 	--Thirst Text
-	draw.SimpleText( "Thirst: "..math.Clamp(Mythirst / 100, 0, 100).."%", "TargetIDTiny", 210, ScrH() - 114, Color( 155, 155, 255, 255 ), 0, 1 )
+	draw.SimpleText( translate.Get("Thirst")..": "..math.Clamp(Mythirst / 100, 0, 100).."%", "TargetIDTiny", 210, ScrH() - 114, Color( 155, 155, 255, 255 ), 0, 1 )
 --	draw.SimpleText( "Thirst: "..math.Round(Mythirst / 100).."%", "TargetIDTiny", 210, ScrH() - 114, Color( 155, 155, 255, 255 ), 0, 1 )
 
 
@@ -404,7 +404,7 @@ local function DrawVitals( )
 
 
 	--Fatigue Text
-	draw.SimpleText( "Fatigue: "..math.Clamp(Myfatigue / 100, 0, 100).."%", "TargetIDTiny", 210, ScrH() - 78, Color( 205, 205, 255, 255 ), 0, 1 )
+	draw.SimpleText( translate.Get("Fatigue")..": "..math.Clamp(Myfatigue / 100, 0, 100).."%", "TargetIDTiny", 210, ScrH() - 78, Color( 205, 205, 255, 255 ), 0, 1 )
 --	draw.SimpleText( "Fatigue: "..math.Round(Myfatigue / 100).."%", "TargetIDTiny", 210, ScrH() - 78, Color( 205, 205, 255, 255 ), 0, 1 )
 
 
@@ -422,7 +422,7 @@ local function DrawVitals( )
 
 
 	--Infection Text
-	draw.SimpleText( "Infection: "..math.Clamp(Myinfection / 100, 0, 100).."%", "TargetIDTiny", 210, ScrH() - 42, Color( 205, 105, 105, 255 ), 0, 1 )
+	draw.SimpleText( translate.Get("Infection")..": "..math.Clamp(Myinfection / 100, 0, 100).."%", "TargetIDTiny", 210, ScrH() - 42, Color( 205, 105, 105, 255 ), 0, 1 )
 --	draw.SimpleText( "Infection: "..math.Round(Myinfection / 100).."%", "TargetIDTiny", 210, ScrH() - 42, Color( 205, 105, 105, 255 ), 0, 1 )
 
 
@@ -435,20 +435,20 @@ local function DrawVitals( )
 
 	--Survival time (couldn't make it perfect but it's here anyway)
 	local timesurvived = CurTime() - Mysurvivaltime
-	draw.DrawText( "Time survived: "..math.floor(timesurvived).." s", "TargetIDSmall", 20, ScrH() - 189, Color( 255,255,255,255 ), 0, 1)
+	draw.DrawText( translate.Get("Timesurvived")..": "..math.floor(timesurvived).." s", "TargetIDSmall", 20, ScrH() - 189, Color( 255,255,255,255 ), 0, 1)
 
-	--Prestige (in progress)
-	draw.SimpleText( "Prestige: " .. math.floor( Myprestige ), "TargetIDSmall", 20, ScrH() - 164, Color( 205, 155, 255, 255 ), 0, 1 )
+	--Prestige
+	draw.SimpleText( translate.Get("Prestige")..": " .. math.floor( Myprestige ), "TargetIDSmall", 20, ScrH() - 164, Color( 205, 155, 255, 255 ), 0, 1 )
 	
 	--Levels & cash, just above health and armor
-	draw.SimpleText( "Level: " .. math.floor( Mylevel ), "TargetIDSmall", 20, ScrH() - 147, Color( 200, 200, 200, 255 ), 0, 1 )
-	draw.SimpleText( "Money: " .. math.floor( Mymoney ), "TargetIDSmall", 20, ScrH() - 130, Color( 0, 255, 255, 255 ), 0, 1 )
+	draw.SimpleText( translate.Get("Level")..": " .. math.floor( Mylevel ), "TargetIDSmall", 20, ScrH() - 147, Color( 200, 200, 200, 255 ), 0, 1 )
+	draw.SimpleText( translate.Get("Money")..": " .. math.floor( Mymoney ), "TargetIDSmall", 20, ScrH() - 130, Color( 0, 255, 255, 255 ), 0, 1 )
 	
 	--XP gained
-	draw.SimpleText( XPGained .. " XP Gained!", "TargetID", ScrW() / 2 + 10, ScrH() / 2, XPColor, 0, 1 )
+	draw.SimpleText( XPGained .. " "..translate.Get("XPGained").."!", "TargetID", ScrW() / 2 + 10, ScrH() / 2, XPColor, 0, 1 )
 	
 	--XP gained
-	draw.SimpleText( MoneyGained .. " Cash Gained!", "TargetID", ScrW() / 2 + 10, ScrH() / 2 + 15, MoneyColor, 0, 1 )
+	draw.SimpleText( MoneyGained .. " "..translate.Get("MoneyGained").."!", "TargetID", ScrW() / 2 + 10, ScrH() / 2 + 15, MoneyColor, 0, 1 )
 	
 
 -- Compass
@@ -584,22 +584,23 @@ if dohuddraw != 1 then return false end
 	DrawNames()
 	DrawMiscThings()
 
-	draw.SimpleText( "Version "..GAMEMODE.Version, "TargetIDSmall", 10, 5, Color(205,205,205,255), 0, 0 )
+	draw.SimpleText( "Ver: "..GAMEMODE.Version, "TargetIDSmall", 10, 5, Color(205,205,205,255), 0, 0 )
 	if ( LocalPlayer():Alive() ) then
 		Spawn = CurTime() + GetConVar( "tea_server_respawntime" ):GetString()
 	else
-	if LocalPlayer():IsValid() then
-	
-		surface.SetDrawColor(255, 0, 0, 255)
-		surface.DrawOutlinedRect( ScrW( ) / 2 - 135, 90, 270, 40 )
-		surface.SetDrawColor(0, 0, 0, 200)
-		surface.DrawRect( ScrW( ) / 2 - 135, 90, 270, 40 )
-		if Spawn > CurTime() then
-		draw.DrawText( "You can respawn in " .. math.Clamp( math.floor( (Spawn - CurTime()) + 1 ), 0, 2147483647 ) .. " seconds", "TargetID", ScrW( ) / 2 - 116, 105 - 5, Color( 255,255,255,255 ), 0 )
-		else
-		draw.DrawText( "You are now able to respawn!", "TargetID", ScrW( ) / 2 - 116, 105 - 5, Color( 255,255,255,255 ), 0 )
+		if LocalPlayer():IsValid() then
+			surface.SetDrawColor(255, 0, 0, 255)
+			surface.DrawOutlinedRect( ScrW( ) / 2 - 135, 90, 270, 40 )
+			surface.SetDrawColor(0, 0, 0, 200)
+			surface.DrawRect( ScrW( ) / 2 - 135, 90, 270, 40 )
+			if Spawn > CurTime() + 1 then
+				draw.DrawText( translate.Get("CanRespawnIn") .." " .. math.Clamp( math.floor( (Spawn - CurTime()) + 1 ), 0, 2147483647 ) .. " "..translate.Get("Seconds"), "TargetID", ScrW( ) / 2 - 116, 105 - 5, Color( 255,255,255,255 ), 0 )
+			elseif Spawn > CurTime() then
+				draw.DrawText( translate.Get("CanRespawnIn") .." " .. math.Clamp( math.floor( (Spawn - CurTime()) + 1 ), 0, 2147483647 ) .. " "..translate.Get("Second"), "TargetID", ScrW( ) / 2 - 116, 105 - 5, Color( 255,255,255,255 ), 0 )
+			else
+				draw.DrawText( translate.Get("CanNowRespawn"), "TargetID", ScrW( ) / 2 - 116, 105 - 5, Color( 255,255,255,255 ), 0 )
+			end
 		end
-	end
 	end
 end
 

@@ -3,11 +3,12 @@ AddCSLuaFile()
 
 include( 'taunt_camera.lua' )
 
--- BUG FINALLY FIXED!
+
 local PLAYER = {}
 
 PLAYER.DisplayName			= "AtE Playerclass"
 
+PLAYER.SlowWalkSpeed		= 100		-- There was a gmod update that breaks the gamemode again (everything's fine now)
 PLAYER.WalkSpeed			= 120		-- How fast to move when not running
 PLAYER.RunSpeed				= 250		-- How fast to move when running
 PLAYER.CrouchedWalkSpeed	= 0.3		-- Multiply move speed by this when crouching
@@ -18,7 +19,7 @@ PLAYER.CanUseFlashlight		= true		-- Can we use the flashlight
 PLAYER.MaxHealth			= 100		-- Max health we can have
 PLAYER.MaxArmor 			= 100		-- Max armor we can have
 PLAYER.StartHealth			= 100		-- How much health we start with
-PLAYER.StartArmor			= 0		-- How much armour we start with
+PLAYER.StartArmor			= 0			-- How much armour we start with
 PLAYER.DropWeaponOnDie		= false		-- Do we drop our weapon when we die
 PLAYER.TeammateNoCollide	= true		-- Do we collide with teammates or run straight through them
 PLAYER.AvoidPlayers			= true		-- Automatically swerves around other players

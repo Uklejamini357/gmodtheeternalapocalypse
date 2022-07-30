@@ -60,6 +60,10 @@ local attacker, inflictor, dmg = dmginfo:GetAttacker(), dmginfo:GetInflictor(), 
 
 	local tea_server_debugging = GetConVar( "tea_server_debugging" )
 
+	if target:IsPlayer() and target:IsValid() and tonumber(target.Prestige) >= 15 then
+		dmginfo:ScaleDamage(0.95)
+	end
+
 	if dmginfo:GetDamageType() == DMG_CRUSH and target:IsPlayer() then
 		dmginfo:SetDamage((dmginfo:GetDamage() * 0.01) + 1 )
 	end

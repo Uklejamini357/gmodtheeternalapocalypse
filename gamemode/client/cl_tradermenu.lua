@@ -197,8 +197,8 @@ for k, v in SortedPairsByMemberValue( ItemsList, "Cost" ) do
 
 --	if v.Supply != -1 then
 			local BuyButton = vgui.Create("DButton", ItemBackground)
-			BuyButton:SetSize( 60, 60 )
-			BuyButton:SetPos( 210, 10 )
+			BuyButton:SetSize( 60, 40 )
+			BuyButton:SetPos( 210, 30 )
 			BuyButton:SetText("Buy")
 			BuyButton:SetTextColor(Color(255, 255, 255, 255))
 			BuyButton.Paint = function(panel)

@@ -53,6 +53,7 @@ if !self.Decoded and !self.Decoder then
 	self.nxtuse = CurTime() + 0.5
 	self.Decoder = ply
 	nxtuse = CurTime() + 0.5
+	SendChat(ply, "STAY CLOSE TO AIRDROP CRATE AND STAY ALIVE OR THE CRATE WON'T BE OPENED")
 	timer.Simple(12, function() 
 		if !self.Decoder:IsValid() or !self.Decoder:Alive() or self.Decoder:GetPos():Distance( self:GetPos() ) > 120 then self.Decoder = nil return end
 		SystemBroadcast( self.Decoder:Nick().." has opened an air drop crate!", Color(255,255,255,255), false)

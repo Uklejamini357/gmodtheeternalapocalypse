@@ -2,6 +2,9 @@
 
 function CalculateMaxWeightClient()
 	local maxweight = 0
+	local armorstr = LocalPlayer():GetNWString("ArmorType") or "none"
+	local armortype = ItemsList[armorstr]
+	if LocalPlayer():GetNWString("ArmorType") == "none" then
 		if Myprestige >= 10 then
 			maxweight = 42.4 + (Perks.Strength or 0) * 1.53
 		elseif Myprestige >= 3 then
@@ -9,6 +12,16 @@ function CalculateMaxWeightClient()
 		else
 			maxweight = 37.4 + (Perks.Strength or 0) * 1.53
 		end
+	else
+		local additionalcarryweight = armortype["ArmorStats"]["carryweight"]
+		if Myprestige >= 10 then
+			maxweight = 42.4 + (Perks.Strength or 0) * 1.53 + additionalcarryweight
+		elseif Myprestige >= 3 then
+			maxweight = 39.4 + (Perks.Strength or 0) * 1.53 + additionalcarryweight
+		else
+			maxweight = 37.4 + (Perks.Strength or 0) * 1.53 + additionalcarryweight
+		end
+	end
 	return maxweight
 	end
 	
@@ -186,12 +199,17 @@ function ScoreBoard:Create()
 		else
 			draw.SimpleText( "Speed: Decreased (-"..(armortype["ArmorStats"]["speedloss"] / 10)..")", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 265, Color(205,205,255,255) )	
 		end
-		draw.SimpleText( "Weight: "..armortype.Weight.."kg", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 280, Color(255,235,205,255) )
+		if armortype["ArmorStats"]["carryweight"] > 0 then
+			draw.SimpleText( "Max Carry Weight: +"..armortype["ArmorStats"]["carryweight"].."kg", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 280, Color(255,255,175,255) )
+		else
+			draw.SimpleText( "Max Carry Weight: "..armortype["ArmorStats"]["carryweight"].."kg", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 280, Color(255,230,205,255) )
+		end
+		
 	else
 		draw.SimpleText( "No Armor", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 235, Color(255,255,255,255) )
 		draw.SimpleText( "Protection: 0% ("..( Perks.Defense or 0) * 1.5 .."% total)", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 250, Color(205,255,205,255) )
 		draw.SimpleText( "Speed: No armor", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 265, Color(205,205,255,255) )
-		draw.SimpleText( "Weight: 0kg", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 280, Color(255,235,205,255) )
+		draw.SimpleText( "Max Carry Weight: +0kg", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 280, Color(255,235,205,255) )
 	end
 
 	end
@@ -246,7 +264,7 @@ function ScoreBoard:Create()
 
 
 	local function DoInvPanel()
-	InvForm:SetName("Total item weight: "..CalculateWeightClient().."kg    Maximum carry capacity: "..CalculateMaxWeightClient().."kg")
+	InvForm:SetName(translate.Get("CurrentlyCarrying")..": "..CalculateWeightClient().."kg    "..translate.Get("MaxWeight")..": "..CalculateMaxWeightClient().."kg")
 
 	for k, v in SortedPairsByMemberValue( LocalInventory, "Weight", true ) do
 
@@ -264,7 +282,7 @@ function ScoreBoard:Create()
 			local ItemDisplay = vgui.Create( "SpawnIcon", ItemBackground )
 			ItemDisplay:SetPos( 5, 5 )
 			ItemDisplay:SetModel( v.Model )
-			ItemDisplay:SetToolTip(v.Description.."\n(Item ID: "..k..")")
+			ItemDisplay:SetToolTip(v.Description.."\n("..translate.Get("ItemID")..": "..k..")")
 			ItemDisplay:SetSize(60,60)
 			ItemDisplay.PaintOver = function()
 				return
@@ -303,7 +321,7 @@ function ScoreBoard:Create()
 				net.WriteString(k)
 				net.WriteBool(true)
 				net.SendToServer()
-					timer.Simple(0.25, function() 
+					timer.Simple(0.35, function() 
 						if TheListPanel:IsValid() then
 							TheListPanel:Clear()
 							DoInvPanel()
@@ -327,7 +345,7 @@ function ScoreBoard:Create()
 				net.WriteString(k)
 				net.WriteBool(false)
 				net.SendToServer()
-					timer.Simple(0.25, function() 
+					timer.Simple(0.35, function() 
 						if TheListPanel:IsValid() then
 							TheListPanel:Clear()
 							DoInvPanel()
@@ -529,7 +547,7 @@ for k, v in pairs( LocalFactions ) do
 	local createfaction = vgui.Create("DButton", plypanel2)
 		createfaction:SetSize( 160, 25 )
 		createfaction:SetPos( 70, 8 )
-		createfaction:SetText("Create a new faction")
+		createfaction:SetText(translate.Get("CreateFaction"))
 --	   createfaction:SetFont( "TargetIDSmall" )
 		createfaction:SetTextColor(Color(255, 255, 255, 255))
 		createfaction.Paint = function(panel)
@@ -547,7 +565,7 @@ for k, v in pairs( LocalFactions ) do
 	local managefaction = vgui.Create("DButton", plypanel2)
 		managefaction:SetSize( 160, 25 )
 		managefaction:SetPos( 270, 8 )
-		managefaction:SetText("Manage your faction")
+		managefaction:SetText(translate.Get("ManageFaction"))
 --		managefaction:SetFont( "TargetIDSmall" )
 		managefaction:SetTextColor(Color(255, 255, 255, 255))
 		managefaction.Paint = function(panel)
@@ -565,7 +583,7 @@ for k, v in pairs( LocalFactions ) do
 	local leavefaction = vgui.Create("DButton", plypanel2)
 	leavefaction:SetSize( 160, 25 )
 	leavefaction:SetPos( 470, 8 )
-	leavefaction:SetText("Leave your faction")
+	leavefaction:SetText(translate.Get("LeaveFaction"))
 --	   leavefaction:SetFont( "TargetIDSmall" )
 	leavefaction:SetTextColor(Color(255, 255, 255, 255))
 	leavefaction.Paint = function(panel)

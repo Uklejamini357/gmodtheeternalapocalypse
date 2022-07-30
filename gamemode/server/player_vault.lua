@@ -65,7 +65,7 @@ end
 function AddToVault( ply, str )
 if !ply:IsValid() then return end
 if !ItemsList[str] then return end
-if timer.Exists("Isplyequippingarmor"..ply:UniqueID()) then print(ply:Nick().." tried to place item into vault while equipping armor!") SystemMessage(ply, "Bruh, did you try to place item into vault when equipping armor? You lil' bitch, play the gamemode like it was meant to be played.", Color(255,155,155,255), true) return false end
+if timer.Exists("Isplyequippingarmor"..ply:UniqueID().."_"..str) then print(ply:Nick().." tried to place item into vault while equipping armor!") SystemMessage(ply, "Bruh, did you just try to place armor that you're currently equipping into vault? You lil' bitch, play the gamemode like it was meant to be played.", Color(255,155,155,255), true) return false end
 
 local item = ItemsList[str]
 if (CalculateVaultWeight(ply) + item["Weight"]) > Config[ "VaultSize" ] then SystemMessage(ply, "Your vault doesn't have enough space for that! It can only hold "..Config[ "VaultSize" ].."kg of items!", Color(255,205,205,255), true) return false end

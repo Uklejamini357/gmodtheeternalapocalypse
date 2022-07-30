@@ -2,8 +2,8 @@ Config = {  }
 
 Config[ "DebugLogging" ] = true -- do we want to save debug logs? logs are found in garrysmod/data/theeverlastingapocalypse/logs and can be sent to the developer to find and fix malfunctions within the gamemode
 
---Config[ "WalkSpeed" ] = 120 -- remember that the speed skill increases your walk speed by 3.5 for each level, so at 200 walkspeed players can reach a possible maximum of 235 sprint speed
---Config[ "RunSpeed" ] = 250 -- speed skill increases your running speed by 7 per skill level, so if default is 300, players can reach max of 370 run speed
+--Config[ "WalkSpeed" ] = 135 -- remember that the speed skill increases your walk speed by 3.5 for each level, so at 200 walkspeed players can reach a possible maximum of 235 sprint speed
+--Config[ "RunSpeed" ] = 260 -- speed skill increases your running speed by 7 per skill level, so if default is 300, players can reach max of 370 run speed
 
 --Config[ "MaxProps" ] = 60
 
@@ -12,7 +12,7 @@ Config[ "DebugLogging" ] = true -- do we want to save debug logs? logs are found
 
 Config[ "Currency" ] = "Dollar" -- the s is added onto strings where needed, for example if you put the currency as "Dollar" it will come out as "Dollars" as needed
 
-Config[ "RookieLevel" ] = 100 -- people who are this level or below are considered Rookies
+Config[ "RookieLevel" ] = 10 -- people who are this level or below are considered Rookies
 Config[ "RookieWeapon" ] = "weapon_zw_noobcannon" -- what gun to give to players if they are under the Rookie level and if they lost their previous one
 Config[ "StartMoney" ] = 500 -- Rookie fund
 

@@ -99,8 +99,8 @@ local function RecvPlayerKilled()
 	if attacker == "npc_ate_wraith" then attacker = "Wraith Zombie" end
 	if attacker == "npc_ate_fleshpile" then attacker = "Fleshpile Zombie" end
 	if attacker == "npc_ate_lord" then attacker = "Zombie Lord" end
-	if attacker == "npc_ate_eradicator" then attacker = "Eradicator Zombie" end
-	if attacker == "npc_ate_boss_pukepus" then attacker = "Puke Pus" end
+	if attacker == "npc_ate_tormented_wraith" then attacker = "Tormented Wraith" end
+	if attacker == "npc_ate_superlord" then attacker = "Zombie Superlord" end
 	if attacker == "npc_nextbot_boss_tyrant" then attacker = "The Tyrant" end
 	if attacker == "obj_bigrock" then attacker = "The Tyrant" end
 	if attacker == "obj_fleshbomb" then attacker = "Fleshpile Zombie" end

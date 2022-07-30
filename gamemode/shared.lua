@@ -1,14 +1,14 @@
 --DeriveGamemode( "sandbox" )
 
 include( "player_class/player_ate.lua" )
-include( 'player_class/taunt_camera.lua' )
+include( "sh_translate.lua")
 
 GM.Name 	= "The Eternal Apocalypse"
 GM.AltName	= "After The End Reborn"
 GM.Author 	= "Uklejamini"
 GM.Email 	= "no"
 GM.Website 	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.10.0b"
+GM.Version	= "0.10.1"
 
 team.SetUp( 1, "Loner", Color( 100, 50, 50, 255 ) ) --loner basic team
 
@@ -20,8 +20,8 @@ local tea_server_spawnprotection = CreateConVar( "tea_server_spawnprotection", 1
 local tea_server_spawnprotection_duration = CreateConVar( "tea_server_spawnprotection_duration", 1.5, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "How long should god mode after spawning last? (in seconds). (Default: 1.5)", 0, 5 )
 local tea_server_debugging = CreateConVar( "tea_server_debugging", 0, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Enables debugging features. (Default: 0)", 0, 1 )
 local tea_server_voluntarypvp = CreateConVar( "tea_server_voluntarypvp", 1, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Enables whether players are free to pvp voluntarily or have forced PvP. (Default: 1)", 0, 1 )
-local tea_server_walkspeed = CreateConVar( "tea_server_walkspeed", 120, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "How much default walking speed should players have? (Default: 120)", 0 )
-local tea_server_runspeed = CreateConVar( "tea_server_runspeed", 250, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "How much default running speed should players have? (Default: 250)", 0 )
+local tea_server_walkspeed = CreateConVar( "tea_server_walkspeed", 135, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "How much default walking speed should players have? (Default: 120)", 0 )
+local tea_server_runspeed = CreateConVar( "tea_server_runspeed", 260, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "How much default running speed should players have? (Default: 250)", 0 )
 local tea_server_dbsaving = CreateConVar( "tea_server_dbsaving", 1, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Allow saving players' progress to database? 1 for true, 0 for false (Default: 1)", 0, 1 )
 local tea_config_maxzombies = CreateConVar( "tea_config_maxzombies", 35, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "This does nothing for now, but it will in future update. (Default: 35)", 0 )
 local tea_config_maxcaches = CreateConVar( "tea_config_maxcaches", 10, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "How many caches should there be at any given time? (Default: 10)", 0, 100 )

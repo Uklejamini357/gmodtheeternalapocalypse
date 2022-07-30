@@ -149,9 +149,9 @@ function ENT:OnTakeDamage( dmg )
 		end)
 	end
 	if attacker:IsPlayer() then
-		print(attacker:Nick().." is attacking base core of team "..owner:Team().."! (Damage: "..damage..")")
+		print(attacker:Nick().." is attacking base core of faction "..team.GetName(owner:Team()).."! (Team: "..owner:Team()..", Damage: "..damage..")")
 	else
-		print("An Unknown cause is attacking the base core of team "..owner:Team().."! (Damage: "..damage..")")
+		print("An Unknown cause is attacking the base core of faction "..team.GetName(owner:Team()).."! (Team "..owner:Team()..", Damage: "..damage..")")
 	end
 	local currenthealth = self.integrity
 	if dmg:IsBulletDamage() then 

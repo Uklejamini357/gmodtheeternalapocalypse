@@ -1,6 +1,7 @@
 
 AddCSLuaFile( "cl_init.lua" )
 AddCSLuaFile( "shared.lua" )
+AddCSLuaFile( "sh_translate.lua" )
 AddCSLuaFile( "sh_items.lua" )
 AddCSLuaFile( "sh_loot.lua" )
 AddCSLuaFile( "sh_spawnables.lua" )
@@ -44,7 +45,6 @@ include( "server/debug.lua" )
 include( "server/weather_events.lua" )
 include( "server/specialstuff.lua" )
 include( "server/spawnpoints.lua" )
---include( "lua/includes/modules/player_manager.lua" ) --you don't need that anymore
 include( "server/nodeathsound.lua" )
 
 resource.AddWorkshop("128089118") -- m9k assault rifles
@@ -152,12 +152,12 @@ function GM:Think()
 	ply.Hunger = math.Clamp( ply.Hunger - (0.065 * (1 - (ply.StatSurvivor * 0.04)) ), 0, 10000 )
 	ply.Thirst = math.Clamp( ply.Thirst - (0.0782 * (1 - (ply.StatSurvivor * 0.0425)) ), 0, 10000 )
 
-	if (ply.Thirst <= 0 or ply.Hunger <= 0 or ply.Fatigue >= 10000 or ply.Infection >= 10000) and ply:Alive() then
-	local d = DamageInfo()
-	d:SetDamage( 0.1 )
-	d:SetDamageType( DMG_FALL ) -- tried other damage types that don't affect armor but screw it
-	d:SetAttacker(ply)
-	ply:TakeDamageInfo( d )
+	if !timer.Exists("DyingFromStats"..ply:UniqueID()) and (ply.Thirst <= 0 or ply.Hunger <= 0 or ply.Fatigue >= 10000 or ply.Infection >= 10000) and ply:Alive() then
+		timer.Create("DyingFromStats"..ply:UniqueID(), 15, 1, function()
+			if ply:Alive() then ply:Kill() end
+		end)
+	elseif (timer.Exists("DyingFromStats"..ply:UniqueID()) and (ply.Thirst >= 1 and ply.Hunger >= 1 and ply.Fatigue <= 9999 and ply.Infection <= 9999)) or !ply:Alive() then
+		timer.Destroy("DyingFromStats"..ply:UniqueID())
 	end
 
 	ply.Fatigue = math.Clamp( ply.Fatigue + (0.045 * (1 - (ply.StatSurvivor * 0.035)) ), 0, 10000 )
@@ -172,7 +172,8 @@ function GM:Think()
 	ply.Infection = math.Clamp( ply.Infection + (0.1176 * (1 - (ply.StatImmunity * 0.04)) ), 0, 10000 )
 	end
 
-	if ply:GetMoveType() != MOVETYPE_NOCLIP then
+	if ply:GetMoveType() == MOVETYPE_NOCLIP then if timer.Exists("DrownTimer"..ply:UniqueID()) then timer.Destroy("DrownTimer"..ply:UniqueID()) end
+	elseif ply:GetMoveType() != MOVETYPE_NOCLIP then
 		if ( ply:KeyDown( IN_FORWARD ) or ply:KeyDown( IN_BACK ) or ply:KeyDown( IN_MOVELEFT ) or ply:KeyDown( IN_MOVERIGHT ) ) then
 			PlayerIsMoving = true
 		else
@@ -187,13 +188,15 @@ function GM:Think()
 		if ply:WaterLevel() == 3 and ply:Alive() then
 			ply.Thirst = math.Clamp( ply.Thirst + 0.243 , 0, 10000)
 			if tonumber(ply.Stamina) <= 0 then
-				local drown = DamageInfo()
-				drown:SetDamage( 0.2 )
-				drown:SetDamageType( DMG_FALL ) -- same goes here
-				drown:SetAttacker(ply) --to prevent lua error
-				ply:TakeDamageInfo( drown )
+				if !timer.Exists("DrownTimer"..ply:UniqueID()) then
+					timer.Create("DrownTimer"..ply:UniqueID(), 7, 1, function()
+						if ply:Alive() then ply:Kill() end
+					end)
+				end
+
 			else
 				ply.Stamina = math.Clamp( ply.Stamina - (0.12 - endurance), 0, 100 )
+				if timer.Exists("DrownTimer"..ply:UniqueID()) then timer.Destroy("DrownTimer"..ply:UniqueID()) end
 			end
 		elseif ( ply:KeyDown( IN_SPEED ) and PlayerIsMoving and not ply:KeyDown(IN_DUCK) ) then
 			ply.Stamina = math.Clamp( ply.Stamina - (0.0655 - endurance), 0, 100 )
@@ -237,8 +240,8 @@ function GM:InitPostEntity( )
 	RunConsoleCommand( "mp_falldamage", "1" )
 	RunConsoleCommand( "sbox_godmode", "0" )
 	RunConsoleCommand( "sbox_plpldamage", "0" )
-	RunConsoleCommand( "M9KDefaultClip", "0" ) --To prevent from users being able to abuse m9k weapons by equipping them then dropping and doing this stuff over and over again
---/*--Don't disable this function unless you want to have some fun
+	RunConsoleCommand( "M9KDefaultClip", "0" ) --it's set to 0 so the users don't abuse use and drop commands on m9k weapons over and over again
+/*--Don't disable this function unless you want to have some fun
 	for k, v in pairs( ents.FindByClass( "npc_*" ) ) do
 		v:Remove()
 	end
@@ -252,7 +255,7 @@ function GM:InitPostEntity( )
 		v.maxhealth = 2000
 		v:SetHealth( 2000 )
 	end
---*/
+*/
 end
 
 function GM:PlayerDisconnected( ply )

@@ -132,7 +132,7 @@ ItemsList = {
 		["Name"] = "Energy Drink 'S.T.A.L.K.E.R.'",
 		["Cost"] = 65,
 		["Model"] = "models/wick/wrbstalker/anomaly/items/wick_dev_drink_stalker.mdl",
-		["Description"] = "This is an excellent energy drink consisting of caffeine, taurine and a mixture of rejuvenating vitamins. Just the ticket when you're too tired to push forward!\nRestores 1% health, 5% hunger, 30% thirst, 65% of stamina and recovers 8% of sleep.",
+		["Description"] = "This is an excellent energy drink consisting of caffeine, taurine and a mixture of rejuvenating vitamins. Just the ticket when you're too tired to push forward!\nRestores 1% health, 5% hunger, 30% thirst, 55% of stamina and recovers 8% of sleep.",
 		["Weight"] = 0.36,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -145,7 +145,7 @@ ItemsList = {
 		["Name"] = "'Nonstop' Energy Drink",
 		["Cost"] = 100,
 		["Model"] = "models/wick/wrbstalker/cop/newmodels/items/wick_nonstop.mdl",
-		["Description"] = "This drink will instantly rejuvenate your mind and body. This drink is similar to the common energy drink, but also heals you, reduces radiation somewhat, reduces hunger, and gives you more endurance.\nOf course it's a bit expensive, but the price is worth it! Restores 2% health, 6% hunger, 32% thirst, 90% of stamina and recovers 11% of sleep.",
+		["Description"] = "This drink will instantly rejuvenate your mind and body. This drink is similar to the common energy drink, but also heals you, reduces radiation somewhat, reduces hunger, and gives you more endurance.\nOf course it's a bit expensive, but the price is worth it! Restores 2% health, 6% hunger, 32% thirst, 85% of stamina and recovers 11% of sleep.",
 		["Weight"] = 0.38,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -2425,7 +2425,7 @@ ItemsList = {
 		["Name"] = "Leather Jacket",
 		["Cost"] = 5000,
 		["Model"] = "models/player/group03/male_07.mdl",
-		["Description"] = "A number of stiff leather pads stitched into your suit, will protect you against cuts and bites but it won't stop a bullet\nProtection: 5%\nSpeed: No impact on speed\nAttachment Slots: 1\nBattery: 0",
+		["Description"] = "A number of stiff leather pads stitched into your suit, will protect you against cuts and bites but it won't stop a bullet\nProtection: 5%\nSpeed: No impact on speed\nAttachment Slots: 1\nBattery: 0\nMax Carry Weight: +0kg",
 		["Weight"] = 1.1,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -2435,11 +2435,12 @@ ItemsList = {
 
 		-- armor only values
 		["ArmorStats"] = {
-			["reduction"] = 5,    -- damage reduction in percentage
-			["speedloss"] = 0,    -- speed loss in source units ( default player sprint speed: 250 (320 with maxed speed stat))
-			["slots"] = 1, 	      -- attachment slots
-			["battery"] = 0,      -- battery capacity, suits with 0 battery will only be able to use passive attachments
-			["allowmodels"] = nil -- force the player to be one of these models, nil to let them choose from the default citizen models
+			["reduction"] = 5,		-- damage reduction in percentage
+			["speedloss"] = 0,		-- speed loss in source units ( default player sprint speed: 250 (320 with maxed speed stat))
+			["slots"] = 1,			-- attachment slots
+			["battery"] = 0,		-- battery capacity, suits with 0 battery will only be able to use passive attachments
+			["carryweight"] = 0,	-- additional max carryweight when user wears the armor
+			["allowmodels"] = nil	-- force the player to be one of these models, nil to let them choose from the default citizen models
 		}
 	},
 
@@ -2447,7 +2448,7 @@ ItemsList = {
 		["Name"] = "Chainmail Suit",
 		["Cost"] = 8500,
 		["Model"] = "models/player/group03/male_05.mdl",
-		["Description"] = "A chainmail vest and leather pad combo that is worn underneath your oversuit\nProtection: 7.5%\nSpeed: Decreased (-1)\nAttachment Slots: 1\nBattery: 0",
+		["Description"] = "A chainmail vest and leather pad combo that is worn underneath your oversuit\nProtection: 7.5%\nSpeed: Decreased (-1)\nAttachment Slots: 1\nBattery: 0\nMax Carry Weight: +0kg",
 		["Weight"] = 1.6,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -2460,6 +2461,7 @@ ItemsList = {
 			["speedloss"] = 10,
 			["slots"] = 1,
 			["battery"] = 0,
+			["carryweight"] = 0,
 			["allowmodels"] = nil
 		}
 	},
@@ -2468,7 +2470,7 @@ ItemsList = {
 		["Name"] = "Bandit Jacket",
 		["Cost"] = 10000,
 		["Model"] = "models/player/stalker/bandit_backpack.mdl",
-		["Description"] = "A chainmail vest and leather pad combo that is worn underneath your oversuit\nProtection: 8%\nSpeed: Decreased (-1)\nAttachment Slots: 1\nBattery: 0",
+		["Description"] = "A chainmail vest and leather pad combo that is worn underneath your oversuit\nProtection: 8%\nSpeed: Decreased (-1)\nAttachment Slots: 1\nBattery: 0\nMax Carry Weight: +0kg",
 		["Weight"] = 1.4,
 		["Supply"] = 0,
 		["Rarity"] = 3,
@@ -2481,6 +2483,7 @@ ItemsList = {
 			["speedloss"] = 10,
 			["slots"] = 1,
 			["battery"] = 0,
+			["carryweight"] = 0,
 			["allowmodels"] = {"models/player/stalker/bandit_backpack.mdl"}
 		}
 	},
@@ -2489,7 +2492,7 @@ ItemsList = {
 		["Name"] = "Scrap Armor",
 		["Cost"] = 12500,
 		["Model"] = "models/player/group03/male_05.mdl",
-		["Description"] = "A set of scrap metal attached to your suit via straps and clips, offers good protection for the price range but it's rather bulky and heavy\nProtection: 12.5%\nSpeed: Decreased (-3.5)\nAttachment Slots: 2\nBattery: 0",
+		["Description"] = "A set of scrap metal attached to your suit via straps and clips, offers good protection for the price range but it's rather bulky and heavy\nProtection: 12.5%\nSpeed: Decreased (-3.5)\nAttachment Slots: 2\nBattery: 0\nMax Carry Weight: +0kg",
 		["Weight"] = 3.8,
 		["Supply"] = 0,
 		["Rarity"] = 3,
@@ -2502,6 +2505,7 @@ ItemsList = {
 			["speedloss"] = 35,
 			["slots"] = 2,
 			["battery"] = 0,
+			["carryweight"] = 0,
 			["allowmodels"] = nil
 		}
 	},
@@ -2510,7 +2514,7 @@ ItemsList = {
 		["Name"] = "Brown Trenchcoat Armor",
 		["Cost"] = 15000,
 		["Model"] = "models/player/stalker/bandit_brown.mdl",
-		["Description"] = "CHEEKI BREEKI! it may look like an old overcoat but there's actually a light flak jacket and leather padding under there that offers ok-ish protection\nProtection: 10%\nSpeed: Decreased (-1)\nAttachment Slots: 2\nBattery: 0",
+		["Description"] = "CHEEKI BREEKI! it may look like an old overcoat but there's actually a light flak jacket and leather padding under there that offers ok-ish protection\nProtection: 10%\nSpeed: Decreased (-1)\nAttachment Slots: 2\nBattery: 0\nMax Carry Weight: +0kg",
 		["Weight"] = 2,
 		["Supply"] = 0,
 		["Rarity"] = 3,
@@ -2523,6 +2527,7 @@ ItemsList = {
 			["speedloss"] = 10,
 			["slots"] = 2,
 			["battery"] = 0,
+			["carryweight"] = 0,
 			["allowmodels"] = {"models/player/stalker/bandit_brown.mdl"}
 		}
 	},
@@ -2531,7 +2536,7 @@ ItemsList = {
 		["Name"] = "Black Trenchcoat Armor",
 		["Cost"] = 20000,
 		["Model"] = "models/player/stalker/bandit_black.mdl",
-		["Description"] = "It may look like a black, old overcoat, but there's actually a medium-weight flak jacket and leather padding under there that offers a good-ish protection\nProtection: 15%\nSpeed: Decreased (-1.5)\nAttachment Slots: 2\nBattery: 0",
+		["Description"] = "It may look like a black, old overcoat, but there's actually a medium-weight flak jacket and leather padding under there that offers a good-ish protection\nProtection: 15%\nSpeed: Decreased (-1.5)\nAttachment Slots: 2\nBattery: 0\nMax Carry Weight: +0kg",
 		["Weight"] = 2.6,
 		["Supply"] = 0,
 		["Rarity"] = 4,
@@ -2544,6 +2549,7 @@ ItemsList = {
 			["speedloss"] = 15,
 			["slots"] = 2,
 			["battery"] = 0,
+			["carryweight"] = 0,
 			["allowmodels"] = {"models/player/stalker/bandit_black.mdl"}
 		}
 	},
@@ -2552,7 +2558,7 @@ ItemsList = {
 		["Name"] = "Guerilla Mercenary Armor",
 		["Cost"] = 25000,
 		["Model"] = "models/player/guerilla.mdl",
-		["Description"] = "A flak jacket worn with various other garments. It provides a good mix of protection and mobility for an affordable price.\nProtection: 15.625%\nSpeed: Decreased (-2)\nAttachment Slots: 2\nBattery: 50",
+		["Description"] = "A flak jacket worn with various other garments. It provides a good mix of protection and mobility for an affordable price.\nProtection: 15.625%\nSpeed: Decreased (-2)\nAttachment Slots: 2\nBattery: 50\nMax Carry Weight: +0kg",
 		["Weight"] = 3.2,
 		["Supply"] = 0,
 		["Rarity"] = 4,
@@ -2565,6 +2571,7 @@ ItemsList = {
 			["speedloss"] = 25,
 			["slots"] = 2,
 			["battery"] = 50,
+			["carryweight"] = 0,
 			["allowmodels"] = {"models/player/guerilla.mdl"}
 		}
 	},
@@ -2573,7 +2580,7 @@ ItemsList = {
 		["Name"] = "Arctic Mercenary Armor",
 		["Cost"] = 27500,
 		["Model"] = "models/player/arctic.mdl",
-		["Description"] = "A flak jacket worn with various other garments, protecting user from cold. It provides a good protection and mobility.\nProtection: 16.25%\nSpeed: Decreased (-1.75)\nAttachment Slots: 2\nBattery: 50",
+		["Description"] = "A flak jacket worn with various other garments, protecting user from cold. It provides a good protection and mobility.\nProtection: 16.25%\nSpeed: Decreased (-1.75)\nAttachment Slots: 2\nBattery: 50\nMax Carry Weight: +0kg",
 		["Weight"] = 3.35,
 		["Supply"] = 0,
 		["Rarity"] = 5,
@@ -2586,6 +2593,7 @@ ItemsList = {
 			["speedloss"] = 27.5,
 			["slots"] = 2,
 			["battery"] = 50,
+			["carryweight"] = 0,
 			["allowmodels"] = {"models/player/arctic.mdl"}
 		}
 	},
@@ -2594,7 +2602,7 @@ ItemsList = {
 		["Name"] = "Leet Mercenary Armor",
 		["Cost"] = 26000,
 		["Model"] = "models/player/leet.mdl",
-		["Description"] = "A flak jacket worn with various other garments. It provides a good mix of protection and mobility for an affordable price.\nProtection: 15%\nSpeed: Decreased (-2)\nAttachment Slots: 2\nBattery: 50",
+		["Description"] = "A flak jacket worn with various other garments. It provides a good mix of protection and mobility for an affordable price.\nProtection: 15%\nSpeed: Decreased (-2)\nAttachment Slots: 2\nBattery: 50\nMax Carry Weight: +0kg",
 		["Weight"] = 3,
 		["Supply"] = 0,
 		["Rarity"] = 4,
@@ -2607,6 +2615,7 @@ ItemsList = {
 			["speedloss"] = 20,
 			["slots"] = 2,
 			["battery"] = 50,
+			["carryweight"] = 0,
 			["allowmodels"] = {"models/player/leet.mdl"}
 		}
 	},
@@ -2615,7 +2624,7 @@ ItemsList = {
 		["Name"] = "Phoenix Mercenary Armor",
 		["Cost"] = 30000,
 		["Model"] = "models/player/phoenix.mdl",
-		["Description"] = "A flak jacket worn with various other garments. It provides a good mix of protection and mobility for an affordable price.\nIn addition, this armor set includes additional kevlar plates and provides mask to hide face from others.\nProtection: 20%\nSpeed: Decreased (-2)\nAttachment Slots: 2\nBattery: 50",
+		["Description"] = "A flak jacket worn with various other garments. It provides a good mix of protection and mobility for an affordable price.\nIn addition, this armor set includes additional kevlar plates and provides mask to hide face from others.\nProtection: 20%\nSpeed: Decreased (-2)\nAttachment Slots: 2\nBattery: 50\nMax Carry Weight: +0kg",
 		["Weight"] = 3,
 		["Supply"] = 0,
 		["Rarity"] = 5,
@@ -2628,6 +2637,7 @@ ItemsList = {
 			["speedloss"] = 30,
 			["slots"] = 2,
 			["battery"] = 50,
+			["carryweight"] = 0,
 			["allowmodels"] = {"models/player/phoenix.mdl"}
 		}
 	},
@@ -2636,7 +2646,7 @@ ItemsList = {
 		["Name"] = "Police Gasmask Armor",
 		["Cost"] = 35000,
 		["Model"] = "models/player/gasmask.mdl",
-		["Description"] = "Heavy gear used by swat teams and other special operations personnel. Gas mask is included in this set, protecting user from various gases.\nProtection: 17.5%\nSpeed: Decreased (-5)\nAttachment Slots: 2\nBattery: 50",
+		["Description"] = "Heavy gear used by swat teams and other special operations personnel. Gas mask is included in this set, protecting user from various gases.\nProtection: 17.5%\nSpeed: Decreased (-5)\nAttachment Slots: 2\nBattery: 50\nMax Carry Weight: +0kg",
 		["Weight"] = 5.5,
 		["Supply"] = 0,
 		["Rarity"] = 5,
@@ -2649,6 +2659,7 @@ ItemsList = {
 			["speedloss"] = 47.5,
 			["slots"] = 2,
 			["battery"] = 50,
+			["carryweight"] = 0,
 			["allowmodels"] = {"models/player/gasmask.mdl"}
 		}
 	},
@@ -2657,7 +2668,7 @@ ItemsList = {
 		["Name"] = "Police Riot Armor",
 		["Cost"] = 37000,
 		["Model"] = "models/player/riot.mdl",
-		["Description"] = "Heavy riot gear used by swat teams and other special operations personnel.\nProtection: 25%\nSpeed: Decreased (-55)\nAttachment Slots: 2\nBattery: 50",
+		["Description"] = "Heavy riot gear used by swat teams and other special operations personnel.\nProtection: 25%\nSpeed: Decreased (-55)\nAttachment Slots: 2\nBattery: 50\nMax Carry Weight: +0kg",
 		["Weight"] = 5.8,
 		["Supply"] = 0,
 		["Rarity"] = 5,
@@ -2670,6 +2681,7 @@ ItemsList = {
 			["speedloss"] = 55,
 			["slots"] = 2,
 			["battery"] = 50,
+			["carryweight"] = 0,
 			["allowmodels"] = {"models/player/riot.mdl"}
 		}
 	},
@@ -2678,7 +2690,7 @@ ItemsList = {
 		["Name"] = "Police SWAT Armor",
 		["Cost"] = 36000,
 		["Model"] = "models/player/swat.mdl",
-		["Description"] = "Heavy gear used by swat teams and other special operations personnel. A set of kevlar plates is included, protecting user from various dangers.\nProtection: 23.75%\nSpeed: Decreased (-5.375)\nAttachment Slots: 2\nBattery: 50",
+		["Description"] = "Heavy gear used by swat teams and other special operations personnel. A set of kevlar plates is included, protecting user from various dangers.\nProtection: 23.75%\nSpeed: Decreased (-5.375)\nAttachment Slots: 2\nBattery: 50\nMax Carry Weight: +0kg",
 		["Weight"] = 5.8,
 		["Supply"] = 0,
 		["Rarity"] = 5,
@@ -2691,6 +2703,7 @@ ItemsList = {
 			["speedloss"] = 53.75,
 			["slots"] = 2,
 			["battery"] = 50,
+			["carryweight"] = 0,
 			["allowmodels"] = {"models/player/swat.mdl"}
 		}
 	},
@@ -2699,7 +2712,7 @@ ItemsList = {
 		["Name"] = "Police Urban Armor",
 		["Cost"] = 40000,
 		["Model"] = "models/player/urban.mdl",
-		["Description"] = "Heavy riot gear used by swat teams and other special operations personnel, including medium-weight kevlar plates to provide better protection..\nProtection: 27.5%\nSpeed: Decreased (-5)\nAttachment Slots: 2\nBattery: 50",
+		["Description"] = "Heavy riot gear used by swat teams and other special operations personnel, including medium-weight kevlar plates to provide better protection..\nProtection: 27.5%\nSpeed: Decreased (-5)\nAttachment Slots: 2\nBattery: 50\nMax Carry Weight: +0kg",
 		["Weight"] = 6.5,
 		["Supply"] = 0,
 		["Rarity"] = 5,
@@ -2712,6 +2725,7 @@ ItemsList = {
 			["speedloss"] = 57.5,
 			["slots"] = 2,
 			["battery"] = 50,
+			["carryweight"] = 0,
 			["allowmodels"] = {"models/player/urban.mdl"}
 		}
 	},
@@ -2720,7 +2734,7 @@ ItemsList = {
 		["Name"] = "Sunrise-5 Armor",
 		["Cost"] = 55000,
 		["Model"] = "models/player/stalker/loner_vet.mdl",
-		["Description"] = "A set of custom armor built by a veteran survivor.\nProtection: 30%\nSpeed: Decreased (-3)\nAttachment Slots: 3\nBattery: 100",
+		["Description"] = "A set of custom armor built by a veteran survivor.\nProtection: 30%\nSpeed: Decreased (-3)\nAttachment Slots: 3\nBattery: 100\nMax Carry Weight: +0kg",
 		["Weight"] = 5.5,
 		["Supply"] = 0,
 		["Rarity"] = 5,
@@ -2733,6 +2747,7 @@ ItemsList = {
 			["speedloss"] = 33.75,
 			["slots"] = 3,
 			["battery"] = 75,
+			["carryweight"] = 0,
 			["allowmodels"] = {"models/player/stalker/loner_vet.mdl"}
 		}
 	},
@@ -2741,7 +2756,7 @@ ItemsList = {
 		["Name"] = "PSZ-9d Duty Armor",
 		["Cost"] = 80000,
 		["Model"] = "models/player/stalker/duty_vet.mdl",
-		["Description"] = "A set of custom armor built by a veteran survivor.\nProtection: 37.5%\nSpeed: Decreased (-4.25)\nAttachment Slots: 3\nBattery: 100",
+		["Description"] = "A set of custom armor built by duty soldiers to increase their protection.\nProtection: 37.5%\nSpeed: Decreased (-4.25)\nAttachment Slots: 3\nBattery: 100\nMax Carry Weight: +0kg",
 		["Weight"] = 7.1,
 		["Supply"] = 0,
 		["Rarity"] = 6,
@@ -2754,6 +2769,7 @@ ItemsList = {
 			["speedloss"] = 42.5,
 			["slots"] = 3,
 			["battery"] = 100,
+			["carryweight"] = 0,
 			["allowmodels"] = {"models/player/stalker/duty_vet.mdl"}
 		}
 	},
@@ -2762,7 +2778,7 @@ ItemsList = {
 		["Name"] = "Wind of Freedom Suit",
 		["Cost"] = 60000,
 		["Model"] = "models/player/stalker/freedom_vet.mdl",
-		["Description"] = "A set of custom armor built by a veteran survivor.\nProtection: 30%\nSpeed: Decreased (-2.75)\nAttachment Slots: 3\nBattery: 100",
+		["Description"] = "A set of light armor armor built by a veteran survivor.\nProtection: 30%\nSpeed: Decreased (-2.75)\nAttachment Slots: 3\nBattery: 100\nMax Carry Weight: +0kg",
 		["Weight"] = 5,
 		["Supply"] = 0,
 		["Rarity"] = 6,
@@ -2775,6 +2791,7 @@ ItemsList = {
 			["speedloss"] = 27.5,
 			["slots"] = 3,
 			["battery"] = 100,
+			["carryweight"] = 0,
 			["allowmodels"] = {"models/player/stalker/freedom_vet.mdl"}
 		}
 	},
@@ -2783,7 +2800,7 @@ ItemsList = {
 		["Name"] = "Monolith Armor",
 		["Cost"] = 75000,
 		["Model"] = "models/player/stalker/monolith_vet.mdl",
-		["Description"] = "A set of sunrise armor that is used by Monolithians.\nProtection: 40%\nSpeed: Decreased (-2)\nAttachment Slots: 3\nBattery: 150",
+		["Description"] = "A set of sunrise armor that is used by Monolithians.\nProtection: 35%\nSpeed: Decreased (-3.5)\nAttachment Slots: 3\nBattery: 150\nMax Carry Weight: +0kg",
 		["Weight"] = 6,
 		["Supply"] = 3,
 		["Rarity"] = 6,
@@ -2796,6 +2813,7 @@ ItemsList = {
 			["speedloss"] = 35,
 			["slots"] = 3,
 			["battery"] = 150,
+			["carryweight"] = 0,
 			["allowmodels"] = {"models/player/stalker/monolith_vet.mdl"}
 		}
 	},
@@ -2804,7 +2822,7 @@ ItemsList = {
 		["Name"] = "SKAT-9 Military Armor",
 		["Cost"] = 100000,
 		["Model"] = "models/player/stalker/military_spetsnaz_green.mdl",
-		["Description"] = "A set of high end military armor.\nProtection: 42.5%\nSpeed: Decreased (-5)\nAttachment Slots: 2\nBattery: 100",
+		["Description"] = "A set of high end military armor used by military stalkers for operations.\nProtection: 42.5%\nSpeed: Decreased (-5)\nAttachment Slots: 2\nBattery: 100\nMax Carry Weight: +0kg",
 		["Weight"] = 12,
 		["Supply"] = 0,
 		["Rarity"] = 6,
@@ -2817,6 +2835,7 @@ ItemsList = {
 			["speedloss"] = 50,
 			["slots"] = 2,
 			["battery"] = 100,
+			["carryweight"] = 0,
 			["allowmodels"] = {"models/player/stalker/military_spetsnaz_green.mdl"}
 		}
 	},
@@ -2825,7 +2844,7 @@ ItemsList = {
 		["Name"] = "SKAT-10 Military Armor",
 		["Cost"] = 125000,
 		["Model"] = "models/player/stalker/military_spetsnaz_black.mdl",
-		["Description"] = "A set of very high end military armor.\nProtection: 47.5%\nSpeed: Decreased (-7)\nAttachment Slots: 2\nBattery: 100",
+		["Description"] = "A set of very high end military armor used by master military stalkers for special operations.\nProtection: 47.5%\nSpeed: Decreased (-7)\nAttachment Slots: 2\nBattery: 125\nMax Carry Weight: +5kg",
 		["Weight"] = 15,
 		["Supply"] = 0,
 		["Rarity"] = 7,
@@ -2837,7 +2856,8 @@ ItemsList = {
 			["reduction"] = 47.5,
 			["speedloss"] = 70,
 			["slots"] = 2,
-			["battery"] = 100,
+			["battery"] = 125,
+			["carryweight"] = 5,
 			["allowmodels"] = {"models/player/stalker/military_spetsnaz_black.mdl"}
 		}
 	},
@@ -2846,9 +2866,9 @@ ItemsList = {
 		["Name"] = "Exoskeleton",
 		["Cost"] = 250000,
 		["Model"] = "models/player/stalker/loner_exo.mdl",
-		["Description"] = "A set of armor consisting of heavy flak plating supported by a network of struts and servomotors.\nProtection: 60%\nSpeed: Decreased (-12.5)\nAttachment Slots: 3\nBattery: 100",
+		["Description"] = "A set of armor consisting of heavy flak plating supported by a network of struts and servomotors.\nProtection: 60%\nSpeed: Decreased (-12.5)\nAttachment Slots: 3\nBattery: 100\nMax Carry Weight: +30kg",
 		["Weight"] = 25,
-		["Supply"] = 0,
+		["Supply"] = -2,
 		["Rarity"] = 7,
 		["Category"] = 4,
 		["UseFunc"] = function(ply) UseFunc_EquipArmor(ply, "item_armor_exo") end,
@@ -2859,6 +2879,7 @@ ItemsList = {
 			["speedloss"] = 125,
 			["slots"] = 3,
 			["battery"] = 100,
+			["carryweight"] = 30,
 			["allowmodels"] = {"models/player/stalker/loner_exo.mdl"}
 		}
 	},
@@ -2867,7 +2888,7 @@ ItemsList = {
 		["Name"] = "Mercenary Exoskeleton",
 		["Cost"] = 225000,
 		["Model"] = "models/player/stalker/merc_exo.mdl",
-		["Description"] = "A set of armor consisting of heavy flak plating supported by a network of struts and servomotors.\nProtection: 57.5%\nSpeed: Decreased (-10.5)\nAttachment Slots: 3\nBattery: 100",
+		["Description"] = "A set of armor consisting of heavy flak plating supported by a network of struts and servomotors.\nProtection: 57.5%\nSpeed: Decreased (-10.5)\nAttachment Slots: 3\nBattery: 100\nMax Carry Weight: +30kg",
 		["Weight"] = 23.75,
 		["Supply"] = 0,
 		["Rarity"] = 8,
@@ -2880,6 +2901,7 @@ ItemsList = {
 			["speedloss"] = 115,
 			["slots"] = 3,
 			["battery"] = 100,
+			["carryweight"] = 30,
 			["allowmodels"] = {"models/player/stalker/merc_exo.mdl"}
 		}
 	},
@@ -2888,7 +2910,7 @@ ItemsList = {
 		["Name"] = "Duty Exoskeleton",
 		["Cost"] = 275000,
 		["Model"] = "models/player/stalker/duty_exo.mdl",
-		["Description"] = "A set of armor consisting of heavy flak plating supported by a network of struts and servomotors.\nProtection: 65%\nSpeed: Decreased (-13)\nAttachment Slots: 3\nBattery: 100",
+		["Description"] = "A set of armor consisting of heavy flak plating supported by a network of struts and servomotors.\nProtection: 65%\nSpeed: Decreased (-13)\nAttachment Slots: 3\nBattery: 100\nMax Carry Weight: +30kg",
 		["Weight"] = 27.5,
 		["Supply"] = 0,
 		["Rarity"] = 8,
@@ -2901,6 +2923,7 @@ ItemsList = {
 			["speedloss"] = 130,
 			["slots"] = 3,
 			["battery"] = 100,
+			["carryweight"] = 30,
 			["allowmodels"] = {"models/player/stalker/duty_exo.mdl"}
 		}
 	},
@@ -2909,7 +2932,7 @@ ItemsList = {
 		["Name"] = "Freedom Exoskeleton",
 		["Cost"] = 237500,
 		["Model"] = "models/player/stalker/freedom_exo.mdl",
-		["Description"] = "A set of armor consisting of heavy flak plating supported by a network of struts and servomotors.\nProtection: 55%\nSpeed: Decreased (-11)\nAttachment Slots: 3\nBattery: 100",
+		["Description"] = "A set of armor consisting of heavy flak plating supported by a network of struts and servomotors.\nProtection: 55%\nSpeed: Decreased (-11)\nAttachment Slots: 3\nBattery: 100\nMax Carry Weight: +25kg",
 		["Weight"] = 22.5,
 		["Supply"] = 0,
 		["Rarity"] = 7,
@@ -2922,6 +2945,7 @@ ItemsList = {
 			["speedloss"] = 110,
 			["slots"] = 3,
 			["battery"] = 100,
+			["carryweight"] = 25,
 			["allowmodels"] = {"models/player/stalker/freedom_exo.mdl"}
 		}
 	},
@@ -2930,7 +2954,7 @@ ItemsList = {
 		["Name"] = "Monolith Exoskeleton",
 		["Cost"] = 262500,
 		["Model"] = "models/player/stalker/monolith_exo.mdl",
-		["Description"] = "A set of armor consisting of heavy flak plating supported by a network of struts and servomotors.\nProtection: 62.5%\nSpeed: Decreased (-12.5)\nAttachment Slots: 3\nBattery: 100",
+		["Description"] = "A set of armor consisting of heavy flak plating supported by a network of struts and servomotors.\nProtection: 62.5%\nSpeed: Decreased (-12.5)\nAttachment Slots: 3\nBattery: 100\nMax Carry Weight: +30kg",
 		["Weight"] = 25,
 		["Supply"] = 0,
 		["Rarity"] = 8,
@@ -2943,6 +2967,7 @@ ItemsList = {
 			["speedloss"] = 125,
 			["slots"] = 3,
 			["battery"] = 100,
+			["carryweight"] = 30,
 			["allowmodels"] = {"models/player/stalker/monolith_exo.mdl"}
 		}
 	},
@@ -2951,7 +2976,7 @@ ItemsList = {
 		["Name"] = "CS2 Goggles Armor",
 		["Cost"] = 2500000,
 		["Model"] = "models/stalkertnb/cs2_goggles.mdl",
-		["Description"] = "An experimental armor that provides wearer suitable protection, great battery capacity and increases movement speed of user wearing it.\nProtection: 40%\nSpeed: Increased (1.25)\nAttachment Slots: 3\nBattery: 100",
+		["Description"] = "An experimental armor that provides wearer suitable protection, great battery capacity and increases movement speed of user wearing it.\nProtection: 40%\nSpeed: Increased (1.25)\nAttachment Slots: 3\nBattery: 100\nMax Carry Weight: +5kg",
 		["Weight"] = 15,
 		["Supply"] = 0,
 		["Rarity"] = 9,
@@ -2964,6 +2989,7 @@ ItemsList = {
 			["speedloss"] = -12.5,
 			["slots"] = 3,
 			["battery"] = 200,
+			["carryweight"] = 5,
 			["allowmodels"] = {"models/stalkertnb/cs2_goggles.mdl"}
 		}
 	},
@@ -3022,7 +3048,11 @@ if !SERVER then return false end
 if !ply:IsValid() or !ItemsList[item] or !ply:Alive() then return false end
 if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "You are sleeping, why would you drop armor??") return false end
 if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "You are currently using an item, why would you drop an armor during this time??") return false end
-if timer.Exists("Isplyequippingarmor"..ply:UniqueID()) then SendChat(ply, "Why do you want to drop armor when equipping one??") return false end
+if timer.Exists("Isplyequippingarmor"..ply:UniqueID().."_"..item) then SendChat(ply, "Why do you want to drop armor when equipping one??") return false end
+if !timer.Exists("Plywantstodropequippedarmor"..ply:UniqueID()) and ply:GetNWString("ArmorType") == item then
+	SendChat(ply, "WARNING! You are about to drop an armor that you have it equipped, drop the same armor again within 10 seconds to confirm.")
+	timer.Create("Plywantstodropequippedarmor"..ply:UniqueID(), 10, 1, function() end)
+return false end
 
 local vStart = ply:GetShootPos()
 local vForward = ply:GetAimVector()
@@ -3053,17 +3083,27 @@ if !SERVER then return false end
 if !ply:IsValid() or !ItemsList[item] or !ply:Alive() then return false end
 if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "You are sleeping, why would you equip armor??") return false end
 if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "You are currently using an item, why would you equip your armor during this time??") return false end
-if timer.Exists("Isplyequippingarmor"..ply:UniqueID()) then SendChat(ply, "Why do you want to equip armor when equipping one now??") return false end
+if timer.Exists("Isplyequippingarmor"..ply:UniqueID().."_"..item) then SendChat(ply, "Why do you want to equip armor when equipping one now??") return false end
 
 local used = ItemsList[item]
+if !timer.Exists("plywantstoremovearmor"..ply:UniqueID().."_"..item) and ply.EquippedArmor == item then timer.Create("plywantstoremovearmor"..ply:UniqueID().."_"..item, 10, 1, function() end) SendChat(ply, "Unequip "..used["Name"].."? Use the same armor again to confirm.") return false
+elseif timer.Exists("plywantstoremovearmor"..ply:UniqueID().."_"..item) and ply.EquippedArmor == item then
+SendUseDelay( ply, 3 )
+ply:EmitSound("npc/combine_soldier/zipline_hitground2.wav")
+timer.Simple(3, function()
+SystemMessage(ply, "You unequipped "..used["Name"]..".", Color(205,255,205,255), false)
+UseFunc_RemoveArmor(ply, item)
+end)
+return false end
 
 SendUseDelay( ply, 3 )
 
 ply:EmitSound("npc/combine_soldier/zipline_hitground1.wav")
 
-timer.Create("Isplyequippingarmor"..ply:UniqueID(), 3, 1, function()
+timer.Create("Isplyequippingarmor"..ply:UniqueID(), 3, 1, function() timer.Destroy("Isplyequippingarmor"..ply:UniqueID()) end)
+timer.Create("Isplyequippingarmor"..ply:UniqueID().."_"..item, 3, 1, function()
 if !ply:IsValid() or !ply:Alive() then return false end
-SystemMessage(ply, "You equipped "..used["Name"], Color(205,255,205,255), false)
+SystemMessage(ply, "You equipped "..used["Name"]..". Use the same armor again to unequip.", Color(205,255,205,255), false)
 ply.EquippedArmor = tostring(item)
 ply:SetNWString("ArmorType", tostring(item))
 RecalcPlayerModel( ply )
@@ -3264,9 +3304,9 @@ if !SERVER then return false end
 if !ply:IsValid() then return false end
 if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "You are sleeping, why would you drink now??") return false end
 if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "You are currently using an item, why would you eat during this time??") return false end
-if ply:WaterLevel() == 3 then SendChat(ply, "It is impossible to drink wwhen you are underwater. Get out of the water if you want to drink.") return false end
+if ply:WaterLevel() == 3 then SendChat(ply, "It is impossible to drink when you are underwater. Get out of the water if you want to drink.") return false end
 	if ply:Alive() then
-			if !timer.Exists("plywantstouseitem"..ply:UniqueID()) and ply.Thirst > 9500 then timer.Create("plywantstouseitem"..ply:UniqueID(), 5, 1, function() timer.Destroy("plywantstouseitem"..ply:UniqueID()) end) SendChat( ply, "I am not thirsty, I should save this for later. Use item again within 5 seconds to confirm usage." ) return false end
+			if !timer.Exists("plywantstouseitem"..ply:UniqueID()) and ply.Thirst > 9500 then timer.Create("plywantstouseitem"..ply:UniqueID(), 10, 1, function() timer.Destroy("plywantstouseitem"..ply:UniqueID()) end) SendChat( ply, "I am not thirsty, I should save this for later. Use item again within 10 seconds to confirm usage." ) return false end
 			ply:SetHealth(math.Clamp( ply:Health() + health, 0, ply:GetMaxHealth() ))
 			ply.Hunger = math.Clamp( ply.Hunger + (hunger * 100), 0, 10000 )
 			ply.Thirst = math.Clamp( ply.Thirst + (thirst * 100), 0, 10000 )
@@ -3275,7 +3315,7 @@ if ply:WaterLevel() == 3 then SendChat(ply, "It is impossible to drink wwhen you
 			ply:EmitSound(snd, 100, 100)
 			SendUseDelay( ply, usetime )
 			timer.Create("Isplyusingitem"..ply:UniqueID(), usetime, 1, function()
-			timer.Destroy("Isplyusingitem"..ply:UniqueID())
+			timer.Destroy("plywantstouseitem"..ply:UniqueID())
 			end)
 			return true
 	else

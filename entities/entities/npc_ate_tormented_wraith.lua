@@ -36,8 +36,8 @@ self.ZombieStats = {
 ["Damage"] = 27, -- how much damage per strike?
 ["Force"] = 180, -- how far to knock the player back upon striking them
 ["Infection"] = 12, -- percentage chance to infect them
-["Reach"] = 60, -- how far can the zombies attack reach? in source units
-["StrikeDelay"] = 0.4, -- how long does it take for the zombie to deal damage after beginning an attack
+["Reach"] = 70, -- how far can the zombies attack reach? in source units
+["StrikeDelay"] = 0.36, -- how long does it take for the zombie to deal damage after beginning an attack
 ["AfterStrikeDelay"] = 1, -- how long should the zombie wait after a strike lands until reverting to its behaviour cycle
 
 ["Health"] = 400, -- self explanatory
@@ -91,6 +91,8 @@ function ENT:SpecialSkill1()
 	effectdata:SetOrigin(self:GetPos() + Vector(0, 0, 60))
 	util.Effect("zw_master_pulse", effectdata)
 	self:EmitSound("ambient/machines/thumper_hit.wav", 120, 70)
+	if self.SpeedBuff <= 3 then self.SpeedBuff = math.Clamp(self.SpeedBuff + 1, 1, 3) end
+	self.Ability1CD = CurTime() + self.ZombieStats["Ability1Cooldown"]
 end
 
 function ENT:AttackPlayer(ply)
@@ -107,7 +109,7 @@ end)
 self:DelayedCallback(self.ZombieStats["StrikeDelay"], function()
 if !self:IsValid() or self:Health() < 1 then return end
 					
-	if (IsValid(ply) and self:GetRangeTo(ply) <= self.ZombieStats["Reach"] * 1.2) then
+	if (IsValid(ply) and self:GetRangeTo(ply) <= self.ZombieStats["Reach"] * 1.3) then
 		self:ApplyPlayerDamage(ply, self.ZombieStats["Damage"], -self.ZombieStats["Force"], self.ZombieStats["Infection"])
 
 		net.Start("WraithBlind")

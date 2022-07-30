@@ -13,7 +13,7 @@ local item = ItemsList[name]
 if !item then SystemMessage(ply, "ERROR! This item does not exist!", Color(255,205,205,255), true) 
 ply:ConCommand( "playgamesound buttons/button8.wav" ) return false end
 
-if (CalculateWeight(ply) + (item.Weight * addqty)) > (CalculateMaxWeight(ply)) then SendChat(ply, "You are lacking inventory space!") return false end
+if (CalculateWeight(ply) + (item.Weight * addqty)) > (CalculateMaxWeight(ply)) then SendChat(ply, "You are lacking inventory space! Drop some items first.") return false end
 
 SystemGiveItem( ply, name, addqty )
 
@@ -24,6 +24,32 @@ FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
 concommand.Add("ate_sadmin_giveitem", AdminGiveItem)
+
+function AdminRemoveItem( ply, cmd, args )
+	if !ply:IsValid() then return false end
+	
+	if !SuperAdminCheck( ply ) then 
+		SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
+		ply:ConCommand( "playgamesound buttons/button8.wav" )
+		return
+	end
+	
+	local name = args[1]
+	local strip = args[2] or true
+	local item = ItemsList[name]
+	if !item then SystemMessage(ply, "ERROR! This item does not exist!", Color(255,205,205,255), true) 
+	ply:ConCommand( "playgamesound buttons/button8.wav" ) return false end
+	
+	
+	SystemRemoveItem( ply, name, strip )
+	
+	ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave "..item["Name"].." from their inventory!")
+	print("[ADMIN COMMAND USED] "..ply:Nick().." removed "..item["Name"].." from their inventory!")
+	SystemMessage(ply, "You removed "..item["Name"].." from your inventory!", Color(155,255,155,255), true)
+	FullyUpdatePlayer( ply )
+	ply:ConCommand( "playgamesound buttons/button3.wav" )
+	end
+	concommand.Add("ate_sadmin_removeitem", AdminRemoveItem)
 
 function AdminGiveCash( ply, cmd, args )
 if !ply:IsValid() then return false end
@@ -534,7 +560,7 @@ end
 
 local addqty = args[1] or 1
 
-ply.Hunger = ply.Thirst + (addqty * 100)
+ply.Thirst = ply.Thirst + (addqty * 100)
 ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.."% Thirst!")
 print("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.."% Thirst!")
 SystemMessage(ply, "You gave yourself "..addqty.."% Thirst!", Color(155,255,155,255), true)
@@ -1264,7 +1290,45 @@ end
 ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." spawned a dropped item: "..item["Name"].."!")
 print("[ADMIN COMMAND USED] "..ply:Nick().." spawned a dropped item: "..item["Name"].."!")
 SystemMessage(ply, "You spawned a dropped item: "..item["Name"].."!", Color(155,255,155,255), true)
-FullyUpdatePlayer( ply )
+
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
 concommand.Add("ate_sadmin_spawnitem", ATESpawnItem)
+
+function ATESpawnMoney(ply, cmd, args) 
+	if !ply:IsValid() then return false end
+	
+	if !SuperAdminCheck( ply ) then 
+		SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
+		ply:ConCommand( "playgamesound buttons/button8.wav" )
+		return
+	end
+	
+	local cash = args[1] or 0
+
+	
+	local vStart = ply:GetShootPos()
+	local vForward = ply:GetAimVector()
+	local trace = {}
+	trace.start = vStart
+	trace.endpos = vStart + (vForward * 70)
+	trace.filter = ply
+	local tr = util.TraceLine( trace )
+
+	if cash != nil then
+		local EntDrop = ents.Create( "ate_cash" )
+		EntDrop:SetPos( tr.HitPos )
+		EntDrop:SetAngles( Angle( 0, 0, 0 ) )
+		EntDrop:SetModel("models/props/cs_office/cardboard_box01.mdl")	
+		EntDrop:SetNWInt("CashAmount", math.floor(cash))
+		EntDrop:Spawn()
+		EntDrop:Activate()
+	end
+				
+	ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." spawned dropped cash with "..cash.." "..Config[ "Currency" ].."s!")
+	print("[ADMIN COMMAND USED] "..ply:Nick().." spawned dropped cash with "..cash.." "..Config[ "Currency" ].."s!")
+	SystemMessage(ply, "You spawned dropped cash with "..cash.." "..Config[ "Currency" ].."s!", Color(155,255,155,255), true)
+	
+	ply:ConCommand( "playgamesound buttons/button3.wav" )
+end
+concommand.Add("ate_sadmin_spawnmoney", ATESpawnMoney)

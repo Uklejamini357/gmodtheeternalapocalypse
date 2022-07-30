@@ -240,7 +240,7 @@ function PlayerGainLevel( ply )
 			return
 		end
 		ply.XP = ply.XP - GetReqXP( ply )
-		local moneyreward = 65 + math.floor((ply.Level ^ 1.1217) * 19 + (ply.Level * 5))
+		local moneyreward = 65 + math.floor((ply.Level ^ 1.1217) * 19 + (ply.Level * 5) + (ply.Prestige * 1.6892))
 		ply.Money = ply.Money + moneyreward
 		ply.Level = ply.Level + 1
 		ply.StatPoints = ply.StatPoints + 1

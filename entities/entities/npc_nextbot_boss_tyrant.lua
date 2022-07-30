@@ -279,7 +279,7 @@ function ENT:RunBehaviour()
 								target:ViewPunch(VectorRand():Angle() * 0.05)
 								target:SetVelocity(force)
 								if math.random(0, 100) > 50 then
-								target.Infection = target.Infection + math.Rand(250,1000)
+								target.Infection = target.Infection + math.Rand(200,750)
 							end
 						else
 							local damageInfo = DamageInfo()
