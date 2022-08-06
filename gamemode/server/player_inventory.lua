@@ -164,7 +164,7 @@ if client.Inventory[item] then
 		if func == true then
 			SystemRemoveItem( client, item, false ) -- leave this as false otherwise grenades are unusable
 			client.CanUseItem = false
-			timer.Simple(0, function() if client:IsValid() then client.CanUseItem = true end end)
+			timer.Simple(0., function() if client:IsValid() then client.CanUseItem = true end end)
 		end
 	SendInventory(client)
 	else
@@ -229,7 +229,7 @@ net.Receive( "SellItem", function( length, client )
 local str = net.ReadString()
 
 if !ItemsList[str] then SendChat(client, "ERROR: this item does not exist on the server!") return false end -- if the item doenst exist
-if timer.Exists("Isplyequippingarmor"..client:UniqueID()) then SystemMessage(client, "Bruh, did you try to sell item when equipping armor? You lil' bitch, play the gamemode like it was meant to be played.", Color(255,155,155,255), true) return false end
+if timer.Exists("Isplyequippingarmor"..client:UniqueID().."_"..str) then SystemMessage(client, "Bruh, did you try to sell armor that you were equipping it? You lil' bitch, don't even try that. Play the gamemode like it was meant to be played.", Color(255,155,155,255), true) return false end
 
 local item = ItemsList[str]
 local cash = tonumber(client.Money)

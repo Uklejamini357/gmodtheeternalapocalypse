@@ -60,6 +60,7 @@ local attacker, inflictor, dmg = dmginfo:GetAttacker(), dmginfo:GetInflictor(), 
 
 	local tea_server_debugging = GetConVar( "tea_server_debugging" )
 
+
 	if target:IsPlayer() and target:IsValid() and tonumber(target.Prestige) >= 15 then
 		dmginfo:ScaleDamage(0.95)
 	end
@@ -205,8 +206,11 @@ function GM:DoPlayerDeath( ply, attacker, dmginfo )
 	print( "".. ply:Nick() .." has died with "..ply.Bounty.." bounty and survived for "..math.floor(CurTime() - ply.SurvivalTime).." seconds! ".. tea_server_respawntime:GetString() .." seconds until able to respawn" )
 	end
 
+	if ply.IsAlive == 1 then --to prevent player from spamming the same thing in chat when dying while dead
 	SendChat(ply, "You survived for "..math.floor(CurTime() - ply.SurvivalTime).." seconds before getting killed")
+	end
 	ply.Bounty = 0
+	ply.IsAlive = 0
 	ply:SetNWInt( "PlyBounty", ply.Bounty )
 
 --	ply.Autorespawntime = CurTime() + 20

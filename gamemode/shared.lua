@@ -6,9 +6,9 @@ include( "sh_translate.lua")
 GM.Name 	= "The Eternal Apocalypse"
 GM.AltName	= "After The End Reborn"
 GM.Author 	= "Uklejamini"
-GM.Email 	= "no"
+GM.Email 	= "[Insert Email here]"
 GM.Website 	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.10.1"
+GM.Version	= "0.10.1a"
 
 team.SetUp( 1, "Loner", Color( 100, 50, 50, 255 ) ) --loner basic team
 
@@ -27,12 +27,7 @@ local tea_config_maxzombies = CreateConVar( "tea_config_maxzombies", 35, {FCVAR_
 local tea_config_maxcaches = CreateConVar( "tea_config_maxcaches", 10, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "How many caches should there be at any given time? (Default: 10)", 0, 100 )
 local tea_config_factioncost = CreateConVar( "tea_config_factioncost", 1000, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "How much creating the faction should cost? (Default: 1000)", 0, 10000 )
 local tea_config_maxprops = CreateConVar( "tea_config_maxprops", 60, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "How many props can players create? (Default: 60)", 0, 1000 )
-local tea_config_vaultsize = CreateConVar( "tea_config_vaultsize", 200, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "This does nothing for now, but it will in future update. (Default: 200)", 0 )
 local tea_config_zombiespawning = CreateConVar( "tea_config_zombiespawning", 1, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Should zombies spawn at their zombie spawn? Consider disabling it if adding zombie spawns. (Default: 1)", 0, 1 )
-local tea_config_zombiespawnrate = CreateConVar( "tea_config_zombiespawnrate", 14, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "This does nothing for now, but it will in future update. (Default: 14)", 1 )
-local tea_config_bossspawnrate = CreateConVar( "tea_config_bossspawnrate", 3000, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "This does nothing for now, but it will in future update. (Default: 3000)", 1 )
-local tea_config_airdropspawnrate = CreateConVar( "tea_config_airdropspawnrate", 3750, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "This does nothing for now, but it will in future update. (Default: 3750)", 1 )
-local tea_config_rookielevel = CreateConVar( "tea_config_rookielevel", 10, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Players who are under this level are considered as rookies. Set 0 to disable giving rookies new weapon for rookies. (Default: 10)", 0 )
 
 function GM:ShutDown()
 print("WARNING! WARNING!! THE OBJECT IS GONE!!")

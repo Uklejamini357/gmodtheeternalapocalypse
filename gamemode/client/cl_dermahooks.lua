@@ -26,7 +26,7 @@ PaintPanel:SetPos( 15, 30 )
 PaintPanel:SetSize( 670, 190 )  
 PaintPanel.Paint = function()  
 draw.RoundedBox(12, 0, 0, PaintPanel:GetWide(), PaintPanel:GetTall(), Color(30,30,30,150))
-draw.DrawText( "You will wake up in " .. math.Clamp( math.floor( (LastSleep - CurTime()) + 1 ), 0, 2147483647 ) .. " seconds", "TargetID", 205, 70, Color( 255,255,255,255 ), 0, 1 )
+draw.DrawText( translate.Get("WillWakeupIn").." " .. math.Clamp( math.floor( (LastSleep - CurTime()) + 1 ), 0, 2147483647 ) .." "..translate.Get("Seconds"), "TargetID", 205, 70, Color( 255,255,255,255 ), 0, 1 )
 --draw.SimpleText( "You will wake up in 20 seconds", "TargetID", 205, 70, Color( 255, 255, 255, 255 ), 0, 1 )
 --surface.SetDrawColor( 50, 50, 50, 255 )  
 --surface.DrawRect( 0, 0, PaintPanel:GetWide(), PaintPanel:GetTall() ) 
@@ -34,7 +34,7 @@ draw.DrawText( "You will wake up in " .. math.Clamp( math.floor( (LastSleep - Cu
 end 
 
 local Dlabel = vgui.Create("DLabel", PaintPanel); 
-	Dlabel:SetText( "unless you died in your sleep" ) 
+	Dlabel:SetText( translate.Get("SleepText") ) 
 	Dlabel:SetSize(490, 30); 
 	Dlabel:SetPos(250, 85); 
 
@@ -79,7 +79,7 @@ surface.DrawRect(10, h / 2, fraction * 180, 10)
 surface.SetDrawColor(150, 0, 0, 200)
 surface.DrawOutlinedRect(0, 0, w, h)
 surface.DrawOutlinedRect(10, h / 2, w - 20, 20)
-draw.DrawText( "Please wait...", "TargetID", 100, 5, Color(250, 250, 250), TEXT_ALIGN_CENTER )
+draw.DrawText( translate.Get("Pleasewait"), "TargetID", 100, 5, Color(250, 250, 250), TEXT_ALIGN_CENTER )
 end
 /*
 local Dlabel = vgui.Create("DLabel", DelayFrame)

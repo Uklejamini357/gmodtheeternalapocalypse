@@ -137,6 +137,8 @@ surface.PlaySound(table.Random(radiosounds))
 
 end)
 
+CreateClientConVar("tea_cl_hud", 1, "Show hud? 1 for yes, 0 for no")
+
 function ATEHelp()
 print("Help:")
 print("")

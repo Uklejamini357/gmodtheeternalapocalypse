@@ -91,7 +91,7 @@ function ENT:SpecialSkill1()
 	effectdata:SetOrigin(self:GetPos() + Vector(0, 0, 60))
 	util.Effect("zw_master_pulse", effectdata)
 	self:EmitSound("ambient/machines/thumper_hit.wav", 120, 70)
-	if self.SpeedBuff <= 3 then self.SpeedBuff = math.Clamp(self.SpeedBuff + 1, 1, 3) end
+	if self.SpeedBuff <= 3 then self.SpeedBuff = math.Clamp(self.SpeedBuff + 0.1, 1, 3) end
 	self.Ability1CD = CurTime() + self.ZombieStats["Ability1Cooldown"]
 end
 

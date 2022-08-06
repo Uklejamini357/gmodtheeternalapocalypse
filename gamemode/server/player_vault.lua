@@ -49,15 +49,15 @@ function SavePlayerVault( ply )
 local tea_server_dbsaving = GetConVar("tea_server_dbsaving")
 if AllowSave != 1 and tea_server_dbsaving:GetInt() < 1 then return end
 
-if Config[ "FileSystem" ] == "Legacy" then
-	local data = util.TableToJSON(ply.Vault)
-	file.Write( "theeternalapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" ) .. "/vault.txt"), data )
-elseif Config[ "FileSystem" ] == "PData" then
-	local formatted = util.TableToJSON( ply.Vault )
-	ply:SetPData( "ate_playervault", formatted )
-else
-	print("Bruh, did you try to setup incorrectly? Set your damned filesystem option to a proper setting in sh_config.lua")
-end
+	if Config[ "FileSystem" ] == "Legacy" then
+		local data = util.TableToJSON(ply.Vault)
+		file.Write( "theeternalapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" ) .. "/vault.txt"), data )
+	elseif Config[ "FileSystem" ] == "PData" then
+		local formatted = util.TableToJSON( ply.Vault )
+		ply:SetPData( "ate_playervault", formatted )
+	else
+		print("Bruh, did you try to setup incorrectly? Set your damned filesystem option to a proper setting in sh_config.lua")
+	end
 	print("✓ ".. ply:Nick() .." vault saved into database")
 end
 

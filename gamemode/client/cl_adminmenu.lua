@@ -224,4 +224,5 @@ local AdmMenuFrame = vgui.Create( "DFrame" )
 	RunConsoleCommand("ate_clearzombiespawns")
 	end
 
+
 end

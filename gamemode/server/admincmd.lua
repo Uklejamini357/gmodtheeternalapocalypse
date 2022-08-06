@@ -19,7 +19,7 @@ SystemGiveItem( ply, name, addqty )
 
 ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.."x "..item["Name"].."!")
 print("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.."x "..item["Name"].."!")
-SystemMessage(ply, "You gave yourself "..addqty.."x "..item["Name"], Color(155,255,155,255), true)
+SystemMessage(ply, "You gave yourself "..addqty.."x "..translate.Get(item["Name"]), Color(155,255,155,255), true)
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
@@ -45,7 +45,7 @@ function AdminRemoveItem( ply, cmd, args )
 	
 	ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave "..item["Name"].." from their inventory!")
 	print("[ADMIN COMMAND USED] "..ply:Nick().." removed "..item["Name"].." from their inventory!")
-	SystemMessage(ply, "You removed "..item["Name"].." from your inventory!", Color(155,255,155,255), true)
+	SystemMessage(ply, "You removed "..translate.Get(item["Name"]).." from your inventory!", Color(155,255,155,255), true)
 	FullyUpdatePlayer( ply )
 	ply:ConCommand( "playgamesound buttons/button3.wav" )
 	end
@@ -78,7 +78,7 @@ if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
 	SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
-	ply:ConCommand( "playgamesound buttons/button8.wav" )
+	ply:ConCommand( "playgamesound buttons/button15.wav" )
 	return
 end
 
@@ -114,7 +114,7 @@ end
 	ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has cleaned up all NPCs and nextbots!")
 	print("[ADMIN COMMAND USED] "..ply:Nick().." has cleaned up all NPCs and nextbots!")
 	SystemMessage(ply, "Cleaned up all nextbots and NPCs!", Color(155,255,155,255), true)
-	ply:ConCommand( "playgamesound buttons/button3.wav" )
+	ply:ConCommand( "playgamesound buttons/button15.wav" )
 		for k, v in pairs( ents.GetAll() ) do
 			if v.Type == "nextbot" or ( v:IsNPC() and v:GetClass() != "trader" ) then v.LastAttacker = nil v:Remove() end
 		end
@@ -124,7 +124,7 @@ end
 	ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has cleaned up all zombies!")
 	print("[ADMIN COMMAND USED] "..ply:Nick().." has cleaned up all zombies!")
 	SystemMessage(ply, "Cleaned up all zombies!", Color(155,255,155,255), true)
-	ply:ConCommand( "playgamesound buttons/button3.wav" )
+	ply:ConCommand( "playgamesound buttons/button15.wav" )
 	for k, v in pairs(Config[ "ZombieClasses" ]) do
 		for _, ent in pairs(ents.FindByClass(k)) do ent.LastAttacker = nil ent:Remove() end
 	end
@@ -136,7 +136,7 @@ end
 end
 concommand.Add("ate_admin_clearzombies", AdminClearZeds)
 
-function ATEDebugGiveLevel( ply, cmd, args )
+function TEADevGiveLevel( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -156,10 +156,10 @@ FullyUpdatePlayer( ply )
 ply:SetNWInt( "PlyLevel", ply.Level )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_givelevels", ATEDebugGiveLevel)
+concommand.Add("tea_dev_givelevels", TEADevGiveLevel)
 
 
-function ATEDebugGiveXP( ply, cmd, args )
+function TEADevGiveXP( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -178,9 +178,9 @@ SystemMessage(ply, "You gave yourself "..addqty.." XP!", Color(155,255,155,255),
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_givexp", ATEDebugGiveXP)
+concommand.Add("tea_dev_givexp", TEADevGiveXP)
 
-function ATEDebugGiveStatPoints( ply, cmd, args )
+function TEADevGiveStatPoints( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -199,9 +199,9 @@ SystemMessage(ply, "You gave yourself "..addqty.." Skill points!", Color(155,255
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_givestatpoints", ATEDebugGiveStatPoints)
+concommand.Add("tea_dev_givestatpoints", TEADevGiveStatPoints)
 
-function ATEDebugGiveBounty( ply, cmd, args )
+function TEADevGiveBounty( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -221,9 +221,9 @@ SystemMessage(ply, "You gave yourself "..addqty.." Bounty!", Color(155,255,155,2
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_givebounty", ATEDebugGiveBounty)
+concommand.Add("tea_dev_givebounty", TEADevGiveBounty)
 
-function ATEDebugGiveStatDefense( ply, cmd, args )
+function TEADevGiveStatDefense( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -242,9 +242,9 @@ SystemMessage(ply, "You gave yourself "..addqty.." levels for Defense skill!", C
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_givestatdefense", ATEDebugGiveStatDefense)
+concommand.Add("tea_dev_givestatdefense", TEADevGiveStatDefense)
 
-function ATEDebugGiveStatDamage( ply, cmd, args )
+function TEADevGiveStatDamage( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -263,9 +263,9 @@ SystemMessage(ply, "You gave yourself "..addqty.." levels for Damage skill!", Co
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_givestatdamage", ATEDebugGiveStatDamage)
+concommand.Add("tea_dev_givestatdamage", TEADevGiveStatDamage)
 
-function ATEDebugGiveStatSpeed( ply, cmd, args )
+function TEADevGiveStatSpeed( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -286,9 +286,9 @@ FullyUpdatePlayer( ply )
 RecalcPlayerSpeed(ply)
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_givestatspeed", ATEDebugGiveStatSpeed)
+concommand.Add("tea_dev_givestatspeed", TEADevGiveStatSpeed)
 
-function ATEDebugGiveStatHealth( ply, cmd, args )
+function TEADevGiveStatHealth( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -309,9 +309,9 @@ SystemMessage(ply, "You gave yourself "..addqty.." levels for Health skill!", Co
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_givestathealth", ATEDebugGiveStatHealth)
+concommand.Add("tea_dev_givestathealth", TEADevGiveStatHealth)
 
-function ATEDebugGiveStatKnowledge( ply, cmd, args )
+function TEADevGiveStatKnowledge( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -331,9 +331,9 @@ SystemMessage(ply, "You gave yourself "..addqty.." levels for Knowledge skill!",
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_givestatknowledge", ATEDebugGiveStatKnowledge)
+concommand.Add("tea_dev_givestatknowledge", TEADevGiveStatKnowledge)
 
-function ATEDebugGiveStatMedSkill( ply, cmd, args )
+function TEADevGiveStatMedSkill( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -353,9 +353,9 @@ SystemMessage(ply, "You gave yourself "..addqty.." levels for MedSkill!", Color(
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_givestatmedskill", ATEDebugGiveStatMedSkill)
+concommand.Add("tea_dev_givestatmedskill", TEADevGiveStatMedSkill)
 
-function ATEDebugGiveStatStrength( ply, cmd, args )
+function TEADevGiveStatStrength( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -374,9 +374,9 @@ SystemMessage(ply, "You gave yourself "..addqty.." levels for Strength skill!", 
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_givestatstrength", ATEDebugGiveStatStrength)
+concommand.Add("tea_dev_givestatstrength", TEADevGiveStatStrength)
 
-function ATEDebugGiveStatEndurance( ply, cmd, args )
+function TEADevGiveStatEndurance( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -395,9 +395,9 @@ SystemMessage(ply, "You gave yourself "..addqty.." levels for Endurance skill!",
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_givestatendurance", ATEDebugGiveStatEndurance)
+concommand.Add("tea_dev_givestatendurance", TEADevGiveStatEndurance)
 
-function ATEDebugGiveStatSalvage( ply, cmd, args )
+function TEADevGiveStatSalvage( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -417,9 +417,9 @@ SystemMessage(ply, "You gave yourself "..addqty.." levels for Salvage skill!", C
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_givestatsalvage", ATEDebugGiveStatSalvage)
+concommand.Add("tea_dev_givestatsalvage", TEADevGiveStatSalvage)
 
-function ATEDebugGiveStatBarter( ply, cmd, args )
+function TEADevGiveStatBarter( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -439,9 +439,9 @@ SystemMessage(ply, "You gave yourself "..addqty.." levels for Barter skill!", Co
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_givestatbarter", ATEDebugGiveStatBarter)
+concommand.Add("tea_dev_givestatbarter", TEADevGiveStatBarter)
 
-function ATEDebugGiveStatEngineer( ply, cmd, args )
+function TEADevGiveStatEngineer( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -462,9 +462,9 @@ SystemMessage(ply, "You gave yourself "..addqty.." levels for Engineer skill!", 
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_givestatengineer", ATEDebugGiveStatEngineer)
+concommand.Add("tea_dev_givestatengineer", TEADevGiveStatEngineer)
 
-function ATEDebugGiveStatImmunity( ply, cmd, args )
+function TEADevGiveStatImmunity( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -484,9 +484,9 @@ SystemMessage(ply, "You gave yourself "..addqty.." levels for Immunity skill!", 
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_givestatimmunity", ATEDebugGiveStatImmunity)
+concommand.Add("tea_dev_givestatimmunity", TEADevGiveStatImmunity)
 
-function ATEDebugGiveStatSurvivor( ply, cmd, args )
+function TEADevGiveStatSurvivor( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -505,9 +505,9 @@ SystemMessage(ply, "You gave yourself "..addqty.." levels for Survivor skill!", 
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_givestatsurvivor", ATEDebugGiveStatSurvivor)
+concommand.Add("tea_dev_givestatsurvivor", TEADevGiveStatSurvivor)
 
-function ATEDebugGiveStamina( ply, cmd, args )
+function TEADevGiveStamina( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -526,9 +526,9 @@ SystemMessage(ply, "You gave yourself "..addqty.."% Stamina!", Color(155,255,155
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_givestamina", ATEDebugGiveStamina)
+concommand.Add("tea_dev_givestamina", TEADevGiveStamina)
 
-function ATEDebugGiveHunger( ply, cmd, args )
+function TEADevGiveHunger( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -547,9 +547,9 @@ SystemMessage(ply, "You gave yourself "..addqty.."% Hunger!", Color(155,255,155,
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_givehunger", ATEDebugGiveHunger)
+concommand.Add("tea_dev_givehunger", TEADevGiveHunger)
 
-function ATEDebugGiveThirst( ply, cmd, args )
+function TEADevGiveThirst( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -568,9 +568,9 @@ SystemMessage(ply, "You gave yourself "..addqty.."% Thirst!", Color(155,255,155,
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_givethirst", ATEDebugGiveThirst)
+concommand.Add("tea_dev_givethirst", TEADevGiveThirst)
 
-function ATEDebugGiveFatigue( ply, cmd, args )
+function TEADevGiveFatigue( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -589,9 +589,9 @@ SystemMessage(ply, "You gave yourself "..addqty.."% Fatigue!", Color(155,255,155
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_givefatigue", ATEDebugGiveFatigue)
+concommand.Add("tea_dev_givefatigue", TEADevGiveFatigue)
 
-function ATEDebugGiveInfection( ply, cmd, args )
+function TEADevGiveInfection( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -610,7 +610,7 @@ SystemMessage(ply, "You gave yourself "..addqty.."% Infection!", Color(155,255,1
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_giveinfection", ATEDebugGiveInfection)
+concommand.Add("tea_dev_giveinfection", TEADevGiveInfection)
 
 function PlayerForceGainLevel( ply )
 
@@ -656,7 +656,7 @@ FullyUpdatePlayer( ply )
 end
 concommand.Add("tea_dev_forcelevel_noxp", PlayerForceGainLevelNoXP)
 
-function ATEDebugSetCash( ply, cmd, args )
+function TEADevSetCash( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -675,10 +675,10 @@ SystemMessage(ply, "You set your money to "..setqty.."!", Color(155,255,155,255)
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_setmoney", ATEDebugSetCash)
+concommand.Add("tea_dev_setmoney", TEADevSetCash)
 
 
-function ATEDebugSetLevel( ply, cmd, args )
+function TEADevSetLevel( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -697,10 +697,10 @@ SystemMessage(ply, "You set your level to "..setqty.."!", Color(155,255,155,255)
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_setlevel", ATEDebugSetLevel)
+concommand.Add("tea_dev_setlevel", TEADevSetLevel)
 
 
-function ATEDebugSetXP( ply, cmd, args )
+function TEADevSetXP( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -719,9 +719,9 @@ SystemMessage(ply, "You set your XP to "..setqty.."!", Color(155,255,155,255), t
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_setxp", ATEDebugSetXP)
+concommand.Add("tea_dev_setxp", TEADevSetXP)
 
-function ATEDebugSetStatPoints( ply, cmd, args )
+function TEADevSetStatPoints( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -741,9 +741,9 @@ SystemMessage(ply, "You set your Skill points value to "..setqty.."!", Color(155
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_setstatpoints", ATEDebugSetStatPoints)
+concommand.Add("tea_dev_setstatpoints", TEADevSetStatPoints)
 
-function ATEDebugSetBounty( ply, cmd, args )
+function TEADevSetBounty( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -764,9 +764,9 @@ SystemMessage(ply, "You set your Bounty to "..setqty.."!", Color(155,255,155,255
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_setbounty", ATEDebugSetBounty)
+concommand.Add("tea_dev_setbounty", TEADevSetBounty)
 
-function ATEDebugSetStatDefense( ply, cmd, args )
+function TEADevSetStatDefense( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -786,9 +786,9 @@ SystemMessage(ply, "You set your Defense skill level to "..setqty.."!", Color(15
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_setstatdefense", ATEDebugSetStatDefense)
+concommand.Add("tea_dev_setstatdefense", TEADevSetStatDefense)
 
-function ATEDebugSetStatDamage( ply, cmd, args )
+function TEADevSetStatDamage( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -807,9 +807,9 @@ SystemMessage(ply, "You set your Damage skill level to "..setqty.."!", Color(155
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_setstatdamage", ATEDebugSetStatDamage)
+concommand.Add("tea_dev_setstatdamage", TEADevSetStatDamage)
 
-function ATEDebugSetStatSpeed( ply, cmd, args )
+function TEADevSetStatSpeed( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -829,9 +829,9 @@ FullyUpdatePlayer( ply )
 RecalcPlayerSpeed(ply)
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_setstatspeed", ATEDebugSetStatSpeed)
+concommand.Add("tea_dev_setstatspeed", TEADevSetStatSpeed)
 
-function ATEDebugSetStatHealth( ply, cmd, args )
+function TEADevSetStatHealth( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -851,9 +851,9 @@ SystemMessage(ply, "You set your Health skill level to "..setqty.."!", Color(155
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_setstathealth", ATEDebugSetStatHealth)
+concommand.Add("tea_dev_setstathealth", TEADevSetStatHealth)
 
-function ATEDebugSetStatKnowledge( ply, cmd, args )
+function TEADevSetStatKnowledge( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -872,9 +872,9 @@ SystemMessage(ply, "You set your Knowledge skill level to "..setqty.."!", Color(
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_setstatknowledge", ATEDebugSetStatKnowledge)
+concommand.Add("tea_dev_setstatknowledge", TEADevSetStatKnowledge)
 
-function ATEDebugSetStatMedSkill( ply, cmd, args )
+function TEADevSetStatMedSkill( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -893,9 +893,9 @@ SystemMessage(ply, "You set your MedSkill level to "..setqty.."!", Color(155,255
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_setstatmedskill", ATEDebugSetStatMedSkill)
+concommand.Add("tea_dev_setstatmedskill", TEADevSetStatMedSkill)
 
-function ATEDebugSetStatStrength( ply, cmd, args )
+function TEADevSetStatStrength( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -914,9 +914,9 @@ SystemMessage(ply, "You set your Strength skill level to "..setqty.."!", Color(1
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_setstatstrength", ATEDebugSetStatStrength)
+concommand.Add("tea_dev_setstatstrength", TEADevSetStatStrength)
 
-function ATEDebugSetStatEndurance( ply, cmd, args )
+function TEADevSetStatEndurance( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -935,9 +935,9 @@ SystemMessage(ply, "You set your Endurance skill level to "..setqty.."!", Color(
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_setstatendurance", ATEDebugSetStatEndurance)
+concommand.Add("tea_dev_setstatendurance", TEADevSetStatEndurance)
 
-function ATEDebugSetStatSalvage( ply, cmd, args )
+function TEADevSetStatSalvage( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -956,9 +956,9 @@ SystemMessage(ply, "You set your Salvage skill level to "..setqty.."!", Color(15
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_setstatsalvage", ATEDebugSetStatSalvage)
+concommand.Add("tea_dev_setstatsalvage", TEADevSetStatSalvage)
 
-function ATEDebugSetStatBarter( ply, cmd, args )
+function TEADevSetStatBarter( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -977,9 +977,9 @@ SystemMessage(ply, "You set your Barter skill level to "..setqty.."!", Color(155
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_setstatbarter", ATEDebugSetStatBarter)
+concommand.Add("tea_dev_setstatbarter", TEADevSetStatBarter)
 
-function ATEDebugSetStatEngineer( ply, cmd, args )
+function TEADevSetStatEngineer( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -999,9 +999,9 @@ SystemMessage(ply, "You set your Engineer skill level to "..setqty.."!", Color(1
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_setstatengineer", ATEDebugSetStatEngineer)
+concommand.Add("tea_dev_setstatengineer", TEADevSetStatEngineer)
 
-function ATEDebugSetStatImmunity( ply, cmd, args )
+function TEADevSetStatImmunity( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -1020,9 +1020,9 @@ SystemMessage(ply, "You set your Immunity skill level to "..setqty.."!", Color(1
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_setstatimmunity", ATEDebugSetStatImmunity)
+concommand.Add("tea_dev_setstatimmunity", TEADevSetStatImmunity)
 
-function ATEDebugSetStatSurvivor( ply, cmd, args )
+function TEADevSetStatSurvivor( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -1041,9 +1041,9 @@ SystemMessage(ply, "You set your Survivor skill level to "..setqty.."!", Color(1
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_setstatsurvivor", ATEDebugSetStatSurvivor)
+concommand.Add("tea_dev_setstatsurvivor", TEADevSetStatSurvivor)
 
-function ATEDebugSetStamina( ply, cmd, args )
+function TEADevSetStamina( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -1062,9 +1062,9 @@ SystemMessage(ply, "You set your Stamina to "..setqty.."%!", Color(155,255,155,2
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_setstamina", ATEDebugSetStamina)
+concommand.Add("tea_dev_setstamina", TEADevSetStamina)
 
-function ATEDebugSetHunger( ply, cmd, args )
+function TEADevSetHunger( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -1083,9 +1083,9 @@ SystemMessage(ply, "You set your Hunger to "..setqty.."%!", Color(155,255,155,25
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_sethunger", ATEDebugSetHunger)
+concommand.Add("tea_dev_sethunger", TEADevSetHunger)
 
-function ATEDebugSetThirst( ply, cmd, args )
+function TEADevSetThirst( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -1104,9 +1104,9 @@ SystemMessage(ply, "You set your Thirst to "..setqty.."%!", Color(155,255,155,25
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_setthirst", ATEDebugSetThirst)
+concommand.Add("tea_dev_setthirst", TEADevSetThirst)
 
-function ATEDebugSetFatigue( ply, cmd, args )
+function TEADevSetFatigue( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -1125,9 +1125,9 @@ SystemMessage(ply, "You set your Fatigue to "..setqty.."%!", Color(155,255,155,2
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_setfatigue", ATEDebugSetFatigue)
+concommand.Add("tea_dev_setfatigue", TEADevSetFatigue)
 
-function ATEDebugSetInfection( ply, cmd, args )
+function TEADevSetInfection( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -1146,7 +1146,7 @@ SystemMessage(ply, "You set your Infection to "..setqty.."%!", Color(155,255,155
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_setinfection", ATEDebugSetInfection)
+concommand.Add("tea_dev_setinfection", TEADevSetInfection)
 
 function ATEAdminSystemBroadcast( ply, cmd, args )
 if !ply:IsValid() then return false end
@@ -1289,7 +1289,7 @@ end
 
 ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." spawned a dropped item: "..item["Name"].."!")
 print("[ADMIN COMMAND USED] "..ply:Nick().." spawned a dropped item: "..item["Name"].."!")
-SystemMessage(ply, "You spawned a dropped item: "..item["Name"].."!", Color(155,255,155,255), true)
+SystemMessage(ply, "You spawned a dropped item: "..translate.Get(item["Name"]).."!", Color(155,255,155,255), true)
 
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
@@ -1305,7 +1305,7 @@ function ATESpawnMoney(ply, cmd, args)
 	end
 	
 	local cash = args[1] or 0
-
+	if cash == 0 or tonumber(cash) < 0 then SendChat(ply, "Usage: ate_sadmin_spawnmoney (amount) - Spawn a desired amount of money in front of you [Amount can't be negative]") return end
 	
 	local vStart = ply:GetShootPos()
 	local vForward = ply:GetAimVector()
@@ -1332,3 +1332,50 @@ function ATESpawnMoney(ply, cmd, args)
 	ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
 concommand.Add("ate_sadmin_spawnmoney", ATESpawnMoney)
+
+function TEARefillStats(ply, cmd)
+if !ply:IsValid() then return false end
+
+if !SuperAdminCheck( ply ) then 
+	SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
+	ply:ConCommand( "playgamesound buttons/button8.wav" )
+	return
+end
+
+ply.Stamina = 100
+ply.Hunger = 10000
+ply.Thirst = 10000
+ply.Fatigue = 0
+ply.Infection = 0
+
+ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." refilled their stats!")
+print("[ADMIN COMMAND USED] "..ply:Nick().." refilled their stats!")
+SystemMessage(ply, "You refilled your stats!", Color(155,255,155,255), true)
+
+FullyUpdatePlayer( ply )
+ply:ConCommand( "playgamesound buttons/button3.wav" )
+end
+concommand.Add("tea_dev_refillstats", TEARefillStats)
+
+function TEADevPayout( ply, cmd, args )
+	if !ply:IsValid() then return false end
+	
+	if !SuperAdminCheck( ply ) then 
+		SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
+		ply:ConCommand( "playgamesound buttons/button8.wav" )
+		return
+	end
+	
+	local xp = args[1] or nil
+	local cash = args[2] or 0
+
+	if xp == nil or cash == nil then SendChat(ply, "Use this for test! Modifiers such as skills do apply! (tea_dev_payout {xp} {bounty})") return end
+	Payout(ply, xp, cash)
+	ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." used Payout command and gained "..xp.." XP and "..cash.." Cash!")
+	print("[ADMIN COMMAND USED] "..ply:Nick().." used Payout command and gained "..xp.." XP and "..cash.." Cash!")
+	SystemMessage(ply, "You used Payout command and gained "..xp.." XP and "..cash.." Cash!", Color(155,255,155,255), true)
+	
+	FullyUpdatePlayer( ply )
+	ply:ConCommand( "playgamesound buttons/button3.wav" )
+end
+concommand.Add("tea_dev_payout", TEADevPayout)

@@ -94,7 +94,7 @@ for k, v in SortedPairsByMemberValue( FLIMSYPROPS, "COST" ) do
 	local ItemCost = vgui.Create( "DLabel", ItemBackground )
 	ItemCost:SetFont( "TargetIDSmall" )
 	ItemCost:SetColor( Color(155,255,155,255) )
-	ItemCost:SetText( "Cost: ".. math.floor(v.COST * discount).." "..Config[ "Currency" ].."s" )
+	ItemCost:SetText( translate.Get("Cost")..": ".. math.floor(v.COST * discount).." "..Config[ "Currency" ].."s" )
 	ItemCost:SizeToContents()
 	ItemCost:Center()
 	local x,y = ItemCost:GetPos();
@@ -134,7 +134,7 @@ for k, v in SortedPairsByMemberValue( FLIMSYPROPS, "COST" ) do
 	ItemClicker.Paint = function() -- Paint function
 	return false
 	end
-	ItemClicker.DoClick = function() RunConsoleCommand("use","zw_buildtool")
+	ItemClicker.DoClick = function() RunConsoleCommand("use","ate_buildtool")
 	ChooseProp( tostring(k) )
 	end
 
@@ -189,7 +189,7 @@ for k, v in SortedPairsByMemberValue( TOUGHPROPS, "COST" ) do
 	local ItemCost = vgui.Create( "DLabel", ItemBackground )
 	ItemCost:SetFont( "TargetIDSmall" )
 	ItemCost:SetColor( Color(155,255,155,255) )
-	ItemCost:SetText( "Cost: ".. math.floor(v.COST * discount).." "..Config[ "Currency" ].."s" )
+	ItemCost:SetText( translate.Get("Cost")..": ".. math.floor(v.COST * discount).." "..Config[ "Currency" ].."s" )
 	ItemCost:SizeToContents()
 	ItemCost:Center()
 	local x,y = ItemCost:GetPos();
@@ -229,7 +229,7 @@ for k, v in SortedPairsByMemberValue( TOUGHPROPS, "COST" ) do
 	ItemClicker.Paint = function() -- Paint function
 	return false
 	end
-	ItemClicker.DoClick = function() RunConsoleCommand("use","zw_buildtool")
+	ItemClicker.DoClick = function() RunConsoleCommand("use","ate_buildtool")
 	ChooseProp( tostring(k) )
 	end
 
@@ -282,7 +282,7 @@ for k, v in SortedPairsByMemberValue( SpecialSpawns, "Cost" ) do
 	local ItemCost = vgui.Create( "DLabel", ItemBackground )
 	ItemCost:SetFont( "TargetIDSmall" )
 	ItemCost:SetColor( Color(155,255,155,255) )
-	ItemCost:SetText( "Cost: ".. v.Cost.." "..Config[ "Currency" ].."s" )
+	ItemCost:SetText( translate.Get("Cost")..": ".. v.Cost.." "..Config[ "Currency" ].."s" )
 	ItemCost:SizeToContents()
 	ItemCost:Center()
 	local x,y = ItemCost:GetPos();
@@ -293,7 +293,7 @@ for k, v in SortedPairsByMemberValue( SpecialSpawns, "Cost" ) do
 	ItemClicker:SetText("")
 	ItemClicker:SetPos( 15, 125 )
 	ItemClicker:SetTextColor( Color(255,255,255,255) )
-	ItemClicker:SetText( "Place Blueprint" )
+	ItemClicker:SetText(translate.Get("PlaceBlueprint"))
 	ItemClicker:SetSize( 120, 20 )
 	ItemClicker.Paint = function() -- Paint function
 	surface.SetDrawColor(20, 20, 60 ,200)
@@ -301,7 +301,7 @@ for k, v in SortedPairsByMemberValue( SpecialSpawns, "Cost" ) do
 	surface.SetDrawColor(0, 0, 150 ,255)
 	surface.DrawOutlinedRect( 0, 0, ItemClicker:GetWide(), ItemClicker:GetTall() )
 	end
-	ItemClicker.DoClick = function() RunConsoleCommand("use","zw_buildtool")
+	ItemClicker.DoClick = function() RunConsoleCommand("use","ate_buildtool")
 	ChooseStructure( k )
 	end
 
@@ -314,11 +314,11 @@ end
 
 
  
-PropertySheet:AddSheet( "Flimsy Props", FlimsyPanel, "icon16/bin.png", 
-false, false, "Flimsy props aren't particularly strong and can be damaged by everything.  On the upside they are dirt cheap." )
-PropertySheet:AddSheet( "Strong Props", StrongPanel, "icon16/shield.png", 
-false, false, "Strong props can only be damaged by explosives or zombie attacks.  They are a bit more costly than flimsy props though." )
-PropertySheet:AddSheet( "Faction Structures", SpecialPanel, "icon16/brick.png", 
-false, false, "This menu contains special structres such as functional doors, base components etc." )
+PropertySheet:AddSheet( translate.Get("PropMNPSheet1"), FlimsyPanel, "icon16/bin.png", 
+false, false, translate.Get("PropMNPSheet1_d") )
+PropertySheet:AddSheet( translate.Get("PropMNPSheet2"), StrongPanel, "icon16/shield.png", 
+false, false, translate.Get("PropMNPSheet2_d") )
+PropertySheet:AddSheet( translate.Get("PropMNPSheet3"), SpecialPanel, "icon16/brick.png", 
+false, false, translate.Get("PropMNPSheet3_d") )
 
 end

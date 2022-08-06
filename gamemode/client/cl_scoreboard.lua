@@ -192,24 +192,26 @@ function ScoreBoard:Create()
 	local armorstr = LocalPlayer():GetNWString("ArmorType") or "none"
 	local armortype = ItemsList[armorstr]
 	if armorstr and armortype then
-		draw.SimpleText( "Armor: "..armortype.Name, "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 235, Color(255,255,255,255) )
-		draw.SimpleText( "Protection: "..armortype["ArmorStats"]["reduction"].."%  ("..armortype["ArmorStats"]["reduction"] + ((Perks.Defense or 0) * 1.5).."% total)", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 250, Color(205,255,205,255) )
+		draw.SimpleText( translate.Get("Armor")..": "..translate.Get(armortype.Name), "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 235, Color(255,255,255,255) )
+		draw.SimpleText( translate.Get("ArmorProtection")..": "..armortype["ArmorStats"]["reduction"].."%  ("..armortype["ArmorStats"]["reduction"] + ((Perks.Defense or 0) * 1.5).."% total)", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 250, Color(205,255,205,255) )
 		if armortype["ArmorStats"]["speedloss"] < 0 then
-		draw.SimpleText( "Speed: Increased ("..-(armortype["ArmorStats"]["speedloss"] / 10)..")", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 265, Color(205,205,255,255) )
+		draw.SimpleText( translate.Get("ArmorSpeed")..": Increased ("..-(armortype["ArmorStats"]["speedloss"] / 10)..")", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 265, Color(205,205,255,255) )
+		elseif armortype["ArmorStats"]["speedloss"] == 0 then
+			draw.SimpleText( translate.Get("ArmorSpeed")..": None", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 265, Color(205,205,255,255) )
 		else
-			draw.SimpleText( "Speed: Decreased (-"..(armortype["ArmorStats"]["speedloss"] / 10)..")", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 265, Color(205,205,255,255) )	
+			draw.SimpleText( translate.Get("ArmorSpeed")..": Decreased (-"..(armortype["ArmorStats"]["speedloss"] / 10)..")", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 265, Color(205,205,255,255) )
 		end
 		if armortype["ArmorStats"]["carryweight"] > 0 then
-			draw.SimpleText( "Max Carry Weight: +"..armortype["ArmorStats"]["carryweight"].."kg", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 280, Color(255,255,175,255) )
+			draw.SimpleText( translate.Get("MaxWeight")..": +"..armortype["ArmorStats"]["carryweight"].."kg", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 280, Color(255,255,175,255) )
 		else
-			draw.SimpleText( "Max Carry Weight: "..armortype["ArmorStats"]["carryweight"].."kg", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 280, Color(255,230,205,255) )
+			draw.SimpleText( translate.Get("MaxWeight")..": "..armortype["ArmorStats"]["carryweight"].."kg", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 280, Color(255,230,205,255) )
 		end
 		
 	else
-		draw.SimpleText( "No Armor", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 235, Color(255,255,255,255) )
-		draw.SimpleText( "Protection: 0% ("..( Perks.Defense or 0) * 1.5 .."% total)", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 250, Color(205,255,205,255) )
-		draw.SimpleText( "Speed: No armor", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 265, Color(205,205,255,255) )
-		draw.SimpleText( "Max Carry Weight: +0kg", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 280, Color(255,235,205,255) )
+		draw.SimpleText( translate.Get("NoArmor"), "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 235, Color(255,255,255,255) )
+		draw.SimpleText( translate.Get("ArmorProtection")..": 0% ("..( Perks.Defense or 0) * 1.5 .."% "..translate.Get("Total")..")", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 250, Color(205,255,205,255) )
+		draw.SimpleText( translate.Get("ArmorSpeed")..": None", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 265, Color(205,205,255,255) )
+		draw.SimpleText( translate.Get("MaxWeight")..": +0kg", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 280, Color(255,235,205,255) )
 	end
 
 	end
@@ -282,7 +284,7 @@ function ScoreBoard:Create()
 			local ItemDisplay = vgui.Create( "SpawnIcon", ItemBackground )
 			ItemDisplay:SetPos( 5, 5 )
 			ItemDisplay:SetModel( v.Model )
-			ItemDisplay:SetToolTip(v.Description.."\n("..translate.Get("ItemID")..": "..k..")")
+			ItemDisplay:SetToolTip(translate.Get(v.Description).."\n("..translate.Get("ItemID")..": "..k..")")
 			ItemDisplay:SetSize(60,60)
 			ItemDisplay.PaintOver = function()
 				return
@@ -296,7 +298,7 @@ function ScoreBoard:Create()
 			ItemName:SetPos( 80, 10 )
 			ItemName:SetFont( "TargetIDSmall" )
 			ItemName:SetColor( Color(255,255,255,255) )
-			ItemName:SetText( v.Name.." ("..v.Weight.."kg)" )
+			ItemName:SetText( translate.Get(v.Name).." ("..v.Weight..""..translate.Get("kg")..")" )
 			ItemName:SizeToContents()
 
 			local ItemQty = vgui.Create( "DLabel", ItemBackground )
@@ -309,7 +311,7 @@ function ScoreBoard:Create()
 			local EquipButton = vgui.Create("DButton", ItemBackground)
 			EquipButton:SetSize( 80, 20 )
 			EquipButton:SetPos( 80, 35 )
-			EquipButton:SetText("Use")
+			EquipButton:SetText(translate.Get("Use"))
 			EquipButton:SetTextColor(Color(255, 255, 255, 255))
 			EquipButton.Paint = function(panel)
 			surface.SetDrawColor(0, 150, 0 ,255)
@@ -333,7 +335,7 @@ function ScoreBoard:Create()
 			local DropButton = vgui.Create("DButton", ItemBackground)
 			DropButton:SetSize( 80, 20 )
 			DropButton:SetPos( 170, 35 )
-			DropButton:SetText("Drop")
+			DropButton:SetText(translate.Get("Drop"))
 			DropButton:SetTextColor(Color(255, 255, 255, 255))
 			DropButton.Paint = function(panel)
 			surface.SetDrawColor(150, 75, 0 ,255)
@@ -395,7 +397,7 @@ for k, v in pairs( player.GetAll() ) do
 	plyname2:SetPos( 240, 12 )
 	plyname2:SetFont( "TargetIDSmall" )
 	plyname2:SetColor( team.GetColor(v:Team()) )
-	plyname2:SetText( "Faction: "..team.GetName(v:Team()))
+	plyname2:SetText( translate.Get("Faction")..": "..team.GetName(v:Team()))
 --	plyname2:SizeToContents()
 	plyname2:SetSize(200, 15)
 
@@ -409,29 +411,29 @@ for k, v in pairs( player.GetAll() ) do
 	local plyping = vgui.Create( "DLabel", plypanel )
 	plyping:SetPos( 510, 12 )
 	plyping:SetFont( "TargetIDSmall" )
-	plyping:SetColor( Color(255,227,227,255) )
-	plyping:SetText( "Ping: " .. v:Ping())
+	plyping:SetColor( Color(255,math.Clamp(255 - (0.5 * v:Ping()), 0, 255),math.Clamp(255 - (0.5 * v:Ping()), 0, 255),255) )
+	plyping:SetText( translate.Get("Ping")..": " .. v:Ping())
 	plyping:SizeToContents()
 
 	local plyprestige = vgui.Create( "DLabel", plypanel )
 	plyprestige:SetPos( 240, 32 )
 	plyprestige:SetFont( "TargetIDSmall" )
 	plyprestige:SetColor( Color(255,127,255,255) )
-	plyprestige:SetText( "Prestige: " .. v:GetNWInt( "PlyPrestige", 0 ))
+	plyprestige:SetText( translate.Get("Prestige")..": " .. v:GetNWInt( "PlyPrestige", 0 ))
 	plyprestige:SizeToContents()
 
 	local plykills = vgui.Create( "DLabel", plypanel )
 	plykills:SetPos( 430, 32 )
 	plykills:SetFont( "TargetIDSmall" )
 	plykills:SetColor( Color(255,255,255,255) )
-	plykills:SetText( "Kills: " .. v:Frags())
+	plykills:SetText( translate.Get("Frags")..": " .. v:Frags())
 	plykills:SizeToContents()
 
 	local plydeaths = vgui.Create( "DLabel", plypanel )
 	plydeaths:SetPos( 510, 32 )
 	plydeaths:SetFont( "TargetIDSmall" )
 	plydeaths:SetColor( Color(255,255,255,255) )
-	plydeaths:SetText( "Deaths: " .. v:Deaths())
+	plydeaths:SetText( translate.Get("Deaths")..": " .. v:Deaths())
 	plydeaths:SizeToContents()
 
 
@@ -444,7 +446,7 @@ for k, v in pairs( player.GetAll() ) do
 	local mutechat = vgui.Create("DButton", plypanel)
 		mutechat:SetSize( 45, 24 )
 		mutechat:SetPos( 655, 7 )
-		mutechat:SetText("Mute")
+		mutechat:SetText(translate.Get("Mute"))
 		mutechat:SetTextColor(Color(255, 255, 255, 255))
 		mutechat.Paint = function(panel)
 			if v:IsMuted() then
@@ -468,7 +470,7 @@ for k, v in pairs( player.GetAll() ) do
 	local invfaction = vgui.Create("DButton", plypanel)
 		invfaction:SetSize( 45, 22 )
 		invfaction:SetPos( 655, 33 )
-		invfaction:SetText("Profile")
+		invfaction:SetText(translate.Get("Profile"))
 		invfaction:SetTextColor(Color(255, 255, 255, 255))
 		invfaction.Paint = function(panel)
 				surface.SetDrawColor(0, 0, 100 ,255)
@@ -489,10 +491,10 @@ for k, v in pairs( player.GetAll() ) do
 		surface.SetDrawColor(150, 0, 0 ,255)
 		surface.DrawOutlinedRect(1, 1, pvp:GetWide() - 1 , pvp:GetTall() - 1)
 		surface.SetDrawColor(100, 0, 0 ,105)
-		if v:GetNWBool("pvp") == false then
-		draw.DrawText( "PvP", "DermaDefault", 4, 7, Color(55,55,55) )
+		if GetConVar("tea_server_voluntarypvp"):GetInt() < 1 and v:Team() == 1 and v:GetNWBool("pvp") == false then
+		draw.DrawText( translate.Get("PvP"), "DermaDefault", 4, 7, Color(55,55,55) )
 		else
-		draw.DrawText( "PvP", "DermaDefault", 4, 7, Color(255,255,255) )
+		draw.DrawText( translate.Get("PvP"), "DermaDefault", 4, 7, Color(255,255,255) )
 		surface.DrawRect(1, 1, pvp:GetWide() - 1 , pvp:GetTall() - 1)
 		end
 
@@ -612,9 +614,9 @@ end
 	facleader:SetFont( "TargetIDSmall" )
 	facleader:SetColor( Color(255,255,255,255) )
 	if v.leader and v.leader:IsValid() then
-	facleader:SetText( "Leader: "..v.leader:Nick() or "N/A" )
+	facleader:SetText( translate.Get("Leader")..": "..v.leader:Nick() or "N/A" )
 	else
-	facleader:SetText( "Leader: N/A" )
+	facleader:SetText( translate.Get("Leader")..": N/A" )
 	end
 	facleader:SetSize(200, 15)
 
@@ -622,20 +624,20 @@ end
 	members:SetPos( 420, 12 )
 	members:SetFont( "TargetIDSmall" )
 	members:SetColor( Color(255,255,255,255) )
-	members:SetText( "Members: "..team.NumPlayers( v.index ) )
+	members:SetText( translate.Get("Members")..": "..team.NumPlayers( v.index ) )
 	members:SizeToContents()
 
-	local base = vgui.Create( "DLabel", plypanel )
-	base:SetPos( 535, 12 )
-	base:SetFont( "TargetIDSmall" )
-	base:SetColor( Color(255,255,255,255) )
-	base:SetText( "Base: No" )
-	base:SizeToContents()
+--	local base = vgui.Create( "DLabel", plypanel )
+--	base:SetPos( 535, 12 )
+--	base:SetFont( "TargetIDSmall" )
+--	base:SetColor( Color(255,255,255,255) )
+--	base:SetText( "Base: No" )
+--	base:SizeToContents()
 
 	local joinfaction = vgui.Create("DButton", plypanel)
 		joinfaction:SetSize( 80, 25 )
 		joinfaction:SetPos( 610, 8 )
-		joinfaction:SetText("Join Faction")
+		joinfaction:SetText(translate.Get("JoinFaction"))
 		joinfaction:SetTextColor(Color(255, 255, 255, 255))
 		joinfaction.Paint = function(panel)
 				surface.SetDrawColor(150, 0, 0 ,255)
@@ -667,7 +669,7 @@ draw.RoundedBox( 2,  0,  0, w, h, Color( 0, 0, 0, 100 ) )
 surface.SetDrawColor(150, 0, 0 ,255)
 surface.DrawOutlinedRect(0, 0, w, h)
 
-draw.SimpleText( "Absolutely Ever True Lasting...", "TargetID", 15, 10, Color(255,255,255,255) )
+draw.SimpleText( "(This isn't translated, need a helper)", "TargetID", 15, 10, Color(255,255,255,255) )
 draw.SimpleText( "Welcome to The Eternal Apocalypse. Also known as After The End Reborn.", "TargetID", 15, 30, Color(255,255,255,255) )
 draw.SimpleText( "In this gamemode:", "TargetID", 15, 60, Color(155,155,155,255) )
 draw.SimpleText( "Most zombies are overbuffed, new weapons are added. Unused/Cut items are added", "TargetID", 15, 90, Color(155,155,155,255) )
@@ -699,10 +701,10 @@ end
 
 	
 -----------------------------------------Sheets---------------------------------------------------------------
-	PropertySheet:AddSheet( "Inventory", InvForm, "icon16/basket.png", false, false, "Manage your stuff" )
-	PropertySheet:AddSheet( "Factions", FactionList, "icon16/user_red.png", false, false, "Join factions" )
-	PropertySheet:AddSheet( "Scoreboard", Scores, "icon16/group.png", false, false, "See who is online and how many killed players they have" )
-	PropertySheet:AddSheet( "Help", HelpForm, "icon16/note.png", false, false, "Shows a bit of info about this gamemode" )
+	PropertySheet:AddSheet( translate.Get("Inventory"), InvForm, "icon16/basket.png", false, false, translate.Get("Inventory_d") )
+	PropertySheet:AddSheet( translate.Get("Factions"), FactionList, "icon16/user_red.png", false, false, "Join factions" )
+	PropertySheet:AddSheet( translate.Get("Scoreboard"), Scores, "icon16/group.png", false, false, "See who is online and how many killed players they have" )
+	PropertySheet:AddSheet( translate.Get("Help"), HelpForm, "icon16/note.png", false, false, "Shows a bit of info about this gamemode" )
 
 
 
@@ -774,7 +776,7 @@ end
 	local ModelButton = vgui.Create("DButton", ScoreBoardFrame)
 	ModelButton:SetSize( 90, 20 )
 	ModelButton:SetPos( ScoreBoardFrame:GetWide() - 100, 25 )
-	ModelButton:SetText("Change Model")
+	ModelButton:SetText(translate.Get("ChangeModel"))
 	ModelButton:SetTextColor(Color(255, 255, 255, 255))
 	ModelButton.Paint = function(panel)
 	surface.SetDrawColor(150, 0, 0 ,255)
@@ -796,7 +798,7 @@ local function DoStatsList()
 		
 		local LabelDefense = vgui.Create( "DLabel" )
 		LabelDefense:SetPos( 50, 50 )
-		LabelDefense:SetText( k.." : "..v )
+		LabelDefense:SetText( translate.Get(k).." : "..v )
 		LabelDefense:SizeToContents()
 		StatsForm:AddItem( LabelDefense )
 		
@@ -804,12 +806,12 @@ local function DoStatsList()
 		Button:SetPos( 50, 100 )
 		Button:SetSize( 10, 20 )
 		Button:SetTextColor( Color( 255, 255, 255, 255 ) )
-		Button:SetText( "Increase " .. k .. " by 1" )
+		Button:SetText( translate.Get("Inc1Stat_1").." "..translate.Get(k).." ".. translate.Get("Inc1Stat_2") )
 		Button.DoClick = function( Button )
 		net.Start("UpgradePerk")
 		net.WriteString(k)
 		net.SendToServer()
-		timer.Simple(0.25, function() 
+		timer.Simple(0.3, function() 
 			if StatsForm:IsValid() then
 				StatsForm:Clear()
 				DoStatsList()
@@ -838,7 +840,7 @@ DoStatsList()
 	
 */	
 -----------------------------------------Sheet List---------------------------------------------------------------
-	SecondarySheet:AddSheet( "My Skills", StatsForm, "icon16/heart.png", false, false, "Upgrade your stats" )
+	SecondarySheet:AddSheet( translate.Get("MySkills"), StatsForm, "icon16/heart.png", false, false, translate.Get("MySkills_d") )
 --	SecondarySheet:AddSheet( "Armor and Attachments", ArmorForm, "icon16/shield.png", false, false, "Change your model" )
 end
 

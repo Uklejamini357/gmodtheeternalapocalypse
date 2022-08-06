@@ -90,11 +90,17 @@ GainPrestige(ply)
 end)
 
 function GainPrestige(ply)
+	if !ply:Alive() then SendChat(ply, "Must be alive in order to prestige!") return end
 	if tonumber(ply.Level) >= 50 + (10 * ply.Prestige) then
 		ply.Prestige = ply.Prestige + 1
 		ply.Level = 1
 		ply.XP = 0
-		ply.StatPoints = 0
+		if tonumber(ply.Prestige) >= 20 then
+			ply.StatPoints = 5
+		else
+			ply.StatPoints = 0
+		end
+
 
 		for k, v in pairs( StatsListServer ) do
 			local TheStatPieces = string.Explode( ";", v )
@@ -115,13 +121,21 @@ function GainPrestige(ply)
 			SystemMessage(ply, "You have prestiged to Prestige level "..ply.Prestige.."! You now spawn with +5 more armor!", Color(155,255,255,255), true)
 		elseif tonumber(ply.Prestige) == 10 then
 			SystemMessage(ply, "You have prestiged to Prestige level "..ply.Prestige.."! You now can carry +3kg more!", Color(155,255,255,255), true)
+		elseif tonumber(ply.Prestige) == 15 then
+			SystemMessage(ply, "You have prestiged to Prestige level "..ply.Prestige.."! You now take 5% less damage from all sources!", Color(155,255,255,255), true)
+		elseif tonumber(ply.Prestige) == 20 then
+			SystemMessage(ply, "You have prestiged to Prestige level "..ply.Prestige.."! Everytime you prestige, you start with 5 skill points instead of 0!", Color(155,255,255,255), true)
 		else
 			local moneyprestigereward = math.floor((1500 * ply.Prestige) + (((24 ^ 1.592) * (3 * ply.Level)) ^ 1.392)) --gives players money if they prestige without gaining any other advantage except for more levels
 			ply.Money = ply.Money + moneyprestigereward
 			SystemMessage(ply, "You have prestiged to Prestige level "..ply.Prestige.."! You have gained "..moneyprestigereward.." "..Config["Currency"].."s!", Color(155,255,255,255), true)
 		end
 		SystemBroadcast(ply:Nick().." has prestiged to Prestige level "..ply.Prestige.."!", Color(155,205,255,255), true)
-		ply:EmitSound("weapons/physcannon/energy_disintegrate"..math.random(4, 5)..".wav", 90, math.Rand(80,90))
+		ply:EmitSound("weapons/physcannon/energy_disintegrate"..math.random(4, 5)..".wav", 90, math.Rand(75,90))
+		ply:EmitSound("ambient/machines/thumper_hit.wav", 120, 50)
+		local effectdata = EffectData()
+		effectdata:SetOrigin(ply:GetPos() + Vector(0, 0, 60))
+		util.Effect("zw_master_strike", effectdata)
 
 		net.Start("UpdatePeriodicStats")
 		net.WriteFloat( ply.Level )

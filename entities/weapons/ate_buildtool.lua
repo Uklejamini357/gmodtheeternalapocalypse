@@ -20,8 +20,8 @@ end
 --Swep info and other stuff
 SWEP.Author	= "LegendofRobbo"
 SWEP.Contact = ""
-SWEP.Purpose = "use this to build your base"
-SWEP.Instructions = "Click to spawn a prop."
+SWEP.Purpose = "Use this to build your base.\nSalvaging a prop will refund 45% of the prop cost."
+SWEP.Instructions = "Click (+attack) to spawn prop\nPress R (+reload) to salvage"
 SWEP.AdminSpawnable	= false
 SWEP.Spawnable	= false
 SWEP.ViewModel	= "models/weapons/v_physcannon.mdl"
@@ -131,9 +131,9 @@ local trace = util.TraceLine(tr)
 	if trace.Entity and trace.Entity:IsValid() and (trace.Entity:GetClass() == "prop_flimsy" or trace.Entity:GetClass() == "prop_strong") and not (self.Weapon:GetNextPrimaryFire() > CurTime() ) then
 	DestroyProp(self.Owner, trace.Entity)
 	self:SetNextPrimaryFire(CurTime() + 2.08)
-	elseif trace.Entity and trace.Entity:IsValid() and SpecialSpawns[trace.Entity:GetClass()] then
+	elseif trace.Entity and trace.Entity:IsValid() and SpecialSpawns[trace.Entity:GetClass()] and not (self.Weapon:GetNextPrimaryFire() > CurTime() ) then
 	DestroyStructure(self.Owner, trace.Entity)
-	self:SetNextPrimaryFire(CurTime() + 1)
+	self:SetNextPrimaryFire(CurTime() + 2.08)
 	end
 
 end
@@ -170,7 +170,7 @@ elseif caxis == 2 then
 		self:SetBRoll(roll - 5)
 		end
 	end
-	self:SetNextPrimaryFire(CurTime() + 0.1)
+	self:SetNextPrimaryFire(CurTime() + 0.09)
 return
 end
 
@@ -220,7 +220,7 @@ elseif caxis == 2 then
 		self:SetBRoll(roll + 5)
 	end
 end
-self:SetNextSecondaryFire(CurTime() + 0.1)
+self:SetNextSecondaryFire(CurTime() + 0.09)
 return
 end
 

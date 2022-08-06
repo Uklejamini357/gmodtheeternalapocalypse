@@ -2,17 +2,17 @@
 /*
 Item template:
 
-["item_healthkit"] = { 											-- what the item will be called within the games code, can be anything as long as you don't use the same name twice
-	["Name"] = "Medkit", 										-- what the item will be called ingame
-	["Cost"] = 200,												-- how many Gold will it cost if you buy it from the trader?
-	["Model"] = "models/Items/HealthKit.mdl",					-- the items model
-	["Description"] = "stuff",									-- the description will show up in the trader buy menu and in your inventory when you mouse over it
-	["Weight"] = 1,												-- weight in kilograms (if your american and want to use imperial then your shit out of luck m8)
-	["Supply"] = 0,												-- how many of these items does each trader have in stock? stock refills every 24 hours.  Putting 0 means unlimited stock, Putting -1 as stock will make it so the item isn't sold by traders
-	["Rarity"] = 1,												-- 0 = trash, 1 = junk, 2 = common, 3 = uncommon, 4 = rare, 5 = super rare, 6 = epic, 7 = mythic, 8 = legendary, 9 = godly, 10 = event, 11 = unobtainable, any other = pending
-	["Category"] = 1,											-- 1 = supplies, 2 = ammunition, 3 = weapons, any other = ignored by trader
-	["UseFunc"] = stuff 										-- the function to call when the player uses the item from their inventory, you will need lua skillz here
-	["DropFunc"] = stuff 										-- the function to call when the player drops the item
+["item_healthkit"] = { 				-- what the item will be called within the games code, can be anything as long as you don't use the same name twice
+	["Name"] = "Medkit", 			-- what the item will be called ingame
+	["Cost"] = 200,					-- how many Gold will it cost if you buy it from the trader?
+	["Model"] = "models/Items/HealthKit.mdl",			-- the items model
+	["Description"] = "stuff",				-- the description will show up in the trader buy menu and in your inventory when you mouse over it
+	["Weight"] = 1,						-- weight in kilograms (if your american and want to use imperial then your shit out of luck m8)
+	["Supply"] = 0,						-- how many of these items does each trader have in stock? stock refills every 24 hours.  Putting 0 means unlimited stock, Putting -1 as stock will make it so the item isn't sold by traders
+	["Rarity"] = 1,						-- 0 = trash, 1 = junk, 2 = common, 3 = uncommon, 4 = rare, 5 = super rare, 6 = epic, 7 = mythic, 8 = legendary, 9 = godly, 10 = event, 11 = unobtainable, any other = pending
+	["Category"] = 1,					-- 1 = supplies, 2 = ammunition, 3 = weapons, 4 = armor, any other = ignored by trader
+	["UseFunc"] = stuff 				-- the function to call when the player uses the item from their inventory, you will need lua skillz here
+	["DropFunc"] = stuff 				-- the function to call when the player drops the item
 }
 
 
@@ -28,7 +28,7 @@ ItemsList = {
 		["Name"] = "Bandage",
 		["Cost"] = 65,
 		["Model"] = "models/wick/wrbstalker/anomaly/items/wick_dev_bandage.mdl",
-		["Description"] = "A rolled up bandage that can be used to stop bleeding or to splint broken limbs.\nRestores 11 health, effectiveness is increased by 2.5% per MedSkill point.",
+		["Description"] = "Bandage_d",
 		["Weight"] = 0.06,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -41,7 +41,7 @@ ItemsList = {
 		["Name"] = "Medkit",
 		["Cost"] = 175,
 		["Model"] = "models/wick/wrbstalker/anomaly/items/wick_dev_aptechka_low.mdl",
-		["Description"] = "An all-purpose medkit. Used to treat injuries of various types and severities - wounds, burns, poisonings, etc.\nRestores 45 health, healing effectiveness is increased by 2.5% per MedSkill point and treats 5% of infection.",
+		["Description"] = "Medkit_d",
 		["Weight"] = 0.5,
 		["Supply"] = 30,
 		["Rarity"] = 3,
@@ -51,10 +51,10 @@ ItemsList = {
 	},
 
 	["item_armymedkit"] = {
-		["Name"] = "Army Medkit",
+		["Name"] = "ArmyMedkit",
 		["Cost"] = 300,
 		["Model"] = "models/wick/wrbstalker/anomaly/items/wick_dev_aptechka_high.mdl",
-		["Description"] = "A specialized medical set to fight against physical damage and blood loss.\nIn it is included a component for blood coagulation, antibiotics, immunal stimulators, and painkillers.\nRestores 70 health, healing effectiveness is increased by 2.5% per MedSkill point and treats 20% of infection.",
+		["Description"] = "ArmyMedkit_d",
 		["Weight"] = 0.6,
 		["Supply"] = 10,
 		["Rarity"] = 4,
@@ -64,10 +64,10 @@ ItemsList = {
 	},
 
 	["item_scientificmedkit"] = {
-		["Name"] = "Scientific Medkit",
+		["Name"] = "ScientificMedkit",
 		["Cost"] = 500,
 		["Model"] = "models/wick/wrbstalker/anomaly/items/wick_dev_aptechka_mid.mdl",
-		["Description"] = "High end medical set designed for use in The Zone. This medkit includes items used to stop bleeding, treat burns, clean wounds, and treat a variety of different injuries.\nIt also includes anti-radiation pills and medicine.\nRestores 100 health, healing effectiveness is increased by 2.5% per MedSkill point and treats 60% of infection.",
+		["Description"] = "ScientificMedkit_d",
 		["Weight"] = 0.65,
 		["Supply"] = 5,
 		["Rarity"] = 5,
@@ -80,7 +80,7 @@ ItemsList = {
 		["Name"] = "Antidote",
 		["Cost"] = 100,
 		["Model"] = "models/wick/wrbstalker/cop/newmodels/items/wick_antidot.mdl",
-		["Description"] = "A rare and expensive antidote that is capable of curing the zombie plague, It's a shame this wasn't invented until most of the world had already been overrun.\nDoesn't restore any health, but treats 40% of infection.",
+		["Description"] = "Antidote_d",
 		["Weight"] = 0.08,
 		["Supply"] = 12,
 		["Rarity"] = 3,
@@ -90,10 +90,10 @@ ItemsList = {
 	},
 
 	["item_egg"] = {
-		["Name"] = "Raw Egg",
+		["Name"] = "Egg",
 		["Cost"] = 5,
 		["Model"] = "models/props_phx/misc/egg.mdl",
-		["Description"] = "A raw egg. Restores 4% hunger, but dehydrates 1% thirst.",
+		["Description"] = "Egg_d",
 		["Weight"] = 0.08,
 		["Supply"] = 0,
 		["Rarity"] = 0,
@@ -103,10 +103,10 @@ ItemsList = {
 	},
 
 	["item_milk"] = {
-		["Name"] = "Old Milk",
+		["Name"] = "Milk",
 		["Cost"] = 35,
 		["Model"] = "models/props_junk/garbage_milkcarton002a.mdl",
-		["Description"] = "An old milk. Restores 11% hunger and quenches 20% thirst.",
+		["Description"] = "Milk_d",
 		["Weight"] = 1.05,
 		["Supply"] = 20,
 		["Rarity"] = 1,
@@ -116,10 +116,10 @@ ItemsList = {
 	},
 
 	["item_soda"] = {
-		["Name"] = "Can of Softdrink",
+		["Name"] = "Soda",
 		["Cost"] = 50,
 		["Model"] = "models/props_junk/PopCan01a.mdl",
-		["Description"] = "An old pre apocalyptic softdrink, it even still has bubbles left in it! Restores 1% health, 8% hunger, 35% thirst, 5% stamina and recovers 1% of sleep.",
+		["Description"] = "Soda_d",
 		["Weight"] = 0.33,
 		["Supply"] = 0,
 		["Rarity"] = 1,
@@ -129,10 +129,10 @@ ItemsList = {
 	},
 
 	["item_energydrink"] = {
-		["Name"] = "Energy Drink 'S.T.A.L.K.E.R.'",
+		["Name"] = "EnergyDrink",
 		["Cost"] = 65,
 		["Model"] = "models/wick/wrbstalker/anomaly/items/wick_dev_drink_stalker.mdl",
-		["Description"] = "This is an excellent energy drink consisting of caffeine, taurine and a mixture of rejuvenating vitamins. Just the ticket when you're too tired to push forward!\nRestores 1% health, 5% hunger, 30% thirst, 55% of stamina and recovers 8% of sleep.",
+		["Description"] = "EnergyDrink_d",
 		["Weight"] = 0.36,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -142,10 +142,10 @@ ItemsList = {
 	},
 
 	["item_energydrink_nonstop"] = {
-		["Name"] = "'Nonstop' Energy Drink",
+		["Name"] = "NonstopEnergyDrink",
 		["Cost"] = 100,
 		["Model"] = "models/wick/wrbstalker/cop/newmodels/items/wick_nonstop.mdl",
-		["Description"] = "This drink will instantly rejuvenate your mind and body. This drink is similar to the common energy drink, but also heals you, reduces radiation somewhat, reduces hunger, and gives you more endurance.\nOf course it's a bit expensive, but the price is worth it! Restores 2% health, 6% hunger, 32% thirst, 85% of stamina and recovers 11% of sleep.",
+		["Description"] = "NonstopEnergyDrink_d",
 		["Weight"] = 0.38,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -155,10 +155,10 @@ ItemsList = {
 	},
 
 	["item_beerbottle"] = {
-		["Name"] = "Bottle of Beer",
+		["Name"] = "BeerBottle",
 		["Cost"] = 35,
 		["Model"] = "models/props_junk/garbage_glassbottle003a.mdl",
-		["Description"] = "Makes the apocalypse a bit more bearable. Restores 1% health, 9% hunger, 5% thirst, but drains 15% stamina and gives 10% fatigue.",
+		["Description"] = "BeerBottle_d",
 		["Weight"] = 0.8,
 		["Supply"] = 10,
 		["Rarity"] = 3,
@@ -169,10 +169,10 @@ ItemsList = {
 
 
 	["item_tinnedfood"] = {
-		["Name"] = "Tinned Rations",
+		["Name"] = "TinnedRations",
 		["Cost"] = 45,
 		["Model"] = "models/props_junk/garbage_metalcan001a.mdl",
-		["Description"] = "A tin of god knows what, the label fell off a long time ago. Restores 3% health, 20% hunger, but dehydrates 10% thirst.",
+		["Description"] = "TinnedRations_d",
 		["Weight"] = 0.4,
 		["Supply"] = 30,
 		["Rarity"] = 2,
@@ -185,7 +185,7 @@ ItemsList = {
 		["Name"] = "Potato",
 		["Cost"] = 60,
 		["Model"] = "models/props_phx/misc/potato.mdl",
-		["Description"] = "A potato, tastes awful raw but it's edible nonetheless. Restores 2% health, 22% hunger, but dehydrates 8% thirst.",
+		["Description"] = "Potato_d",
 		["Weight"] = 0.2,
 		["Supply"] = 20,
 		["Rarity"] = 2,
@@ -195,10 +195,10 @@ ItemsList = {
 	},
 
 	["item_traderfood"] = {
-		["Name"] = "Trader's Special",
+		["Name"] = "TraderSpecial",
 		["Cost"] = 75,
 		["Model"] = "models/props_junk/garbage_takeoutcarton001a.mdl",
-		["Description"] = "A box of rather dubious looking meat and ramen, prepared for you by your friendly local trader. Restores 4% health, 47% Hunger, 4% stamina but dehydrates 15% thirst.",
+		["Description"] = "TraderSpecial_d",
 		["Weight"] = 0.6,
 		["Supply"] = 5,
 		["Rarity"] = 2,
@@ -208,10 +208,10 @@ ItemsList = {
 	},
 
 	["item_trout"] = {
-		["Name"] = "River Trout",
+		["Name"] = "RiverTrout",
 		["Cost"] = 95,
 		["Model"] = "models/props/CS_militia/fishriver01.mdl",
-		["Description"] = "A tasty, fresh river trout. Restores 5% health, 65% Hunger, but dehydrates 4% thirst.",
+		["Description"] = "RiverTrout_d",
 		["Weight"] = 0.75,
 		["Supply"] = 2,
 		["Rarity"] = 3,
@@ -221,10 +221,10 @@ ItemsList = {
 	},
 
 	["item_melon"] = {
-		["Name"] = "Watermelon",
+		["Name"] = "Melon",
 		["Cost"] = 150,
 		["Model"] = "models/props_junk/watermelon01.mdl",
-		["Description"] = "A fresh, tasty watermelon, fresh from the farming compounds up in the mountains. Restores 7% health, 85% Hunger, 20% thirst and 3% stamina.",
+		["Description"] = "Melon_d",
 		["Weight"] = 2,
 		["Supply"] = 3,
 		["Rarity"] = 3,
@@ -234,10 +234,10 @@ ItemsList = {
 	},
 
 	["item_burger"] = {
-		["Name"] = "Cheez Burger",
+		["Name"] = "Burger",
 		["Cost"] = 750,
 		["Model"] = "models/food/burger.mdl",
-		["Description"] = "Can i haz cheez burger? Restores 30% health, 100% hunger and 15% thirst, 90% stamina and recovers 25% of sleep.",
+		["Description"] = "Burger_d",
 		["Weight"] = 0.4,
 		["Supply"] = -1,
 		["Rarity"] = 7,
@@ -250,7 +250,7 @@ ItemsList = {
 		["Name"] = "Hotdog",
 		["Cost"] = 400,
 		["Model"] = "models/food/hotdog.mdl",
-		["Description"] = "Hot Dog. Restores 20% health, 80% hunger, 10% thirst, 40% stamina and recovers 15% of sleep.",
+		["Description"] = "Hotdog_d",
 		["Weight"] = 0.35,
 		["Supply"] = -1,
 		["Rarity"] = 6,
@@ -263,7 +263,7 @@ ItemsList = {
 		["Name"] = "Donut",
 		["Cost"] = 65,
 		["Model"] = "models/noesis/donut.mdl",
-		["Description"] = "A donut. Restores 2% health, 45% hunger, 5% stamina and recovers 1% of sleep, but dehydrates 7% of thirst.",
+		["Description"] = "Donut_d",
 		["Weight"] = 0.2,
 		["Supply"] = 5,
 		["Rarity"] = 2,
@@ -276,7 +276,7 @@ ItemsList = {
 		["Name"] = "Bed",
 		["Cost"] = 80,
 		["Model"] = "models/props/de_inferno/bed.mdl",
-		["Description"] = "Allows you to sleep and set your spawnpoint (your spawnpoint depends on your bed location).\nHeals by 10% when used.",
+		["Description"] = "Bed_d",
 		["Weight"] = 4.5,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -286,10 +286,10 @@ ItemsList = {
 	},
 
 	["item_sleepingbag"] = {
-		["Name"] = "Sleeping Bag",
+		["Name"] = "SleepingBag",
 		["Cost"] = 1130,
 		["Model"] = "models/wick/wrbstalker/anomaly/items/dez_item_sleepbag.mdl",
-		["Description"] = "A sleeping bag that can be re-used. Sleeping in the open may attract zombies.",
+		["Description"] = "SleepingBag_d",
 		["Weight"] = 2.2,
 		["Supply"] = 0,
 		["Rarity"] = 5,
@@ -299,10 +299,10 @@ ItemsList = {
 	},
 
 	["item_amnesiapills"] = {
-		["Name"] = "Amnesia Pills",
+		["Name"] = "AmnesiaPills",
 		["Cost"] = 1250,
 		["Model"] = "models/props_lab/jar01b.mdl",
-		["Description"] = "USE THIS AT YOUR OWN RISK\nA bottle of pills that cause you to forget everything you've ever learned. Resets all your stats and refunds your stat points.",
+		["Description"] = "AmnesiaPills_d",
 		["Weight"] = 0.1,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -312,10 +312,10 @@ ItemsList = {
 	},
 
 	["item_armorbattery"] = {
-		["Name"] = "Armor Battery",
+		["Name"] = "ArmorBattery",
 		["Cost"] = 600,
 		["Model"] = "models/Items/battery.mdl",
-		["Description"] = "An Armor Battery used to boost protection in combat.\nRestores 15% Armor Battery, with +2% effectiveness per Engineer skill.",
+		["Description"] = "ArmorBattery_d",
 		["Weight"] = 0.55,
 		["Supply"] = 6,
 		["Rarity"] = 4,
@@ -325,10 +325,10 @@ ItemsList = {
 	},
 
 	["item_armorkevlar"] = {
-		["Name"] = "Kevlar Plate",
+		["Name"] = "ArmorKevlar",
 		["Cost"] = 1500,
 		["Model"] = "models/wick/wrbstalker/anomaly/items/dez_kevlar.mdl",
-		["Description"] = "A part of kevlar armor mostly used to protect user from severe bullet wounds.\nRestores 35% Armor battery, with +2% effectiveness per Engineer skill.",
+		["Description"] = "ArmorKevlar_d",
 		["Weight"] = 1.13,
 		["Supply"] = 3,
 		["Rarity"] = 5,
@@ -351,20 +351,20 @@ ItemsList = {
 		["Name"] = "Radio",
 		["Cost"] = 300,
 		["Model"] = "models/wick/wrbstalker/anomaly/items/dez_radio.mdl",
-		["Description"] = "An old radio. It doesn't work anymore, but traders may pay money for this find.",
+		["Description"] = "Radio_d",
 		["Weight"] = 1,
 		["Supply"] = -1,
 		["Rarity"] = 2,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) SendChat(ply, "I should probably take this to the trader, I don't have any use for it") return false end,
+		["UseFunc"] = function(ply) SendChat(ply, translate.Get("ItemNoUseSellable")) return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_radio") return drop end,
 	},
 
 	["item_scrap"] = {
-		["Name"] = "Scrap Metal",
+		["Name"] = "ScrapMetal",
 		["Cost"] = 350,
 		["Model"] = "models/Gibs/helicopter_brokenpiece_02.mdl",
-		["Description"] = "Scrap metal. It doesn't really do anything but you may still use it to improve your armor condition.\nIncreases 10% Armor Battery, +2% Effectiveness per Engineer skill",
+		["Description"] = "ScrapMetal_d",
 		["Weight"] = 1,
 		["Supply"] = -1,
 		["Rarity"] = 2,
@@ -377,91 +377,91 @@ ItemsList = {
 		["Name"] = "Chemicals",
 		["Cost"] = 600,
 		["Model"] = "models/props_junk/plasticbucket001a.mdl",
-		["Description"] = "Some old chemicals that might be useful for explosives. The trader will pay good money for this.",
+		["Description"] = "Chemicals_d",
 		["Weight"] = 1.5,
 		["Supply"] = -1,
 		["Rarity"] = 3,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) SendChat(ply, "I should probably take this to the trader, I don't have any use for it") return false end,
+		["UseFunc"] = function(ply) SendChat(ply, translate.Get("ItemNoUseSellable")) return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_chems") return drop end,
 	},
 
 	["item_tv"] = {
-		["Name"] = "Old TV",
+		["Name"] = "OldTV",
 		["Cost"] = 800,
 		["Model"] = "models/props_c17/tv_monitor01.mdl",
-		["Description"] = "An old television that appears to be intact. The trader will pay good money for this.",
+		["Description"] = "OldTV_d",
 		["Weight"] = 2,
 		["Supply"] = -1,
 		["Rarity"] = 3,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) SendChat(ply, "I should probably take this to the trader, I don't have any use for it") return false end,
+		["UseFunc"] = function(ply) SendChat(ply, translate.Get("ItemNoUseSellable")) return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_tv") return drop end,
 	},
 
 	["item_beer"] = {
-		["Name"] = "Crate of Beer",
+		["Name"] = "CrateofBeer",
 		["Cost"] = 1200,
 		["Model"] = "models/props/CS_militia/caseofbeer01.mdl",
-		["Description"] = "A crate of unopened beer. The trader will pay good money for this.",
+		["Description"] = "CrateofBeer_d",
 		["Weight"] = 5,
 		["Supply"] = -1,
 		["Rarity"] = 3,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) SendChat(ply, "I should probably take this to the trader, I don't have any use for it") return false end,
+		["UseFunc"] = function(ply) SendChat(ply, translate.Get("ItemNoUseSellable")) return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_beer") return drop end,
 	},
 
 	["item_hamradio"] = {
-		["Name"] = "Ham Radio",
+		["Name"] = "HamRadio",
 		["Cost"] = 1500,
 		["Model"] = "models/props_lab/citizenradio.mdl",
-		["Description"] = "A working ham radio. The trader will pay good money for this.",
+		["Description"] = "HamRadio_d",
 		["Weight"] = 2.5,
 		["Supply"] = -1,
 		["Rarity"] = 3,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) SendChat(ply, "I should probably take this to the trader, I don't have any use for it") return false end,
+		["UseFunc"] = function(ply) SendChat(ply, translate.Get("ItemNoUseSellable")) return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_hamradio") return drop end,
 	},
 
 	["item_computer"] = {
-		["Name"] = "Old Computer",
+		["Name"] = "OldPC",
 		["Cost"] = 2000,
 		["Model"] = "models/props_lab/harddrive02.mdl",
-		["Description"] = "Working computers are a very rare find these days. The trader will pay good money for this",
+		["Description"] = "OldPC_d",
 		["Weight"] = 4,
 		["Supply"] = -1,
 		["Rarity"] = 4,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) SendChat(ply, "I should probably take this to the trader, I don't have any use for it") return false end,
+		["UseFunc"] = function(ply) SendChat(ply, translate.Get("ItemNoUseSellable")) return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_computer") return drop end,
 	},
 
 
 	["item_blueprint_sawbow"] = {
-		["Name"] = "Saw-Bow Blueprint",
+		["Name"] = "SawBowBlueprint",
 		["Cost"] = 5000,
 		["Model"] = "models/props_lab/clipboard.mdl",
-		["Description"] = "A clipboard containing some highly interesting blueprints for a crossbow that fires sawblades. I should take this to the trader and see what he thinks.",
+		["Description"] = "SawBowBlueprint_d",
 		["Weight"] = 0.25,
 		["Supply"] = -1,
 		["Rarity"] = 11,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) SendChat(ply, "I should probably take this to the trader, He might be able to build this thing") return false end,
+		["UseFunc"] = function(ply) SendChat(ply, translate.Get("ItemNoUseWeapon")) return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_blueprint_sawbow") return drop end,
 	},
 
 	["item_blueprint_railgun"] = {
-		["Name"] = "Railgun Blueprint",
+		["Name"] = "RailgunBlueprint",
 		["Cost"] = 5000,
 		["Model"] = "models/props_lab/clipboard.mdl",
-		["Description"] = "A clipboard containing some highly interesting blueprints for a high tech railgun. I should take this to the trader and see what he thinks.",
+		["Description"] = "RailgunBlueprint_d",
 		["Weight"] = 0.25,
 		["Supply"] = -1,
 		["Rarity"] = 11,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) SendChat(ply, "I should probably take this to the trader, He might be able to build this thing") return false end,
+		["UseFunc"] = function(ply) SendChat(ply, translate.Get("ItemNoUseWeapon")) return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_blueprint_railgun") return drop end,
 	},
 
@@ -479,42 +479,42 @@ ItemsList = {
 
 
 	["item_junk_tin"] = {
-		["Name"] = "Empty Tin",
+		["Name"] = "EmptyTin",
 		["Cost"] = 0,
 		["Model"] = "models/props_junk/garbage_metalcan002a.mdl",
-		["Description"] = "This once contained food, now it only contains despair.",
+		["Description"] = "EmptyTin_d",
 		["Weight"] = 0.1,
 		["Supply"] = -1,
 		["Rarity"] = 0,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) SendChat(ply, "This is just useless trash") return false end,
+		["UseFunc"] = function(ply) SendChat(ply, translate.Get("ItemNoUse")) return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_tin") return drop end,
 	},
 
 	["item_junk_boot"] = {
-		["Name"] = "Old Boot",
+		["Name"] = "OldBoot",
 		["Cost"] = 0,
 		["Model"] = "models/props_junk/Shoe001a.mdl",
-		["Description"] = "Smells like cheesy feet",
+		["Description"] = "OldBoot_d",
 		["Weight"] = 0.17,
 		["Supply"] = -1,
 		["Rarity"] = 0,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) SendChat(ply, "This is just useless trash") return false end,
+		["UseFunc"] = function(ply) SendChat(ply, translate.Get("ItemNoUse")) return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_boot") return drop end,
 	},
 
 
 	["item_junk_paper"] = {
-		["Name"] = "Old Newspaper",
+		["Name"] = "OldNewspaper",
 		["Cost"] = 0,
 		["Model"] = "models/props_junk/garbage_newspaper001a.mdl",
-		["Description"] = "The latest news and gossip from 1993.",
+		["Description"] = "OldNewspaper_d",
 		["Weight"] = 0.12,
 		["Supply"] = -1,
 		["Rarity"] = 0,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) SendChat(ply, "This is just useless trash") return false end,
+		["UseFunc"] = function(ply) SendChat(ply, translate.Get("ItemNoUse")) return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_paper") return drop end,
 	},
 
@@ -522,90 +522,90 @@ ItemsList = {
 		["Name"] = "Keyboard",
 		["Cost"] = 0,
 		["Model"] = "models/props_c17/computer01_keyboard.mdl",
-		["Description"] = "There aren't any computers left to connect this to...",
+		["Description"] = "Keyboard_d",
 		["Weight"] = 0.23,
 		["Supply"] = -1,
 		["Rarity"] = 0,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) SendChat(ply, "This is just useless trash") return false end,
+		["UseFunc"] = function(ply) SendChat(ply, translate.Get("ItemNoUse")) return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_keyboard") return drop end,
 	},
 
 	["item_junk_gardenpot"] = {
-		["Name"] = "Garden Pot",
+		["Name"] = "GardenPot",
 		["Cost"] = 0,
 		["Model"] = "models/props_junk/terracotta01.mdl",
-		["Description"] = "There's no time for watching grass grow these days.",
+		["Description"] = "GardenPot_d",
 		["Weight"] = 0.25,
 		["Supply"] = -1,
 		["Rarity"] = 0,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) SendChat(ply, "This is just useless trash") return false end,
+		["UseFunc"] = function(ply) SendChat(ply, translate.Get("ItemNoUse")) return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_gardenpot") return drop end,
 	},
 
 	["item_junk_paint"] = {
-		["Name"] = "Bucket of Dried Paint",
+		["Name"] = "BucketPaint",
 		["Cost"] = 0,
 		["Model"] = "models/props_junk/metal_paintcan001a.mdl",
-		["Description"] = "Dried up old paint.",
+		["Description"] = "BucketPaint_d",
 		["Weight"] = 0.25,
 		["Supply"] = -1,
 		["Rarity"] = 0,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) SendChat(ply, "This is just useless trash") return false end,
+		["UseFunc"] = function(ply) SendChat(ply, translate.Get("ItemNoUse")) return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_paint") return drop end,
 	},
 
 	["item_junk_doll"] = {
-		["Name"] = "Toy Doll",
+		["Name"] = "ToyDoll",
 		["Cost"] = 0,
 		["Model"] = "models/props_c17/doll01.mdl",
-		["Description"] = "Creepy looking little bastard.",
+		["Description"] = "ToyDoll_d",
 		["Weight"] = 0.15,
 		["Supply"] = -1,
 		["Rarity"] = 0,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) SendChat(ply, "This is just useless trash") return false end,
+		["UseFunc"] = function(ply) SendChat(ply, translate.Get("ItemNoUse")) return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_doll") return drop end,
 	},
 
 	["item_junk_pot"] = {
-		["Name"] = "Rusted Tin Pot",
+		["Name"] = "TinPot",
 		["Cost"] = 0,
 		["Model"] = "models/props_interiors/pot02a.mdl",
-		["Description"] = "This could be useful if it wasn't rusted through at the bottom.",
+		["Description"] = "TinPot_d",
 		["Weight"] = 0.2,
 		["Supply"] = -1,
 		["Rarity"] = 0,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) SendChat(ply, "This is just useless trash") return false end,
+		["UseFunc"] = function(ply) SendChat(ply, translate.Get("ItemNoUse")) return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_pot") return drop end,
 	},
 
 	["item_junk_hula"] = {
-		["Name"] = "Hula Doll",
+		["Name"] = "HulaDoll",
 		["Cost"] = 0,
 		["Model"] = "models/props_lab/huladoll.mdl",
-		["Description"] = "Wind it up and it does the macarena! pretty cool but you can't eat it, fuck it or use it as a weapon so in the trash it goes.",
+		["Description"] = "HulaDoll_d",
 		["Weight"] = 0.1,
 		["Supply"] = -1,
 		["Rarity"] = 0,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) SendChat(ply, "This is just useless trash") return false end,
+		["UseFunc"] = function(ply) SendChat(ply, translate.Get("ItemNoUse")) return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_hula") return drop end,
 	},
 
 	["item_junk_nailbox"] = {
-		["Name"] = "Empty Nail Box",
+		["Name"] = "Nailbox",
 		["Cost"] = 0,
 		["Model"] = "models/props_lab/box01a.mdl",
-		["Description"] = "This once contained nails, now a family of cockroaches live in it.",
+		["Description"] = "Nailbox_d",
 		["Weight"] = 0.06,
 		["Supply"] = -1,
 		["Rarity"] = 0,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) SendChat(ply, "This is just useless trash") return false end,
+		["UseFunc"] = function(ply) SendChat(ply, translate.Get("ItemNoUse")) return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_nailbox") return drop end,
 	},
 
@@ -613,12 +613,12 @@ ItemsList = {
 		["Name"] = "Twig",
 		["Cost"] = 0,
 		["Model"] = "models/props/cs_office/Snowman_arm.mdl",
-		["Description"] = "Get some wood.",
+		["Description"] = "Twig_d",
 		["Weight"] = 0.1,
 		["Supply"] = -1,
 		["Rarity"] = 0,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) SendChat(ply, "This is just useless trash") return false end,
+		["UseFunc"] = function(ply) SendChat(ply, translate.Get("ItemNoUse")) return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_twig") return drop end,
 	},
 
@@ -645,49 +645,49 @@ ItemsList = {
 
 
 	["item_craft_fueltank"] = {
-		["Name"] = "Fuel Tank",
+		["Name"] = "FuelTank",
 		["Cost"] = 500,
 		["Model"] = "models/props_junk/metalgascan.mdl",
-		["Description"] = "An empty fuel tank, used to craft vehicles.",
+		["Description"] = "FuelTank_d",
 		["Weight"] = 0.25,
 		["Supply"] = -1,
 		["Rarity"] = 11,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) SendChat(ply, "I should find a vehicle dealer so i can build a vehicle with this") return false end,
+		["UseFunc"] = function(ply) SendChat(ply, translate.Get("ItemNoUseVehicle")) return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_craft_fueltank") return drop end,
 	},
 
 	["item_craft_wheel"] = {
-		["Name"] = "Car Wheel",
+		["Name"] = "CarWheel",
 		["Cost"] = 300,
 		["Model"] = "models/props_vehicles/carparts_wheel01a.mdl",
-		["Description"] = "A car wheel fitted with a tyre that still holds air.",
+		["Description"] = "CarWheel_d",
 		["Weight"] = 1.5,
 		["Supply"] = -1,
 		["Rarity"] = 11,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) SendChat(ply, "I should find a vehicle dealer so i can build a vehicle with this") return false end,
+		["UseFunc"] = function(ply) SendChat(ply, translate.Get("ItemNoUseVehicle")) return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_craft_wheel") return drop end,
 	},
 
 	["item_craft_oil"] = {
-		["Name"] = "Engine Oil (1L)",
+		["Name"] = "EngineOil",
 		["Cost"] = 500,
 		["Model"] = "models/props_junk/garbage_plasticbottle001a.mdl",
-		["Description"] = "A bottle of engine lubricant, required to make an engine run without exploding.",
+		["Description"] = "EngineOil_d",
 		["Weight"] = 1,
 		["Supply"] = -1,
 		["Rarity"] = 11,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) SendChat(ply, "I should find a vehicle dealer so i can build a vehicle with this") return false end,
+		["UseFunc"] = function(ply) SendChat(ply, translate.Get("ItemNoUseVehicle")) return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_craft_oil") return drop end,
 	},
 
 	["item_craft_battery"] = {
-		["Name"] = "Battery Cell",
+		["Name"] = "BatteryCell",
 		["Cost"] = 500,
 		["Model"] = "models/Items/car_battery01.mdl",
-		["Description"] = "A standard battery used in many different things.",
+		["Description"] = "BatteryCell_d",
 		["Weight"] = 0.6,
 		["Supply"] = -1,
 		["Rarity"] = 11,
@@ -697,10 +697,10 @@ ItemsList = {
 	},
 
 	["item_craft_ecb"] = {
-		["Name"] = "Electronic Control Box",
+		["Name"] = "ECB",
 		["Cost"] = 250,
 		["Model"] = "models/props_lab/reciever01b.mdl",
-		["Description"] = "An electronic control box used in the construction of various vehicles and special weapons.",
+		["Description"] = "ECB_d",
 		["Weight"] = 0.35,
 		["Supply"] = -1,
 		["Rarity"] = 11,
@@ -710,28 +710,28 @@ ItemsList = {
 	},
 
 	["item_craft_engine_small"] = {
-		["Name"] = "Small engine",
+		["Name"] = "SmallEngine",
 		["Cost"] = 1000,
 		["Model"] = "models/gibs/airboat_broken_engine.mdl",
-		["Description"] = "A small petrol engine, it looks to be in decent condition.",
+		["Description"] = "SmallEngine_d",
 		["Weight"] = 3,
 		["Supply"] = -1,
 		["Rarity"] = 11,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) SendChat(ply, "I should find a vehicle dealer so i can build a vehicle with this") return false end,
+		["UseFunc"] = function(ply) SendChat(ply, translate.Get("ItemNoUseVehicle")) return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_craft_engine_small") return drop end,
 	},
 
 	["item_craft_engine_large"] = {
-		["Name"] = "Large engine",
+		["Name"] = "LargeEngine",
 		["Cost"] = 3000,
 		["Model"] = "models/props_c17/TrapPropeller_Engine.mdl",
-		["Description"] = "A big block engine, this looks like a bit of love and care would restore it to working order.",
+		["Description"] = "LargeEngine_d",
 		["Weight"] = 5,
 		["Supply"] = -1,
 		["Rarity"] = 11,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) SendChat(ply, "I should find a vehicle dealer so i can build a vehicle with this") return false end,
+		["UseFunc"] = function(ply) SendChat(ply, translate.Get("ItemNoUseVehicle")) return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_craft_engine_large") return drop end,
 	},
 
@@ -754,10 +754,10 @@ ItemsList = {
 
 
 	["weapon_zw_noobcannon"] = {
-		["Name"] = "Noob Cannon",
+		["Name"] = "NoobCannon",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_pist_glock18.mdl",
-		["Description"] = "My first peashooter, given to all players that are under level 10 and at prestige 0 when they spawn.",
+		["Description"] = "NoobCannon_d",
 		["Weight"] = 1.1,
 		["Supply"] = -1, -- -1 stock means the traders will never sell this item
 		["Rarity"] = 1,
@@ -767,10 +767,10 @@ ItemsList = {
 	},
 
 	["weapon_zw_pigsticker"] = {
-		["Name"] = "Pig Sticker",
+		["Name"] = "PigSticker",
 		["Cost"] = 350,
 		["Model"] = "models/weapons/w_knife_ct.mdl",
-		["Description"] = "A combat knife that can save your ass if you run out of ammo.",
+		["Description"] = "PigSticker_d",
 		["Weight"] = 0.38,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -783,20 +783,20 @@ ItemsList = {
 		["Name"] = "Axe",
 		["Cost"] = 800,
 		["Model"] = "models/props/CS_militia/axe.mdl",
-		["Description"] = "Can i axe you a question?",
+		["Description"] = "Axe_d",
 		["Weight"] = 1.73,
 		["Supply"] = 0,
 		["Rarity"] = 3,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_axe") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_axe") if drop then ply:StripWeapon("weapon_zw_axe")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_axe") if drop then ply:StripWeapon("weapon_zw_axe")end return drop end,
 	},
 
 	["weapon_ate_wrench"] = {
-		["Name"] = "Builder's Wrench",
+		["Name"] = "BuildersWrench",
 		["Cost"] = 800,
 		["Model"] = "models/props_c17/tools_wrench01a.mdl",
-		["Description"] = "A wrench that is required to build and repair props and base components.  Can also be used as a bashing weapon though it isn't very effective.",
+		["Description"] = "BuildersWrench_d",
 		["Weight"] = 0.47,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -806,23 +806,23 @@ ItemsList = {
 	},
 
 	["weapon_zw_scrapsword"] = {
-		["Name"] = "Scrap Sword",
+		["Name"] = "ScrapSword",
 		["Cost"] = 1500,
 		["Model"] = "models/props_c17/TrapPropeller_Blade.mdl",
-		["Description"] = "A massive, heavy blade made of rusty scrap metal welded together.  I hope you have taken your tetanus vaccine in case you cut yourself.",
+		["Description"] = "ScrapSword_d",
 		["Weight"] = 5.3,
 		["Supply"] = 0,
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_scrapsword") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_scrapsword") if drop then ply:StripWeapon("weapon_zw_scrapsword")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_scrapsword") if drop then ply:StripWeapon("weapon_zw_scrapsword")end return drop end,
 	},
 
 	["weapon_zw_g20"] = {
-		["Name"] = "G20 Gov Issue",
+		["Name"] = "G20Gov",
 		["Cost"] = 450,
 		["Model"] = "models/weapons/w_pist_glock18.mdl",
-		["Description"] = "A newer model of glock that was popular among police and servicemen before the apocalpyse.",
+		["Description"] = "G20Gov_d",
 		["Weight"] = 1.18,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -832,10 +832,10 @@ ItemsList = {
 	},
 
 	["weapon_zw_57"] = {
-		["Name"] = "FN FiveSeven",
+		["Name"] = "FN_FiveSeven",
 		["Cost"] = 600,
 		["Model"] = "models/weapons/w_pist_fiveseven.mdl",
-		["Description"] = "A fast firing pistol that spews a hail of small high velocity bullets.",
+		["Description"] = "FN_FiveSeven_d",
 		["Weight"] = 0.82,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -845,10 +845,10 @@ ItemsList = {
 	},
 
 	["weapon_zw_u45"] = {
-		["Name"] = "U-45 Whisper",
+		["Name"] = "U45Whisper",
 		["Cost"] = 700,
 		["Model"] = "models/weapons/w_pist_usp.mdl",
-		["Description"] = "A silencable pistol that used to be popular among swat and miltary outfits.",
+		["Description"] = "U45Whisper_d",
 		["Weight"] = 1.1,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -859,10 +859,10 @@ ItemsList = {
 
 
 	["weapon_zw_warren50"] = {
-		["Name"] = "Warren .50",
+		["Name"] = "Warren50",
 		["Cost"] = 850,
 		["Model"] = "models/weapons/w_pist_deagle.mdl",
-		["Description"] = "A powerful and flashy pistol that fires heavy magnum rounds, warrens are still in high demand despite their high skill requirement to use effectively.",
+		["Description"] = "Warren50_d",
 		["Weight"] = 1.73,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -872,10 +872,10 @@ ItemsList = {
 	},
 
 	["weapon_zw_python"] = {
-		["Name"] = "Python Magnum",
+		["Name"] = "PythonMagnum",
 		["Cost"] = 1200,
 		["Model"] = "models/weapons/w_357.mdl",
-		["Description"] = "A bulky revolver that fires large caliber magnum bullets.",
+		["Description"] = "PythonMagnum_d",
 		["Weight"] = 1.18,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -885,10 +885,10 @@ ItemsList = {
 	},
 
 	["weapon_zw_dual"] = {
-		["Name"] = "Dual Cutlass-9s",
+		["Name"] = "DualCutlass",
 		["Cost"] = 2000,
 		["Model"] = "models/weapons/w_pist_elite.mdl",
-		["Description"] = "A pair of custom built pistols that once belonged to a gunslinger of great renown.",
+		["Description"] = "DualCutlass_d",
 		["Weight"] = 2.72,
 		["Supply"] = -1,
 		["Rarity"] = 4,
@@ -898,10 +898,10 @@ ItemsList = {
 	},
 
 	["weapon_zw_satan"] = {
-		["Name"] = "Hand Cannon",
+		["Name"] = "HandCannon",
 		["Cost"] = 2250,
 		["Model"] = "models/weapons/w_m29_satan.mdl",
-		["Description"] = "This thing is fucking huge, i hope i can fire it without breaking my wrist.",
+		["Description"] = "HandCannon_d",
 		["Weight"] = 3.14,
 		["Supply"] = -1,
 		["Rarity"] = 4,
@@ -911,10 +911,10 @@ ItemsList = {
 	},
 
 	["weapon_zw_mp11"] = {
-		["Name"] = "MP-11 PDW",
+		["Name"] = "MP11PDW",
 		["Cost"] = 2250,
 		["Model"] = "models/weapons/w_smg_mac10.mdl",
-		["Description"] = "An old machine pistol, makes for a decent close quarters weapon but performs poorly at longer ranges. Uses pistol ammo.",
+		["Description"] = "MP11PDW_d",
 		["Weight"] = 2.85,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -924,10 +924,10 @@ ItemsList = {
 	},
 
 	["weapon_zw_rg900"] = {
-		["Name"] = "RG-900",
+		["Name"] = "RG900",
 		["Cost"] = 2500,
 		["Model"] = "models/weapons/w_smg_tmp.mdl",
-		["Description"] = "A modern tactical machine pistol fitted with an integrated silencer. Uses pistol ammo.",
+		["Description"] = "RG900_d",
 		["Weight"] = 2.9,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -937,10 +937,10 @@ ItemsList = {
 	},
 
 	["weapon_zw_k5a"] = {
-		["Name"] = "Kohl K5-A",
+		["Name"] = "KohlK5A",
 		["Cost"] = 3250,
 		["Model"] = "models/weapons/w_smg_mp5.mdl",
-		["Description"] = "This old german SMG may be an outdated design but it still packs a punch on the battlefield. Uses pistol rounds.",
+		["Description"] = "KohlK5A_d",
 		["Weight"] = 3,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -950,10 +950,10 @@ ItemsList = {
 	},
 
 	["weapon_zw_stinger"] = {
-		["Name"] = "Stinger SR",
+		["Name"] = "StingerSR",
 		["Cost"] = 2800,
 		["Model"] = "models/weapons/w_smg1.mdl",
-		["Description"] = "A burst fire machine pistol designed to be accurate enough to go toe to toe with longer range attackers. Uses pistol ammo.",
+		["Description"] = "StingerSR_d",
 		["Weight"] = 3.85,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -963,10 +963,10 @@ ItemsList = {
 	},
 
 	["weapon_zw_bosch"] = {
-		["Name"] = "Bosch-Sterling B-60",
+		["Name"] = "BoschSterlingB60",
 		["Cost"] = 3750,
 		["Model"] = "models/weapons/w_sten.mdl",
-		["Description"] = "A dated but still reasonably effective SMG with an interesting side loading magazine. Uses pistol ammo.",
+		["Description"] = "BoschSterlingB60_d",
 		["Weight"] = 3.45,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -976,10 +976,10 @@ ItemsList = {
 	},
 
 	["weapon_zw_k8"] = {
-		["Name"] = "Kohl K8",
+		["Name"] = "KohlK8",
 		["Cost"] = 5000,
 		["Model"] = "models/weapons/w_smg_ump45.mdl",
-		["Description"] = "The last weapon design released by Kohl before germany was overrun by the zombies, this is a modern SMG that offers excellent power, efficiency and accuracy. Uses pistol ammo.",
+		["Description"] = "KohlK8_d",
 		["Weight"] = 3.12,
 		["Supply"] = 0,
 		["Rarity"] = 3,
@@ -989,10 +989,10 @@ ItemsList = {
 	},
 
 	["weapon_zw_k8c"] = {
-		["Name"] = "Kohl K8-C",
+		["Name"] = "KohlK8C",
 		["Cost"] = 5500,
 		["Model"] = "models/weapons/w_hk_usc.mdl",
-		["Description"] = "An accurate carbine variant of the kohl K8 smg. Uses pistol ammo",
+		["Description"] = "KohlK8C_d",
 		["Weight"] = 3.15,
 		["Supply"] = -1,
 		["Rarity"] = 4,
@@ -1002,10 +1002,10 @@ ItemsList = {
 	},
 
 	["weapon_zw_shredder"] = {
-		["Name"] = "The Shredder",
+		["Name"] = "TheShredder",
 		["Cost"] = 7750,
 		["Model"] = "models/weapons/w_smg_p90.mdl",
-		["Description"] = "An experimental SMG that fires a hail of small high velocity bullets. Uses pistol ammo.",
+		["Description"] = "TheShredder_d",
 		["Weight"] = 3,
 		["Supply"] = -1,
 		["Rarity"] = 4,
@@ -1015,10 +1015,10 @@ ItemsList = {
 	},
 
 	["weapon_zw_enforcer"] = {
-		["Name"] = "M3 Enforcer",
+		["Name"] = "M3Enforcer",
 		["Cost"] = 5000,
 		["Model"] = "models/weapons/w_shot_m3super90.mdl",
-		["Description"] = "A 12 guage pump shotgun that was commonly used by police and sport shooters before the apocalpyse",
+		["Description"] = "M3Enforcer_d",
 		["Weight"] = 3.6,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -1028,10 +1028,10 @@ ItemsList = {
 	},
 
 	["weapon_zw_sweeper"] = {
-		["Name"] = "XS-12 Sweeper",
+		["Name"] = "XS12Sweeper",
 		["Cost"] = 7750,
 		["Model"] = "models/weapons/w_shot_xm1014.mdl",
-		["Description"] = "A 12 guage pump shotgun that was commonly used by police and sport shooters before the apocalpyse",
+		["Description"] = "XS12Sweeper_d",
 		["Weight"] = 3.8,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -1041,10 +1041,10 @@ ItemsList = {
 	},
 
 	["weapon_zw_ranger"] = {
-		["Name"] = "XR-15 Ranger",
+		["Name"] = "XR15Ranger",
 		["Cost"] = 7250,
 		["Model"] = "models/weapons/w_rif_m4a1.mdl",
-		["Description"] = "An iconic american rifle that has been kept up to modern standards via constant upgrades.",
+		["Description"] = "XR15Ranger_d",
 		["Weight"] = 4.2,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -1054,10 +1054,10 @@ ItemsList = {
 	},
 
 	["weapon_zw_fusil"] = {
-		["Name"] = "Fusil F1",
+		["Name"] = "FusilF1",
 		["Cost"] = 7150,
 		["Model"] = "models/weapons/w_rif_famas.mdl",
-		["Description"] = "A tough, accurate rifle that was used in large numbers by the european union as they tried to quell the zombie plague.",
+		["Description"] = "FusilF1_d",
 		["Weight"] = 4,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -1067,10 +1067,10 @@ ItemsList = {
 	},
 
 	["weapon_zw_stugcommando"] = {
-		["Name"] = "Stug Commando",
+		["Name"] = "StugCommando",
 		["Cost"] = 9250,
 		["Model"] = "models/weapons/w_rif_sg552.mdl",
-		["Description"] = "A shortened version of the Stug 556LR Sniper that has been optimized for use as an assault rifle.",
+		["Description"] = "StugCommando_d",
 		["Weight"] = 4.45,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -1081,10 +1081,10 @@ ItemsList = {
 
 
 	["weapon_zw_krukov"] = {
-		["Name"] = "Krukov KA-74",
+		["Name"] = "KrukovKA74",
 		["Cost"] = 11000,
 		["Model"] = "models/weapons/w_rif_ak47.mdl",
-		["Description"] = "A basic but still highly effective russian assault rifle.",
+		["Description"] = "KrukovKA74_d",
 		["Weight"] = 3.76,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -1094,10 +1094,10 @@ ItemsList = {
 	},
 
 	["weapon_zw_l303"] = {
-		["Name"] = "Lior L303",
+		["Name"] = "LiorL303",
 		["Cost"] = 13500,
 		["Model"] = "models/weapons/w_rif_galil.mdl",
-		["Description"] = "A rugged assault rifle that was used by the Saudi Union before their homeland was nuked in an attempt to halt the spread of zombies.",
+		["Description"] = "LiorL303_d",
 		["Weight"] = 5.35,
 		["Supply"] = -1,
 		["Rarity"] = 3,
@@ -1107,10 +1107,10 @@ ItemsList = {
 	},
 
 	["weapon_zw_scar"] = {
-		["Name"] = "FN SCAR",
+		["Name"] = "FNScar",
 		["Cost"] = 22000,
 		["Model"] = "models/weapons/w_fn_scar_h.mdl",
-		["Description"] = "The pinnacle of modern assault rifles, was produced in very small numbers before the apocalyose so a gun like this is a rare find indeed.  Uses rifle ammo.",
+		["Description"] = "FNScar_d",
 		["Weight"] = 4.6,
 		["Supply"] = -1,
 		["Rarity"] = 5,
@@ -1120,10 +1120,10 @@ ItemsList = {
 	},
 
 	["weapon_zw_lmg"] = {
-		["Name"] = "Sawtooth LMG-4",
+		["Name"] = "SawtoothLMG4",
 		["Cost"] = 16250,
 		["Model"] = "models/weapons/w_mach_m249para.mdl",
-		["Description"] = "A bulky light machine gun built to provide constant suppression against enemies in combat.",
+		["Description"] = "SawtoothLMG4_d",
 		["Weight"] = 7.5,
 		["Supply"] = 0,
 		["Rarity"] = 3,
@@ -1134,10 +1134,10 @@ ItemsList = {
 
 
 	["weapon_zw_antelope"] = {
-		["Name"] = "Antelope 7.62",
+		["Name"] = "Antelope762",
 		["Cost"] = 9200,
 		["Model"] = "models/weapons/w_snip_scout.mdl",
-		["Description"] = "A scoped sporting rifle that was often used for hunting before the zombie apocalypse.  Uses sniper ammo.",
+		["Description"] = "Antelope762_d",
 		["Weight"] = 5.25,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -1147,10 +1147,10 @@ ItemsList = {
 	},
 
 	["weapon_zw_scimitar"] = {
-		["Name"] = "Kohl K24 Scimitar",
+		["Name"] = "KohlK24Scimitar",
 		["Cost"] = 11000,
 		["Model"] = "models/weapons/w_snip_g3sg1.mdl",
-		["Description"] = "A burst fire sniper created by kohl to give infantry squads long range capabilites in battle.",
+		["Description"] = "KohlK24Scimitar_d",
 		["Weight"] = 5.4,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -1160,10 +1160,10 @@ ItemsList = {
 	},
 
 	["weapon_zw_blackhawk"] = {
-		["Name"] = "Blackhawk Sniper",
+		["Name"] = "BlackhawkSniper",
 		["Cost"] = 15000,
 		["Model"] = "models/weapons/w_snip_sg550.mdl",
-		["Description"] = "A powerful military sniper fitted with a silencer and NVG scope.  Uses sniper ammo.",
+		["Description"] = "BlackhawkSniper_d",
 		["Weight"] = 6.35,
 		["Supply"] = -1,
 		["Rarity"] = 4,
@@ -1173,10 +1173,10 @@ ItemsList = {
 	},
 
 	["weapon_zw_punisher"] = {
-		["Name"] = "The Punisher",
+		["Name"] = "ThePunisher",
 		["Cost"] = 35000,
 		["Model"] = "models/weapons/w_acc_int_aw50.mdl",
-		["Description"] = "A massively powerful sniper rifle chambered in the .50BMG cartridge.  Uses sniper ammo.",
+		["Description"] = "ThePunisher_d",
 		["Weight"] = 7.95,
 		["Supply"] = 5,
 		["Rarity"] = 5,
@@ -1186,10 +1186,10 @@ ItemsList = {
 	},
 	
 	["weapon_zw_scrapcrossbow"] = {
-		["Name"] = "Explosive Crossbow",
+		["Name"] = "ExplosiveCrossbow",
 		["Cost"] = 15000,
 		["Model"] = "models/weapons/w_crossbow.mdl",
-		["Description"] = "A crossbow cobbled together from various spare parts, it can fire explosive bolts.  Uses steel bolts.",
+		["Description"] = "ExplosiveCrossbow_d",
 		["Weight"] = 8,
 		["Supply"] = -1,
 		["Rarity"] = 4,
@@ -1199,10 +1199,10 @@ ItemsList = {
 	},
 
 	["weapon_zw_winchester"] = {
-		["Name"] = "WINchester",
+		["Name"] = "Winchester",
 		["Cost"] = 6500,
 		["Model"] = "models/weapons/w_winchester_1873.mdl",
-		["Description"] = "They don't call this the WINchester for nothing amirite.  Uses Magnum rounds.",
+		["Description"] = "Winchester_d",
 		["Weight"] = 5.32,
 		["Supply"] = -1,
 		["Rarity"] = 5,
@@ -1212,10 +1212,10 @@ ItemsList = {
 	},
 
 	["weapon_zw_perrin"] = {
-		["Name"] = "Perrin P-64",
+		["Name"] = "PerrinP64",
 		["Cost"] = 8500,
 		["Model"] = "models/weapons/w_pp19_bizon.mdl",
-		["Description"] = "A russian weapon designed to put assualt rifle levels of firepower in the hands of tankers and support crews.  Uses pistol rounds.",
+		["Description"] = "PerrinP64_d",
 		["Weight"] = 3.72,
 		["Supply"] = -1,
 		["Rarity"] = 5,
@@ -1225,10 +1225,10 @@ ItemsList = {
 	},
 
 	["weapon_zw_dammerung"] = {
-		["Name"] = "Dammerung Assault Shotgun",
+		["Name"] = "Dammerung",
 		["Cost"] = 12200,
 		["Model"] = "models/weapons/w_usas_12.mdl",
-		["Description"] = "A fully automatic 20 round assault shotgun that chews anybody in the room into pulpy red goop.  Uses shotgun rounds.",
+		["Description"] = "Dammerung_d",
 		["Weight"] = 6.72,
 		["Supply"] = -1,
 		["Rarity"] = 6,
@@ -1238,10 +1238,10 @@ ItemsList = {
 	},
 
 	["weapon_zw_rpg"] = {
-		["Name"] = "RPG Launcher",
-		["Cost"] = 50000,
+		["Name"] = "RPGLauncher",
+		["Cost"] = 60000,
 		["Model"] = "models/weapons/w_rocket_launcher.mdl",
-		["Description"] = "An RPG launcher primarily designed for busting vehicles or fortifications.  Uses rockets.",
+		["Description"] = "RPGLauncher_d",
 		["Weight"] = 7.2,
 		["Supply"] = 0,
 		["Rarity"] = 3,
@@ -1252,10 +1252,10 @@ ItemsList = {
 
 
 	["weapon_zw_fuckinator"] = {
-		["Name"] = "The Fuckinator",
+		["Name"] = "TheFuckinator",
 		["Cost"] = 40000,
 		["Model"] = "models/weapons/w_pist_p228.mdl",
-		["Description"] = "Point away from face.",
+		["Description"] = "TheFuckinator_d",
 		["Weight"] = 8.17,
 		["Supply"] = -1,
 		["Rarity"] = 7,
@@ -1265,10 +1265,10 @@ ItemsList = {
 	},
 
 	["weapon_zw_germanator"] = {
-		["Name"] = "The Germanator",
+		["Name"] = "TheGermanator",
 		["Cost"] = 6800,
 		["Model"] = "models/weapons/w_mp40smg.mdl",
-		["Description"] = "An antique SMG that fires an unnecessarily large caliber bullet. Uses pistol ammo.",
+		["Description"] = "TheGermanator_d",
 		["Weight"] = 3.34,
 		["Supply"] = -1,
 		["Rarity"] = 5,
@@ -1278,10 +1278,10 @@ ItemsList = {
 	},
 
 	["weapon_zw_807"] = {
-		["Name"] = "RM-807",
+		["Name"] = "RM807",
 		["Cost"] = 5800,
 		["Model"] = "models/weapons/w_remington_870_tact.mdl",
-		["Description"] = "A 12 guage pump shotgun that fires extra strength magnum shells. Uses shotgun ammo.",
+		["Description"] = "RM807_d",
 		["Weight"] = 3.82,
 		["Supply"] = -1,
 		["Rarity"] = 5,
@@ -1291,10 +1291,10 @@ ItemsList = {
 	},
 
 	["weapon_mad_crowbar"] = {
-		["Name"] = "[MAD] Crowbar",
+		["Name"] = "MADCrowbar",
 		["Cost"] = 150000,
 		["Model"] = "models/weapons/w_crowbar.mdl",
-		["Description"] = "A Crowbar???????",
+		["Description"] = "MADCrowbar_d",
 		["Weight"] = 6.17,
 		["Supply"] = -1,
 		["Rarity"] = 9,
@@ -1309,10 +1309,10 @@ ItemsList = {
 -- ammo
 
 	["item_pistolammo"] = {
-		["Name"] = "Pistol Ammo Box",
+		["Name"] = "PistolAmmo",
 		["Cost"] = 45,
 		["Model"] = "models/wick/wrbstalker/anomaly/items/wick_ammo_9x18_fmj.mdl",
-		["Description"] = "An ammo box that contains 100 pistol rounds.",
+		["Description"] = "PistolAmmo_d",
 		["Weight"] = 1,
 		["Supply"] = 0,
 		["Rarity"] = 1,
@@ -1322,10 +1322,10 @@ ItemsList = {
 	},
 
 	["item_m9k_smgammo"] = {
-		["Name"] = "[M9k] SMG Ammo Box",
+		["Name"] = "M9kSMGAmmo",
 		["Cost"] = 70,
 		["Model"] = "models/wick/wrbstalker/anomaly/items/wick_ammo_9x19_fmj.mdl",
-		["Description"] = "Ammo used for M9k SMG Weapons. Contains 100 SMG rounds.",
+		["Description"] = "M9kSMGAmmo_d",
 		["Weight"] = 1,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -1335,10 +1335,10 @@ ItemsList = {
 	},
 
 	["item_m9k_assaultammo"] = {
-		["Name"] = "[M9k] Assault Rifle Ammo",
+		["Name"] = "M9kAssaultRifleAmmo",
 		["Cost"] = 95,
 		["Model"] = "models/wick/wrbstalker/anomaly/items/wick_ammo_556x45_ss190.mdl",
-		["Description"] = "Ammo used for M9k Assault Weapons. Contains 100 Assault Rifle rounds.",
+		["Description"] = "M9kAssaultRifleAmmo_d",
 		["Weight"] = 1,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -1348,10 +1348,10 @@ ItemsList = {
 	},
 
 	["item_m9k_sniperammo"] = {
-		["Name"] = "[M9k] Sniper Rifle Ammo",
+		["Name"] = "M9kSniperRifleAmmo",
 		["Cost"] = 150,
 		["Model"] = "models/wick/wrbstalker/anomaly/items/wick_ammo_762x54_7h1.mdl",
-		["Description"] = "Ammo used for M9k Sniper Weapons. Contains 50 Sniper Rifle rounds.",
+		["Description"] = "M9kSniperRifleAmmo_d",
 		["Weight"] = 1,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -1361,10 +1361,10 @@ ItemsList = {
 	},
 
 	["item_magammo"] = {
-		["Name"] = "Magnum Bullets",
+		["Name"] = "MagnumAmmo",
 		["Cost"] = 60,
 		["Model"] = "models/wick/wrbstalker/anomaly/items/wick_ammo_357_jhp.mdl",
-		["Description"] = "An ammo box that contains 50 magnum rounds.",
+		["Description"] = "MagnumAmmo_d",
 		["Weight"] = 1,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -1374,10 +1374,10 @@ ItemsList = {
 	},
 
 	["item_buckshotammo"] = {
-		["Name"] = "Buckshot Ammo",
+		["Name"] = "BuckshotAmmo",
 		["Cost"] = 65,
 		["Model"] = "models/wick/wrbstalker/anomaly/items/wick_ammo_12x70_buck_2.mdl",
-		["Description"] = "An ammo box that contains 50 shotgun rounds.",
+		["Description"] = "BuckshotAmmo_d",
 		["Weight"] = 1,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -1387,10 +1387,10 @@ ItemsList = {
 	},
 
 	["item_rifleammo"] = {
-		["Name"] = "Rifle Ammo Box",
+		["Name"] = "RifleAmmo",
 		["Cost"] = 90,
 		["Model"] = "models/wick/wrbstalker/anomaly/items/wick_ammo_762x39_fmj.mdl",
-		["Description"] = "An ammo box that contains 100 assault rifle rounds.",
+		["Description"] = "RifleAmmo_d",
 		["Weight"] = 1,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -1400,10 +1400,10 @@ ItemsList = {
 	},
 
 	["item_sniperammo"] = {
-		["Name"] = "Sniper Ammo",
+		["Name"] = "SniperAmmo",
 		["Cost"] = 130,
 		["Model"] = "models/wick/wrbstalker/anomaly/items/wick_ammo_762x51_fmj.mdl",
-		["Description"] = "An ammo box that contains 50 sniper rifle bullets.",
+		["Description"] = "SniperAmmo_d",
 		["Weight"] = 1,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -1413,10 +1413,10 @@ ItemsList = {
 	},
 
 	["item_crossbowbolt"] = {
-		["Name"] = "Steel Bolts",
+		["Name"] = "SteelBolts",
 		["Cost"] = 40,
 		["Model"] = "models/Items/CrossbowRounds.mdl",
-		["Description"] = "An bundle of 6 steel bolts.",
+		["Description"] = "SteelBolts_d",
 		["Weight"] = 0.3,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -1426,10 +1426,10 @@ ItemsList = {
 	},
 
 	["item_crossbowbolt_crate"] = {
-		["Name"] = "Steel Bolts Crate",
+		["Name"] = "SteelBoltsCrate",
 		["Cost"] = 150,
 		["Model"] = "models/Items/item_item_crate.mdl",
-		["Description"] = "A crate that contains 25 steel bolts.",
+		["Description"] = "SteelBoltsCrate_d",
 		["Weight"] = 1.5,
 		["Supply"] = 0,
 		["Rarity"] = 3,
@@ -1439,10 +1439,10 @@ ItemsList = {
 	},
 
 	["item_rocketammo"] = {
-		["Name"] = "RPG Rocket",
+		["Name"] = "RPGRound",
 		["Cost"] = 180,
 		["Model"] = "models/weapons/w_missile_closed.mdl",
-		["Description"] = "A missile designed for use with the RPG launcher.",
+		["Description"] = "RPGRound_d",
 		["Weight"] = 2.14,
 		["Supply"] = 0,
 		["Rarity"] = 3,
@@ -1456,10 +1456,10 @@ ItemsList = {
 
 
     ["weapon_zw_falcon"] = {
-		["Name"] = "Warren Falcon .45",
+		["Name"] = "WarrenFalcon45",
 		["Cost"] = 2000,
 		["Model"] = "models/weapons/s_dmgf_co1911.mdl",
-		["Description"] = "A classic pistol that has been in use for over 100 years and still stands tall on the battlefield.",
+		["Description"] = "WarrenFalcon45_d",
 		["Weight"] = 1.4,
 		["Supply"] = 0,
 		["Rarity"] = 3,
@@ -1469,10 +1469,10 @@ ItemsList = {
 	},
 
     ["weapon_zw_spas"] = {
-		["Name"] = "SPAS12 Shorty",
+		["Name"] = "SPAS12Shorty",
 		["Cost"] = 8000,
 		["Model"] = "models/weapons/w_shotgun.mdl",
-		["Description"] = "A pump shotgun that has been cut down from its' original length to save on weight.  It has also been modded with an alternate slamfire mode that fires 2 rounds in quick succession.",
+		["Description"] = "SPAS12Shorty_d",
 		["Weight"] = 3.6,
 		["Supply"] = 0,
 		["Rarity"] = 4,
@@ -1482,10 +1482,10 @@ ItemsList = {
 	},
 
     ["weapon_zw_lbr"] = {
-		["Name"] = "Warren LBR",
+		["Name"] = "WarrenLBR",
 		["Cost"] = 15500,
 		["Model"] = "models/weapons/w_snip_m14sp.mdl",
-		["Description"] = "A powerful semi-auto battle rifle that is a rebuilt version of an old and popular design.",
+		["Description"] = "WarrenLBR_d",
 		["Weight"] = 3.8,
 		["Supply"] = 0,
 		["Rarity"] = 5,
@@ -1502,10 +1502,10 @@ ItemsList = {
 
 	
     ["weapon_zw_plasmalauncher"] = {
-		["Name"] = "Experimental Plasma Cannon",
+		["Name"] = "PlasmaLauncher",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_physics.mdl",
-		["Description"] = "The EPC is an experimental plasma launcher that uses no ammo and fires highly volatile and explosive plasma blasts.\n*unused weapon sorry*",
+		["Description"] = "PlasmaLauncher_d",
 		["Weight"] = 20,
 		["Supply"] = -1,
 		["Rarity"] = 11,
@@ -1515,10 +1515,10 @@ ItemsList = {
 	},
 
     ["weapon_zw_minigun"] = {
-		["Name"] = "GAU-8C Chaingun",
+		["Name"] = "GAU8CChaingun",
 		["Cost"] = 45000,
 		["Model"] = "models/weapons/w_m134_minigun.mdl",
-		["Description"] = "An enormous minigun that spews a constant stream of hot lead.",
+		["Description"] = "GAU8CChaingun_d",
 		["Weight"] = 16.62,
 		["Supply"] = -1,
 		["Rarity"] = 6,
@@ -1528,10 +1528,10 @@ ItemsList = {
 	},
 
     ["weapon_zw_grenade_pipe"] = {
-		["Name"] = "Pipe Bomb",
+		["Name"] = "PipeBomb",
 		["Cost"] = 120,
 		["Model"] = "models/props_lab/pipesystem03a.mdl",
-		["Description"] = "An explosive pipe bomb that can be useful for blowing up crowds of zombies or raining fire on enemy bases.",
+		["Description"] = "PipeBomb_d",
 		["Weight"] = 0.34,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -1541,10 +1541,10 @@ ItemsList = {
 	},
 
     ["weapon_zw_grenade_flare"] = {
-		["Name"] = "Distress Flare",
+		["Name"] = "DistressFlare",
 		["Cost"] = 65,
 		["Model"] = "models/props_lab/pipesystem03a.mdl",
-		["Description"] = "A distress flare that is useful for lighting up dark areas.",
+		["Description"] = "DistressFlare_d",
 		["Weight"] = 0.4,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -1554,10 +1554,10 @@ ItemsList = {
 	},
 
     ["weapon_zw_grenade_frag"] = {
-		["Name"] = "Frag Grenade",
+		["Name"] = "FragGrenade",
 		["Cost"] = 375,
 		["Model"] = "models/weapons/w_eq_fraggrenade.mdl",
-		["Description"] = "A high powered military fragmentation grenade, these are a relatively rare find in this post apocalyptic world.",
+		["Description"] = "FragGrenade_d",
 		["Weight"] = 0.63,
 		["Supply"] = -1,
 		["Rarity"] = 3,
@@ -1567,10 +1567,10 @@ ItemsList = {
 	},
 
     ["weapon_zw_grenade_molotov"] = {
-		["Name"] = "Molotov Cocktail",
+		["Name"] = "MolotovCocktail",
 		["Cost"] = 400,
 		["Model"] = "models/props_junk/garbage_glassbottle003a.mdl",
-		["Description"] = "A bottle full of petrol with a burning rag stuffed into the top.  Perfect for hosting a zombie BBQ.",
+		["Description"] = "MolotovCocktail_d",
 		["Weight"] = 0.35,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -1588,10 +1588,10 @@ ItemsList = {
 
 
     ["m9k_coltpython"] = {
-		["Name"] = "[M9k] Colt Python",
-		["Cost"] = 6500,
+		["Name"] = "M9KColtPython",
+		["Cost"] = 5000,
 		["Model"] = "models/weapons/w_colt_python.mdl",
-		["Description"] = "Colt Python from M9k Small Arms. Uses Magnum ammo.",
+		["Description"] = "M9KColtPython_d",
 		["Weight"] = 1.36,
 		["Supply"] = 0,
 		["Rarity"] = 3,
@@ -1601,10 +1601,10 @@ ItemsList = {
 	},
 
     ["m9k_glock"] = {
-		["Name"] = "[M9k] Glock 18",
-		["Cost"] = 10900,
+		["Name"] = "M9kGlock18",
+		["Cost"] = 10000,
 		["Model"] = "models/weapons/w_dmg_glock.mdl",
-		["Description"] = "Glock 18 from M9k Small Arms. Uses Pistol ammo.",
+		["Description"] = "M9kGlock18_d",
 		["Weight"] = 1.56,
 		["Supply"] = 0,
 		["Rarity"] = 4,
@@ -1614,8 +1614,8 @@ ItemsList = {
 	},
 
     ["m9k_hk45"] = {
-		["Name"] = "[M9k] HK45C",
-		["Cost"] = 5000,
+		["Name"] = "M9kHK45C",
+		["Cost"] = 4000,
 		["Model"] = "models/weapons/w_hk45c.mdl",
 		["Description"] = "HK45C from M9k Small Arms. Uses Pistol ammo.",
 		["Weight"] = 0.96,
@@ -1627,10 +1627,10 @@ ItemsList = {
 	},
 
     ["m9k_m92beretta"] = {
-		["Name"] = "[M9k] Beretta M92",
-		["Cost"] = 5450,
+		["Name"] = "M9kBerettaM92",
+		["Cost"] = 4250,
 		["Model"] = "models/weapons/w_beretta_m92.mdl",
-		["Description"] = "Beretta M92 from M9k Small Arms. Uses Pistol ammo.",
+		["Description"] = "M9kBerettaM92_d",
 		["Weight"] = 1.16,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -1640,10 +1640,10 @@ ItemsList = {
 	},
 
     ["m9k_luger"] = {
-		["Name"] = "[M9k] P08 Luger",
-		["Cost"] = 5200,
+		["Name"] = "M9kP08Luger",
+		["Cost"] = 4500,
 		["Model"] = "models/weapons/w_luger_p08.mdl",
-		["Description"] = "description.",
+		["Description"] = "description",
 		["Weight"] = 1.09,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -1653,10 +1653,10 @@ ItemsList = {
 	},
 
     ["m9k_ragingbull"] = {
-		["Name"] = "[M9k] Raging Bull",
-		["Cost"] = 7300,
+		["Name"] = "M9kRagingBull",
+		["Cost"] = 6200,
 		["Model"] = "models/weapons/w_taurus_raging_bull.mdl",
-		["Description"] = "description.",
+		["Description"] = "description",
 		["Weight"] = 2.16,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -1666,8 +1666,8 @@ ItemsList = {
 	},
 
     ["m9k_scoped_taurus"] = {
-		["Name"] = "[M9k] Scoped Raging Bull",
-		["Cost"] = 9000,
+		["Name"] = "M9kScopedTaurus",
+		["Cost"] = 8000,
 		["Model"] = "models/weapons/w_raging_bull_scoped.mdl",
 		["Description"] = "description",
 		["Weight"] = 2.56,
@@ -1679,8 +1679,8 @@ ItemsList = {
 	},
 
     ["m9k_remington1858"] = {
-		["Name"] = "[M9k] Remington 1858",
-		["Cost"] = 6300,
+		["Name"] = "M9kRemington1858",
+		["Cost"] = 5500,
 		["Model"] = "models/weapons/w_remington_1858.mdl",
 		["Description"] = "description",
 		["Weight"] = 1.46,
@@ -1692,8 +1692,8 @@ ItemsList = {
 	},
 
     ["m9k_model3russian"] = {
-		["Name"] = "[M9k] S&W Model 3 Russian",
-		["Cost"] = 6500,
+		["Name"] = "M9kSWModel3Russian",
+		["Cost"] = 5750,
 		["Model"] = "models/weapons/w_model_3_rus.mdl",
 		["Description"] = "description",
 		["Weight"] = 1.38,
@@ -1705,8 +1705,8 @@ ItemsList = {
 	},
 
     ["m9k_model500"] = {
-		["Name"] = "[M9k] S&W Model 500",
-		["Cost"] = 7950,
+		["Name"] = "M9kSWModel500",
+		["Cost"] = 6750,
 		["Model"] = "models/weapons/w_sw_model_500.mdl",
 		["Description"] = "description",
 		["Weight"] = 1.36,
@@ -1718,8 +1718,8 @@ ItemsList = {
 	},
 
     ["m9k_model627"] = {
-		["Name"] = "[M9k] S&W Model 627",
-		["Cost"] = 8100,
+		["Name"] = "M9kSWModel627",
+		["Cost"] = 6950,
 		["Model"] = "models/weapons/w_sw_model_627.mdl",
 		["Description"] = "description",
 		["Weight"] = 2.10,
@@ -1731,8 +1731,8 @@ ItemsList = {
 	},
 
     ["m9k_sig_p229r"] = {
-		["Name"] = "[M9k] Sig Sauer P229R",
-		["Cost"] = 7900,
+		["Name"] = "M9kSigSauerP229R",
+		["Cost"] = 6000,
 		["Model"] = "models/weapons/w_sig_229r.mdl",
 		["Description"] = "description",
 		["Weight"] = 1.31,
@@ -1744,7 +1744,7 @@ ItemsList = {
 	},
 
     ["m9k_acr"] = {
-		["Name"] = "[M9k] ACR",
+		["Name"] = "M9kACR",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_masada_acr.mdl",
 		["Description"] = "description",
@@ -1757,7 +1757,7 @@ ItemsList = {
 	},
 
     ["m9k_ak47"] = {
-		["Name"] = "[M9k] AK-47",
+		["Name"] = "M9kAK47",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_ak47_m9k.mdl",
 		["Description"] = "description",
@@ -1770,7 +1770,7 @@ ItemsList = {
 	},
 
     ["m9k_ak74"] = {
-		["Name"] = "[M9k] AK-74",
+		["Name"] = "M9kAK74",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_tct_ak47.mdl",
 		["Description"] = "description",
@@ -1783,7 +1783,7 @@ ItemsList = {
 	},
 
     ["m9k_amd65"] = {
-		["Name"] = "[M9k] AMD 65",
+		["Name"] = "M9kAMD65",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_amd_65.mdl",
 		["Description"] = "description",
@@ -1796,7 +1796,7 @@ ItemsList = {
 	},
 
     ["m9k_an94"] = {
-		["Name"] = "[M9k] AN-94",
+		["Name"] = "M9kAN94",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_rif_an_94.mdl",
 		["Description"] = "description",
@@ -1809,7 +1809,7 @@ ItemsList = {
 	},
 
     ["m9k_val"] = {
-		["Name"] = "[M9k] AS Val",
+		["Name"] = "M9kASVal",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_dmg_vally.mdl",
 		["Description"] = "description",
@@ -1822,7 +1822,7 @@ ItemsList = {
 	},
 
     ["m9k_f2000"] = {
-		["Name"] = "[M9k] F2000",
+		["Name"] = "M9kF2000",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_fn_f2000.mdl",
 		["Description"] = "description",
@@ -1835,7 +1835,7 @@ ItemsList = {
 	},
 
     ["m9k_fal"] = {
-		["Name"] = "[M9k] FN Fal",
+		["Name"] = "M9kFNFal",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_fn_fal.mdl",
 		["Description"] = "description",
@@ -1848,7 +1848,7 @@ ItemsList = {
 	},
 
     ["m9k_g36"] = {
-		["Name"] = "[M9k] G36",
+		["Name"] = "M9kG36",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_hk_g36c.mdl",
 		["Description"] = "description",
@@ -1861,7 +1861,7 @@ ItemsList = {
 	},
 
     ["m9k_m416"] = {
-		["Name"] = "[M9k] HK 416",
+		["Name"] = "M9kHK416",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_hk_416.mdl",
 		["Description"] = "description",
@@ -1874,7 +1874,7 @@ ItemsList = {
 	},
 
     ["m9k_g3a3"] = {
-		["Name"] = "[M9k] HK G3A3",
+		["Name"] = "M9kHKG3A3",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_hk_g3.mdl",
 		["Description"] = "description",
@@ -1887,7 +1887,7 @@ ItemsList = {
 	},
 
     ["m9k_l85"] = {
-		["Name"] = "[M9k] L85",
+		["Name"] = "M9kL85",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_l85a2.mdl",
 		["Description"] = "description",
@@ -1900,7 +1900,7 @@ ItemsList = {
 	},
 
     ["m9k_m16a4_acog"] = {
-		["Name"] = "[M9k] M16A4 ACOG",
+		["Name"] = "M9kM16A4ACOG",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_dmg_m16ag.mdl",
 		["Description"] = "description",
@@ -1913,7 +1913,7 @@ ItemsList = {
 	},
 
     ["m9k_vikhr"] = {
-		["Name"] = "[M9k] SR-3M Vikhr",
+		["Name"] = "M9kSR3MVikhr",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_dmg_vikhr.mdl",
 		["Description"] = "description",
@@ -1926,7 +1926,7 @@ ItemsList = {
 	},
 
     ["m9k_auga3"] = {
-		["Name"] = "[M9k] Steyr AUG A3",
+		["Name"] = "M9kSteyrAUGA3",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_auga3.mdl",
 		["Description"] = "description",
@@ -1939,7 +1939,7 @@ ItemsList = {
 	},
 
     ["m9k_tar21"] = {
-		["Name"] = "[M9k] TAR-21",
+		["Name"] = "M9kTAR21",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_imi_tar21.mdl",
 		["Description"] = "description",
@@ -1952,7 +1952,7 @@ ItemsList = {
 	},
 
     ["m9k_ares_shrike"] = {
-		["Name"] = "[M9k] Ares Shrike",
+		["Name"] = "M9kAresShrike",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_ares_shrike.mdl",
 		["Description"] = "description",
@@ -1965,7 +1965,7 @@ ItemsList = {
 	},
 
     ["m9k_fg42"] = {
-		["Name"] = "[M9k] FG 42",
+		["Name"] = "M9kFG42",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_fg42.mdl",
 		["Description"] = "description",
@@ -1978,7 +1978,7 @@ ItemsList = {
 	},
 
     ["m9k_m1918bar"] = {
-		["Name"] = "[M9k] M1918 BAR",
+		["Name"] = "M9kM1918Bar",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_m1918_bar.mdl",
 		["Description"] = "description",
@@ -1991,10 +1991,10 @@ ItemsList = {
 	},
 
     ["m9k_m60"] = {
-		["Name"] = "[M9k] M60",
+		["Name"] = "M9kM60",
 		["Cost"] = 100000,
 		["Model"] = "models/weapons/w_m60_machine_gun.mdl",
-		["Description"] = "The best Weapon reborn - M60. Uses M9k Assault rifle ammo.",
+		["Description"] = "M9kM60_d",
 		["Weight"] = 9.8,
 		["Supply"] = 1,
 		["Rarity"] = 8,
@@ -2004,7 +2004,7 @@ ItemsList = {
 	},
 
     ["m9k_pkm"] = {
-		["Name"] = "[M9k] PKM",
+		["Name"] = "M9kPKM",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_mach_russ_pkm.mdl",
 		["Description"] = "description",
@@ -2017,7 +2017,7 @@ ItemsList = {
 	},
 
     ["m9k_m3"] = {
-		["Name"] = "[M9k] Benneli M3",
+		["Name"] = "M9kBenneliM3",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_benelli_m3.mdl",
 		["Description"] = "description",
@@ -2030,7 +2030,7 @@ ItemsList = {
 	},
 
     ["m9k_browningauto5"] = {
-		["Name"] = "[M9k] Browning Auto 5",
+		["Name"] = "M9kBrowningAuto5",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_browning_auto.mdl",
 		["Description"] = "description",
@@ -2043,7 +2043,7 @@ ItemsList = {
 	},
 
     ["m9k_ithacam37"] = {
-		["Name"] = "[M9k] Ithaca M37",
+		["Name"] = "M9kIthacaM37",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_ithaca_m37.mdl",
 		["Description"] = "description",
@@ -2056,7 +2056,7 @@ ItemsList = {
 	},
 
     ["m9k_mossberg590"] = {
-		["Name"] = "[M9k] Mossberg 590",
+		["Name"] = "M9kMossberg590",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_mossberg_590.mdl",
 		["Description"] = "description",
@@ -2069,7 +2069,7 @@ ItemsList = {
 	},
 
     ["m9k_jackhammer"] = {
-		["Name"] = "[M9k] Pancor Jackhammer",
+		["Name"] = "M9kPancorJackhammer",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_pancor_jackhammer.mdl",
 		["Description"] = "description",
@@ -2082,7 +2082,7 @@ ItemsList = {
 	},
 
     ["m9k_spas12"] = {
-		["Name"] = "[M9k] SPAS 12",
+		["Name"] = "M9kSPAS12",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_spas_12.mdl",
 		["Description"] = "description",
@@ -2095,7 +2095,7 @@ ItemsList = {
 	},
 
     ["m9k_striker12"] = {
-		["Name"] = "[M9k] Striker 12",
+		["Name"] = "M9kStriker12",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_striker_12g.mdl",
 		["Description"] = "description",
@@ -2108,7 +2108,7 @@ ItemsList = {
 	},
 
     ["m9k_1897winchester"] = {
-		["Name"] = "[M9k] Wincheter 1897",
+		["Name"] = "M9kWinchester1897",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_winchester_1897_trench.mdl",
 		["Description"] = "description",
@@ -2121,7 +2121,7 @@ ItemsList = {
 	},
 
     ["m9k_1887winchester"] = {
-		["Name"] = "[M9k] Winchester 87",
+		["Name"] = "M9kWinchester87",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_winchester_1887.mdl",
 		["Description"] = "description",
@@ -2134,7 +2134,7 @@ ItemsList = {
 	},
 
     ["m9k_barret_m82"] = {
-		["Name"] = "[M9k] Barret M82",
+		["Name"] = "M9kBarretM82",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_barret_m82.mdl",
 		["Description"] = "description",
@@ -2147,7 +2147,7 @@ ItemsList = {
 	},
 
     ["m9k_m98b"] = {
-		["Name"] = "[M9k] Barret M98B",
+		["Name"] = "M9kBarretM98B",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_barrett_m98b.mdl",
 		["Description"] = "description",
@@ -2160,7 +2160,7 @@ ItemsList = {
 	},
 
     ["m9k_svu"] = {
-		["Name"] = "[M9k] Dragunov SVU",
+		["Name"] = "M9kDragunovSVU",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_dragunov_svu.mdl",
 		["Description"] = "description",
@@ -2173,7 +2173,7 @@ ItemsList = {
 	},
 
     ["m9k_sl8"] = {
-		["Name"] = "[M9k] SL8",
+		["Name"] = "M9kSL8",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_snip_int.mdl",
 		["Description"] = "description",
@@ -2186,7 +2186,7 @@ ItemsList = {
 	},
 
     ["m9k_intervention"] = {
-		["Name"] = "[M9k] Intervention",
+		["Name"] = "M9kIntervention",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_snip_int.mdl",
 		["Description"] = "description",
@@ -2199,7 +2199,7 @@ ItemsList = {
 	},
 
     ["m9k_m24"] = {
-		["Name"] = "[M9k] M24",
+		["Name"] = "M9kM24",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_snip_m24_6.mdl",
 		["Description"] = "description",
@@ -2212,7 +2212,7 @@ ItemsList = {
 	},
 
     ["m9k_psg1"] = {
-		["Name"] = "[M9k] PSG-1",
+		["Name"] = "M9kPSG1",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_hk_psg1.mdl",
 		["Description"] = "description",
@@ -2225,7 +2225,7 @@ ItemsList = {
 	},
 
     ["m9k_remington7615p"] = {
-		["Name"] = "[M9k] Remington 7615P",
+		["Name"] = "M9kRemington7615P",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_remington_7615p.mdl",
 		["Description"] = "description",
@@ -2238,7 +2238,7 @@ ItemsList = {
 	},
 
     ["m9k_svt40"] = {
-		["Name"] = "[M9k] SVT 40",
+		["Name"] = "M9kSVT40",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_svt_40.mdl",
 		["Description"] = "description",
@@ -2251,7 +2251,7 @@ ItemsList = {
 	},
 
     ["m9k_contender"] = {
-		["Name"] = "[M9k] Thompson Contender G2",
+		["Name"] = "M9kThompsonContenderG2",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_g2_contender.mdl",
 		["Description"] = "description",
@@ -2264,7 +2264,7 @@ ItemsList = {
 	},
 
     ["m9k_honeybadger"] = {
-		["Name"] = "[M9k] AAC Honey Badger",
+		["Name"] = "M9kAACHoneyBadger",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_aac_honeybadger.mdl",
 		["Description"] = "description",
@@ -2277,7 +2277,7 @@ ItemsList = {
 	},
 
     ["m9k_mp5"] = {
-		["Name"] = "[M9k] HK MP5",
+		["Name"] = "M9kHKMP5",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_hk_mp5.mdl",
 		["Description"] = "description",
@@ -2290,7 +2290,7 @@ ItemsList = {
 	},
 
     ["m9k_mp7"] = {
-		["Name"] = "[M9k] HK MP7",
+		["Name"] = "M9kHKMP7",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_mp7_silenced.mdl",
 		["Description"] = "description",
@@ -2303,7 +2303,7 @@ ItemsList = {
 	},
 
     ["m9k_ump45"] = {
-		["Name"] = "[M9k] HK UMP45",
+		["Name"] = "M9kHKUMP45",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_hk_ump45.mdl",
 		["Description"] = "description",
@@ -2316,7 +2316,7 @@ ItemsList = {
 	},
 
     ["m9k_kac_pdw"] = {
-		["Name"] = "[M9k] KAC PDW",
+		["Name"] = "M9kKACPDW",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_kac_pdw.mdl",
 		["Description"] = "description",
@@ -2329,7 +2329,7 @@ ItemsList = {
 	},
 
     ["m9k_vector"] = {
-		["Name"] = "[M9k] KRISS Vector",
+		["Name"] = "M9kKRISSVector",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_kriss_vector.mdl",
 		["Description"] = "description",
@@ -2342,7 +2342,7 @@ ItemsList = {
 	},
 
     ["m9k_magpulpdr"] = {
-		["Name"] = "[M9k] Magpul PDR",
+		["Name"] = "M9kMagpulPDR",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_magpul_pdr.mdl",
 		["Description"] = "description",
@@ -2355,7 +2355,7 @@ ItemsList = {
 	},
 
     ["m9k_mp5sd"] = {
-		["Name"] = "[M9k] MP5SD",
+		["Name"] = "M9kMP5SD",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_hk_mp5sd.mdl",
 		["Description"] = "description",
@@ -2368,7 +2368,7 @@ ItemsList = {
 	},
 
     ["m9k_mp9"] = {
-		["Name"] = "[M9k] MP9",
+		["Name"] = "M9kMP9",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_brugger_thomet_mp9.mdl",
 		["Description"] = "description",
@@ -2381,7 +2381,7 @@ ItemsList = {
 	},
 
     ["m9k_tec9"] = {
-		["Name"] = "[M9k] TEC-9",
+		["Name"] = "M9kTEC9",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_intratec_tec9.mdl",
 		["Description"] = "description",
@@ -2394,7 +2394,7 @@ ItemsList = {
 	},
 
     ["m9k_thompson"] = {
-		["Name"] = "[M9k] Tommy Gun",
+		["Name"] = "M9kTommyGun",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_tommy_gun.mdl",
 		["Description"] = "description",
@@ -2407,7 +2407,7 @@ ItemsList = {
 	},
 
     ["m9k_uzi"] = {
-		["Name"] = "[M9k] UZI",
+		["Name"] = "M9kUZI",
 		["Cost"] = 0,
 		["Model"] = "models/weapons/w_uzi_imi.mdl",
 		["Description"] = "description",
@@ -2422,10 +2422,10 @@ ItemsList = {
 
 
 	["item_armor_jacket_leather"] = {
-		["Name"] = "Leather Jacket",
+		["Name"] = "LeatherJacket",
 		["Cost"] = 5000,
 		["Model"] = "models/player/group03/male_07.mdl",
-		["Description"] = "A number of stiff leather pads stitched into your suit, will protect you against cuts and bites but it won't stop a bullet\nProtection: 5%\nSpeed: No impact on speed\nAttachment Slots: 1\nBattery: 0\nMax Carry Weight: +0kg",
+		["Description"] = "LeatherJacket_d",
 		["Weight"] = 1.1,
 		["Supply"] = 0,
 		["Rarity"] = 2,
@@ -2445,16 +2445,16 @@ ItemsList = {
 	},
 
 	["item_armor_chainmail"] = {
-		["Name"] = "Chainmail Suit",
+		["Name"] = "ChainmailSuit",
 		["Cost"] = 8500,
 		["Model"] = "models/player/group03/male_05.mdl",
-		["Description"] = "A chainmail vest and leather pad combo that is worn underneath your oversuit\nProtection: 7.5%\nSpeed: Decreased (-1)\nAttachment Slots: 1\nBattery: 0\nMax Carry Weight: +0kg",
+		["Description"] = "ChainmailSuit_d",
 		["Weight"] = 1.6,
 		["Supply"] = 0,
 		["Rarity"] = 2,
 		["Category"] = 4,
-		["UseFunc"] = function(ply) UseFunc_EquipArmor(ply, "item_armor_chain") end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_chain") return drop end,
+		["UseFunc"] = function(ply) UseFunc_EquipArmor(ply, "item_armor_chainmail") end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_chainmail") return drop end,
 		-- armor only values
 		["ArmorStats"] = {
 			["reduction"] = 7.5,
@@ -2467,10 +2467,10 @@ ItemsList = {
 	},
 
 	["item_armor_jacket_bandit"] = {
-		["Name"] = "Bandit Jacket",
+		["Name"] = "BanditJacket",
 		["Cost"] = 10000,
 		["Model"] = "models/player/stalker/bandit_backpack.mdl",
-		["Description"] = "A chainmail vest and leather pad combo that is worn underneath your oversuit\nProtection: 8%\nSpeed: Decreased (-1)\nAttachment Slots: 1\nBattery: 0\nMax Carry Weight: +0kg",
+		["Description"] = "BanditJacket_d",
 		["Weight"] = 1.4,
 		["Supply"] = 0,
 		["Rarity"] = 3,
@@ -2489,10 +2489,10 @@ ItemsList = {
 	},
 
 	["item_armor_scrap"] = {
-		["Name"] = "Scrap Armor",
+		["Name"] = "ScrapArmor",
 		["Cost"] = 12500,
 		["Model"] = "models/player/group03/male_05.mdl",
-		["Description"] = "A set of scrap metal attached to your suit via straps and clips, offers good protection for the price range but it's rather bulky and heavy\nProtection: 12.5%\nSpeed: Decreased (-3.5)\nAttachment Slots: 2\nBattery: 0\nMax Carry Weight: +0kg",
+		["Description"] = "ScrapArmor_d",
 		["Weight"] = 3.8,
 		["Supply"] = 0,
 		["Rarity"] = 3,
@@ -2511,11 +2511,11 @@ ItemsList = {
 	},
 
 	["item_armor_trenchcoat_brown"] = {
-		["Name"] = "Brown Trenchcoat Armor",
+		["Name"] = "BrownTrenchcoatArmor",
 		["Cost"] = 15000,
 		["Model"] = "models/player/stalker/bandit_brown.mdl",
-		["Description"] = "CHEEKI BREEKI! it may look like an old overcoat but there's actually a light flak jacket and leather padding under there that offers ok-ish protection\nProtection: 10%\nSpeed: Decreased (-1)\nAttachment Slots: 2\nBattery: 0\nMax Carry Weight: +0kg",
-		["Weight"] = 2,
+		["Description"] = "BrownTrenchcoatArmor_d",
+		["Weight"] = 2.28,
 		["Supply"] = 0,
 		["Rarity"] = 3,
 		["Category"] = 4,
@@ -2533,11 +2533,11 @@ ItemsList = {
 	},
 
 	["item_armor_trenchcoat_black"] = {
-		["Name"] = "Black Trenchcoat Armor",
+		["Name"] = "BlackTrenchcoatArmor",
 		["Cost"] = 20000,
 		["Model"] = "models/player/stalker/bandit_black.mdl",
-		["Description"] = "It may look like a black, old overcoat, but there's actually a medium-weight flak jacket and leather padding under there that offers a good-ish protection\nProtection: 15%\nSpeed: Decreased (-1.5)\nAttachment Slots: 2\nBattery: 0\nMax Carry Weight: +0kg",
-		["Weight"] = 2.6,
+		["Description"] = "BlackTrenchcoatArmor_d",
+		["Weight"] = 2.9,
 		["Supply"] = 0,
 		["Rarity"] = 4,
 		["Category"] = 4,
@@ -2546,7 +2546,7 @@ ItemsList = {
 		-- armor only values
 		["ArmorStats"] = {
 			["reduction"] = 15,
-			["speedloss"] = 15,
+			["speedloss"] = 17.5,
 			["slots"] = 2,
 			["battery"] = 0,
 			["carryweight"] = 0,
@@ -2555,10 +2555,10 @@ ItemsList = {
 	},
 
 	["item_armor_mercenary_guerilla"] = {
-		["Name"] = "Guerilla Mercenary Armor",
+		["Name"] = "GuerillaMercArmor",
 		["Cost"] = 25000,
 		["Model"] = "models/player/guerilla.mdl",
-		["Description"] = "A flak jacket worn with various other garments. It provides a good mix of protection and mobility for an affordable price.\nProtection: 15.625%\nSpeed: Decreased (-2)\nAttachment Slots: 2\nBattery: 50\nMax Carry Weight: +0kg",
+		["Description"] = "GuerillaMercArmor_d",
 		["Weight"] = 3.2,
 		["Supply"] = 0,
 		["Rarity"] = 4,
@@ -2577,10 +2577,10 @@ ItemsList = {
 	},
 
 	["item_armor_mercernary_arctic"] = {
-		["Name"] = "Arctic Mercenary Armor",
+		["Name"] = "ArcticMercArmor",
 		["Cost"] = 27500,
 		["Model"] = "models/player/arctic.mdl",
-		["Description"] = "A flak jacket worn with various other garments, protecting user from cold. It provides a good protection and mobility.\nProtection: 16.25%\nSpeed: Decreased (-1.75)\nAttachment Slots: 2\nBattery: 50\nMax Carry Weight: +0kg",
+		["Description"] = "ArcticMercArmor_d",
 		["Weight"] = 3.35,
 		["Supply"] = 0,
 		["Rarity"] = 5,
@@ -2599,10 +2599,10 @@ ItemsList = {
 	},
 
 	["item_armor_mercenary_leet"] = {
-		["Name"] = "Leet Mercenary Armor",
+		["Name"] = "LeetMercArmor",
 		["Cost"] = 26000,
 		["Model"] = "models/player/leet.mdl",
-		["Description"] = "A flak jacket worn with various other garments. It provides a good mix of protection and mobility for an affordable price.\nProtection: 15%\nSpeed: Decreased (-2)\nAttachment Slots: 2\nBattery: 50\nMax Carry Weight: +0kg",
+		["Description"] = "LeetMercArmor_d",
 		["Weight"] = 3,
 		["Supply"] = 0,
 		["Rarity"] = 4,
@@ -2621,10 +2621,10 @@ ItemsList = {
 	},
 
 	["item_armor_mercenary_phoenix"] = {
-		["Name"] = "Phoenix Mercenary Armor",
+		["Name"] = "PhoenixMercArmor",
 		["Cost"] = 30000,
 		["Model"] = "models/player/phoenix.mdl",
-		["Description"] = "A flak jacket worn with various other garments. It provides a good mix of protection and mobility for an affordable price.\nIn addition, this armor set includes additional kevlar plates and provides mask to hide face from others.\nProtection: 20%\nSpeed: Decreased (-2)\nAttachment Slots: 2\nBattery: 50\nMax Carry Weight: +0kg",
+		["Description"] = "PhoenixMercArmor_d",
 		["Weight"] = 3,
 		["Supply"] = 0,
 		["Rarity"] = 5,
@@ -2643,10 +2643,10 @@ ItemsList = {
 	},
 
 	["item_armor_police_gasmask"] = {
-		["Name"] = "Police Gasmask Armor",
+		["Name"] = "PoliceGasmaskArmor",
 		["Cost"] = 35000,
 		["Model"] = "models/player/gasmask.mdl",
-		["Description"] = "Heavy gear used by swat teams and other special operations personnel. Gas mask is included in this set, protecting user from various gases.\nProtection: 17.5%\nSpeed: Decreased (-5)\nAttachment Slots: 2\nBattery: 50\nMax Carry Weight: +0kg",
+		["Description"] = "PoliceGasmaskArmor_d",
 		["Weight"] = 5.5,
 		["Supply"] = 0,
 		["Rarity"] = 5,
@@ -2665,10 +2665,10 @@ ItemsList = {
 	},
 
 	["item_armor_police_riot"] = {
-		["Name"] = "Police Riot Armor",
+		["Name"] = "PoliceRiotArmor",
 		["Cost"] = 37000,
 		["Model"] = "models/player/riot.mdl",
-		["Description"] = "Heavy riot gear used by swat teams and other special operations personnel.\nProtection: 25%\nSpeed: Decreased (-55)\nAttachment Slots: 2\nBattery: 50\nMax Carry Weight: +0kg",
+		["Description"] = "PoliceRiotArmor_d",
 		["Weight"] = 5.8,
 		["Supply"] = 0,
 		["Rarity"] = 5,
@@ -2687,10 +2687,10 @@ ItemsList = {
 	},
 
 	["item_armor_police_swat"] = {
-		["Name"] = "Police SWAT Armor",
+		["Name"] = "PoliceSWATArmor",
 		["Cost"] = 36000,
 		["Model"] = "models/player/swat.mdl",
-		["Description"] = "Heavy gear used by swat teams and other special operations personnel. A set of kevlar plates is included, protecting user from various dangers.\nProtection: 23.75%\nSpeed: Decreased (-5.375)\nAttachment Slots: 2\nBattery: 50\nMax Carry Weight: +0kg",
+		["Description"] = "PoliceSWATArmor_d",
 		["Weight"] = 5.8,
 		["Supply"] = 0,
 		["Rarity"] = 5,
@@ -2709,10 +2709,10 @@ ItemsList = {
 	},
 
 	["item_armor_police_urban"] = {
-		["Name"] = "Police Urban Armor",
+		["Name"] = "PoliceUrbanArmor",
 		["Cost"] = 40000,
 		["Model"] = "models/player/urban.mdl",
-		["Description"] = "Heavy riot gear used by swat teams and other special operations personnel, including medium-weight kevlar plates to provide better protection..\nProtection: 27.5%\nSpeed: Decreased (-5)\nAttachment Slots: 2\nBattery: 50\nMax Carry Weight: +0kg",
+		["Description"] = "PoliceUrbanArmor_d",
 		["Weight"] = 6.5,
 		["Supply"] = 0,
 		["Rarity"] = 5,
@@ -2731,10 +2731,10 @@ ItemsList = {
 	},
 
 	["item_armor_sunrise"] = {
-		["Name"] = "Sunrise-5 Armor",
+		["Name"] = "SunriseArmor",
 		["Cost"] = 55000,
 		["Model"] = "models/player/stalker/loner_vet.mdl",
-		["Description"] = "A set of custom armor built by a veteran survivor.\nProtection: 30%\nSpeed: Decreased (-3)\nAttachment Slots: 3\nBattery: 100\nMax Carry Weight: +0kg",
+		["Description"] = "SunriseArmor_d",
 		["Weight"] = 5.5,
 		["Supply"] = 0,
 		["Rarity"] = 5,
@@ -2753,10 +2753,10 @@ ItemsList = {
 	},
 
 	["item_armor_sunrise_dolg"] = {
-		["Name"] = "PSZ-9d Duty Armor",
+		["Name"] = "DolgArmor",
 		["Cost"] = 80000,
 		["Model"] = "models/player/stalker/duty_vet.mdl",
-		["Description"] = "A set of custom armor built by duty soldiers to increase their protection.\nProtection: 37.5%\nSpeed: Decreased (-4.25)\nAttachment Slots: 3\nBattery: 100\nMax Carry Weight: +0kg",
+		["Description"] = "DolgArmor_d",
 		["Weight"] = 7.1,
 		["Supply"] = 0,
 		["Rarity"] = 6,
@@ -2775,10 +2775,10 @@ ItemsList = {
 	},
 
 	["item_armor_sunrise_svoboda"] = {
-		["Name"] = "Wind of Freedom Suit",
+		["Name"] = "SvobodaArmor",
 		["Cost"] = 60000,
 		["Model"] = "models/player/stalker/freedom_vet.mdl",
-		["Description"] = "A set of light armor armor built by a veteran survivor.\nProtection: 30%\nSpeed: Decreased (-2.75)\nAttachment Slots: 3\nBattery: 100\nMax Carry Weight: +0kg",
+		["Description"] = "SvobodaArmor_d",
 		["Weight"] = 5,
 		["Supply"] = 0,
 		["Rarity"] = 6,
@@ -2797,10 +2797,10 @@ ItemsList = {
 	},
 
 	["item_armor_sunrise_monolith"] = {
-		["Name"] = "Monolith Armor",
+		["Name"] = "MonolithArmor",
 		["Cost"] = 75000,
 		["Model"] = "models/player/stalker/monolith_vet.mdl",
-		["Description"] = "A set of sunrise armor that is used by Monolithians.\nProtection: 35%\nSpeed: Decreased (-3.5)\nAttachment Slots: 3\nBattery: 150\nMax Carry Weight: +0kg",
+		["Description"] = "MonolithArmor_d",
 		["Weight"] = 6,
 		["Supply"] = 3,
 		["Rarity"] = 6,
@@ -2819,10 +2819,10 @@ ItemsList = {
 	},
 
 	["item_armor_military_green"] = {
-		["Name"] = "SKAT-9 Military Armor",
-		["Cost"] = 100000,
+		["Name"] = "MilitaryGreenArmor",
+		["Cost"] = 125000,
 		["Model"] = "models/player/stalker/military_spetsnaz_green.mdl",
-		["Description"] = "A set of high end military armor used by military stalkers for operations.\nProtection: 42.5%\nSpeed: Decreased (-5)\nAttachment Slots: 2\nBattery: 100\nMax Carry Weight: +0kg",
+		["Description"] = "MilitaryGreenArmor_d",
 		["Weight"] = 12,
 		["Supply"] = 0,
 		["Rarity"] = 6,
@@ -2841,10 +2841,10 @@ ItemsList = {
 	},
 
 	["item_armor_military_black"] = {
-		["Name"] = "SKAT-10 Military Armor",
-		["Cost"] = 125000,
+		["Name"] = "MilitaryBlackArmor",
+		["Cost"] = 150000,
 		["Model"] = "models/player/stalker/military_spetsnaz_black.mdl",
-		["Description"] = "A set of very high end military armor used by master military stalkers for special operations.\nProtection: 47.5%\nSpeed: Decreased (-7)\nAttachment Slots: 2\nBattery: 125\nMax Carry Weight: +5kg",
+		["Description"] = "MilitaryBlackArmor_d",
 		["Weight"] = 15,
 		["Supply"] = 0,
 		["Rarity"] = 7,
@@ -2863,10 +2863,10 @@ ItemsList = {
 	},
 
 	["item_armor_exo"] = {
-		["Name"] = "Exoskeleton",
+		["Name"] = "ExoArmor",
 		["Cost"] = 250000,
 		["Model"] = "models/player/stalker/loner_exo.mdl",
-		["Description"] = "A set of armor consisting of heavy flak plating supported by a network of struts and servomotors.\nProtection: 60%\nSpeed: Decreased (-12.5)\nAttachment Slots: 3\nBattery: 100\nMax Carry Weight: +30kg",
+		["Description"] = "ExoArmor_d",
 		["Weight"] = 25,
 		["Supply"] = -2,
 		["Rarity"] = 7,
@@ -2885,10 +2885,10 @@ ItemsList = {
 	},
 
 	["item_armor_exo_merc"] = {
-		["Name"] = "Mercenary Exoskeleton",
+		["Name"] = "MercExoArmor",
 		["Cost"] = 225000,
 		["Model"] = "models/player/stalker/merc_exo.mdl",
-		["Description"] = "A set of armor consisting of heavy flak plating supported by a network of struts and servomotors.\nProtection: 57.5%\nSpeed: Decreased (-10.5)\nAttachment Slots: 3\nBattery: 100\nMax Carry Weight: +30kg",
+		["Description"] = "MercExoArmor_d",
 		["Weight"] = 23.75,
 		["Supply"] = 0,
 		["Rarity"] = 8,
@@ -2907,10 +2907,10 @@ ItemsList = {
 	},
 
 	["item_armor_exo_dolg"] = {
-		["Name"] = "Duty Exoskeleton",
+		["Name"] = "DolgExoArmor",
 		["Cost"] = 275000,
 		["Model"] = "models/player/stalker/duty_exo.mdl",
-		["Description"] = "A set of armor consisting of heavy flak plating supported by a network of struts and servomotors.\nProtection: 65%\nSpeed: Decreased (-13)\nAttachment Slots: 3\nBattery: 100\nMax Carry Weight: +30kg",
+		["Description"] = "DolgExoArmor_d",
 		["Weight"] = 27.5,
 		["Supply"] = 0,
 		["Rarity"] = 8,
@@ -2929,10 +2929,10 @@ ItemsList = {
 	},
 
 	["item_armor_exo_svoboda"] = {
-		["Name"] = "Freedom Exoskeleton",
+		["Name"] = "SvobodaExoArmor",
 		["Cost"] = 237500,
 		["Model"] = "models/player/stalker/freedom_exo.mdl",
-		["Description"] = "A set of armor consisting of heavy flak plating supported by a network of struts and servomotors.\nProtection: 55%\nSpeed: Decreased (-11)\nAttachment Slots: 3\nBattery: 100\nMax Carry Weight: +25kg",
+		["Description"] = "SvobodaExoArmor_d",
 		["Weight"] = 22.5,
 		["Supply"] = 0,
 		["Rarity"] = 7,
@@ -2951,10 +2951,10 @@ ItemsList = {
 	},
 
 	["item_armor_exo_monolith"] = {
-		["Name"] = "Monolith Exoskeleton",
+		["Name"] = "MonolithExoArmor",
 		["Cost"] = 262500,
 		["Model"] = "models/player/stalker/monolith_exo.mdl",
-		["Description"] = "A set of armor consisting of heavy flak plating supported by a network of struts and servomotors.\nProtection: 62.5%\nSpeed: Decreased (-12.5)\nAttachment Slots: 3\nBattery: 100\nMax Carry Weight: +30kg",
+		["Description"] = "MonolithExoArmor_d",
 		["Weight"] = 25,
 		["Supply"] = 0,
 		["Rarity"] = 8,
@@ -2973,10 +2973,10 @@ ItemsList = {
 	},
 
 	["item_armor_cs2_goggles"] = {
-		["Name"] = "CS2 Goggles Armor",
+		["Name"] = "CS2GogglesArmor",
 		["Cost"] = 2500000,
 		["Model"] = "models/stalkertnb/cs2_goggles.mdl",
-		["Description"] = "An experimental armor that provides wearer suitable protection, great battery capacity and increases movement speed of user wearing it.\nProtection: 40%\nSpeed: Increased (1.25)\nAttachment Slots: 3\nBattery: 100\nMax Carry Weight: +5kg",
+		["Description"] = "CS2GogglesArmor_d",
 		["Weight"] = 15,
 		["Supply"] = 0,
 		["Rarity"] = 9,
@@ -3086,12 +3086,12 @@ if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "You are cu
 if timer.Exists("Isplyequippingarmor"..ply:UniqueID().."_"..item) then SendChat(ply, "Why do you want to equip armor when equipping one now??") return false end
 
 local used = ItemsList[item]
-if !timer.Exists("plywantstoremovearmor"..ply:UniqueID().."_"..item) and ply.EquippedArmor == item then timer.Create("plywantstoremovearmor"..ply:UniqueID().."_"..item, 10, 1, function() end) SendChat(ply, "Unequip "..used["Name"].."? Use the same armor again to confirm.") return false
+if !timer.Exists("plywantstoremovearmor"..ply:UniqueID().."_"..item) and ply.EquippedArmor == item then timer.Create("plywantstoremovearmor"..ply:UniqueID().."_"..item, 10, 1, function() end) SendChat(ply, "Unequip "..translate.Get(used["Name"]).."? Use the same armor again to confirm.") return false
 elseif timer.Exists("plywantstoremovearmor"..ply:UniqueID().."_"..item) and ply.EquippedArmor == item then
 SendUseDelay( ply, 3 )
 ply:EmitSound("npc/combine_soldier/zipline_hitground2.wav")
 timer.Simple(3, function()
-SystemMessage(ply, "You unequipped "..used["Name"]..".", Color(205,255,205,255), false)
+SystemMessage(ply, "You unequipped "..translate.Get(used["Name"])..".", Color(205,255,205,255), false)
 UseFunc_RemoveArmor(ply, item)
 end)
 return false end
@@ -3103,7 +3103,7 @@ ply:EmitSound("npc/combine_soldier/zipline_hitground1.wav")
 timer.Create("Isplyequippingarmor"..ply:UniqueID(), 3, 1, function() timer.Destroy("Isplyequippingarmor"..ply:UniqueID()) end)
 timer.Create("Isplyequippingarmor"..ply:UniqueID().."_"..item, 3, 1, function()
 if !ply:IsValid() or !ply:Alive() then return false end
-SystemMessage(ply, "You equipped "..used["Name"]..". Use the same armor again to unequip.", Color(205,255,205,255), false)
+SystemMessage(ply, "You equipped "..translate.Get(used["Name"])..". Use the same armor again to unequip.", Color(205,255,205,255), false)
 ply.EquippedArmor = tostring(item)
 ply:SetNWString("ArmorType", tostring(item))
 RecalcPlayerModel( ply )
@@ -3306,7 +3306,7 @@ if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "You are sleep
 if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "You are currently using an item, why would you eat during this time??") return false end
 if ply:WaterLevel() == 3 then SendChat(ply, "It is impossible to drink when you are underwater. Get out of the water if you want to drink.") return false end
 	if ply:Alive() then
-			if !timer.Exists("plywantstouseitem"..ply:UniqueID()) and ply.Thirst > 9500 then timer.Create("plywantstouseitem"..ply:UniqueID(), 10, 1, function() timer.Destroy("plywantstouseitem"..ply:UniqueID()) end) SendChat( ply, "I am not thirsty, I should save this for later. Use item again within 10 seconds to confirm usage." ) return false end
+			if !timer.Exists("plywantstouseitem"..ply:UniqueID()) and ply.Thirst > 9500 then timer.Create("plywantstouseitem"..ply:UniqueID(), 10, 1, function() timer.Destroy("plywantstouseitem"..ply:UniqueID()) end) SendChat( ply, "You are not thirsty, consider saving this for later. Use item again within 10 seconds to confirm usage." ) return false end
 			ply:SetHealth(math.Clamp( ply:Health() + health, 0, ply:GetMaxHealth() ))
 			ply.Hunger = math.Clamp( ply.Hunger + (hunger * 100), 0, 10000 )
 			ply.Thirst = math.Clamp( ply.Thirst + (thirst * 100), 0, 10000 )

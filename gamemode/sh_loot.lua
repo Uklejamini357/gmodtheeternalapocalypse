@@ -1,8 +1,11 @@
+
+-- See languages/english.lua and goto LootTable section for more info
 -- tier 1 loot aka junk
+
 LootTable1 = {
 	["item_bandage"] = {
 		["Name"] = "2x Bandages",
-		["Weight"] = 0.12, -- base item x3
+		["Weight"] = 0.12, -- base item x(qty)
 		["Qty"] = 2,
 		["Class"] = "item_bandage",
 	},
@@ -127,9 +130,9 @@ LootTable1 = {
 	},
 
 	["weapon_zw_grenade_frag"] = {
-		["Name"] = "3x Frag Grenade",
-		["Weight"] = 1.89,
-		["Qty"] = 3,
+		["Name"] = "2x Frag Grenade",
+		["Weight"] = 1.26,
+		["Qty"] = 2,
 		["Class"] = "weapon_zw_grenade_frag",
 	},
 

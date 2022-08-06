@@ -94,7 +94,7 @@ end
 	local weightlabel = vgui.Create( "DLabel", lootpanel )
 	weightlabel:SetPos( 20, 560 )
 	weightlabel:SetFont( "TargetIDSmall" )
-	weightlabel:SetText( "Total item weight: "..CalculateWeightClient().."kg    Maximum carry capacity: "..CalculateMaxWeightClient().."kg" )
+	weightlabel:SetText( translate.Get("CurrentlyCarrying")..": "..CalculateWeightClient().."kg    "..translate.Get("MaxWeight")..": "..CalculateMaxWeightClient().."kg" )
 	weightlabel:SizeToContents()
 
 
@@ -117,7 +117,7 @@ local function uwotm8( tab, parent )
 			local ItemDisplay = vgui.Create( "SpawnIcon", ItemBackground )
 			ItemDisplay:SetPos( 5, 5 )
 			ItemDisplay:SetModel( v.Model )
-			ItemDisplay:SetToolTip( v.Description )
+			ItemDisplay:SetToolTip( translate.Get(v.Description) )
 			ItemDisplay:SetSize(56,56)
 			ItemDisplay.PaintOver = function()
 				return
@@ -131,7 +131,7 @@ local function uwotm8( tab, parent )
 			ItemName:SetPos( 80, 10 )
 			ItemName:SetFont( "TargetIDSmall" )
 			ItemName:SetColor( Color(255,255,255,255) )
-			ItemName:SetText( v.Name.." ("..v.Weight.."kg)" )
+			ItemName:SetText( translate.Get(v.Name).." ("..v.Weight.."kg)" )
 			ItemName:SizeToContents()
 
 			local ItemQty = vgui.Create( "DLabel", ItemBackground )
@@ -144,7 +144,7 @@ local function uwotm8( tab, parent )
 			local TakeButton = vgui.Create("DButton", ItemBackground)
 			TakeButton:SetSize( 80, 20 )
 			TakeButton:SetPos( 80, 35 )
-			TakeButton:SetText("Take")
+			TakeButton:SetText(translate.Get("Take"))
 			TakeButton:SetTextColor(Color(255, 255, 255, 255))
 			TakeButton.Paint = function(panel, w, h)
 			surface.SetDrawColor(0, 150, 0 ,255)
@@ -169,7 +169,7 @@ local function uwotm8( tab, parent )
 							TheListPanel:Clear()
 							uwotm8( tab, parent )
 						end
-		weightlabel:SetText( "Total item weight: "..CalculateWeightClient().."kg    Maximum carry capacity: "..CalculateMaxWeightClient().."kg" )
+						weightlabel:SetText( translate.Get("CurrentlyCarrying")..": "..CalculateWeightClient().."kg    "..translate.Get("MaxWeight")..": "..CalculateMaxWeightClient().."kg" )
 			end)
 
 				end
@@ -181,9 +181,9 @@ end
 	uwotm8( loottable, TheListPanel )
 
 
-	PropertySheet:AddSheet( "Take Items", InvForm, "icon16/basket_remove.png", false, false, "The stuff that is in this crate" )
+	PropertySheet:AddSheet( translate.Get("TakeItems"), InvForm, "icon16/basket_remove.png", false, false, "The stuff that is in this crate" )
 	if canstore then
-	PropertySheet:AddSheet( "Store Items", StoreForm, "icon16/basket_put.png", false, false, "derp" )
+	PropertySheet:AddSheet( translate.Get("StoreItems"), StoreForm, "icon16/basket_put.png", false, false, "derp" )
 	end
 end
 

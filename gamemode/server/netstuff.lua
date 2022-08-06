@@ -89,7 +89,7 @@ timer.Create( "changemodelcooldown_"..client:UniqueID(), 120, 0, function()
 	timer.Destroy("changemodelcooldown_"..client:UniqueID())
 end ) 
 
-timer.Simple(1, function() RecalcPlayerModel( client ) end)
+timer.Simple(0.75, function() RecalcPlayerModel( client ) end)
 
 end)
 

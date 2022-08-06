@@ -328,6 +328,7 @@ function GM:PlayerInitialSpawn( ply )
 	------------------
 
 	ply.SurvivalTime = math.floor(CurTime())
+	ply.IsAlive = 1
 	ply.Stamina = 100
 	ply.Hunger = 10000
 	ply.Thirst = 10000
@@ -409,6 +410,7 @@ function GM:PlayerSpawn( ply )
 	self.BaseClass:PlayerSpawn( ply )
 	player_manager.SetPlayerClass( ply, "player_ate" )
 
+	ply.IsAlive = 1
 	RecalcPlayerModel( ply )
 
 	for k, v in pairs(ents.FindByClass( "bed") ) do

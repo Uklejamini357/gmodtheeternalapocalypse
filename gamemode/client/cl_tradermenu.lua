@@ -153,7 +153,7 @@ for k, v in SortedPairsByMemberValue( ItemsList, "Cost" ) do
 	local ItemDisplay = vgui.Create( "SpawnIcon", ItemBackground )
 	ItemDisplay:SetPos( 10, 10 )
 	ItemDisplay:SetModel( v.Model )
-	ItemDisplay:SetToolTip(v.Description.."\n(Item ID: "..k..")")
+	ItemDisplay:SetToolTip(translate.Get(v.Description).."\n(Item ID: "..k..")")
 	ItemDisplay:SetSize(60,60)
 	ItemDisplay.PaintOver = function()
 		return
@@ -166,7 +166,7 @@ for k, v in SortedPairsByMemberValue( ItemsList, "Cost" ) do
 	ItemName:SetPos( 80, 10)
 	ItemName:SetSize( 170, 15)
 	ItemName:SetColor( Color(205,205,205,255) )
-	ItemName:SetText( v.Name )
+	ItemName:SetText( translate.Get(v.Name) )
 
 	local ItemCost = vgui.Create( "DLabel", ItemBackground )
 	ItemCost:SetFont( "TargetIDSmall" )
@@ -248,7 +248,7 @@ for k, v in SortedPairsByMemberValue( LocalInventory, "Weight", true ) do
 		local ItemDisplay = vgui.Create( "SpawnIcon", ItemBackground )
 		ItemDisplay:SetPos( 5, 5 )
 		ItemDisplay:SetModel( v.Model )
-		ItemDisplay:SetToolTip(v.Description.."\n(Item ID: "..k..")")
+		ItemDisplay:SetToolTip(translate.Get(v.Description).."\n(Item ID: "..k..")")
 		ItemDisplay:SetSize(60,60)
 		ItemDisplay.PaintOver = function()
 			return
@@ -262,7 +262,7 @@ for k, v in SortedPairsByMemberValue( LocalInventory, "Weight", true ) do
 		ItemName:SetPos( 80, 10 )
 		ItemName:SetFont( "TargetIDSmall" )
 		ItemName:SetColor( Color(255,255,255,255) )
-		ItemName:SetText( v.Name.." ("..v.Weight.."kg)" )
+		ItemName:SetText( translate.Get(v.Name).." ("..v.Weight.."kg)" )
 		ItemName:SizeToContents()
 
 	if icost > 1 then
@@ -369,7 +369,7 @@ local function DoVaultPanel()
 		local ItemDisplay = vgui.Create( "SpawnIcon", ItemBackground )
 		ItemDisplay:SetPos( 5, 5 )
 		ItemDisplay:SetModel( v.Model )
-		ItemDisplay:SetToolTip(v.Description.."\n(Item ID: "..k..")")
+		ItemDisplay:SetToolTip(translate.Get(v.Description).."\n(Item ID: "..k..")")
 		ItemDisplay:SetSize(60,60)
 		ItemDisplay.PaintOver = function()
 			return
@@ -382,7 +382,7 @@ local function DoVaultPanel()
 		ItemName:SetPos( 80, 10 )
 		ItemName:SetFont( "TargetIDSmall" )
 		ItemName:SetColor( Color(255,255,255,255) )
-		ItemName:SetText( v.Name.." ("..v.Weight.."kg)" )
+		ItemName:SetText( translate.Get(v.Name).." ("..v.Weight.."kg)" )
 		ItemName:SizeToContents()
 
 		local ItemQty = vgui.Create( "DLabel", ItemBackground )

@@ -4,7 +4,7 @@ AddCSLuaFile()
 SWEP.PrintName	= "Hands"
 
 SWEP.Author		= "LegendofRobbo"
-SWEP.Purpose	= "Use right click to pick shit up and left click to smack your bitch up"
+SWEP.Purpose	= "Use right click to pick up some stuff up and left click to attack"
 
 SWEP.DrawCrosshair	= false
 SWEP.Spawnable	= true
@@ -89,7 +89,8 @@ else
 		if (SERVER) then
 		self.Owner.Stamina = math.Clamp(self.Owner.Stamina - math.Rand(0.1, 0.3), 0, 100)
 		timer.Simple(0.15, function()
-		self.Owner.Stamina = math.Clamp(self.Owner.Stamina - math.Rand(0.7, 2.5), 0, 100)
+			if !self:IsValid() then return end
+			self.Owner.Stamina = math.Clamp(self.Owner.Stamina - math.Rand(0.7, 2.5), 0, 100)
 		end)
 		end
 	else
@@ -98,7 +99,8 @@ else
 		if (SERVER) then
 		self.Owner.Stamina = math.Clamp(self.Owner.Stamina - math.Rand(0.14, 0.4), 0, 100)
 		timer.Simple(0.15, function()
-		self.Owner.Stamina = math.Clamp(self.Owner.Stamina - math.Rand(0.4, 1.1), 0, 100)
+			if !self:IsValid() then return end
+			self.Owner.Stamina = math.Clamp(self.Owner.Stamina - math.Rand(0.4, 1.1), 0, 100)
 		end)
 		end
 	end

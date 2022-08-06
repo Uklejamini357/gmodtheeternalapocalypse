@@ -193,9 +193,10 @@ end
 MaxClipAmmo = {}
 
 local function DrawVitals( )
-	if (!LocalPlayer():Alive() or !LocalPlayer():IsValid() ) then return end
+	if !LocalPlayer():Alive() or !LocalPlayer():IsValid() then return end
+	if GetConVar("tea_cl_hud"):GetInt() < 1 then return end
 	local me = LocalPlayer()
-	if (me:GetActiveWeapon() == NULL or me:GetActiveWeapon() == "gmod_camera" ) then return end  
+	if me:GetActiveWeapon() == NULL or me:GetActiveWeapon() == "gmod_camera" then return end  
 	local Health = me:Health()
 --	local MaxHealth = 100 + ( me:GetNWInt( "StatHealth" ) * 5 )
 	local MaxHealth = me:GetMaxHealth()
@@ -284,6 +285,7 @@ local function DrawVitals( )
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------AMMO
 
+
 	if( MaxAmmoType != 0 or MaxAmmoType2 != 0 or AmmoClip1 > 0 or AmmoClip2 > 0 ) then
 	IsAmmoBox = true
 	--Ammo Box
@@ -292,6 +294,7 @@ local function DrawVitals( )
 	surface.SetDrawColor(200, 100, 0 ,255)
 	surface.DrawOutlinedRect(ScrW() - 270,  ScrH() - 140, 250, 70)
 	
+
 	--Ammo Text
 	draw.SimpleText( "Ammo in Clip: " .. AmmoClip1 .. " / " .. AmmoClip2, "TargetIDSmall", ScrW() - 259, ScrH() - 110, Color( 255, 255, 255, 255 ), 0, 1 )
 	
@@ -584,7 +587,8 @@ if dohuddraw != 1 then return false end
 	DrawNames()
 	DrawMiscThings()
 
-	draw.SimpleText( "Ver: "..GAMEMODE.Version, "TargetIDSmall", 10, 5, Color(205,205,205,255), 0, 0 )
+	draw.SimpleText( "Ver. "..GAMEMODE.Version, "TargetIDSmall", 10, 5, Color(205,205,205,255), 0, 0 )
+	draw.SimpleText( "Time: "..os.date("%H:%M:%S"), "TargetIDSmall", 10, 19, Color(205,205,205,255), 0, 0 )
 	if ( LocalPlayer():Alive() ) then
 		Spawn = CurTime() + GetConVar( "tea_server_respawntime" ):GetString()
 	else
@@ -773,7 +777,7 @@ end
 	surface.DrawOutlinedRect( t, s, 200, 65 )
 	surface.SetDrawColor(0, 0, 0, 200)
 	surface.DrawRect( t, s, 200, 65 )
-	draw.DrawText( itemtable.Name, "TargetID", t + 5, s + 4, Color( 255, 255, 255, 255 ) )
+	draw.DrawText( translate.Get(itemtable.Name), "TargetID", t + 5, s + 4, Color( 255, 255, 255, 255 ) )
 	draw.DrawText( itemtable.Weight.."kg", "TargetID", t + 5, s + 22, Color( 255, 255, 155, 255 ) )
 	draw.DrawText( "Rarity: "..raretext, "TargetID", t + 5, s + 40, rarecol )
 	end

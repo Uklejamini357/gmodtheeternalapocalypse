@@ -216,7 +216,7 @@ function SWEP:DealDamage( anim )
 				if v:IsPlayer() or v:IsNPC() or v.Type == "nextbot" then SystemMessage(self.Owner, "Unable to build: prop obstructed!", Color(255,205,205,255), true) return false end
 			end
 
-			if tr.Entity.BuildLevel >= 3 then
+			if tr.Entity.BuildLevel >= 5 then
 				tr.Entity:FinishBuild()
 			else
 				tr.Entity.BuildLevel = tr.Entity.BuildLevel + 1
