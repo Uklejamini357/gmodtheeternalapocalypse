@@ -38,25 +38,22 @@ function SpawnPlayer( ply )
 
 			ply:SetPos( pos )
 			ply:SetAngles( ang )
---			SystemMessage(ply, "You have spawned in " .. name .. "!", Color(205,255,205,255), true)
 
 		end
 	end
 end
 hook.Add("PlayerSpawn", "ate_whoknowswhattocallhooksthesedays", SpawnPlayer)
 
-function AddPlayerSpawn( ply, cmd, args, str )
+function AddPlayerSpawn( ply, cmd, args )
 	if !SuperAdminCheck( ply ) then 
 		SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
 		ply:ConCommand( "playgamesound buttons/button8.wav" )
 		return
 	end
 	
-	LoadPlayerSpawns() --reload them
-	
-    str = str or "New Spawn"
+	local str = args[1] or "New Spawn"
 
-    local PosAngName = tostring( ply:GetPos() ) .. ";" .. tostring( ply:GetAngles() ) .. ";" .. tostring(str)
+	local PosAngName = tostring( ply:GetPos() ) .. ";" .. tostring( ply:GetAngles() ) .. ";" .. tostring(str)
 
 	if( PlayerSpawnsData == "" ) then
 		NewData = tostring( PosAngName )
@@ -65,12 +62,13 @@ function AddPlayerSpawn( ply, cmd, args, str )
 	end
 	
 	file.Write( "theeternalapocalypse/spawns/players/" .. string.lower(game.GetMap()) .. ".txt", NewData )
-
+	
 	SendChat( ply, "Added a new player spawnpoint called '"..str.."' at position "..tostring(ply:GetPos()).."!")
 	print("[SPAWNPOINTS MODIFIED] "..ply:Nick().." has added a new player spawnpoint called '"..str.."' at position "..tostring(ply:GetPos()).."!")
 	ate_DebugLog("[SPAWNPOINTS MODIFIED] "..ply:Nick().." has added a new player spawnpoint called '"..str.."' at position "..tostring(ply:GetPos()).."!")
 	ply:ConCommand( "playgamesound buttons/button3.wav" )
-	timer.Simple(1, function() LoadPlayerSpawns() end) -- and again
+	LoadPlayerSpawns() --reload them
+	timer.Simple(0.5, function() LoadPlayerSpawns() end) -- and again (to prevent any unnecessary missing spawnpoints)
 end
 concommand.Add( "ate_addplayerspawnpoint", AddPlayerSpawn )
 
@@ -89,7 +87,7 @@ print("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all player spawnpoints
 ate_DebugLog( "[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all player spawnpoints!")
 ply:ConCommand( "playgamesound buttons/button15.wav" )
 end
-concommand.Add( "ate_clearplayerspawnpoints", ClearPlayerSpawns )
+concommand.Add( "ate_clearplayerspawnpoints", ClearPlayerSpawns)
 
 function RefreshPlayerSpawns(ply, cmd, args)
 if !SuperAdminCheck( ply ) then 
@@ -99,4 +97,4 @@ if !SuperAdminCheck( ply ) then
 end
 LoadPlayerSpawns()
 end
-concommand.Add( "ate_refreshplayerspawnpoints", RefreshPlayerSpawns )
+concommand.Add( "ate_refreshplayerspawnpoints", RefreshPlayerSpawns)

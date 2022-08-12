@@ -87,6 +87,9 @@ end
 end
 hook.Add( "CalcView", "DeathView", DeathView )
 
+timer.Simple(1, function()
+RunConsoleCommand("refresh_inventory")
+end)
 
 function GM:OnUndo( name, strCustomString )
 	
@@ -137,13 +140,14 @@ surface.PlaySound(table.Random(radiosounds))
 
 end)
 
-CreateClientConVar("tea_cl_hud", 1, "Show hud? 1 for yes, 0 for no")
+CreateClientConVar("tea_cl_hud", 1)
+CreateClientConVar("tea_cl_hudstyle", 0)
 
 function ATEHelp()
 print("Help:")
 print("")
 print("Welcome to The Eternal Apocalypse. This is known as a remake of After The End. But better, harder and improved...")
-print("A help panel may be added in future.")
+print("A help panel may be added in future. For the sake of some inconvenience, some of commands were removed.")
 print("For more help, enter one of those command below:")
 print("")
 print("ate_help_general - Prints General Help into console")
@@ -152,12 +156,7 @@ print("ate_help_zombies - Prints Zombies Help into console")
 print("ate_help_trader - Prints Trader Help into console")
 print("ate_help_loot - Prints Loot Help into console")
 print("ate_help_skills - Prints Skills Help into console")
-print("ate_help_pvp - Prints PvP Help into console")
-print("ate_help_factions - Prints Factions Help into console")
-print("ate_help_other - Prints Other Help into console")
-print("ate_help_debugging - Prints Debugging Help into console if ran into some problems (Like empty inventory or so)")
 print("")
-print("ate_admin_help - Prints Admin Help into console, Admin commands only available for Admins")
 print("ate_admin_help_debugging - Some debug stuff for superadmins")
 end
 concommand.Add("ate_help", ATEHelp)
@@ -239,43 +238,6 @@ print("Strength Skill: Increases max carry weight by 1.53kg per level.")
 print("Survivor Skill: Decreases hunger decreasing by 4% per level and decreases fatigue progressing by 3.5% per level.")
 end
 concommand.Add("ate_help_skills", ATEHelpSkills)
-
-function ATEHelpPvP()
-print("PvP Help:")
-print("")
-print("Has killing zombies over and over for you became boring as hell?")
-print("Guess what! There is an alternative! PvP! PLAYER VERSUS PLAYER!")
-print("PvP ")
-end
-concommand.Add("ate_help_pvp", ATEHelpPvP)
-
-function ATEHelpFactions()
-print("Factions Help:")
-print("")
-print("This help is in progress.")
-end
-concommand.Add("ate_help_factions", ATEHelpFactions)
-
-function ATEHelpOther()
-print("Other Help:")
-print("")
-print("This help is in progress.")
-end
-concommand.Add("ate_help_other", ATEHelpOther)
-
-function ATEHelpDebugging()
-print("Debugging Help:")
-print("")
-print("This help is in progress.")
-end
-concommand.Add("ate_help_debugging", ATEHelpDebugging)
-
-function ATEHelpAdmin()
-print("Admin Help:")
-print("")
-print("This help is in progress.")
-end
-concommand.Add("ate_admin_help", ATEHelpAdmin)
 
 function ATEHelpAdminDebugging()
 print("Admin Debugging Help:")

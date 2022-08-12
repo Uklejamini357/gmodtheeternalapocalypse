@@ -18,24 +18,40 @@ local attacker, inflictor, dmg = dmginfo:GetAttacker(), dmginfo:GetInflictor(), 
 	end
 
 	local tea_server_voluntarypvp = GetConVar("tea_server_voluntarypvp")
-	if target:IsPlayer() and attacker:IsPlayer() and target != attacker and !target:IsPvPForced() and target.Territory != team.GetName(attacker:Team()) and tea_server_voluntarypvp:GetInt() > 0 then
-
-		if target:Alive() and attacker:Team() == 1 and attacker:GetNWBool("pvp") == false then
-			SystemMessage(attacker, "Your PvP is not enabled!", Color(255,205,205,255), true)
+	if target:IsPlayer() and attacker:IsPlayer() and target != attacker and !target:IsPvPForced() and target.Territory != team.GetName(attacker:Team()) then
+		 
+		if target:Alive() and attacker:IsPlayer() and target:IsPlayer() and target:HasGodMode() then
+			if !timer.Exists("NoPvPMsgAntiSpamTimer"..attacker:UniqueID()) then
+				SystemMessage(attacker, "This target is invulnerable!", Color(255,205,205,255), true)
+				timer.Create("NoPvPMsgAntiSpamTimer"..attacker:UniqueID(), 0.5, 1, function() end)
+			end
+			dmginfo:SetDamage( 0 )
+		return false end
+		if target:Alive() and attacker:Team() == 1 and attacker:GetNWBool("pvp") == false and tea_server_voluntarypvp:GetInt() > 0 then
+			if !timer.Exists("NoPvPMsgAntiSpamTimer"..attacker:UniqueID()) then
+				SystemMessage(attacker, "Your PvP is not enabled!", Color(255,205,205,255), true)
+				timer.Create("NoPvPMsgAntiSpamTimer"..attacker:UniqueID(), 0.5, 1, function() end)
+			end
+			dmginfo:SetDamage( 0 )
+		return false
+		elseif target:Alive() and target:Team() == 1 and target:GetNWBool("pvp") == false and tea_server_voluntarypvp:GetInt() > 0 then
+			if !timer.Exists("NoPvPMsgAntiSpamTimer"..attacker:UniqueID()) then
+				SystemMessage(attacker, "You can't attack loners unless they have PvP enabled!", Color(255,205,205,255), true)
+				timer.Create("NoPvPMsgAntiSpamTimer"..attacker:UniqueID(), 0.5, 1, function() end)
+			end
 			dmginfo:SetDamage( 0 )
 			return false
-
-		elseif target:Alive() and target:Team() == 1 and target:GetNWBool("pvp") == false then
-			SystemMessage(attacker, "You can't attack loners unless they have PvP enabled!", Color(255,205,205,255), true)
-			dmginfo:SetDamage( 0 )
+			elseif target:Alive() and (target:Team() == attacker:Team()) and not (target:Team() == 1 or attacker:Team() == 1) then
+				if !timer.Exists("NoPvPMsgAntiSpamTimer"..attacker:UniqueID()) then
+					SystemMessage(attacker, "You can't attack your factionmates!", Color(255,205,205,255), true)
+					timer.Create("NoPvPMsgAntiSpamTimer"..attacker:UniqueID(), 0.5, 1, function() end)
+				end
+				dmginfo:SetDamage( 0 )
 			return false
-		
-		elseif target:Alive() and (target:Team() == attacker:Team()) and not (target:Team() == 1 or attacker:Team() == 1) then
-			SystemMessage(attacker, "You can't attack your factionmates!", Color(255,205,205,255), true)
-			dmginfo:SetDamage( 0 )
-			return false
-
+			
 		end
+		
+	
 
 
 		if timer.Exists("pvpnominge_"..target:UniqueID()) then timer.Destroy("pvpnominge_"..target:UniqueID()) end
@@ -85,25 +101,16 @@ local attacker, inflictor, dmg = dmginfo:GetAttacker(), dmginfo:GetInflictor(), 
 		dmginfo:ScaleDamage( 1 + (0.01 * attacker.StatDamage) )
 		if target:IsPlayer() or target.Type == "nextbot" or target:IsNPC() then
 			attacker:PrintMessage(HUD_PRINTCENTER, "Damage: "..dmginfo:GetDamage())
-			if tea_server_debugging:GetInt() >= 1 then
-				attacker:ConCommand("playgamesound buttons/button10.wav")
-			end
 		end
 	end
 
-	if target:IsPlayer() and target:Alive() and attacker != target and attacker:IsPlayer() and dmginfo:GetDamageType() == DMG_GENERIC then
+	if target:IsPlayer() and target:Alive() and attacker != target and attacker:IsPlayer() and dmginfo:GetDamageType() == DMG_GENERIC and (!target:IsPvPGuarded() and !attacker:IsPvPGuarded()) then
 		dmginfo:ScaleDamage( 1 + (0.01 * attacker.StatDamage) )
 		attacker:PrintMessage(HUD_PRINTCENTER, "Damage: "..dmginfo:GetDamage().."")
 		print(attacker:Nick().." has damaged "..target:Nick().." for "..dmginfo:GetDamage().." damage!")
-		if tea_server_debugging:GetInt() >= 1 then
-			attacker:ConCommand("playgamesound buttons/button10.wav")
-		end
-	elseif target:IsPlayer() and target:Alive() and attacker != target and attacker:IsPlayer() then
+	elseif target:IsPlayer() and target:Alive() and attacker != target and attacker:IsPlayer() and (!target:IsPvPGuarded() and !attacker:IsPvPGuarded()) then
 		attacker:PrintMessage(HUD_PRINTCENTER, "Damage: "..dmginfo:GetDamage().."")
 		print(attacker:Nick().." has damaged "..target:Nick().." for "..dmginfo:GetDamage().." damage!")
-		if tea_server_debugging:GetInt() >= 1 then
-			attacker:ConCommand("playgamesound buttons/button10.wav")
-		end
 	end
 
 	for _, ent in pairs (ents.FindByClass("trader")) do
@@ -113,9 +120,8 @@ local attacker, inflictor, dmg = dmginfo:GetAttacker(), dmginfo:GetInflictor(), 
 	end
 
 	if tea_server_debugging:GetInt() >= 1 then
-		if target:IsPlayer() and target:Alive() then
+		if target:IsPlayer() and target:Alive() and !target:IsPvPGuarded() and !target:HasGodMode() then
 		target:PrintMessage(HUD_PRINTCENTER, "Damage taken: "..dmginfo:GetDamage().."")
-		target:ConCommand("playgamesound buttons/button10.wav")
 		print(""..target:Nick().." has taken "..dmginfo:GetDamage().." damage!")
 		end
 	end
@@ -171,6 +177,11 @@ function GM:ScalePlayerDamage( ply, group, dmginfo )
 	end
 end
 
+/*
+net.Receive("Respawn", function(length, ply)
+	ply:Spawn()
+end)
+*/
 
 function GM:PlayerDeathThink( ply )
 
@@ -186,8 +197,10 @@ function GM:DoPlayerDeath( ply, attacker, dmginfo )
 	ply:ConCommand( "play theeternalapocalypse/gameover_music.wav" )
 	
 	local tea_server_respawntime = GetConVar( "tea_server_respawntime" )
-
+	
+	if ply.IsAlive == 1 then
 	ply.RespawnTime = CurTime() + tea_server_respawntime:GetString()
+	end
 
 	if tonumber(ply.Bounty) >= 5 then
 	local cashloss = ply.Bounty * math.Rand(0.3, 0.4)
@@ -195,32 +208,53 @@ function GM:DoPlayerDeath( ply, attacker, dmginfo )
 	print( "".. ply:Nick() .." has died with "..ply.Bounty.." bounty, dropped money worth of "..math.floor(cashloss).." "..Config[ "Currency" ].."s and survived for "..math.floor(CurTime() - ply.SurvivalTime).." seconds! ".. tea_server_respawntime:GetString() .." seconds until able to respawn" )
 
 	local EntDrop = ents.Create( "ate_cash" )
-		EntDrop:SetPos( ply:GetPos() + Vector(0, 0, 10))
+	EntDrop:SetPos( ply:GetPos() + Vector(0, 0, 10))
 		EntDrop:SetAngles( Angle( 0, 0, 0 ) )
 		EntDrop:SetNWInt("CashAmount", math.floor(cashloss))
 		EntDrop:Spawn()
 		EntDrop:Activate()
-
-	SystemMessage(ply, "You died and dropped your bounty cash worth of "..math.floor(cashloss).." "..Config[ "Currency" ].."s! The remaining "..math.ceil(bountyloss).." "..Config[ "Currency" ].."s is lost forever! Always remember to cash in your bounty at traders, especially when having high bounty.", Color(255,205,205,255), true)
+		
+		SystemMessage(ply, "You died and dropped your bounty cash worth of "..math.floor(cashloss).." "..Config[ "Currency" ].."s! The remaining "..math.ceil(bountyloss).." "..Config[ "Currency" ].."s is lost forever! Always remember to cash in your bounty at traders, especially when having high bounty.", Color(255,205,205,255), true)
 	else
-	print( "".. ply:Nick() .." has died with "..ply.Bounty.." bounty and survived for "..math.floor(CurTime() - ply.SurvivalTime).." seconds! ".. tea_server_respawntime:GetString() .." seconds until able to respawn" )
+		print( "".. ply:Nick() .." has died with "..ply.Bounty.." bounty and survived for "..math.floor(CurTime() - ply.SurvivalTime).." seconds! ".. tea_server_respawntime:GetString() .." seconds until able to respawn" )
+	end
+	
+	if ply.IsAlive == 1 then --to prevent player from spamming the same thing in chat when dying while dead
+		SendChat(ply, "You survived for "..math.floor(CurTime() - ply.SurvivalTime).." seconds before getting killed")
 	end
 
-	if ply.IsAlive == 1 then --to prevent player from spamming the same thing in chat when dying while dead
-	SendChat(ply, "You survived for "..math.floor(CurTime() - ply.SurvivalTime).." seconds before getting killed")
-	end
+/*	for k,v in pairs(player.GetAll()) do
+		if !attacker:IsPlayer() then
+			v:PrintMessage(2, "[Death Log] "..ply:Nick().." was killed by "..attacker:GetClass())
+		else
+			if attacker != ply then
+				v:PrintMessage(2, "[Death Log] "..ply:Nick().." was killed by "..attacker:Nick().." using "..attacker:GetActiveWeapon():GetClass())
+			end
+		end
+	end*/ --not included because i think it would be too obvious
+
 	ply.Bounty = 0
 	ply.IsAlive = 0
+	if math.floor(ply.BestSurvivalTime) < (CurTime() - ply.SurvivalTime) then
+		SendChat(ply, "New survival time record! Previous Best: "..math.floor(ply.BestSurvivalTime).."s, New best: "..math.floor(CurTime() - ply.SurvivalTime).."s")
+		ply.BestSurvivalTime = math.floor(CurTime() - ply.SurvivalTime)
+	end
+	ply.SurvivalTime = CurTime() --idk why, it's already included in PlayerSpawn
 	ply:SetNWInt( "PlyBounty", ply.Bounty )
-
---	ply.Autorespawntime = CurTime() + 20
-
+	
+	--	ply.Autorespawntime = CurTime() + 20
+	
 	ply:Flashlight( false )
 	ply:Freeze( false )
 
 	ply:CreateRagdoll()
 
+	--ply:SendLua( "DeathSC()" )
+
+	timer.Destroy("IsSleeping_"..ply:UniqueID())
 	ply:AddDeaths( 1 )
+	ply.playerdeaths = ply.playerdeaths + 1
+	TEANetUpdateStatistics(ply)
 
 /*	if attacker:IsPlayer() and (ply:Team() == attacker:Team()) and attacker != ply and not (ply:Team() == 1 or attacker:Team() == 1) then
 		attacker:AddFrags( -1 )
@@ -237,8 +271,8 @@ function GM:DoPlayerDeath( ply, attacker, dmginfo )
 
 	else*/if attacker:IsPlayer() and attacker != ply then
 		attacker:AddFrags( 1 ) 
-
-
+		attacker.playerskilled = attacker.playerskilled + 1
+		TEANetUpdateStatistics(attacker)
 	end
 
 	if ply:GetActiveWeapon() == NULL then return end --you don't need to worry about it, you still drop the weapon you held from your inventory when you die

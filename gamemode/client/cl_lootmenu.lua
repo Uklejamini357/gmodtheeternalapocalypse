@@ -36,6 +36,8 @@ if lootpanel and lootpanel:IsVisible() then return end
 	lootpanel:SetTitle ( "" )
 	lootpanel:SetDraggable( false )
 	lootpanel:SetVisible( true )
+	lootpanel:SetAlpha(0)
+	lootpanel:AlphaTo(255, 0.25, 0)
 	lootpanel:ShowCloseButton( true )
 	lootpanel:MakePopup()
 	lootpanel.Paint = function( panel, w, h )
@@ -155,7 +157,7 @@ local function uwotm8( tab, parent )
 				if currentcrate:IsValid() then
 					-- this distance check exists on the server too so don't even try being a smartarse with net messages m8
 					if LocalPlayer():GetPos():Distance( currentcrate:GetPos() ) > 120 then chat.AddText( Color(255,200,200), "You have moved too far away from this crate!" ) lootpanel:Remove() return end
-					if (CalculateWeightClient() + v.Weight) > CalculateMaxWeightClient() then chat.AddText( Color(255,200,200), "You don't have enough free space to carry that!" ) return end
+					if (CalculateWeightClient() + v.Weight) > CalculateMaxWeightClient() then chat.AddText( Color(255,200,200), "You don't have enough free space to carry that! (Need "..(CalculateWeightClient() + v.Weight) - CalculateMaxWeightClient().."kg more space)" ) return end
 					net.Start( "UseCrate" )
 					net.WriteEntity( currentcrate )
 					net.WriteString( k )
@@ -164,26 +166,24 @@ local function uwotm8( tab, parent )
 
 					if v.Qty > 1 then v.Qty = v.Qty - 1 else tab[k] = nil end
 
-					timer.Simple(0.1, function() 
+					timer.Simple(0.1, function()
 						if TheListPanel:IsValid() then
 							TheListPanel:Clear()
 							uwotm8( tab, parent )
 						end
-						weightlabel:SetText( translate.Get("CurrentlyCarrying")..": "..CalculateWeightClient().."kg    "..translate.Get("MaxWeight")..": "..CalculateMaxWeightClient().."kg" )
-			end)
-
+					weightlabel:SetText( translate.Get("CurrentlyCarrying")..": "..CalculateWeightClient().."kg    "..translate.Get("MaxWeight")..": "..CalculateMaxWeightClient().."kg" )
+					end)
 				end
 			end
-
 			parent:AddItem( ItemBackground )
+		end
 	end
-end
 	uwotm8( loottable, TheListPanel )
 
 
 	PropertySheet:AddSheet( translate.Get("TakeItems"), InvForm, "icon16/basket_remove.png", false, false, "The stuff that is in this crate" )
 	if canstore then
-	PropertySheet:AddSheet( translate.Get("StoreItems"), StoreForm, "icon16/basket_put.png", false, false, "derp" )
+		PropertySheet:AddSheet( translate.Get("StoreItems"), StoreForm, "icon16/basket_put.png", false, false, "derp" )
 	end
 end
 

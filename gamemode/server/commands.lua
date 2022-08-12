@@ -58,6 +58,7 @@ concommand.Add( "ate_clearmyprops", TrashProps )
 
 function DropCash( ply, cmd, args )
 if !ply:IsValid() then return false end
+if !ply:Alive() then SystemMessage(ply, "Just NO", Color(255,0,0,255), false) return false end
 if timer.Exists("dropcashcooldown_"..ply:UniqueID()) then SystemMessage(ply, "Wait before you drop more money!", Color(255,205,205,255), true)
 print("".. ply:Nick() .." attempted to drop money while on cooldown!") return false end
 timer.Create( "dropcashcooldown_"..ply:UniqueID(), 2, 1, function()

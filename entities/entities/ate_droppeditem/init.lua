@@ -11,6 +11,7 @@ function ENT:Initialize()
 	self.Entity:SetSolid( SOLID_VPHYSICS )
  	self.Entity:SetColor( Color(255, 255, 255, 255) )
 	self.Entity:SetUseType( SIMPLE_USE )
+--	self:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
 
 	timer.Simple(3600, function() if self:IsValid() then self:Remove() end end )
 	
@@ -27,7 +28,7 @@ function ENT:Use( activator, caller )
 if !activator:IsValid() or !activator:IsPlayer() or !self:GetNWString("ItemClass") or !activator:Alive() then return false end
 local name = self:GetNWString("ItemClass")
 local ref = ItemsList[name]
-if (CalculateWeight(activator) + ref.Weight) > CalculateMaxWeight(activator) then SendChat(activator, "You don't have enough space for this item!") return false end
+if (CalculateWeight(activator) + ref.Weight) > CalculateMaxWeight(activator) then SendChat(activator, "You don't have enough space for this item! Need ".. -CalculateMaxWeight(activator) + CalculateWeight(activator) + ref.Weight .."kg more space!") return false end
 
 SystemGiveItem( activator, name )
 

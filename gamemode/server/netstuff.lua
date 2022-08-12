@@ -6,7 +6,8 @@ util.AddNetworkString("AddVault")
 util.AddNetworkString("WithdrawVault")
 
 util.AddNetworkString("UpdateStats") -- no functions for this in this file, see player_data.lua and cl_hud.lua
-util.AddNetworkString("UpdatePeriodicStats") -- ditto above
+util.AddNetworkString("UpdatePeriodicStats")
+util.AddNetworkString("UpdateStatistics")
 util.AddNetworkString("UpdatePerks")
 util.AddNetworkString("UpdateInventory")
 util.AddNetworkString("UpgradePerk")
@@ -24,12 +25,65 @@ util.AddNetworkString("UseDelay") -- delays on using items
 util.AddNetworkString("RecvFactions") -- see factions.lua and cl_scoreboard.lua
 util.AddNetworkString("CreateFaction") -- see factions.lua
 util.AddNetworkString("JoinFaction") -- see factions.lua
+util.AddNetworkString("GiveLeader")
 util.AddNetworkString("InviteFaction") -- gee i wonder what this could be for
 util.AddNetworkString("KickFromFaction")
 util.AddNetworkString("DisbandFaction")
 util.AddNetworkString("WraithBlind") -- rape your vision when you get hit by a wraith
 util.AddNetworkString("Payout") -- sell cl_hud and server/npcspawns
 util.AddNetworkString("Prestige") -- see player_data.lua
+--util.AddNetworkString("Respawn")
+
+function TEANetUpdateStats(ply)
+	net.Start("UpdateStats")
+	net.WriteFloat(math.Round(ply.Stamina))
+	net.WriteFloat(math.Round(ply.Hunger))
+	net.WriteFloat(math.Round(ply.Thirst))
+	net.WriteFloat(math.Round(ply.Fatigue))
+	net.WriteFloat(math.Round(ply.Infection))
+	net.WriteFloat(math.Round(ply.SurvivalTime))
+	net.WriteFloat(math.Round(ply.Battery))
+	net.Send(ply)
+end
+
+function TEANetUpdatePeriodicStats(ply)
+	net.Start("UpdatePeriodicStats")
+	net.WriteFloat(ply.Level)
+	net.WriteFloat(ply.Prestige)
+	net.WriteFloat(ply.Money)
+	net.WriteFloat(ply.XP)
+	net.WriteFloat(ply.StatPoints)
+	net.WriteFloat(ply.Bounty)
+	net.Send(ply)
+end
+
+function TEANetUpdatePerks(ply)
+	net.Start("UpdatePerks")
+	net.WriteFloat(ply.StatDefense)
+	net.WriteFloat(ply.StatDamage)
+	net.WriteFloat(ply.StatSpeed)
+	net.WriteFloat(ply.StatHealth)
+	net.WriteFloat(ply.StatKnowledge)
+	net.WriteFloat(ply.StatMedSkill)
+	net.WriteFloat(ply.StatStrength)
+	net.WriteFloat(ply.StatEndurance)
+	net.WriteFloat(ply.StatSalvage)
+	net.WriteFloat(ply.StatBarter)
+	net.WriteFloat(ply.StatEngineer)
+	net.WriteFloat(ply.StatImmunity)
+	net.WriteFloat(ply.StatSurvivor)
+	net.WriteFloat(ply.StatAgility)
+	net.Send(ply)
+end
+
+function TEANetUpdateStatistics(ply)
+	net.Start("UpdateStatistics")
+	net.WriteFloat(ply.BestSurvivalTime)
+	net.WriteFloat(ply.ZKills)
+	net.WriteFloat(ply.playerskilled)
+	net.WriteFloat(ply.playerdeaths)
+	net.Send(ply)
+end
 
 
 function SystemBroadcast(msg, color, sys) -- same as system message, just broadcasts it to everybody instead of accepting a ply argument

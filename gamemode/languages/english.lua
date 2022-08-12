@@ -39,7 +39,7 @@ LANGUAGE.NeedToSleepFatigue = "WARNING! You are about to die from fatigue, find 
 LANGUAGE.NeedToCureInfection = "WARNING! You are about to die from infection, find a cure!"
 LANGUAGE.Pleasewait = "Please wait..."
 LANGUAGE.WillWakeupIn = "You will wake up in"
-LANGUAGE.SleepText = "unless you died in your sleep"
+LANGUAGE.SleepText = "This panel will be closed if you die in your sleep or if the timer runs out"
 LANGUAGE.PressPickUp = "Press E to pick up"
 
 --Context Menu
@@ -570,6 +570,11 @@ LANGUAGE.ItemNoUse = "This is just useless trash"
 LANGUAGE.ItemNoUseWeapon = "I should probably take this to the trader, He might be able to build this thing"
 LANGUAGE.ItemNoUseVehicle = "I should find a vehicle dealer so i can build a vehicle with this"
 LANGUAGE.ItemNoUseSellable = "I should probably take this to the trader, I don't have any use for it"
+LANGUAGE.ItemNoUseCooldown = "Can't use multiple items at the time"
+LANGUAGE.ItemNoUseCooldownAmmo = "Can't resupply ammo while using an item"
+LANGUAGE.ItemNoUseCooldownFrag = "Can't use frags while using an item"
+LANGUAGE.ItemNoUseCooldownWeapon = "Can't equip weapon while using an item"
+
 
 --Other
 
@@ -578,3 +583,5 @@ LANGUAGE.Total = "Total"
 LANGUAGE.None = "None"
 LANGUAGE.AcceptModelChange = "Accept Changes"
 LANGUAGE.Cost = "Cost"
+LANGUAGE.x_turned_on_noclip = "%s turned on noclip."
+LANGUAGE.x_turned_off_noclip = "%s turned off noclip."

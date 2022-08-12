@@ -1,41 +1,44 @@
-Config = {  }
+Config = { }
 
-Config[ "DebugLogging" ] = true -- do we want to save debug logs? logs are found in garrysmod/data/theeverlastingapocalypse/logs and can be sent to the developer to find and fix malfunctions within the gamemode
+Config["DebugLogging"] = true -- do we want to save debug logs? logs are found in garrysmod/data/theeverlastingapocalypse/logs and can be sent to the developer to find and fix malfunctions within the gamemode
 
---Config[ "WalkSpeed" ] = 135 -- remember that the speed skill increases your walk speed by 3.5 for each level, so at 200 walkspeed players can reach a possible maximum of 235 sprint speed
---Config[ "RunSpeed" ] = 260 -- speed skill increases your running speed by 7 per skill level, so if default is 300, players can reach max of 370 run speed
+
+Config["Currency"] = "Dollar"	-- the 's' is added onto strings where needed, for example if you put the currency as "Dollar" it will come out as "Dollars" as needed
+
+Config["RookieLevel"] = 10	-- people who are this level or below are considered Rookies
+Config["RookieWeapon"] = "weapon_zw_noobcannon"	-- what gun to give to players if they are under the Rookie level and if they lost their previous one
+Config["StartMoney"] = 500	-- Rookie fund
+
+Config["MaxZombies"] = 35	-- how many standard zombies can exist at any given time, turn this down if your server is lagging from the zombie ai
+Config["ZombieSpawnRate"] = 13	-- fresh zombies will be spawned in every x seconds
+Config["BossSpawnRate"] = 3150	-- how fast the boss spawn timer will be run in seconds (3600 seconds = 1 hour).  Keep in mind that if there is less than 3 players online then the boss will never spawn regardless of spawn rate
+Config["AirdropSpawnRate"] = 4000	-- same as boss spawn rate but for airdrops
+
+Config["MaxCarryWeight"] = 37.4	-- how much carry weight should we have by default (in kg)
+
+
+Config["VaultSize"] = 175 --	vault size in kg
+Config["FileSystem"] = "Legacy" --	set to Legacy or PData
+-- legacy saves player data as text files under garrysmod/data/theeverlastingapocalypse/profiles/(players steamid)/
+-- Pdata saves their data to the servers sql file (garrysmod/sv.db)
+-- Use the pdata system if you are having issues with text file saving/loading or if you prefer everything to be in the sql file.
+-- No there isn't support for MySQL and there proably won't be unless you code it yourself.
+
+--Config[ "MaxCaches" ] = 10 --	how many loot caches can exist in the map at any given time?
+--Config[ "WalkSpeed" ] = 135	-- remember that the speed skill increases your walk speed by 3.5 for each level, so at 200 walkspeed players can reach a possible maximum of 235 sprint speed
+--Config[ "RunSpeed" ] = 260	-- speed skill increases your running speed by 7 per skill level, so if default is 300, players can reach max of 370 run speed
 
 --Config[ "MaxProps" ] = 60
 
---Config[ "FactionCost" ] = 1000 -- do you want faction making to cost money?
---Config[ "VoluntaryPVP" ] = true -- (not used anymore due to addition of CVars) is PvP voluntary? set to false to always force pvp, useful on gigantic maps like rp_stalker or if you just enjoy a more day-z ish experience
-
-Config[ "Currency" ] = "Dollar" -- the s is added onto strings where needed, for example if you put the currency as "Dollar" it will come out as "Dollars" as needed
-
-Config[ "RookieLevel" ] = 10 -- people who are this level or below are considered Rookies
-Config[ "RookieWeapon" ] = "weapon_zw_noobcannon" -- what gun to give to players if they are under the Rookie level and if they lost their previous one
-Config[ "StartMoney" ] = 500 -- Rookie fund
-
-Config[ "MaxZombies" ] = 35 -- how many standard zombies can exist at any given time, turn this down if your server is lagging from the zombie ai
-Config[ "ZombieSpawnRate" ] = 13 -- fresh zombies will be spawned in every x seconds
-Config[ "BossSpawnRate" ] = 3000 -- how fast the boss spawn timer will be run in seconds (3600 seconds = 1 hour).  Keep in mind that if there is less than 3 players online then the boss will never spawn regardless of spawn rate
-Config[ "AirdropSpawnRate" ] = 3750 -- same as boss spawn rate but for airdrops
-
---Config[ "MaxCaches" ] = 10 -- how many loot caches can exist in the map at any given time?
-
-Config[ "VaultSize" ] = 175 -- vault size in kg
-Config[ "FileSystem" ] = "Legacy" -- set to Legacy or PData
--- legacy saves player data as text files under garrysmod/data/theeverlastingapocalypse/profiles/(players steamid)/
--- Pdata saves their data to the servers sql file (garrysmod/sv.db)
--- Use the pdata system if you are having issues with text file saving/loading or if you prefer everything to be in the sql file.  No there isn't support for MySQL and there proably won't be unless you code it yourself.
-
+--Config[ "FactionCost" ] = 1000	-- do you want faction making to cost money?
+--Config[ "VoluntaryPVP" ] = true	-- (not used anymore due to addition of CVars) Is PvP voluntary? Set to false to always force pvp, useful on gigantic maps like rp_stalker or if you just enjoy a more day-z ish experience
 
 -----------------------------ZOMBIE CLASSES-----------------------------
 
 Config[ "ZombieClasses" ] = {
 
-	["npc_ate_basic"] = { -- table name must be the entclass name of the zombie, see garrysmod/gamemodes/theeverlastingapocalypse/entities for entclasses
-		["SpawnChance"] = 68.5, -- spawn chance in %, be careful as the spawn chance of all your zombies totalled up must not exceed 100% (there is a helper function that will tell you if this has happened)
+	["npc_ate_basic"] = { -- table name must be the entclass name of the zombie, see garrysmod/gamemodes/theeternalapocalypse/entities for entclasses (or you can add other zombie types by yourself)
+		["SpawnChance"] = 67, -- spawn chance in %, be careful as the spawn chance of all your zombies totalled up must not exceed 100% (there is a helper function that will tell you if this has happened or how much the current total spawn chance for zombies is)
 		["XPReward"] = 48, -- average xp reward for killing this zombie, varies with the VaryRewards setting above
 		["MoneyReward"] = 22, -- average money reward for killing this zombie, varies with the VaryRewards setting above
 	},
@@ -69,6 +72,20 @@ Config[ "ZombieClasses" ] = {
 		["XPReward"] = 430,
 		["MoneyReward"] = 310,
 	},
+
+	["npc_ate_tormented_wraith"] = {
+		["SpawnChance"] = 1.25,
+		["XPReward"] = 185,
+		["MoneyReward"] = 150,
+	},
+
+	["npc_ate_superlord"] = {
+		["SpawnChance"] = 0.25,
+		["XPReward"] = 850,
+		["MoneyReward"] = 700,
+	},
+
+		
 
 }
 
@@ -206,11 +223,11 @@ Config["Vehicles"] = {
 }
 
 
-----------------------------------------------------------------------------------------------------------------
-----------------------------------------------ADMIN CHECKS------------------------------------------------------
--- I'm creating these functions here so that you can alter the checks to suit your own servers ranking system --
---   Superadmins can spawn themselves weapons and cash, admins only have the ate_admin_clearzombies command   --
-----------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------ADMIN CHECKS-----------------------------------------------------------
+-------- I'm creating these functions here so that you can alter the checks to suit your own servers ranking system --------
+--  Superadmins can use any commands however, admins only have the ate_admin_clearzombies and spawn boss/airdrop command  --
+----------------------------------------------------------------------------------------------------------------------------
 
 function SuperAdminCheck( ply )
 if !ply:IsValid() then return false end

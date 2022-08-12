@@ -31,6 +31,19 @@ for k, v in pairs(people) do
 	end
 end
 
+--shouldn't cause too many unsignificant problems (trader himself will not be targetted by anyone)
+local meta = self
+local tbNPCsNoTarget = {}
+local AddEntityRelationship = meta.AddEntityRelationship
+tbNPCsNoTarget[self] = {}
+for _,ent in ipairs(ents.GetAll()) do
+	if(ent:IsNPC() and ent ~= self) then
+		tbNPCsNoTarget[self][ent] = ent:Disposition(self)
+		AddEntityRelationship(ent,self,D_NU,100)
+	end
+end
+
+
 end
 
 
@@ -45,7 +58,8 @@ function ENT:Initialize( )
 	local PhysAwake = self.Entity:GetPhysicsObject( )
 	if PhysAwake:IsValid( ) then
 		PhysAwake:Wake( )
-	end 
+	end
+
 end
 
 function ENT:OnTakeDamage( dmg ) 
@@ -56,6 +70,7 @@ function ENT:AcceptInput( input, ply, caller )
 	if input == "Use" && ply:IsPlayer() && ply:KeyPressed( 32 ) then
 		net.Start( "OpenTraderMenu" )
 		net.Send( ply )
+		self:EmitSound("vo/npc/male01/hi0"..math.random(1,2)..".wav")
 --		ply:ConCommand( "play vo/coast/odessa/nlo_cub_hello.wav" )
 	end
 end

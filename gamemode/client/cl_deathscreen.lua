@@ -1,4 +1,4 @@
---Unused (i changed my mind)
+--Unused (i changed my mind, but will still be working on it)
 /*
 function DeathSC()
 local DeathSC = vgui.Create( "DFrame" )
@@ -25,6 +25,11 @@ local DeathSC = vgui.Create( "DFrame" )
 	surface.DrawOutlinedRect(0, 0, forcerspwn:GetWide(), forcerspwn:GetTall())
 	draw.RoundedBox( 2, 0, 0, forcerspwn:GetWide(), forcerspwn:GetTall(), Color(0, 0, 0, 130) )
 	end
+	forcerspwn.DoClick = function()
+		net.Start("Respawn")
+		net.SendToServer()
+		DeathSC:Remove()
+	end
 
 	local chatmessage = vgui.Create("DButton", DeathSC)
 	chatmessage:SetSize( 120, 30 )
@@ -41,17 +46,19 @@ local DeathSC = vgui.Create( "DFrame" )
 	end
 
 	timer.Simple( 5, function()
-	local clearzeds = vgui.Create("DButton", DeathSC)
-	clearzeds:SetSize( 120, 30 )
-	clearzeds:SetPos( 325, 250)
-	clearzeds:SetText("Respawn")
-	clearzeds:SetTextColor(Color(255, 255, 255, 255))
-	clearzeds.Paint = function(panel)
+	local respawn = vgui.Create("DButton", DeathSC)
+	respawn:SetSize( 120, 30 )
+	respawn:SetPos( 325, 250)
+	respawn:SetText("Respawn")
+	respawn:SetTextColor(Color(255, 255, 255, 255))
+	respawn.Paint = function(panel)
 	surface.SetDrawColor(150, 0, 0 ,255)
-	surface.DrawOutlinedRect(0, 0, clearzeds:GetWide(), clearzeds:GetTall())
-	draw.RoundedBox( 2, 0, 0, clearzeds:GetWide(), clearzeds:GetTall(), Color(0, 0, 0, 130) )
+	surface.DrawOutlinedRect(0, 0, respawn:GetWide(), respawn:GetTall())
+	draw.RoundedBox( 2, 0, 0, respawn:GetWide(), respawn:GetTall(), Color(0, 0, 0, 130) )
 	end
-	clearzeds.DoClick = function()
+	respawn.DoClick = function()
+	net.Start("Respawn")
+	net.SendToServer()
 	DeathSC:Remove()
 	end
 	end )

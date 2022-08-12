@@ -10,6 +10,8 @@ FactionFrame:Center()
 FactionFrame:SetTitle ( "" )
 FactionFrame:SetDraggable( false )
 FactionFrame:SetVisible( true )
+FactionFrame:SetAlpha(0)
+FactionFrame:AlphaTo(255, 0.25, 0)
 FactionFrame:ShowCloseButton( true )
 FactionFrame:MakePopup()
 FactionFrame.Paint = function()
@@ -89,7 +91,6 @@ concommand.Add("ate_createfaction", FactionMenu)
 function ManageMenu()
 
 if LocalPlayer():Team() == 1 then chat.AddText(Color(255,255,255,255), "[System] ", Color(255,205,205,255), "You are not in a faction!") return false end
-
 --if LocalPlayer():Team() == 1 then chat.AddText(Color(255,255,255,255), "[System] ", Color(255,205,205,255), "You are not the leader of your faction!") return false end
 
 
@@ -99,6 +100,8 @@ ManageFrame:Center()
 ManageFrame:SetTitle ( "" )
 ManageFrame:SetDraggable( false )
 ManageFrame:SetVisible( true )
+ManageFrame:SetAlpha(0)
+ManageFrame:AlphaTo(255, 0.25, 0)
 ManageFrame:ShowCloseButton( true )
 ManageFrame:MakePopup()
 ManageFrame.Paint = function()
@@ -192,7 +195,9 @@ for k, v in pairs( team.GetPlayers(LocalPlayer():Team()) ) do
 			surface.DrawRect(0, 0, ldrbutton:GetWide(), ldrbutton:GetTall())
 		end
 		ldrbutton.DoClick = function()
-		print("Gave leadership to "..v:Nick())
+			net.Start("GiveLeader")
+			net.WriteEntity(v)
+			net.SendToServer()
 		end
 
 	local plyname = vgui.Create( "DLabel", plypanel )

@@ -68,14 +68,7 @@ SystemMessage(ply, "You salvaged one of your props and gained "..math.floor(refu
 ent:EmitSound("physics/wood/wood_furniture_break"..math.random(1,2)..".wav", 100, math.random(95,105))
 ent:Remove()
 
-net.Start("UpdatePeriodicStats")
-net.WriteFloat( ply.Level )
-net.WriteFloat( ply.Prestige )
-net.WriteFloat( ply.Money )
-net.WriteFloat( ply.XP )
-net.WriteFloat( ply.StatPoints )
-net.WriteFloat( ply.Bounty )
-net.Send( ply )
+TEANetUpdatePeriodicStats(ply)
 end)
 
 end
@@ -100,14 +93,7 @@ SystemMessage(ply, "You salvaged one of your buildings and gained "..math.floor(
 ent:EmitSound("physics/wood/wood_furniture_break"..math.random(1,2)..".wav", 100, math.random(95,105))
 ent:Remove()
 
-net.Start("UpdatePeriodicStats")
-net.WriteFloat( ply.Level )
-net.WriteFloat( ply.Prestige )
-net.WriteFloat( ply.Money )
-net.WriteFloat( ply.XP )
-net.WriteFloat( ply.StatPoints )
-net.WriteFloat( ply.Bounty )
-net.Send( ply )
+TEANetUpdatePeriodicStats(ply)
 end)
 
 end
@@ -206,14 +192,7 @@ if ptype == 2 and ply:Team() == 1 then SystemMessage(ply, "You must be in a fact
 	ply.Money = tonumber(ply.Money) - (pcost * discount)
 	end
 
-	net.Start("UpdatePeriodicStats")
-	net.WriteFloat( ply.Level )
-	net.WriteFloat( ply.Prestige )
-	net.WriteFloat( ply.Money )
-	net.WriteFloat( ply.XP )
-	net.WriteFloat( ply.StatPoints )
-	net.WriteFloat( ply.Bounty )
-	net.Send( ply )
+	TEANetUpdatePeriodicStats(ply)
 
 end
 
@@ -252,14 +231,7 @@ if CheckBases(ply, pos) then SystemMessage(ply, "You cannot spawn structures thi
 	prop:SetNWEntity("owner", ply)
 	ply.Money = tonumber(ply.Money) - pcost
 
-	net.Start("UpdatePeriodicStats")
-	net.WriteFloat( ply.Level )
-	net.WriteFloat( ply.Prestige )
-	net.WriteFloat( ply.Money )
-	net.WriteFloat( ply.XP )
-	net.WriteFloat( ply.StatPoints )
-	net.WriteFloat( ply.Bounty )
-	net.Send( ply )
+	TEANetUpdatePeriodicStats(ply)
 
 end
 

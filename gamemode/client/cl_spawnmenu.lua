@@ -2,10 +2,11 @@
 
 
 function GM:OnSpawnMenuOpen()
-
 	gui.EnableScreenClicker( true )
 	PropMenu()
 	PropsFrame:SetVisible( true )
+	PropsFrame:SetAlpha(0)
+	PropsFrame:AlphaTo(255, 0.2, 0)
 end
 
 function GM:OnSpawnMenuClose( )
@@ -135,7 +136,8 @@ for k, v in SortedPairsByMemberValue( FLIMSYPROPS, "COST" ) do
 	return false
 	end
 	ItemClicker.DoClick = function() RunConsoleCommand("use","ate_buildtool")
-	ChooseProp( tostring(k) )
+	surface.PlaySound("common/wpn_select.wav")
+	ChooseProp(tostring(k))
 	end
 
 
@@ -230,6 +232,7 @@ for k, v in SortedPairsByMemberValue( TOUGHPROPS, "COST" ) do
 	return false
 	end
 	ItemClicker.DoClick = function() RunConsoleCommand("use","ate_buildtool")
+	surface.PlaySound("common/wpn_select.wav")
 	ChooseProp( tostring(k) )
 	end
 
@@ -302,6 +305,7 @@ for k, v in SortedPairsByMemberValue( SpecialSpawns, "Cost" ) do
 	surface.DrawOutlinedRect( 0, 0, ItemClicker:GetWide(), ItemClicker:GetTall() )
 	end
 	ItemClicker.DoClick = function() RunConsoleCommand("use","ate_buildtool")
+	surface.PlaySound("common/wpn_select.wav")
 	ChooseStructure( k )
 	end
 

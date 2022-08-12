@@ -15,10 +15,10 @@ ply:ConCommand( "playgamesound buttons/button8.wav" ) return false end
 
 if (CalculateWeight(ply) + (item.Weight * addqty)) > (CalculateMaxWeight(ply)) then SendChat(ply, "You are lacking inventory space! Drop some items first.") return false end
 
-SystemGiveItem( ply, name, addqty )
+ply.Inventory[name] = ply.Inventory[name] + addqty
 
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.."x "..item["Name"].."!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.."x "..item["Name"].."!")
+ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.."x "..translate.Get(item["Name"]))
+print("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.."x "..translate.Get(item["Name"]))
 SystemMessage(ply, "You gave yourself "..addqty.."x "..translate.Get(item["Name"]), Color(155,255,155,255), true)
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
@@ -43,8 +43,8 @@ function AdminRemoveItem( ply, cmd, args )
 	
 	SystemRemoveItem( ply, name, strip )
 	
-	ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave "..item["Name"].." from their inventory!")
-	print("[ADMIN COMMAND USED] "..ply:Nick().." removed "..item["Name"].." from their inventory!")
+	ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave "..translate.Get(item["Name"]).." from their inventory!")
+	print("[ADMIN COMMAND USED] "..ply:Nick().." removed "..translate.Get(item["Name"]).." from their inventory!")
 	SystemMessage(ply, "You removed "..translate.Get(item["Name"]).." from your inventory!", Color(155,255,155,255), true)
 	FullyUpdatePlayer( ply )
 	ply:ConCommand( "playgamesound buttons/button3.wav" )
@@ -1287,8 +1287,8 @@ else
 			EntDrop:SetVelocity(ply:GetForward() * 80 + Vector(0,0,50))
 end
 
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." spawned a dropped item: "..item["Name"].."!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." spawned a dropped item: "..item["Name"].."!")
+ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." spawned a dropped item: "..translate.Get(item["Name"]))
+print("[ADMIN COMMAND USED] "..ply:Nick().." spawned a dropped item: "..translate.Get(item["Name"]))
 SystemMessage(ply, "You spawned a dropped item: "..translate.Get(item["Name"]).."!", Color(155,255,155,255), true)
 
 ply:ConCommand( "playgamesound buttons/button3.wav" )

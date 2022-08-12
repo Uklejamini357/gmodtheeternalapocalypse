@@ -3,7 +3,7 @@ local playa = FindMetaTable("Player")
 function CalculateWeight(ply)
 local totalweight = 0
 	for k, v in pairs(ply.Inventory) do
-		if !ItemsList[k] then ErrorNoHalt( "CalculateWeight error on "..ply:Nick()..", they must have a corrupt inventory file or something" ) continue end	
+		if !ItemsList[k] then ErrorNoHalt( "CalculateWeight error on "..ply:Nick().."! They must have a corrupt inventory file or something\n" ) continue end	
 		local ref = ItemsList[k]
 		totalweight = totalweight + (ref.Weight * v)
 	end
@@ -14,22 +14,23 @@ function CalculateMaxWeight(ply)
 local armorstr = ply:GetNWString("ArmorType") or "none"
 local armortype = ItemsList[armorstr]
 local maxweight = 0
+local defaultcarryweight = Config[ "MaxCarryWeight" ]
 if ply:GetNWString("ArmorType") == "none" then
 	if tonumber(ply.Prestige) >= 10 then
-		maxweight = 42.4 + ((ply.StatStrength or 0) * 1.53)
+		maxweight = defaultcarryweight + 5 + ((ply.StatStrength or 0) * 1.53)
 	elseif tonumber(ply.Prestige) >= 3 then
-		maxweight = 39.4 + ((ply.StatStrength or 0) * 1.53)
+		maxweight = defaultcarryweight + 2 + ((ply.StatStrength or 0) * 1.53)
 	else
-		maxweight = 37.4 + ((ply.StatStrength or 0) * 1.53)
+		maxweight = defaultcarryweight + ((ply.StatStrength or 0) * 1.53)
 	end
 else
-	local additionalcarryweight = armortype["ArmorStats"]["carryweight"]
+	local addcarryweight = armortype["ArmorStats"]["carryweight"]
 	if tonumber(ply.Prestige) >= 10 then
-		maxweight = 42.4 + ((ply.StatStrength or 0) * 1.53) + armortype["ArmorStats"]["carryweight"]
+		maxweight = defaultcarryweight + 5 + ((ply.StatStrength or 0) * 1.53) + addcarryweight
 	elseif tonumber(ply.Prestige) >= 3 then
-		maxweight = 39.4 + ((ply.StatStrength or 0) * 1.53) + armortype["ArmorStats"]["carryweight"]
+		maxweight = defaultcarryweight + 2 + ((ply.StatStrength or 0) * 1.53) + addcarryweight
 	else
-		maxweight = 37.4 + ((ply.StatStrength or 0) * 1.53) + armortype["ArmorStats"]["carryweight"]
+		maxweight = defaultcarryweight + ((ply.StatStrength or 0) * 1.53) + addcarryweight
 	end
 end
 return maxweight
@@ -44,7 +45,7 @@ concommand.Add("refresh_inventory", SendInventory)
 
 
 function LoadPlayerInventory( ply )
-if !ply:IsValid() or !ply:IsPlayer() then Error( "After the end: tried to load a player inventory file that doesn't exist!" ) return end
+if !ply:IsValid() or !ply:IsPlayer() then Error( "The Eternal Apocalypse: Tried to load a player inventory file that doesn't exist!" ) return end
 
 ply.Inventory = {}
 
@@ -81,13 +82,14 @@ if !ply:IsValid() then return end
 if Config[ "FileSystem" ] == "Legacy" then
 	local data = util.TableToJSON(ply.Inventory)
 	file.Write( "theeternalapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" )) .. "/inventory.txt", data )
+	print("✓ ".. ply:Nick() .." inventory saved into database")
 elseif Config[ "FileSystem" ] == "PData" then
 	local formatted = util.TableToJSON( ply.Inventory )
 	ply:SetPData( "ate_playerinventory", formatted )
+	print("✓ ".. ply:Nick() .." inventory saved into database")
 else
 	print("Bruh, did you try to setup incorrectly? Set your damned filesystem option to a proper setting in sh_config.lua")
 end
-	print("✓ ".. ply:Nick() .." inventory saved into database")
 end
 
 function SaveTimer()
@@ -105,7 +107,7 @@ function SaveTimer()
 		end
 	end
 end
-timer.Create( "SaveTimer", 120, 0, SaveTimer )
+timer.Create( "SaveTimer", 180, 0, SaveTimer )
 
 
 function SystemGiveItem( ply, str, qty )
@@ -164,7 +166,7 @@ if client.Inventory[item] then
 		if func == true then
 			SystemRemoveItem( client, item, false ) -- leave this as false otherwise grenades are unusable
 			client.CanUseItem = false
-			timer.Simple(0., function() if client:IsValid() then client.CanUseItem = true end end)
+			timer.Simple(0.7, function() if client:IsValid() then client.CanUseItem = true end end)
 		end
 	SendInventory(client)
 	else
@@ -193,14 +195,14 @@ function playa:BuyItem( str )
 if !ItemsList[str] then SendChat(self, "ERROR: this item does not exist on the server!") return end -- if the item doenst exist
 
 local item = ItemsList[str]
-
 local stockcheck = ItemsList[str]["Supply"]
-if stockcheck == -1 then SendChat(self, "Bruh, did you just try to buy stuff that trader doesn't even sell? You should play the gamemode like it was meant to be played.") return end -- people may try to hack and send faked netmessages to buy stuff the trader isnt meant to sell
+
+if stockcheck <= -1 then SendChat(self, "Bruh, did you just try to buy stuff that trader doesn't even sell? You should play the gamemode like it was meant to be played.") return end -- people may try to hack and send faked netmessages to buy stuff the trader isnt meant to sell
 
 local cash = tonumber(self.Money)
 
 if (cash < (item["Cost"] * (1 - (self.StatBarter * 0.015)))) then SendChat(self, "You cannot afford that!") return false end
-if ((CalculateWeight(self) + item["Weight"]) > CalculateMaxWeight(self)) then SendChat(self, "You do not have enough space for that!") return false end
+if ((CalculateWeight(self) + item["Weight"]) > CalculateMaxWeight(self)) then SendChat(self, "You do not have enough space for that! Need "..-CalculateMaxWeight(self) + CalculateWeight(self) + item["Weight"].."kg more space!") return false end
 
 
 SystemGiveItem( self, str )
@@ -209,15 +211,7 @@ SystemGiveItem( self, str )
 self.Money = math.floor(self.Money - (item["Cost"] * (1 - (self.StatBarter * 0.015)))) -- reduce buy cost by 1.5% per barter level
 SendInventory(self)
 self:EmitSound("items/ammopickup.wav", 100, 100)
-
-net.Start("UpdatePeriodicStats")
-net.WriteFloat( self.Level )
-net.WriteFloat( self.Prestige )
-net.WriteFloat( self.Money )
-net.WriteFloat( self.XP )
-net.WriteFloat( self.StatPoints )
-net.WriteFloat( self.Bounty )
-net.Send( self )
+TEANetUpdatePeriodicStats(self)
 
 end
 
@@ -249,14 +243,7 @@ local cash = tonumber(client.Money)
 	SendInventory(client)
 	client:EmitSound("physics/cardboard/cardboard_box_break3.wav", 100, 100)
 
-	net.Start("UpdatePeriodicStats")
-	net.WriteFloat( client.Level )
-	net.WriteFloat( client.Prestige )
-	net.WriteFloat( client.Money )
-	net.WriteFloat( client.XP )
-	net.WriteFloat( client.StatPoints )
-	net.WriteFloat( client.Bounty )
-	net.Send( client )
+	TEANetUpdatePeriodicStats(client)
 
 end)
 

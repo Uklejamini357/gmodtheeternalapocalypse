@@ -169,7 +169,7 @@ SystemGiveItem( ply, str )
 SendInventory( ply )
 
 -- airdrops and random loot caches need to be deleted when there's no items left in them
-if ent.ContainerRemoveEmpty and table.Count( ent.ContainerItems ) < 1 then ent.ContainerItems = nil timer.Simple(15, function() if ent:IsValid() then ent:Remove() end end) end
+if ent.ContainerRemoveEmpty and table.Count( ent.ContainerItems ) < 1 then ent.ContainerItems = nil timer.Simple(15, function() if ent:IsValid() then SystemBroadcast("Airdrop crate is gone!", Color(255,105,105,255), true) ent:Remove() end end) end
 
 end
 

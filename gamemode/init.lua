@@ -46,6 +46,7 @@ include( "server/weather_events.lua" )
 include( "server/specialstuff.lua" )
 include( "server/spawnpoints.lua" )
 include( "server/nodeathsound.lua" )
+include( "server/crafting.lua" )
 
 resource.AddWorkshop("128089118") -- m9k assault rifles
 resource.AddWorkshop("128091208") -- m9k heavy weapons
@@ -121,20 +122,23 @@ function CalculateJumpPower(ply)
 end
 
 function GM:OnPlayerHitGround( ply, inWater, onFloater, speed )
-
     if speed > (400 + (2 * ply.StatAgility)) then
         ply:ViewPunch(Angle(5, 0, 0))
+		if !ply:HasGodMode() then
         ply.Stamina = math.Clamp( ply.Stamina - (15 * (1 - (ply.StatAgility * 0.01) - (ply.StatEndurance * 0.045)) ), 0, 100 )
+		end
     elseif speed > (140 + (2 * ply.StatAgility)) then
 		ply:ViewPunch(Angle(math.random(1, 1.2), 0, math.random(-0.2, 0.2)))
-		ply.Stamina = math.Clamp( ply.Stamina - (7.5 * (1 - (ply.StatAgility * 0.01) - (ply.StatEndurance * 0.045)) ), 0, 100 )
+		if !ply:HasGodMode() then
+			ply.Stamina = math.Clamp( ply.Stamina - (7.5 * (1 - (ply.StatAgility * 0.01) - (ply.StatEndurance * 0.045)) ), 0, 100 )
+		end
     end
 end
 
 --You will no longer be able to regenerate your health when having either 40%< Hunger, 35%< Thirst, >65% Fatigue or >40% Infection (dependent on "Immunity" and "Survivor" skills' values)
 function HealthRegen()
 	for k, ply in pairs( player.GetAll() ) do
-		if ply:Alive() and ply.Thirst >= (3000 - (125 * ply.StatSurvivor)) and ply.Hunger >= (3000 - (150 * ply.StatSurvivor)) and ply.Fatigue <= (7000 + (150 * ply.StatSurvivor)) and ply.Infection <= (5000 - (100 * ply.StatImmunity)) then
+		if ply:Alive() and ply:Health() < ply:GetMaxHealth() and ply.Thirst >= (3000 - (125 * ply.StatSurvivor)) and ply.Hunger >= (3000 - (150 * ply.StatSurvivor)) and ply.Fatigue <= (7000 + (150 * ply.StatSurvivor)) and ply.Infection <= (5000 - (100 * ply.StatImmunity)) then
 			ply:SetHealth( math.Clamp( ply:Health() + 1 + (ply.StatMedSkill * 0.1), 5, ply:GetMaxHealth() ) )
 		end
 	end
@@ -145,93 +149,92 @@ timer.Create( "HealthRegen", 10, 0, HealthRegen )
 function GM:Think()
 
 	for k, ply in pairs( player.GetAll() ) do
-	if !ply:IsValid() then continue end
+	if !ply:HasGodMode() then
+		if !ply:IsValid() then continue end
 
-	local endurance = ((ply.StatEndurance - (0.15 * ply.StatSpeed)) / 500)
-	-- hunger, thirst, fatigue, infection
-	ply.Hunger = math.Clamp( ply.Hunger - (0.065 * (1 - (ply.StatSurvivor * 0.04)) ), 0, 10000 )
-	ply.Thirst = math.Clamp( ply.Thirst - (0.0782 * (1 - (ply.StatSurvivor * 0.0425)) ), 0, 10000 )
+		local endurance = ((ply.StatEndurance - (0.15 * ply.StatSpeed)) / 500)
+		-- hunger, thirst, fatigue, infection
+		ply.Hunger = math.Clamp( ply.Hunger - (0.065 * (1 - (ply.StatSurvivor * 0.04)) ), 0, 10000 )
+		ply.Thirst = math.Clamp( ply.Thirst - (0.0782 * (1 - (ply.StatSurvivor * 0.0425)) ), 0, 10000 )
 
-	if !timer.Exists("DyingFromStats"..ply:UniqueID()) and (ply.Thirst <= 0 or ply.Hunger <= 0 or ply.Fatigue >= 10000 or ply.Infection >= 10000) and ply:Alive() then
-		timer.Create("DyingFromStats"..ply:UniqueID(), 15, 1, function()
-			if ply:Alive() then ply:Kill() end
-		end)
-	elseif (timer.Exists("DyingFromStats"..ply:UniqueID()) and (ply.Thirst >= 1 and ply.Hunger >= 1 and ply.Fatigue <= 9999 and ply.Infection <= 9999)) or !ply:Alive() then
-		timer.Destroy("DyingFromStats"..ply:UniqueID())
-	end
-
-	ply.Fatigue = math.Clamp( ply.Fatigue + (0.045 * (1 - (ply.StatSurvivor * 0.035)) ), 0, 10000 )
-
-	--random chance of getting infected per tick is extremely rare, but has chance if survived for more than 20 minutes, can decrease chance by increasing immunity skill level
-	local infectionchance = math.random(0, 2000000 + (100000 * ply.StatImmunity) - (CurTime() - ply.SurvivalTime))
-	if (infectionchance <= 0 and math.floor(CurTime() - ply.SurvivalTime) >= 600) and ply.Infection <= 0 and ply:Alive() then
-	print(ply:Nick().." has caught infection randomly!")
-	SendChat(ply, "You have caught infection randomly!")
-	end
-	if (ply.Infection > 0 or (infectionchance <= 0 and math.floor(CurTime() - ply.SurvivalTime) >= 600)) and ply:Alive() then
-	ply.Infection = math.Clamp( ply.Infection + (0.1176 * (1 - (ply.StatImmunity * 0.04)) ), 0, 10000 )
-	end
-
-	if ply:GetMoveType() == MOVETYPE_NOCLIP then if timer.Exists("DrownTimer"..ply:UniqueID()) then timer.Destroy("DrownTimer"..ply:UniqueID()) end
-	elseif ply:GetMoveType() != MOVETYPE_NOCLIP then
-		if ( ply:KeyDown( IN_FORWARD ) or ply:KeyDown( IN_BACK ) or ply:KeyDown( IN_MOVELEFT ) or ply:KeyDown( IN_MOVERIGHT ) ) then
-			PlayerIsMoving = true
-		else
-			PlayerIsMoving = false
+		if !timer.Exists("DyingFromStats"..ply:UniqueID()) and (ply.Thirst <= 0 or ply.Hunger <= 0 or ply.Fatigue >= 10000 or ply.Infection >= 10000) and ply:Alive() then
+			timer.Create("DyingFromStats"..ply:UniqueID(), 30, 1, function()
+				if ply:Alive() then ply:Kill() end
+			end)
+		elseif (timer.Exists("DyingFromStats"..ply:UniqueID()) and (ply.Thirst >= 1 and ply.Hunger >= 1 and ply.Fatigue <= 9999 and ply.Infection <= 9999)) or !ply:Alive() then
+			timer.Destroy("DyingFromStats"..ply:UniqueID())
 		end
+
+		ply.Fatigue = math.Clamp( ply.Fatigue + (0.045 * (1 - (ply.StatSurvivor * 0.035)) ), 0, 10000 )
+
+		--random chance of getting infected per tick is extremely rare, but has chance if survived for more than 20 minutes, can decrease chance by increasing immunity skill level
+		local infectionchance = math.random(0, 2000000 + (100000 * ply.StatImmunity) - (CurTime() - ply.SurvivalTime))
+		if (infectionchance <= 0 and math.floor(CurTime() - ply.SurvivalTime) >= 600) and ply.Infection <= 0 and ply:Alive() then
+			print(ply:Nick().." has caught infection randomly!")
+			SendChat(ply, "You have caught infection randomly!")
+		end
+		if (ply.Infection > 0 or (infectionchance <= 0 and math.floor(CurTime() - ply.SurvivalTime) >= 600)) and ply:Alive() then
+			ply.Infection = math.Clamp( ply.Infection + (0.1176 * (1 - (ply.StatImmunity * 0.04)) ), 0, 10000 )
+		end
+
+		if ply:GetMoveType() == MOVETYPE_NOCLIP then if timer.Exists("DrownTimer"..ply:UniqueID()) then timer.Destroy("DrownTimer"..ply:UniqueID()) end
+			elseif ply:GetMoveType() != MOVETYPE_NOCLIP then
+				if ( ply:KeyDown( IN_FORWARD ) or ply:KeyDown( IN_BACK ) or ply:KeyDown( IN_MOVELEFT ) or ply:KeyDown( IN_MOVERIGHT ) ) then
+					PlayerIsMoving = true
+				else
+					PlayerIsMoving = false
+				end
 
 /*		if ply:KeyPressed( IN_JUMP ) then
 			ply.Stamina = ply.Stamina - 5
 		end
 */ -- Trying to find function that drains stamina on jumping, but this one doesn't really work
 
-		if ply:WaterLevel() == 3 and ply:Alive() then
-			ply.Thirst = math.Clamp( ply.Thirst + 0.243 , 0, 10000)
-			if tonumber(ply.Stamina) <= 0 then
-				if !timer.Exists("DrownTimer"..ply:UniqueID()) then
-					timer.Create("DrownTimer"..ply:UniqueID(), 7, 1, function()
-						if ply:Alive() then ply:Kill() end
-					end)
+				if ply:WaterLevel() == 3 and ply:Alive() then
+					ply.Thirst = math.Clamp( ply.Thirst + 0.243 , 0, 10000)
+					if tonumber(ply.Stamina) <= 0 then
+						if !timer.Exists("DrownTimer"..ply:UniqueID()) then
+							timer.Create("DrownTimer"..ply:UniqueID(), 10, 1, function()
+								if ply:Alive() then ply:Kill() end
+							end)
+						end
+					else
+						ply.Stamina = math.Clamp( ply.Stamina - (0.12 - endurance), 0, 100 )
+						if timer.Exists("DrownTimer"..ply:UniqueID()) then timer.Destroy("DrownTimer"..ply:UniqueID()) end
+					end
+				elseif ( ply:KeyDown( IN_SPEED ) and PlayerIsMoving and not ply:KeyDown(IN_DUCK) ) then
+					ply.Stamina = math.Clamp( ply.Stamina - (0.0655 - endurance), 0, 100 )
+					if timer.Exists("DrownTimer"..ply:UniqueID()) then timer.Destroy("DrownTimer"..ply:UniqueID()) end
+				elseif PlayerIsMoving and ply:KeyDown( IN_DUCK ) then
+					ply.Stamina = math.Clamp( ply.Stamina + 0.0057, 0, 100 )
+					if timer.Exists("DrownTimer"..ply:UniqueID()) then timer.Destroy("DrownTimer"..ply:UniqueID()) end
+				elseif PlayerIsMoving then
+					ply.Stamina = math.Clamp( ply.Stamina + 0.00251, 0, 100 )
+					if timer.Exists("DrownTimer"..ply:UniqueID()) then timer.Destroy("DrownTimer"..ply:UniqueID()) end
+				elseif ply:KeyDown( IN_DUCK ) then
+					ply.Stamina = math.Clamp( ply.Stamina + 0.02, 0, 100 )
+					if timer.Exists("DrownTimer"..ply:UniqueID()) then timer.Destroy("DrownTimer"..ply:UniqueID()) end
+				else
+					ply.Stamina = math.Clamp( ply.Stamina + 0.023, 0, 100 )
+					if timer.Exists("DrownTimer"..ply:UniqueID()) then timer.Destroy("DrownTimer"..ply:UniqueID()) end
 				end
-
-			else
-				ply.Stamina = math.Clamp( ply.Stamina - (0.12 - endurance), 0, 100 )
-				if timer.Exists("DrownTimer"..ply:UniqueID()) then timer.Destroy("DrownTimer"..ply:UniqueID()) end
+		
+				if ply.Stamina > 30 then
+					ply.sprintrecharge = false
+				end
+		
+				if( ply:KeyDown( IN_SPEED ) and PlayerIsMoving and ply.Stamina <= 0) then
+					ply:ConCommand( "-speed" )
+					ply.sprintrecharge = true
+				end
+		
+				if( ply:KeyDown( IN_SPEED ) and PlayerIsMoving and ply.sprintrecharge == true and ply.Stamina <= 30) then
+					ply:ConCommand( "-speed" )
+				end
 			end
-		elseif ( ply:KeyDown( IN_SPEED ) and PlayerIsMoving and not ply:KeyDown(IN_DUCK) ) then
-			ply.Stamina = math.Clamp( ply.Stamina - (0.0655 - endurance), 0, 100 )
-		elseif PlayerIsMoving and ply:KeyDown( IN_DUCK ) then
-			ply.Stamina = math.Clamp( ply.Stamina + 0.0057, 0, 100 )
-		elseif PlayerIsMoving then
-			ply.Stamina = math.Clamp( ply.Stamina + 0.00251, 0, 100 )
-		elseif ply:KeyDown( IN_DUCK ) then
-			ply.Stamina = math.Clamp( ply.Stamina + 0.02, 0, 100 )
-		else
-			ply.Stamina = math.Clamp( ply.Stamina + 0.023, 0, 100 )
 		end
-		
-		if ply.Stamina > 30 then
-			ply.sprintrecharge = false
-		end
-		
-		if( ply:KeyDown( IN_SPEED ) and PlayerIsMoving and ply.Stamina <= 0) then
-			ply:ConCommand( "-speed" )
-			ply.sprintrecharge = true
-		end
-		
-		if( ply:KeyDown( IN_SPEED ) and PlayerIsMoving and ply.sprintrecharge == true and ply.Stamina <= 30) then
-			ply:ConCommand( "-speed" )
-		end
-	end
 
-		net.Start("UpdateStats")
-		net.WriteFloat( math.Round(ply.Stamina) )
-		net.WriteFloat( math.Round(ply.Hunger) )
-		net.WriteFloat( math.Round(ply.Thirst) )
-		net.WriteFloat( math.Round(ply.Fatigue) )
-		net.WriteFloat( math.Round(ply.Infection) )
-		net.WriteFloat( math.Round(ply.SurvivalTime) )
-		net.Send( ply )
+		TEANetUpdateStats(ply)
 
 	end
 end
@@ -328,13 +331,18 @@ function GM:PlayerInitialSpawn( ply )
 	------------------
 
 	ply.SurvivalTime = math.floor(CurTime())
+	ply.BestSurvivalTime = 0
+	ply.ZKills = 0
+	ply.playerskilled = 0
+	ply.playerdeaths = 0
+	ply.SlowDown = 0
 	ply.IsAlive = 1
 	ply.Stamina = 100
 	ply.Hunger = 10000
 	ply.Thirst = 10000
 	ply.Fatigue = 0
 	ply.Infection = 0
-	ply.Battery = 0
+	ply.Battery = 100 --planned for flashlights
 	ply.ChosenModel = "models/player/kleiner.mdl"
 	ply.XP = 0 
 	ply.Level = 1
@@ -366,6 +374,8 @@ function GM:PlayerInitialSpawn( ply )
 	net.WriteTable(Factions)
 	net.Send(ply)
 	
+	TEANetUpdateStatistics(ply)
+
 	SystemBroadcast(ply:Nick().." has spawned into the game", Color(255,255,155,255), false)
 	ForceEquipArmor(ply, ply.EquippedArmor)
 
@@ -410,6 +420,7 @@ function GM:PlayerSpawn( ply )
 	self.BaseClass:PlayerSpawn( ply )
 	player_manager.SetPlayerClass( ply, "player_ate" )
 
+	ply.SlowDown = 0
 	ply.IsAlive = 1
 	RecalcPlayerModel( ply )
 
@@ -422,8 +433,8 @@ function GM:PlayerSpawn( ply )
 
 	if timer.Exists("pvpnominge_"..ply:UniqueID()) then timer.Destroy("pvpnominge_"..ply:UniqueID()) end
 
-	local tea_server_spawnprotection = GetConVar( "tea_server_spawnprotection" )
-	local tea_server_spawnprotection_duration = GetConVar( "tea_server_spawnprotection_duration" )
+	local tea_server_spawnprotection = GetConVar("tea_server_spawnprotection")
+	local tea_server_spawnprotection_duration = GetConVar("tea_server_spawnprotection_duration")
 
 	if tea_server_spawnprotection_duration:GetInt() > 0 and tea_server_spawnprotection:GetInt() >= 1 then
 		if !ply:Alive() then return end
@@ -450,11 +461,11 @@ function GM:PlayerSpawn( ply )
 	ply:SetNWBool("pvp", false)
 	ply:SetPvPGuarded( 0 )
 	ply:SetPlayerColor( Vector(cl_playercolor) )
-	CalculateStartingHealth( ply )
+	CalculateStartingHealth(ply)
 	CalculateMaxArmor(ply)
 	CalculateJumpPower(ply)
-	ply:ConCommand( "play common/null.wav" )
-	RecalcPlayerModel( ply )
+	ply:ConCommand("play common/null.wav")
+	RecalcPlayerModel(ply)
 	PrepareStats(ply)
 	FullyUpdatePlayer(ply)
 
@@ -510,8 +521,9 @@ function GM:PlayerSpawnedProp( userid, model, prop )
 	prop.model = model
 end
 
-function GM:PlayerNoClip( ply )
+function GM:PlayerNoClip( ply, on )
 	if ply:IsAdmin() or ply:IsSuperAdmin() or ply:SteamID64() == "76561198274314803" or ply:SteamID64() == "76561198028288732" then
+		PrintMessage(HUD_PRINTCONSOLE, translate.Format(on and "x_turned_on_noclip" or "x_turned_off_noclip", ply:Name()))
 		return true
 	end
 
@@ -533,8 +545,13 @@ local armortype = ItemsList[plyarmor]
 armorspeed = tonumber(armortype["ArmorStats"]["speedloss"])
 end
 
-GAMEMODE:SetPlayerSpeed( ply, (tea_server_walkspeed:GetInt() - (armorspeed / 2)) + ply.StatSpeed * 3.5, (tea_server_runspeed:GetInt() - armorspeed) + ply.StatSpeed * 7 )
-
+if ply.SlowDown == 1 then
+	GAMEMODE:SetPlayerSpeed( ply, ((tea_server_walkspeed:GetInt() * 0.6) - (armorspeed / 1.2)) + ply.StatSpeed * 2.1, ((tea_server_runspeed:GetInt() * 0.6) - armorspeed / 0.6) + ply.StatSpeed * 4.2 )
+	ply:SetSlowWalkSpeed(60)
+else
+	GAMEMODE:SetPlayerSpeed( ply, (tea_server_walkspeed:GetInt() - (armorspeed / 2)) + ply.StatSpeed * 3.5, (tea_server_runspeed:GetInt() - armorspeed) + ply.StatSpeed * 7 )
+	ply:SetSlowWalkSpeed(100)
+end
 end
 
 -- ULX overrides this and screws up our voice system... maybe it will be fixed or not
@@ -558,7 +575,9 @@ local chance = 0
 	for k, v in pairs( Config[ "ZombieClasses" ] ) do
 		chance = chance + v.SpawnChance
 	end
-	if chance > 100 then ErrorNoHalt("Configuration Error! the total zombie spawn chance of this server has exceeded 100% ( Currently "..chance.."% )! some zombie types may not be able to spawn, see theeverlastingapocalypse/gamemode/sh_config.lua for more info\n") end
+	if chance > 100 then ErrorNoHalt("Configuration Error! The total zombie spawn chance of this server has exceeded 100% ( Currently "..chance.."% )! Some zombie types may not be able to spawn, see theeternalapocalypse/gamemode/sh_config.lua for more info\n")
+	elseif chance < 100 then print("Current zombie spawn chance: "..chance.."% (Not perfect)")
+	else print("Current zombie spawn chance: "..chance.."% (OK)") end
 end
 CheckForDerp()
 

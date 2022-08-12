@@ -9,9 +9,10 @@ end
 
 
 function SendVault( ply )
-net.Start("UpdateVault")
-net.WriteTable(ply.Vault)
-net.Send(ply)
+	if !ply:IsValid() then return end
+	net.Start("UpdateVault")
+	net.WriteTable(ply.Vault)
+	net.Send(ply)
 end
 concommand.Add("refresh_vault", SendVault)
 
@@ -68,7 +69,7 @@ if !ItemsList[str] then return end
 if timer.Exists("Isplyequippingarmor"..ply:UniqueID().."_"..str) then print(ply:Nick().." tried to place item into vault while equipping armor!") SystemMessage(ply, "Bruh, did you just try to place armor that you're currently equipping into vault? You lil' bitch, play the gamemode like it was meant to be played.", Color(255,155,155,255), true) return false end
 
 local item = ItemsList[str]
-if (CalculateVaultWeight(ply) + item["Weight"]) > Config[ "VaultSize" ] then SystemMessage(ply, "Your vault doesn't have enough space for that! It can only hold "..Config[ "VaultSize" ].."kg of items!", Color(255,205,205,255), true) return false end
+if (CalculateVaultWeight(ply) + item["Weight"]) > Config[ "VaultSize" ] then SystemMessage(ply, "Your vault doesn't have enough space for that! It can only hold "..Config[ "VaultSize" ].."kg of items! (Need "..-Config["VaultSize"] + CalculateVaultWeight(ply) + item["Weight"].."kg more space!)", Color(255,205,205,255), true) return false end
 
 	if ply.Vault[str] then
 		ply.Vault[str] = ply.Vault[str] + 1
@@ -86,7 +87,7 @@ if !ply.Vault[str] then return end
 
 local item = ItemsList[str]
 
-if ((CalculateWeight(ply) + item["Weight"]) > (CalculateMaxWeight(ply))) then SystemMessage(client, "You don't have enough space for that!", Color(255,205,205,255), true) return false end
+if ((CalculateWeight(ply) + item["Weight"]) > (CalculateMaxWeight(ply))) then SystemMessage(ply, "You don't have enough space for that! Need "..-CalculateMaxWeight(ply) + CalculateWeight(ply) + item["Weight"].."kg more space!", Color(255,205,205,255), true) return false end
 
 
 ply.Vault[str] = ply.Vault[str] - 1

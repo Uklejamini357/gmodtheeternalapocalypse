@@ -450,7 +450,7 @@ function ENT:OnInjured(damageInfo)
 	end
 	end
 
-	if self:Health() <= 10000 then
+	if self:Health() - dmg <= 10000 then
 		self.RageLevel = 5
 		self.loco:SetDesiredSpeed( 400 )
 		if self.IsEnraged == 0 then

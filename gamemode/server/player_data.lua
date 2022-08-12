@@ -25,35 +25,13 @@ end
 
 		ate_DebugLog( "Loading player data: " .. ply:Nick() .." ( "..ply:SteamID().." ) Level: "..tostring(ply.Level).." Cash: $"..tostring(ply.Money).." XP Total: "..tostring(ply.XP).." Armor Equipped: "..tostring(ply.EquippedArmor) )
 
-		net.Start("UpdatePeriodicStats")
-		net.WriteFloat( ply.Level )
-		net.WriteFloat( ply.Prestige )
-		net.WriteFloat( ply.Money )
-		net.WriteFloat( ply.XP )
-		net.WriteFloat( ply.StatPoints )
-		net.WriteFloat( ply.Bounty )
-		net.Send( ply )
-
-		net.Start("UpdatePerks")
-		net.WriteFloat( ply.StatDefense )
-		net.WriteFloat( ply.StatDamage )
-		net.WriteFloat( ply.StatSpeed )
-		net.WriteFloat( ply.StatHealth )
-		net.WriteFloat( ply.StatKnowledge )
-		net.WriteFloat( ply.StatMedSkill )
-		net.WriteFloat( ply.StatStrength )
-		net.WriteFloat( ply.StatEndurance )
-		net.WriteFloat( ply.StatSalvage )
-		net.WriteFloat( ply.StatBarter )
-		net.WriteFloat( ply.StatEngineer )
-		net.WriteFloat( ply.StatImmunity )
-		net.WriteFloat( ply.StatSurvivor )
-		net.WriteFloat( ply.StatAgility )
-		net.Send( ply )
+		TEANetUpdatePeriodicStats(ply)
+		TEANetUpdatePerks(ply)
 
 	else
 
 		ply.ChosenModel = "models/player/kleiner.mdl"
+		ply.BestSurvivalTime = 0
 		ply.XP = 0 
 		ply.Level = 1
 		ply.Prestige = 0
@@ -72,14 +50,8 @@ end
 
 		SavePlayer( ply )
 
-		net.Start("UpdatePeriodicStats")
-		net.WriteFloat( ply.Level )
-		net.WriteFloat( ply.Prestige )
-		net.WriteFloat( ply.Money )
-		net.WriteFloat( ply.XP )
-		net.WriteFloat( ply.StatPoints )
-		net.WriteFloat( ply.Bounty )
-		net.Send( ply )
+		TEANetUpdatePeriodicStats(ply)
+		TEANetUpdateStatistics(ply)
 
 	end
 
@@ -137,31 +109,9 @@ function GainPrestige(ply)
 		effectdata:SetOrigin(ply:GetPos() + Vector(0, 0, 60))
 		util.Effect("zw_master_strike", effectdata)
 
-		net.Start("UpdatePeriodicStats")
-		net.WriteFloat( ply.Level )
-		net.WriteFloat( ply.Prestige )
-		net.WriteFloat( ply.Money )
-		net.WriteFloat( ply.XP )
-		net.WriteFloat( ply.StatPoints )
-		net.WriteFloat( ply.Bounty )
-		net.Send( ply )
-
-		net.Start("UpdatePerks")
-		net.WriteFloat(ply.StatDefense)
-		net.WriteFloat(ply.StatDamage)
-		net.WriteFloat(ply.StatSpeed)
-		net.WriteFloat(ply.StatHealth)
-		net.WriteFloat(ply.StatKnowledge)
-		net.WriteFloat(ply.StatMedSkill)
-		net.WriteFloat(ply.StatStrength)
-		net.WriteFloat(ply.StatEndurance)
-		net.WriteFloat(ply.StatSalvage)
-		net.WriteFloat(ply.StatBarter)
-		net.WriteFloat(ply.StatEngineer)
-		net.WriteFloat(ply.StatImmunity)
-		net.WriteFloat(ply.StatSurvivor)
-		net.WriteFloat(ply.StatAgility)
-		net.Send( ply )
+		TEANetUpdatePeriodicStats(ply)
+		TEANetUpdatePerks(ply)
+		TEANetUpdateStatistics(ply)
 
 		ply:SetNWInt( "PlyBounty", ply.Bounty )
 		ply:SetNWInt( "PlyLevel", ply.Level )
@@ -181,6 +131,8 @@ local Data = {}
 
 if AllowSave != 1 and tea_server_dbsaving:GetInt() < 1 then print("Warning! Database saving is disabled! Players will not have their progress saved during this time.") return end
 --	Data[ "ChosenModel" ] = ply.ChosenModel
+	Data[ "BestSurvivalTime" ] = ply.BestSurvivalTime
+	Data[ "ZKills" ] = ply.ZKills
 	Data[ "XP" ] = ply.XP
 	Data[ "Level" ] = ply.Level
 	Data[ "Prestige" ] = ply.Prestige
@@ -207,34 +159,12 @@ if AllowSave != 1 and tea_server_dbsaving:GetInt() < 1 then print("Warning! Data
 		end
 	end
 
-	net.Start("UpdatePeriodicStats")
-	net.WriteFloat( ply.Level )
-	net.WriteFloat( ply.Prestige )
-	net.WriteFloat( ply.Money )
-	net.WriteFloat( ply.XP )
-	net.WriteFloat( ply.StatPoints )
-	net.WriteFloat( ply.Bounty )
-	net.WriteFloat( ply.Battery )
-	net.Send( ply )
-
+	TEANetUpdatePeriodicStats(ply)
 	ate_DebugLog( "Saving player data: " .. ply:Nick() .." ( "..ply:SteamID().." ) Level: "..tostring(ply.Level).." Cash: $"..tostring(ply.Money).." XP Total: "..tostring(ply.XP).." Armor Equipped: "..tostring(ply.EquippedArmor) )
 
-	net.Start("UpdatePerks")
-	net.WriteFloat( ply.StatDefense )
-	net.WriteFloat( ply.StatDamage )
-	net.WriteFloat( ply.StatSpeed )
-	net.WriteFloat( ply.StatHealth )
-	net.WriteFloat( ply.StatKnowledge )
-	net.WriteFloat( ply.StatMedSkill )
-	net.WriteFloat( ply.StatStrength )
-	net.WriteFloat( ply.StatEndurance )
-	net.WriteFloat( ply.StatSalvage )
-	net.WriteFloat( ply.StatBarter )
-	net.WriteFloat( ply.StatEngineer )
-	net.WriteFloat( ply.StatImmunity )
-	net.WriteFloat( ply.StatSurvivor )
-	net.WriteFloat( ply.StatAgility )
-	net.Send( ply )
+	TEANetUpdatePerks(ply)
+
+	TEANetUpdateStatistics(ply)
 
 	print("✓ ".. ply:Nick() .." profile saved into database")
 
@@ -264,14 +194,8 @@ function PlayerGainLevel( ply )
 
 		ply:SetNWInt( "PlyLevel", ply.Level )
 
-		net.Start("UpdatePeriodicStats")
-		net.WriteFloat( ply.Level )
-		net.WriteFloat( ply.Prestige )
-		net.WriteFloat( ply.Money )
-		net.WriteFloat( ply.XP )
-		net.WriteFloat( ply.StatPoints )
-		net.WriteFloat( ply.Bounty )
-		net.Send( ply )
+		TEANetUpdatePeriodicStats(ply)
+
 		timer.Simple(0.05, function() -- Timer was created to prevent Buffer Overflow if user has too much XP if user levels up
 		PlayerGainLevel(ply) -- This is so the user will gain another level if user has required xp for next level and will repeat
 		end)
@@ -288,17 +212,11 @@ ply.Hunger = 10000
 ply.Thirst = 10000
 ply.Fatigue = 0
 ply.Infection = 0
+ply.Battery = 100
 ply.SurvivalTime = math.floor(CurTime())
 
 -- send that shit to them so their hud can display it (this function is called every tick)
-net.Start("UpdateStats")
-net.WriteFloat( ply.Stamina )
-net.WriteFloat( ply.Hunger )
-net.WriteFloat( ply.Thirst )
-net.WriteFloat( ply.Fatigue )
-net.WriteFloat( ply.Infection )
-net.WriteFloat( ply.SurvivalTime )
-net.Send( ply )
+TEANetUpdateStats(ply)
 
 end
 
@@ -311,36 +229,15 @@ if !ply:IsValid() then return end
 	net.WriteTable( ply.Inventory )
 	net.Send( ply )
 
-	net.Start("UpdatePeriodicStats")
-	net.WriteFloat( ply.Level )
-	net.WriteFloat( ply.Prestige )
-	net.WriteFloat( ply.Money )
-	net.WriteFloat( ply.XP )
-	net.WriteFloat( ply.StatPoints )
-	net.WriteFloat( ply.Bounty )
-	net.Send( ply )
+	TEANetUpdatePeriodicStats(ply)
 
 	ply:SetNWInt( "PlyBounty", ply.Bounty )
 	ply:SetNWInt( "PlyLevel", ply.Level )
 	ply:SetNWInt( "PlyPrestige", ply.Prestige )
 
-	net.Start("UpdatePerks")
-	net.WriteFloat( ply.StatDefense )
-	net.WriteFloat( ply.StatDamage )
-	net.WriteFloat( ply.StatSpeed )
-	net.WriteFloat( ply.StatHealth )
-	net.WriteFloat( ply.StatKnowledge )
-	net.WriteFloat( ply.StatMedSkill )
-	net.WriteFloat( ply.StatStrength )
-	net.WriteFloat( ply.StatEndurance )
-	net.WriteFloat( ply.StatSalvage )
-	net.WriteFloat( ply.StatBarter )
-	net.WriteFloat( ply.StatEngineer )
-	net.WriteFloat( ply.StatImmunity )
-	net.WriteFloat( ply.StatSurvivor )
-	net.WriteFloat( ply.StatAgility )
-	net.Send( ply )
+	TEANetUpdatePerks(ply)
 
+	TEANetUpdateStatistics(ply)
 	net.Start("RecvFactions")
 	net.WriteTable(Factions)
 	net.Send( ply )

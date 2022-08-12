@@ -214,9 +214,7 @@ timer.Create( "BossSpawnTimer", tonumber(Config[ "BossSpawnRate" ]), 0, SpawnBos
 
 function StoreAttacker( target, dmginfo )
 if ( target.Type == "nextbot" or target:IsNPC() ) and dmginfo:GetAttacker():IsPlayer() then 
-
 	if !target.BossMonster then target.LastAttacker = dmginfo:GetAttacker() else
-
 		local dmg = dmginfo:GetDamage()
 		local attacker = dmginfo:GetAttacker()
 		if !target.DamagedBy[attacker] then 
@@ -224,9 +222,7 @@ if ( target.Type == "nextbot" or target:IsNPC() ) and dmginfo:GetAttacker():IsPl
 		else
 			target.DamagedBy[attacker] = math.Clamp(target.DamagedBy[attacker] + dmg, 0, target:GetMaxHealth())
 		end
-
 	end
-
 end
 
 end
@@ -239,10 +235,12 @@ local tea_server_moneyreward = GetConVar( "tea_server_moneyreward" )
 	if ( ent.Type == "nextbot" or ent:IsNPC() ) and (ent.XPReward and ent.MoneyReward) then
 		if ent.LastAttacker and ent.LastAttacker:IsValid() then
 		Payout( ent.LastAttacker, ent.XPReward * tea_server_xpreward:GetString(), ent.MoneyReward * tea_server_moneyreward:GetString() )
+		ent.LastAttacker.ZKills = ent.LastAttacker.ZKills + 1
+		TEANetUpdateStatistics(ent.LastAttacker)
 		elseif ent.DamagedBy then
 			for k, v in pairs(ent.DamagedBy) do
 				local pay = tonumber(v / 4)
-				Payout(k, pay * tea_server_xpreward:GetString(), pay * tea_server_moneyreward:GetString())
+				Payout(k, math.Round(pay * tea_server_xpreward:GetString()), math.Round(pay * tea_server_moneyreward:GetString()))
 			end
 
 			local EntDrop = ents.Create( "loot_cache_boss" )
@@ -282,14 +280,8 @@ function Payout(ply, xp, cash)
 		net.WriteFloat( MoneyGain + MoneyBonus )
 		net.Send( ply )
 
-		net.Start("UpdatePeriodicStats")
-		net.WriteFloat( ply.Level )
-		net.WriteFloat( ply.Prestige )
-		net.WriteFloat( ply.Money )
-		net.WriteFloat( ply.XP )
-		net.WriteFloat( ply.StatPoints )
-		net.WriteFloat( ply.Bounty )
-		net.Send( ply )
+		TEANetUpdatePeriodicStats(ply)
+
 	elseif ( ply:IsPlayer() and ply:IsValid() ) then
 		local CurXP = ply.XP
 		local CurMoney = ply.Money
@@ -314,14 +306,7 @@ function Payout(ply, xp, cash)
 		net.WriteFloat( MoneyGain + MoneyBonus )
 		net.Send( ply )
 
-		net.Start("UpdatePeriodicStats")
-		net.WriteFloat( ply.Level )
-		net.WriteFloat( ply.Prestige )
-		net.WriteFloat( ply.Money )
-		net.WriteFloat( ply.XP )
-		net.WriteFloat( ply.StatPoints )
-		net.WriteFloat( ply.Bounty )
-		net.Send( ply )
+		TEANetUpdatePeriodicStats(ply)
 	end
 end
 

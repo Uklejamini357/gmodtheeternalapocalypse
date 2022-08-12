@@ -161,7 +161,7 @@ function ENT:OnInjured(damageInfo)
 	self:Teleport()
 	self.Ouchies = 0
 	end
-	if self:Health() <= 2000 and self.IsEnraged == 0 then
+	if self:Health() - dmg <= 2000 and self.IsEnraged == 0 then
 	for k,v in pairs(ents.FindInSphere(self:GetPos(), 1000)) do
 		if v:IsPlayer() then
 			SystemMessage(v, "Superlord has enraged!", Color(255,230,230,255), false)

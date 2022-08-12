@@ -36,12 +36,21 @@ end
 local Dlabel = vgui.Create("DLabel", PaintPanel); 
 	Dlabel:SetText( translate.Get("SleepText") ) 
 	Dlabel:SetSize(490, 30); 
-	Dlabel:SetPos(250, 85); 
+	Dlabel:SetPos(150, 85); 
 
 
-timer.Simple( 25, function()
+timer.Simple(25, function()
+if LDFrame:IsValid() then
 	LDFrame:Close()
-end )
+end
+end)
+timer.Create("Sleeping", 1, 25, function()
+	if !LocalPlayer():Alive() and LDFrame:IsValid() then
+	LDFrame:Close()
+	elseif !LDFrame:IsValid() then
+	timer.Destroy("Sleeping")
+	end
+end)
 
 end 
 usermessage.Hook( "DrawSleepOverlay", DrawSleepOverlay )

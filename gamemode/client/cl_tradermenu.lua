@@ -1,6 +1,7 @@
 -------------------------------- Trader Menu --------------------------------
-
-net.Receive("OpenTraderMenu", function() TraderMenu() end)
+net.Receive("OpenTraderMenu", function()
+	TraderMenu()
+end)
 
 function TraderMenu()
 
@@ -10,6 +11,8 @@ TraderFrame:Center()
 TraderFrame:SetTitle ( "" )
 TraderFrame:SetDraggable( false )
 TraderFrame:SetVisible( true )
+TraderFrame:SetAlpha(0)
+TraderFrame:AlphaTo(255, 1, 0)
 TraderFrame:ShowCloseButton( true )
 TraderFrame:MakePopup()
 TraderFrame.Paint = function()
@@ -19,21 +22,21 @@ TraderFrame.Paint = function()
 	surface.DrawLine(0, TraderFrame:GetTall() - 60, TraderFrame:GetWide(), TraderFrame:GetTall() - 60)
 end
 
-	local PropertySheet = vgui.Create( "DPropertySheet" )
-	PropertySheet:SetParent( TraderFrame )
-	PropertySheet:SetPos( 5, 5 )
-	PropertySheet:SetSize( 900, TraderFrame:GetTall() - 65 )
-	PropertySheet.Paint = function()
-		surface.SetDrawColor(0, 0, 0, 100)
-		surface.DrawRect(0, 0, PropertySheet:GetWide(), PropertySheet:GetTall())
+local PropertySheet = vgui.Create( "DPropertySheet" )
+PropertySheet:SetParent( TraderFrame )
+PropertySheet:SetPos( 5, 5 )
+PropertySheet:SetSize( 900, TraderFrame:GetTall() - 65 )
+PropertySheet.Paint = function()
+	surface.SetDrawColor(0, 0, 0, 100)
+	surface.DrawRect(0, 0, PropertySheet:GetWide(), PropertySheet:GetTall())
 	for k, v in pairs(PropertySheet.Items) do
-	if (!v.Tab) then continue end
-	
-	v.Tab.Paint = function(self,w,h)
-		draw.RoundedBox(0, 0, 0, w, h, Color(50,25,25))
+		if (!v.Tab) then continue end
+		
+		v.Tab.Paint = function(self,w,h)
+			draw.RoundedBox(0, 0, 0, w, h, Color(50,25,25))
+		end
 	end
-	end
-	end
+end
 
 	local SupplyPanel = vgui.Create( "DPanelList" )
 	SupplyPanel:SetTall( 635 )
@@ -42,7 +45,7 @@ end
 	SupplyPanel:EnableVerticalScrollbar( true )
 	SupplyPanel:EnableHorizontal( true )
 	SupplyPanel:SetSpacing( 10 )
-
+	
 	local AmmoPanel = vgui.Create( "DPanelList" )
 	AmmoPanel:SetTall( 635 )
 	AmmoPanel:SetWide( 890 )
@@ -50,7 +53,7 @@ end
 	AmmoPanel:EnableVerticalScrollbar( true )
 	AmmoPanel:EnableHorizontal( true )
 	AmmoPanel:SetSpacing( 10 )
-
+	
 	local GunPanel = vgui.Create( "DPanelList" )
 	GunPanel:SetTall( 635 )
 	GunPanel:SetWide( 890 )
@@ -58,7 +61,7 @@ end
 	GunPanel:EnableVerticalScrollbar( true )
 	GunPanel:EnableHorizontal( true )
 	GunPanel:SetSpacing( 10 )
-
+	
 	local SellPanel = vgui.Create( "DPanelList" )
 	SellPanel:SetTall( 635 )
 	SellPanel:SetWide( 890 )
@@ -66,7 +69,7 @@ end
 	SellPanel:EnableVerticalScrollbar( true )
 	SellPanel:EnableHorizontal( true )
 	SellPanel:SetSpacing( 10 )
-
+	
 	local ArmorPanel = vgui.Create( "DPanelList" )
 	ArmorPanel:SetTall( 635 )
 	ArmorPanel:SetWide( 890 )
@@ -74,7 +77,7 @@ end
 	ArmorPanel:EnableVerticalScrollbar( true )
 	ArmorPanel:EnableHorizontal( true )
 	ArmorPanel:SetSpacing( 10 )
-
+	
 	local VaultPanel = vgui.Create( "DPanelList" )
 	VaultPanel:SetTall( 635 )
 	VaultPanel:SetWide( 890 )
@@ -82,111 +85,112 @@ end
 	VaultPanel:EnableVerticalScrollbar( true )
 	VaultPanel:EnableHorizontal( true )
 	VaultPanel:SetSpacing( 10 )
-
+	
 	local Specials = vgui.Create( "DPanelList" )
 	Specials:SetTall( 635 )
 	Specials:SetWide( 890 )
 	Specials:SetPos( 5, 25 )
-
-
+	
+	
 	MyWeight = vgui.Create( "DLabel", TraderFrame )
 	MyWeight:SetFont( "TargetID" )
 	MyWeight:SetPos( 10, TraderFrame:GetTall() - 42)
 	MyWeight:SetSize( 350, 25)
 	MyWeight:SetColor( Color(255,255,255,255) )
 	MyWeight:SetText("Currently Carrying: "..CalculateWeightClient().."kg / "..CalculateMaxWeightClient().."kg")
-
+	
 	MyMoney = vgui.Create( "DLabel", TraderFrame )
 	MyMoney:SetFont( "TargetID" )
 	MyMoney:SetPos( 350, TraderFrame:GetTall() - 42)
 	MyMoney:SetSize( 350, 25)
 	MyMoney:SetColor( Color(155,255,155,255) )
 	MyMoney:SetText("My Wallet: "..Mymoney)
-
+	
 	local CastBounty = vgui.Create("DButton", TraderFrame)
 	CastBounty:SetSize( 120, 45 )
 	CastBounty:SetPos( 540, TraderFrame:GetTall() - 52 )
 	CastBounty:SetText("Cash my bounty in!")
 	CastBounty:SetTextColor(Color(255, 255, 255, 255))
 	CastBounty.Paint = function(panel, w, h)
-	surface.SetDrawColor(0, 150, 0 ,255)
-	surface.DrawOutlinedRect(0, 0, w, h)
-	draw.RoundedBox( 2, 0, 0, w, h, Color(0, 50, 0, 130) )
+		surface.SetDrawColor(0, 150, 0 ,255)
+		surface.DrawOutlinedRect(0, 0, w, h)
+		draw.RoundedBox( 2, 0, 0, w, h, Color(0, 50, 0, 130) )
 	end
 	CastBounty.DoClick = function()
-	net.Start("CashBounty")
-	net.SendToServer()
-	timer.Simple(0.3, function()
-	MyMoney:SetText("My Wallet: "..Mymoney)
-	end)
+		net.Start("CashBounty")
+		net.SendToServer()
+		timer.Simple(0.3, function()
+			MyMoney:SetText("My Wallet: "..Mymoney)
+		end)
 	end
-
-
+	
+	
 	MyVaultWeight = vgui.Create( "DLabel", TraderFrame )
 	MyVaultWeight:SetFont( "TargetID" )
 	MyVaultWeight:SetPos( 740, TraderFrame:GetTall() - 42)
 	MyVaultWeight:SetSize( 350, 25)
 	MyVaultWeight:SetColor( Color(255,255,255,255) )
 	MyVaultWeight:SetText("Vault Capacity: "..CalculateVaultClient().."kg / "..Config["VaultSize"].."kg")
-
-
-
---------------------------------------------supplies-------------------------------------------------------------
-
-
-
-
-function DoTraderList(cat, parent)
-for k, v in SortedPairsByMemberValue( ItemsList, "Cost" ) do
-	if v.Supply == -1 or v.Category != cat then continue end -- skip items with -1 supply or that are in the wrong category
---	if v.Category != cat then continue end
-
-	local ItemBackground = vgui.Create( "DPanel" )
-	ItemBackground:SetPos( 5, 5 )
-	ItemBackground:SetSize( 280, 80 )
-	ItemBackground.Paint = function() -- Paint function
-		draw.RoundedBoxEx(8,1,1,ItemBackground:GetWide()-2,ItemBackground:GetTall()-2,Color(0, 0, 0, 50), false, false, false, false)
-	surface.SetDrawColor(50, 50, 50 ,255)
-	surface.DrawOutlinedRect(0, 0, ItemBackground:GetWide(), ItemBackground:GetTall())
-	end
-
-	local ItemDisplay = vgui.Create( "SpawnIcon", ItemBackground )
-	ItemDisplay:SetPos( 10, 10 )
-	ItemDisplay:SetModel( v.Model )
-	ItemDisplay:SetToolTip(translate.Get(v.Description).."\n(Item ID: "..k..")")
-	ItemDisplay:SetSize(60,60)
-	ItemDisplay.PaintOver = function()
-		return
-	end
-	ItemDisplay.OnMousePressed = function()
-		return false
-	end
-
-	local ItemName = vgui.Create( "DLabel", ItemBackground )
-	ItemName:SetPos( 80, 10)
-	ItemName:SetSize( 170, 15)
-	ItemName:SetColor( Color(205,205,205,255) )
-	ItemName:SetText( translate.Get(v.Name) )
-
-	local ItemCost = vgui.Create( "DLabel", ItemBackground )
-	ItemCost:SetFont( "TargetIDSmall" )
-	ItemCost:SetPos( 80, 25)
-	ItemCost:SetSize( 170, 15)
-	ItemCost:SetColor( Color(155,255,155,255) )
-	ItemCost:SetText( "Cost: ".. math.floor((v.Cost * (1 - ((Perks.Barter or 0) * 0.015)))) )
-
-	local ItemWeight = vgui.Create( "DLabel", ItemBackground )
-	ItemWeight:SetFont( "TargetIDSmall" )
-	ItemWeight:SetPos( 80, 42)
-	ItemWeight:SetSize( 170, 15)
-	ItemWeight:SetColor( Color(155,155,255,255) )
-	ItemWeight:SetText( "Weight: ".. v.Weight.."kg" )
-
+	
+	
+	
+	--------------------------------------------supplies-------------------------------------------------------------
+	
+	
+	
+	
+	function DoTraderList(cat, parent)
+		for k, v in SortedPairsByMemberValue( ItemsList, "Cost" ) do
+			if v.Supply == -1 or v.Category != cat then continue end -- skip items with -1 supply or that are in the wrong category
+			--	if v.Category != cat then continue end
+			
+			local ItemBackground = vgui.Create( "DPanel" )
+			ItemBackground:SetPos( 5, 5 )
+			ItemBackground:SetSize( 280, 80 )
+			ItemBackground.Paint = function() -- Paint function
+				draw.RoundedBoxEx(8,1,1,ItemBackground:GetWide()-2,ItemBackground:GetTall()-2,Color(0, 0, 0, 50), false, false, false, false)
+				surface.SetDrawColor(50, 50, 50 ,255)
+				surface.DrawOutlinedRect(0, 0, ItemBackground:GetWide(), ItemBackground:GetTall())
+			end
+			
+			local ItemDisplay = vgui.Create( "SpawnIcon", ItemBackground )
+			ItemDisplay:SetPos( 10, 10 )
+			ItemDisplay:SetModel( v.Model )
+			ItemDisplay:SetToolTip(translate.Get(v.Description).."\n(Item ID: "..k..")")
+			ItemDisplay:SetSize(60,60)
+			ItemDisplay.PaintOver = function()
+				return
+			end
+			ItemDisplay.OnMousePressed = function()
+				return false
+			end
+			
+			local ItemName = vgui.Create( "DLabel", ItemBackground )
+			ItemName:SetPos( 80, 10)
+			ItemName:SetSize( 170, 15)
+			ItemName:SetColor( Color(205,205,205,255) )
+			ItemName:SetText( translate.Get(v.Name) )
+			
+			local ItemCost = vgui.Create( "DLabel", ItemBackground )
+			ItemCost:SetFont( "TargetIDSmall" )
+			ItemCost:SetPos( 80, 25)
+			ItemCost:SetSize( 170, 15)
+			ItemCost:SetColor( Color(155,255,155,255) )
+			ItemCost:SetText( "Cost: ".. math.floor((v.Cost * (1 - ((Perks.Barter or 0) * 0.015)))) )
+			
+			local ItemWeight = vgui.Create( "DLabel", ItemBackground )
+			ItemWeight:SetFont( "TargetIDSmall" )
+			ItemWeight:SetPos( 80, 42)
+			ItemWeight:SetSize( 170, 15)
+			ItemWeight:SetColor( Color(155,155,255,255) )
+			ItemWeight:SetText( "Weight: ".. v.Weight.."kg" )
+			
 	local ItemSupply = vgui.Create( "DLabel", ItemBackground )
 	ItemSupply:SetFont( "TargetIDSmall" )
 	ItemSupply:SetPos( 80, 58)
 	ItemSupply:SetSize( 170, 15)
 	ItemSupply:SetColor( Color(255,155,155,255) )
+	
 	if v.Supply == 0 then
 	ItemSupply:SetText( "Supply: Unlimited" )
 	elseif v.Supply == -1 then

@@ -111,7 +111,12 @@ if !self:IsValid() or self:Health() < 1 then return end
 					
 	if (IsValid(ply) and self:GetRangeTo(ply) <= self.ZombieStats["Reach"] * 1.3) then
 		self:ApplyPlayerDamage(ply, self.ZombieStats["Damage"], -self.ZombieStats["Force"], self.ZombieStats["Infection"])
-
+		ply.SlowDown = 1
+		RecalcPlayerSpeed(ply)
+		timer.Create("WraithAttack_"..ply:UniqueID(), 5, 1, function()
+		ply.SlowDown = 0
+		RecalcPlayerSpeed(ply)
+		end)
 		net.Start("WraithBlind")
 		net.Send(ply)
 	end

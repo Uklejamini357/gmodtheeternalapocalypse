@@ -54,6 +54,12 @@ if team.GetName(client:Team()) == "Loner" then SystemMessage(client, "You can't 
 BootFromFaction(client, target)
 end)
 
+net.Receive( "GiveLeader", function( length, client )
+	local target = net.ReadEntity()
+	if !client:IsValid() or !target:IsValid() then return false end
+	GiveLeader(client, target)
+end)
+
 net.Receive( "DisbandFaction", function( length, client )
 if !client:IsValid() then return false end
 local plyfaction = team.GetName(client:Team())
@@ -124,7 +130,7 @@ if plyfaction != targetfaction then SystemMessage(ply, "Stop trying to hack you 
 
 	target:SetTeam( 1 )
 	ClearFactionStructures(target)
-	SystemMessage(ply, "You have kicked "..target:Nick().." from your faction", Color(205,205,255,255), true)
+	SystemMessage(ply, "You have kicked "..target:Nick().." from your faction!", Color(205,205,255,255), true)
 	SystemMessage(target, ply:Nick().." has kicked you out of their faction!", Color(205,205,255,255), true)
 	net.Start("RecvFactions")
 	net.WriteTable(Factions)
@@ -137,12 +143,12 @@ if !ply:IsValid() then return false end
 if ply:Team() == 1 then SystemMessage(ply, "You are already a loner!", Color(255,205,205,255), true) return false end
 if timer.Exists("pvpnominge_"..ply:UniqueID()) then SystemMessage(ply, "You cannot leave faction as you have damaged or you took damage from another player within the last 60 seconds!", Color(255,205,205,255), true) return false end
 	
-	SystemMessage(ply, "You left your faction and are now a loner", Color(205,205,255,255), true)
+	SystemMessage(ply, "You have left your faction and you are now a loner.", Color(205,205,255,255), true)
 
 	local plyfaction = team.GetName(ply:Team())
 	if team.NumPlayers(ply:Team()) > 1 && Factions[plyfaction]["leader"] == ply then
+		ply:SetTeam(1)
 		timer.Simple(0.25, function() -- hopefully that will work
-		ply:SetTeam( 1 )
 		SelectRandomLeader(plyfaction)
 		end)
 	elseif team.NumPlayers(ply:Team()) <= 1 then
@@ -164,15 +170,14 @@ if !ply:IsValid() or !target:IsValid() then return false end
 
 local plyfaction = team.GetName(ply:Team())
 
-if ply == target then SystemMessage(ply, "You cant invite yourself to a faction!", Color(255,205,205,255), true) return false end
+if ply == target then SystemMessage(ply, "You can't invite yourself to a faction!", Color(255,205,205,255), true) return false end
 if Factions[plyfaction]["leader"] != ply then SystemMessage(ply, "You aren't the leader of your faction!", Color(255,205,205,255), true) return false end
-if team.GetName(ply:Team()) == team.GetName(target:Team()) then SystemMessage(ply, target:Nick().."Is already in your faction!", Color(205,205,255,255), true) return false end
+if team.GetName(ply:Team()) == team.GetName(target:Team()) then SystemMessage(ply, target:Nick().." is already in your faction!", Color(205,205,255,255), true) return false end
 if table.HasValue(target.InvitedTo, plyfaction) then SystemMessage(ply, "You have already sent a faction invite to "..target:Nick().."!", Color(255,205,205,255), true) return false end
 
 table.insert( target.InvitedTo, plyfaction )
---PrintTable(target.InvitedTo)
 SystemMessage(ply, "You have invited: "..target:Nick().." to join your faction", Color(205,205,255,255), true)
-SystemMessage(target, ply:Nick().." has invited you to join their faction: "..team.GetName(ply:Team()).." .  Navigate to the factions tab in your inventory window to join.", Color(205,205,255,255), true)
+SystemMessage(target, ply:Nick().." has invited you to join their faction '"..team.GetName(ply:Team()).."'. Navigate to the factions tab in your inventory window to join.", Color(205,205,255,255), true)
 
 net.Start("RecvFactions")
 net.WriteTable(Factions)
@@ -184,7 +189,6 @@ function SelectRandomLeader(fac)
 if !Factions[fac] then return false end
 local index = Factions[fac]["index"]
 Factions[fac]["leader"] = table.Random(team.GetPlayers(index))
---SystemMessage(Factions[fac]["leader"], "You have been randomly selected to be the new leader of "..fac, Color(205,205,255,255), true)
 SystemBroadcast(Factions[fac]["leader"]:Nick().." has been randomly selected to be the new leader of "..fac, Color(205,205,255,255), true)
 
 net.Start("RecvFactions")
@@ -194,15 +198,17 @@ end
 
 
 function GiveLeader( ply, target )
-if !ply:IsValid() or !target:IsValid() then return false end
-if ply:Team() == 1 or target:Team() == 1 then SystemMessage(ply, "You apparently tried to give leadership to a loner, You dun goof'd mate", Color(255,205,205,255), true) return false end
-if ply:Team() == target:Team() then SystemMessage(ply, "You cannot give leadership to somebody that isn't in your faction!", Color(255,205,205,255), true) return false end
-local plyfaction = team.GetName(ply:Team())
-if Factions[plyfaction]["leader"] != ply then SystemMessage(ply, "You aren't the leader of your faction!", Color(255,205,205,255), true) return false end
-
-Factions[plyfaction]["leader"] = target
-SystemMessage(ply, "You have ceded leadership of your faction to : "..target:Nick(), Color(205,205,255,255), true)
-SystemMessage(target, ply:Nick().." has given faction leader to you! You now own the faction: "..plyfaction, Color(205,205,255,255), true)
+	if !ply:IsValid() or !target:IsValid() then return false end
+	if ply == target then SystemMessage(ply, "You cannot give faction leadership to yourself!", Color(255,205,205,255), true) return false end
+	if ply:Team() == 1 or target:Team() == 1 then SystemMessage(ply, "You apparently tried to give leadership to a loner, You dun goof'd mate", Color(255,205,205,255), true) return false end
+	if ply:Team() != target:Team() then SystemMessage(ply, "You cannot give leadership to somebody that isn't in your faction!", Color(255,205,205,255), true) return false end
+	local plyfaction = team.GetName(ply:Team())
+	if Factions[plyfaction]["leader"] != ply then SystemMessage(ply, "You aren't the leader of your faction!", Color(255,205,205,255), true) return false end
+	
+	Factions[plyfaction]["leader"] = target
+	SystemMessage(ply, "You have ceded leadership of your faction to : "..target:Nick(), Color(205,205,255,255), true)
+	SystemMessage(target, ply:Nick().." has given faction leader to you! You now own the faction: "..plyfaction, Color(205,205,255,255), true)
+	SystemBroadcast(ply:Nick().." has selected "..target:Nick().." to be the new leader of "..plyfaction, Color(205,205,255,255), true)
 
 net.Start("RecvFactions")
 net.WriteTable(Factions)
@@ -218,7 +224,9 @@ if Factions[fac]["leader"] != ply then SystemMessage(ply, "You cannot disband a 
 local plyfaction = team.GetName(ply:Team())
 
 for k, v in pairs(team.GetPlayers(tonumber(Factions[fac]["index"]))) do
-	LeaveFaction( v )
+	v:SetTeam(1)
+	SystemMessage(v, "Your faction has been disbanded!", Color(255,205,205,255), true)
+	AutoDisbandFaction(plyfaction)
 end
 Factions[fac] = nil
 --SystemBroadcast(ply:Nick().." has disbanded the faction: "..plyfaction, Color(255,205,255,255), true)

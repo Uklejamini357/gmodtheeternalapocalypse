@@ -8,7 +8,7 @@ GM.AltName	= "After The End Reborn"
 GM.Author 	= "Uklejamini"
 GM.Email 	= "[Insert Email here]"
 GM.Website 	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.10.1a"
+GM.Version	= "0.10.2"
 
 team.SetUp( 1, "Loner", Color( 100, 50, 50, 255 ) ) --loner basic team
 
@@ -18,7 +18,7 @@ local tea_server_moneyreward = CreateConVar( "tea_server_moneyreward", 1, {FCVAR
 local tea_server_xpreward = CreateConVar( "tea_server_xpreward", 1, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Modifies XP gain multiplier for killing zombies. This convar is dynamic (affects all zombies) and does not affect Money rewards for destroying faction structures. Useful for making events. (Default: 1)" )
 local tea_server_spawnprotection = CreateConVar( "tea_server_spawnprotection", 1, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Enable temporary god mode on spawning? tea_server_spawnprotection_duration must be above 0 for it to work! 1 for true, 0 for false (Default: 1)", 0, 1 )
 local tea_server_spawnprotection_duration = CreateConVar( "tea_server_spawnprotection_duration", 1.5, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "How long should god mode after spawning last? (in seconds). (Default: 1.5)", 0, 5 )
-local tea_server_debugging = CreateConVar( "tea_server_debugging", 0, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Enables debugging features. (Default: 0)", 0, 1 )
+local tea_server_debugging = CreateConVar( "tea_server_debugging", 0, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Enables debugging features. DO NOT USE THESE FOR DEDICATED SERVERS, ONLY FOR TESTING PURPOSES. (Default: 0)", 0, 1 )
 local tea_server_voluntarypvp = CreateConVar( "tea_server_voluntarypvp", 1, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Enables whether players are free to pvp voluntarily or have forced PvP. (Default: 1)", 0, 1 )
 local tea_server_walkspeed = CreateConVar( "tea_server_walkspeed", 135, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "How much default walking speed should players have? (Default: 120)", 0 )
 local tea_server_runspeed = CreateConVar( "tea_server_runspeed", 260, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "How much default running speed should players have? (Default: 250)", 0 )
@@ -42,6 +42,38 @@ print("WARNING! WARNING!! THE OBJECT IS GONE!!")
 	end
 end
 
+function GM:IsSpecialPerson(ply, image)
+	local img, tooltip
+--i know this was copied from zombiesurvival gamemode but i was too lazy to make one by myself anyway
+--you can add new special person table by yourself but you need to keep the original ones and the new ones must be after steamid
+	if ply:SteamID64() == "76561198274314803" then
+		img = "icon16/award_star_gold_3.png"
+		tooltip = "The Eternal Apocalypse Dev"
+	elseif ply:SteamID64() == "76561198028288732" then
+		img = "icon16/medal_gold_3.png"
+		tooltip = "LegendofRobbo\nCreator of After The End"
+	elseif ply:IsBot() then
+		img = "icon16/plugin.png"
+		tooltip = "BOT\nidk who he is anyway"
+	elseif ply:IsSuperAdmin() then
+		img = "icon16/shield_add.png"
+		tooltip = "Super Admin"
+	elseif ply:IsAdmin() then
+		img = "icon16/shield.png"
+		tooltip = "Admin"
+	end
+
+	if img then
+		if CLIENT then
+			image:SetImage(img)
+			image:SetTooltip(tooltip)
+		end
+
+		return true
+	end
+
+	return false
+end
 
 function GM:PlayerShouldTakeDamage( ply, attacker )
 if attacker:IsPlayer() then

@@ -19,6 +19,9 @@ WARNING: IF YOU ARE USING THE DEFAULT SWEPS PACK YOU WILL ABSOLUTELY NEED TO HAV
 a lot of the default sweps use models and sounds from the m9k pack and will be errors if you dont have m9k installed on your server
 m9k specialties is not required
 
+You can edit some things.
+For example, death sound effect in server/server_util.lua
+
 
 ===================================================================================
 
