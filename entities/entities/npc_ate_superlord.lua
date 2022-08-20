@@ -152,8 +152,10 @@ function ENT:OnInjured(damageInfo)
 	local dmg = damageInfo:GetDamage()
 
 	self.Ouchies = (self.Ouchies or 0) + dmg
-
-	self:EmitSound(table.Random(self.PainSounds), 100, math.random(90, 110))
+	if self.NextPainSound < CurTime() and damageInfo:GetDamage() < self:Health() then
+		self.NextPainSound = CurTime() + 0.5
+		self:EmitSound(table.Random(self.PainSounds), 100, math.random(90, 110))
+	end
 	if attacker:IsPlayer() then
 	self.target = attacker
 	end

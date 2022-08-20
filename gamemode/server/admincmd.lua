@@ -3,19 +3,21 @@ if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
 	SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
-	ply:ConCommand( "playgamesound buttons/button8.wav" )
+	ply:ConCommand("playgamesound buttons/button8.wav")
 	return
 end
 
-local name = args[1]
+local name = args[1] or "NULL"
 local addqty = args[2] or 1
 local item = ItemsList[name]
-if !item then SystemMessage(ply, "ERROR! This item does not exist!", Color(255,205,205,255), true) 
-ply:ConCommand( "playgamesound buttons/button8.wav" ) return false end
+if !item then
+	SystemMessage(ply, "ERROR! This item does not exist! (Attempted to give item "..name.."!)", Color(255,205,205,255), true) 
+	ply:ConCommand("playgamesound buttons/button8.wav")
+return false end
 
 if (CalculateWeight(ply) + (item.Weight * addqty)) > (CalculateMaxWeight(ply)) then SendChat(ply, "You are lacking inventory space! Drop some items first.") return false end
 
-ply.Inventory[name] = ply.Inventory[name] + addqty
+SystemGiveItem(ply, name, addqty)
 
 ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.."x "..translate.Get(item["Name"]))
 print("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.."x "..translate.Get(item["Name"]))
@@ -101,38 +103,30 @@ concommand.Add("ate_sadmin_clearprops", AdminClearProps)
 
 
 function AdminClearZeds( ply, cmd, args )
-if !ply:IsValid() then return false end
-
-if !AdminCheck( ply ) then 
-	SystemMessage(ply, "You are not admin!", Color(255,205,205,255), true)
-	ply:ConCommand( "playgamesound buttons/button8.wav" )
-	return
-end
-
+	if !ply:IsValid() then return false end
+	if !AdminCheck(ply) then 
+		SystemMessage(ply, "You are not admin!", Color(255,205,205,255), true)
+		ply:ConCommand( "playgamesound buttons/button8.wav" )
+		return
+	end
 	if args[1] == "force" then
 		-- force remove all nextbots and npcs
-	ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has cleaned up all NPCs and nextbots!")
-	print("[ADMIN COMMAND USED] "..ply:Nick().." has cleaned up all NPCs and nextbots!")
-	SystemMessage(ply, "Cleaned up all nextbots and NPCs!", Color(155,255,155,255), true)
-	ply:ConCommand( "playgamesound buttons/button15.wav" )
+		ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has cleaned up all NPCs and nextbots!")
+		print("[ADMIN COMMAND USED] "..ply:Nick().." has cleaned up all NPCs and nextbots!")
+		SystemMessage(ply, "Cleaned up all nextbots and NPCs!", Color(155,255,155,255), true)
+		ply:ConCommand( "playgamesound buttons/button15.wav" )
 		for k, v in pairs( ents.GetAll() ) do
 			if v.Type == "nextbot" or ( v:IsNPC() and v:GetClass() != "trader" ) then v.LastAttacker = nil v:Remove() end
 		end
-
 	else
-
-	ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has cleaned up all zombies!")
-	print("[ADMIN COMMAND USED] "..ply:Nick().." has cleaned up all zombies!")
-	SystemMessage(ply, "Cleaned up all zombies!", Color(155,255,155,255), true)
-	ply:ConCommand( "playgamesound buttons/button15.wav" )
-	for k, v in pairs(Config[ "ZombieClasses" ]) do
-		for _, ent in pairs(ents.FindByClass(k)) do ent.LastAttacker = nil ent:Remove() end
+		ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has cleaned up all zombies!")
+		print("[ADMIN COMMAND USED] "..ply:Nick().." has cleaned up all zombies!")
+		SystemMessage(ply, "Cleaned up all zombies!", Color(155,255,155,255), true)
+		ply:ConCommand( "playgamesound buttons/button15.wav" )
+		for k, v in pairs(Config[ "ZombieClasses" ]) do
+			for _, ent in pairs(ents.FindByClass(k)) do ent.LastAttacker = nil ent:Remove() end
+		end
 	end
-
-
-	end
-
-
 end
 concommand.Add("ate_admin_clearzombies", AdminClearZeds)
 
@@ -180,27 +174,6 @@ ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
 concommand.Add("tea_dev_givexp", TEADevGiveXP)
 
-function TEADevGiveStatPoints( ply, cmd, args )
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck( ply ) then 
-	SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
-	ply:ConCommand( "playgamesound buttons/button8.wav" )
-	return
-end
-
-local addqty = args[1] or 1
-
-ply.StatPoints = ply.StatPoints + addqty
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." Skill points!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." Skill points!")
-SystemMessage(ply, "You gave yourself "..addqty.." Skill points!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer( ply )
-ply:ConCommand( "playgamesound buttons/button3.wav" )
-end
-concommand.Add("tea_dev_givestatpoints", TEADevGiveStatPoints)
-
 function TEADevGiveBounty( ply, cmd, args )
 if !ply:IsValid() then return false end
 
@@ -223,7 +196,7 @@ ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
 concommand.Add("tea_dev_givebounty", TEADevGiveBounty)
 
-function TEADevGiveStatDefense( ply, cmd, args )
+function TEADevGiveStatPoints( ply, cmd, args )
 if !ply:IsValid() then return false end
 
 if !SuperAdminCheck( ply ) then 
@@ -234,278 +207,49 @@ end
 
 local addqty = args[1] or 1
 
-ply.StatDefense = ply.StatDefense + addqty
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." levels for Defense skill!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." levels for Defense skill!")
-SystemMessage(ply, "You gave yourself "..addqty.." levels for Defense skill!", Color(155,255,155,255), true)
+ply.StatPoints = ply.StatPoints + addqty
+ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." Skill points!")
+print("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." Skill points!")
+SystemMessage(ply, "You gave yourself "..addqty.." Skill points!", Color(155,255,155,255), true)
 
 FullyUpdatePlayer( ply )
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add("tea_dev_givestatdefense", TEADevGiveStatDefense)
+concommand.Add("tea_dev_givestatpoints", TEADevGiveStatPoints)
 
-function TEADevGiveStatDamage( ply, cmd, args )
-if !ply:IsValid() then return false end
+--this was probably one of the hardest commands i've ever added
+function TEADevGiveStat( ply, cmd, args )
+	if !ply:IsValid() then return false end
 
-if !SuperAdminCheck( ply ) then 
-	SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
-	ply:ConCommand( "playgamesound buttons/button8.wav" )
-	return
+	if !SuperAdminCheck( ply ) then 
+		SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
+		ply:ConCommand( "playgamesound buttons/button8.wav" )
+		return
+	end
+	
+	local statname = args[1] or nil
+	local addqty = args[2] or 1
+	if statname == nil then
+		ply:PrintMessage(2, "Usage:\nArgument #1: Stat Name\nInclude only stat name, do not include Stat before stat name! (Examples: Agility, Speed or Strength)\n \nList:")
+		for k,v in ipairs(StatsListServer) do ply:PrintMessage(2, v) end
+	return end
+	local stat = "Stat"..statname
+	if statname == "Points" then --when they manage to increase their skill points with this command while it's supposed to increase their skill
+		SystemMessage(ply, "You can't increase your Skill Points with this command! Use tea_dev_givestatpoints instead!", Color(255,205,205,255), true)
+		ply:ConCommand("playgamesound buttons/button8.wav")
+		return
+	end
+
+	ply[stat] = ply[stat] + addqty
+	ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." increased their "..statname.." Skill for "..addqty.." point(s)!")
+	print("[ADMIN COMMAND USED] "..ply:Nick().." increased their "..statname.." Skill for "..addqty.." point(s)!")
+	SystemMessage(ply, "You increased your "..statname.." Skill for "..addqty.." point(s)!", Color(155,255,155,255), true)
+
+	FullyUpdatePlayer(ply)
+	ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
+concommand.Add("tea_dev_givestat", TEADevGiveStat)
 
-local addqty = args[1] or 1
-
-ply.StatDamage = ply.StatDamage + addqty
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." levels for Damage skill!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." levels for Damage skill!")
-SystemMessage(ply, "You gave yourself "..addqty.." levels for Damage skill!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer( ply )
-ply:ConCommand( "playgamesound buttons/button3.wav" )
-end
-concommand.Add("tea_dev_givestatdamage", TEADevGiveStatDamage)
-
-function TEADevGiveStatSpeed( ply, cmd, args )
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck( ply ) then 
-	SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
-	ply:ConCommand( "playgamesound buttons/button8.wav" )
-	return
-end
-
-local addqty = args[1] or 1
-
-ply.StatSpeed = ply.StatSpeed + addqty
-
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." levels for Speed skill!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." levels for Speed skill!")
-SystemMessage(ply, "You gave yourself "..addqty.." levels for Speed skill!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer( ply )
-RecalcPlayerSpeed(ply)
-ply:ConCommand( "playgamesound buttons/button3.wav" )
-end
-concommand.Add("tea_dev_givestatspeed", TEADevGiveStatSpeed)
-
-function TEADevGiveStatHealth( ply, cmd, args )
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck( ply ) then 
-	SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
-	ply:ConCommand( "playgamesound buttons/button8.wav" )
-	return
-end
-
-local addqty = args[1] or 1
-
-ply.StatHealth = ply.StatHealth + addqty
-ply:SetMaxHealth( 100 + ( ply.StatHealth * 5 ) )
-
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." levels for Speed skill!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." levels for Speed skill!")
-SystemMessage(ply, "You gave yourself "..addqty.." levels for Health skill!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer( ply )
-ply:ConCommand( "playgamesound buttons/button3.wav" )
-end
-concommand.Add("tea_dev_givestathealth", TEADevGiveStatHealth)
-
-function TEADevGiveStatKnowledge( ply, cmd, args )
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck( ply ) then 
-	SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
-	ply:ConCommand( "playgamesound buttons/button8.wav" )
-	return
-end
-
-local addqty = args[1] or 1
-
-ply.StatKnowledge = ply.StatKnowledge + addqty
-
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." levels for Knowledge skill!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." levels for Knowledge skill!")
-SystemMessage(ply, "You gave yourself "..addqty.." levels for Knowledge skill!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer( ply )
-ply:ConCommand( "playgamesound buttons/button3.wav" )
-end
-concommand.Add("tea_dev_givestatknowledge", TEADevGiveStatKnowledge)
-
-function TEADevGiveStatMedSkill( ply, cmd, args )
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck( ply ) then 
-	SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
-	ply:ConCommand( "playgamesound buttons/button8.wav" )
-	return
-end
-
-local addqty = args[1] or 1
-
-ply.StatMedSkill = ply.StatMedSkill + addqty
-
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." levels for MedSkill!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." levels for MedSkill!")
-SystemMessage(ply, "You gave yourself "..addqty.." levels for MedSkill!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer( ply )
-ply:ConCommand( "playgamesound buttons/button3.wav" )
-end
-concommand.Add("tea_dev_givestatmedskill", TEADevGiveStatMedSkill)
-
-function TEADevGiveStatStrength( ply, cmd, args )
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck( ply ) then 
-	SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
-	ply:ConCommand( "playgamesound buttons/button8.wav" )
-	return
-end
-
-local addqty = args[1] or 1
-
-ply.StatStrength = ply.StatStrength + addqty
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." levels for Strength skill!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." levels for Strength skill!")
-SystemMessage(ply, "You gave yourself "..addqty.." levels for Strength skill!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer( ply )
-ply:ConCommand( "playgamesound buttons/button3.wav" )
-end
-concommand.Add("tea_dev_givestatstrength", TEADevGiveStatStrength)
-
-function TEADevGiveStatEndurance( ply, cmd, args )
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck( ply ) then 
-	SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
-	ply:ConCommand( "playgamesound buttons/button8.wav" )
-	return
-end
-
-local addqty = args[1] or 1
-
-ply.StatEndurance = ply.StatEndurance + addqty
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." levels for Endurance skill!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." levels for Endurance skill!")
-SystemMessage(ply, "You gave yourself "..addqty.." levels for Endurance skill!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer( ply )
-ply:ConCommand( "playgamesound buttons/button3.wav" )
-end
-concommand.Add("tea_dev_givestatendurance", TEADevGiveStatEndurance)
-
-function TEADevGiveStatSalvage( ply, cmd, args )
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck( ply ) then 
-	SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
-	ply:ConCommand( "playgamesound buttons/button8.wav" )
-	return
-end
-
-local addqty = args[1] or 1
-
-ply.StatSalvage = ply.StatSalvage + addqty
-
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." levels for Salvage skill!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." levels for Salvage skill!")
-SystemMessage(ply, "You gave yourself "..addqty.." levels for Salvage skill!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer( ply )
-ply:ConCommand( "playgamesound buttons/button3.wav" )
-end
-concommand.Add("tea_dev_givestatsalvage", TEADevGiveStatSalvage)
-
-function TEADevGiveStatBarter( ply, cmd, args )
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck( ply ) then 
-	SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
-	ply:ConCommand( "playgamesound buttons/button8.wav" )
-	return
-end
-
-local addqty = args[1] or 1
-
-ply.StatBarter = ply.StatBarter + addqty
-
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." levels for Barter skill!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." levels for Barter skill!")
-SystemMessage(ply, "You gave yourself "..addqty.." levels for Barter skill!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer( ply )
-ply:ConCommand( "playgamesound buttons/button3.wav" )
-end
-concommand.Add("tea_dev_givestatbarter", TEADevGiveStatBarter)
-
-function TEADevGiveStatEngineer( ply, cmd, args )
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck( ply ) then 
-	SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
-	ply:ConCommand( "playgamesound buttons/button8.wav" )
-	return
-end
-
-local addqty = args[1] or 1
-
-ply.StatEngineer = ply.StatEngineer + addqty
-CalculateStartingArmor(ply)
-
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." levels for Engineer skill!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." levels for Engineer skill!")
-SystemMessage(ply, "You gave yourself "..addqty.." levels for Engineer skill!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer( ply )
-ply:ConCommand( "playgamesound buttons/button3.wav" )
-end
-concommand.Add("tea_dev_givestatengineer", TEADevGiveStatEngineer)
-
-function TEADevGiveStatImmunity( ply, cmd, args )
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck( ply ) then 
-	SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
-	ply:ConCommand( "playgamesound buttons/button8.wav" )
-	return
-end
-
-local addqty = args[1] or 1
-
-ply.StatImmunity = ply.StatImmunity + addqty
-
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." levels for Immunity skill!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." levels for Immunity skill!")
-SystemMessage(ply, "You gave yourself "..addqty.." levels for Immunity skill!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer( ply )
-ply:ConCommand( "playgamesound buttons/button3.wav" )
-end
-concommand.Add("tea_dev_givestatimmunity", TEADevGiveStatImmunity)
-
-function TEADevGiveStatSurvivor( ply, cmd, args )
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck( ply ) then 
-	SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
-	ply:ConCommand( "playgamesound buttons/button8.wav" )
-	return
-end
-
-local addqty = args[1] or 1
-
-ply.StatSurvivor = ply.StatSurvivor + addqty
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." levels for Survivor skill!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." levels for Survivor skill!")
-SystemMessage(ply, "You gave yourself "..addqty.." levels for Survivor skill!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer( ply )
-ply:ConCommand( "playgamesound buttons/button3.wav" )
-end
-concommand.Add("tea_dev_givestatsurvivor", TEADevGiveStatSurvivor)
 
 function TEADevGiveStamina( ply, cmd, args )
 if !ply:IsValid() then return false end
@@ -738,7 +482,7 @@ print("[ADMIN COMMAND USED] "..ply:Nick().." set their Skill points value to "..
 SystemMessage(ply, "You set your Skill points value to "..setqty.."!", Color(155,255,155,255), true)
 
 
-FullyUpdatePlayer( ply )
+FullyUpdatePlayer(ply)
 ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
 concommand.Add("tea_dev_setstatpoints", TEADevSetStatPoints)
@@ -766,282 +510,37 @@ ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
 concommand.Add("tea_dev_setbounty", TEADevSetBounty)
 
-function TEADevSetStatDefense( ply, cmd, args )
-if !ply:IsValid() then return false end
+function TEADevGiveStat( ply, cmd, args )
+	if !ply:IsValid() then return false end
 
-if !SuperAdminCheck( ply ) then 
-	SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
-	ply:ConCommand( "playgamesound buttons/button8.wav" )
-	return
+	if !SuperAdminCheck( ply ) then 
+		SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
+		ply:ConCommand( "playgamesound buttons/button8.wav" )
+		return
+	end
+	
+	local statname = args[1] or nil
+	local setqty = args[2] or 1
+	if statname == nil then
+		ply:PrintMessage(2, "Usage:\nArgument #1: Stat Name\nInclude only stat name, do not include Stat before stat name! (Examples: Agility, Speed or Strength)\n \nList:")
+		for k,v in ipairs(StatsListServer) do ply:PrintMessage(2, v) end
+	return end
+	local stat = "Stat"..statname
+	if statname == "Points" then
+		SystemMessage(ply, "You can't set your Skill Points with this command! Use tea_dev_setstatpoints instead!", Color(255,205,205,255), true)
+		ply:ConCommand("playgamesound buttons/button8.wav")
+		return
+	end
+
+	ply[stat] = setqty
+	ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." set their "..statname.." Skill value to "..setqty.."!")
+	print("[ADMIN COMMAND USED] "..ply:Nick().." set their "..statname.." Skill value to "..setqty.."!")
+	SystemMessage(ply, "You set your "..statname.." Skill value to "..setqty.."!", Color(155,255,155,255), true)
+
+	FullyUpdatePlayer(ply)
+	ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-
-local setqty = args[1] or 1
-
-ply.StatDefense = setqty
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." set their Defense skill level to "..setqty.."!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." set their Defense skill level to "..setqty.."!")
-SystemMessage(ply, "You set your Defense skill level to "..setqty.."!", Color(155,255,155,255), true)
-
-
-FullyUpdatePlayer( ply )
-ply:ConCommand( "playgamesound buttons/button3.wav" )
-end
-concommand.Add("tea_dev_setstatdefense", TEADevSetStatDefense)
-
-function TEADevSetStatDamage( ply, cmd, args )
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck( ply ) then 
-	SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
-	ply:ConCommand( "playgamesound buttons/button8.wav" )
-	return
-end
-
-local setqty = args[1] or 1
-
-ply.StatDamage = setqty
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." set their Damage skill level to "..setqty.."!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." set their Damage skill level to "..setqty.."!")
-SystemMessage(ply, "You set your Damage skill level to "..setqty.."!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer( ply )
-ply:ConCommand( "playgamesound buttons/button3.wav" )
-end
-concommand.Add("tea_dev_setstatdamage", TEADevSetStatDamage)
-
-function TEADevSetStatSpeed( ply, cmd, args )
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck( ply ) then 
-	SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
-	ply:ConCommand( "playgamesound buttons/button8.wav" )
-	return
-end
-
-local setqty = args[1] or 1
-
-ply.StatSpeed = setqty
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." set their Speed skill level to "..setqty.."!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." set their Speed skill level to "..setqty.."!")
-SystemMessage(ply, "You set your Speed skill level to "..setqty.."!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer( ply )
-RecalcPlayerSpeed(ply)
-ply:ConCommand( "playgamesound buttons/button3.wav" )
-end
-concommand.Add("tea_dev_setstatspeed", TEADevSetStatSpeed)
-
-function TEADevSetStatHealth( ply, cmd, args )
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck( ply ) then 
-	SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
-	ply:ConCommand( "playgamesound buttons/button8.wav" )
-	return
-end
-
-local setqty = args[1] or 1
-
-ply.StatHealth = setqty
-ply:SetMaxHealth( 100 + ( ply.StatHealth * 5 ) )
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." set their Health skill level to "..setqty.."!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." set their Health skill level to "..setqty.."!")
-SystemMessage(ply, "You set your Health skill level to "..setqty.."!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer( ply )
-ply:ConCommand( "playgamesound buttons/button3.wav" )
-end
-concommand.Add("tea_dev_setstathealth", TEADevSetStatHealth)
-
-function TEADevSetStatKnowledge( ply, cmd, args )
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck( ply ) then 
-	SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
-	ply:ConCommand( "playgamesound buttons/button8.wav" )
-	return
-end
-
-local setqty = args[1] or 1
-
-ply.StatKnowledge = setqty
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." set their Knowledge skill level to "..setqty.."!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." set their Knowledge skill level to "..setqty.."!")
-SystemMessage(ply, "You set your Knowledge skill level to "..setqty.."!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer( ply )
-ply:ConCommand( "playgamesound buttons/button3.wav" )
-end
-concommand.Add("tea_dev_setstatknowledge", TEADevSetStatKnowledge)
-
-function TEADevSetStatMedSkill( ply, cmd, args )
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck( ply ) then 
-	SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
-	ply:ConCommand( "playgamesound buttons/button8.wav" )
-	return
-end
-
-local setqty = args[1] or 1
-
-ply.StatMedSkill = setqty
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." set their Medskill level to "..setqty.."!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." set their MedSkill level to "..setqty.."!")
-SystemMessage(ply, "You set your MedSkill level to "..setqty.."!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer( ply )
-ply:ConCommand( "playgamesound buttons/button3.wav" )
-end
-concommand.Add("tea_dev_setstatmedskill", TEADevSetStatMedSkill)
-
-function TEADevSetStatStrength( ply, cmd, args )
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck( ply ) then 
-	SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
-	ply:ConCommand( "playgamesound buttons/button8.wav" )
-	return
-end
-
-local setqty = args[1] or 1
-
-ply.StatStrength = setqty
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." set their Strength skill level to "..setqty.."!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." set their Strength skill level to "..setqty.."!")
-SystemMessage(ply, "You set your Strength skill level to "..setqty.."!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer( ply )
-ply:ConCommand( "playgamesound buttons/button3.wav" )
-end
-concommand.Add("tea_dev_setstatstrength", TEADevSetStatStrength)
-
-function TEADevSetStatEndurance( ply, cmd, args )
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck( ply ) then 
-	SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
-	ply:ConCommand( "playgamesound buttons/button8.wav" )
-	return
-end
-
-local setqty = args[1] or 1
-
-ply.StatEndurance = setqty
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." set their Endurance skill level to "..setqty.."!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." set their Endurance skill level to "..setqty.."!")
-SystemMessage(ply, "You set your Endurance skill level to "..setqty.."!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer( ply )
-ply:ConCommand( "playgamesound buttons/button3.wav" )
-end
-concommand.Add("tea_dev_setstatendurance", TEADevSetStatEndurance)
-
-function TEADevSetStatSalvage( ply, cmd, args )
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck( ply ) then 
-	SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
-	ply:ConCommand( "playgamesound buttons/button8.wav" )
-	return
-end
-
-local setqty = args[1] or 1
-
-ply.StatSalvage = setqty
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." set their Salvage skill level to "..setqty.."!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." set their Salvage skill level to "..setqty.."!")
-SystemMessage(ply, "You set your Salvage skill level to "..setqty.."!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer( ply )
-ply:ConCommand( "playgamesound buttons/button3.wav" )
-end
-concommand.Add("tea_dev_setstatsalvage", TEADevSetStatSalvage)
-
-function TEADevSetStatBarter( ply, cmd, args )
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck( ply ) then 
-	SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
-	ply:ConCommand( "playgamesound buttons/button8.wav" )
-	return
-end
-
-local setqty = args[1] or 1
-
-ply.StatBarter = setqty
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." set their Barter skill level to "..setqty.."!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." set their Barter skill level to "..setqty.."!")
-SystemMessage(ply, "You set your Barter skill level to "..setqty.."!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer( ply )
-ply:ConCommand( "playgamesound buttons/button3.wav" )
-end
-concommand.Add("tea_dev_setstatbarter", TEADevSetStatBarter)
-
-function TEADevSetStatEngineer( ply, cmd, args )
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck( ply ) then 
-	SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
-	ply:ConCommand( "playgamesound buttons/button8.wav" )
-	return
-end
-
-local setqty = args[1] or 1
-
-ply.StatEngineer = setqty
-CalculateStartingArmor(ply)
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." set their Engineer skill level to "..setqty.."!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." set their Engineer skill level to "..setqty.."!")
-SystemMessage(ply, "You set your Engineer skill level to "..setqty.."!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer( ply )
-ply:ConCommand( "playgamesound buttons/button3.wav" )
-end
-concommand.Add("tea_dev_setstatengineer", TEADevSetStatEngineer)
-
-function TEADevSetStatImmunity( ply, cmd, args )
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck( ply ) then 
-	SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
-	ply:ConCommand( "playgamesound buttons/button8.wav" )
-	return
-end
-
-local setqty = args[1] or 1
-
-ply.StatImmunity = setqty
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." set their Immunity skill level to "..setqty.."!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." set their Immunity skill level to "..setqty.."!")
-SystemMessage(ply, "You set your Immunity skill level to "..setqty.."!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer( ply )
-ply:ConCommand( "playgamesound buttons/button3.wav" )
-end
-concommand.Add("tea_dev_setstatimmunity", TEADevSetStatImmunity)
-
-function TEADevSetStatSurvivor( ply, cmd, args )
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck( ply ) then 
-	SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
-	ply:ConCommand( "playgamesound buttons/button8.wav" )
-	return
-end
-
-local setqty = args[1] or 1
-
-ply.StatSurvivor = setqty
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." set their Survivor skill level to "..setqty.."!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." set their Survivor skill level to "..setqty.."!")
-SystemMessage(ply, "You set your Survivor skill level to "..setqty.."!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer( ply )
-ply:ConCommand( "playgamesound buttons/button3.wav" )
-end
-concommand.Add("tea_dev_setstatsurvivor", TEADevSetStatSurvivor)
+concommand.Add("tea_dev_setstat", TEADevGiveStat)
 
 function TEADevSetStamina( ply, cmd, args )
 if !ply:IsValid() then return false end

@@ -84,6 +84,7 @@ self.Ability1CD = CurTime()
 
 end
 
+--gives a speed buff for self if target is spotted
 function ENT:SpecialSkill1()
 	if !self:IsValid() then return false end
 	
@@ -91,7 +92,7 @@ function ENT:SpecialSkill1()
 	effectdata:SetOrigin(self:GetPos() + Vector(0, 0, 60))
 	util.Effect("zw_master_pulse", effectdata)
 	self:EmitSound("ambient/machines/thumper_hit.wav", 120, 70)
-	if self.SpeedBuff <= 3 then self.SpeedBuff = math.Clamp(self.SpeedBuff + 0.1, 1, 3) end
+	if self.SpeedBuff < 3 then self.SpeedBuff = math.Clamp(self.SpeedBuff + 0.1, 1, 3) end
 	self.Ability1CD = CurTime() + self.ZombieStats["Ability1Cooldown"]
 end
 
@@ -100,7 +101,7 @@ if !ply:IsValid() or !self:IsValid() then return false end
 self:EmitSound(table.Random(self.AttackSounds), 100, math.random(95, 105))
 self:SetMaterial("")
 
--- swing those claws baby
+-- swing those claws
 self:DelayedCallback(self.ZombieStats["StrikeDelay"] * 0.75, function()
 	self:EmitSound("npc/vort/claw_swing"..math.random(1, 2)..".wav")
 end)
@@ -111,7 +112,7 @@ if !self:IsValid() or self:Health() < 1 then return end
 					
 	if (IsValid(ply) and self:GetRangeTo(ply) <= self.ZombieStats["Reach"] * 1.3) then
 		self:ApplyPlayerDamage(ply, self.ZombieStats["Damage"], -self.ZombieStats["Force"], self.ZombieStats["Infection"])
-		ply.SlowDown = 1
+		ply.SlowDown = 1 --slow them down temporarily by 40%
 		RecalcPlayerSpeed(ply)
 		timer.Create("WraithAttack_"..ply:UniqueID(), 5, 1, function()
 		ply.SlowDown = 0
@@ -122,7 +123,7 @@ if !self:IsValid() or self:Health() < 1 then return end
 	end
 end)
 
--- check if we killed the guy and find a new target if we did
+
 self:DelayedCallback(self.ZombieStats["StrikeDelay"] * 1.2, function()
 if (IsValid(ply) and !ply:Alive()) then
 	self.target = nil

@@ -40,11 +40,11 @@ if self.BedObstructed == 1 then SendChat(ply, "This bed is obstructed!") return 
 	ply.Fatigue = 0
 	ply:Freeze(true)
 	self.BedObstructed = 1
-	self.Entity:SetColor( Color(255, 0, 0, 255) )
+	self.Entity:SetColor(Color(255, 0, 0, 255)) --for various reasons bed will be red to indicate that the bed is obstructed
 	timer.Simple(25, function()
 		self.BedObstructed = 0
 		self.Entity:SetColor( Color(255, 255, 255, 255) )
 		ply:Freeze(false)
-	end )
-	ply:SetHealth( math.Clamp(ply:Health() + (0.05 * ply:GetMaxHealth()), 1, ply:GetMaxHealth()) )
+	end)
+	ply:SetHealth(math.Clamp(ply:Health() + (0.05 * ply:GetMaxHealth()), 1, ply:GetMaxHealth())) --heal 5% of player's max health
 end

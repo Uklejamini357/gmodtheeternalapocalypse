@@ -64,6 +64,7 @@ end
 */
 
 
+
 function ENT:HasLOS()
 if !self:IsValid() or !self.target:IsValid() then return false end
 if self.target != nil then
@@ -90,23 +91,26 @@ function ENT:Initialize()
 --	self.breathing:Play()
 --	self.breathing:ChangePitch(60, 0)
 --	self.breathing:ChangeVolume(0.3, 0)
-	self.loco:SetDeathDropHeight(700) --removing this won't help much
-	self.loco:SetAcceleration( 800 )
+	if SERVER then
+		self.loco:SetDeathDropHeight(700) --bug with tyrant fixed?
+		self.loco:SetAcceleration(800)
+		self:SetHealth(30000)
+		self:SetMaxHealth(30000)
+	end
 	self.IsEnraged = 0
-	self:SetHealth(30000)
-	self:SetMaxHealth(30000)
 	self:SetModelScale( 0.8, 0 )
 	self:SetCollisionBounds(Vector(-34,-34, 0), Vector(34, 34, 84))
---	self:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
---	self:SetSkin(math.random(0, self:SkinCount() - 1))
-
+	--	self:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
+	--	self:SetSkin(math.random(0, self:SkinCount() - 1))
+	
+	self.NextPainSound = CurTime()
 	self.nexttoss = CurTime()
 	self.nextslam = CurTime()
 
 	timer.Simple(1200, function() if self:IsValid() then self:Remove() SystemBroadcast("[BOSS]: The Tyrant was not killed and has left the area!", Color(255,105,105,255), false) end end)
 
 	hook.Add("EntityRemoved", self, function()
-		if (self.breathing) then
+		if self.breathing then
 			self.breathing:Stop()
 			self.breathing = nil
 		end
@@ -142,7 +146,7 @@ function ENT:RunBehaviour()
 			local trace = util.TraceHull(data)
 			local entity = trace.Entity
 
-	if math.random( 1,1000) < 25 then
+	if math.random(1,1000) < 25 then
 	local sounds = {}
 	sounds[1] = (self.Idle1)
 	sounds[2] = (self.Idle2)
@@ -157,10 +161,11 @@ function ENT:RunBehaviour()
 			self.loco:FaceTowards(target:GetPos())
 
 
-			if (self:GetRangeTo(target) <= 400 && self.nextslam < CurTime() && self:HasLOS() ) then 
+			if (self:GetRangeTo(target) <= 400 && self.nextslam < CurTime() && self:HasLOS()) then 
 
 			self:StartActivity(ACT_RANGE_ATTACK1)
 				self:TimedEvent(3.2, function()
+					if not (self:IsValid() && self:Health() > 0) then return end
 					self:EmitSound("npc/env_headcrabcanister/explosion.wav", 140, 100)
 					local effectdata = EffectData()
 					effectdata:SetOrigin(self:GetPos())
@@ -424,6 +429,7 @@ function ENT:OnKilled(damageInfo)
 	end
 */
 
+	self:SetColor(Color(255,255,255,255))
 	self:EmitSound(table.Random(deathSounds), 100, math.random(95, 105))
 	self:BecomeRagdoll(damageInfo)
 end
@@ -438,7 +444,11 @@ function ENT:OnInjured(damageInfo)
 	local dmg = damageInfo:GetDamage()
 	local range = self:GetRangeTo(attacker)
 
-	self:EmitSound(table.Random(painSounds), 100, math.random(50, 80))
+	if self.NextPainSound < CurTime() and damageInfo:GetDamage() < self:Health() then
+		self.NextPainSound = CurTime() + 0.8
+		self:EmitSound(table.Random(painSounds), 100, math.random(50, 80))
+	end
+
 	if attacker:IsPlayer() then
 	self.target = attacker
 	end
@@ -467,7 +477,6 @@ function ENT:OnInjured(damageInfo)
 --	self:AlertNearby(attacker, 1000)
 --	end
 end
-
 
 function ENT:AttackProp(targetprops)
 --	local entstoattack = ents.FindInSphere(self:GetPos() + self:GetAngles():Up() * 55, 35)

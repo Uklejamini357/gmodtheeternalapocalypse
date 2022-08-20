@@ -1,90 +1,75 @@
+AddCSLuaFile("cl_init.lua")
+AddCSLuaFile("shared.lua")
+AddCSLuaFile("sh_translate.lua")
+AddCSLuaFile("sh_items.lua")
+AddCSLuaFile("sh_loot.lua")
+AddCSLuaFile("sh_spawnables.lua")
+AddCSLuaFile("sh_config.lua")
+AddCSLuaFile("client/cl_scoreboard.lua")
+AddCSLuaFile("client/cl_hud.lua")
+AddCSLuaFile("client/cl_createfaction.lua")
+AddCSLuaFile("client/cl_modelsmenu.lua")
+AddCSLuaFile("client/cl_contextmenu.lua")
+AddCSLuaFile("client/cl_customdeathnotice.lua")
+AddCSLuaFile("client/cl_spawnmenu.lua")
+AddCSLuaFile("client/cl_tradermenu.lua")
+AddCSLuaFile("client/cl_dermahooks.lua")
+AddCSLuaFile("client/cl_lootmenu.lua")
+AddCSLuaFile("client/cl_adminmenu.lua")
+AddCSLuaFile("client/cl_deathscreen.lua")
+AddCSLuaFile("client/cl_statsmenu.lua")
+AddCSLuaFile("client/cl_net.lua")
 
-AddCSLuaFile( "cl_init.lua" )
-AddCSLuaFile( "shared.lua" )
-AddCSLuaFile( "sh_translate.lua" )
-AddCSLuaFile( "sh_items.lua" )
-AddCSLuaFile( "sh_loot.lua" )
-AddCSLuaFile( "sh_spawnables.lua" )
-AddCSLuaFile( "sh_config.lua" )
-AddCSLuaFile( "client/cl_scoreboard.lua" )
-AddCSLuaFile( "client/cl_hud.lua" )
-AddCSLuaFile( "client/cl_createfaction.lua" )
-AddCSLuaFile( "client/cl_modelsmenu.lua" )
-AddCSLuaFile( "client/cl_contextmenu.lua" )
-AddCSLuaFile( "client/cl_customdeathnotice.lua" )
-AddCSLuaFile( "client/cl_spawnmenu.lua" )
-AddCSLuaFile( "client/cl_tradermenu.lua" )
-AddCSLuaFile( "client/cl_dermahooks.lua" )
-AddCSLuaFile( "client/cl_lootmenu.lua" )
-AddCSLuaFile( "client/cl_adminmenu.lua" )
-AddCSLuaFile( "client/cl_deathscreen.lua" )
-AddCSLuaFile( "client/cl_net.lua" )
 
 
-
-include( "shared.lua" )
-include( "sh_items.lua" )
-include( "sh_loot.lua" )
-include( "sh_spawnables.lua" )
-include( "sh_config.lua" )
-include( "server/netstuff.lua" )
-include( "server/server_util.lua" )
-include( "server/config.lua" )
-include( "server/commands.lua" )
-include( "server/admincmd.lua" )
-include( "server/player_data.lua" )
-include( "server/player_inventory.lua" )
-include( "server/player_props.lua" )
-include( "server/player_vault.lua" )
-include( "server/npcspawns.lua" )
-include( "server/traders.lua" )
-include( "server/airdrops.lua" )
-include( "server/factions.lua" )
-include( "server/loot_system.lua" )
-include( "server/debug.lua" )
-include( "server/weather_events.lua" )
-include( "server/specialstuff.lua" )
-include( "server/spawnpoints.lua" )
-include( "server/nodeathsound.lua" )
-include( "server/crafting.lua" )
-
-resource.AddWorkshop("128089118") -- m9k assault rifles
-resource.AddWorkshop("128091208") -- m9k heavy weapons
-resource.AddWorkshop("128093075") -- m9k small arms pack
-resource.AddWorkshop("355101935") -- stalker playermodels
-resource.AddWorkshop("411284648") -- gamemode content pack
-resource.AddWorkshop("448170926") -- swep pack
-resource.AddWorkshop("1270991543") -- armor models
-resource.AddWorkshop("1680884607") -- project stalker sounds 
-resource.AddWorkshop("2438451886") -- stalker item models pack
+include("shared.lua")
+include("sh_translate.lua")
+include("sh_items.lua")
+include("sh_loot.lua")
+include("sh_spawnables.lua")
+include("sh_config.lua")
+include("server/netstuff.lua")
+include("server/server_util.lua")
+include("server/config.lua")
+include("server/commands.lua")
+include("server/admincmd.lua")
+include("server/player_data.lua")
+include("server/player_inventory.lua")
+include("server/player_props.lua")
+include("server/player_vault.lua")
+include("server/npcspawns.lua")
+include("server/traders.lua")
+include("server/airdrops.lua")
+include("server/factions.lua")
+include("server/loot_system.lua")
+include("server/debug.lua")
+include("server/weather_events.lua")
+include("server/specialstuff.lua")
+include("server/spawnpoints.lua")
+include("server/nodeathsound.lua")
+include("server/crafting.lua")
 
 
 --include("time_weather.lua")
 
 
 Factions = Factions or {}
-
 DEBUG = false
 
-
-function GM:ShowHelp( ply )
+function GM:ShowHelp(ply)
 
 	ply:SendLua( "hook.Run( 'StartSearch' )" )
 
 end
 
-function GM:ShowTeam( ply )
-
+function GM:ShowTeam(ply)
 	if !SuperAdminCheck(ply) then return false end
-	ply:SendLua( "AdminMenu()" )
-	ply:ConCommand( "playgamesound buttons/button24.wav" )
-
+	ply:SendLua("AdminMenu()")
+	ply:ConCommand("playgamesound buttons/button24.wav")
 end
 
-function GM:ShowSpare1( ply )
-
-	ply:SendLua( "DropGoldMenu()" )
-
+function GM:ShowSpare1(ply)
+	ply:SendLua("DropGoldMenu()")
 end
 
 function CalculateStartingHealth(ply)
@@ -121,7 +106,7 @@ function CalculateJumpPower(ply)
 	end
 end
 
-function GM:OnPlayerHitGround( ply, inWater, onFloater, speed )
+function GM:OnPlayerHitGround(ply, inWater, onFloater, speed)
     if speed > (400 + (2 * ply.StatAgility)) then
         ply:ViewPunch(Angle(5, 0, 0))
 		if !ply:HasGodMode() then
@@ -154,8 +139,8 @@ function GM:Think()
 
 		local endurance = ((ply.StatEndurance - (0.15 * ply.StatSpeed)) / 500)
 		-- hunger, thirst, fatigue, infection
-		ply.Hunger = math.Clamp( ply.Hunger - (0.065 * (1 - (ply.StatSurvivor * 0.04)) ), 0, 10000 )
-		ply.Thirst = math.Clamp( ply.Thirst - (0.0782 * (1 - (ply.StatSurvivor * 0.0425)) ), 0, 10000 )
+		ply.Hunger = math.Clamp(ply.Hunger - (0.065 * (1 - (ply.StatSurvivor * 0.04)) ), 0, 10000)
+		ply.Thirst = math.Clamp(ply.Thirst - (0.0782 * (1 - (ply.StatSurvivor * 0.0425)) ), 0, 10000)
 
 		if !timer.Exists("DyingFromStats"..ply:UniqueID()) and (ply.Thirst <= 0 or ply.Hunger <= 0 or ply.Fatigue >= 10000 or ply.Infection >= 10000) and ply:Alive() then
 			timer.Create("DyingFromStats"..ply:UniqueID(), 30, 1, function()
@@ -165,13 +150,13 @@ function GM:Think()
 			timer.Destroy("DyingFromStats"..ply:UniqueID())
 		end
 
-		ply.Fatigue = math.Clamp( ply.Fatigue + (0.045 * (1 - (ply.StatSurvivor * 0.035)) ), 0, 10000 )
+		ply.Fatigue = math.Clamp(ply.Fatigue + (0.045 * (1 - (ply.StatSurvivor * 0.035))), 0, 10000)
 
-		--random chance of getting infected per tick is extremely rare, but has chance if survived for more than 20 minutes, can decrease chance by increasing immunity skill level
+		--random chance of getting infected per tick is extremely rare, but has chance if survived for more than 10 minutes, can decrease chance of this happening by increasing immunity skill level
 		local infectionchance = math.random(0, 2000000 + (100000 * ply.StatImmunity) - (CurTime() - ply.SurvivalTime))
 		if (infectionchance <= 0 and math.floor(CurTime() - ply.SurvivalTime) >= 600) and ply.Infection <= 0 and ply:Alive() then
-			print(ply:Nick().." has caught infection randomly!")
-			SendChat(ply, "You have caught infection randomly!")
+			print(ply:Nick().." has caught infection!")
+			SendChat(ply, translate.Get("PlyCaughtInfection"))
 		end
 		if (ply.Infection > 0 or (infectionchance <= 0 and math.floor(CurTime() - ply.SurvivalTime) >= 600)) and ply:Alive() then
 			ply.Infection = math.Clamp( ply.Infection + (0.1176 * (1 - (ply.StatImmunity * 0.04)) ), 0, 10000 )
@@ -239,12 +224,13 @@ function GM:Think()
 	end
 end
 
-function GM:InitPostEntity( )
-	RunConsoleCommand( "mp_falldamage", "1" )
-	RunConsoleCommand( "sbox_godmode", "0" )
-	RunConsoleCommand( "sbox_plpldamage", "0" )
-	RunConsoleCommand( "M9KDefaultClip", "0" ) --it's set to 0 so the users don't abuse use and drop commands on m9k weapons over and over again
-/*--Don't disable this function unless you want to have some fun
+function GM:InitPostEntity()
+	RunConsoleCommand("mp_falldamage", "1")
+	RunConsoleCommand("sbox_godmode", "0")
+	RunConsoleCommand("sbox_plpldamage", "0")
+	RunConsoleCommand("M9KDefaultClip", "0") --it's set to 0 so the users don't abuse use and drop commands on m9k weapons over and over again
+	RunConsoleCommand("sv_defaultdeployspeed", "1")
+--Don't disable this function unless you want to have some fun
 	for k, v in pairs( ents.FindByClass( "npc_*" ) ) do
 		v:Remove()
 	end
@@ -256,9 +242,9 @@ function GM:InitPostEntity( )
 	end
 	for k, v in pairs( ents.FindByClass( "prop_physics" ) ) do
 		v.maxhealth = 2000
-		v:SetHealth( 2000 )
+		v:SetHealth(2000)
 	end
-*/
+
 end
 
 function GM:PlayerDisconnected( ply )
@@ -268,7 +254,7 @@ function GM:PlayerDisconnected( ply )
 	if ply.Bounty >= 5 then
 	local cashloss = ply.Bounty * math.Rand(0.3, 0.4)
 	local bountyloss = ply.Bounty - cashloss
-	print( "".. ply:Nick() .." has left the server with "..ply.Bounty.." bounty and dropped money worth of "..math.floor(cashloss).." "..Config[ "Currency" ].."s!" )
+	print(ply:Nick() .." has left the server with "..ply.Bounty.." bounty and dropped money worth of "..math.floor(cashloss).." "..Config[ "Currency" ].."s!")
 
 	local EntDrop = ents.Create( "ate_cash" )
 		EntDrop:SetPos( ply:GetPos() + Vector(0, 0, 10))
@@ -309,7 +295,7 @@ end
 
 function GM:PlayerConnect( name, ip )
 --	SendAll( name .. " has joined the server." )
-SystemBroadcast(name.." has joined the server", Color(255,255,155,255), false)
+SystemBroadcast(translate.Format("PlayerHasJoined", name), Color(255,255,155,255), false)
 end
 
 function GM:OnReloaded()
@@ -376,7 +362,7 @@ function GM:PlayerInitialSpawn( ply )
 	
 	TEANetUpdateStatistics(ply)
 
-	SystemBroadcast(ply:Nick().." has spawned into the game", Color(255,255,155,255), false)
+	SystemBroadcast(translate.Format("PlayerHasSpawned", ply:Nick()), Color(255,255,155,255), false)
 	ForceEquipArmor(ply, ply.EquippedArmor)
 
 end
@@ -416,18 +402,18 @@ local function FindGoodSpawnPoint( e )
 	return goodspawn
 end
 
-function GM:PlayerSpawn( ply )
-	self.BaseClass:PlayerSpawn( ply )
-	player_manager.SetPlayerClass( ply, "player_ate" )
+function GM:PlayerSpawn(ply)
+	self.BaseClass:PlayerSpawn(ply)
+	player_manager.SetPlayerClass(ply, "player_ate" )
 
 	ply.SlowDown = 0
 	ply.IsAlive = 1
-	RecalcPlayerModel( ply )
+	RecalcPlayerModel(ply)
 
-	for k, v in pairs(ents.FindByClass( "bed") ) do
+	for k, v in pairs(ents.FindByClass("bed") ) do
 		if v.Owner and v.Owner:IsValid() and v.Owner == ply then
-			local piss = FindGoodSpawnPoint( v )
-			if piss then ply:SetPos( piss ) end
+			local bedspawnpoint = FindGoodSpawnPoint( v )
+			if bedspawnpoint then ply:SetPos(bedspawnpoint) end
 		end
 	end
 
@@ -436,16 +422,16 @@ function GM:PlayerSpawn( ply )
 	local tea_server_spawnprotection = GetConVar("tea_server_spawnprotection")
 	local tea_server_spawnprotection_duration = GetConVar("tea_server_spawnprotection_duration")
 
-	if tea_server_spawnprotection_duration:GetInt() > 0 and tea_server_spawnprotection:GetInt() >= 1 then
+	if tea_server_spawnprotection_duration:GetFloat() > 0 and tea_server_spawnprotection:GetInt() >= 1 then
 		if !ply:Alive() then return end
 		ply:GodEnable()
-		ply:PrintMessage(HUD_PRINTCENTER, "Spawn protection enabled for "..tea_server_spawnprotection_duration:GetString().." second(s)")
+		ply:PrintMessage(HUD_PRINTCENTER, translate.Format("PlySpawnProtEnabled", tea_server_spawnprotection_duration:GetFloat()))
 	end
-	if tea_server_spawnprotection_duration:GetInt() > 0 and tea_server_spawnprotection:GetInt() > 0 then
-		timer.Create("IsSpawnProtectionTimerEnabled"..ply:UniqueID(), tea_server_spawnprotection_duration:GetString(), 1, function()
+	if tea_server_spawnprotection_duration:GetFloat() > 0 and tea_server_spawnprotection:GetInt() > 0 then
+		timer.Create("IsSpawnProtectionTimerEnabled"..ply:UniqueID(), tea_server_spawnprotection_duration:GetFloat(), 1, function()
 		if !ply:Alive() then return end
 		ply:GodDisable()
-		ply:PrintMessage(HUD_PRINTCENTER, "Spawn protection expired")
+		ply:PrintMessage(HUD_PRINTCENTER, translate.Get("PlySpawnProtExpired"))
 		timer.Destroy("IsSpawnProtectionTimerEnabled"..ply:UniqueID())
 		end)
 	end
@@ -459,8 +445,8 @@ function GM:PlayerSpawn( ply )
 	end)
 
 	ply:SetNWBool("pvp", false)
-	ply:SetPvPGuarded( 0 )
-	ply:SetPlayerColor( Vector(cl_playercolor) )
+	ply:SetPvPGuarded(0)
+	ply:SetPlayerColor(Vector(cl_playercolor))
 	CalculateStartingHealth(ply)
 	CalculateMaxArmor(ply)
 	CalculateJumpPower(ply)
@@ -494,7 +480,7 @@ if !ItemsList[ply.EquippedArmor] or ItemsList[ply.EquippedArmor]["ArmorStats"]["
 		ply.ChosenModel = table.Random(DefaultModels)
 	end
 
-	ply:SetModel( ply.ChosenModel )
+	ply:SetModel(ply.ChosenModel)
 	return false
 end
 
@@ -505,14 +491,14 @@ if !models[ply.ChosenModel] then ply.ChosenModel = table.Random(models) ply:SetM
 
 end
 
-function GM:PlayerLoadout( ply )
-	ply:Give( "ate_fists" )
-	ply:Give( "ate_buildtool" )
+function GM:PlayerLoadout(ply)
+	ply:Give("ate_fists")
+	ply:Give("ate_buildtool")
 	if SuperAdminCheck(ply) then -- Superadmins are given physgun on their spawn
 		ply:Give("weapon_physgun")
 	end
 	
-	ply:SelectWeapon( "ate_fists" )
+	ply:SelectWeapon("ate_fists")
 end
 
 -- not really used but left in for debug functions eg. testzombies
@@ -535,6 +521,8 @@ end
 
 function RecalcPlayerSpeed(ply)
 local armorspeed = 0
+local walkspeed = Config["WalkSpeed"]
+local runspeed = Config["RunSpeed"]
 local plyarmor = ply:GetNWString("ArmorType")
 local tea_server_walkspeed = GetConVar("tea_server_walkspeed")
 local tea_server_runspeed = GetConVar("tea_server_runspeed")
@@ -545,11 +533,12 @@ local armortype = ItemsList[plyarmor]
 armorspeed = tonumber(armortype["ArmorStats"]["speedloss"])
 end
 
+--maybe i'll get to reworking it so when user's walkspeed is around like 133 they will have slow walk speed set to 75% of their walk speed
 if ply.SlowDown == 1 then
-	GAMEMODE:SetPlayerSpeed( ply, ((tea_server_walkspeed:GetInt() * 0.6) - (armorspeed / 1.2)) + ply.StatSpeed * 2.1, ((tea_server_runspeed:GetInt() * 0.6) - armorspeed / 0.6) + ply.StatSpeed * 4.2 )
+	GAMEMODE:SetPlayerSpeed(ply, ((walkspeed * 0.6) - (armorspeed / 1.2)) + ply.StatSpeed * 2.1, ((runspeed * 0.6) - armorspeed / 0.6) + ply.StatSpeed * 4.2 )
 	ply:SetSlowWalkSpeed(60)
 else
-	GAMEMODE:SetPlayerSpeed( ply, (tea_server_walkspeed:GetInt() - (armorspeed / 2)) + ply.StatSpeed * 3.5, (tea_server_runspeed:GetInt() - armorspeed) + ply.StatSpeed * 7 )
+	GAMEMODE:SetPlayerSpeed(ply, (walkspeed - (armorspeed / 2)) + ply.StatSpeed * 3.5, (runspeed - armorspeed) + ply.StatSpeed * 7 )
 	ply:SetSlowWalkSpeed(100)
 end
 end
@@ -581,12 +570,32 @@ local chance = 0
 end
 CheckForDerp()
 
+function GM:AddResources()
+	for _, filename in pairs(file.Find("sound/theeternalapocalypse/*.wav", "GAME")) do
+		resource.AddFile("sound/theeternalapocalypse/*.wav"..filename)
+	end
+	for _, filename in pairs(file.Find("sound/theeternalapocalypse/*.mp3", "GAME")) do
+		resource.AddFile("sound/theeternalapocalypse/*.mp3"..filename)
+	end
+	for _, filename in pairs(file.Find("sound/theeternalapocalypse/*.ogg", "GAME")) do
+		resource.AddFile("sound/theeternalapocalypse/*.ogg"..filename)
+	end
+	resource.AddWorkshop("128089118") -- m9k assault rifles
+	resource.AddWorkshop("128091208") -- m9k heavy weapons
+	resource.AddWorkshop("128093075") -- m9k small arms pack
+	resource.AddWorkshop("355101935") -- stalker playermodels
+	resource.AddWorkshop("411284648") -- gamemode content pack
+	resource.AddWorkshop("448170926") -- swep pack
+	resource.AddWorkshop("1270991543") -- armor models
+	resource.AddWorkshop("1680884607") -- project stalker sounds 
+	resource.AddWorkshop("2438451886") -- stalker item models pack
+end
 
-print( "\n==============================================\n" )
-print( GM.Name.." ("..GM.AltName..") Gamemode Loaded Successfully\n" )
-print( "Made by "..GM.Author.."\n" )
-print( "Original Creator: LegendofRobbo\n" )
-print( "Version: "..GM.Version.."\n")
-print( "Github: https://github.com/Uklejamini357/gmodtheeternalapocalypse\n" )
-print( "Be sure to check out github site for new updates\n" )
-print( "==============================================\n" )
+print("\n==============================================\n")
+print(GM.Name.." ("..GM.AltName..") Gamemode Loaded Successfully\n")
+print("Made by "..GM.Author.."\n")
+print("Original Creator: LegendofRobbo\n")
+print("Version: "..GM.Version.."\n")
+print("Github: https://github.com/Uklejamini357/gmodtheeternalapocalypse\n")
+print("Be sure to check out github site for new updates\n")
+print("==============================================\n")

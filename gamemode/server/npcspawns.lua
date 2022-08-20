@@ -228,24 +228,24 @@ end
 end
 hook.Add("EntityTakeDamage", "StoreAttacker", StoreAttacker)
 
-function NPCReward( ent )
-local tea_server_xpreward = GetConVar( "tea_server_xpreward" )
-local tea_server_moneyreward = GetConVar( "tea_server_moneyreward" )
+function NPCReward(ent)
+local tea_server_xpreward = GetConVar("tea_server_xpreward")
+local tea_server_moneyreward = GetConVar("tea_server_moneyreward")
 
 	if ( ent.Type == "nextbot" or ent:IsNPC() ) and (ent.XPReward and ent.MoneyReward) then
 		if ent.LastAttacker and ent.LastAttacker:IsValid() then
-		Payout( ent.LastAttacker, ent.XPReward * tea_server_xpreward:GetString(), ent.MoneyReward * tea_server_moneyreward:GetString() )
+		Payout( ent.LastAttacker, ent.XPReward * tea_server_xpreward:GetFloat(), ent.MoneyReward * tea_server_moneyreward:GetFloat() )
 		ent.LastAttacker.ZKills = ent.LastAttacker.ZKills + 1
 		TEANetUpdateStatistics(ent.LastAttacker)
 		elseif ent.DamagedBy then
 			for k, v in pairs(ent.DamagedBy) do
-				local pay = tonumber(v / 4)
-				Payout(k, math.Round(pay * tea_server_xpreward:GetString()), math.Round(pay * tea_server_moneyreward:GetString()))
+				local pay = tonumber(v / 4)	-- i really need to rework this one since doing 4 damage to bosses grants +1XP and +1$ reward
+				Payout(k, math.Round(pay * tea_server_xpreward:GetFloat()), math.Round(pay * tea_server_moneyreward:GetFloat()))
 			end
 
-			local EntDrop = ents.Create( "loot_cache_boss" )
-			EntDrop:SetPos( ent:GetPos() + Vector(0, 0, 50) )
-			EntDrop:SetAngles( ent:GetAngles() )
+			local EntDrop = ents.Create("loot_cache_boss")
+			EntDrop:SetPos(ent:GetPos() + Vector(0, 0, 50))
+			EntDrop:SetAngles(ent:GetAngles())
 			EntDrop.LootType = table.Random(LootTableBoss)["Class"]
 			EntDrop:Spawn()
 			EntDrop:Activate()
@@ -256,11 +256,11 @@ hook.Add("EntityRemoved", "killpayouts", NPCReward)
 
 
 function Payout(ply, xp, cash)
-	if( ply:IsPlayer() and ply:IsValid() ) and tonumber(ply.Prestige) >= 1 then
+	if ply:IsPlayer() and ply:IsValid() then
 		local CurXP = ply.XP
 		local CurMoney = ply.Money
-		local XPGain = xp
-		local MoneyGain = cash * 1.05
+		local XPGain = xp * (TEAXPBonus(ply) or 0)
+		local MoneyGain = cash * (TEACashBonus(ply) or 0)
 		local XPBonus = math.floor( XPGain * (ply.StatKnowledge * 0.02) )
 		local MoneyBonus = math.floor( MoneyGain * (ply.StatSalvage * 0.02) )
 
@@ -268,37 +268,11 @@ function Payout(ply, xp, cash)
 		ply.Bounty = ply.Bounty + MoneyGain + MoneyBonus
 		ply:SetNWInt( "PlyBounty", ply.Bounty )
 		
-		print(""..ply:Nick().." gained "..XPGain + XPBonus.." XP ("..XPGain..", +"..XPBonus.." with Knowledge Skill level "..ply.StatKnowledge..", Total "..ply.XP..")")
-		print(""..ply:Nick().." gained "..MoneyGain + MoneyBonus.." "..Config[ "Currency" ].."s to their bounty ("..MoneyGain..", +"..MoneyBonus.." with Salvage Skill level "..ply.StatSalvage..", Total "..ply.Bounty..")")
+		print(ply:Nick().." gained "..XPGain + XPBonus.." XP ("..XPGain..", +"..XPBonus.." with Knowledge Skill level "..ply.StatKnowledge..", Total "..ply.XP..")")
+		print(ply:Nick().." gained "..MoneyGain + MoneyBonus.." "..Config["Currency"].."s to their bounty ("..MoneyGain..", +"..MoneyBonus.." with Salvage Skill level "..ply.StatSalvage..", Total "..ply.Bounty..")")
 
-		if tonumber(ply.Level) < 50 + (10 * ply.Prestige) then
-			PlayerGainLevel( ply )
-		end
-		
-		net.Start("Payout")
-		net.WriteFloat( XPGain + XPBonus )
-		net.WriteFloat( MoneyGain + MoneyBonus )
-		net.Send( ply )
-
-		TEANetUpdatePeriodicStats(ply)
-
-	elseif ( ply:IsPlayer() and ply:IsValid() ) then
-		local CurXP = ply.XP
-		local CurMoney = ply.Money
-		local XPGain = xp
-		local MoneyGain = cash
-		local XPBonus = math.floor( XPGain * (ply.StatKnowledge * 0.02) )
-		local MoneyBonus = math.floor( MoneyGain * (ply.StatSalvage * 0.02) )
-
-		ply.XP = CurXP + XPGain + XPBonus
-		ply.Bounty = ply.Bounty + MoneyGain + MoneyBonus
-		ply:SetNWInt( "PlyBounty", ply.Bounty )
-		
-		print(""..ply:Nick().." gained "..XPGain + XPBonus.." XP ("..XPGain..", +"..XPBonus.." with Knowledge Skill level "..ply.StatKnowledge..", Total "..ply.XP..")")
-		print(""..ply:Nick().." gained "..MoneyGain + MoneyBonus.." "..Config[ "Currency" ].."s to their bounty ("..MoneyGain..", +"..MoneyBonus.." with Salvage Skill level "..ply.StatSalvage..", Total "..ply.Bounty..")")
-
-		if tonumber(ply.Level) < 50 + (10 * ply.Prestige) then
-			PlayerGainLevel( ply )
+		if tonumber(ply.Level) < 50 + (5 * ply.Prestige) then
+			PlayerGainLevel(ply)
 		end
 		
 		net.Start("Payout")

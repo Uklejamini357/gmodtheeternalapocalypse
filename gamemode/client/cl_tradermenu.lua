@@ -97,7 +97,7 @@ end
 	MyWeight:SetPos( 10, TraderFrame:GetTall() - 42)
 	MyWeight:SetSize( 350, 25)
 	MyWeight:SetColor( Color(255,255,255,255) )
-	MyWeight:SetText("Currently Carrying: "..CalculateWeightClient().."kg / "..CalculateMaxWeightClient().."kg")
+	MyWeight:SetText(translate.Get("CurrentlyCarrying").." "..CalculateWeightClient().."kg / "..CalculateMaxWeightClient().."kg")
 	
 	MyMoney = vgui.Create( "DLabel", TraderFrame )
 	MyMoney:SetFont( "TargetID" )
@@ -141,7 +141,7 @@ end
 	
 	function DoTraderList(cat, parent)
 		for k, v in SortedPairsByMemberValue( ItemsList, "Cost" ) do
-			if v.Supply == -1 or v.Category != cat then continue end -- skip items with -1 supply or that are in the wrong category
+			if v.Supply <= -1 or v.Category != cat then continue end -- skip items with -1 supply or that are in the wrong category
 			--	if v.Category != cat then continue end
 			
 			local ItemBackground = vgui.Create( "DPanel" )
@@ -201,8 +201,8 @@ end
 
 --	if v.Supply != -1 then
 			local BuyButton = vgui.Create("DButton", ItemBackground)
-			BuyButton:SetSize( 60, 40 )
-			BuyButton:SetPos( 210, 30 )
+			BuyButton:SetSize(60, 40)
+			BuyButton:SetPos(210, 30)
 			BuyButton:SetText("Buy")
 			BuyButton:SetTextColor(Color(255, 255, 255, 255))
 			BuyButton.Paint = function(panel)
@@ -214,7 +214,7 @@ end
 			net.Start("BuyItem")
 			net.WriteString(k)
 			net.SendToServer()
-			timer.Simple(0.3, function() MyWeight:SetText("Currently Carrying: "..CalculateWeightClient().."kg / "..CalculateMaxWeightClient().."kg") MyMoney:SetText("My Wallet: "..Mymoney) end)
+			timer.Simple(0.3, function() MyWeight:SetText(translate.Get("CurrentlyCarrying").." "..CalculateWeightClient().."kg / "..CalculateMaxWeightClient().."kg") MyMoney:SetText("My Wallet: "..Mymoney) end)
 			end
 --	end
 
@@ -300,7 +300,7 @@ for k, v in SortedPairsByMemberValue( LocalInventory, "Weight", true ) do
 			net.Start("SellItem")
 			net.WriteString(k)
 			net.SendToServer()
-			timer.Simple(0.3, function() MyWeight:SetText("Currently Carrying: "..CalculateWeightClient().."kg / "..CalculateMaxWeightClient().."kg") MyMoney:SetText("My Wallet: "..Mymoney) end)
+			timer.Simple(0.3, function() MyWeight:SetText(translate.Get("CurrentlyCarrying")..": "..CalculateWeightClient().."kg / "..CalculateMaxWeightClient().."kg") MyMoney:SetText("My Wallet: "..Mymoney) end)
 				timer.Simple(0.25, function() 
 					if SellPanel:IsValid() then
 						SellPanel:Clear()
@@ -325,7 +325,7 @@ for k, v in SortedPairsByMemberValue( LocalInventory, "Weight", true ) do
 		net.Start("AddVault")
 		net.WriteString(k)
 		net.SendToServer()
-		timer.Simple(0.4, function() MyWeight:SetText("Currently Carrying: "..CalculateWeightClient().."kg / "..CalculateMaxWeightClient().."kg") MyMoney:SetText("My Wallet: "..Mymoney) end)
+		timer.Simple(0.4, function() MyWeight:SetText(translate.Get("CurrentlyCarrying").." "..CalculateWeightClient().."kg / "..CalculateMaxWeightClient().."kg") MyMoney:SetText("My Wallet: "..Mymoney) end)
 		timer.Simple(0.4, function() MyVaultWeight:SetText("Vault Capacity: "..CalculateVaultClient().."kg / "..Config["VaultSize"].."kg") end)
 		timer.Simple(0.4, function() 
 			if SellPanel:IsValid() then
@@ -410,7 +410,7 @@ local function DoVaultPanel()
 			net.Start("WithdrawVault")
 			net.WriteString(k)
 			net.SendToServer()
-	timer.Simple(0.4, function() MyWeight:SetText("Currently Carrying: "..CalculateWeightClient().."kg / "..CalculateMaxWeightClient().."kg") MyMoney:SetText("My Wallet: "..Mymoney) end)
+	timer.Simple(0.4, function() MyWeight:SetText(translate.Get("CurrentlyCarrying").." "..CalculateWeightClient().."kg / "..CalculateMaxWeightClient().."kg") MyMoney:SetText("My Wallet: "..Mymoney) end)
 	timer.Simple(0.4, function() MyVaultWeight:SetText("Vault Capacity: "..CalculateVaultClient().."kg / "..Config["VaultSize"].."kg") end)
 				timer.Simple(0.4, function() 
 					if VaultPanel:IsValid() then

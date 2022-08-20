@@ -1,4 +1,4 @@
--- this is one dog ugly format but it saves a bunch of page space so whatever
+-- this one is ugly format but it saves a bunch of page space so whatever
 FLIMSYPROPS = {}
 
 FLIMSYPROPS["models/props_debris/wood_board04a.mdl"] = {NAME = "Plank - Thin", COST = 20, TOUGHNESS = 1}

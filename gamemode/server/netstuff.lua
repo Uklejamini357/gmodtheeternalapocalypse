@@ -26,7 +26,7 @@ util.AddNetworkString("RecvFactions") -- see factions.lua and cl_scoreboard.lua
 util.AddNetworkString("CreateFaction") -- see factions.lua
 util.AddNetworkString("JoinFaction") -- see factions.lua
 util.AddNetworkString("GiveLeader")
-util.AddNetworkString("InviteFaction") -- gee i wonder what this could be for
+util.AddNetworkString("InviteFaction") -- invite faction
 util.AddNetworkString("KickFromFaction")
 util.AddNetworkString("DisbandFaction")
 util.AddNetworkString("WraithBlind") -- rape your vision when you get hit by a wraith
@@ -167,7 +167,7 @@ local perk2 = "Stat"..perk
 		CalculateMaxArmor(ply)
 		CalculateJumpPower(ply)
 		print(ply:Nick().." used 1 skill point on "..perk.." skill ("..tonumber(ply.StatPoints).." skill points remaining)")
-		SendChat( ply, "You increased your " .. perk .. " skill by 1 point!" )
+		SendChat( ply, "You increased your " ..perk.. " skill by 1 point!" )
  		RecalcPlayerSpeed(ply)
 		FullyUpdatePlayer( ply )
 end)

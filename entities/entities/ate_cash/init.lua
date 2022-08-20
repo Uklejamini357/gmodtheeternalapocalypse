@@ -96,14 +96,7 @@ activator.Money = activator.Money + cash
 
 SystemMessage(activator, "You picked up a box containing "..cash.." Dollars!", Color(205,255,205,255), true)
 
-net.Start("UpdatePeriodicStats")
-net.WriteFloat( activator.Level )
-net.WriteFloat( activator.Prestige )
-net.WriteFloat( activator.Money )
-net.WriteFloat( activator.XP )
-net.WriteFloat( activator.StatPoints )
-net.WriteFloat( activator.Bounty )
-net.Send( activator )
+TEANetUpdatePeriodicStats(activator)
 
 
 activator:EmitSound("items/itempickup.wav", 100, 100)

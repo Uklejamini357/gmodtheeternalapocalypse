@@ -58,9 +58,9 @@ LANGUAGE.DoPrestige = "Prestige!"
 --Prop Menu
 
 LANGUAGE.PropMNPSheet1 = "Flimsy Props"
-LANGUAGE.PropMNPSheet1_d = "Flimsy props aren't particularly strong and can be damaged by everything.  On the upside they are dirt cheap."
+LANGUAGE.PropMNPSheet1_d = "Flimsy props aren't particularly strong and can be damaged by everything. On the upside they are dirt cheap."
 LANGUAGE.PropMNPSheet2 = "Strong Props"
-LANGUAGE.PropMNPSheet2_d = "Strong props can only be damaged by explosives or zombie attacks.  They are a bit more costly than flimsy props though."
+LANGUAGE.PropMNPSheet2_d = "Strong props can only be damaged by explosives or zombie attacks. They are a bit more costly than flimsy props though."
 LANGUAGE.PropMNPSheet3 = "Faction Structures"
 LANGUAGE.PropMNPSheet3_d = "This menu contains special structres such as functional doors, base components etc."
 LANGUAGE.PlaceBlueprint = "Place Blueprint"
@@ -121,6 +121,12 @@ LANGUAGE.TakeItems = "Take Items"
 LANGUAGE.Take = "Take"
 LANGUAGE.StoreItems = "Store Items"
 
+--Trader
+
+LANGUAGE.TraderSoldItem = "Sold item '%s' for %d %ss!"
+LANGUAGE.TraderBoughtItem = "Purchased item '%s' for %d %ss!"
+
+
 --Items (too much to do, adding translates for this is just literally a lot harder than i thought)
 
 LANGUAGE.Bandage = "Bandage"
@@ -160,7 +166,7 @@ LANGUAGE.Burger_d = "Can i haz cheez burger? Restores 30% health, 100% hunger an
 LANGUAGE.Hotdog = "Hot Dog"
 LANGUAGE.Hotdog_d = "A Hot Dog. Restores 20% health, 80% hunger, 10% thirst, 40% stamina and recovers 15% of sleep."
 LANGUAGE.Donut = "Donut"
-LANGUAGE.Donut_d = "A donut. Restores 2% health, 45% hunger, 5% stamina and recovers 1% of sleep, but dehydrates 7% of thirst."
+LANGUAGE.Donut_d = "A donut. Restores 2% health, 25% hunger, 5% stamina and recovers 1% of sleep, but dehydrates 7% of thirst."
 LANGUAGE.Bed = "Bed"
 LANGUAGE.Bed_d = "Allows you to sleep and set your spawnpoint (your spawnpoint depends on your bed location).\nHeals by 10% when used."
 LANGUAGE.SleepingBag = "Sleeping Bag"
@@ -360,17 +366,25 @@ LANGUAGE.M9KColtPython_d = "Colt Python from M9k Small Arms. Uses Magnum ammo."
 LANGUAGE.M9kGlock18 = "[M9k] Glock 18"
 LANGUAGE.M9kGlock18_d = "Glock 18 from M9k Small Arms. Uses Pistol ammo."
 LANGUAGE.M9kHK45C = "[M9k] HK45C"
-LANGUAGE.M9kHK45C_d = "[M9k] HK45C"
+LANGUAGE.M9kHK45C_d = "HK45C from M9k Small Arms. Uses Pistol ammo."
 LANGUAGE.M9kBerettaM92 = "[M9k] Beretta M92"
 LANGUAGE.M9kBerettaM92_d = "Beretta M92 from M9k Small Arms. Uses Pistol ammo."
 LANGUAGE.M9kP08Luger = "[M9k] P08 Luger"
+LANGUAGE.M9kP08Luger_d = "P08 Luger from M9k Small Arms. Uses Pistol ammo."
 LANGUAGE.M9kRagingBull = "[M9k] Raging Bull"
+LANGUAGE.M9kRagingBull_d = "Raging Bull from M9k Small Arms. Uses Magnum ammo."
 LANGUAGE.M9kScopedTaurus = "[M9k] Scoped Raging Bull"
+LANGUAGE.M9kScopedTaurus_d = "Scoped Raging Bull from M9k Small Arms. Uses Magnum ammo."
 LANGUAGE.M9kRemington1858 = "[M9k] Remington 1858"
+LANGUAGE.M9kRemington1858_d = "Remington 1858 from M9k Small Arms. Uses Magnum ammo."
 LANGUAGE.M9kSWModel3Russian = "[M9k] S&W Model 3 Russian"
+LANGUAGE.M9kSWModel3Russian_d = "S&W Model 3 Russian from M9k Small Arms. Uses Magnum ammo."
 LANGUAGE.M9kSWModel500 = "[M9k] S&W Model 500"
+LANGUAGE.M9kSWModel500_d = "S&W Model 500 from M9k Small Arms. Uses Magnum ammo."
 LANGUAGE.M9kSWModel627 = "[M9k] S&W Model 627"
+LANGUAGE.M9kSWModel627_d = "S&W Model 627 from M9k Small Arms. Uses Magnum ammo."
 LANGUAGE.M9kSigSauerP229R = "[M9k] Sig Sauer P229R"
+LANGUAGE.M9kSigSauerP229R_d = "Sig Sauer P229R from M9k Small Arms. Uses Pistol ammo."
 LANGUAGE.M9kACR = "[M9k] ACR"
 LANGUAGE.M9kAK47 = "[M9k] AK-47"
 LANGUAGE.M9kAK74 = "[M9k] AK-74"
@@ -426,14 +440,6 @@ LANGUAGE.M9kTommyGun = "[M9k] Tommy Gun"
 LANGUAGE.M9kUZI = "[M9k] UZI"
 
 /*
-LANGUAGE.M9kP08Luger_d = 
-LANGUAGE.M9kRagingBull_d = 
-LANGUAGE.M9kScopedTaurus_d = 
-LANGUAGE.M9kRemington1858_d = 
-LANGUAGE.M9kSWModel3Russian_d = 
-LANGUAGE.M9kSWModel500_d = 
-LANGUAGE.M9kSWModel627_d = 
-LANGUAGE.M9kSigSauerP229R_d = 
 LANGUAGE.M9kACR_d = 
 LANGUAGE.M9kAK47_d = 
 LANGUAGE.M9kAK74_d = 
@@ -542,7 +548,7 @@ LANGUAGE.MonolithExoArmor_d = "A set of armor consisting of heavy flak plating s
 LANGUAGE.CS2GogglesArmor = "CS2 Goggles Armor"
 LANGUAGE.CS2GogglesArmor_d = "An experimental armor that provides wearer suitable protection, great battery capacity and increases movement speed of user wearing it.\nProtection: 40%\nSpeed: Increased (1.25)\nAttachment Slots: 3\nBattery: 100\nMax Carry Weight: +5kg"
 
---LootTable
+--LootTable (planning to make rework of loot chat send instead)
 
 LANGUAGE.L_Bandage = "2x Bandages"
 LANGUAGE.L_Medkit = "1x Medkit"
@@ -566,6 +572,22 @@ LANGUAGE.L_FragGrenade = "2x Frag Grenade"
 
 --Item Chat send
 
+LANGUAGE.PlyLevelUp = "Congratulations! You are now level %d, you have gained 1 skill point and %d %ss!"
+LANGUAGE.PlyHasPrestiged = "You have prestiged to Prestige %d! You have gained %d %ss!"
+LANGUAGE.PlayerPrestigedTo = "%s has prestiged to Prestige level %d!"
+LANGUAGE.PlyPrestigedTo1 = "You have prestiged to Prestige %d! You now have 1.05x cash gaining from killing zombies!"
+LANGUAGE.PlyPrestigedTo2 = "You have prestiged to Prestige %d! You now spawn with +5 more health!"
+LANGUAGE.PlyPrestigedTo3 = "You have prestiged to Prestige %d! You now can carry +2kg more!"
+LANGUAGE.PlyPrestigedTo4 = "You have prestiged to Prestige %d! You now have +10 jumppower!"
+LANGUAGE.PlyPrestigedTo5 = "You have prestiged to Prestige %d! You now spawn with +5 more armor!"
+LANGUAGE.PlyPrestigedTo10 = "You have prestiged to Prestige %d! You now can carry +3kg more!"
+LANGUAGE.PlyPrestigedTo15 = "You have prestiged to Prestige %d! You now have 0.95x damage taken from all sources!"
+LANGUAGE.PlyPrestigedTo20 = "You have prestiged to Prestige %d! Everytime you prestige, you start with 5 skill points instead of 0!"
+LANGUAGE.PlyPrestigedTo25 = "You have prestiged to Prestige %d! You now have 1.1x XP gaining multiplier!"
+LANGUAGE.PlyCaughtInfection = "You have caught infection!"
+LANGUAGE.PlayerHasJoined = "%s has joined the server"
+LANGUAGE.PlayerHasSpawned = "%s has spawned into the game"
+LANGUAGE.FactionSelectNewFacLeader = "%s has been randomly selected to be the new leader of %s!"
 LANGUAGE.ItemNoUse = "This is just useless trash"
 LANGUAGE.ItemNoUseWeapon = "I should probably take this to the trader, He might be able to build this thing"
 LANGUAGE.ItemNoUseVehicle = "I should find a vehicle dealer so i can build a vehicle with this"
@@ -578,6 +600,8 @@ LANGUAGE.ItemNoUseCooldownWeapon = "Can't equip weapon while using an item"
 
 --Other
 
+LANGUAGE.PlySpawnProtEnabled = "Spawn protection enabled for %s second(s)"
+LANGUAGE.PlySpawnProtExpired = "Spawn protection expired"
 LANGUAGE.description = "No Description"
 LANGUAGE.Total = "Total"
 LANGUAGE.None = "None"

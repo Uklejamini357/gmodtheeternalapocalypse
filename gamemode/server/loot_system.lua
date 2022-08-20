@@ -84,10 +84,10 @@ if ( LootCount() >= tea_config_maxcaches:GetInt() ) then return false end -- don
 			for k, v in RandomPairs( LootList ) do
 			if ( LootCount() >= tea_config_maxcaches:GetInt() ) then break end
 				local Booty = string.Explode( ";", v )
-				local pos = util.StringToType( Booty[1], "Vector" )
-				local ang = util.StringToType( Booty[2], "Angle" )
+				local pos = util.StringToType(Booty[1], "Vector")
+				local ang = util.StringToType(Booty[2], "Angle")
 				if math.random(1,20) > 3 then
-					local EntDrop = ents.Create( "loot_cache" )
+					local EntDrop = ents.Create("loot_cache")
 					EntDrop:SetPos( pos )
 					EntDrop:SetAngles( ang )
 					EntDrop.LootType = table.Random(LootTable1)["Class"]
@@ -133,7 +133,7 @@ end
 
 function PlaceInContainer( ply, str, ent )
 if !ply:IsValid() or !ent:IsValid() or !ent.ContainerItems then return end
-if ply:GetPos():Distance( ent:GetPos() ) > 120 then return end
+if ply:GetPos():Distance(ent:GetPos()) > 120 then return end
 if !ItemsList[str] then return end
 
 if ent.ContainerRemoveEmpty then SystemMessage(ply, "You cannot place items into this container! Buy a faction stash if you need item storage!", Color(255,205,205,255), true) return end
@@ -153,54 +153,56 @@ end
 
 
 function WithdrawFromContainer( ply, str, ent )
-if !ply:IsValid() or !ent:IsValid() or !ent.ContainerItems then return end
-if ply:GetPos():Distance( ent:GetPos() ) > 120 then return end
-if !ItemsList[str] or !ent.ContainerItems[str] then return end
+	if !ply:IsValid() or !ent:IsValid() or !ent.ContainerItems then return end
+	if ply:GetPos():Distance( ent:GetPos() ) > 120 then return end
+	if !ItemsList[str] or !ent.ContainerItems[str] then return end
 
-local item = ItemsList[str]
+	local item = ItemsList[str]
 
-if ((CalculateWeight(ply) + item["Weight"]) > CalculateMaxWeight(ply)) then SystemMessage(client, "You don't have enough space for that!", Color(255,205,205,255), true) return end
+	if ((CalculateWeight(ply) + item["Weight"]) > CalculateMaxWeight(ply)) then SystemMessage(client, "You don't have enough space for that!", Color(255,205,205,255), true) return end
 
 
-ent.ContainerItems[str] = ent.ContainerItems[str] - 1
-if ent.ContainerItems[str] < 1 then ent.ContainerItems[str] = nil end
+	ent.ContainerItems[str] = ent.ContainerItems[str] - 1
+	if ent.ContainerItems[str] < 1 then ent.ContainerItems[str] = nil end
 
-SystemGiveItem( ply, str )
-SendInventory( ply )
+	SystemGiveItem(ply, str)
+	SendInventory(ply)
 
 -- airdrops and random loot caches need to be deleted when there's no items left in them
-if ent.ContainerRemoveEmpty and table.Count( ent.ContainerItems ) < 1 then ent.ContainerItems = nil timer.Simple(15, function() if ent:IsValid() then SystemBroadcast("Airdrop crate is gone!", Color(255,105,105,255), true) ent:Remove() end end) end
-
+	if ent.ContainerRemoveEmpty and table.Count(ent.ContainerItems) < 1 then
+		ent.ContainerItems = nil
+		timer.Simple(15, function()
+			if ent:IsValid() then
+				SystemBroadcast("Airdrop crate is gone!", Color(255,105,105,255), true)
+				ent:Remove()
+			end
+		end)
+	end
 end
 
-function OpenContainer( ent, ply )
-if !ent:IsValid() then return end
-if !ent.ContainerItems then SystemMessage(ply, "It's empty!", Color(255,205,205,255), false) return end
-net.Start( "SendCrateItems" )
-net.WriteEntity( ent )
-net.WriteTable( ent.ContainerItems )
-net.WriteBool( !ent.ContainerRemoveEmpty )
-net.Send( ply )
-
+function OpenContainer(ent, ply)
+	if !ent:IsValid() then return end
+	if !ent.ContainerItems then SystemMessage(ply, "It's empty!", Color(255,205,205,255), false) return end
+	net.Start("SendCrateItems")
+	net.WriteEntity(ent)
+	net.WriteTable(ent.ContainerItems)
+	net.WriteBool(!ent.ContainerRemoveEmpty)
+	net.Send(ply)
 end
 
-net.Receive( "UseCrate", function( len, ply )
-local ent = net.ReadEntity()
-local item = net.ReadString()
-local stash = net.ReadBool() or false
+--maybe i will add buildable (or usable) containers in future
+net.Receive( "UseCrate", function(len, ply)
+	local ent = net.ReadEntity()
+	local item = net.ReadString()
+	local stash = net.ReadBool() or false
 
-if !ent:IsValid() or !ent.ContainerItems or !ply:IsValid() or !ply:Alive() then return end
-if stash then
-	PlaceInContainer( ply, item, ent )
-else
-	WithdrawFromContainer( ply, item, ent )
-end
-
-end )
-
-
-
-
+	if !ent:IsValid() or !ent.ContainerItems or !ply:IsValid() or !ply:Alive() then return end
+	if stash then
+		PlaceInContainer(ply, item, ent)
+	else
+		WithdrawFromContainer(ply, item, ent)
+	end
+end)
 
 
 
@@ -217,25 +219,22 @@ this rolls twice from the junk table, selecting a 2 random item classes from it 
 }
 ]]
 
-function RollLootTable( params, maxrolls )
-if not istable(params) then return end
-local maxrolls = maxrolls or -1
-local rolls = 0
+function RollLootTable(params, maxrolls)
+	if not istable(params) then return end
+	local maxrolls = maxrolls or -1
+	local rolls = 0
+	local rolled = {}
+	for k, v in pairs(params) do
+		if !LootTable[k] then ErrorNoHalt("RollLootTable() error: "..k.." is not a valid loot table! see gamemode/sh_loot.lua for more info" ) continue end
+		if rolls >= maxrolls and maxrolls >= 0 then continue end
+		for i = 1, v[1] do
+			local item = table.Random(LootTable[k])
+			local qty = math.random(v[2], v[3])
 
-local rolled = {}
-
-for k, v in pairs(params) do
-	if !LootTable[k] then ErrorNoHalt("RollLootTable() error: "..k.." is not a valid loot table! see gamemode/sh_loot.lua for more info" ) continue end
-	if rolls >= maxrolls and maxrolls >= 0 then continue end
-	for i = 1, v[1] do
-	local item = table.Random( LootTable[k] )
-	local qty = math.random( v[2], v[3] )
-
-	if rolls >= maxrolls and maxrolls >= 0 then continue end
-	if maxrolls >= 0 then rolls = rolls + 1 end
-	if rolled[item] then rolled[item] = rolled[item] + qty else rolled[item] = qty end
-end
-end
-
-return rolled
+			if rolls >= maxrolls and maxrolls >= 0 then continue end
+			if maxrolls >= 0 then rolls = rolls + 1 end
+			if rolled[item] then rolled[item] = rolled[item] + qty else rolled[item] = qty end
+		end
+	end
+	return rolled
 end

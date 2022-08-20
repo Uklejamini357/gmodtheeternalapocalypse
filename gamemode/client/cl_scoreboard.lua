@@ -74,6 +74,7 @@ zmbskilled = zkills
 plyskilled = playerskilled
 plydeaths = playerdeaths
 end)
+
 net.Receive( "UpdatePerks", function( length )
 
 local s1 = net.ReadFloat()
@@ -474,12 +475,12 @@ for k, v in pairs( player.GetAll() ) do
 			plyping:SetText( translate.Get("Ping")..": " .. v:Ping())
 			plyping:SizeToContents()
 		elseif !plyping:IsValid() then
-			timer.Destroy("UpdateScoreboard")
+			timer.Destroy("UpdateScoreboard") --to prevent any error
 		end
 	end)
 
 	local mutechat = vgui.Create("DButton", plypanel)
-		mutechat:SetSize( 45, 24 )
+		mutechat:SetSize( 45, 23 )
 		mutechat:SetPos( 655, 7 )
 		mutechat:SetText(translate.Get("Mute"))
 		mutechat:SetTextColor(Color(255, 255, 255, 255))
@@ -498,13 +499,13 @@ for k, v in pairs( player.GetAll() ) do
 
 		end
 			mutechat.DoClick = function()
-			v:SetMuted( !v:IsMuted() )
+			v:SetMuted(!v:IsMuted())
 			surface.PlaySound("buttons/button9.wav")
 		end
 
 	local invfaction = vgui.Create("DButton", plypanel)
-		invfaction:SetSize( 45, 22 )
-		invfaction:SetPos( 655, 33 )
+		invfaction:SetSize(45, 23)
+		invfaction:SetPos(655, 32)
 		invfaction:SetText(translate.Get("Profile"))
 		invfaction:SetTextColor(Color(255, 255, 255, 255))
 		invfaction.Paint = function(panel)
@@ -518,24 +519,41 @@ for k, v in pairs( player.GetAll() ) do
 			surface.PlaySound("buttons/button7.wav")
 		end
 
+--	in progress
+/*	local checkstats = vgui.Create("DButton", plypanel)
+	checkstats:SetSize( 40, 22 )
+	checkstats:SetPos( 610, 33 )
+	checkstats:SetText("Stats")
+	checkstats:SetTextColor(Color(55, 255, 255, 255))
+	checkstats.Paint = function(panel)
+		surface.SetDrawColor(0, 100, 100 ,255)
+		surface.DrawOutlinedRect(0, 0, checkstats:GetWide(), checkstats:GetTall())
+		surface.SetDrawColor(0, 50, 50 ,155)
+		surface.DrawRect(0, 0, checkstats:GetWide(), checkstats:GetTall())
+	end
+	checkstats.DoClick = function()
+		chat.AddText(Color(255,255,255,255), "Whoops, doesn't work yet. Maybe in next update.")
+		surface.PlaySound("buttons/button9.wav")
+	end*/
+
 
 	local pvp = vgui.Create( "DPanel", plypanel )
-	pvp:SetPos( 625, 7  )
-	pvp:SetSize( 25, 24 )
+	pvp:SetPos(610, 7 )
+	pvp:SetSize(40, 24)
 	pvp.Paint = function() -- Paint function
 		surface.SetDrawColor(150, 0, 0 ,255)
 		surface.DrawOutlinedRect(1, 1, pvp:GetWide() - 1 , pvp:GetTall() - 1)
 		surface.SetDrawColor(100, 0, 0 ,105)
 		if v:Team() == 1 and v:GetNWBool("pvp") == false then
-		draw.DrawText( translate.Get("PvP"), "DermaDefault", 4, 7, Color(55,55,55) )
+		draw.DrawText(translate.Get("PvP"), "DermaDefault", 12, 5, Color(55,55,55) )
 		else
-		draw.DrawText( translate.Get("PvP"), "DermaDefault", 4, 7, Color(255,255,255) )
+		draw.DrawText(translate.Get("PvP"), "DermaDefault", 12, 5, Color(255,255,255) )
 		surface.DrawRect(1, 1, pvp:GetWide() - 1 , pvp:GetTall() - 1)
 		end
 
 	end
 
-	Scores:AddItem( plypanel )
+	Scores:AddItem(plypanel)
 
 end
 
@@ -544,28 +562,28 @@ end
 -----------------------------------------Join Faction---------------------------------------------------------------
 
 
-local FactionList = vgui.Create( "DPanelList", PropertySheet )
-FactionList:SetSize( 650, 250 )
-FactionList:SetPadding( 5 )
-FactionList:SetSpacing( 5 )
-FactionList:EnableHorizontal( false )
-FactionList:EnableVerticalScrollbar( true )
-FactionList:SetPos( 10, 80 )
-FactionList:SetName( "" )
+local FactionList = vgui.Create("DPanelList", PropertySheet)
+FactionList:SetSize(650, 250)
+FactionList:SetPadding(5)
+FactionList:SetSpacing(5)
+FactionList:EnableHorizontal(false)
+FactionList:EnableVerticalScrollbar(true)
+FactionList:SetPos(10, 80)
+FactionList:SetName("")
 
 
-	local plypanel2 = vgui.Create( "DPanel", FactionList )
-	plypanel2:SetPos( 0, 0 )
-	plypanel2:SetSize( 570, 40 )
+	local plypanel2 = vgui.Create("DPanel", FactionList)
+	plypanel2:SetPos(0, 0)
+	plypanel2:SetSize(570, 40)
 	plypanel2.Paint = function() -- Paint function
 		draw.RoundedBoxEx(8,1,1,plypanel2:GetWide(),plypanel2:GetTall(),Color(0, 0, 0, 150), false, false, false, false)
 		surface.SetDrawColor(150, 0, 0 ,255)
 		surface.DrawOutlinedRect(1, 1, plypanel2:GetWide() - 1 , plypanel2:GetTall() - 1)
 	end
 
-	FactionList:AddItem( plypanel2 )
+	FactionList:AddItem(plypanel2)
 
-for k, v in pairs( LocalFactions ) do
+for k, v in pairs(LocalFactions) do
 	if team.NumPlayers(v.index) == 0 then continue end -- ignore empty teams
 
 	local plypanel = vgui.Create( "DPanel", FactionList )
@@ -576,16 +594,15 @@ for k, v in pairs( LocalFactions ) do
 		surface.SetDrawColor(150, 0, 0 ,255)
 		surface.DrawOutlinedRect(1, 1, plypanel:GetWide() - 1 , plypanel:GetTall() - 1)
 		surface.SetDrawColor(team.GetColor(v.index))
-		surface.DrawRect(5, 5,30 ,30)
+		surface.DrawRect(5, 5,30,30)
 		surface.SetDrawColor(0,0,0,255)
 		surface.DrawOutlinedRect( 4, 4, 32, 32)
 	end
 
 	local createfaction = vgui.Create("DButton", plypanel2)
-		createfaction:SetSize( 160, 25 )
-		createfaction:SetPos( 70, 8 )
+		createfaction:SetSize(160, 25)
+		createfaction:SetPos(70, 8)
 		createfaction:SetText(translate.Get("CreateFaction"))
---	   createfaction:SetFont( "TargetIDSmall" )
 		createfaction:SetTextColor(Color(255, 255, 255, 255))
 		createfaction.Paint = function(panel)
 				surface.SetDrawColor(150, 150, 0 ,255)
@@ -603,7 +620,6 @@ for k, v in pairs( LocalFactions ) do
 		managefaction:SetSize( 160, 25 )
 		managefaction:SetPos( 270, 8 )
 		managefaction:SetText(translate.Get("ManageFaction"))
---		managefaction:SetFont( "TargetIDSmall" )
 		managefaction:SetTextColor(Color(255, 255, 255, 255))
 		managefaction.Paint = function(panel)
 				surface.SetDrawColor(150, 50, 150 ,255)
@@ -621,7 +637,6 @@ for k, v in pairs( LocalFactions ) do
 	leavefaction:SetSize( 160, 25 )
 	leavefaction:SetPos( 470, 8 )
 	leavefaction:SetText(translate.Get("LeaveFaction"))
---	   leavefaction:SetFont( "TargetIDSmall" )
 	leavefaction:SetTextColor(Color(255, 255, 255, 255))
 	leavefaction.Paint = function(panel)
 		surface.SetDrawColor(150, 0, 0 ,255)
@@ -638,10 +653,10 @@ end
 
 
 	local plyname = vgui.Create( "DLabel", plypanel )
-	plyname:SetPos( 45, 12 )
-	plyname:SetFont( "TargetIDSmall" )
+	plyname:SetPos(45, 12)
+	plyname:SetFont("TargetIDSmall")
 	plyname:SetColor( Color(255,255,255,255) )
-	plyname:SetText( k )
+	plyname:SetText(k)
 	plyname:SetSize(180, 15)
 
 	local facleader = vgui.Create( "DLabel", plypanel )
@@ -661,14 +676,14 @@ end
 	members:SetColor( Color(255,255,255,255) )
 	members:SetText( translate.Get("Members")..": "..team.NumPlayers( v.index ) )
 	members:SizeToContents()
-
---	local base = vgui.Create( "DLabel", plypanel )
---	base:SetPos( 535, 12 )
---	base:SetFont( "TargetIDSmall" )
---	base:SetColor( Color(255,255,255,255) )
---	base:SetText( "Base: No" )
---	base:SizeToContents()
-
+/*
+	local base = vgui.Create("DLabel", plypanel) --this was mostly useless
+	base:SetPos(535, 12)
+	base:SetFont("TargetIDSmall")
+	base:SetColor(Color(255,255,255,255))
+	base:SetText("Base: No")
+	base:SizeToContents()
+*/
 	local joinfaction = vgui.Create("DButton", plypanel)
 		joinfaction:SetSize( 80, 25 )
 		joinfaction:SetPos( 610, 8 )
@@ -695,54 +710,55 @@ end
 local HelpForm = vgui.Create( "DPanel", PropertySheet )
 HelpForm:SetSize( 675, 700 )
 --HelpForm:SetPadding( 4 )
---HelpForm:SetName( "Items" )
 HelpForm.Paint = function( self, w, h )
 draw.RoundedBox( 2,  0,  0, w, h, Color( 0, 0, 0, 100 ) )
 surface.SetDrawColor(150, 0, 0 ,255)
 surface.DrawOutlinedRect(0, 0, w, h)
 
-draw.SimpleText( "(This isn't translated to rus, need a helper)", "TargetID", 15, 10, Color(255,255,255,255) )
-draw.SimpleText( "Welcome to The Eternal Apocalypse. Also known as After The End Reborn.", "TargetID", 15, 30, Color(255,255,255,255) )
-draw.SimpleText( "In this gamemode:", "TargetID", 15, 60, Color(155,155,155,255) )
-draw.SimpleText( "Most zombies are buffed, new weapons are added. Unused/Cut items are added", "TargetID", 15, 90, Color(155,155,155,255) )
-draw.SimpleText( "back. Health Regen function is also changed, it regenerates less hp. So you gotta carry", "TargetID", 15, 110, Color(155,155,155,255) )
-draw.SimpleText( "more meds. Same thing applies for Weight system. 37.4 kg as carry weight, +1.53kg per", "TargetID", 15, 130, Color(155,155,155,255) )
-draw.SimpleText( "Strength skill (by default). The way how you play this gamemode is also the same like in", "TargetID", 15, 150, Color(155,155,155,255) )
-draw.SimpleText( "After The End. Barter skill is nerfed, you get less cash for selling items to traders.", "TargetID", 15, 170, Color(155,155,155,255) )
-draw.SimpleText( "Bounty loss on death is more than in vanilla, most likely you drop cash between of", "TargetID", 15, 190, Color(155,155,155,255) )
-draw.SimpleText( "30-40% bounty. Also, minimum amount of players required for boss is reduced to 2", "TargetID", 15, 210, Color(155,155,155,255) )
-draw.SimpleText( "and for airdrop is increased to 5. In addition, Prestiging system is added.", "TargetID", 15, 230, Color(155,155,155,255) )
-draw.SimpleText( "For more info about prestige, hold C and press 'Prestige'", "TargetID", 15, 250, Color(155,155,155,255) )
-draw.SimpleText( "General help:", "TargetID", 15, 275, Color(155,155,255,255) )
-draw.SimpleText( "By killing zombies, you gain XP and Bounty, go to trader and cash in your bounty. This", "TargetID", 15, 300, Color(155,155,255,255) )
-draw.SimpleText( "way, you get money. The more XP you gain, the more levels you can get to. Leveling up", "TargetID", 15, 320, Color(155,155,255,255) )
-draw.SimpleText( "grants 1 skill point and some money, depending on your level.", "TargetID", 15, 340, Color(155,155,255,255) )
-draw.SimpleText( "F1 (gm_showhelp): [Function Not Implemented]", "TargetID", 15, 380, Color(155,255,255,255) )
-draw.SimpleText( "F2 (gm_showteam): Open Admin Commands Panel", "TargetID", 15, 400, Color(155,255,255,255) )
-draw.SimpleText( "F3 (gm_showspare1): Open Drop Money Panel", "TargetID", 15, 420, Color(155,255,255,255) )
-draw.SimpleText( "F4 (gm_showspare2): [Function Not Implemented]", "TargetID", 15, 440, Color(155,255,255,255) )
-draw.SimpleText( "Just a few more notes:", "TargetID", 15, 500, Color(155,255,155,255) )
-draw.SimpleText( "- You can change your HUD Style you like with client ConVar tea_cl_hudstyle", "TargetID", 15, 530, Color(205,205,205,255) )
-draw.SimpleText( "- Gamemode works the same as ZsRPG and AtE, but most of its' functions are changed", "TargetID", 15, 550, Color(255,255,155,255) )
-draw.SimpleText( "- A map may change once per every while. This depends on server Owner's choice.", "TargetID", 15, 570, Color(255,255,155,255) )
-draw.SimpleText( "- If you encounter any problem, error, or any kind of mistranslation, report it to the dev.", "TargetID", 15, 590, Color(255,155,155,255) )
-draw.SimpleText( "Good hunting. (this panel may be changed every update)", "TargetID", 15, 630, Color(155,255,155,255) )
+draw.SimpleText("(This isn't translated to rus, need a helper)", "TargetID", 15, 10, Color(255,255,255,255))
+draw.SimpleText("Welcome to The Eternal Apocalypse. Also known as After The End Reborn.", "TargetID", 15, 30, Color(255,255,255,255))
+draw.SimpleText("In this gamemode:", "TargetID", 15, 60, Color(155,155,155,255))
+draw.SimpleText("Most zombies are buffed, new weapons are added. Unused/Cut items are added", "TargetID", 15, 90, Color(155,155,155,255))
+draw.SimpleText("back. Health Regen function is also changed, it regenerates less hp. So you gotta carry", "TargetID", 15, 110, Color(155,155,155,255))
+draw.SimpleText("more meds. Same thing applies for Weight system. 37.4 kg as carry weight, +1.53kg per", "TargetID", 15, 130, Color(155,155,155,255))
+draw.SimpleText("Strength skill (by default). The way how you play this gamemode is also the same like in", "TargetID", 15, 150, Color(155,155,155,255))
+draw.SimpleText("After The End. Barter skill is nerfed, you get less cash for selling items to traders.", "TargetID", 15, 170, Color(155,155,155,255))
+draw.SimpleText("Bounty loss on death is more than in vanilla, most likely you drop cash between of", "TargetID", 15, 190, Color(155,155,155,255))
+draw.SimpleText("30-40% bounty. Also, minimum amount of players required for boss is reduced to 2", "TargetID", 15, 210, Color(155,155,155,255))
+draw.SimpleText("and for airdrop is increased to 5. In addition, Prestiging system is added.", "TargetID", 15, 230, Color(155,155,155,255))
+draw.SimpleText("For more info about prestige, hold C and press 'Prestige'", "TargetID", 15, 250, Color(155,155,155,255))
+draw.SimpleText("General help:", "TargetID", 15, 275, Color(155,155,255,255))
+draw.SimpleText("By killing zombies, you gain XP and Bounty, go to trader and cash in your bounty. This", "TargetID", 15, 300, Color(155,155,255,255))
+draw.SimpleText("way, you get money. The more XP you gain, the more levels you can get to. Leveling up", "TargetID", 15, 320, Color(155,155,255,255))
+draw.SimpleText("grants 1 skill point and some money, depending on your level.", "TargetID", 15, 340, Color(155,155,255,255))
+draw.SimpleText("F1 (gm_showhelp): [Function Not Implemented]", "TargetID", 15, 380, Color(155,255,255,255))
+draw.SimpleText("F2 (gm_showteam): Open Admin Commands Panel", "TargetID", 15, 400, Color(155,255,255,255))
+draw.SimpleText("F3 (gm_showspare1): Open Drop Money Panel", "TargetID", 15, 420, Color(155,255,255,255))
+draw.SimpleText("F4 (gm_showspare2): [Function Not Implemented]", "TargetID", 15, 440, Color(155,255,255,255))
+draw.SimpleText("Just a few more notes:", "TargetID", 15, 500, Color(155,255,155,255))
+draw.SimpleText("- You can change your HUD Style you like with client ConVar tea_cl_hudstyle", "TargetID", 15, 530, Color(205,205,205,255))
+draw.SimpleText("- Gamemode works the same as ZsRPG and AtE, but most of its' functions are changed", "TargetID", 15, 550, Color(255,255,155,255))
+draw.SimpleText("- SELECTING BUILD TOOL FOR FIRST TIME IN SESSION HAS 50/50 CHANCE TO CRASH", "TargetID", 15, 570, Color(255,55,55,255))
+draw.SimpleText("YOUR GAME!! (Most likely because if server has some weather addon then it happens)", "TargetID", 15, 590, Color(255,55,55,255))
+draw.SimpleText("- If you encounter any problem, error, or any kind of mistranslation, report it to the dev.", "TargetID", 15, 610, Color(255,155,155,255))
+draw.SimpleText("Good hunting. (this panel may be changed every update)", "TargetID", 15, 635, Color(155,255,155,255))
 end
 
 -----------------Craft Form (not finished and not included)-----------------------
 
 
-local CraftForm = vgui.Create( "DPanel", PropertySheet )
-CraftForm:SetSize( 675, 700 )
-CraftForm.Paint = function( self, w, h )
-draw.RoundedBox( 2,  0,  0, w, h, Color( 0, 0, 0, 100 ) )
+local CraftForm = vgui.Create("DPanel",PropertySheet)
+CraftForm:SetSize(675,700)
+CraftForm.Paint = function(self,w,h)
+draw.RoundedBox(2,0,0,w,h,Color(0,0,0,100))
 surface.SetDrawColor(150, 0, 0 ,255)
 surface.DrawOutlinedRect(0, 0, w, h)
 
-draw.SimpleText( "This isn't present in the current version.", "TargetID", 15, 10, Color(255,255,255,255) )
-draw.SimpleText( "This property will have Crafting Panel which you will be able to use.", "TargetID", 15, 30, Color(255,255,255,255) )
-draw.SimpleText( "It may be added in next update.", "TargetID", 15, 50, Color(255,255,255,255) )
-draw.SimpleText( "Check back later then", "TargetID", 15, 70, Color(205,205,205,255) )
+draw.SimpleText("This isn't present in the current version.", "TargetID", 15, 10, Color(255,255,255,255))
+draw.SimpleText("This property will have Crafting Panel which you will be able to use.", "TargetID", 15, 30, Color(255,255,255,255))
+draw.SimpleText("It may be added in future update.", "TargetID", 15, 50, Color(255,255,255,255))
+draw.SimpleText("And it's hard to add it.", "TargetID", 15, 70, Color(255,255,255,255))
+draw.SimpleText("Check back later then", "TargetID", 15, 100, Color(205,205,205,255))
 
 end
 
@@ -755,10 +771,10 @@ draw.RoundedBox( 2,  0,  0, w, h, Color( 0, 0, 0, 100 ) )
 surface.SetDrawColor(150, 0, 0 ,255)
 surface.DrawOutlinedRect(0, 0, w, h)
 
-draw.SimpleText( "Best Survival Time: "..bestsurvtim.."s", "TargetID", 15, 10, Color(255,255,255,255) )
-draw.SimpleText( "Zombies Killed in Total: "..zmbskilled, "TargetID", 15, 35, Color(255,255,255,255) )
-draw.SimpleText( "Players killed in Total: "..plyskilled, "TargetID", 15, 60, Color(255,255,255,255) )
-draw.SimpleText( "Your Deaths in Total: "..plydeaths, "TargetID", 15, 85, Color(255,255,255,255) )
+draw.SimpleText("Best Survival Time: "..bestsurvtim.."s", "TargetID", 15, 10, Color(255,255,255,255))
+draw.SimpleText("Zombies Killed in Total: "..zmbskilled, "TargetID", 15, 35, Color(255,255,255,255))
+draw.SimpleText("Players killed in Total: "..plyskilled, "TargetID", 15, 60, Color(255,255,255,255))
+draw.SimpleText("Your Deaths in Total: "..plydeaths, "TargetID", 15, 85, Color(255,255,255,255))
 
 end
 ------------------------------------Sheets----------------------------------------

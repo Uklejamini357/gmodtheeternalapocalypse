@@ -237,7 +237,7 @@ local WantToPrestigeFrame = vgui.Create( "DFrame" )
 	local prestigetext = vgui.Create( "DLabel", WantToPrestigeFrame )
 	prestigetext:SetFont( "TargetIDSmall" )
 	prestigetext:SetColor( Color(205,205,205,255) )
-	prestigetext:SetText( "Prestiging allows you to gain more levels depending on your Prestige level.\nIt will also give you some advantage, depending on your Prestige.\nYou need to be at least level 50 (plus 10 depending on prestige level) to prestige\nAdditionally, if you prestige to a level that doesn't grant any additional buffs, \nyou will gain cash instead.\n\nPrestige 1 = Gain 5% more overall cash from killing zombies\nPrestige 2 = Spawn with 5 additional health\nPrestige 3 = +2kg max carry weight\nPrestige 4 = Jump +10 units higher\nPrestige 5 = Spawn with 5 additional armor\nPrestige 10 = +3kg max carry weight\nPrestige 15 = Take 5% less damage from all sources\nPrestige 20 = Start with 5 skill points every prestige\nMore advantages for more prestiges will be added soon" )
+	prestigetext:SetText( "Prestiging allows you to gain more levels depending on your Prestige level.\nIt will also give you some advantage, depending on your Prestige.\nYou need to be at least level 50 (plus 5 depending on prestige level) to prestige\nAdditionally, if you prestige to a level that doesn't grant any additional buffs, \nyou will gain cash instead.\n\nPrestige 1 = Gain 5% more overall cash from killing zombies\nPrestige 2 = Spawn with 5 additional health\nPrestige 3 = +2kg max carry weight\nPrestige 4 = Jump +10 units higher\nPrestige 5 = Spawn with 5 additional armor\nPrestige 10 = +3kg max carry weight\nPrestige 15 = Take 5% less damage from all sources\nPrestige 20 = Start with 5 skill points every prestige\nPrestige 25 = Gain XP at 1.1x multiplier\nWill add config to modify required level for prestige in future")
 	prestigetext:SizeToContents()
 	prestigetext:SetPos( 10, 30)
 
@@ -253,11 +253,11 @@ local WantToPrestigeFrame = vgui.Create( "DFrame" )
 	end
 	doprestige.DoClick = function()
 	WantToPrestigeFrame:Remove()
-	local levelrequiredforprestige = 50 + (10 * Myprestige)
+	local levelrequiredforprestige = 50 + (5 * Myprestige)
 	if Mylevel >= levelrequiredforprestige then
 		ConfirmPrestige()
 	else
-		chat.AddText( Color(255,255,255,255), "[System] ", Color(255,155,155,255), "You must be at least level ".. levelrequiredforprestige .." to prestige!" )
+		chat.AddText( Color(255,255,255,255), "[System] ", Color(255,155,155,255), "You must be at least level "..levelrequiredforprestige.." to prestige!" )
 		surface.PlaySound("buttons/button10.wav")
 	end
 	end

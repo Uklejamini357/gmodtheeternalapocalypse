@@ -20,9 +20,9 @@ end
 
 function PropMenu()
 	PropsFrame = vgui.Create( "DFrame" )
-	PropsFrame:SetSize( 1000, 700 )
+	PropsFrame:SetSize(1000, 700)
 	PropsFrame:Center()
-	PropsFrame:SetTitle ( "" )
+	PropsFrame:SetTitle("")
 	PropsFrame:SetDraggable( false )
 	PropsFrame:SetVisible( true )
 	PropsFrame:ShowCloseButton( false )

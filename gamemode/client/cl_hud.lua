@@ -138,8 +138,8 @@ return 0
 end
 
 
-local function DrawNames( )
-	local trace = { }
+local function DrawNames()
+	local trace = {}
 
 
 	if GetConVar("tea_server_debugging"):GetInt() >= 1 then
@@ -147,9 +147,14 @@ local function DrawNames( )
 		trace.endpos = trace.start + LocalPlayer():GetAimVector() * 1500000
 		trace.filter = LocalPlayer()
 	
-		local tr = util.TraceLine( trace )
+		local tr = util.TraceLine(trace)
 		if tr.Entity != NULL then
-			draw.SimpleText( tr.Entity, "TargetIDSmall", 20, 180, Color(205,205,205,255), 0, 0 )
+			draw.SimpleText(tr.Entity, "TargetIDSmall", 20, 180, Color(205,205,205,255), 0, 0)
+			if tr.Entity:Health() > 0 then
+				draw.SimpleText("Ent HP: "..tr.Entity:Health().."/"..tr.Entity:GetMaxHealth(), "TargetIDSmall", 20, 210, Color(205,205,205,255), 0, 0)
+			end
+		else
+			draw.SimpleText("Entity [?][NULL]", "TargetIDSmall", 20, 180, Color(205,205,205,255), 0, 0)
 		end
 	end
 	trace.start = LocalPlayer():EyePos()
@@ -157,31 +162,31 @@ local function DrawNames( )
 	trace.filter = LocalPlayer()
 
 	local tea_server_voluntarypvp = GetConVar("tea_server_voluntarypvp")	
-	local tr = util.TraceLine( trace )
+	local tr = util.TraceLine(trace)
 	local ply = tr.Entity
-	if ply:IsValid( ) and ply:IsPlayer() and ply != LocalPlayer() and ply:Alive() then
-	local headPos = ( ply:GetShootPos( ) + Vector( 0, 0, 18 ) ):ToScreen()
-				surface.SetFont( "TargetID" )
+	if ply:IsValid() and ply:IsPlayer() and ply != LocalPlayer() and ply:Alive() then
+	local headPos = (ply:GetShootPos() + Vector(0,0,18)):ToScreen()
+				surface.SetFont("TargetID")
 
 				local message = ply:Name()
-				local wo, ho = surface.GetTextSize( message )
+				local wo, ho = surface.GetTextSize(message)
 
-				surface.SetFont( "TargetIDSmall" )
+				surface.SetFont("TargetIDSmall")
 
-				local message2 = translate.Get("Health")..": " .. ply:Health() .." / " .. ply:GetMaxHealth()
-				local wo2, ho2 = surface.GetTextSize( message2 )
+				local message2 = translate.Get("Health")..": "..ply:Health().." / "..ply:GetMaxHealth()
+				local wo2, ho2 = surface.GetTextSize(message2)
 
-				local message3 = translate.Get("Armor")..": " .. ply:Armor() .." / " .. ply:GetMaxArmor()
-				local wo3, ho3 = surface.GetTextSize( message3 )
+				local message3 = translate.Get("Armor")..": "..ply:Armor().." / "..ply:GetMaxArmor()
+				local wo3, ho3 = surface.GetTextSize(message3)
  
-				local message4 = translate.Get("Level")..": " .. ply:GetNWInt( "PlyLevel", 1 )
-				local wo4, ho4 = surface.GetTextSize( message4 )
+				local message4 = translate.Get("Level")..": "..ply:GetNWInt("PlyLevel", 1)
+				local wo4, ho4 = surface.GetTextSize(message4)
  
-				local message5 = translate.Get("Bounty")..": " .. math.floor(ply:GetNWInt( "PlyBounty", 0 ))
-				local wo5, ho5 = surface.GetTextSize( message5 )
+				local message5 = translate.Get("Bounty")..": "..math.floor(ply:GetNWInt("PlyBounty", 0))
+				local wo5, ho5 = surface.GetTextSize(message5)
 
 				local message6 = translate.Get("Faction")..": "..team.GetName(ply:Team())
-				local wo6, ho6 = surface.GetTextSize( message6 )
+				local wo6, ho6 = surface.GetTextSize(message6)
 
 				if ply:IsPvPGuarded() then
 				draw.SimpleTextOutlined(  "p", "CounterShit", headPos.x - 15, headPos.y - 62, Color( 50, 250, 0, 255 ), 0, 0, 2, Color( 0, 50, 0, 255 ) )
@@ -189,12 +194,12 @@ local function DrawNames( )
 				draw.SimpleTextOutlined(  "C", "CounterShit", headPos.x - 25, headPos.y - 60, Color( 255, 50, 0, 255 ), 0, 0, 2, Color( 50, 0, 0, 255 ) )
 				end
 
-				draw.SimpleTextOutlined(  ply:Name(), "TargetID", headPos.x - (wo /2 ), headPos.y - 40, Color( 255, 255, 255, 255 ), 0, 0, 2, Color( 0, 0, 0, 255 ) )
-				draw.SimpleTextOutlined(  translate.Get("Health")..": " .. ply:Health() .." / " .. ply:GetMaxHealth(), "TargetIDSmall", headPos.x - (wo2 / 2), headPos.y - 20, Color( 255, math.Clamp(((ply:Health() * 100) / ply:GetMaxHealth()) * 2.5, 0, 255), math.Clamp(((ply:Health() * 100) / ply:GetMaxHealth()) * 2.5, 0, 255), 255 ), 0, 0, 1, Color( 0, 0, 0, 255 ) )
-				draw.SimpleTextOutlined(  translate.Get("Armor")..": " .. ply:Armor() .." / " .. ply:GetMaxArmor(), "TargetIDSmall", headPos.x - (wo3 / 2), headPos.y - 7, Color( math.Clamp((50 + (ply:Armor() * 100) / ply:GetMaxArmor()), 0, 255), math.Clamp((50 + (ply:Armor() * 100) / ply:GetMaxArmor()), 0, 255), 255, 255 ), 0, 0, 1, Color( 0, 0, 0, 255 ) )
-				draw.SimpleTextOutlined(  translate.Get("Level")..": " .. ply:GetNWInt( "PlyLevel", 1 ) , "TargetIDSmall", headPos.x - (wo4 / 2 ) - 2, headPos.y + 7, Color( 255, 205, 255, 255 ), 0, 0, 1, Color( 0, 0, 0, 255 ) )
-				draw.SimpleTextOutlined(  translate.Get("Bounty")..": " .. math.floor(ply:GetNWInt( "PlyBounty", 0 )) , "TargetIDSmall", headPos.x - (wo5 / 2 ) - 2, headPos.y + 20, Color( 255, 64, 64, 255 ), 0, 0, 1, Color( 0, 0, 0, 255 ) )
-				draw.SimpleTextOutlined(  translate.Get("Faction")..": "..team.GetName(ply:Team()), "TargetIDSmall", headPos.x - (wo6 / 2 ) - 2, headPos.y + 33, team.GetColor(ply:Team()), 0, 0, 1, Color( 0, 0, 0, 255 ) )
+				draw.SimpleTextOutlined(ply:Name(), "TargetID", headPos.x - (wo /2 ), headPos.y - 40, Color( 255, 255, 255, 255 ), 0, 0, 2, Color( 0, 0, 0, 255 ) )
+				draw.SimpleTextOutlined(translate.Get("Health")..": " .. ply:Health() .." / " .. ply:GetMaxHealth(), "TargetIDSmall", headPos.x - (wo2 / 2), headPos.y - 20, Color( 255, math.Clamp(((ply:Health() * 100) / ply:GetMaxHealth()) * 2.5, 0, 255), math.Clamp(((ply:Health() * 100) / ply:GetMaxHealth()) * 2.5, 0, 255), 255 ), 0, 0, 1, Color( 0, 0, 0, 255 ) )
+				draw.SimpleTextOutlined(translate.Get("Armor")..": " .. ply:Armor() .." / " .. ply:GetMaxArmor(), "TargetIDSmall", headPos.x - (wo3 / 2), headPos.y - 7, Color( math.Clamp((50 + (ply:Armor() * 100) / ply:GetMaxArmor()), 0, 255), math.Clamp((50 + (ply:Armor() * 100) / ply:GetMaxArmor()), 0, 255), 255, 255 ), 0, 0, 1, Color( 0, 0, 0, 255 ) )
+				draw.SimpleTextOutlined(translate.Get("Level")..": " .. ply:GetNWInt( "PlyLevel", 1 ) , "TargetIDSmall", headPos.x - (wo4 / 2 ) - 2, headPos.y + 7, Color( 255, 205, 255, 255 ), 0, 0, 1, Color( 0, 0, 0, 255 ) )
+				draw.SimpleTextOutlined(translate.Get("Bounty")..": " .. math.floor(ply:GetNWInt( "PlyBounty", 0 )) , "TargetIDSmall", headPos.x - (wo5 / 2 ) - 2, headPos.y + 20, Color( 255, 64, 64, 255 ), 0, 0, 1, Color( 0, 0, 0, 255 ) )
+				draw.SimpleTextOutlined(translate.Get("Faction")..": "..team.GetName(ply:Team()), "TargetIDSmall", headPos.x - (wo6 / 2 ) - 2, headPos.y + 33, team.GetColor(ply:Team()), 0, 0, 1, Color( 0, 0, 0, 255 ) )
 
 	end
 
@@ -205,7 +210,7 @@ MaxClipAmmo = {}
 local function DrawVitals()
 	local me = LocalPlayer()
 	if !me:Alive() or !me:IsValid() then return end
-	if GetConVar("tea_cl_hud"):GetInt() < 1 or me:GetActiveWeapon() == "gmod_camera" then return end 
+	if GetConVar("tea_cl_hud"):GetInt() < 1 or GetConVar("cl_drawhud"):GetInt() < 1 or me:GetActiveWeapon() == "gmod_camera" then return end 
 	local Health = me:Health()
 	local MaxHealth = me:GetMaxHealth()
 	local Armor = me:Armor()
@@ -541,12 +546,13 @@ else
 	if Myinfection > 0 then
 		local infectionbarclamp = math.Clamp(Myinfection / 50, 0, 200)
 		surface.SetDrawColor(200,100,100,160)
-		surface.DrawRect( 20, ScrH() - 20, infectionbarclamp, 4 )
+		surface.DrawRect(20, ScrH() - 20, infectionbarclamp, 4)
 		surface.SetDrawColor(160,80,80,160)
-		surface.DrawRect( 20, ScrH() - 16, infectionbarclamp, 4 )
+		surface.DrawRect(20, ScrH() - 16, infectionbarclamp, 4)
 	end
 end
 
+local timesurvived = CurTime() - Mysurvivaltime
 if GetConVar("tea_cl_hudstyle"):GetInt() <= 0 then
 	--Levels, cash, prestige & time survival box
 	draw.RoundedBox( 1,  10,  ScrH() - 200, 180, 85, Color( 0, 0, 0, 175 ) )
@@ -554,13 +560,11 @@ if GetConVar("tea_cl_hudstyle"):GetInt() <= 0 then
 	surface.DrawOutlinedRect(10,  ScrH() - 200, 180, 85)
 
 	--Prestige, Levels, cash and Survival time (which i couldn't make it perfect but it's here anyway), just above health and armor
-	local timesurvived = CurTime() - Mysurvivaltime
 	draw.DrawText( translate.Get("Timesurvived")..": "..math.floor(timesurvived).." s", "TargetIDSmall", 20, ScrH() - 189, Color(255,255,255,255), 0, 1)
 	draw.SimpleText( translate.Get("Prestige")..": " .. math.floor(Myprestige), "TargetIDSmall", 20, ScrH() - 164, Color(205,155,255,255), 0, 1 )
 	draw.SimpleText( translate.Get("Level")..": " .. math.floor(Mylevel), "TargetIDSmall", 20, ScrH() - 147, Color(200,200,200,255), 0, 1 )
 	draw.SimpleText( translate.Get("Money")..": " .. math.floor(Mymoney), "TargetIDSmall", 20, ScrH() - 130, Color(0,255,255,255), 0, 1 )
 else
-	local timesurvived = CurTime() - Mysurvivaltime
 	draw.DrawText( translate.Get("Timesurvived")..": "..math.floor(timesurvived).." s", "TargetIDSmall", 270, ScrH() - 164, Color(205,205,205,255), 0, 1)
 	draw.SimpleText( translate.Get("Prestige")..": " .. math.floor(Myprestige), "TargetIDSmall", 270, ScrH() - 140, Color(205,205,205,255), 0, 1 )
 	draw.SimpleText( translate.Get("Level")..": " .. math.floor(Mylevel), "TargetIDSmall", 270, ScrH() - 122, Color(205,205,205,255), 0, 1 )
@@ -707,7 +711,7 @@ concommand.Add("gastest", function() surface.PlaySound( "npc/combine_soldier/gea
 */
 
 function GM:HUDPaint()
-if dohuddraw != 1 then return false end
+	if dohuddraw != 1 then return false end
 
 /*
 	if gasmask then 
@@ -726,8 +730,8 @@ if dohuddraw != 1 then return false end
 	local glow = math.abs(math.sin(CurTime() * 0.6) * 255)
 	draw.SimpleText( "Ver. "..GAMEMODE.Version, "TargetIDSmall", 10, 5, Color(64,glow,0,255), 0, 0 )
 	draw.SimpleText( "Time: "..os.date("%H:%M:%S"), "TargetIDSmall", 10, 19, Color(205,205,205,255), 0, 0 )
-	if ( LocalPlayer():Alive() ) then
-		Spawn = CurTime() + GetConVar( "tea_server_respawntime" ):GetString()
+	if (LocalPlayer():Alive()) then
+		Spawn = CurTime() + GetConVar("tea_server_respawntime"):GetFloat()
 	else
 		if LocalPlayer():IsValid() then
 			if GetConVar("tea_cl_hudstyle"):GetInt() <= 0 then
@@ -736,11 +740,11 @@ if dohuddraw != 1 then return false end
 				surface.SetDrawColor(0, 0, 0, 200)
 				surface.DrawRect( ScrW( ) / 2 - 135, 90, 270, 40 )
 				if Spawn > CurTime() + 1 then
-					draw.DrawText( translate.Get("CanRespawnIn") .." " .. math.Clamp( math.floor( (Spawn - CurTime()) + 1 ), 0, 2147483647 ) .. " "..translate.Get("Seconds"), "TargetIDSmall", ScrW() / 2 - 106, 102, Color( 255,255,255,255 ), 0 )
+					draw.DrawText(translate.Get("CanRespawnIn") .." " .. math.Clamp( math.floor( (Spawn - CurTime()) + 1 ), 0, 2147483647 ) .. " "..translate.Get("Seconds"), "TargetIDSmall", ScrW() / 2 - 106, 102, Color( 255,255,255,255 ), 0)
 				elseif Spawn > CurTime() then
-					draw.DrawText( translate.Get("CanRespawnIn") .." " .. math.Clamp( math.floor( (Spawn - CurTime()) + 1 ), 0, 2147483647 ) .. " "..translate.Get("Second"), "TargetIDSmall", ScrW() / 2 - 105, 102, Color( 255,255,255,255 ), 0 )
+					draw.DrawText(translate.Get("CanRespawnIn") .." " .. math.Clamp( math.floor( (Spawn - CurTime()) + 1 ), 0, 2147483647 ) .. " "..translate.Get("Second"), "TargetIDSmall", ScrW() / 2 - 105, 102, Color( 255,255,255,255 ), 0)
 				else
-					draw.DrawText( translate.Get("CanNowRespawn"), "TargetIDSmall", ScrW( ) / 2 - 106, 102, Color( 255,255,255,255 ), 0 )
+					draw.DrawText(translate.Get("CanNowRespawn"), "TargetIDSmall", ScrW( ) / 2 - 106, 102, Color( 255,255,255,255 ), 0)
 				end
 			else
 				if Spawn > CurTime() + 1 then
@@ -755,7 +759,7 @@ if dohuddraw != 1 then return false end
 	end
 end
 
-function GM:HUDShouldDraw( name )
+function GM:HUDShouldDraw(name)
 	local donotdraw = 
 	{ 
 	
@@ -766,25 +770,25 @@ function GM:HUDShouldDraw( name )
 	
 	}
 	
-	for k, v in pairs( donotdraw ) do
-		if( name == v ) then return false end
+	for k, v in pairs(donotdraw) do
+		if (name == v) then return false end
 	end
 	
 	return true
 end
 
-function GM:RenderScreenspaceEffects( )
+function GM:RenderScreenspaceEffects()
 	local modify = {}
 	local color = 1
 	
-	if ( LocalPlayer():Health() < (LocalPlayer():GetMaxHealth() * 0.5) ) then
-		if ( LocalPlayer():Alive() ) then
-			color = math.Clamp( color - ( ( (LocalPlayer():GetMaxHealth() * 0.5) - LocalPlayer():Health() ) * ( 1 / (LocalPlayer():GetMaxHealth() * 0.5) )), 0, color )
+	if (LocalPlayer():Health() < (LocalPlayer():GetMaxHealth() * 0.5)) then
+		if (LocalPlayer():Alive()) then
+			color = math.Clamp(color - (((LocalPlayer():GetMaxHealth() * 0.5) - LocalPlayer():Health()) * (1 / (LocalPlayer():GetMaxHealth() * 0.5))), 0, color)
 		else
 			color = 0
 		end
 		
-		DrawMotionBlur( math.Clamp( 1 - ( ( (LocalPlayer():GetMaxHealth() * 0.5) - LocalPlayer():Health() ) * ( 1 / (LocalPlayer():GetMaxHealth() * 0.5) )), 0.1, 1 ), 1, 0 )
+		DrawMotionBlur(math.Clamp(1 - (((LocalPlayer():GetMaxHealth() * 0.5) - LocalPlayer():Health()) * (1 / (LocalPlayer():GetMaxHealth() * 0.5))), 0.1, 1), 1, 0)
 	end
 
 	if wralpha > 220 then DrawMotionBlur(0.4, 0.8, 0.01) end
@@ -799,7 +803,7 @@ function GM:RenderScreenspaceEffects( )
 	modify["$pp_colour_mulg"] = 0
 	modify["$pp_colour_mulb"] = 0
 	
-	DrawColorModify( modify )
+	DrawColorModify(modify)
 end
 
 
@@ -820,19 +824,19 @@ for _, ent in pairs (ents.FindByClass("structure_base_core")) do
 			surface.DrawRect( t2, s2, 350, 45 )
 --			local xz, xy = surface.GetTextSize( facmsg )
 			if ent:GetNWEntity("owner"):Team() == LocalPlayer():Team() then
-				draw.DrawText( "You are in friendly territory", "TargetID", t2 + 65, s2 + 4, Color( 205, 255, 205, 255 ) )
-				draw.DrawText( facmsg , "TargetID", ScrW() / 2, s2 + 22, team.GetColor(ent:GetNWEntity("owner"):Team()), 1 )
+				draw.DrawText("You are in friendly territory", "TargetID", t2 + 65, s2 + 4, Color( 205, 255, 205, 255 ) )
+				draw.DrawText(facmsg , "TargetID", ScrW() / 2, s2 + 22, team.GetColor(ent:GetNWEntity("owner"):Team()), 1 )
 			else
-				draw.DrawText( "You are in another factions territory!", "TargetID", t2 + 32, s2 + 4, Color( 255, 255, 255, 255 ) )
-				draw.DrawText( facmsg , "TargetID", ScrW() / 2, s2 + 22, team.GetColor(ent:GetNWEntity("owner"):Team()), 1 )
+				draw.DrawText("You are in another factions territory!", "TargetID", t2 + 32, s2 + 4, Color( 255, 255, 255, 255 ) )
+				draw.DrawText(facmsg , "TargetID", ScrW() / 2, s2 + 22, team.GetColor(ent:GetNWEntity("owner"):Team()), 1 )
 			end
 		else
 			if ent:GetNWEntity("owner"):Team() == LocalPlayer():Team() then
-				draw.DrawText( "You are in friendly territory", "TargetID", t2 + 65, s2 + 4, Color( 205, 255, 205, 255 ) )
-				draw.DrawText( facmsg , "TargetID", ScrW() / 2, s2 + 22, team.GetColor(ent:GetNWEntity("owner"):Team()), 1 )
+				draw.DrawText("You are in friendly territory", "TargetID", t2 + 65, s2 + 4, Color( 205, 255, 205, 255 ) )
+				draw.DrawText(facmsg , "TargetID", ScrW() / 2, s2 + 22, team.GetColor(ent:GetNWEntity("owner"):Team()), 1 )
 			else
-				draw.DrawText( "You are in another factions territory!", "TargetID", t2 + 32, s2 + 4, Color( 255, 255, 255, 255 ) )
-				draw.DrawText( facmsg , "TargetID", ScrW() / 2, s2 + 22, team.GetColor(ent:GetNWEntity("owner"):Team()), 1 )
+				draw.DrawText("You are in another factions territory!", "TargetID", t2 + 32, s2 + 4, Color( 255, 255, 255, 255 ) )
+				draw.DrawText(facmsg , "TargetID", ScrW() / 2, s2 + 22, team.GetColor(ent:GetNWEntity("owner"):Team()), 1 )
 			end
 		end
 	end
@@ -844,25 +848,25 @@ for _, ent in pairs (ents.FindByClass("airdrop_cache")) do
 	local t2 = ScrW() / 2 - 175
 	local s2 = 25
 	surface.SetDrawColor(255, 0, 0, 255)
-	surface.DrawOutlinedRect( t2, s2, 350, 45 )
+	surface.DrawOutlinedRect(t2, s2, 350, 45)
 	surface.SetDrawColor(0, 0, 0, 200)
-	surface.DrawRect( t2, s2, 350, 45 )
-	draw.DrawText( "You are in an active airdrop zone!", "TargetID", t2 + 42, s2 + 4, Color( 255, 205, 205, 255 ) )
-	draw.DrawText( "PvP is forced, beware of other survivors!", "TargetID", t2 + 15, s2 + 22, Color( 255, 205, 205, 255 ) )
+	surface.DrawRect(t2, s2, 350, 45)
+	draw.DrawText("You are in an active airdrop zone!", "TargetID", t2 + 42, s2 + 4, Color( 255, 205, 205, 255 ) )
+	draw.DrawText("PvP is forced, beware of other survivors!", "TargetID", t2 + 15, s2 + 22, Color( 255, 205, 205, 255 ) )
 	end
 end
 
 
 	local CurTargetEnt = nil
-	local TargetText = { }
-	local trace = { }
+	local TargetText = {}
+	local trace = {}
 
 
 	trace.start = LocalPlayer():EyePos()
 	trace.endpos = trace.start + LocalPlayer():GetAimVector() * 120
 	trace.filter = LocalPlayer()
 	
-	local tr = util.TraceLine( trace )
+	local tr = util.TraceLine(trace)
 	if !tr.Entity:IsValid() then return false end
 
 

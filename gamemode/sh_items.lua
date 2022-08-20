@@ -91,7 +91,7 @@ ItemsList = {
 
 	["item_egg"] = {
 		["Name"] = "Egg",
-		["Cost"] = 5,
+		["Cost"] = 10,
 		["Model"] = "models/props_phx/misc/egg.mdl",
 		["Description"] = "Egg_d",
 		["Weight"] = 0.08,
@@ -130,7 +130,7 @@ ItemsList = {
 
 	["item_energydrink"] = {
 		["Name"] = "EnergyDrink",
-		["Cost"] = 65,
+		["Cost"] = 70,
 		["Model"] = "models/wick/wrbstalker/anomaly/items/wick_dev_drink_stalker.mdl",
 		["Description"] = "EnergyDrink_d",
 		["Weight"] = 0.36,
@@ -143,7 +143,7 @@ ItemsList = {
 
 	["item_energydrink_nonstop"] = {
 		["Name"] = "NonstopEnergyDrink",
-		["Cost"] = 100,
+		["Cost"] = 110,
 		["Model"] = "models/wick/wrbstalker/cop/newmodels/items/wick_nonstop.mdl",
 		["Description"] = "NonstopEnergyDrink_d",
 		["Weight"] = 0.38,
@@ -268,7 +268,7 @@ ItemsList = {
 		["Supply"] = 5,
 		["Rarity"] = 2,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) local food = UseFunc_Eat(ply, 3, 2, 45, -7, 5, -1, "npc/barnacle/barnacle_gulp2.wav") return food end,
+		["UseFunc"] = function(ply) local food = UseFunc_Eat(ply, 3, 2, 25, -7, 5, -1, "npc/barnacle/barnacle_gulp2.wav") return food end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_donut") return drop end,
 	},
 
@@ -316,7 +316,7 @@ ItemsList = {
 		["Cost"] = 600,
 		["Model"] = "models/Items/battery.mdl",
 		["Description"] = "ArmorBattery_d",
-		["Weight"] = 0.55,
+		["Weight"] = 0.35,
 		["Supply"] = 6,
 		["Rarity"] = 4,
 		["Category"] = 1,
@@ -487,7 +487,7 @@ ItemsList = {
 		["Supply"] = -1,
 		["Rarity"] = 0,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) SendChat(ply, translate.Get("ItemNoUse")) return false end,
+		["UseFunc"] = function(ply) SendChat(ply, translate.ClientGet(ply, "ItemNoUse")) return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_tin") return drop end,
 	},
 
@@ -500,7 +500,7 @@ ItemsList = {
 		["Supply"] = -1,
 		["Rarity"] = 0,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) SendChat(ply, translate.Get("ItemNoUse")) return false end,
+		["UseFunc"] = function(ply) SendChat(ply, translate.ClientGet(ply, "ItemNoUse")) return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_boot") return drop end,
 	},
 
@@ -514,7 +514,7 @@ ItemsList = {
 		["Supply"] = -1,
 		["Rarity"] = 0,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) SendChat(ply, translate.Get("ItemNoUse")) return false end,
+		["UseFunc"] = function(ply) SendChat(ply, translate.ClientGet(ply, "ItemNoUse")) return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_paper") return drop end,
 	},
 
@@ -527,7 +527,7 @@ ItemsList = {
 		["Supply"] = -1,
 		["Rarity"] = 0,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) SendChat(ply, translate.Get("ItemNoUse")) return false end,
+		["UseFunc"] = function(ply) SendChat(ply, translate.ClientGet(ply, "ItemNoUse")) return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_keyboard") return drop end,
 	},
 
@@ -540,7 +540,7 @@ ItemsList = {
 		["Supply"] = -1,
 		["Rarity"] = 0,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) SendChat(ply, translate.Get("ItemNoUse")) return false end,
+		["UseFunc"] = function(ply) SendChat(ply, translate.ClientGet(ply, "ItemNoUse")) return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_gardenpot") return drop end,
 	},
 
@@ -553,7 +553,7 @@ ItemsList = {
 		["Supply"] = -1,
 		["Rarity"] = 0,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) SendChat(ply, translate.Get("ItemNoUse")) return false end,
+		["UseFunc"] = function(ply) SendChat(ply, translate.ClientGet(ply, "ItemNoUse")) return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_paint") return drop end,
 	},
 
@@ -566,7 +566,7 @@ ItemsList = {
 		["Supply"] = -1,
 		["Rarity"] = 0,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) SendChat(ply, translate.Get("ItemNoUse")) return false end,
+		["UseFunc"] = function(ply) SendChat(ply, translate.ClientGet(ply, "ItemNoUse")) return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_doll") return drop end,
 	},
 
@@ -579,7 +579,7 @@ ItemsList = {
 		["Supply"] = -1,
 		["Rarity"] = 0,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) SendChat(ply, translate.Get("ItemNoUse")) return false end,
+		["UseFunc"] = function(ply) SendChat(ply, translate.ClientGet(ply, "ItemNoUse")) return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_pot") return drop end,
 	},
 
@@ -592,7 +592,7 @@ ItemsList = {
 		["Supply"] = -1,
 		["Rarity"] = 0,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) SendChat(ply, translate.Get("ItemNoUse")) return false end,
+		["UseFunc"] = function(ply) SendChat(ply, translate.ClientGet(ply, "ItemNoUse")) return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_hula") return drop end,
 	},
 
@@ -605,7 +605,7 @@ ItemsList = {
 		["Supply"] = -1,
 		["Rarity"] = 0,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) SendChat(ply, translate.Get("ItemNoUse")) return false end,
+		["UseFunc"] = function(ply) SendChat(ply, translate.ClientGet(ply, "ItemNoUse")) return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_nailbox") return drop end,
 	},
 
@@ -618,10 +618,11 @@ ItemsList = {
 		["Supply"] = -1,
 		["Rarity"] = 0,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) SendChat(ply, translate.Get("ItemNoUse")) return false end,
+		["UseFunc"] = function(ply) SendChat(ply, translate.ClientGet(ply, "ItemNoUse")) return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_twig") return drop end,
 	},
 
+	--secret item?????
 	["upgradestatimmune"] = {
 		["Name"] = "[REMOVED ITEM]",
 		["Cost"] = 0,
@@ -634,7 +635,6 @@ ItemsList = {
 		["UseFunc"] = function(ply) SendChat(ply, "NO!") return true end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "upgradestatimmune") return drop end,
 	},
-
 
 
 
@@ -740,13 +740,7 @@ ItemsList = {
 
 
 
-
-
-
 -- guns
-
-
-
 
 
 
@@ -763,7 +757,7 @@ ItemsList = {
 		["Rarity"] = 1,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_noobcannon") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_noobcannon") if drop then ply:StripWeapon("weapon_zw_noobcannon")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_noobcannon") if drop then ply:StripWeapon("weapon_zw_noobcannon") end return drop end,
 	},
 
 	["weapon_zw_pigsticker"] = {
@@ -776,7 +770,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_pigsticker") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_pigsticker") if drop then ply:StripWeapon("weapon_zw_pigsticker")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_pigsticker") if drop then ply:StripWeapon("weapon_zw_pigsticker") end return drop end,
 	},
 
 	["weapon_zw_axe"] = {
@@ -1304,9 +1298,8 @@ ItemsList = {
 	},
 
 
-
-
 -- ammo
+
 
 	["item_pistolammo"] = {
 		["Name"] = "PistolAmmo",
@@ -1465,7 +1458,7 @@ ItemsList = {
 		["Rarity"] = 3,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_falcon") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_falcon") if drop then ply:StripWeapon("weapon_zw_falcon")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_falcon") if drop then ply:StripWeapon("weapon_zw_falcon") end return drop end,
 	},
 
     ["weapon_zw_spas"] = {
@@ -1478,7 +1471,7 @@ ItemsList = {
 		["Rarity"] = 4,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_spas") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_spas") if drop then ply:StripWeapon("weapon_zw_spas")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_spas") if drop then ply:StripWeapon("weapon_zw_spas") end return drop end,
 	},
 
     ["weapon_zw_lbr"] = {
@@ -1491,11 +1484,8 @@ ItemsList = {
 		["Rarity"] = 5,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_lbr") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_lbr") if drop then ply:StripWeapon("weapon_zw_lbr")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_lbr") if drop then ply:StripWeapon("weapon_zw_lbr") end return drop end,
 	},
-
-
-
 
 
 -- Other special weapons
@@ -1580,11 +1570,7 @@ ItemsList = {
 	},
 
 
-
-
-
 -- M9k guns
-
 
 
     ["m9k_coltpython"] = {
@@ -1607,7 +1593,7 @@ ItemsList = {
 		["Description"] = "M9kGlock18_d",
 		["Weight"] = 1.56,
 		["Supply"] = 0,
-		["Rarity"] = 4,
+		["Rarity"] = 5,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_glock") return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_glock") if drop then ply:StripWeapon("m9k_glock")end  return drop end,
@@ -1617,13 +1603,13 @@ ItemsList = {
 		["Name"] = "M9kHK45C",
 		["Cost"] = 4000,
 		["Model"] = "models/weapons/w_hk45c.mdl",
-		["Description"] = "HK45C from M9k Small Arms. Uses Pistol ammo.",
+		["Description"] = "M9kHK45C_d",
 		["Weight"] = 0.96,
 		["Supply"] = 0,
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_hk45") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_hk45") if drop then ply:StripWeapon("m9k_hk45")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_hk45") if drop then ply:StripWeapon("m9k_hk45") end return drop end,
 	},
 
     ["m9k_m92beretta"] = {
@@ -1633,20 +1619,20 @@ ItemsList = {
 		["Description"] = "M9kBerettaM92_d",
 		["Weight"] = 1.16,
 		["Supply"] = 0,
-		["Rarity"] = 2,
+		["Rarity"] = 3,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_m92beretta") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_m92beretta") if drop then ply:StripWeapon("m9k_m92beretta")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_m92beretta") if drop then ply:StripWeapon("m9k_m92beretta") end return drop end,
 	},
 
     ["m9k_luger"] = {
 		["Name"] = "M9kP08Luger",
 		["Cost"] = 4500,
 		["Model"] = "models/weapons/w_luger_p08.mdl",
-		["Description"] = "description",
+		["Description"] = "M9kP08Luger_d",
 		["Weight"] = 1.09,
 		["Supply"] = 0,
-		["Rarity"] = 2,
+		["Rarity"] = 3,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_luger") return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_luger") if drop then ply:StripWeapon("m9k_luger")end  return drop end,
@@ -1656,10 +1642,10 @@ ItemsList = {
 		["Name"] = "M9kRagingBull",
 		["Cost"] = 6200,
 		["Model"] = "models/weapons/w_taurus_raging_bull.mdl",
-		["Description"] = "description",
+		["Description"] = "M9kRagingBull_d",
 		["Weight"] = 2.16,
 		["Supply"] = 0,
-		["Rarity"] = 2,
+		["Rarity"] = 4,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_ragingbull") return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_ragingbull") if drop then ply:StripWeapon("m9k_ragingbull")end  return drop end,
@@ -1669,10 +1655,10 @@ ItemsList = {
 		["Name"] = "M9kScopedTaurus",
 		["Cost"] = 8000,
 		["Model"] = "models/weapons/w_raging_bull_scoped.mdl",
-		["Description"] = "description",
+		["Description"] = "M9kScopedTaurus_d",
 		["Weight"] = 2.56,
 		["Supply"] = 0,
-		["Rarity"] = 2,
+		["Rarity"] = 4,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_scoped_taurus") return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_scoped_taurus") if drop then ply:StripWeapon("m9k_scoped_taurus")end  return drop end,
@@ -1682,10 +1668,10 @@ ItemsList = {
 		["Name"] = "M9kRemington1858",
 		["Cost"] = 5500,
 		["Model"] = "models/weapons/w_remington_1858.mdl",
-		["Description"] = "description",
+		["Description"] = "M9kRemington1858_d",
 		["Weight"] = 1.46,
 		["Supply"] = 0,
-		["Rarity"] = 2,
+		["Rarity"] = 3,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_remington1858") return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_remington1858") if drop then ply:StripWeapon("m9k_remington1858")end  return drop end,
@@ -1695,10 +1681,10 @@ ItemsList = {
 		["Name"] = "M9kSWModel3Russian",
 		["Cost"] = 5750,
 		["Model"] = "models/weapons/w_model_3_rus.mdl",
-		["Description"] = "description",
+		["Description"] = "M9kSWModel3Russian_d",
 		["Weight"] = 1.38,
 		["Supply"] = 0,
-		["Rarity"] = 2,
+		["Rarity"] = 3,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_model3russian") return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_model3russian") if drop then ply:StripWeapon("m9k_model3russian")end  return drop end,
@@ -1708,10 +1694,10 @@ ItemsList = {
 		["Name"] = "M9kSWModel500",
 		["Cost"] = 6750,
 		["Model"] = "models/weapons/w_sw_model_500.mdl",
-		["Description"] = "description",
+		["Description"] = "M9kSWModel500_d",
 		["Weight"] = 1.36,
 		["Supply"] = 0,
-		["Rarity"] = 2,
+		["Rarity"] = 4,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_model500") return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_model500") if drop then ply:StripWeapon("m9k_model500")end  return drop end,
@@ -1721,10 +1707,10 @@ ItemsList = {
 		["Name"] = "M9kSWModel627",
 		["Cost"] = 6950,
 		["Model"] = "models/weapons/w_sw_model_627.mdl",
-		["Description"] = "description",
+		["Description"] = "M9kSWModel627_d",
 		["Weight"] = 2.10,
 		["Supply"] = 0,
-		["Rarity"] = 2,
+		["Rarity"] = 4,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_model627") return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_model627") if drop then ply:StripWeapon("m9k_model627")end  return drop end,
@@ -1734,18 +1720,20 @@ ItemsList = {
 		["Name"] = "M9kSigSauerP229R",
 		["Cost"] = 6000,
 		["Model"] = "models/weapons/w_sig_229r.mdl",
-		["Description"] = "description",
+		["Description"] = "M9kSigSauerP229R_d",
 		["Weight"] = 1.31,
-		["Supply"] = -1,
-		["Rarity"] = 2,
+		["Supply"] = 0,
+		["Rarity"] = 3,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_sig_p229r") return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_sig_p229r") if drop then ply:StripWeapon("m9k_sig_p229r")end  return drop end,
 	},
 
+--rest of m9k guns not included because they are still... unfinished
+
     ["m9k_acr"] = {
 		["Name"] = "M9kACR",
-		["Cost"] = 0,
+		["Cost"] = 32500,
 		["Model"] = "models/weapons/w_masada_acr.mdl",
 		["Description"] = "description",
 		["Weight"] = 4.2,
@@ -1758,7 +1746,7 @@ ItemsList = {
 
     ["m9k_ak47"] = {
 		["Name"] = "M9kAK47",
-		["Cost"] = 0,
+		["Cost"] = 27000,
 		["Model"] = "models/weapons/w_ak47_m9k.mdl",
 		["Description"] = "description",
 		["Weight"] = 3.8,
@@ -1771,7 +1759,7 @@ ItemsList = {
 
     ["m9k_ak74"] = {
 		["Name"] = "M9kAK74",
-		["Cost"] = 0,
+		["Cost"] = 27500,
 		["Model"] = "models/weapons/w_tct_ak47.mdl",
 		["Description"] = "description",
 		["Weight"] = 3.66,
@@ -1784,7 +1772,7 @@ ItemsList = {
 
     ["m9k_amd65"] = {
 		["Name"] = "M9kAMD65",
-		["Cost"] = 0,
+		["Cost"] = 28750,
 		["Model"] = "models/weapons/w_amd_65.mdl",
 		["Description"] = "description",
 		["Weight"] = 3.9,
@@ -1797,7 +1785,7 @@ ItemsList = {
 
     ["m9k_an94"] = {
 		["Name"] = "M9kAN94",
-		["Cost"] = 0,
+		["Cost"] = 35000,
 		["Model"] = "models/weapons/w_rif_an_94.mdl",
 		["Description"] = "description",
 		["Weight"] = 4.4,
@@ -1810,7 +1798,7 @@ ItemsList = {
 
     ["m9k_val"] = {
 		["Name"] = "M9kASVal",
-		["Cost"] = 0,
+		["Cost"] = 33000,
 		["Model"] = "models/weapons/w_dmg_vally.mdl",
 		["Description"] = "description",
 		["Weight"] = 2.8,
@@ -1823,7 +1811,7 @@ ItemsList = {
 
     ["m9k_f2000"] = {
 		["Name"] = "M9kF2000",
-		["Cost"] = 0,
+		["Cost"] = 40000,
 		["Model"] = "models/weapons/w_fn_f2000.mdl",
 		["Description"] = "description",
 		["Weight"] = 5.24,
@@ -1836,7 +1824,7 @@ ItemsList = {
 
     ["m9k_fal"] = {
 		["Name"] = "M9kFNFal",
-		["Cost"] = 0,
+		["Cost"] = 31500,
 		["Model"] = "models/weapons/w_fn_fal.mdl",
 		["Description"] = "description",
 		["Weight"] = 5.9,
@@ -1849,7 +1837,7 @@ ItemsList = {
 
     ["m9k_g36"] = {
 		["Name"] = "M9kG36",
-		["Cost"] = 0,
+		["Cost"] = 36500,
 		["Model"] = "models/weapons/w_hk_g36c.mdl",
 		["Description"] = "description",
 		["Weight"] = 3.6,
@@ -1862,7 +1850,7 @@ ItemsList = {
 
     ["m9k_m416"] = {
 		["Name"] = "M9kHK416",
-		["Cost"] = 0,
+		["Cost"] = 34000,
 		["Model"] = "models/weapons/w_hk_416.mdl",
 		["Description"] = "description",
 		["Weight"] = 4.2,
@@ -1875,7 +1863,7 @@ ItemsList = {
 
     ["m9k_g3a3"] = {
 		["Name"] = "M9kHKG3A3",
-		["Cost"] = 0,
+		["Cost"] = 38500,
 		["Model"] = "models/weapons/w_hk_g3.mdl",
 		["Description"] = "description",
 		["Weight"] = 5.8,
@@ -1888,7 +1876,7 @@ ItemsList = {
 
     ["m9k_l85"] = {
 		["Name"] = "M9kL85",
-		["Cost"] = 0,
+		["Cost"] = 42000,
 		["Model"] = "models/weapons/w_l85a2.mdl",
 		["Description"] = "description",
 		["Weight"] = 5,
@@ -1901,7 +1889,7 @@ ItemsList = {
 
     ["m9k_m16a4_acog"] = {
 		["Name"] = "M9kM16A4ACOG",
-		["Cost"] = 0,
+		["Cost"] = 43000,
 		["Model"] = "models/weapons/w_dmg_m16ag.mdl",
 		["Description"] = "description",
 		["Weight"] = 4.2,
@@ -1914,7 +1902,7 @@ ItemsList = {
 
     ["m9k_vikhr"] = {
 		["Name"] = "M9kSR3MVikhr",
-		["Cost"] = 0,
+		["Cost"] = 26000,
 		["Model"] = "models/weapons/w_dmg_vikhr.mdl",
 		["Description"] = "description",
 		["Weight"] = 3.68,
@@ -1927,7 +1915,7 @@ ItemsList = {
 
     ["m9k_auga3"] = {
 		["Name"] = "M9kSteyrAUGA3",
-		["Cost"] = 0,
+		["Cost"] = 33500,
 		["Model"] = "models/weapons/w_auga3.mdl",
 		["Description"] = "description",
 		["Weight"] = 4.18,
@@ -1940,7 +1928,7 @@ ItemsList = {
 
     ["m9k_tar21"] = {
 		["Name"] = "M9kTAR21",
-		["Cost"] = 0,
+		["Cost"] = 32000,
 		["Model"] = "models/weapons/w_imi_tar21.mdl",
 		["Description"] = "description",
 		["Weight"] = 3.35,
@@ -1992,7 +1980,7 @@ ItemsList = {
 
     ["m9k_m60"] = {
 		["Name"] = "M9kM60",
-		["Cost"] = 100000,
+		["Cost"] = 140000,
 		["Model"] = "models/weapons/w_m60_machine_gun.mdl",
 		["Description"] = "M9kM60_d",
 		["Weight"] = 9.8,
@@ -2005,7 +1993,7 @@ ItemsList = {
 
     ["m9k_pkm"] = {
 		["Name"] = "M9kPKM",
-		["Cost"] = 0,
+		["Cost"] = 125000,
 		["Model"] = "models/weapons/w_mach_russ_pkm.mdl",
 		["Description"] = "description",
 		["Weight"] = 8.5,
@@ -2013,12 +2001,12 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_pkm") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_pkm") if drop then ply:StripWeapon("m9k_pkm")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_pkm") if drop then ply:StripWeapon("m9k_pkm") end return drop end,
 	},
 
     ["m9k_m3"] = {
 		["Name"] = "M9kBenneliM3",
-		["Cost"] = 0,
+		["Cost"] = 40000,
 		["Model"] = "models/weapons/w_benelli_m3.mdl",
 		["Description"] = "description",
 		["Weight"] = 3.62,
@@ -2031,7 +2019,7 @@ ItemsList = {
 
     ["m9k_browningauto5"] = {
 		["Name"] = "M9kBrowningAuto5",
-		["Cost"] = 0,
+		["Cost"] = 47500,
 		["Model"] = "models/weapons/w_browning_auto.mdl",
 		["Description"] = "description",
 		["Weight"] = 4.4,
@@ -2044,7 +2032,7 @@ ItemsList = {
 
     ["m9k_ithacam37"] = {
 		["Name"] = "M9kIthacaM37",
-		["Cost"] = 0,
+		["Cost"] = 44000,
 		["Model"] = "models/weapons/w_ithaca_m37.mdl",
 		["Description"] = "description",
 		["Weight"] = 3.45,
@@ -2057,7 +2045,7 @@ ItemsList = {
 
     ["m9k_mossberg590"] = {
 		["Name"] = "M9kMossberg590",
-		["Cost"] = 0,
+		["Cost"] = 42500,
 		["Model"] = "models/weapons/w_mossberg_590.mdl",
 		["Description"] = "description",
 		["Weight"] = 3.69,
@@ -2070,7 +2058,7 @@ ItemsList = {
 
     ["m9k_jackhammer"] = {
 		["Name"] = "M9kPancorJackhammer",
-		["Cost"] = 0,
+		["Cost"] = 55000,
 		["Model"] = "models/weapons/w_pancor_jackhammer.mdl",
 		["Description"] = "description",
 		["Weight"] = 4.6,
@@ -2083,7 +2071,7 @@ ItemsList = {
 
     ["m9k_spas12"] = {
 		["Name"] = "M9kSPAS12",
-		["Cost"] = 0,
+		["Cost"] = 60000,
 		["Model"] = "models/weapons/w_spas_12.mdl",
 		["Description"] = "description",
 		["Weight"] = 4.2,
@@ -2096,7 +2084,7 @@ ItemsList = {
 
     ["m9k_striker12"] = {
 		["Name"] = "M9kStriker12",
-		["Cost"] = 0,
+		["Cost"] = 57500,
 		["Model"] = "models/weapons/w_striker_12g.mdl",
 		["Description"] = "description",
 		["Weight"] = 3.66,
@@ -2109,7 +2097,7 @@ ItemsList = {
 
     ["m9k_1897winchester"] = {
 		["Name"] = "M9kWinchester1897",
-		["Cost"] = 0,
+		["Cost"] = 41000,
 		["Model"] = "models/weapons/w_winchester_1897_trench.mdl",
 		["Description"] = "description",
 		["Weight"] = 3.2,
@@ -2122,7 +2110,7 @@ ItemsList = {
 
     ["m9k_1887winchester"] = {
 		["Name"] = "M9kWinchester87",
-		["Cost"] = 0,
+		["Cost"] = 39500,
 		["Model"] = "models/weapons/w_winchester_1887.mdl",
 		["Description"] = "description",
 		["Weight"] = 3.12,
@@ -2135,7 +2123,7 @@ ItemsList = {
 
     ["m9k_barret_m82"] = {
 		["Name"] = "M9kBarretM82",
-		["Cost"] = 0,
+		["Cost"] = 105000,
 		["Model"] = "models/weapons/w_barret_m82.mdl",
 		["Description"] = "description",
 		["Weight"] = 11.85,
@@ -2143,12 +2131,12 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_barret_m82") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_barret_m82") if drop then ply:StripWeapon("m9k_barret_m82")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_barret_m82") if drop then ply:StripWeapon("m9k_barret_m82") end return drop end,
 	},
 
     ["m9k_m98b"] = {
 		["Name"] = "M9kBarretM98B",
-		["Cost"] = 0,
+		["Cost"] = 80000,
 		["Model"] = "models/weapons/w_barrett_m98b.mdl",
 		["Description"] = "description",
 		["Weight"] = 10.95,
@@ -2161,7 +2149,7 @@ ItemsList = {
 
     ["m9k_svu"] = {
 		["Name"] = "M9kDragunovSVU",
-		["Cost"] = 0,
+		["Cost"] = 81500,
 		["Model"] = "models/weapons/w_dragunov_svu.mdl",
 		["Description"] = "description",
 		["Weight"] = 5.44,
@@ -2174,7 +2162,7 @@ ItemsList = {
 
     ["m9k_sl8"] = {
 		["Name"] = "M9kSL8",
-		["Cost"] = 0,
+		["Cost"] = 57500,
 		["Model"] = "models/weapons/w_snip_int.mdl",
 		["Description"] = "description",
 		["Weight"] = 4.92,
@@ -2182,12 +2170,12 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_sl8") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_sl8") if drop then ply:StripWeapon("m9k_sl8")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_sl8") if drop then ply:StripWeapon("m9k_sl8") end return drop end,
 	},
 
     ["m9k_intervention"] = {
 		["Name"] = "M9kIntervention",
-		["Cost"] = 0,
+		["Cost"] = 55000,
 		["Model"] = "models/weapons/w_snip_int.mdl",
 		["Description"] = "description",
 		["Weight"] = 8.46,
@@ -2195,12 +2183,12 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_intervention") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_intervention") if drop then ply:StripWeapon("m9k_intervention")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_intervention") if drop then ply:StripWeapon("m9k_intervention") end return drop end,
 	},
 
     ["m9k_m24"] = {
 		["Name"] = "M9kM24",
-		["Cost"] = 0,
+		["Cost"] = 69000,
 		["Model"] = "models/weapons/w_snip_m24_6.mdl",
 		["Description"] = "description",
 		["Weight"] = 7.98,
@@ -2213,7 +2201,7 @@ ItemsList = {
 
     ["m9k_psg1"] = {
 		["Name"] = "M9kPSG1",
-		["Cost"] = 0,
+		["Cost"] = 73500,
 		["Model"] = "models/weapons/w_hk_psg1.mdl",
 		["Description"] = "description",
 		["Weight"] = 8.28,
@@ -2221,12 +2209,12 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_psg1") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_psg1") if drop then ply:StripWeapon("m9k_psg1")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_psg1") if drop then ply:StripWeapon("m9k_psg1") end return drop end,
 	},
 
     ["m9k_remington7615p"] = {
 		["Name"] = "M9kRemington7615P",
-		["Cost"] = 0,
+		["Cost"] = 18000,
 		["Model"] = "models/weapons/w_remington_7615p.mdl",
 		["Description"] = "description",
 		["Weight"] = 5.65,
@@ -2234,12 +2222,12 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_remington7615p") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_remington7615p") if drop then ply:StripWeapon("m9k_remington7615p")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_remington7615p") if drop then ply:StripWeapon("m9k_remington7615p") end return drop end,
 	},
 
     ["m9k_svt40"] = {
 		["Name"] = "M9kSVT40",
-		["Cost"] = 0,
+		["Cost"] = 63000,
 		["Model"] = "models/weapons/w_svt_40.mdl",
 		["Description"] = "description",
 		["Weight"] = 0,
@@ -2252,7 +2240,7 @@ ItemsList = {
 
     ["m9k_contender"] = {
 		["Name"] = "M9kThompsonContenderG2",
-		["Cost"] = 0,
+		["Cost"] = 45000,
 		["Model"] = "models/weapons/w_g2_contender.mdl",
 		["Description"] = "description",
 		["Weight"] = 0,
@@ -2265,7 +2253,7 @@ ItemsList = {
 
     ["m9k_honeybadger"] = {
 		["Name"] = "M9kAACHoneyBadger",
-		["Cost"] = 0,
+		["Cost"] = 51500,
 		["Model"] = "models/weapons/w_aac_honeybadger.mdl",
 		["Description"] = "description",
 		["Weight"] = 0,
@@ -2278,7 +2266,7 @@ ItemsList = {
 
     ["m9k_mp5"] = {
 		["Name"] = "M9kHKMP5",
-		["Cost"] = 0,
+		["Cost"] = 26500,
 		["Model"] = "models/weapons/w_hk_mp5.mdl",
 		["Description"] = "description",
 		["Weight"] = 0,
@@ -2291,7 +2279,7 @@ ItemsList = {
 
     ["m9k_mp7"] = {
 		["Name"] = "M9kHKMP7",
-		["Cost"] = 0,
+		["Cost"] = 29250,
 		["Model"] = "models/weapons/w_mp7_silenced.mdl",
 		["Description"] = "description",
 		["Weight"] = 0,
@@ -2304,7 +2292,7 @@ ItemsList = {
 
     ["m9k_ump45"] = {
 		["Name"] = "M9kHKUMP45",
-		["Cost"] = 0,
+		["Cost"] = 24000,
 		["Model"] = "models/weapons/w_hk_ump45.mdl",
 		["Description"] = "description",
 		["Weight"] = 0,
@@ -2317,7 +2305,7 @@ ItemsList = {
 
     ["m9k_kac_pdw"] = {
 		["Name"] = "M9kKACPDW",
-		["Cost"] = 0,
+		["Cost"] = 26750,
 		["Model"] = "models/weapons/w_kac_pdw.mdl",
 		["Description"] = "description",
 		["Weight"] = 0,
@@ -2330,7 +2318,7 @@ ItemsList = {
 
     ["m9k_vector"] = {
 		["Name"] = "M9kKRISSVector",
-		["Cost"] = 0,
+		["Cost"] = 34650,
 		["Model"] = "models/weapons/w_kriss_vector.mdl",
 		["Description"] = "description",
 		["Weight"] = 0,
@@ -2343,7 +2331,7 @@ ItemsList = {
 
     ["m9k_magpulpdr"] = {
 		["Name"] = "M9kMagpulPDR",
-		["Cost"] = 0,
+		["Cost"] = 29000,
 		["Model"] = "models/weapons/w_magpul_pdr.mdl",
 		["Description"] = "description",
 		["Weight"] = 0,
@@ -2356,7 +2344,7 @@ ItemsList = {
 
     ["m9k_mp5sd"] = {
 		["Name"] = "M9kMP5SD",
-		["Cost"] = 0,
+		["Cost"] = 28000,
 		["Model"] = "models/weapons/w_hk_mp5sd.mdl",
 		["Description"] = "description",
 		["Weight"] = 0,
@@ -2369,7 +2357,7 @@ ItemsList = {
 
     ["m9k_mp9"] = {
 		["Name"] = "M9kMP9",
-		["Cost"] = 0,
+		["Cost"] = 28500,
 		["Model"] = "models/weapons/w_brugger_thomet_mp9.mdl",
 		["Description"] = "description",
 		["Weight"] = 0,
@@ -2382,7 +2370,7 @@ ItemsList = {
 
     ["m9k_tec9"] = {
 		["Name"] = "M9kTEC9",
-		["Cost"] = 0,
+		["Cost"] = 20500,
 		["Model"] = "models/weapons/w_intratec_tec9.mdl",
 		["Description"] = "description",
 		["Weight"] = 0,
@@ -2395,7 +2383,7 @@ ItemsList = {
 
     ["m9k_thompson"] = {
 		["Name"] = "M9kTommyGun",
-		["Cost"] = 0,
+		["Cost"] = 26000,
 		["Model"] = "models/weapons/w_tommy_gun.mdl",
 		["Description"] = "description",
 		["Weight"] = 0,
@@ -2408,7 +2396,7 @@ ItemsList = {
 
     ["m9k_uzi"] = {
 		["Name"] = "M9kUZI",
-		["Cost"] = 0,
+		["Cost"] = 22000,
 		["Model"] = "models/weapons/w_uzi_imi.mdl",
 		["Description"] = "description",
 		["Weight"] = 0,
@@ -2437,8 +2425,8 @@ ItemsList = {
 		["ArmorStats"] = {
 			["reduction"] = 5,		-- damage reduction in percentage
 			["speedloss"] = 0,		-- speed loss in source units ( default player sprint speed: 250 (320 with maxed speed stat))
-			["slots"] = 1,			-- attachment slots
-			["battery"] = 0,		-- battery capacity, suits with 0 battery will only be able to use passive attachments
+			["slots"] = 1,			-- attachment slots (to be removed)
+			["battery"] = 0,		-- battery capacity, suits with 0 battery will only be able to use passive attachments (may be reworked, with flashlight)
 			["carryweight"] = 0,	-- additional max carryweight when user wears the armor
 			["allowmodels"] = nil	-- force the player to be one of these models, nil to let them choose from the default citizen models
 		}
@@ -2455,7 +2443,7 @@ ItemsList = {
 		["Category"] = 4,
 		["UseFunc"] = function(ply) UseFunc_EquipArmor(ply, "item_armor_chainmail") end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_chainmail") return drop end,
-		-- armor only values
+
 		["ArmorStats"] = {
 			["reduction"] = 7.5,
 			["speedloss"] = 10,
@@ -2477,7 +2465,6 @@ ItemsList = {
 		["Category"] = 4,
 		["UseFunc"] = function(ply) UseFunc_EquipArmor(ply, "item_armor_jacket_bandit") end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_jacket_bandit") return drop end,
-		-- armor only values
 		["ArmorStats"] = {
 			["reduction"] = 8,
 			["speedloss"] = 10,
@@ -2499,7 +2486,6 @@ ItemsList = {
 		["Category"] = 4,
 		["UseFunc"] = function(ply) UseFunc_EquipArmor(ply, "item_armor_scrap") end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_scrap") return drop end,
-		-- armor only values
 		["ArmorStats"] = {
 			["reduction"] = 12.5,
 			["speedloss"] = 35,
@@ -2521,7 +2507,6 @@ ItemsList = {
 		["Category"] = 4,
 		["UseFunc"] = function(ply) UseFunc_EquipArmor(ply, "item_armor_trenchcoat_brown") end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_trenchcoat_brown") return drop end,
-		-- armor only values
 		["ArmorStats"] = {
 			["reduction"] = 10,
 			["speedloss"] = 10,
@@ -2543,7 +2528,6 @@ ItemsList = {
 		["Category"] = 4,
 		["UseFunc"] = function(ply) UseFunc_EquipArmor(ply, "item_armor_trenchcoat_black") end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_trenchcoat_black") return drop end,
-		-- armor only values
 		["ArmorStats"] = {
 			["reduction"] = 15,
 			["speedloss"] = 17.5,
@@ -2565,7 +2549,6 @@ ItemsList = {
 		["Category"] = 4,
 		["UseFunc"] = function(ply) UseFunc_EquipArmor(ply, "item_armor_mercenary_guerilla") end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_mercenary_guerilla") return drop end,
-		-- armor only values
 		["ArmorStats"] = {
 			["reduction"] = 15.625,
 			["speedloss"] = 25,
@@ -2587,7 +2570,6 @@ ItemsList = {
 		["Category"] = 4,
 		["UseFunc"] = function(ply) UseFunc_EquipArmor(ply, "item_armor_mercenary_arctic") end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_mercenary_arctic") return drop end,
-		-- armor only values
 		["ArmorStats"] = {
 			["reduction"] = 16.25,
 			["speedloss"] = 27.5,
@@ -2609,7 +2591,6 @@ ItemsList = {
 		["Category"] = 4,
 		["UseFunc"] = function(ply) UseFunc_EquipArmor(ply, "item_armor_mercenary_leet") end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_mercenary_leet") return drop end,
-		-- armor only values
 		["ArmorStats"] = {
 			["reduction"] = 15,
 			["speedloss"] = 20,
@@ -2631,7 +2612,6 @@ ItemsList = {
 		["Category"] = 4,
 		["UseFunc"] = function(ply) UseFunc_EquipArmor(ply, "item_armor_mercenary_phoenix") end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_mercenary_phoenix") return drop end,
-		-- armor only values
 		["ArmorStats"] = {
 			["reduction"] = 20,
 			["speedloss"] = 30,
@@ -2653,7 +2633,6 @@ ItemsList = {
 		["Category"] = 4,
 		["UseFunc"] = function(ply) UseFunc_EquipArmor(ply, "item_armor_police_gasmask") end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_police_gasmask") return drop end,
-		-- armor only values
 		["ArmorStats"] = {
 			["reduction"] = 22.5,
 			["speedloss"] = 47.5,
@@ -2675,7 +2654,6 @@ ItemsList = {
 		["Category"] = 4,
 		["UseFunc"] = function(ply) UseFunc_EquipArmor(ply, "item_armor_police_riot") end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_police_riot") return drop end,
-		-- armor only values
 		["ArmorStats"] = {
 			["reduction"] = 25,
 			["speedloss"] = 55,
@@ -2697,7 +2675,6 @@ ItemsList = {
 		["Category"] = 4,
 		["UseFunc"] = function(ply) UseFunc_EquipArmor(ply, "item_armor_police_swat") end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_police_swat") return drop end,
-		-- armor only values
 		["ArmorStats"] = {
 			["reduction"] = 23.75,
 			["speedloss"] = 53.75,
@@ -2719,7 +2696,6 @@ ItemsList = {
 		["Category"] = 4,
 		["UseFunc"] = function(ply) UseFunc_EquipArmor(ply, "item_armor_police_urban") end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_police_urban") return drop end,
-		-- armor only values
 		["ArmorStats"] = {
 			["reduction"] = 27.5,
 			["speedloss"] = 57.5,
@@ -2741,7 +2717,6 @@ ItemsList = {
 		["Category"] = 4,
 		["UseFunc"] = function(ply) UseFunc_EquipArmor(ply, "item_armor_sunrise") end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_sunrise") return drop end,
-		-- armor only values
 		["ArmorStats"] = {
 			["reduction"] = 30,
 			["speedloss"] = 33.75,
@@ -2763,7 +2738,6 @@ ItemsList = {
 		["Category"] = 4,
 		["UseFunc"] = function(ply) UseFunc_EquipArmor(ply, "item_armor_sunrise_dolg") end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_sunrise_dolg") return drop end,
-		-- armor only values
 		["ArmorStats"] = {
 			["reduction"] = 37.5,
 			["speedloss"] = 42.5,
@@ -2785,7 +2759,6 @@ ItemsList = {
 		["Category"] = 4,
 		["UseFunc"] = function(ply) UseFunc_EquipArmor(ply, "item_armor_sunrise_svoboda") end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_sunrise_svoboda") return drop end,
-		-- armor only values
 		["ArmorStats"] = {
 			["reduction"] = 30,
 			["speedloss"] = 27.5,
@@ -2807,7 +2780,6 @@ ItemsList = {
 		["Category"] = 4,
 		["UseFunc"] = function(ply) UseFunc_EquipArmor(ply, "item_armor_sunrise_monolith") end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_sunrise_monolith") return drop end,
-		-- armor only values
 		["ArmorStats"] = {
 			["reduction"] = 35,
 			["speedloss"] = 35,
@@ -2829,7 +2801,6 @@ ItemsList = {
 		["Category"] = 4,
 		["UseFunc"] = function(ply) UseFunc_EquipArmor(ply, "item_armor_military_green") end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_military_green") return drop end,
-		-- armor only values
 		["ArmorStats"] = {
 			["reduction"] = 42.5,
 			["speedloss"] = 50,
@@ -2851,7 +2822,6 @@ ItemsList = {
 		["Category"] = 4,
 		["UseFunc"] = function(ply) UseFunc_EquipArmor(ply, "item_armor_military_black") end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_military_black") return drop end,
-		-- armor only values
 		["ArmorStats"] = {
 			["reduction"] = 47.5,
 			["speedloss"] = 70,
@@ -2868,12 +2838,11 @@ ItemsList = {
 		["Model"] = "models/player/stalker/loner_exo.mdl",
 		["Description"] = "ExoArmor_d",
 		["Weight"] = 25,
-		["Supply"] = -2,
+		["Supply"] = 0,
 		["Rarity"] = 7,
 		["Category"] = 4,
 		["UseFunc"] = function(ply) UseFunc_EquipArmor(ply, "item_armor_exo") end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_exo") return drop end,
-		-- armor only values
 		["ArmorStats"] = {
 			["reduction"] = 60,
 			["speedloss"] = 125,
@@ -2895,7 +2864,6 @@ ItemsList = {
 		["Category"] = 4,
 		["UseFunc"] = function(ply) UseFunc_EquipArmor(ply, "item_armor_exo_merc") end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_exo_merc") return drop end,
-		-- armor only values
 		["ArmorStats"] = {
 			["reduction"] = 57.5,
 			["speedloss"] = 115,
@@ -2917,7 +2885,6 @@ ItemsList = {
 		["Category"] = 4,
 		["UseFunc"] = function(ply) UseFunc_EquipArmor(ply, "item_armor_exo_dolg") end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_exo_dolg") return drop end,
-		-- armor only values
 		["ArmorStats"] = {
 			["reduction"] = 65,
 			["speedloss"] = 130,
@@ -2939,7 +2906,6 @@ ItemsList = {
 		["Category"] = 4,
 		["UseFunc"] = function(ply) UseFunc_EquipArmor(ply, "item_armor_exo_svoboda") end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_exo_svoboda") return drop end,
-		-- armor only values
 		["ArmorStats"] = {
 			["reduction"] = 55,
 			["speedloss"] = 110,
@@ -2961,7 +2927,6 @@ ItemsList = {
 		["Category"] = 4,
 		["UseFunc"] = function(ply) UseFunc_EquipArmor(ply, "item_armor_exo_monolith") end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_exo_monolith") return drop end,
-		-- armor only values
 		["ArmorStats"] = {
 			["reduction"] = 62.5,
 			["speedloss"] = 125,
@@ -2974,7 +2939,7 @@ ItemsList = {
 
 	["item_armor_cs2_goggles"] = {
 		["Name"] = "CS2GogglesArmor",
-		["Cost"] = 2500000,
+		["Cost"] = 650000,
 		["Model"] = "models/stalkertnb/cs2_goggles.mdl",
 		["Description"] = "CS2GogglesArmor_d",
 		["Weight"] = 15,
@@ -2983,7 +2948,6 @@ ItemsList = {
 		["Category"] = 4,
 		["UseFunc"] = function(ply) UseFunc_EquipArmor(ply, "item_armor_cs2_goggles") end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_cs2_goggles") return drop end,
-		-- armor only values
 		["ArmorStats"] = {
 			["reduction"] = 40,
 			["speedloss"] = -12.5,
@@ -2998,8 +2962,8 @@ ItemsList = {
 
 
 function UseFunc_Sleep(ply, bheal)
-if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "You are already sleeping, why would you sleep again??") return false end
-if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "You are currently using an item, why would you sleep now??") return false end
+if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "Can't sleep while sleeping already!") return false end
+if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "Can't sleep while using an item!") return false end
 if ply.Fatigue <= 2000 then SendChat(ply, "You are not tired") return false end
 if ply.Hunger <= 3000 then SendChat(ply, "You are hungry, you should eat something.") return false end
 if ply.Thirst <= 3000 then SendChat(ply, "You are thirsty, you should drink something.") return false end
@@ -3014,7 +2978,7 @@ timer.Create( "IsSleeping_"..ply:UniqueID(), 25, 1, function()
 	timer.Destroy("IsSleeping_"..ply:UniqueID())
 end )
 if bheal then
-ply:SetHealth( ply:GetMaxHealth() )
+ply:SetHealth(ply:GetMaxHealth())
 end
 end
 
@@ -3022,9 +2986,9 @@ end
 function UseFunc_DropItem(ply, item)
 if !SERVER then return false end
 if !ply:IsValid() or !ItemsList[item] then return false end
-if !ply:Alive() then SendChat(ply, "no dropping items while dead") return false end
-if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "You are sleeping, why would you drop an item??") return false end
-if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "You are currently using an item, why would you drop an item during this time??") return false end
+if !ply:Alive() then SendChat(ply, "no dropping items when dead") return false end
+if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "Can't drop an item while sleeping!") return false end
+if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "Can't drop an item while using one!") return false end
 
 local vStart = ply:GetShootPos()
 local vForward = ply:GetAimVector()
@@ -3041,18 +3005,16 @@ EntDrop:SetNWString("ItemClass", item)
 EntDrop:Spawn()
 EntDrop:Activate()
 
-return true
-
-end
+return true end
 
 
 function UseFunc_DropArmor(ply, item) -- same as drop item but we don't want to set the dropped item to a playermodel do we?
 if !SERVER then return false end
 if !ply:IsValid() or !ItemsList[item] then return false end
-if !ply:Alive() then SendChat(ply, "no dropping items while dead") return false end
-if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "You are sleeping, why would you drop armor??") return false end
-if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "You are currently using an item, why would you drop an armor during this time??") return false end
-if timer.Exists("Isplyequippingarmor"..ply:UniqueID().."_"..item) then SendChat(ply, "Why do you want to drop armor when equipping one??") return false end
+if !ply:Alive() then SendChat(ply, "no dropping items when dead") return false end
+if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "Can't drop armor while sleeping!") return false end
+if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "Can't drop armor while using an item!") return false end
+if timer.Exists("Isplyequippingarmor"..ply:UniqueID().."_"..item) then SendChat(ply, "Can't drop armor while currently equipping one!") return false end
 if !timer.Exists("Plywantstodropequippedarmor"..ply:UniqueID()) and ply:GetNWString("ArmorType") == item then
 	SendChat(ply, "WARNING! You are about to drop an armor that you have it equipped, drop the same armor again within 10 seconds to confirm.")
 	timer.Create("Plywantstodropequippedarmor"..ply:UniqueID(), 10, 1, function() end)
@@ -3064,8 +3026,8 @@ local trace = {}
 trace.start = vStart
 trace.endpos = vStart + (vForward * 70)
 trace.filter = ply
-local tr = util.TraceLine( trace )
-local EntDrop = ents.Create( "ate_droppeditem" )
+local tr = util.TraceLine(trace)
+local EntDrop = ents.Create("ate_droppeditem")
 EntDrop:SetPos( tr.HitPos )
 EntDrop:SetAngles( Angle( 0, 0, 0 ) )
 EntDrop:SetModel("models/props/cs_office/cardboard_box01.mdl")
@@ -3077,22 +3039,20 @@ if ply.EquippedArmor == tostring(item) then
 UseFunc_RemoveArmor(ply, item)
 end
 
-return true
-
-end
+return true end
 
 
 function UseFunc_EquipArmor(ply, item)
 if !SERVER then return false end
 if !ply:IsValid() or !ItemsList[item] or !ply:Alive() then return false end
-if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "You are sleeping, why would you equip armor??") return false end
-if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "You are currently using an item, why would you equip your armor during this time??") return false end
-if timer.Exists("Isplyequippingarmor"..ply:UniqueID().."_"..item) then SendChat(ply, "Why do you want to equip armor when equipping one now??") return false end
+if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "Can't equip armor while sleeping!") return false end
+if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "Can't equip armor while using an item!") return false end
+if timer.Exists("Isplyequippingarmor"..ply:UniqueID().."_"..item) then SendChat(ply, "Can't equip armor while equipping one now!") return false end
 
 local used = ItemsList[item]
 if !timer.Exists("plywantstoremovearmor"..ply:UniqueID().."_"..item) and ply.EquippedArmor == item then timer.Create("plywantstoremovearmor"..ply:UniqueID().."_"..item, 10, 1, function() end) SendChat(ply, "Unequip "..translate.Get(used["Name"]).."? Use the same armor again to confirm.") return false
 elseif timer.Exists("plywantstoremovearmor"..ply:UniqueID().."_"..item) and ply.EquippedArmor == item then
-SendUseDelay( ply, 3 )
+SendUseDelay(ply, 3)
 ply:EmitSound("npc/combine_soldier/zipline_hitground2.wav")
 timer.Simple(3, function()
 SystemMessage(ply, "You unequipped "..translate.Get(used["Name"])..".", Color(205,255,205,255), false)
@@ -3100,7 +3060,7 @@ UseFunc_RemoveArmor(ply, item)
 end)
 return false end
 
-SendUseDelay( ply, 3 )
+SendUseDelay(ply, 3)
 
 ply:EmitSound("npc/combine_soldier/zipline_hitground1.wav")
 
@@ -3110,14 +3070,12 @@ if !ply:IsValid() or !ply:Alive() then return false end
 SystemMessage(ply, "You equipped "..translate.Get(used["Name"])..". Use the same armor again to unequip.", Color(205,255,205,255), false)
 ply.EquippedArmor = tostring(item)
 ply:SetNWString("ArmorType", tostring(item))
-RecalcPlayerModel( ply )
+RecalcPlayerModel(ply)
 RecalcPlayerSpeed(ply)
-end )
+end)
 
 
-return false
-
-end
+return false end
 
 function ForceEquipArmor(ply, item) --Same as Equip armor, but we don't want to have cooldown from moving nor make noise of equipping armor when spawning right?
 	if !SERVER then return false end
@@ -3127,7 +3085,7 @@ function ForceEquipArmor(ply, item) --Same as Equip armor, but we don't want to 
 	
 	ply.EquippedArmor = tostring(item)
 	ply:SetNWString("ArmorType", tostring(item))
-	RecalcPlayerModel( ply )
+	RecalcPlayerModel(ply)
 	RecalcPlayerSpeed(ply)
 	
 	return false
@@ -3142,17 +3100,15 @@ local used = ItemsList[item]
 
 ply.EquippedArmor = "none"
 ply:SetNWString("ArmorType", "none")
-RecalcPlayerModel( ply )
+RecalcPlayerModel(ply)
 RecalcPlayerSpeed(ply)
 
-return false
-
-end
+return false end
 
 function UseFunc_DeployBed(ply, type)
 if !SERVER then return false end
 if !ply:IsValid() or !ply:Alive() then return false end
-if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "You are sleeping, why would you use bed??") return false end
+if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "Can't deploy bed while sleeping!") return false end
 if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, translate.Get("ItemNoUseCooldown")) return false end
 
 local vStart = ply:GetShootPos()
@@ -3161,8 +3117,8 @@ local trace = {}
 trace.start = vStart
 trace.endpos = vStart + (vForward * 70)
 trace.filter = ply
-local tr = util.TraceLine( trace )
-local EntDrop = ents.Create( "bed" )
+local tr = util.TraceLine(trace)
+local EntDrop = ents.Create("bed")
 EntDrop:SetPos( tr.HitPos )
 EntDrop:SetAngles( Angle( 0, 0, 0 ) )
 EntDrop:Spawn()
@@ -3174,59 +3130,54 @@ for k, v in pairs(ents.FindByClass("bed") ) do
 	if !v.Owner:IsValid() or v.Owner == ply then v:Remove() end
 end
 
-return true
-
-end
+return true end
 
 
 function UseFunc_EquipGun(ply, gun)
 if !SERVER then return false end
 if !ply:IsValid() or !ply:Alive() then return false end
-if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "You are sleeping, why would you equip a gun now??") return false end
-if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "You are currently using an item, why would you equip a gun now?") return false end
+if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "Can't equip a gun while sleeping!") return false end
+if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "Can't equip a gun while using an item!") return false end
 	if ply:GetActiveWeapon() != gun then
-		ply:Give( gun )
-		ply:SelectWeapon( gun )
+		ply:Give(gun)
+		ply:SelectWeapon(gun)
 	end
-return false
-end
+return false end
 
 function UseFunc_EquipNade(ply, gun, nadetype)
 if !SERVER then return false end
 if !ply:IsValid() or !ply:Alive() then return false end
-if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "You are sleeping, why would you equip a gun now??") return false end
-if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "You are currently using an item, why would you equip a grenade now?") return false end
-ply:GiveAmmo( 1, nadetype )
-ply:Give( gun )
+if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "Can't equip a grenade while sleeping!") return false end
+if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "Can't equip a grenade while using an item!") return false end
+ply:GiveAmmo(1, nadetype)
+ply:Give(gun)
 
 if ply:GetActiveWeapon() != gun then
-	ply:SelectWeapon( gun )
+	ply:SelectWeapon(gun)
 end
 
-return true
-end
+return true end
 
 function UseFunc_GiveAmmo(ply, amount, type)
 if !SERVER then return false end
 if !ply:IsValid() or !ply:Alive() then return false end
-if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "You are sleeping, why would you use ammo now??") return false end
-if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "You are currently using an item, why would you use ammo now??") return false end
-	ply:GiveAmmo( amount, type )
-return true
-end
+if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "Can't use ammo while sleeping!") return false end
+if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "Can't use ammo while using an item!") return false end
+	ply:GiveAmmo(amount, type)
+return true end
 
 
 function UseFunc_Heal(ply, usetime, hp, infection, snd)
 if !SERVER then return false end
 if !ply:IsValid() then return false end
-if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "You are sleeping, why would you use a medicine during this time??") return false end
+if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "Can't use item while sleeping!") return false end
 if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, translate.Get("ItemNoUseCooldown")) return false end
 	if ply:Alive() then
-			if ply:Health() >= ( ply:GetMaxHealth() ) and ply.Infection < 1 then SendChat( ply, "You are perfectly fine, using this your medkit would be wasteful at this time." ) return false end
+			if ply:Health() >= ply:GetMaxHealth() and ply.Infection < 1 then SendChat( ply, "You are perfectly fine, using this would be wasteful at this time." ) return false end
 			ply:SetHealth( math.Clamp( ply:Health() + (hp * ( 1 + (ply.StatMedSkill * 0.025) )), 0, ply:GetMaxHealth() ) )
 			ply.Infection = math.Clamp( ply.Infection - (infection * 100), 0, 10000 )
 			ply:EmitSound(snd, 100, 100)
-			SendUseDelay( ply, usetime )
+			SendUseDelay(ply, usetime)
 			timer.Create("Isplyusingitem"..ply:UniqueID(), usetime, 1, function()
 			timer.Destroy("Isplyusingitem"..ply:UniqueID())
 			end)
@@ -3241,28 +3192,28 @@ end
 function UseFunc_HealInfection(ply, usetime, infection, snd)
 	if !SERVER then return false end
 	if !ply:IsValid() then return false end
-	if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "You are sleeping, why would you use a medicine during this time??") return false end
+	if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "Can't use item while sleeping!") return false end
 	if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, translate.Get("ItemNoUseCooldown")) return false end
-		if ply:Alive() then
-				if ply.Infection < 1 then SendChat( ply, "You are feeling well, why would you use antidote now?" ) return false end
-				ply.Infection = math.Clamp( ply.Infection - (infection * 100), 0, 10000 )
-				ply:EmitSound(snd, 100, 100)
-				SendUseDelay( ply, usetime )
-				timer.Create("Isplyusingitem"..ply:UniqueID(), usetime, 1, function()
-				timer.Destroy("Isplyusingitem"..ply:UniqueID())
-				end)
-				return true
-		else
-			SendChat( ply, "You could have healed yourself, before you died." ) -- if they try to call this function when they are dead
-			print(ply.StatMedSkill)
-			return false
-		end
+	if ply:Alive() then
+			if ply.Infection < 1 then SendChat( ply, "You are feeling well, why would you use antidote now?" ) return false end
+			ply.Infection = math.Clamp( ply.Infection - (infection * 100), 0, 10000 )
+			ply:EmitSound(snd, 100, 100)
+			SendUseDelay( ply, usetime )
+			timer.Create("Isplyusingitem"..ply:UniqueID(), usetime, 1, function()
+			timer.Destroy("Isplyusingitem"..ply:UniqueID())
+			end)
+			return true
+	else
+		SendChat( ply, "You could have healed yourself, before you died." ) -- if they try to call this function when they are dead
+		print(ply.StatMedSkill)
+		return false
 	end
+end
 
 function UseFunc_Armor(ply, usetime, armor, snd)
 if !SERVER then return false end
 if !ply:IsValid() then return false end
-if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "You are sleeping, why would you reinforce your armor??") return false end
+if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "Can't use item while sleeping!") return false end
 if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, translate.Get("ItemNoUseCooldown")) return false end
 	if ply:Alive() then
 			if ply:Armor() >= ply:GetMaxArmor() then SendChat( ply, "Your armor is already at full condition." ) return false end
@@ -3282,7 +3233,7 @@ end
 function UseFunc_Eat(ply, usetime, health, hunger, thirst, stamina, fatigue, snd)
 if !SERVER then return false end
 if !ply:IsValid() then return false end
-if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "You are sleeping, why would you eat now??") return false end
+if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "Can't use item while sleeping!") return false end
 if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, translate.Get("ItemNoUseCooldown")) return false end
 	if ply:Alive() then
 			if ply.Hunger > 9500 then SendChat( ply, "I am not hungry, I should save this for later." ) return false end
@@ -3306,7 +3257,7 @@ end
 function UseFunc_Drink(ply, usetime, health, hunger, thirst, stamina, fatigue, snd)
 if !SERVER then return false end
 if !ply:IsValid() then return false end
-if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "You are sleeping, why would you drink now??") return false end
+if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "Can't use item while sleeping!") return false end
 if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, translate.Get("ItemNoUseCooldown")) return false end
 if ply:WaterLevel() == 3 then SendChat(ply, "It is impossible to drink when you are underwater. Get out of the water if you want to drink.") return false end
 	if ply:Alive() then
@@ -3331,13 +3282,13 @@ end
 function UseFunc_Respec(ply)
 if !SERVER then return false end
 if !ply:IsValid() or !ply:Alive() then return false end
-if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "You are sleeping, why should you use amnesia pill now??") return false end
+if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "Can't use item while sleeping!") return false end
 if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, translate.Get("ItemNoUseCooldown")) return false end
 
 local refund = 0 + ply.StatPoints
 ply.StatPoints = 0
 
-for k, v in pairs( StatsListServer ) do
+for k, v in pairs(StatsListServer) do
 	local TheStatPieces = string.Explode( ";", v )
 	local TheStatName = TheStatPieces[1]
 	refund = refund + tonumber(ply[ TheStatName ])
@@ -3353,31 +3304,9 @@ RecalcPlayerSpeed(ply)
 
 ply:EmitSound("npc/barnacle/barnacle_gulp2.wav")
 
-net.Start("UpdatePeriodicStats")
-net.WriteFloat( ply.Level )
-net.WriteFloat( ply.Prestige )
-net.WriteFloat( ply.Money )
-net.WriteFloat( ply.XP )
-net.WriteFloat( ply.StatPoints )
-net.WriteFloat( ply.Bounty )
-net.Send( ply )
+TEANetUpdatePeriodicStats(ply)
 
-net.Start("UpdatePerks")
-net.WriteFloat(ply.StatDefense)
-net.WriteFloat(ply.StatDamage)
-net.WriteFloat(ply.StatSpeed)
-net.WriteFloat(ply.StatHealth)
-net.WriteFloat(ply.StatKnowledge)
-net.WriteFloat(ply.StatMedSkill)
-net.WriteFloat(ply.StatStrength)
-net.WriteFloat(ply.StatEndurance)
-net.WriteFloat(ply.StatSalvage)
-net.WriteFloat(ply.StatBarter)
-net.WriteFloat(ply.StatEngineer)
-net.WriteFloat(ply.StatImmunity)
-net.WriteFloat(ply.StatSurvivor)
-net.WriteFloat(ply.StatAgility)
-net.Send( ply )
+TEANetUpdatePerks(ply)
 
 SystemMessage(ply, "You consumed an amnesia pill and forgot everything you have learned. All skills are now set to 0 and stat points are refunded", Color(255,255,205,255), true)
 

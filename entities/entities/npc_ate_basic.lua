@@ -125,6 +125,7 @@ function ENT:Initialize()
 	self:SetMaxHealth(self.ZombieStats["Health"])
 	self:SetCollisionBounds(Vector(-12,-12, 0), Vector(12, 12, 64))
 	self.NxtTick = 5
+	self.NextPainSound = CurTime()
 end
 
 
@@ -200,12 +201,14 @@ if IsValid(target) and target:Alive() and self:GetRangeTo(target) <= (1500 * sel
 -- check if we are obstructed by props and smash them if we are
 		local breakshit = ents.FindInSphere(self:GetPos() + self:GetAngles():Up() * 55, 35)
 
-		for k, v in pairs(breakshit) do
-			if v:GetClass() == "prop_flimsy" or v:GetClass() == "prop_strong" or SpecialSpawns[v:GetClass()] then
-				self:AttackProp(v)
-			elseif v:GetClass() == "prop_door_rotating" and v:GetNoDraw() == false then
-			self:AttackDoor(v)
-			else continue end
+		for k,v in pairs(breakshit) do
+			if v:IsValid() then
+				if v:GetClass() == "prop_flimsy" or v:GetClass() == "prop_strong" or SpecialSpawns[v:GetClass()] then
+					self:AttackProp(v)
+				elseif v:GetClass() == "prop_door_rotating" and v:GetNoDraw() == false then
+					self:AttackDoor(v)
+				else continue end
+			end
 		end
 		self.NxtTick = 5
 	else
@@ -295,7 +298,7 @@ function ENT:OnKilled(damageInfo)
 */
 	self:EmitSound(table.Random(self.DieSounds), 100, math.random(75, 130))
 	self:BecomeRagdoll(damageInfo)
-	timer.Simple(0.05, function() -- hope that no zombies will instantly disappear without leaving corpses
+	timer.Simple(0.25, function() -- there was one case scenario where a zombie disappeared without leaving a corpse during server lag so i had to increase timer
 	self:Remove()
 	end)
 end
@@ -303,8 +306,10 @@ end
 function ENT:OnInjured(damageInfo)
 	local attacker = damageInfo:GetAttacker()
 	local range = self:GetRangeTo(attacker)
-
-	self:EmitSound(table.Random(self.PainSounds), 100, math.random(90, 110))
+	if self.NextPainSound < CurTime() and damageInfo:GetDamage() < self:Health() then
+		self.NextPainSound = CurTime() + 0.5
+		self:EmitSound(table.Random(self.PainSounds), 100, math.random(90, 110))
+	end
 	if attacker:IsPlayer() then
 	self.target = attacker
 	end
@@ -392,9 +397,11 @@ target:SetNotSolid(true)
 target:SetNoDraw(true)
 
 local function ResetDoor(door, fakedoor)
+	if door:IsValid() and fakedoor:IsValid() then
 	door:SetNotSolid(false)
 	door:SetNoDraw(false)
 	fakedoor:Remove()
+	end
 end
 
 local push = self:GetPos():Normalize()

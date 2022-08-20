@@ -14,7 +14,7 @@ function CalculateMaxWeight(ply)
 local armorstr = ply:GetNWString("ArmorType") or "none"
 local armortype = ItemsList[armorstr]
 local maxweight = 0
-local defaultcarryweight = Config[ "MaxCarryWeight" ]
+local defaultcarryweight = Config["MaxCarryWeight"]
 if ply:GetNWString("ArmorType") == "none" then
 	if tonumber(ply.Prestige) >= 10 then
 		maxweight = defaultcarryweight + 5 + ((ply.StatStrength or 0) * 1.53)
@@ -44,13 +44,13 @@ concommand.Add("refresh_inventory", SendInventory)
 
 
 
-function LoadPlayerInventory( ply )
-if !ply:IsValid() or !ply:IsPlayer() then Error( "The Eternal Apocalypse: Tried to load a player inventory file that doesn't exist!" ) return end
+function LoadPlayerInventory(ply)
+if !ply:IsValid() or !ply:IsPlayer() then Error("The Eternal Apocalypse: Tried to load a player inventory file that doesn't exist!") return end
 
 ply.Inventory = {}
 
 local LoadedData
-if Config[ "FileSystem" ] == "Legacy" then
+if Config["FileSystem"] == "Legacy" then
 
 	if (file.Exists( "theeternalapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" )) .. "/inventory.txt", "DATA" )) then
 		LoadedData = file.Read( "theeternalapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" ) .. "/inventory.txt"), "DATA" )
@@ -68,13 +68,13 @@ end
 		ply.Inventory = table.Copy( Config[ "RookieGear" ] )
 	end
 
-	timer.Simple( 1, function() SendInventory(ply) end )
+	timer.Simple(1, function() SendInventory(ply) end)
 
 
 end
 
 
-function SavePlayerInventory( ply )
+function SavePlayerInventory(ply)
 local tea_server_dbsaving = GetConVar("tea_server_dbsaving")
 if AllowSave != 1 and tea_server_dbsaving:GetInt() < 1 then return end
 if !ply:IsValid() then return end
@@ -96,18 +96,17 @@ function SaveTimer()
 	local i = 0
 	for k, ply in pairs( player.GetAll() ) do
 		if ply:IsValid() then
-		i = i + 1
-		timer.Simple( i * 0.5, function()
-			if !ply:IsValid() then return end
-			SavePlayer( ply )
-			SavePlayerInventory( ply )
-			SavePlayerVault( ply )
-		end)
-
+			i = i + 1
+			timer.Simple( i * 0.5, function()
+				if !ply:IsValid() then return end
+				SavePlayer(ply)
+				SavePlayerInventory(ply)
+				SavePlayerVault(ply)
+			end)
 		end
 	end
 end
-timer.Create( "SaveTimer", 180, 0, SaveTimer )
+timer.Create("SaveTimer", 180, 0, SaveTimer)
 
 
 function SystemGiveItem( ply, str, qty )
@@ -117,7 +116,7 @@ if !ItemsList[str] or !ply.Inventory then return end
 qty = tonumber(qty) or 1
 
 local item = ItemsList[str]
-if ((CalculateWeight(ply) + item["Weight"]) > (CalculateMaxWeight(ply))) then SendChat(ply, "You don't have any inventory space left for this item!") return false end -- dont need to pester them with notifications from a system function, just return false
+if ((CalculateWeight(ply) + (qty * item["Weight"])) > (CalculateMaxWeight(ply))) then SendChat(ply, "You don't have any inventory space left for this item! (Need "..-CalculateMaxWeight(ply) + CalculateWeight(ply) + (qty * item["Weight"]).."kg more space)") return false end -- dont need to pester them with notifications from a system function, just return false
 
 	if ply.Inventory[str] then
 		ply.Inventory[str] = ply.Inventory[str] + qty
@@ -127,111 +126,108 @@ if ((CalculateWeight(ply) + item["Weight"]) > (CalculateMaxWeight(ply))) then Se
 
 end
 
-function SystemRemoveItem( ply, str, strip )
-if !ply:IsValid() or !ply:IsPlayer() then return end
-if !ItemsList[str] or !ply.Inventory then return end
+function SystemRemoveItem(ply, str, strip)
+	if !ply:IsValid() or !ply:IsPlayer() then return end
+	if !ItemsList[str] or !ply.Inventory then return end
 
-strip = tobool(strip) or false
-if !ply:IsValid() then return end
-if !ItemsList[str] then return end
-if !ply.Inventory[str] then return end
+	strip = tobool(strip) or false
+	if !ply:IsValid() then return end
+	if !ItemsList[str] then return end
+	if !ply.Inventory[str] then return end
 
-if strip then
-ply:StripWeapon(str)
-end
-ply.Inventory[str] = ply.Inventory[str] - 1
-if ply.Inventory[str] < 1 then ply.Inventory[str] = nil end
-
-end
-
-
-
-net.Receive( "UseItem", function( length, client ) -- this function also handles item dropping
-local item = net.ReadString()
-local action = net.ReadBool()
-local ftoggle
-if !action then ftoggle = "DropFunc" else ftoggle = "UseFunc" end
-
-
-if !client.CanUseItem then return false end -- cancel the function if they are spamming net messages
-if !ItemsList[item] then SendChat(client, "ERROR: You tried to use an item that doesn't exist!") return false end -- if the item doenst exist
-
-local ref = ItemsList[item]
-
-if client.Inventory[item] then
-	if client.Inventory[item] > 0 then
-
-		local func = ref[ftoggle](client)
-
-		if func == true then
-			SystemRemoveItem( client, item, false ) -- leave this as false otherwise grenades are unusable
-			client.CanUseItem = false
-			timer.Simple(0.7, function() if client:IsValid() then client.CanUseItem = true end end)
-		end
-	SendInventory(client)
-	else
-	SendChat(client, "You don't have one of those!")
+	if strip then
+		ply:StripWeapon(str)
 	end
-else
-SendChat(client, "You don't have one of those!")
+	ply.Inventory[str] = ply.Inventory[str] - 1
+	if ply.Inventory[str] < 1 then ply.Inventory[str] = nil end
+
 end
 
+
+
+net.Receive("UseItem", function(length, client) -- this function also handles item dropping
+	local item = net.ReadString()
+	local action = net.ReadBool()
+	local ftoggle
+	if !action then ftoggle = "DropFunc" else ftoggle = "UseFunc" end
+
+	if !client.CanUseItem then return false end -- cancel the function if they are spamming net messages
+	if !ItemsList[item] then SendChat(client, "ERROR: You tried to use an item that doesn't exist!") return false end -- if the item doenst exist
+
+	local ref = ItemsList[item]
+
+	if client.Inventory[item] then
+		if client.Inventory[item] > 0 then
+			local func = ref[ftoggle](client)
+			if func == true then
+				SystemRemoveItem( client, item, false ) -- leave this as false otherwise grenades are unusable
+				client.CanUseItem = false
+				timer.Simple(0.7, function() if client:IsValid() then client.CanUseItem = true end end)
+			end
+			SendInventory(client)
+		else
+			SendChat(client, "You don't have one of those!")
+		end
+	else
+		SendChat(client, "You don't have one of those!")
+	end
 end)
 
 
 ----------------------------------------------------------buy shit----------------------------------------------------------------------------
 
 
-net.Receive( "BuyItem", function( length, client )
-local str = net.ReadString()
-if client:IsValid() and client:Alive() and client:IsPvPGuarded() then -- if they aren't pvp guarded then they aren't near a trader and are therefore trying to hack
-client:BuyItem( str )
-end
+net.Receive("BuyItem", function(length, client)
+	local str = net.ReadString()
+	if client:IsValid() and client:Alive() and client:IsPvPGuarded() then -- if they aren't pvp guarded then they aren't near a trader and are therefore trying to hack
+		client:BuyItem(str)
+	elseif !client:IsPvPGuarded() then
+		SystemMessage(client, "STOP TRYING TO HACK!!!!", Color(255,205,205,255), true)
+	end
 end)
 
 
-function playa:BuyItem( str )
---if !client.CanBuy then SendChat(client, "Hey calm down there bud, don't rush the system") return false end -- cancel the function if they are spamming net messages
-if !ItemsList[str] then SendChat(self, "ERROR: this item does not exist on the server!") return end -- if the item doenst exist
+function playa:BuyItem(str)
+	--if !client.CanBuy then SendChat(client, "Hey calm down there bud, don't rush the system") return false end -- cancel the function if they are spamming net messages
+	if !ItemsList[str] then SendChat(self, "ERROR: this item does not exist on the server!") return end -- if the item doenst exist
 
-local item = ItemsList[str]
-local stockcheck = ItemsList[str]["Supply"]
+	local item = ItemsList[str]
+	local stockcheck = ItemsList[str]["Supply"]
+	local buyprice = item["Cost"] * (1 - (self.StatBarter * 0.015))
 
-if stockcheck <= -1 then SendChat(self, "Bruh, did you just try to buy stuff that trader doesn't even sell? You should play the gamemode like it was meant to be played.") return end -- people may try to hack and send faked netmessages to buy stuff the trader isnt meant to sell
+	if stockcheck <= -1 then SendChat(self, "Bruh, did you just try to buy stuff that trader doesn't even sell? You should play the gamemode like it was meant to be played.") return end -- people may try to hack and send faked netmessages to buy stuff the trader isnt meant to sell
 
-local cash = tonumber(self.Money)
+	local cash = tonumber(self.Money)
 
-if (cash < (item["Cost"] * (1 - (self.StatBarter * 0.015)))) then SendChat(self, "You cannot afford that!") return false end
-if ((CalculateWeight(self) + item["Weight"]) > CalculateMaxWeight(self)) then SendChat(self, "You do not have enough space for that! Need "..-CalculateMaxWeight(self) + CalculateWeight(self) + item["Weight"].."kg more space!") return false end
+	if (cash < buyprice) then SendChat(self, "You cannot afford that!") return false end
+	if ((CalculateWeight(self) + item["Weight"]) > CalculateMaxWeight(self)) then SendChat(self, "You do not have enough space for that! Need "..-CalculateMaxWeight(self) + CalculateWeight(self) + item["Weight"].."kg more space!") return false end
 
-
-SystemGiveItem( self, str )
-
-
-self.Money = math.floor(self.Money - (item["Cost"] * (1 - (self.StatBarter * 0.015)))) -- reduce buy cost by 1.5% per barter level
-SendInventory(self)
-self:EmitSound("items/ammopickup.wav", 100, 100)
-TEANetUpdatePeriodicStats(self)
-
+	SystemGiveItem(self, str)
+	self:PrintMessage(HUD_PRINTCONSOLE, translate.Format("TraderBoughtItem", translate.Get(item["Name"]), buyprice, Config["Currency"]))
+	self.Money = math.floor(self.Money - (item["Cost"] * (1 - (self.StatBarter * 0.015)))) -- reduce buy cost by 1.5% per barter level
+	SendInventory(self)
+	self:EmitSound("items/ammopickup.wav", 100, 100)
+	TEANetUpdatePeriodicStats(self)
 end
 
 
-----------------------------------------------------------sell shit----------------------------------------------------------------------------
+----------------------------------------------------------sell stuff----------------------------------------------------------------------------
 
 
 net.Receive( "SellItem", function( length, client )
-local str = net.ReadString()
+	local str = net.ReadString()
 
-if !ItemsList[str] then SendChat(client, "ERROR: this item does not exist on the server!") return false end -- if the item doenst exist
-if timer.Exists("Isplyequippingarmor"..client:UniqueID().."_"..str) then SystemMessage(client, "Bruh, did you try to sell armor that you were equipping it? You lil' bitch, don't even try that. Play the gamemode like it was meant to be played.", Color(255,155,155,255), true) return false end
+	if !ItemsList[str] then SendChat(client, "ERROR: this item does not exist on the server!") return false end -- if the item doenst exist
+	if timer.Exists("Isplyequippingarmor"..client:UniqueID().."_"..str) then SystemMessage(client, "Bruh, did you try to sell armor that you were equipping it? You lil' bitch, there will be consequences. Play the gamemode like it was meant to be played.", Color(255,155,155,255), true) return false end
 
-local item = ItemsList[str]
-local cash = tonumber(client.Money)
+	local item = ItemsList[str]
+	local cash = tonumber(client.Money)
+	local sellprice = item["Cost"] * (0.2 + (client.StatBarter * 0.005))
 
 	if client.Inventory[str] then
 		SystemRemoveItem( client, str, true )
 	else 
-	SendChat(client, "You don't have one of those!")
+		SendChat(client, "You don't have one of those!")
 	return false
 	end
 
@@ -239,7 +235,8 @@ local cash = tonumber(client.Money)
 		UseFunc_RemoveArmor(client, str)
 	end
 
-	client.Money = math.floor(client.Money + (item["Cost"] * (0.2 + (client.StatBarter * 0.005)))) -- base sell price 20% of the original buy price plus 0.5% per barter level to max of 25%
+	client:PrintMessage(HUD_PRINTCONSOLE, translate.Format("TraderSoldItem", translate.Get(item["Name"]), sellprice, Config["Currency"]))
+	client.Money = math.floor(client.Money + sellprice) -- base sell price 20% of the original buy price plus 0.5% per barter level to max of 25%
 	SendInventory(client)
 	client:EmitSound("physics/cardboard/cardboard_box_break3.wav", 100, 100)
 
@@ -252,12 +249,11 @@ end)
 
 
 net.Receive( "UseGun", function( length, client )
-local item = net.ReadString()
-if client.Inventory[item] then
-	client:Give( item )
-	client:SelectWeapon( item )
-else
-SendChat(client, "You don't have one of those!")
-end
-
+	local item = net.ReadString()
+	if client.Inventory[item] then
+		client:Give( item )
+		client:SelectWeapon( item )
+	else
+		SendChat(client, "You don't have one of those!")
+	end
 end)

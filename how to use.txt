@@ -16,11 +16,13 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=1680884607 (Project S.T.A
 
 
 WARNING: IF YOU ARE USING THE DEFAULT SWEPS PACK YOU WILL ABSOLUTELY NEED TO HAVE M9K SMALL ARMS, ASSAULT RIFLES AND HEAVY WEAPONS INSTALLED
-a lot of the default sweps use models and sounds from the m9k pack and will be errors if you dont have m9k installed on your server
-m9k specialties is not required
+A lot of the default sweps use models and sounds from the m9k pack and will be errors if you dont have m9k installed on your server
+and damn there are some weapons bugged which use some sounds from after the end content
+M9k specialties is not required.
 
 You can edit some things.
 For example, death sound effect in server/server_util.lua
+Prestige level requirement
 
 
 ===================================================================================
@@ -30,8 +32,10 @@ This gamemode requires three things:
 1. Your map must have a navmesh as the zombies are nextbots (google gmod navmesh if you dont know what this is or how to make one)
 (or just do nav_generate, if it can't generate, simply enable sv_cheats then give entity info_player_start to yourself at place you want
 to generate navmesh then do nav_generate [you can also use Navmesh tool])
+--Edit: There's alternative 
 
-2. Your server must have counter strike source mounted. Otherwise, some props, boss and faction loot caches will be errors.
+2. Your server must have counter strike source mounted. Otherwise, some props, boss and faction loot caches
+will be errors and you won't be able to hear some sounds since some sounds are from CS:S.
 
 3. You need to create a config file for you map, this is literally as simple as going ingame and using these 3 commands:
 ate_addzombiespawn - creates spawnpoints for the zombies to appear at
@@ -49,7 +53,7 @@ ate_clearairdropspawns
 ate_clearplayerspawnpoints
 
 A better config setup system will most likely be added in future but for now it works well enough.
-(it won't be added in the future, nor it was in the past)
+(it won't be added in the future, nor it was in the past, there are convars added already)
 
 
 That's all!
@@ -69,6 +73,8 @@ sh_spawnables.lua - controls which props and structures are available for player
 
 sh_config.lua - configurate max zombies, max loot and more
 
+You can also edit the entire gamemode code if you are making your own version of the eternal apocalypsee
+
 ===================================================================================
 
 Admin commands:
@@ -77,9 +83,17 @@ Admin commands are pretty rudimentary at the moment, expect better support for a
 Current commands are:
 
 ate_sadmin_giveitem "name" "amount"          eg. ate_sadmin_giveitem item_rifleammo 3       - gives you the corresponding item
-ate_sadmin_givecash "amount" - gives you cash moneys -- edit: whoops, i had it as giveadars before which was incorrect, sorry guys
+ate_sadmin_givecash "amount" - gives you cash moneys
 
 ate_admin_clearzombies "force"  - deletes all regular zombies if force is false or not inputted,
 deletes all nextbots including bosses if you type force after the command
 
+ate_admin_spawnboss - triggers the spawnboss event regardless of player count
+ate_admin_spawnairdrop - triggers the spawnairdrop event
+
 To see more admin commands, see theeternalapocalypse/gamemode/server/admincmd.lua
+
+
+Credits to
+LegendofRobbo - The legend himself who created After The End gamemode
+

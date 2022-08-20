@@ -1,6 +1,6 @@
 -- (Unfinished) Russian translation
 -- Translated with Yandex translator from English
--- Credits to D-Z Toy for helping me in translating! (and probably correcting)
+-- this is too much send help
 
 
 --[[Examples"
