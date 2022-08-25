@@ -10,6 +10,7 @@ util.AddNetworkString("UpdatePeriodicStats")
 util.AddNetworkString("UpdateStatistics")
 util.AddNetworkString("UpdatePerks")
 util.AddNetworkString("UpdateInventory")
+util.AddNetworkString("UpdateTargetStats")
 util.AddNetworkString("UpgradePerk")
 util.AddNetworkString("UpdateVault")
 
@@ -85,95 +86,103 @@ function TEANetUpdateStatistics(ply)
 	net.Send(ply)
 end
 
+function TEANetUpdatePlayerStatistics(ply, target)
+	net.Start("UpdateTargetStats")
+	net.WriteFloat(target.BestSurvivalTime)
+	net.WriteFloat(target.ZKills)
+	net.WriteFloat(target.playerskilled)
+	net.WriteFloat(target.playerdeaths)
+	net.Send(ply)
+end
+
 
 function SystemBroadcast(msg, color, sys) -- same as system message, just broadcasts it to everybody instead of accepting a ply argument
-for k, v in pairs(player.GetAll()) do
-net.Start("SystemMessage")
-net.WriteString( msg )
-net.WriteColor( color )
-net.WriteBool( sys or false )
-net.Send(v)
-end
+	for k, v in pairs(player.GetAll()) do
+		net.Start("SystemMessage")
+		net.WriteString(msg)
+		net.WriteColor(color)
+		net.WriteBool(sys or false)
+		net.Send(v)
+	end
 end
 
 function RadioBroadcast(time, msg, sender)
-timer.Simple(time, function()
-	for k, v in pairs(player.GetAll()) do
-	net.Start("RadioMessage")
-	net.WriteString( sender )
-	net.WriteString( msg )
-	net.Send(v)
-	end
-end)
+	timer.Simple(time, function()
+		for k, v in pairs(player.GetAll()) do
+			net.Start("RadioMessage")
+			net.WriteString(sender)
+			net.WriteString(msg)
+			net.Send(v)
+		end
+	end)
 end
 
 function SystemMessage(ply, msg, color, sys)
-net.Start("SystemMessage")
-net.WriteString( msg )
-net.WriteColor( color )
-net.WriteBool( sys or false )
-net.Send(ply)
+	net.Start("SystemMessage")
+	net.WriteString(msg)
+	net.WriteColor(color)
+	net.WriteBool(sys or false)
+	net.Send(ply)
 end
 
-function SendUseDelay( ply, delay )
-if !ply:IsValid() or !ply:Alive() then return end
-net.Start( "UseDelay" )
-net.WriteUInt( delay, 8 )
-net.Send(ply)
+function SendUseDelay(ply, delay)
+	if !ply:IsValid() or !ply:Alive() then return end
+	net.Start("UseDelay")
+	net.WriteUInt(delay, 8)
+	net.Send(ply)
 end
 
-net.Receive( "ChangeProp", function( length, client )
-if !client:IsValid() or !client:Alive() then return false end
-local model = net.ReadString()
-client.SelectedProp = model
+net.Receive("ChangeProp", function(length, client)
+	if !client:IsValid() or !client:Alive() then return false end
+	local model = net.ReadString()
+	client.SelectedProp = model
 end)
 
 
-net.Receive( "ChangeModel", function( length, client )
-if !client:IsValid() or !client:Alive() then return false end
-if timer.Exists("changemodelcooldown_"..client:UniqueID()) then SystemMessage(client, "You can't change your model since you already have changed your model in the last 120 seconds!", Color(255,155,155,255), true) return false end
-local model = net.ReadString()
-local col = net.ReadVector()
-client.ChosenModel = model
-client.ChosenModelColor = col
+net.Receive("ChangeModel", function(length, client)
+	if !client:IsValid() or !client:Alive() then return false end
+	if timer.Exists("changemodelcooldown_"..client:UniqueID()) then SystemMessage(client, "You can't change your model since you already have changed your model in the last 120 seconds!", Color(255,155,155,255), true) return false end
+	local model = net.ReadString()
+	local col = net.ReadVector()
+	client.ChosenModel = model
+	client.ChosenModelColor = col
 
-SendUseDelay( client, 1 )
-timer.Create( "changemodelcooldown_"..client:UniqueID(), 120, 0, function()
-	if !client:IsValid() then return false end
-	timer.Destroy("changemodelcooldown_"..client:UniqueID())
-end ) 
-
-timer.Simple(0.75, function() RecalcPlayerModel( client ) end)
+	SendUseDelay(client, 1)
+	timer.Create("changemodelcooldown_"..client:UniqueID(), 120, 0, function()
+		if !client:IsValid() then return false end
+		timer.Destroy("changemodelcooldown_"..client:UniqueID())
+	end) 
+timer.Simple(0.75, function() RecalcPlayerModel(client) end)
 
 end)
 
 
-net.Receive( "UpgradePerk", function( length, client )
-local ply = client
-local perk = net.ReadString()
-local perk2 = "Stat"..perk
-	if( tonumber(ply.StatPoints) < 1 ) then
-		SendChat( ply, "You need more stat points to upgrade a skill!" )
+net.Receive("UpgradePerk", function(length, client)
+	local ply = client
+	local perk = net.ReadString()
+	local perk2 = "Stat"..perk
+	if(tonumber(ply.StatPoints) < 1) then
+		SendChat(ply, "You need more stat points to upgrade a skill!")
 		return false
 	end
-	if ( tonumber(ply[perk2]) >= 10 ) then
-		SendChat( ply, "You have reached the maximum number of points for this skill" )
+	if (tonumber(ply[perk2]) >= 10) then
+		SendChat(ply, "You have reached the maximum number of points for this skill")
 		return false
 	end
 
 		ply[perk2] = ply[perk2] + 1
 		ply.StatPoints = ply.StatPoints - 1
-		CalculateMaxHealth( ply )
+		CalculateMaxHealth(ply)
 		CalculateMaxArmor(ply)
 		CalculateJumpPower(ply)
 		print(ply:Nick().." used 1 skill point on "..perk.." skill ("..tonumber(ply.StatPoints).." skill points remaining)")
-		SendChat( ply, "You increased your " ..perk.. " skill by 1 point!" )
+		SendChat(ply, translate.ClientFormat(ply, "PerkIncreased", perk))
  		RecalcPlayerSpeed(ply)
-		FullyUpdatePlayer( ply )
+		FullyUpdatePlayer(ply)
 end)
 
 
-net.Receive( "CashBounty", function( length, client )
+net.Receive("CashBounty", function(length, client)
 if !client:IsValid() or !client:Alive() then return false end
 
 local trader = false
@@ -186,10 +195,25 @@ if trader == false then SystemMessage(client, "Bruh, did you try to cash in your
 if client.Bounty <= 0 then SystemMessage(client, "You don't have any bounty to cash in!", Color(255,205,205,255), true) return false end
 
 client.Money = math.floor(tonumber(client.Money)) + tonumber(client.Bounty)
-print(client:Nick().." has cashed in their bounty and received "..tonumber(client.Bounty).." "..Config[ "Currency" ].."s!")
-SystemMessage(client, "You cashed in your bounty and received "..tonumber(client.Bounty).." "..Config[ "Currency" ].."s!", Color(205,255,205,255), true)
+print(client:Nick().." has cashed in their bounty and received "..tonumber(client.Bounty).." "..Config["Currency"].."s!")
+SystemMessage(client, "You cashed in your bounty and received "..tonumber(client.Bounty).." "..Config["Currency"].."s!", Color(205,255,205,255), true)
 client.Bounty = 0
-client:SetNWInt( "PlyBounty", client.Bounty )
+client:SetNWInt("PlyBounty", client.Bounty)
 
-FullyUpdatePlayer( client )
+FullyUpdatePlayer(client)
+end)
+
+net.Receive("UpdateTargetStats", function(length, client)
+	local ply = client
+	local target = net.ReadEntity()
+	if !ply:IsValid() or !target:IsValid() then return false end
+	local nick = target:Nick()
+	
+	net.Start("UpdateTargetStats")
+	net.WriteString(nick)
+	net.WriteFloat(target.BestSurvivalTime)
+	net.WriteFloat(target.ZKills)
+	net.WriteFloat(target.playerskilled)
+	net.WriteFloat(target.playerdeaths)
+	net.Send(ply)
 end)

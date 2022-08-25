@@ -1,29 +1,29 @@
-function LoadPlayer( ply )
+function LoadPlayer(ply)
 
-if not file.IsDir("theeternalapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" )) .. "", "DATA") then
-   file.CreateDir("theeternalapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" ) .. ""))
+if not file.IsDir("theeternalapocalypse/players/" .. string.lower(string.gsub(ply:SteamID(), ":", "_")) .. "", "DATA") then
+   file.CreateDir("theeternalapocalypse/players/" .. string.lower(string.gsub(ply:SteamID(), ":", "_") .. ""))
 end
-	if (file.Exists( "theeternalapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" ) .. "/profile.txt"), "DATA" )) then
-		local TheFile = file.Read( "theeternalapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" ) .. "/profile.txt"), "DATA" )
-		local DataPieces = string.Explode( "\n", TheFile )
+	if (file.Exists("theeternalapocalypse/players/" .. string.lower(string.gsub(ply:SteamID(), ":", "_") .. "/profile.txt"), "DATA")) then
+		local TheFile = file.Read("theeternalapocalypse/players/" .. string.lower(string.gsub(ply:SteamID(), ":", "_") .. "/profile.txt"), "DATA")
+		local DataPieces = string.Explode("\n", TheFile)
 
 		local Output = {}
 
-		for k, v in pairs( DataPieces ) do
-			local TheLine = string.Explode( ";", v ) -- convert txt string to stats table
+		for k, v in pairs(DataPieces) do
+			local TheLine = string.Explode(";", v) -- convert txt string to stats table
 
 			ply[TheLine[1]] = TheLine[2]  -- dump all their stats into their player table
 --			print(TheLine[1].." = "..TheLine[2])
 		end
 
---		print( "Loaded player: " .. ply:Nick() .." ( "..ply:SteamID().." )" )
-		ate_DebugLog( "Loaded player: " .. ply:Nick() .." ( "..ply:SteamID().." ) from file: ".."theeternalapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" ) .. "/profile.txt") )
+--		print("Loaded player: " .. ply:Nick() .." ("..ply:SteamID()..")")
+		ate_DebugLog("Loaded player: " .. ply:Nick() .." ("..ply:SteamID()..") from file: ".."theeternalapocalypse/players/" .. string.lower(string.gsub(ply:SteamID(), ":", "_") .. "/profile.txt"))
 
-		ply:SetNWInt( "PlyLevel", ply.Level )
-		ply:SetNWInt( "PlyPrestige", ply.Prestige )
+		ply:SetNWInt("PlyLevel", ply.Level)
+		ply:SetNWInt("PlyPrestige", ply.Prestige)
 		ply:SetNWString("ArmorType", ply.EquippedArmor) -- i really shouldnt have 2 different vars for this but whatever, im beyond caring at this point
 
-		ate_DebugLog( "Loading player data: " .. ply:Nick() .." ( "..ply:SteamID().." ) Level: "..tostring(ply.Level).." Cash: $"..tostring(ply.Money).." XP Total: "..tostring(ply.XP).." Armor Equipped: "..tostring(ply.EquippedArmor) )
+		ate_DebugLog("Loading player data: "..ply:Nick().." ("..ply:SteamID()..") Level: "..tostring(ply.Level).." Cash: $"..tostring(ply.Money).." XP Total: "..tostring(ply.XP).." Armor Equipped: "..tostring(ply.EquippedArmor))
 
 		TEANetUpdatePeriodicStats(ply)
 		TEANetUpdatePerks(ply)
@@ -44,16 +44,16 @@ end
 		ply.StatPoints = 0
 		ply.EquippedArmor = "none"
 		
-		for k, v in pairs( StatsListServer ) do
-			local TheStatPieces = string.Explode( ";", v )
+		for k, v in pairs(StatsListServer) do
+			local TheStatPieces = string.Explode(";", v)
 			local TheStatName = TheStatPieces[1]
 			ply[TheStatName] = 0
 		end
 
-		print( "Created a new profile for "..ply:Nick() .." ( "..ply:SteamID().." )" )
-		ate_DebugLog( "Created new data file for: "..ply:Nick().." ("..ply:SteamID()..") located at: ".."theeternalapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" ) .. "/profile.txt") )
+		print("Created a new profile for "..ply:Nick() .." ("..ply:SteamID()..")")
+		ate_DebugLog("Created new data file for: "..ply:Nick().." ("..ply:SteamID()..") located at: ".."theeternalapocalypse/players/" .. string.lower(string.gsub(ply:SteamID(), ":", "_") .. "/profile.txt"))
 
-		SavePlayer( ply )
+		SavePlayer(ply)
 
 		TEANetUpdatePeriodicStats(ply)
 		TEANetUpdateStatistics(ply)
@@ -82,16 +82,16 @@ Data["ChosenModel"] = ply.ChosenModel
 Data["ChosenModelColor"] = tostring(ply.ChosenModelColor)
 
 
-for k, v in pairs( StatsListServer ) do
-	local TheStatPieces = string.Explode( ";", v )
+for k, v in pairs(StatsListServer) do
+	local TheStatPieces = string.Explode(";", v)
 	local TheStatName = TheStatPieces[1]
 	Data[ TheStatName ] = ply[ TheStatName ]
 end
 
 
 local StringToWrite = ""
-for k, v in pairs( Data ) do
-		if( StringToWrite == "" ) then
+for k, v in pairs(Data) do
+		if(StringToWrite == "") then
 			StringToWrite = k .. ";" .. v
 		else
 			StringToWrite = StringToWrite .. "\n" .. k .. ";" .. v
@@ -99,7 +99,7 @@ for k, v in pairs( Data ) do
 	end
 	
 	TEANetUpdatePeriodicStats(ply) --see server/netstuff.lua
-	ate_DebugLog( "Saving player data: " .. ply:Nick() .." ( "..ply:SteamID().." ) Level: "..tostring(ply.Level).." Cash: $"..tostring(ply.Money).." XP Total: "..tostring(ply.XP).." Armor Equipped: "..tostring(ply.EquippedArmor) )
+	ate_DebugLog("Saving player data: "..ply:Nick().." ("..ply:SteamID()..") Level: "..tostring(ply.Level).." Cash: $"..tostring(ply.Money).." XP Total: "..tostring(ply.XP).." Armor Equipped: "..tostring(ply.EquippedArmor))
 	
 	TEANetUpdatePerks(ply)
 	
@@ -108,8 +108,8 @@ for k, v in pairs( Data ) do
 	print("✓ ".. ply:Nick() .." profile saved into database")
 	
 	
-	file.Write( "theeternalapocalypse/players/" ..string.lower(string.gsub( ply:SteamID(), ":", "_" ) .. "/profile.txt"), StringToWrite )
-	ate_DebugLog( "Saved player: " ..ply:Nick().." ("..ply:SteamID()..") to file: ".."theeternalapocalypse/players/" ..string.lower(string.gsub( ply:SteamID(), ":", "_" ) .. "/profile.txt") )
+	file.Write("theeternalapocalypse/players/"..string.lower(string.gsub(ply:SteamID(), ":", "_") .. "/profile.txt"), StringToWrite)
+	ate_DebugLog("Saved player: "..ply:Nick().." ("..ply:SteamID()..") to file: ".."theeternalapocalypse/players/" ..string.lower(string.gsub(ply:SteamID(), ":", "_") .. "/profile.txt"))
 end
 
 --Bonus multipliers for various supporters (and the dev)
@@ -150,7 +150,7 @@ function PlayerGainLevel(ply)
 			SendChat(ply, "Level Maxed, prestige to level further.")
 			return
 		end
-		ply.XP = ply.XP - GetReqXP( ply )
+		ply.XP = ply.XP - GetReqXP(ply)
 		local moneyreward = 65 + math.floor((ply.Level ^ 1.1217) * 19 + (ply.Level * 5) + (ply.Prestige * 2.6892))
 		ply.Money = ply.Money + moneyreward
 		ply.Level = ply.Level + 1
@@ -189,8 +189,8 @@ function GainPrestige(ply)
 		end
 		
 		
-		for k, v in pairs( StatsListServer ) do
-			local TheStatPieces = string.Explode( ";", v )
+		for k, v in pairs(StatsListServer) do
+			local TheStatPieces = string.Explode(";", v)
 			local TheStatName = TheStatPieces[1]
 			ply[ TheStatName ] = 0
 		end
@@ -198,27 +198,27 @@ function GainPrestige(ply)
 		util.ScreenShake(ply:GetPos(), 50, 0.5, 1.5, 800)
 		local prestige = ply.Prestige
 		if tonumber(prestige) == 1 then
-			SystemMessage(ply, translate.Format("PlyPrestigedTo1", prestige), Color(155,255,255,255), true)
+			SystemMessage(ply, translate.ClientFormat(ply, "PlyPrestigedTo1", prestige), Color(155,255,255,255), true)
 		elseif tonumber(prestige) == 2 then
-			SystemMessage(ply, translate.Format("PlyPrestigedTo2", prestige), Color(155,255,255,255), true)
+			SystemMessage(ply, translate.ClientFormat(ply, "PlyPrestigedTo2", prestige), Color(155,255,255,255), true)
 		elseif tonumber(prestige) == 3 then
-			SystemMessage(ply, translate.Format("PlyPrestigedTo3", prestige), Color(155,255,255,255), true)
+			SystemMessage(ply, translate.ClientFormat(ply, "PlyPrestigedTo3", prestige), Color(155,255,255,255), true)
 		elseif tonumber(prestige) == 4 then
-			SystemMessage(ply, translate.Format("PlyPrestigedTo4", prestige), Color(155,255,255,255), true)
+			SystemMessage(ply, translate.ClientFormat(ply, "PlyPrestigedTo4", prestige), Color(155,255,255,255), true)
 		elseif tonumber(prestige) == 5 then
-			SystemMessage(ply, translate.Format("PlyPrestigedTo5", prestige), Color(155,255,255,255), true)
+			SystemMessage(ply, translate.ClientFormat(ply, "PlyPrestigedTo5", prestige), Color(155,255,255,255), true)
 		elseif tonumber(prestige) == 10 then
-			SystemMessage(ply, translate.Format("PlyPrestigedTo10", prestige), Color(155,255,255,255), true)
+			SystemMessage(ply, translate.ClientFormat(ply, "PlyPrestigedTo10", prestige), Color(155,255,255,255), true)
 		elseif tonumber(prestige) == 15 then
-			SystemMessage(ply, translate.Format("PlyPrestigedTo15", prestige), Color(155,255,255,255), true)
+			SystemMessage(ply, translate.ClientFormat(ply, "PlyPrestigedTo15", prestige), Color(155,255,255,255), true)
 		elseif tonumber(prestige) == 20 then
-			SystemMessage(ply, translate.Format("PlyPrestigedTo20", prestige), Color(155,255,255,255), true)
+			SystemMessage(ply, translate.ClientFormat(ply, "PlyPrestigedTo20", prestige), Color(155,255,255,255), true)
 		elseif tonumber(prestige) == 25 then
-			SystemMessage(ply, translate.Format("PlyPrestigedTo25", prestige), Color(155,255,255,255), true)
+			SystemMessage(ply, translate.ClientFormat(ply, "PlyPrestigedTo25", prestige), Color(155,255,255,255), true)
 		else
-			local moneyprestigereward = math.floor(1603 + (1471 * prestige) + (((prestige * 1.592) * (3 * ply.Level)) ^ 1.392)) --gives players money if they prestige without gaining any other advantage except for more levels
+			local moneyprestigereward = math.floor(1603 + (1129 * prestige) + (((prestige * 1.592) * (3 * ply.Level)) ^ 1.392)) --gives players money if they prestige without gaining any other advantage except for more levels
 			ply.Money = ply.Money + moneyprestigereward
-			SystemMessage(ply, translate.Format("PlyHasPrestiged", prestige, moneyprestigereward, Config["Currency"]), Color(155,255,255,255), true)
+			SystemMessage(ply, translate.ClientFormat(ply, "PlyHasPrestiged", prestige, moneyprestigereward, Config["Currency"]), Color(155,255,255,255), true)
 		end
 		SystemBroadcast(translate.Format("PlayerPrestigedTo", ply:Nick(), prestige), Color(155,205,255,255), true)
 		ply:EmitSound("weapons/physcannon/energy_disintegrate"..math.random(4, 5)..".wav", 90, math.Rand(75,90))
@@ -261,24 +261,22 @@ TEANetUpdateStats(ply)
 end
 
 
-function FullyUpdatePlayer( ply )
-
-if !ply:IsValid() then return end
+function FullyUpdatePlayer(ply)
+	if !ply:IsValid() then return end
 
 	net.Start("UpdateInventory")
-	net.WriteTable( ply.Inventory )
-	net.Send( ply )
+	net.WriteTable(ply.Inventory)
+	net.Send(ply)
+
+	ply:SetNWInt("PlyBounty", ply.Bounty)
+	ply:SetNWInt("PlyLevel", ply.Level)
+	ply:SetNWInt("PlyPrestige", ply.Prestige)
 
 	TEANetUpdatePeriodicStats(ply)
-
-	ply:SetNWInt( "PlyBounty", ply.Bounty )
-	ply:SetNWInt( "PlyLevel", ply.Level )
-	ply:SetNWInt( "PlyPrestige", ply.Prestige )
-
 	TEANetUpdatePerks(ply)
 	TEANetUpdateStatistics(ply)
 
 	net.Start("RecvFactions")
 	net.WriteTable(Factions)
-	net.Send( ply )
+	net.Send(ply)
 end

@@ -199,7 +199,7 @@ end
 
 function MakeStructure(ply, struc, pos, ang)
 	if !ply:IsValid() or !ply:Alive() then return false end
-	if !SpecialSpawns[struc] then SystemMessage(ply, "Invalid Structure! Tell a developer cos shit be bugged yo", Color(255,205,205,255), true) return false end
+	if !SpecialSpawns[struc] then SystemMessage(ply, "Invalid Structure! Tell a developer because something bugged", Color(255,205,205,255), true) return false end
 	if ply:Team() == 1 then SystemMessage(ply, "You must be in a faction to place structures!", Color(255,205,205,255), true) return false end
 	if CheckBases(ply, pos) then SystemMessage(ply, "You cannot spawn structures this close to an opposing faction base!", Color(255,205,205,255), true) return false end
 
@@ -213,7 +213,7 @@ function MakeStructure(ply, struc, pos, ang)
 		return false
 	end
 
-	if struc == "structure_base_core" and CheckFactionBases(pos) != true then SystemMessage(ply, "Unable to create base core: too close to trader, spawn or another base core!", Color(255,205,205,255), true) return false end
+	if struc == "structure_base_core" and CheckFactionBases(pos) != true then SystemMessage(ply, "Unable to create base core: Too close to trader, spawn or another base core!", Color(255,205,205,255), true) return false end
 	local plyteam = team.GetName(ply:Team())
 	if struc == "structure_base_core" and Factions[ plyteam ]["leader"] != ply then SystemMessage(ply, "You must be the leader of your faction to create a base core!", Color(255,205,205,255), true) return false end
 

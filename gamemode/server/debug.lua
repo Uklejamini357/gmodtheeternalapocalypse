@@ -37,6 +37,18 @@ end
 print("The Eternal Apocalypse: Saved logs at "..TimeStr.." to data/theeternalapocalypse/logs/"..filename)
 DebugLogs = {}
 end
-concommand.Add("ate_savelogs", SaveLog)
-timer.Create("ate_savelogs_timer", 600, 0, SaveLog)
+timer.Create("ate_savelogs_timer", 480, 0, SaveLog)
+
+function TEADevSaveLog(ply, cmd, args)
+	if !ply:IsValid() then return end
+	if !SuperAdminCheck(ply) then 
+		SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
+		ply:ConCommand("playgamesound buttons/button8.wav")
+		return
+	end
+	SystemMessage(ply, "Logs saved", Color(255,255,255,255), true)
+	SaveLog()
+
+end
+concommand.Add("tea_debug_savelogs", TEADevSaveLog)
 --Because now I made it so the logs saving on server shutdown, it was made to save less frequent

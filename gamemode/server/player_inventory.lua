@@ -45,27 +45,26 @@ concommand.Add("refresh_inventory", SendInventory)
 
 
 function LoadPlayerInventory(ply)
-if !ply:IsValid() or !ply:IsPlayer() then Error("The Eternal Apocalypse: Tried to load a player inventory file that doesn't exist!") return end
+	if !ply:IsValid() or !ply:IsPlayer() then Error("The Eternal Apocalypse: Tried to load a player inventory file that doesn't exist!") return end
+	ply.Inventory = {}
 
-ply.Inventory = {}
+	local LoadedData
+	if Config["FileSystem"] == "Legacy" then
 
-local LoadedData
-if Config["FileSystem"] == "Legacy" then
-
-	if (file.Exists( "theeternalapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" )) .. "/inventory.txt", "DATA" )) then
-		LoadedData = file.Read( "theeternalapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" ) .. "/inventory.txt"), "DATA" )
+	if (file.Exists("theeternalapocalypse/players/"..string.lower(string.gsub(ply:SteamID(), ":", "_")).."/inventory.txt", "DATA")) then
+		LoadedData = file.Read("theeternalapocalypse/players/"..string.lower(string.gsub( ply:SteamID(), ":", "_").."/inventory.txt"), "DATA")
 	end
-elseif Config[ "FileSystem" ] == "PData" then
-		LoadedData = ply:GetPData( "ate_playerinventory" )
-else
-	print("Bruh, did you try to setup incorrectly? Set your damned filesystem option to a proper setting in sh_config.lua")
-end
+	elseif Config[ "FileSystem" ] == "PData" then
+		LoadedData = ply:GetPData("ate_playerinventory")
+	else
+		print("Bruh, did you try to setup incorrectly? Set your damned filesystem option to a proper setting in sh_config.lua")
+	end
 
 	if LoadedData then 
-		local formatted = util.JSONToTable( LoadedData )
+		local formatted = util.JSONToTable(LoadedData)
 		ply.Inventory = formatted
 	else
-		ply.Inventory = table.Copy( Config[ "RookieGear" ] )
+		ply.Inventory = table.Copy(Config["RookieGear"])
 	end
 
 	timer.Simple(1, function() SendInventory(ply) end)
@@ -75,21 +74,21 @@ end
 
 
 function SavePlayerInventory(ply)
-local tea_server_dbsaving = GetConVar("tea_server_dbsaving")
-if AllowSave != 1 and tea_server_dbsaving:GetInt() < 1 then return end
-if !ply:IsValid() then return end
+	local tea_server_dbsaving = GetConVar("tea_server_dbsaving")
+	if AllowSave != 1 and tea_server_dbsaving:GetInt() < 1 then return end
+	if !ply:IsValid() then return end
 
-if Config[ "FileSystem" ] == "Legacy" then
-	local data = util.TableToJSON(ply.Inventory)
-	file.Write( "theeternalapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" )) .. "/inventory.txt", data )
-	print("✓ ".. ply:Nick() .." inventory saved into database")
-elseif Config[ "FileSystem" ] == "PData" then
-	local formatted = util.TableToJSON( ply.Inventory )
-	ply:SetPData( "ate_playerinventory", formatted )
-	print("✓ ".. ply:Nick() .." inventory saved into database")
-else
-	print("Bruh, did you try to setup incorrectly? Set your damned filesystem option to a proper setting in sh_config.lua")
-end
+	if Config[ "FileSystem" ] == "Legacy" then
+		local data = util.TableToJSON(ply.Inventory)
+		file.Write("theeternalapocalypse/players/"..string.lower(string.gsub(ply:SteamID(), ":", "_")).."/inventory.txt", data)
+		print("✓ ".. ply:Nick() .." inventory saved into database")
+	elseif Config[ "FileSystem" ] == "PData" then
+		local formatted = util.TableToJSON( ply.Inventory )
+		ply:SetPData( "ate_playerinventory", formatted )
+		print("✓ ".. ply:Nick() .." inventory saved into database")
+	else
+		print("Bruh, did you try to setup incorrectly? Set your damned filesystem option to a proper setting in sh_config.lua")
+	end
 end
 
 function SaveTimer()
@@ -109,7 +108,7 @@ end
 timer.Create("SaveTimer", 180, 0, SaveTimer)
 
 
-function SystemGiveItem( ply, str, qty )
+function SystemGiveItem(ply, str, qty)
 
 if !ply:IsValid() or !ply:IsPlayer() then return end
 if !ItemsList[str] or !ply.Inventory then return end
@@ -152,7 +151,7 @@ net.Receive("UseItem", function(length, client) -- this function also handles it
 	if !action then ftoggle = "DropFunc" else ftoggle = "UseFunc" end
 
 	if !client.CanUseItem then return false end -- cancel the function if they are spamming net messages
-	if !ItemsList[item] then SendChat(client, "ERROR: You tried to use an item that doesn't exist!") return false end -- if the item doenst exist
+	if !ItemsList[item] then SendChat(client, translate.ClientGet(client, "ItemNonExistant")) return false end -- if the item doenst exist
 
 	local ref = ItemsList[item]
 
@@ -160,16 +159,16 @@ net.Receive("UseItem", function(length, client) -- this function also handles it
 		if client.Inventory[item] > 0 then
 			local func = ref[ftoggle](client)
 			if func == true then
-				SystemRemoveItem( client, item, false ) -- leave this as false otherwise grenades are unusable
+				SystemRemoveItem(client, item, false) -- leave this as false otherwise grenades are unusable
 				client.CanUseItem = false
 				timer.Simple(0.7, function() if client:IsValid() then client.CanUseItem = true end end)
 			end
 			SendInventory(client)
 		else
-			SendChat(client, "You don't have one of those!")
+			SendChat(client, translate.ClientGet(client, "HasNotGotItem"))
 		end
 	else
-		SendChat(client, "You don't have one of those!")
+		SendChat(client, translate.ClientGet(client, "HasNotGotItem"))
 	end
 end)
 
@@ -189,7 +188,7 @@ end)
 
 function playa:BuyItem(str)
 	--if !client.CanBuy then SendChat(client, "Hey calm down there bud, don't rush the system") return false end -- cancel the function if they are spamming net messages
-	if !ItemsList[str] then SendChat(self, "ERROR: this item does not exist on the server!") return end -- if the item doenst exist
+	if !ItemsList[str] then SendChat(self, translate.ClientGet(self, "ItemNonExistant")) return end -- if the item doenst exist
 
 	local item = ItemsList[str]
 	local stockcheck = ItemsList[str]["Supply"]
@@ -200,10 +199,10 @@ function playa:BuyItem(str)
 	local cash = tonumber(self.Money)
 
 	if (cash < buyprice) then SendChat(self, "You cannot afford that!") return false end
-	if ((CalculateWeight(self) + item["Weight"]) > CalculateMaxWeight(self)) then SendChat(self, "You do not have enough space for that! Need "..-CalculateMaxWeight(self) + CalculateWeight(self) + item["Weight"].."kg more space!") return false end
+	if ((CalculateWeight(self) + item["Weight"]) > CalculateMaxWeight(self)) then SendChat(self, translate.ClientFormat(self, "NotEnoughSpace", -CalculateMaxWeight(self) + CalculateWeight(self) + item["Weight"], translate.ClientGet(self, "kg"))) return false end
 
 	SystemGiveItem(self, str)
-	self:PrintMessage(HUD_PRINTCONSOLE, translate.Format("TraderBoughtItem", translate.Get(item["Name"]), buyprice, Config["Currency"]))
+	self:PrintMessage(HUD_PRINTCONSOLE, translate.ClientFormat(self, "TraderBoughtItem", translate.ClientGet(self, item["Name"]), buyprice, Config["Currency"]))
 	self.Money = math.floor(self.Money - (item["Cost"] * (1 - (self.StatBarter * 0.015)))) -- reduce buy cost by 1.5% per barter level
 	SendInventory(self)
 	self:EmitSound("items/ammopickup.wav", 100, 100)
@@ -214,10 +213,10 @@ end
 ----------------------------------------------------------sell stuff----------------------------------------------------------------------------
 
 
-net.Receive( "SellItem", function( length, client )
+net.Receive("SellItem", function(length, client)
 	local str = net.ReadString()
 
-	if !ItemsList[str] then SendChat(client, "ERROR: this item does not exist on the server!") return false end -- if the item doenst exist
+	if !ItemsList[str] then SendChat(client, translate.ClientGet(client, "ItemNonExistant")) return false end -- if the item doenst exist
 	if timer.Exists("Isplyequippingarmor"..client:UniqueID().."_"..str) then SystemMessage(client, "Bruh, did you try to sell armor that you were equipping it? You lil' bitch, there will be consequences. Play the gamemode like it was meant to be played.", Color(255,155,155,255), true) return false end
 
 	local item = ItemsList[str]
@@ -227,7 +226,7 @@ net.Receive( "SellItem", function( length, client )
 	if client.Inventory[str] then
 		SystemRemoveItem( client, str, true )
 	else 
-		SendChat(client, "You don't have one of those!")
+		SendChat(client, translate.ClientGet(client, "HasNotGotItem"))
 	return false
 	end
 
@@ -235,7 +234,7 @@ net.Receive( "SellItem", function( length, client )
 		UseFunc_RemoveArmor(client, str)
 	end
 
-	client:PrintMessage(HUD_PRINTCONSOLE, translate.Format("TraderSoldItem", translate.Get(item["Name"]), sellprice, Config["Currency"]))
+	client:PrintMessage(HUD_PRINTCONSOLE, translate.ClientFormat(client, "TraderSoldItem", translate.ClientGet(client, item["Name"]), sellprice, Config["Currency"]))
 	client.Money = math.floor(client.Money + sellprice) -- base sell price 20% of the original buy price plus 0.5% per barter level to max of 25%
 	SendInventory(client)
 	client:EmitSound("physics/cardboard/cardboard_box_break3.wav", 100, 100)
@@ -248,12 +247,12 @@ end)
 ----------------------------------------------------------equip guns----------------------------------------------------------------------------
 
 
-net.Receive( "UseGun", function( length, client )
+net.Receive("UseGun", function( length, client )
 	local item = net.ReadString()
 	if client.Inventory[item] then
 		client:Give( item )
 		client:SelectWeapon( item )
 	else
-		SendChat(client, "You don't have one of those!")
+		SendChat(client, translate.ClientGet(client, "HasNotGotItem"))
 	end
 end)

@@ -11,9 +11,9 @@ end
 
 function GM:OnSpawnMenuClose( )
 if PropsFrame:IsValid() then
-	PropsFrame:SetVisible( false )
+	PropsFrame:SetVisible(false)
 	PropsFrame:Remove()
-	gui.EnableScreenClicker( false )
+	gui.EnableScreenClicker(false)
 end
 end
 

@@ -25,23 +25,6 @@ PLAYER.TeammateNoCollide	= true		-- Do we collide with teammates or run straight
 PLAYER.AvoidPlayers			= true		-- Automatically swerves around other players
 PLAYER.UseVMHands			= true		-- Uses viewmodel hands
 
-/*
-PLAYER.WalkSpeed			= 400
-PLAYER.RunSpeed				= 600
-PLAYER.CrouchedWalkSpeed	= 0.3
-PLAYER.DuckSpeed			= 0.3
-PLAYER.UnDuckSpeed			= 0.3
-PLAYER.JumpPower			= 200
-PLAYER.CanUseFlashlight		= true
-PLAYER.MaxHealth			= 100
-PLAYER.MaxArmor 			= 100 
-PLAYER.StartHealth			= 100
-PLAYER.StartArmor			= 0
-PLAYER.DropWeaponOnDie		= false
-PLAYER.TeammateNoCollide	= true
-PLAYER.AvoidPlayers			= true
-PLAYER.UseVMHands			= true
-*/
 
 PLAYER.TauntCam = TauntCamera()
 

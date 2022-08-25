@@ -8,6 +8,8 @@ You MUST use one of the above when using translate.AddLanguage
 --[[Examples"
 LANGUAGE.gamemodename = "The Eternal Apocalypse"
 translate.Get("gamemodename")
+LANGUAGE.boughtitem = "Purchased %s for %d dollars"
+translate.Format("boughtitem", item, cost)
 ]]
 
 translate.AddLanguage("en", "English")
@@ -38,7 +40,7 @@ LANGUAGE.NeedToDrinkThirst = "WARNING! You are dying from dehydration, drink som
 LANGUAGE.NeedToSleepFatigue = "WARNING! You are about to die from fatigue, find somewhere to sleep!"
 LANGUAGE.NeedToCureInfection = "WARNING! You are about to die from infection, find a cure!"
 LANGUAGE.Pleasewait = "Please wait..."
-LANGUAGE.WillWakeupIn = "You will wake up in"
+LANGUAGE.WillWakeupIn = "You will wake up in %d seconds"
 LANGUAGE.SleepText = "This panel will be closed if you die in your sleep or if the timer runs out"
 LANGUAGE.PressPickUp = "Press E to pick up"
 
@@ -112,8 +114,7 @@ LANGUAGE.Help = "Help"
 LANGUAGE.ChangeModel = "Change Model"
 LANGUAGE.MySkills = "My Skills"
 LANGUAGE.MySkills_d = "Upgrade your stats"
-LANGUAGE.Inc1Stat_1 = "Increase"
-LANGUAGE.Inc1Stat_2 = "by 1"
+LANGUAGE.Inc1Stat = "Increase %s by 1"
 
 --Loot Menu
 
@@ -263,9 +264,9 @@ LANGUAGE.PigSticker_d = "A combat knife that can save your ass if you run out of
 LANGUAGE.Axe = "Axe"
 LANGUAGE.Axe_d = "Can i axe you a question?"
 LANGUAGE.BuildersWrench = "Builder's Wrench"
-LANGUAGE.BuildersWrench_d = "A wrench that is required to build and repair props and base components.  Can also be used as a bashing weapon though it isn't very effective."
+LANGUAGE.BuildersWrench_d = "A wrench that is required to build and repair props and base components. Can also be used as a bashing weapon though it isn't very effective."
 LANGUAGE.ScrapSword = "Scrap Sword"
-LANGUAGE.ScrapSword_d = "A massive, heavy blade made of rusty scrap metal welded together.  I hope you have taken your tetanus vaccine in case you cut yourself."
+LANGUAGE.ScrapSword_d = "A massive, heavy blade made of rusty scrap metal welded together. I hope you have taken your tetanus vaccine in case you cut yourself."
 LANGUAGE.G20Gov = "G20 Gov Issue"
 LANGUAGE.G20Gov_d = "A newer model of glock that was popular among police and servicemen before the apocalpyse."
 LANGUAGE.FN_FiveSeven = "FN FiveSeven"
@@ -311,27 +312,27 @@ LANGUAGE.KrukovKA74_d = "A basic but still highly effective russian assault rifl
 LANGUAGE.LiorL303 = "Lior L303"
 LANGUAGE.LiorL303_d = "A rugged assault rifle that was used by the Saudi Union before their homeland was nuked in an attempt to halt the spread of zombies."
 LANGUAGE.FNScar = "FN SCAR"
-LANGUAGE.FNScar_d = "The pinnacle of modern assault rifles, was produced in very small numbers before the apocalyose so a gun like this is a rare find indeed.  Uses rifle ammo."
+LANGUAGE.FNScar_d = "The pinnacle of modern assault rifles, was produced in very small numbers before the apocalyose so a gun like this is a rare find indeed. Uses rifle ammo."
 LANGUAGE.SawtoothLMG4 = "Sawtooth LMG-4"
 LANGUAGE.SawtoothLMG4_d = "A bulky light machine gun built to provide constant suppression against enemies in combat."
 LANGUAGE.Antelope762 = "Antelope 7.62"
-LANGUAGE.Antelope762_d = "A scoped sporting rifle that was often used for hunting before the zombie apocalypse.  Uses sniper ammo."
+LANGUAGE.Antelope762_d = "A scoped sporting rifle that was often used for hunting before the zombie apocalypse. Uses sniper ammo."
 LANGUAGE.KohlK24Scimitar = "Kohl K24 Scimitar"
 LANGUAGE.KohlK24Scimitar_d = "A burst fire sniper created by kohl to give infantry squads long range capabilites in battle."
 LANGUAGE.BlackhawkSniper = "Blackhawk Sniper"
-LANGUAGE.BlackhawkSniper_d = "A powerful military sniper fitted with a silencer and NVG scope.  Uses sniper ammo."
+LANGUAGE.BlackhawkSniper_d = "A powerful military sniper fitted with a silencer and NVG scope. Uses sniper ammo."
 LANGUAGE.ThePunisher = "The Punisher"
-LANGUAGE.ThePunisher_d = "A massively powerful sniper rifle chambered in the .50BMG cartridge.  Uses sniper ammo."
+LANGUAGE.ThePunisher_d = "A massively powerful sniper rifle chambered in the .50BMG cartridge. Uses sniper ammo."
 LANGUAGE.ExplosiveCrossbow = "Explosive Crossbow"
-LANGUAGE.ExplosiveCrossbow_d = "A crossbow cobbled together from various spare parts, it can fire explosive bolts.  Uses steel bolts."
+LANGUAGE.ExplosiveCrossbow_d = "A crossbow cobbled together from various spare parts, it can fire explosive bolts. Uses steel bolts."
 LANGUAGE.Winchester = "WINchester"
-LANGUAGE.Winchester_d = "They don't call this the WINchester for nothing amirite.  Uses Magnum rounds."
+LANGUAGE.Winchester_d = "They don't call this the WINchester for nothing amirite. Uses Magnum rounds."
 LANGUAGE.PerrinP64 = "Perrin P-64"
-LANGUAGE.PerrinP64_d = "A russian weapon designed to put assualt rifle levels of firepower in the hands of tankers and support crews.  Uses pistol rounds."
+LANGUAGE.PerrinP64_d = "A russian weapon designed to put assualt rifle levels of firepower in the hands of tankers and support crews. Uses pistol rounds."
 LANGUAGE.Dammerung = "Dammerung Assault Shotgun"
-LANGUAGE.Dammerung_d = "A fully automatic 20 round assault shotgun that chews anybody in the room into pulpy red goop.  Uses shotgun rounds."
+LANGUAGE.Dammerung_d = "A fully automatic 20 round assault shotgun that chews anybody in the room into pulpy red goop. Uses shotgun rounds."
 LANGUAGE.RPGLauncher = "RPG Launcher"
-LANGUAGE.RPGLauncher_d = "An RPG launcher primarily designed for busting vehicles or fortifications.  Uses rockets."
+LANGUAGE.RPGLauncher_d = "An RPG launcher primarily designed for busting vehicles or fortifications. Uses rockets."
 LANGUAGE.TheFuckinator = "The Fuckinator"
 LANGUAGE.TheFuckinator_d = "Point away from face."
 LANGUAGE.TheGermanator = "The Germanator"
@@ -357,9 +358,9 @@ LANGUAGE.DistressFlare_d = "A distress flare that is useful for lighting up dark
 LANGUAGE.FragGrenade = "Frag Grenade"
 LANGUAGE.FragGrenade_d = "A high powered military fragmentation grenade, these are a relatively rare find in this post apocalyptic world."
 LANGUAGE.MolotovCocktail = "Molotov Cocktail"
-LANGUAGE.MolotovCocktail_d = "A bottle full of petrol with a burning rag stuffed into the top.  Perfect for hosting a zombie BBQ."
+LANGUAGE.MolotovCocktail_d = "A bottle full of petrol with a burning rag stuffed into the top. Perfect for hosting a zombie BBQ."
 
---M9k Guns (currently adding descriptions for these)
+--M9k Guns (yes, i will get to editing descriptions to be more accurate later)
 
 LANGUAGE.M9KColtPython = "[M9k] Colt Python"
 LANGUAGE.M9KColtPython_d = "Colt Python from M9k Small Arms. Uses Magnum ammo."
@@ -386,112 +387,109 @@ LANGUAGE.M9kSWModel627_d = "S&W Model 627 from M9k Small Arms. Uses Magnum ammo.
 LANGUAGE.M9kSigSauerP229R = "[M9k] Sig Sauer P229R"
 LANGUAGE.M9kSigSauerP229R_d = "Sig Sauer P229R from M9k Small Arms. Uses Pistol ammo."
 LANGUAGE.M9kACR = "[M9k] ACR"
+LANGUAGE.M9kACR_d = "ACR from M9k Assault Rifles. Uses M9k Assault Rifle ammo."
 LANGUAGE.M9kAK47 = "[M9k] AK-47"
+LANGUAGE.M9kAK47_d = "AK-47 from M9k Assault Rifles. Uses M9k Assault Rifle ammo."
 LANGUAGE.M9kAK74 = "[M9k] AK-74"
+LANGUAGE.M9kAK74_d = "AK-74 from M9k Assault Rifles. Uses M9k Assault Rifle ammo."
 LANGUAGE.M9kAMD65 = "[M9k] AMD 65"
+LANGUAGE.M9kAMD65_d = "AMD 65 from M9k Assault Rifles. Uses M9k Assault Rifle ammo."
 LANGUAGE.M9kAN94 = "[M9k] AN-94"
+LANGUAGE.M9kAN94_d = "AN-94 from M9k Assault Rifles. Uses M9k Assault Rifle ammo."
 LANGUAGE.M9kASVal = "[M9k] AS Val"
+LANGUAGE.M9kASVal_d = "AS Val from M9k Assault Rifles. Uses M9k Assault Rifle ammo."
 LANGUAGE.M9kF2000 = "[M9k] F2000"
+LANGUAGE.M9kF2000_d = "F2000 from M9k Assault Rifles. Uses M9k Assault Rifle ammo."
 LANGUAGE.M9kFNFal = "[M9k] FN Fal"
+LANGUAGE.M9kFNFal_d = "FN Fal from M9k Assault Rifles. Uses M9k Assault Rifle ammo."
 LANGUAGE.M9kG36 = "[M9k] G36"
+LANGUAGE.M9kG36_d = "G36 from M9k Assault Rifles. Uses M9k Assault Rifle ammo."
 LANGUAGE.M9kHK416 = "[M9k] HK 416"
+LANGUAGE.M9kHK416_d = "HK 416 from M9k Assault Rifles. Uses M9k Assault Rifle ammo."
 LANGUAGE.M9kHKG3A3 = "[M9k] HK G3A3"
+LANGUAGE.M9kHKG3A3_d = "HK G3A3 from M9k Assault Rifles. Uses M9k Assault Rifle ammo."
 LANGUAGE.M9kL85 = "[M9k] L85"
+LANGUAGE.M9kL85_d = "L85 from M9k Assault Rifles. Uses M9k Assault Rifle ammo."
 LANGUAGE.M9kM16A4ACOG = "[M9k] M16A4 ACOG"
+LANGUAGE.M9kM16A4ACOG_d = "M16A4 ACOG from M9k Assault Rifles. Uses M9k Assault Rifle ammo."
 LANGUAGE.M9kSR3MVikhr = "[M9k] SR-3M Vikhr"
+LANGUAGE.M9kSR3MVikhr_d = "SR-3M Vikhr from M9k Assault Rifles. Uses M9k Assault Rifle ammo."
 LANGUAGE.M9kSteyrAUGA3 = "[M9k] Steyr AUG A3"
+LANGUAGE.M9kSteyrAUGA3_d = "Steyr AUG A3 from M9k Assault Rifles. Uses M9k Assault Rifle ammo."
 LANGUAGE.M9kTAR21 = "[M9k] TAR-21"
+LANGUAGE.M9kTAR21_d = "TAR-21 from M9k Assault Rifles. Uses M9k Assault Rifle ammo."
 LANGUAGE.M9kAresShrike = "[M9k] Ares Shrike"
+LANGUAGE.M9kAresShrike_d = "Ares Shrike from M9k Heavy Weapons. Uses M9k Assault Rifle ammo."
 LANGUAGE.M9kFG42 = "[M9k] FG 42"
+LANGUAGE.M9kFG42_d = "FG 42 from M9k Heavy Weapons. Uses M9k Assault Rifle ammo."
 LANGUAGE.M9kM1918Bar = "[M9k] M1918 BAR"
+LANGUAGE.M9kM1918Bar_d = "M1918 Bar from M9k Heavy Weapons. Uses M9k Assault Rifle ammo."
 LANGUAGE.M9kM60 = "[M9k] M60"
 LANGUAGE.M9kM60_d = "The best Weapon reborn - M60. Uses M9k Assault rifle ammo."
 LANGUAGE.M9kPKM = "[M9k] PKM"
+LANGUAGE.M9kPKM_d = "PKM from M9k Heavy Weapons. Uses M9k Assault Rifle ammo."
 LANGUAGE.M9kBenneliM3 = "[M9k] Benneli M3"
+LANGUAGE.M9kBenneliM3_d = "Benneli M3 from M9k Heavy Weapons. Uses Shotgun ammo."
 LANGUAGE.M9kBrowningAuto5 = "[M9k] Browning Auto 5"
+LANGUAGE.M9kBrowningAuto5_d = "Browning Auto 5 from M9k Heavy Weapons. Uses Shotgun ammo."
 LANGUAGE.M9kIthacaM37 = "[M9k] Ithaca M37"
+LANGUAGE.M9kIthacaM37_d = "Ithaca M37 from M9k Heavy Weapons. Uses Shotgun ammo."
 LANGUAGE.M9kMossberg590 = "[M9k] Mossberg 590"
+LANGUAGE.M9kMossberg590_d = "Mossberg 590 from M9k Heavy Weapons. Uses Shotgun ammo."
 LANGUAGE.M9kPancorJackhammer = "[M9k] Pancor Jackhammer"
+LANGUAGE.M9kPancorJackhammer_d = "Pancor Jackhammer from M9k Heavy Weapons. Uses Shotgun ammo."
 LANGUAGE.M9kSPAS12 = "[M9k] SPAS 12"
+LANGUAGE.M9kSPAS12_d = "SPAS 12 from M9k Heavy Weapons. Uses Shotgun ammo."
 LANGUAGE.M9kStriker12 = "[M9k] Striker 12"
+LANGUAGE.M9kStriker12_d = "Striker 12 from M9k Heavy Weapons. Uses Shotgun ammo."
 LANGUAGE.M9kWinchester1897 = "[M9k] Winchester 1897"
+LANGUAGE.M9kWinchester1897_d = "Winchester 1897 from M9k Heavy Weapons. Uses Shotgun ammo."
 LANGUAGE.M9kWinchester87 = "[M9k] Winchester 87"
+LANGUAGE.M9kWinchester87_d = "Winchester 87 from M9k Heavy Weapons. Uses Shotgun ammo."
 LANGUAGE.M9kBarretM82 = "[M9k] Barret M82"
+LANGUAGE.M9kBarretM82_d = "Barret M82 from M9k Heavy Weapons. Uses M9k Sniper Rifle ammo."
 LANGUAGE.M9kBarretM98B = "[M9k] Barret M98B"
+LANGUAGE.M9kBarretM98B_d = "Barret M98B from M9k Heavy Weapons. Uses M9k Sniper Rifle ammo."
 LANGUAGE.M9kDragunovSVU = "[M9k] Dragunov SVU"
+LANGUAGE.M9kDragunovSVU_d = "Dragunov SVU from M9k Heavy Weapons. Uses M9k Sniper Rifle ammo."
 LANGUAGE.M9kSL8 = "[M9k] SL8"
+LANGUAGE.M9kSL8_d = "SL8 from M9k Heavy Weapons. Uses M9k Assault Rifle ammo."
 LANGUAGE.M9kIntervention = "[M9k] Intervention"
+LANGUAGE.M9kIntervention_d = "Intervention from M9k Heavy Weapons. Uses M9k Sniper Rifle ammo."
 LANGUAGE.M9kM24 = "[M9k] M24"
+LANGUAGE.M9kM24_d = "M24 from M9k Heavy Weapons. Uses M9k Sniper Rifle ammo."
 LANGUAGE.M9kPSG1 = "[M9k] PSG-1"
+LANGUAGE.M9kPSG1_d = "PSG-1 from M9k Heavy Weapons. Uses M9k Sniper Rifle ammo."
 LANGUAGE.M9kRemington7615P = "[M9k] Remington 7615P"
+LANGUAGE.M9kRemington7615P_d = "Remington 7615P from M9k Heavy Weapons, being known as a weak sniper rifle. Uses M9k Sniper Rifle ammo."
 LANGUAGE.M9kSVT40 = "[M9k] SVT 40"
+LANGUAGE.M9kSVT40_d = "SVT 40 from M9k Heavy Weapons. Uses M9k Sniper Rifle ammo."
 LANGUAGE.M9kThompsonContenderG2 = "[M9k] Thompson Contender G2"
+LANGUAGE.M9kThompsonContenderG2_d = "Thompson Contender G2 from M9k Heavy Weapons. Uses M9k Sniper Rifle ammo."
 LANGUAGE.M9kAACHoneyBadger = "[M9k] AAC Honey Badger"
+LANGUAGE.M9kAACHoneyBadger_d = "AAC Honey Badger from M9k Small Arms. Uses M9k SMG ammo."
 LANGUAGE.M9kHKMP5 = "[M9k] HK MP5"
+LANGUAGE.M9kHKMP5_d = "HK MP5 from M9k Small Arms. Uses M9k SMG ammo."
 LANGUAGE.M9kHKMP7 = "[M9k] HK MP7"
+LANGUAGE.M9kHKMP7_d = "HK MP7 from M9k Small Arms. Uses M9k SMG ammo."
 LANGUAGE.M9kHKUMP45 = "[M9k] HK UMP45"
+LANGUAGE.M9kHKUMP45_d = "HK UMP 45 from M9k Small Arms. Uses M9k SMG ammo."
 LANGUAGE.M9kKACPDW = "[M9k] KAC PDW"
+LANGUAGE.M9kKACPDW_d = "KAC PDW from M9k Small Arms. Uses M9k SMG ammo."
 LANGUAGE.M9kKRISSVector = "[M9k] KRISS Vector"
+LANGUAGE.M9kKRISSVector_d = "KRISS Vector from M9k Small Arms. Uses M9k SMG ammo."
 LANGUAGE.M9kMagpulPDR = "[M9k] Magpul PDR"
+LANGUAGE.M9kMagpulPDR_d = "Magpul PDR. Uses M9k SMG ammo."
 LANGUAGE.M9kMP5SD = "[M9k] MP5SD"
+LANGUAGE.M9kMP5SD_d = "MP5SD from M9k Small Arms. Uses M9k SMG ammo."
 LANGUAGE.M9kMP9 = "[M9k] MP9"
+LANGUAGE.M9kMP9_d = "MP9 from M9k Small Arms. Uses M9k SMG ammo."
 LANGUAGE.M9kTEC9 = "[M9k] TEC-9"
+LANGUAGE.M9kTEC9_d = "TEC-9 from M9k Small Arms. Uses M9k SMG ammo."
 LANGUAGE.M9kTommyGun = "[M9k] Tommy Gun"
+LANGUAGE.M9kTommyGun_d = "Tommy Gun from M9k Small Arms. Uses M9k SMG ammo."
 LANGUAGE.M9kUZI = "[M9k] UZI"
-
-/*
-LANGUAGE.M9kACR_d = 
-LANGUAGE.M9kAK47_d = 
-LANGUAGE.M9kAK74_d = 
-LANGUAGE.M9kAMD65_d = 
-LANGUAGE.M9kAN94_d = 
-LANGUAGE.M9kASVal_d = 
-LANGUAGE.M9kF2000_d = 
-LANGUAGE.M9kFNFal_d = 
-LANGUAGE.M9kG36_d = 
-LANGUAGE.M9kHK416_d = 
-LANGUAGE.M9kHKG3A3_d = 
-LANGUAGE.M9kL85_d = 
-LANGUAGE.M9kM16A4ACOG_d = 
-LANGUAGE.M9kSR3MVikhr_d = 
-LANGUAGE.M9kSteyrAUGA3_d = 
-LANGUAGE.M9kTAR21_d = 
-LANGUAGE.M9kAresShrike_d = 
-LANGUAGE.M9kFG42_d = 
-LANGUAGE.M9kM1918Bar_d = 
-LANGUAGE.M9kPKM_d = 
-LANGUAGE.M9kBenneliM3_d = 
-LANGUAGE.M9kBrowningAuto5_d = 
-LANGUAGE.M9kIthacaM37_d = 
-LANGUAGE.M9kMossberg590_d = 
-LANGUAGE.M9kPancorJackhammer_d = 
-LANGUAGE.M9kSPAS12_d = 
-LANGUAGE.M9kStriker12_d = 
-LANGUAGE.M9kWinchester1897_d = 
-LANGUAGE.M9kWinchester87_d = 
-LANGUAGE.M9kBarretM82_d = 
-LANGUAGE.M9kBarretM98B_d = 
-LANGUAGE.M9kDragunovSVU_d = 
-LANGUAGE.M9kSL8_d = 
-LANGUAGE.M9kIntervention_d = 
-LANGUAGE.M9kM24_d = 
-LANGUAGE.M9kPSG1_d = 
-LANGUAGE.M9kRemington7615P_d = 
-LANGUAGE.M9kSVT40_d = 
-LANGUAGE.M9kThompsonContenderG2_d = 
-LANGUAGE.M9kAACHoneyBadger_d = 
-LANGUAGE.M9kHKMP5_d = 
-LANGUAGE.M9kHKMP7_d = 
-LANGUAGE.M9kHKUMP45_d = 
-LANGUAGE.M9kKACPDW_d = 
-LANGUAGE.M9kKRISSVector_d = 
-LANGUAGE.M9kMagpulPDR_d = 
-LANGUAGE.M9kMP5SD_d = 
-LANGUAGE.M9kMP9_d = 
-LANGUAGE.M9kTEC9_d = 
-LANGUAGE.M9kTommyGun_d = 
-LANGUAGE.M9kUZI_d = 
-*/
+LANGUAGE.M9kUZI_d = "UZI from M9k Small Arms. Uses M9k SMG ammo."
 
 --Armor
 
@@ -548,30 +546,9 @@ LANGUAGE.MonolithExoArmor_d = "A set of armor consisting of heavy flak plating s
 LANGUAGE.CS2GogglesArmor = "CS2 Goggles Armor"
 LANGUAGE.CS2GogglesArmor_d = "An experimental armor that provides wearer suitable protection, great battery capacity and increases movement speed of user wearing it.\nProtection: 40%\nSpeed: Increased (1.25)\nAttachment Slots: 3\nBattery: 100\nMax Carry Weight: +5kg"
 
---LootTable (planning to make rework of loot chat send instead)
-
-LANGUAGE.L_Bandage = "2x Bandages"
-LANGUAGE.L_Medkit = "1x Medkit"
-LANGUAGE.L_Antidote = "1x Antidote"
-LANGUAGE.L_Soda = "2x Softdrinks"
-LANGUAGE.L_Tinnedfood = "2x Tinned Rations"
-LANGUAGE.L_Melon = "1x Melon"
-LANGUAGE.L_PistolAmmo = "2x Pistol Ammo Box"
-LANGUAGE.L_MagnumAmmo = "2x Magnum Ammo Box"
-LANGUAGE.L_ShotgunAmmo = "2x Shotgun Ammo Box"
-LANGUAGE.L_RifleAmmo = "1x Rifle Ammo Box"
-LANGUAGE.L_SniperAmmo = "1x Sniper Ammo Box"
-LANGUAGE.L_M9kSMGAmmo = "2x [M9k] SMG Ammo Box"
-LANGUAGE.L_M9kAssaultAmmo = "1x [M9k] Assault Rifle Ammo Box"
-LANGUAGE.L_PigSticker = "1x Pig Sticker"
-LANGUAGE.L_Scrap = "2x Scrap Metal"
-LANGUAGE.L_Chems = "1x Chemicals"
-LANGUAGE.L_PipeBomb = "2x Pipe Bomb"
-LANGUAGE.L_Flare = "2x Distress Flare"
-LANGUAGE.L_FragGrenade = "2x Frag Grenade"
-
 --Item Chat send
 
+LANGUAGE.PerkIncreased = "You increased your %s skill by 1 point!"
 LANGUAGE.PlyLevelUp = "Congratulations! You are now level %d, you have gained 1 skill point and %d %ss!"
 LANGUAGE.PlyHasPrestiged = "You have prestiged to Prestige %d! You have gained %d %ss!"
 LANGUAGE.PlayerPrestigedTo = "%s has prestiged to Prestige level %d!"
@@ -596,7 +573,18 @@ LANGUAGE.ItemNoUseCooldown = "Can't use multiple items at the time"
 LANGUAGE.ItemNoUseCooldownAmmo = "Can't resupply ammo while using an item"
 LANGUAGE.ItemNoUseCooldownFrag = "Can't use frags while using an item"
 LANGUAGE.ItemNoUseCooldownWeapon = "Can't equip weapon while using an item"
+LANGUAGE.ItemNoSleepCooldownSleeping = "Can't sleep while sleeping already!"
+LANGUAGE.ItemUsedSkillsReset = "You consumed an amnesia pill and forgot everything you have learned. All skills are now set to 0 and stat points are refunded"
+LANGUAGE.ItemNonExistant = "ERROR: This item does not exist on the server!"
+LANGUAGE.NotEnoughSpace = "You do not have enough space for that! (Need %s%s more space)"
+LANGUAGE.NotEnoughSpaceLoot = "You don't have enough space for this item! It weighs: %s%s (Need %s%s more space)"
+LANGUAGE.HasNotGotItem = "You don't have one of those!"
 
+--Admin and dev commands
+
+LANGUAGE.TEAAdminCheckFailed = "You are not admin!"
+LANGUAGE.TEASuperAdminCheckFailed = "You are not superadmin!"
+LANGUAGE.TEADevCheckFailed = "You are not dev!"
 
 --Other
 

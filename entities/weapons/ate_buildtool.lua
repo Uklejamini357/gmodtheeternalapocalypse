@@ -91,7 +91,12 @@ if not (CLIENT) then return false end
 	surface.SetTextPos(x2 - 342, y2 + 88)
 	surface.SetTextColor(200, 200, 200, 225)
 	surface.DrawText("Current Angles: Pitch "..weapon:GetBPitch().." Yaw "..weapon:GetBYaw().. " Roll "..weapon:GetBRoll())
-
+	surface.SetTextPos(x2 - 342, y2 + 108)
+	surface.SetTextColor(200, 250, 200, 225)
+	surface.DrawText("Tip: Hold down SHIFT while rotating")
+	surface.SetTextPos(x2 - 342, y2 + 128)
+	surface.SetTextColor(200, 250, 200, 225)
+	surface.DrawText("prop to increase rotation rate by upto 20")
 end
 end
 
@@ -156,21 +161,39 @@ if self.Owner:KeyDown(IN_USE) then
 
 if caxis == 0 then
 		local pitch = self:GetBPitch()
-		if pitch <= 0 then self:SetBPitch(355) else
-		self:SetBPitch(pitch - 5)
+		if self.Owner:KeyDown(IN_SPEED) then
+			if pitch < 20 then self:SetBPitch(pitch + 340) else
+			self:SetBPitch(pitch - 20)
+		end
+	else
+		if pitch < 5 then self:SetBPitch(pitch + 355) else
+			self:SetBPitch(pitch - 5)
+		end
 		end
 elseif caxis == 1 then
 		local yaw = self:GetBYaw()
-		if yaw <= 0 then self:SetBYaw(355) else
+		if self.Owner:KeyDown(IN_SPEED) then
+			if yaw < 20 then self:SetBYaw(yaw + 340) else
+			self:SetBYaw(yaw - 20)
+		end
+	else
+		if yaw < 5 then self:SetBYaw(yaw + 355) else
 		self:SetBYaw(yaw - 5)
+		end
 		end
 elseif caxis == 2 then
 		local roll = self:GetBRoll()
-		if roll <= 0 then self:SetBRoll(355) else
+		if self.Owner:KeyDown(IN_SPEED) then
+			if roll < 20 then self:SetBRoll(roll + 340) else
+			self:SetBRoll(roll - 20)
+		end
+	else
+		if roll < 5 then self:SetBRoll(roll + 355) else
 		self:SetBRoll(roll - 5)
 		end
 	end
-	self:SetNextPrimaryFire(CurTime() + 0.09)
+	end
+	self:SetNextPrimaryFire(CurTime() + 0.15)
 return
 end
 
@@ -206,21 +229,39 @@ local caxis = self:GetChangeAxis()
 if self.Owner:KeyDown(IN_USE) then
 if caxis == 0 then
 		local pitch = self:GetBPitch()
-		if pitch >= 355 then self:SetBPitch(0) else
-		self:SetBPitch(pitch + 5)
-	end
+		if self.Owner:KeyDown(IN_SPEED) then
+			if pitch >= 340 then self:SetBPitch(pitch - 340) else
+			self:SetBPitch(pitch + 20)
+		end
+	else
+		if pitch >= 355 then self:SetBPitch(pitch - 355) else
+			self:SetBPitch(pitch + 5)
+		end
+		end
 elseif caxis == 1 then
 		local yaw = self:GetBYaw()
-		if yaw >= 355 then self:SetBYaw(0) else
+		if self.Owner:KeyDown(IN_SPEED) then
+			if yaw >= 340 then self:SetBYaw(yaw - 340) else
+			self:SetBYaw(yaw + 20)
+		end
+	else
+		if yaw >= 355 then self:SetBYaw(yaw - 355) else
 		self:SetBYaw(yaw + 5)
-	end
+		end
+		end
 elseif caxis == 2 then
 		local roll = self:GetBRoll()
-		if roll >= 355 then self:SetBRoll(0) else
+		if self.Owner:KeyDown(IN_SPEED) then
+			if roll >= 340 then self:SetBRoll(roll - 340) else
+			self:SetBRoll(roll + 20)
+		end
+	else
+		if roll >= 355 then self:SetBRoll(roll - 355) else
 		self:SetBRoll(roll + 5)
+		end
 	end
-end
-self:SetNextSecondaryFire(CurTime() + 0.09)
+	end
+self:SetNextSecondaryFire(CurTime() + 0.15)
 return
 end
 

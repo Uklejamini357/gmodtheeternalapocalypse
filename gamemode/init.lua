@@ -33,6 +33,7 @@ include("server/server_util.lua")
 include("server/config.lua")
 include("server/commands.lua")
 include("server/admincmd.lua")
+include("server/devcmds.lua")
 include("server/player_data.lua")
 include("server/player_inventory.lua")
 include("server/player_props.lua")
@@ -46,7 +47,6 @@ include("server/debug.lua")
 include("server/weather_events.lua")
 include("server/specialstuff.lua")
 include("server/spawnpoints.lua")
-include("server/nodeathsound.lua")
 include("server/crafting.lua")
 
 
@@ -156,7 +156,7 @@ function GM:Think()
 		local infectionchance = math.random(0, 2000000 + (100000 * ply.StatImmunity) - (CurTime() - ply.SurvivalTime))
 		if (infectionchance <= 0 and math.floor(CurTime() - ply.SurvivalTime) >= 600) and ply.Infection <= 0 and ply:Alive() then
 			print(ply:Nick().." has caught infection!")
-			SendChat(ply, translate.Get("PlyCaughtInfection"))
+			SendChat(ply, translate.ClientGet(ply, "PlyCaughtInfection"))
 		end
 		if (ply.Infection > 0 or (infectionchance <= 0 and math.floor(CurTime() - ply.SurvivalTime) >= 600)) and ply:Alive() then
 			ply.Infection = math.Clamp( ply.Infection + (0.1176 * (1 - (ply.StatImmunity * 0.04)) ), 0, 10000 )
@@ -229,6 +229,7 @@ function GM:InitPostEntity()
 	RunConsoleCommand("sbox_godmode", "0")
 	RunConsoleCommand("sbox_plpldamage", "0")
 	RunConsoleCommand("M9KDefaultClip", "0") --it's set to 0 so the users don't abuse use and drop commands on m9k weapons over and over again
+	RunConsoleCommand("M9KDisablePenetration", "1") --they were op, time to nerf them again (unless you want them to remain the same, remove or exclude this string)
 	RunConsoleCommand("sv_defaultdeployspeed", "1")
 --Don't disable this function unless you want to have some fun
 	for k, v in pairs( ents.FindByClass( "npc_*" ) ) do
@@ -240,6 +241,7 @@ function GM:InitPostEntity()
 	for k, v in pairs( ents.FindByClass( "item_*" ) ) do
 		v:Remove()
 	end
+
 	for k, v in pairs( ents.FindByClass( "prop_physics" ) ) do
 		v.maxhealth = 2000
 		v:SetHealth(2000)
@@ -254,7 +256,7 @@ function GM:PlayerDisconnected( ply )
 	if ply.Bounty >= 5 then
 	local cashloss = ply.Bounty * math.Rand(0.3, 0.4)
 	local bountyloss = ply.Bounty - cashloss
-	print(ply:Nick() .." has left the server with "..ply.Bounty.." bounty and dropped money worth of "..math.floor(cashloss).." "..Config[ "Currency" ].."s!")
+	print(ply:Nick() .." has left the server with "..ply.Bounty.." bounty and dropped money worth of "..math.floor(cashloss).." "..Config["Currency"].."s!")
 
 	local EntDrop = ents.Create( "ate_cash" )
 		EntDrop:SetPos( ply:GetPos() + Vector(0, 0, 10))
@@ -284,9 +286,11 @@ function GM:PlayerDisconnected( ply )
 
 	local plyfaction = team.GetName(ply:Team())
 	if team.NumPlayers(ply:Team()) > 1 && Factions[plyfaction]["leader"] == ply then
+		timer.Simple(0.4, function() --this time it should work properly
 		SelectRandomLeader(plyfaction)
+		end)
 	elseif team.NumPlayers(ply:Team()) <= 1 then
-		AutoDisbandFaction( plyfaction )
+		AutoDisbandFaction(plyfaction)
 	end
 
 
@@ -295,24 +299,26 @@ end
 
 function GM:PlayerConnect( name, ip )
 --	SendAll( name .. " has joined the server." )
-SystemBroadcast(translate.Format("PlayerHasJoined", name), Color(255,255,155,255), false)
+	for k,ply in pairs(player.GetAll()) do
+		SystemMessage(ply, translate.ClientFormat(ply, "PlayerHasJoined", name), Color(255,255,155,255), false)
+	end
 end
 
 function GM:OnReloaded()
 timer.Simple(1, function()
 for k, v in pairs(player.GetAll()) do
-	FullyUpdatePlayer( v )
+	FullyUpdatePlayer(v)
 end
 end)
 
 end
 
 
-function GM:PlayerInitialSpawn( ply )
+function GM:PlayerInitialSpawn(ply)
 
-	self.BaseClass:PlayerInitialSpawn( ply )
+	self.BaseClass:PlayerInitialSpawn(ply)
 
-	ply:AllowFlashlight( true )
+	ply:AllowFlashlight(true)
 
 	------------------
 
@@ -339,16 +345,16 @@ function GM:PlayerInitialSpawn( ply )
 	ply.CanUseItem = true
 	ply.InvitedTo = {} -- stores faction invites
 	ply.SelectedProp = "models/props_debris/wood_board04a.mdl"
-	ply:SetPvPGuarded( 0 )
+	ply:SetPvPGuarded(0)
 	ply.Territory = "none"
 	ply.Bounty = 0
 	ply.EquippedArmor = "none"
 	ply.Inventory = {}
 	------------------
 	
-	LoadPlayer( ply )
-	LoadPlayerInventory( ply )
-	LoadPlayerVault( ply )
+	LoadPlayer(ply)
+	LoadPlayerInventory(ply)
+	LoadPlayerVault(ply)
 	print("loading datafiles for "..ply:Nick())
 	
 --	ply.PvP = false
@@ -425,13 +431,13 @@ function GM:PlayerSpawn(ply)
 	if tea_server_spawnprotection_duration:GetFloat() > 0 and tea_server_spawnprotection:GetInt() >= 1 then
 		if !ply:Alive() then return end
 		ply:GodEnable()
-		ply:PrintMessage(HUD_PRINTCENTER, translate.Format("PlySpawnProtEnabled", tea_server_spawnprotection_duration:GetFloat()))
+		ply:PrintMessage(HUD_PRINTCENTER, translate.ClientFormat(ply, "PlySpawnProtEnabled", tea_server_spawnprotection_duration:GetFloat()))
 	end
 	if tea_server_spawnprotection_duration:GetFloat() > 0 and tea_server_spawnprotection:GetInt() > 0 then
 		timer.Create("IsSpawnProtectionTimerEnabled"..ply:UniqueID(), tea_server_spawnprotection_duration:GetFloat(), 1, function()
-		if !ply:Alive() then return end
+		if !ply:IsValid() or !ply:Alive() then return end
 		ply:GodDisable()
-		ply:PrintMessage(HUD_PRINTCENTER, translate.Get("PlySpawnProtExpired"))
+		ply:PrintMessage(HUD_PRINTCENTER, translate.ClientGet(ply, "PlySpawnProtExpired"))
 		timer.Destroy("IsSpawnProtectionTimerEnabled"..ply:UniqueID())
 		end)
 	end
@@ -456,8 +462,8 @@ function GM:PlayerSpawn(ply)
 	FullyUpdatePlayer(ply)
 
 	-- give them a new noob cannon if they are still levels under Rookie Level and are at prestige 0
-	local newgun = Config[ "RookieWeapon" ]
-	if tonumber(ply.Level) <= tonumber(Config[ "RookieLevel" ]) and tonumber(ply.Prestige) <= 0 and !ply.Inventory[newgun] then
+	local newgun = Config["RookieWeapon"]
+	if tonumber(ply.Level) <= tonumber(Config["RookieLevel"]) and tonumber(ply.Prestige) <= 0 and !ply.Inventory[newgun] then
 	SystemGiveItem( ply, newgun )
 	SendInventory(ply)
 	end
@@ -467,10 +473,10 @@ end
 
 -- not like setplayermodel, just reads their model and colour settings and sets them to it
 function RecalcPlayerModel( ply )
-if ply:IsBot() then ply:SetModel( "models/player/kleiner.mdl" ) return end
+if ply:IsBot() then ply:SetModel( "models/player/soldier_stripped.mdl" ) return end
 
 if !ply.ChosenModel then ply.ChosenModel = "models/player/kleiner.mdl" end
-if !ply.ChosenModelColor then ply.ChosenModelColor = Vector( 0.25, 0, 0) end
+if !ply.ChosenModelColor then ply.ChosenModelColor = Vector(0.25, 0, 0) end
 
 if type(ply.ChosenModelColor) == "string" then ply.ChosenModelColor = Vector(ply.ChosenModelColor) end
 ply:SetPlayerColor(ply.ChosenModelColor)
@@ -507,8 +513,8 @@ function GM:PlayerSpawnedProp( userid, model, prop )
 	prop.model = model
 end
 
-function GM:PlayerNoClip( ply, on )
-	if ply:IsAdmin() or ply:IsSuperAdmin() or ply:SteamID64() == "76561198274314803" or ply:SteamID64() == "76561198028288732" then
+function GM:PlayerNoClip(ply, on)
+	if AdminCheck(ply) or SuperAdminCheck(ply) or TEADevCheck(ply) then
 		PrintMessage(HUD_PRINTCONSOLE, translate.Format(on and "x_turned_on_noclip" or "x_turned_off_noclip", ply:Name()))
 		return true
 	end
@@ -524,8 +530,8 @@ local armorspeed = 0
 local walkspeed = Config["WalkSpeed"]
 local runspeed = Config["RunSpeed"]
 local plyarmor = ply:GetNWString("ArmorType")
-local tea_server_walkspeed = GetConVar("tea_server_walkspeed")
-local tea_server_runspeed = GetConVar("tea_server_runspeed")
+--local tea_server_walkspeed = GetConVar("tea_server_walkspeed")
+--local tea_server_runspeed = GetConVar("tea_server_runspeed")
 
 if !ply:IsValid() then return end
 if plyarmor and plyarmor != "none" then
@@ -533,7 +539,7 @@ local armortype = ItemsList[plyarmor]
 armorspeed = tonumber(armortype["ArmorStats"]["speedloss"])
 end
 
---maybe i'll get to reworking it so when user's walkspeed is around like 133 they will have slow walk speed set to 75% of their walk speed
+--maybe i'll get to reworking it so when user's walkspeed is around like 133% of slow walk speed they will have slow walk speed set to 75% of their walk speed
 if ply.SlowDown == 1 then
 	GAMEMODE:SetPlayerSpeed(ply, ((walkspeed * 0.6) - (armorspeed / 1.2)) + ply.StatSpeed * 2.1, ((runspeed * 0.6) - armorspeed / 0.6) + ply.StatSpeed * 4.2 )
 	ply:SetSlowWalkSpeed(60)
@@ -544,13 +550,12 @@ end
 end
 
 -- ULX overrides this and screws up our voice system... maybe it will be fixed or not
-function GM:PlayerCanHearPlayersVoice( listener, talker )
-if listener:GetPos():Distance(talker:GetPos()) <= 1500 then
-return true, false
-else
-return false, false
-end
-
+function GM:PlayerCanHearPlayersVoice(listener, talker)
+	if listener:GetPos():Distance(talker:GetPos()) <= 1250 then
+		return true, false
+	else
+		return false, false
+	end
 end
 
 
@@ -561,7 +566,7 @@ end
 
 local function CheckForDerp()
 local chance = 0
-	for k, v in pairs( Config[ "ZombieClasses" ] ) do
+	for k, v in pairs(Config["ZombieClasses"]) do
 		chance = chance + v.SpawnChance
 	end
 	if chance > 100 then ErrorNoHalt("Configuration Error! The total zombie spawn chance of this server has exceeded 100% ( Currently "..chance.."% )! Some zombie types may not be able to spawn, see theeternalapocalypse/gamemode/sh_config.lua for more info\n")
@@ -596,6 +601,6 @@ print(GM.Name.." ("..GM.AltName..") Gamemode Loaded Successfully\n")
 print("Made by "..GM.Author.."\n")
 print("Original Creator: LegendofRobbo\n")
 print("Version: "..GM.Version.."\n")
-print("Github: https://github.com/Uklejamini357/gmodtheeternalapocalypse\n")
+print("Github: https://github.com/Uklejamini357/gmodtheeternalapocalypse \n")
 print("Be sure to check out github site for new updates\n")
 print("==============================================\n")

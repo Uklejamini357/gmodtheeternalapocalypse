@@ -22,21 +22,22 @@ function ENT:SpawnFunction( userid, tr )
 end
 
 function ENT:Use( activator, caller )
-if !caller:IsValid() or !caller:IsPlayer() or !self.LootType or !caller:Alive() then self:Remove() return false end
+	if !caller:IsValid() or !caller:IsPlayer() or !self.LootType or !caller:Alive() then self:Remove() return false end
 	local name = self.LootType
 	local item = ItemsList[name]
 	local itemweight = ItemsList[name]["Weight"]
+	local itemname = ItemsList[name]["Name"]
 
 	local qtycheck = LootTableBoss[name]["Qty"]
 
 	if !name or !item or !qtycheck then SendChat(caller, "Sorry, this loot cache was bugged and was auto removed to avoid breaking the game, please tell an admin or developer") self:Remove() return false end
 
 	if !item then return false end
-	if (CalculateWeight(caller) + (qtycheck * itemweight)) > CalculateMaxWeight(caller) then SendChat(caller, "You don't have enough space for this item! It weighs: "..(qtycheck * itemweight).."kg (Need ".. -CalculateMaxWeight(caller) + CalculateWeight(caller) + (qtycheck * itemweight) .."kg more space)") return false end
+	if (CalculateWeight(caller) + (qtycheck * itemweight)) > CalculateMaxWeight(caller) then SendChat(caller, translate.ClientFormat(caller, "NotEnoughSpaceLoot", qtycheck * itemweight, translate.ClientGet(caller, "kg"), -CalculateMaxWeight(caller) + CalculateWeight(caller) + (qtycheck * itemweight), translate.ClientGet(caller, "kg"))) return false end
 
 	SystemGiveItem( caller, name, qtycheck )
 
-	SendChat(caller, "You picked up a boss drop cache containing ["..LootTableBoss[name]["Name"].."]")
+	SendChat(caller, "You picked up a boss drop cache containing [ "..qtycheck.."x "..translate.ClientGet(caller, itemname).." ]")
 	SystemBroadcast( caller:Nick().." has found a boss cache!", Color(255,255,255,255), true)
 	SendInventory( caller )
 	caller:EmitSound("items/ammopickup.wav", 100, 100)

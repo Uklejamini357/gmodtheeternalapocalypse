@@ -3,71 +3,71 @@ local DropData = ""
 
 
 function LoadAD()
-if not file.IsDir("theeternalapocalypse/spawns/airdrops", "DATA") then
-   file.CreateDir("theeternalapocalypse/spawns/airdrops")
+if not file.IsDir("theeternalapocalypse/spawns/"..string.lower(game.GetMap()), "DATA") then
+   file.CreateDir("theeternalapocalypse/spawns/"..string.lower(game.GetMap()))
 end
-	if file.Exists( "theeternalapocalypse/spawns/airdrops/" .. string.lower(game.GetMap()) .. ".txt", "DATA" ) then
+	if file.Exists("theeternalapocalypse/spawns/" .. string.lower(game.GetMap()) .. "/airdrops.txt", "DATA") then
 		DropData = "" --reset it
-		DropData = file.Read( "theeternalapocalypse/spawns/airdrops/" .. string.lower(game.GetMap()) .. ".txt", "DATA" )
-		print( "Airdrop spawnpoints loaded" )
+		DropData = file.Read("theeternalapocalypse/spawns/" .. string.lower(game.GetMap()) .. "/airdrops.txt", "DATA")
+		print("Airdrop spawnpoints loaded")
 	else
 		DropData = "" --just in case
-		print( "No airdrop spawnpoints found for this map" )
+		print("No airdrop spawnpoints found for this map")
 	end
 end
 LoadAD()
 
-function AddAD( ply, cmd, args )
-	if !SuperAdminCheck( ply ) then 
-		SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
-		ply:ConCommand( "playgamesound buttons/button8.wav" )
+function AddAD(ply, cmd, args)
+	if !SuperAdminCheck(ply) then 
+		SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
+		ply:ConCommand("playgamesound buttons/button8.wav")
 		return
 	end
 
-	local tr = util.TraceLine( {
+	local tr = util.TraceLine({
 		start = ply:GetPos(),
 		endpos = ply:GetPos() + Vector(0, 0, 90000),
 		mask = MASK_SOLID_BRUSHONLY,
-	} )
+	})
 	if !tr.HitSky then SystemMessage(ply, "You can only place airdrop spawns in areas that are visible to the skybox!", Color(255,205,205,255), true) return end
-	local hitp = tr.HitPos - Vector( 0, 0, 80 )
+	local hitp = tr.HitPos - Vector(0, 0, 80)
 
-	if( DropData == "" ) then
-		NewData = tostring( hitp ) .. ";" .. tostring( ply:GetAngles() )
+	if (DropData == "") then
+		NewData = tostring(hitp) ..";".. tostring(ply:GetAngles())
 	else
-		NewData = DropData .. "\n" .. tostring( hitp ) .. ";" .. tostring( ply:GetAngles() )
+		NewData = DropData .."\n".. tostring(hitp) .. ";".. tostring(ply:GetAngles())
 	end
 	
-	file.Write( "theeternalapocalypse/spawns/airdrops/" .. string.lower(game.GetMap()) .. ".txt", NewData )
+	file.Write("theeternalapocalypse/spawns/"..string.lower(game.GetMap()).."/airdrops.txt", NewData)
 
 	LoadAD() --reload them
 
-	SendChat( ply, "Added an airdrop spawnpoint at position "..tostring(hitp).."!")
+	SendChat(ply, "Added an airdrop spawnpoint at position "..tostring(hitp).."!")
 	print("[SPAWNPOINTS MODIFIED] "..ply:Nick().." has added an airdrop spawnpoint at position "..tostring(hitp).."!")
 	ate_DebugLog("[SPAWNPOINTS MODIFIED] "..ply:Nick().." has added an airdrop spawnpoint at position "..tostring(hitp).."!")
-	ply:ConCommand( "playgamesound buttons/button3.wav" )
+	ply:ConCommand("playgamesound buttons/button3.wav")
 
 end
-concommand.Add( "ate_addairdropspawn", AddAD )
+concommand.Add("ate_addairdropspawn", AddAD)
 
 
-function ClearAD( ply, cmd, args )
-if !SuperAdminCheck( ply ) then 
-	SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
-	ply:ConCommand( "playgamesound buttons/button8.wav" )
+function ClearAD(ply, cmd, args)
+if !SuperAdminCheck(ply) then 
+	SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
+	ply:ConCommand("playgamesound buttons/button8.wav")
 	return
 end
 
-if file.Exists(	"theeternalapocalypse/spawns/airdrops/" .. string.lower(game.GetMap()) .. ".txt", "DATA") then
-	file.Delete("theeternalapocalypse/spawns/airdrops/" .. string.lower(game.GetMap()) .. ".txt")
+if file.Exists(	"theeternalapocalypse/spawns/".. string.lower(game.GetMap()) .."/airdrops.txt", "DATA") then
+	file.Delete("theeternalapocalypse/spawns/".. string.lower(game.GetMap()) .."/airdrops.txt")
 end
 DropData = ""
-SendChat( ply, "Deleted all airdrop spawnpoints" )
+SendChat(ply, "Deleted all airdrop spawnpoints")
 print("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all airdrop spawnpoints!")
 ate_DebugLog("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all airdrop spawnpoints!")
-ply:ConCommand( "playgamesound buttons/button15.wav" )
+ply:ConCommand("playgamesound buttons/button15.wav")
 end
-concommand.Add( "ate_clearairdropspawns", ClearAD )
+concommand.Add("ate_clearairdropspawns", ClearAD)
 
 
 
@@ -89,16 +89,16 @@ local cratedropped = false
 
 if  DropData == "" then return end
 
-	local DropList = string.Explode( "\n", DropData )
-	for k, v in RandomPairs( DropList ) do
+	local DropList = string.Explode("\n", DropData)
+	for k, v in RandomPairs(DropList) do
 		if cratedropped then break end
-		local Booty = string.Explode( ";", v )
-		local pos = util.StringToType( Booty[1], "Vector" )
-		local ang = util.StringToType( Booty[2], "Angle" )
+		local Booty = string.Explode(";", v)
+		local pos = util.StringToType(Booty[1], "Vector")
+		local ang = util.StringToType(Booty[2], "Angle")
 
-		local dropent = ents.Create( "airdrop_cache" )
-		dropent:SetPos( pos )
-		dropent:SetAngles( ang )
+		local dropent = ents.Create("airdrop_cache")
+		dropent:SetPos(pos)
+		dropent:SetAngles(ang)
 		local testinv = {
 			["Junk"] = {math.random(0, 2), 1, 1},
 			["Ammo"] = {math.random(1, 2), 1, 3},
@@ -116,8 +116,8 @@ if  DropData == "" then return end
 			testinv["RookieWeapons"] = {1, 1, 1}
 		end
 
-		local loot = RollLootTable( testinv )
-		MakeLootContainer( dropent, loot )
+		local loot = RollLootTable(testinv)
+		MakeLootContainer(dropent, loot)
 
 		dropent:Spawn()
 		dropent:Activate()
@@ -127,11 +127,11 @@ if  DropData == "" then return end
 
 for k, v in pairs(player.GetAll()) do v:EmitSound("ambient/overhead/hel1.wav") end
 
-SystemBroadcast( "An air drop crate has appeared!", Color(255,255,255,255), false)
+SystemBroadcast("An air drop crate has appeared!", Color(255,255,255,255), false)
 
 end)
 
 end
-timer.Create( "AirdropSpawnTimer", tonumber(Config[ "AirdropSpawnRate" ]), 0, SpawnAirdrop )
+timer.Create("AirdropSpawnTimer", tonumber(Config[ "AirdropSpawnRate" ]), 0, SpawnAirdrop)
 
 

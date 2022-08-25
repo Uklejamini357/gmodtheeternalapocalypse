@@ -1,4 +1,4 @@
-How does this work? It's simple: Place The Eternal Apocalypse into your gamemodes folder (garrysmod/gamemodes)
+So, how does this work? It's simple: Place The Eternal Apocalypse into your gamemodes folder (garrysmod/gamemodes)
 Also need to rename entire file into theeternalapocalypse
 
 
@@ -97,3 +97,17 @@ To see more admin commands, see theeternalapocalypse/gamemode/server/admincmd.lu
 Credits to
 LegendofRobbo - The legend himself who created After The End gamemode
 
+
+That's all i got to say for now
+
+
+ ▄▄▄        █████▒▄▄▄█████▓▓█████  ██▀███     ▄▄▄█████▓ ██░ ██ ▓█████    ▓█████  ███▄    █ ▓█████▄    ██▀███   ▓█████  ▓███▄   ▓██   ██▀███   ███▄    █ 
+▒████▄    ▓██   ▒ ▓  ██▒ ▓▒▓█   ▀ ▓██ ▒ ██▒   ▓  ██▒ ▓▒▓██░ ██▒▓█   ▀    ▓█   ▀  ██ ▀█   █ ▒██▀ ██▌  ▓██ ▒ ██▒ ▓█   ▀  ▓   █  ▓   █ ▓██ ▒ ██▒ ██ ▀█   █ 
+▒██  ▀█▄  ▒████ ░ ▒ ▓██░ ▒░▒███   ▓██ ░▄█ ▒   ▒ ▓██░ ▒░▒██▀▀██░▒███      ▒███   ▓██  ▀█ ██▒░██   █▌  ▓██ ░▄█ ▒ ▒███    ████▒  █   █ ▓██ ░▄█ ▒▓██  ▀█ ██▒
+░██▄▄▄▄██ ░▓█▒  ░ ░ ▓██▓ ░ ▒▓█  ▄ ▒██▀▀█▄     ░ ▓██▓ ░ ░▓█ ░██ ▒▓█  ▄    ▒▓█  ▄ ▓██▒  ▐▌██▒░▓█▄   ▌  ▒██▀▀█▄   ▒▓█  ▄  █   █  █   █ ▒██▀▀█▄  ▓██▒  ▐▌██▒
+ ▓█   ▓██▒░▒█░      ▒██▒ ░ ░▒████▒░██▓ ▒██▒     ▒██▒ ░ ░▓█▒░██▓░▒████▒   ░▒████▒▒██░   ▓██░░▒████▓   ░██▓ ▒██▒ ░▒████▒ ████▒  ▓███  ░██▓ ▒██▒▒██░   ▓██░
+ ▒▒   ▓▒█░ ▒ ░      ▒ ░░   ░░ ▒░ ░░ ▒▓ ░▒▓░     ▒ ░░    ▒ ░░▒░▒░░ ▒░ ░   ░░ ▒░ ░░ ▒░   ▒ ▒  ▒▒▓  ▒   ░ ▒▓ ░▒▓░ ░░ ▒░ ░  ▒▒ ░     ░░ ░ ▒▓ ░▒▓░  ▒░   ▒ ▒ 
+  ▒   ▒▒ ░ ░          ░     ░ ░  ░  ░▒ ░ ▒░       ░     ▒ ░▒░ ░ ░ ░  ░    ░ ░  ░░ ░░   ░ ▒░ ░ ▒  ▒     ░▒ ░ ▒░  ░ ░  ░ ░░░ ░   ░░     ░▒ ░ ▒░  ░░   ░ ▒░
+  ░   ▒    ░ ░      ░         ░     ░░   ░      ░       ░  ░░ ░   ░         ░      ░   ░ ░  ░ ░  ░     ░░   ░     ░      ░ ░   ░ ░    ░░   ░    ░   ░ ░ 
+      ░  ░                    ░  ░   ░                  ░  ░  ░   ░  ░      ░  ░         ░    ░         ░         ░  ░ ░  ░    ░       ░              ░ 
+                                                                                            ░       

@@ -46,26 +46,25 @@ function ENT:Initialize()
 end
 
 function ENT:Use( ply, caller )
-if self.Flying or self.nxtuse > CurTime() then return end
-if !self.Decoded and !self.Decoder then
-	self:EmitSound("buttons/blip2.wav", 100, 100)
-	SendUseDelay( ply, 12 )
-	self.nxtuse = CurTime() + 0.5
-	self.Decoder = ply
-	nxtuse = CurTime() + 0.5
-	SendChat(ply, "STAY CLOSE TO AIRDROP CRATE AND STAY ALIVE OR THE CRATE WON'T BE OPENED")
-	timer.Simple(12, function() 
-		if !self.Decoder:IsValid() or !self.Decoder:Alive() or self.Decoder:GetPos():Distance( self:GetPos() ) > 120 then self.Decoder = nil return end
-		SystemBroadcast( self.Decoder:Nick().." has opened an air drop crate!", Color(255,255,255,255), false)
-		self.Decoded = true
-		self:EmitSound("npc/scanner/scanner_pain1.wav", 85, math.Rand(90, 95))
-		if self.panel:IsValid() then self.panel:Remove() end
-	end)
-elseif self.Decoded then
+	if self.Flying or self.nxtuse > CurTime() then return end
+	if !self.Decoded and !self.Decoder then
+		self:EmitSound("buttons/blip2.wav", 100, 100)
+		SendUseDelay( ply, 12 )
+		self.nxtuse = CurTime() + 0.5
+		self.Decoder = ply
+		nxtuse = CurTime() + 0.5
+		SendChat(ply, "STAY CLOSE TO AIRDROP CRATE AND STAY ALIVE OR THE CRATE WON'T BE OPENED")
+		timer.Simple(12, function() 
+			if !self.Decoder:IsValid() or !self.Decoder:Alive() or self.Decoder:GetPos():Distance( self:GetPos() ) > 120 then self.Decoder = nil return end
+			SystemBroadcast( self.Decoder:Nick().." has opened an air drop crate!", Color(255,255,255,255), false)
+			self.Decoded = true
+			self:EmitSound("npc/scanner/scanner_pain1.wav", 85, math.Rand(90, 95))
+			if self.panel:IsValid() then self.panel:Remove() end
+		end)
+	elseif self.Decoded then
 		OpenContainer( self, ply )
 		self.nxtuse = CurTime() + 0.5
-end
-
+	end
 end
 
 function ENT:PhysicsCollide()
@@ -81,20 +80,17 @@ end
 
 function ENT:Think() 
 
-if !self:GetNWBool("ADActive") then return end
-local owner = self:GetNWEntity("owner")
-local people = ents.FindInSphere(self:GetPos(), 1200)
+	if !self:GetNWBool("ADActive") then return end
+	local owner = self:GetNWEntity("owner")
+	local people = ents.FindInSphere(self:GetPos(), 1200)
 
-for k, v in pairs(people) do
-	if v:IsValid() and v:IsPlayer() and v:Alive() and !v:IsPvPGuarded() then
-
-		v:SetPvPGuarded( 2 )
-
-		timer.Create("forcepvptimer"..v:UniqueID(), 1, 1, function() 
-		if !v:IsValid() then return end
-			v:SetPvPGuarded( 0 )
-		end)
+	for k, v in pairs(people) do
+		if v:IsValid() and v:IsPlayer() and v:Alive() and !v:IsPvPGuarded() then
+			v:SetPvPGuarded( 2 )
+			timer.Create("forcepvptimer"..v:UniqueID(), 1, 1, function() 
+				if !v:IsValid() then return end
+				v:SetPvPGuarded( 0 )
+			end)
+		end
 	end
-end
-
 end

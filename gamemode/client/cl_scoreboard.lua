@@ -52,7 +52,7 @@ Perks = {}
 
 LocalFactions = LocalFactions or {}
 
-if !LocalFactions[ "Loner" ] then LocalFactions[ "Loner" ] = 
+if !LocalFactions["Loner"] then LocalFactions["Loner"] = 
 	{
 		["index"] = 1,
 		["color"] = Color( 100, 50, 50, 255 ),
@@ -75,8 +75,7 @@ plyskilled = playerskilled
 plydeaths = playerdeaths
 end)
 
-net.Receive( "UpdatePerks", function( length )
-
+net.Receive("UpdatePerks", function(length)
 local s1 = net.ReadFloat()
 local s2 = net.ReadFloat()
 local s3 = net.ReadFloat()
@@ -109,11 +108,11 @@ Perks.Agility = s14
 
 end)
 
-net.Receive( "UpdateInventory", function( length )
+net.Receive("UpdateInventory", function(length)
 local data = net.ReadTable()
-table.Empty( LocalInventory )
+table.Empty(LocalInventory)
 
-for k, v in pairs( data ) do
+for k, v in pairs(data) do
 	if !ItemsList[k] then continue end
 	local ref = ItemsList[k]
 
@@ -408,12 +407,11 @@ for k, v in pairs( player.GetAll() ) do
 	plyname:SizeToContents()
 
 	local plyname2 = vgui.Create( "DLabel", plypanel )
-	plyname2:SetPos( 240, 12 )
-	plyname2:SetFont( "TargetIDSmall" )
-	plyname2:SetColor( team.GetColor(v:Team()) )
-	plyname2:SetText( translate.Get("Faction")..": "..team.GetName(v:Team()))
---	plyname2:SizeToContents()
-	plyname2:SetSize(200, 15)
+	plyname2:SetPos(240, 12)
+	plyname2:SetFont("TargetIDSmall")
+	plyname2:SetColor(team.GetColor(v:Team()))
+	plyname2:SetText(translate.Get("Faction")..": "..team.GetName(v:Team()))
+	plyname2:SetSize(180, 15)
 
 	local plylvl = vgui.Create( "DLabel", plypanel )
 	plylvl:SetPos( 430, 12 )
@@ -469,23 +467,14 @@ for k, v in pairs( player.GetAll() ) do
 	end
 	
 
-	timer.Create("UpdateScoreboard", 2, 0, function() --every 2 seconds, if scoreboard panel exists for client, the players' ping text on scoreboard will update
-		if plyping:IsValid() and v:IsValid() then 
-			plyping:SetColor( Color(255,math.Clamp(255 - (0.5 * v:Ping()), 0, 255),math.Clamp(255 - (0.5 * v:Ping()), 0, 255),255) )
-			plyping:SetText( translate.Get("Ping")..": " .. v:Ping())
-			plyping:SizeToContents()
-		elseif !plyping:IsValid() then
-			timer.Destroy("UpdateScoreboard") --to prevent any error
-		end
-	end)
-
+	
 	local mutechat = vgui.Create("DButton", plypanel)
-		mutechat:SetSize( 45, 23 )
-		mutechat:SetPos( 655, 7 )
-		mutechat:SetText(translate.Get("Mute"))
-		mutechat:SetTextColor(Color(255, 255, 255, 255))
-		mutechat.Paint = function(panel)
-			if v:IsValid() and v:IsMuted() then
+	mutechat:SetSize( 45, 23 )
+	mutechat:SetPos( 655, 7 )
+	mutechat:SetText(translate.Get("Mute"))
+	mutechat:SetTextColor(Color(255, 255, 255, 255))
+	mutechat.Paint = function(panel)
+		if v:IsValid() and v:IsMuted() then
 				surface.SetDrawColor(150, 0, 0 ,255)
 				surface.DrawOutlinedRect(0, 0, mutechat:GetWide(), mutechat:GetTall())
 				surface.SetDrawColor(100, 0, 0 ,155)
@@ -498,45 +487,60 @@ for k, v in pairs( player.GetAll() ) do
 			end
 
 		end
-			mutechat.DoClick = function()
-			v:SetMuted(!v:IsMuted())
-			surface.PlaySound("buttons/button9.wav")
-		end
-
-	local invfaction = vgui.Create("DButton", plypanel)
-		invfaction:SetSize(45, 23)
-		invfaction:SetPos(655, 32)
-		invfaction:SetText(translate.Get("Profile"))
+		mutechat.DoClick = function()
+			if v:IsValid() then
+					v:SetMuted(!v:IsMuted())
+				else
+					chat.AddText(Color(255,205,205,255), "This player doesn't exist!")
+				end
+				surface.PlaySound("buttons/button9.wav")
+			end
+			
+			local invfaction = vgui.Create("DButton", plypanel)
+			invfaction:SetSize(45, 23)
+			invfaction:SetPos(655, 32)
+			invfaction:SetText(translate.Get("Profile"))
 		invfaction:SetTextColor(Color(255, 255, 255, 255))
 		invfaction.Paint = function(panel)
-				surface.SetDrawColor(0, 0, 100 ,255)
-				surface.DrawOutlinedRect(0, 0, invfaction:GetWide(), invfaction:GetTall())
-				surface.SetDrawColor(0, 0, 50 ,155)
-				surface.DrawRect(0, 0, invfaction:GetWide(), invfaction:GetTall())
+			surface.SetDrawColor(0, 0, 100 ,255)
+			surface.DrawOutlinedRect(0, 0, invfaction:GetWide(), invfaction:GetTall())
+			surface.SetDrawColor(0, 0, 50 ,155)
+			surface.DrawRect(0, 0, invfaction:GetWide(), invfaction:GetTall())
 		end
-			invfaction.DoClick = function()
-			v:ShowProfile()
+		invfaction.DoClick = function()
+			if v:IsValid() then
+				v:ShowProfile()
+			else
+				chat.AddText(Color(255,205,205,255), "This player doesn't exist!")
+			end
 			surface.PlaySound("buttons/button7.wav")
 		end
-
---	in progress
-/*	local checkstats = vgui.Create("DButton", plypanel)
-	checkstats:SetSize( 40, 22 )
-	checkstats:SetPos( 610, 33 )
-	checkstats:SetText("Stats")
-	checkstats:SetTextColor(Color(55, 255, 255, 255))
-	checkstats.Paint = function(panel)
-		surface.SetDrawColor(0, 100, 100 ,255)
-		surface.DrawOutlinedRect(0, 0, checkstats:GetWide(), checkstats:GetTall())
-		surface.SetDrawColor(0, 50, 50 ,155)
-		surface.DrawRect(0, 0, checkstats:GetWide(), checkstats:GetTall())
-	end
-	checkstats.DoClick = function()
-		chat.AddText(Color(255,255,255,255), "Whoops, doesn't work yet. Maybe in next update.")
+		
+		--	in progress
+		local checkstats = vgui.Create("DButton", plypanel)
+		checkstats:SetSize( 40, 22 )
+		checkstats:SetPos( 610, 33 )
+		checkstats:SetText("Stats")
+		checkstats:SetTextColor(Color(55, 255, 255, 255))
+		checkstats.Paint = function(panel)
+			surface.SetDrawColor(0, 100, 100 ,255)
+			surface.DrawOutlinedRect(0, 0, checkstats:GetWide(), checkstats:GetTall())
+			surface.SetDrawColor(0, 50, 50 ,155)
+			surface.DrawRect(0, 0, checkstats:GetWide(), checkstats:GetTall())
+		end
+		checkstats.DoClick = function()
+			if v:IsValid() then
+				net.Start("UpdateTargetStats")
+			net.WriteEntity(v)
+			net.SendToServer()
+			StatsMenu()
+		else
+			chat.AddText(Color(255,205,205,255), "This player doesn't exist!")
+		end
 		surface.PlaySound("buttons/button9.wav")
-	end*/
+	end
 
-
+	
 	local pvp = vgui.Create( "DPanel", plypanel )
 	pvp:SetPos(610, 7 )
 	pvp:SetSize(40, 24)
@@ -544,16 +548,27 @@ for k, v in pairs( player.GetAll() ) do
 		surface.SetDrawColor(150, 0, 0 ,255)
 		surface.DrawOutlinedRect(1, 1, pvp:GetWide() - 1 , pvp:GetTall() - 1)
 		surface.SetDrawColor(100, 0, 0 ,105)
-		if v:Team() == 1 and v:GetNWBool("pvp") == false then
-		draw.DrawText(translate.Get("PvP"), "DermaDefault", 12, 5, Color(55,55,55) )
+		if v:IsValid() then
+			if v:Team() == 1 and v:GetNWBool("pvp") == false then
+				draw.DrawText(translate.Get("PvP"), "DermaDefault", 12, 5, Color(55,55,55) )
 		else
-		draw.DrawText(translate.Get("PvP"), "DermaDefault", 12, 5, Color(255,255,255) )
-		surface.DrawRect(1, 1, pvp:GetWide() - 1 , pvp:GetTall() - 1)
+			draw.DrawText(translate.Get("PvP"), "DermaDefault", 12, 5, Color(255,255,255) )
+			surface.DrawRect(1, 1, pvp:GetWide() - 1 , pvp:GetTall() - 1)
 		end
-
 	end
 
-	Scores:AddItem(plypanel)
+end
+
+timer.Create("UpdateScoreboard", 2, 0, function() --every 2 seconds, if scoreboard panel exists for client, the players' ping text on scoreboard will update
+	if plyping:IsValid() and v:IsValid() then 
+		plyping:SetColor( Color(255,math.Clamp(255 - (0.5 * v:Ping()), 0, 255),math.Clamp(255 - (0.5 * v:Ping()), 0, 255),255) )
+		plyping:SetText( translate.Get("Ping")..": " .. v:Ping())
+		plyping:SizeToContents()
+	elseif !plyping:IsValid() then
+		timer.Destroy("UpdateScoreboard") --to prevent any error
+	end
+end)
+Scores:AddItem(plypanel)
 
 end
 
@@ -676,14 +691,7 @@ end
 	members:SetColor( Color(255,255,255,255) )
 	members:SetText( translate.Get("Members")..": "..team.NumPlayers( v.index ) )
 	members:SizeToContents()
-/*
-	local base = vgui.Create("DLabel", plypanel) --this was mostly useless
-	base:SetPos(535, 12)
-	base:SetFont("TargetIDSmall")
-	base:SetColor(Color(255,255,255,255))
-	base:SetText("Base: No")
-	base:SizeToContents()
-*/
+
 	local joinfaction = vgui.Create("DButton", plypanel)
 		joinfaction:SetSize( 80, 25 )
 		joinfaction:SetPos( 610, 8 )
@@ -707,14 +715,14 @@ end
 	
 --------------------------Help Form------------------------------------
 
-local HelpForm = vgui.Create( "DPanel", PropertySheet )
-HelpForm:SetSize( 675, 700 )
---HelpForm:SetPadding( 4 )
-HelpForm.Paint = function( self, w, h )
-draw.RoundedBox( 2,  0,  0, w, h, Color( 0, 0, 0, 100 ) )
+local HelpForm = vgui.Create("DPanel", PropertySheet)
+HelpForm:SetSize(675, 700)
+HelpForm.Paint = function(self, w, h )
+draw.RoundedBox(2, 0, 0, w, h, Color(0, 0, 0, 100))
 surface.SetDrawColor(150, 0, 0 ,255)
 surface.DrawOutlinedRect(0, 0, w, h)
 
+--Will add a help panel in some time, with button and stuff
 draw.SimpleText("(This isn't translated to rus, need a helper)", "TargetID", 15, 10, Color(255,255,255,255))
 draw.SimpleText("Welcome to The Eternal Apocalypse. Also known as After The End Reborn.", "TargetID", 15, 30, Color(255,255,255,255))
 draw.SimpleText("In this gamemode:", "TargetID", 15, 60, Color(155,155,155,255))
@@ -742,6 +750,7 @@ draw.SimpleText("- SELECTING BUILD TOOL FOR FIRST TIME IN SESSION HAS 50/50 CHAN
 draw.SimpleText("YOUR GAME!! (Most likely because if server has some weather addon then it happens)", "TargetID", 15, 590, Color(255,55,55,255))
 draw.SimpleText("- If you encounter any problem, error, or any kind of mistranslation, report it to the dev.", "TargetID", 15, 610, Color(255,155,155,255))
 draw.SimpleText("Good hunting. (this panel may be changed every update)", "TargetID", 15, 635, Color(155,255,155,255))
+
 end
 
 -----------------Craft Form (not finished and not included)-----------------------
@@ -884,7 +893,7 @@ local function DoStatsList()
 		Button:SetPos( 50, 100 )
 		Button:SetSize( 10, 20 )
 		Button:SetTextColor( Color( 255, 255, 255, 255 ) )
-		Button:SetText( translate.Get("Inc1Stat_1").." "..translate.Get(k).." ".. translate.Get("Inc1Stat_2") )
+		Button:SetText(translate.Format("Inc1Stat", translate.Get(k)))
 		Button.DoClick = function( Button )
 		net.Start("UpgradePerk")
 		net.WriteString(k)
@@ -899,12 +908,12 @@ local function DoStatsList()
 		end
 		Button.Paint = function()
 		local derp = v
-		draw.RoundedBox( 0,  0,  0, Button:GetWide(), Button:GetTall(), Color( 30, 30, 30, 50 ) )
-		draw.RoundedBox( 0,  0,  0, derp * 22.5, Button:GetTall(), Color( 100, 0, 0, 150 ) )
+		draw.RoundedBox(0, 0, 0, Button:GetWide(), Button:GetTall(), Color(30, 30, 30, 50))
+		draw.RoundedBox(0, 0, 0, derp * 22.5, Button:GetTall(), Color(100, 0, 0, 150 ))
 		surface.SetDrawColor(100, 0, 0 ,255)
 		surface.DrawOutlinedRect(0, 0, Button:GetWide(), Button:GetTall())
 		end
-		StatsForm:AddItem( Button )
+		StatsForm:AddItem(Button)
 	end
 end
 DoStatsList()
@@ -918,8 +927,8 @@ DoStatsList()
 	
 */	
 -----------------------------------------Sheet List---------------------------------------------------------------
-	SecondarySheet:AddSheet( translate.Get("MySkills"), StatsForm, "icon16/heart.png", false, false, translate.Get("MySkills_d") )
---	SecondarySheet:AddSheet( "Armor and Attachments", ArmorForm, "icon16/shield.png", false, false, "Change your model" )
+	SecondarySheet:AddSheet(translate.Get("MySkills"), StatsForm, "icon16/heart.png", false, false, translate.Get("MySkills_d"))
+--	SecondarySheet:AddSheet("Armor and Attachments", ArmorForm, "icon16/shield.png", false, false, "Change your model")
 end
 
 function GM:CreateScoreboard()

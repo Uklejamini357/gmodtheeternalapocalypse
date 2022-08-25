@@ -13,12 +13,12 @@ end
 
 
 function LoadZombies()
-if not file.IsDir("theeternalapocalypse/spawns/zombies", "DATA") then
-   file.CreateDir("theeternalapocalypse/spawns/zombies")
+if not file.IsDir("theeternalapocalypse/spawns/"..string.lower(game.GetMap()), "DATA") then
+   file.CreateDir("theeternalapocalypse/spawns/"..string.lower(game.GetMap()))
 end
-	if file.Exists( "theeternalapocalypse/spawns/zombies/" .. string.lower(game.GetMap()) .. ".txt", "DATA" ) then
+	if file.Exists( "theeternalapocalypse/spawns/"..string.lower(game.GetMap()).."/zombies.txt", "DATA" ) then
 		ZombieData = "" --reset it
-		ZombieData = file.Read( "theeternalapocalypse/spawns/zombies/" .. string.lower(game.GetMap()) .. ".txt", "DATA" )
+		ZombieData = file.Read( "theeternalapocalypse/spawns/" .. string.lower(game.GetMap()) .. "/zombies.txt", "DATA" )
 		print( "Zombie spawnpoints loaded" )
 	else
 		ZombieData = "" --just in case
@@ -28,23 +28,22 @@ end
 LoadZombies() --load them right away
 
 -- note: added the ability to create bosses with this function, setting isboss to true will make the monster distribute its xp reward to all attackers and announce its death
-function CreateZombie( class, pos, ang, xp, cash, isboss )
-local isboss = isboss or false
-local class = tostring(class)
+function CreateZombie(class, pos, ang, xp, cash, isboss)
+	local isboss = isboss or false
+	local class = tostring(class)
 
-
-local SpawnZombie = ents.Create( class )
-SpawnZombie:SetPos( pos )
-SpawnZombie:SetAngles( ang )
-SpawnZombie.XPReward = xp
-SpawnZombie.MoneyReward = cash
-if isboss then
-SpawnZombie.BossMonster = true
-else
-SpawnZombie.BossMonster = false
-end
-SpawnZombie:Spawn()
-SpawnZombie:Activate()
+	local SpawnZombie = ents.Create( class )
+	SpawnZombie:SetPos( pos )
+	SpawnZombie:SetAngles( ang )
+	SpawnZombie.XPReward = xp
+	SpawnZombie.MoneyReward = cash
+	if isboss then
+		SpawnZombie.BossMonster = true
+	else
+		SpawnZombie.BossMonster = false
+	end
+	SpawnZombie:Spawn()
+	SpawnZombie:Activate()
 end
 
 
@@ -101,7 +100,7 @@ end
 
 
 function SpawnZombies()
---if ( ZombieCount() > Config[ "MaxZombies" ] ) then return false end
+if ( ZombieCount() > Config[ "MaxZombies" ] ) then return false end
 	if( ZombieData != "" ) then
 
 		local tea_config_zombiespawning = GetConVar( "tea_config_zombiespawning" )
@@ -138,7 +137,7 @@ timer.Create( "ZombieSpawnTimer", tonumber(Config[ "ZombieSpawnRate" ]), 0, Spaw
 
 function AddZombie( ply, cmd, args )
 	if !SuperAdminCheck( ply ) then 
-		SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
+		SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
 		ply:ConCommand( "playgamesound buttons/button8.wav" )
 		return
 	end
@@ -149,7 +148,7 @@ function AddZombie( ply, cmd, args )
 		NewData = ZombieData .. "\n" .. tostring( ply:GetPos() ) .. ";" .. tostring( ply:GetAngles() )
 	end
 	
-	file.Write( "theeternalapocalypse/spawns/zombies/" .. string.lower(game.GetMap()) .. ".txt", NewData )
+	file.Write( "theeternalapocalypse/spawns/"..string.lower(game.GetMap()).."/zombies.txt", NewData )
 	
 	LoadZombies() --reload them
 	
@@ -162,12 +161,12 @@ concommand.Add( "ate_addzombiespawn", AddZombie )
 
 function ClearZombies( ply, cmd, args )
 if !SuperAdminCheck( ply ) then 
-		SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
+		SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
 		ply:ConCommand( "playgamesound buttons/button8.wav" )
 		return
 end
-if file.Exists(	"theeternalapocalypse/spawns/zombies/" .. string.lower(game.GetMap()) .. ".txt", "DATA") then
-	file.Delete("theeternalapocalypse/spawns/zombies/" .. string.lower(game.GetMap()) .. ".txt")
+if file.Exists(	"theeternalapocalypse/spawns/"..string.lower(game.GetMap()).."/zombies.txt", "DATA") then
+	file.Delete("theeternalapocalypse/spawns/"..string.lower(game.GetMap()).."/zombies.txt")
 	ZombieData = ""
 end
 SendChat( ply, "Deleted all zombie spawnpoints" )
@@ -324,7 +323,7 @@ function TestZombies( ply, cmd, args )
 local class = tostring(args[1]) or "npc_ate_basic"
 
 if !SuperAdminCheck( ply ) then 
-	SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
+	SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
 	ply:ConCommand( "playgamesound buttons/button8.wav" )
 	return
 end

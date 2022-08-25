@@ -9,11 +9,12 @@ function Damagemods(target, dmginfo)
 
 	--i think that one's broken
 	if target:GetClass() == "prop_physics" and target.maxhealth then
-		target:SetHealth(target:Health() - dmginfo:GetDamage())
+		target:SetHealth(target:Health() - dmg)
 		local ColorAmount =  ((target:Health() / target.maxhealth) * 255)
 		target:SetColor(Color(ColorAmount, ColorAmount, ColorAmount, 255))
 		if target:Health() <= 0 then
 			target:GibBreakClient(Vector(math.random(-50, 50),math.random(-50, 50),math.random(-50, 50)))
+			target:EmitSound("physics/metal/metal_box_break2.wav", 80, 100)
 			target:Remove()
 		end
 	end
@@ -57,14 +58,13 @@ function Damagemods(target, dmginfo)
 
 
 	if timer.Exists("pvpnominge_"..target:UniqueID()) then timer.Destroy("pvpnominge_"..target:UniqueID()) end
-		timer.Create("pvpnominge_"..target:UniqueID(), 60, 1, function() -- this timer actually does nothing, its only purpose is to be checked if it exists
-			if !target:IsValid() then return false end
-			timer.Destroy("pvpnominge_"..target:UniqueID())
-		end)
+	timer.Create("pvpnominge_"..target:UniqueID(), 60, 1, function() -- this timer actually does nothing, its only purpose is to be checked if it exists for target
+		if !target:IsValid() then return false end
+		timer.Destroy("pvpnominge_"..target:UniqueID())
+	end)
 
 	if timer.Exists("pvpnominge_"..attacker:UniqueID()) then timer.Destroy("pvpnominge_"..attacker:UniqueID()) end
-
-	timer.Create("pvpnominge_"..attacker:UniqueID(), 60, 1, function() -- this timer actually does nothing, its only purpose is to be checked if it exists
+	timer.Create("pvpnominge_"..attacker:UniqueID(), 60, 1, function() -- same as above but for attacker
 		if !attacker:IsValid() then return false end
 		timer.Destroy("pvpnominge_"..attacker:UniqueID())
 	end)
@@ -75,24 +75,23 @@ function Damagemods(target, dmginfo)
 
 	local tea_server_debugging = GetConVar("tea_server_debugging")
 
+	if !attacker:IsValid() then return end
 	if target:GetClass() == "trader" then return end
+
+	if dmginfo:GetDamageType() == DMG_CRUSH and target:IsPlayer() and attacker:GetClass() == "obj_bigrock" then
+		dmginfo:SetDamage((dmginfo:GetDamage() * 0.01) + 1)
+	elseif dmginfo:GetDamageType() == DMG_CRUSH and target:IsPlayer() then
+		dmginfo:ScaleDamage(0.5)
+	end
 
 	if target:IsPlayer() and target:IsValid() and tonumber(target.Prestige) >= 15 then
 		dmginfo:ScaleDamage(0.95)
 	end
 
-	if dmginfo:GetDamageType() == DMG_CRUSH and target:IsPlayer() then
-		dmginfo:SetDamage((dmginfo:GetDamage() * 0.01) + 1)
-	end
-
 	if dmginfo:GetDamageType() == DMG_BLAST and (target.Type == "nextbot" or target:IsNPC()) then --AI NPCs and nextbots need to take more damage if they take explosive damage so it will be much better and explosives will be more useful
 		dmginfo:ScaleDamage(2.7)
 	end
-/*
-	if attacker:GetClass() == "trigger_hurt" then
-		dmginfo:ScaleDamage(0.5)
-	end
-*/
+
 	if dmginfo:GetDamageType() == DMG_BLAST and target:IsPlayer() then --Players need to take more damage from explosions since thanks to armor they can tank some big damage
 		dmginfo:ScaleDamage(1.55)
 	end
@@ -112,14 +111,14 @@ function Damagemods(target, dmginfo)
 		dmginfo:ScaleDamage(1 + (0.01 * attacker.StatDamage))
 		attacker:PrintMessage(HUD_PRINTCENTER, "Damage: "..dmginfo:GetDamage())
 		if !timer.Exists("HitSFX_"..attacker:UniqueID()) then
-			attacker:ConCommand("playvol theeternalapocalypse/hitsound.wav 0.225")
+			attacker:ConCommand("playvol theeternalapocalypse/hitsound.wav 0.3")
 			timer.Create("HitSFX_"..attacker:UniqueID(), 0.15, 1, function() end)
 		end
 		print(attacker:Nick().." has damaged "..target:Nick().." for "..dmginfo:GetDamage().." damage!")
 	elseif target:IsPlayer() and target:Alive() and attacker != target and attacker:IsPlayer() and (!target:IsPvPGuarded() and !attacker:IsPvPGuarded()) then
 		attacker:PrintMessage(HUD_PRINTCENTER, "Damage: "..dmginfo:GetDamage())
 		if !timer.Exists("HitSFX_"..attacker:UniqueID()) then
-			attacker:ConCommand("playvol theeternalapocalypse/hitsound.wav 0.225")
+			attacker:ConCommand("playvol theeternalapocalypse/hitsound.wav 0.3")
 			timer.Create("HitSFX_"..attacker:UniqueID(), 0.15, 1, function() end)
 		end
 		print(attacker:Nick().." has damaged "..target:Nick().." for "..dmginfo:GetDamage().." damage!")

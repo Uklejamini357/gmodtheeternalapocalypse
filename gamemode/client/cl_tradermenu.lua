@@ -142,7 +142,7 @@ end
 	function DoTraderList(cat, parent)
 		for k, v in SortedPairsByMemberValue( ItemsList, "Cost" ) do
 			if v.Supply <= -1 or v.Category != cat then continue end -- skip items with -1 supply or that are in the wrong category
-			--	if v.Category != cat then continue end
+--			if v.Category != cat then continue end --those are included so you can see new items you add if you exclude the above and include this one
 			
 			local ItemBackground = vgui.Create( "DPanel" )
 			ItemBackground:SetPos( 5, 5 )

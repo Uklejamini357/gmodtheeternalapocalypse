@@ -1,12 +1,12 @@
 TradersData = ""
 
 function LoadTraders()
-if not file.IsDir("theeternalapocalypse/spawns/traders", "DATA") then
-   file.CreateDir("theeternalapocalypse/spawns/traders")
+if not file.IsDir("theeternalapocalypse/spawns/"..string.lower(game.GetMap()), "DATA") then
+   file.CreateDir("theeternalapocalypse/spawns/"..string.lower(game.GetMap()))
 end
-	if file.Exists( "theeternalapocalypse/spawns/traders/" .. string.lower(game.GetMap()) .. ".txt", "DATA" ) then
+	if file.Exists( "theeternalapocalypse/spawns/"..string.lower(game.GetMap()).."/traders.txt", "DATA" ) then
 		TradersData = ""
-		TradersData = file.Read( "theeternalapocalypse/spawns/traders/" .. string.lower(game.GetMap()) .. ".txt", "DATA" )
+		TradersData = file.Read("theeternalapocalypse/spawns/"..string.lower(game.GetMap()).."/traders.txt", "DATA" )
 		print( "Traders file loaded" )
 	else
 		TradersData = ""
@@ -39,7 +39,7 @@ timer.Simple(1, function() SpawnTraders() end) --spawn them right away
 
 function AddTrader( ply, cmd, args )
 	if !SuperAdminCheck( ply ) then 
-		SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
+		SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
 		ply:ConCommand( "playgamesound buttons/button8.wav" )
 		return
 	end
@@ -50,7 +50,7 @@ function AddTrader( ply, cmd, args )
 		NewData = TradersData .. "\n" .. tostring( ply:GetPos() ) .. ";" .. tostring( ply:GetAngles() )
 	end
 	
-	file.Write( "theeternalapocalypse/spawns/traders/" .. string.lower(game.GetMap()) .. ".txt", NewData )
+	file.Write( "theeternalapocalypse/spawns/"..string.lower(game.GetMap()).."/traders.txt", NewData )
 	
 	LoadTraders() --reload them
 	SendChat( ply, "Added a trader spawnpoint at position "..tostring(ply:GetPos()).."!" )
@@ -67,8 +67,8 @@ if !SuperAdminCheck( ply ) then
 	return
 end
 
-if file.Exists(	"theeternalapocalypse/spawns/traders/" .. string.lower(game.GetMap()) .. ".txt", "DATA") then
-	file.Delete("theeternalapocalypse/spawns/traders/" .. string.lower(game.GetMap()) .. ".txt")
+if file.Exists("theeternalapocalypse/spawns/"..string.lower(game.GetMap()).."/traders.txt", "DATA") then
+	file.Delete("theeternalapocalypse/spawns/"..string.lower(game.GetMap()).."/traders.txt")
 end
 SendChat( ply, "Deleted all trader spawnpoints!" )
 print("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all trader spawnpoints!")
@@ -79,7 +79,7 @@ concommand.Add( "ate_cleartraderspawns", ClearTraders )
 
 function RefreshTraders(ply, cmd, args)
 if !SuperAdminCheck( ply ) then 
-	SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
+	SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
 	ply:ConCommand( "playgamesound buttons/button8.wav" )
 	return
 end

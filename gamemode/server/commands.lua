@@ -1,15 +1,15 @@
 -------------------------------------------------------------------Inventory Commands------------------------------------------------------------------
 
 function TogglePVP( ply )
-if timer.Exists("pvptoggle_"..ply:UniqueID()) then SystemMessage(ply, "Don't spam the pvp command!", Color(255,205,205,255), true) return false end
-if timer.Exists("pvpnominge_"..ply:UniqueID()) then SystemMessage(ply, "Unable to toggle PvP: you have damaged or taken damage from another player within the last 60 seconds!", Color(255,205,205,255), true)
+if timer.Exists("pvptoggle_"..ply:UniqueID()) then SystemMessage(ply, "Don't spam the PVP command!", Color(255,205,205,255), true) return false end
+if timer.Exists("pvpnominge_"..ply:UniqueID()) then SystemMessage(ply, "Unable to toggle PVP: you have damaged or taken damage from another player within the last 60 seconds!", Color(255,205,205,255), true)
 print(ply:Nick() .." attempted to toggle pvp while damaged or taken damage from another player within the last 60 seconds!") return false end
 
 ply:SetPvPGuarded( 2 )
 
 SystemMessage(ply, "Toggling PvP in 5 seconds...", Color(205,205,255,255), true)
 ply:EmitSound("npc/attack_helicopter/aheli_mine_drop1.wav", 100, 100)
-print(ply:Nick().." is toggling pvp")
+print(ply:Nick().." is toggling PVP")
 
 local nerds = ents.FindInSphere(ply:GetPos(), 800)
 
@@ -22,7 +22,7 @@ end
 end
 
 
-timer.Create( "pvptoggle_"..ply:UniqueID(), 5, 1, function()
+timer.Create("pvptoggle_"..ply:UniqueID(), 5, 1, function()
 
 	if !ply:IsValid() or !ply:Alive() then return false end
 
@@ -53,7 +53,7 @@ if !ply:IsValid() then return false end
 	SystemMessage(ply, "You cleared all your props.", Color(205,205,255,255), true)
 	print(ply:Nick() .." has cleared all props!")
 end
-concommand.Add( "ate_clearmyprops", TrashProps )
+concommand.Add("ate_clearmyprops", TrashProps)
 
 
 function DropCash(ply, cmd, args)

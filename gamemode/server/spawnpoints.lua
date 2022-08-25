@@ -1,12 +1,12 @@
 PlayerSpawnsData = ""
 
 function LoadPlayerSpawns()
-if not file.IsDir("theeternalapocalypse/spawns/players", "DATA") then
-   file.CreateDir("theeternalapocalypse/spawns/players")
+if not file.IsDir("theeternalapocalypse/spawns/"..string.lower(game.GetMap()), "DATA") then
+   file.CreateDir("theeternalapocalypse/spawns/"..string.lower(game.GetMap()))
 end
-	if file.Exists( "theeternalapocalypse/spawns/players/" .. string.lower(game.GetMap()) .. ".txt", "DATA" ) then
+	if file.Exists( "theeternalapocalypse/spawns/"..string.lower(game.GetMap()).."/players.txt", "DATA" ) then
 		PlayerSpawnsData = ""
-		PlayerSpawnsData = file.Read( "theeternalapocalypse/spawns/players/" .. string.lower(game.GetMap()) .. ".txt", "DATA" )
+		PlayerSpawnsData = file.Read( "theeternalapocalypse/spawns/"..string.lower(game.GetMap()).."/players.txt", "DATA" )
 		print( "Player spawns file loaded" )
 	else
 		PlayerSpawnsData = ""
@@ -42,7 +42,7 @@ hook.Add("PlayerSpawn", "ate_whoknowswhattocallhooksthesedays", SpawnPlayer)
 
 function AddPlayerSpawn(ply, cmd, args)
 	if !SuperAdminCheck(ply) then
-		SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
+		SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
 		ply:ConCommand("playgamesound buttons/button8.wav")
 		return
 	end
@@ -57,7 +57,7 @@ function AddPlayerSpawn(ply, cmd, args)
 		NewData = PlayerSpawnsData.."\n"..tostring(PosAngName)
 	end
 	
-	file.Write("theeternalapocalypse/spawns/players/"..string.lower(game.GetMap())..".txt", NewData )
+	file.Write("theeternalapocalypse/spawns/"..string.lower(game.GetMap()).."/players.txt", NewData )
 	
 	SendChat(ply, "Added a new player spawnpoint called '"..str.."' at position "..tostring(ply:GetPos()).."!")
 	print("[SPAWNPOINTS MODIFIED] "..ply:Nick().." has added a new player spawnpoint called '"..str.."' at position "..tostring(ply:GetPos()).."!")
@@ -70,13 +70,13 @@ concommand.Add("ate_addplayerspawnpoint", AddPlayerSpawn)
 
 function ClearPlayerSpawns(ply, cmd, args)
 	if !SuperAdminCheck(ply) then 
-		SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
+		SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
 		ply:ConCommand("playgamesound buttons/button8.wav")
 		return
 	end
 
-	if file.Exists("theeternalapocalypse/spawns/players/" .. string.lower(game.GetMap()) .. ".txt", "DATA") then
-		file.Delete("theeternalapocalypse/spawns/players/" .. string.lower(game.GetMap()) .. ".txt")
+	if file.Exists("theeternalapocalypse/spawns/".. string.lower(game.GetMap()) .."/players.txt", "DATA") then
+		file.Delete("theeternalapocalypse/spawns/" .. string.lower(game.GetMap()) .. "/players.txt")
 	end
 	SendChat( ply, "Deleted all player spawnpoints")
 	print("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all player spawnpoints!")
@@ -87,7 +87,7 @@ concommand.Add("ate_clearplayerspawnpoints", ClearPlayerSpawns)
 
 function RefreshPlayerSpawns(ply, cmd, args)
 	if !SuperAdminCheck(ply) then 
-		SystemMessage(ply, "You are not superadmin!", Color(255,205,205,255), true)
+		SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
 		ply:ConCommand( "playgamesound buttons/button8.wav" )
 		return
 	end

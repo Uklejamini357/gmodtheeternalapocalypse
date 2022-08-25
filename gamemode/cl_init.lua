@@ -132,7 +132,7 @@ local radiosounds = {
 	"npc/metropolice/vo/hidinglastseenatrange.wav"
 }
 
-net.Receive( "RadioMessage", function( length, client )
+net.Receive("RadioMessage", function(length, client)
 local sender = net.ReadString()
 local msg = net.ReadString()
 

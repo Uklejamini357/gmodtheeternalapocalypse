@@ -98,7 +98,7 @@ function ENT:Initialize()
 		self:SetMaxHealth(30000)
 	end
 	self.IsEnraged = 0
-	self:SetModelScale( 0.8, 0 )
+	self:SetModelScale(0.8, 0)
 	self:SetCollisionBounds(Vector(-34,-34, 0), Vector(34, 34, 84))
 	--	self:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
 	--	self:SetSkin(math.random(0, self:SkinCount() - 1))
@@ -107,7 +107,12 @@ function ENT:Initialize()
 	self.nexttoss = CurTime()
 	self.nextslam = CurTime()
 
-	timer.Simple(1200, function() if self:IsValid() then self:Remove() SystemBroadcast("[BOSS]: The Tyrant was not killed and has left the area!", Color(255,105,105,255), false) end end)
+	timer.Simple(1200, function()
+		if self:IsValid() and SERVER then --it was rare bug that runs clientside and creates clientside error
+			self:Remove()
+			SystemBroadcast("[BOSS]: The Tyrant was not killed and has left the area!", Color(255,105,105,255), false)
+		end
+	end)
 
 	hook.Add("EntityRemoved", self, function()
 		if self.breathing then
@@ -132,38 +137,33 @@ end
 
 function ENT:RunBehaviour()
 	while (true) do
-	if CLIENT then return end
-
+		if CLIENT then return end
 		local target = self.target
 
 		if (IsValid(target) and target:Alive()) then
 			local data = {}
-				data.start = self:GetPos()
-				data.endpos = self:GetPos() + self:GetForward()*128
-				data.filter = self
-				data.mins = self:OBBMins() * 0.65
-				data.maxs = self:OBBMaxs() * 0.65
+			data.start = self:GetPos()
+			data.endpos = self:GetPos() + self:GetForward()*128
+			data.filter = self
+			data.mins = self:OBBMins() * 0.65
+			data.maxs = self:OBBMaxs() * 0.65
 			local trace = util.TraceHull(data)
 			local entity = trace.Entity
 
-	if math.random(1,1000) < 25 then
-	local sounds = {}
-	sounds[1] = (self.Idle1)
-	sounds[2] = (self.Idle2)
-	sounds[3] = (self.Idle3)
-		self:EmitSound( sounds[math.random(1,3)])
-	end
-
+			if math.random(1,1000) < 25 then
+				local sounds = {}
+				sounds[1] = (self.Idle1)
+				sounds[2] = (self.Idle2)
+				sounds[3] = (self.Idle3)
+				self:EmitSound(sounds[math.random(1,3)])
+			end
 		end
-
 
 		if (IsValid(target) and target:Alive() and self:GetRangeTo(target) <= (2500 * self.RageLevel)) then
 			self.loco:FaceTowards(target:GetPos())
 
-
 			if (self:GetRangeTo(target) <= 400 && self.nextslam < CurTime() && self:HasLOS()) then 
-
-			self:StartActivity(ACT_RANGE_ATTACK1)
+				self:StartActivity(ACT_RANGE_ATTACK1)
 				self:TimedEvent(3.2, function()
 					if not (self:IsValid() && self:Health() > 0) then return end
 					self:EmitSound("npc/env_headcrabcanister/explosion.wav", 140, 100)
@@ -175,12 +175,12 @@ function ENT:RunBehaviour()
 
 					local effectdata = EffectData()
 					effectdata:SetOrigin(self:GetPos())
-					effectdata:SetMagnitude( 15 )
-					effectdata:SetScale( 150 )
-					effectdata:SetRadius( 50 )
+					effectdata:SetMagnitude(15)
+					effectdata:SetScale(150)
+					effectdata:SetRadius(50)
 					util.Effect("ThumperDust", effectdata)
 
-					util.ScreenShake( self:GetPos(), 120, 30, 2, 800 )
+					util.ScreenShake(self:GetPos(), 120, 30, 2, 800)
 
 					local slammed = ents.FindInSphere(self:GetPos(), 1000)
 
@@ -189,72 +189,57 @@ function ENT:RunBehaviour()
 							if self.IsEnraged == 1 then
 								local damageInfo = DamageInfo()
 								damageInfo:SetAttacker(self)
-								damageInfo:SetDamage(65 * ( 1 - (v.StatDefense * 0.015)))
+								damageInfo:SetDamage(65 * (1 - (v.StatDefense * 0.015)))
 								damageInfo:SetDamageType(DMG_CLUB)
 
 								v:TakeDamageInfo(damageInfo)
-								v:SetVelocity( Vector(math.random(-100, 100),math.random(-100, 100),350) )
+								v:SetVelocity(Vector(math.random(-100, 100),math.random(-100, 100),350))
 							else
 								local damageInfo = DamageInfo()
 								damageInfo:SetAttacker(self)
-								damageInfo:SetDamage(50 * ( 1 - (v.StatDefense * 0.015)))
+								damageInfo:SetDamage(50 * (1 - (v.StatDefense * 0.015)))
 								damageInfo:SetDamageType(DMG_CLUB)
 
 								v:TakeDamageInfo(damageInfo)
-								v:SetVelocity( Vector(math.random(-100, 100),math.random(-100, 100),300) )
+								v:SetVelocity(Vector(math.random(-100, 100),math.random(-100, 100),300))
 							end
-
---						end
-
 						elseif v:GetPhysicsObject():IsValid() then
-							v:GetPhysicsObject():SetVelocity( Vector(math.random(-100, 100),math.random(-100, 100),300) )
+							v:GetPhysicsObject():SetVelocity(Vector(math.random(-100, 100),math.random(-100, 100),300))
 						end
-
 					end
-
 				end)
-			coroutine.wait(4)
+				coroutine.wait(4)
 
-			self.nextslam = CurTime() + 25
-
-
+				self.nextslam = CurTime() + 25
 
 
+			elseif (self:GetRangeTo(target) <= 1000 && self.nexttoss < CurTime() && self:HasLOS()) then 
 
+				self:StartActivity(self.AttackAnim)
+				coroutine.wait(1)
 
+				local tracedata = {}
+				tracedata.start = self:GetPos() + Vector(0, 0, 40)
+				tracedata.endpos = self.target:GetPos() + Vector(0, 0, 40)
+				tracedata.filter = self
+				local trace = util.TraceLine(tracedata)
 
-			elseif (self:GetRangeTo(target) <= 1000 && self.nexttoss < CurTime() && self:HasLOS() ) then 
+				local spit = ents.Create("obj_bigrock")
+				if !spit:IsValid() then return false end
+				spit:SetAngles(Angle(math.random(0,360), math.random(0,360), math.random(0,360)))
+				spit:SetPos(self:GetPos() + self:GetAngles():Up() * 40)
+				spit:Spawn()
+				spit:Activate()
+				spit.Zed = self.Entity
+				local phys = spit:GetPhysicsObject()
+				phys:AddAngleVelocity(Vector(math.random(-100, 100), math.random(-100, 100), math.random(-100, 100)))
+				phys:SetVelocity(trace.Normal * 1000 + (self:GetAngles():Up() * (self:GetPos():Length(trace.HitPos) * 0.03)) + (self:GetAngles():Forward() * (self:GetPos():Length(trace.HitPos) * 0.03)))
 
-			self:StartActivity(self.AttackAnim)
-			coroutine.wait(1)
-
-			local tracedata = {}
-			tracedata.start = self:GetPos() + Vector(0, 0, 40)
-			tracedata.endpos = self.target:GetPos() + Vector(0, 0, 40)
-			tracedata.filter = self
-			local trace = util.TraceLine(tracedata)
-
-			local spit = ents.Create("obj_bigrock")
-			if !spit:IsValid() then return false end
-			spit:SetAngles(Angle(math.random(0,360), math.random(0,360), math.random(0,360)))
-			spit:SetPos(self:GetPos() + self:GetAngles():Up() * 40)
-			spit:Spawn()
-			spit:Activate()
-			spit.Zed = self.Entity
-			local phys = spit:GetPhysicsObject()
-			phys:AddAngleVelocity( Vector(math.random(-100, 100), math.random(-100, 100), math.random(-100, 100)) )
-			phys:SetVelocity(trace.Normal * 1000 + (self:GetAngles():Up() * (self:GetPos():Length(trace.HitPos) * 0.03)) + (self:GetAngles():Forward() * (self:GetPos():Length(trace.HitPos) * 0.03)) )
-
-			if self.IsEnraged == 1 then
-				self.nexttoss = CurTime() + 6
-			else
-				self.nexttoss = CurTime() + 10
-			end
-
-
-
-
-
+				if self.IsEnraged == 1 then
+					self.nexttoss = CurTime() + 6
+				else
+					self.nexttoss = CurTime() + 10
+				end
 
 
 			elseif (self:GetRangeTo(target) <= 110) then                                                     -- hit the player
@@ -265,45 +250,44 @@ function ENT:RunBehaviour()
 				end)
 
 				self:TimedEvent(1, function()
-					if not ( self:IsValid() && self:Health() > 0 ) then return end
+					if not (self:IsValid() && self:Health() > 0) then return end
 					
 					if (IsValid(target) and self:GetRangeTo(target) <= 155) then
-						if self.IsEnraged == 1 then
-				
+						if self.IsEnraged == 1 then			
 							local damageInfo = DamageInfo()
-								damageInfo:SetAttacker(self)
-								damageInfo:SetDamage(math.random(50, 75) * ( 1 - (target.StatDefense * 0.015)))
-								damageInfo:SetDamageType(DMG_CLUB)
+							damageInfo:SetAttacker(self)
+							damageInfo:SetDamage(math.random(50, 75) * (1 - (target.StatDefense * 0.015)))
+							damageInfo:SetDamageType(DMG_CLUB)
 
-								local force = target:GetAimVector() * -600
-								force.z = 180
+							local force = target:GetAimVector() * -600
+							force.z = 180
 
-								damageInfo:SetDamageForce(force)
-								target:TakeDamageInfo(damageInfo)
-								target:EmitSound("npc/zombie/zombie_hit.wav", 100, math.random(60, 80))
-								target:ViewPunch(VectorRand():Angle() * 0.05)
-								target:SetVelocity(force)
-								if math.random(0, 100) > 50 then
+							damageInfo:SetDamageForce(force)
+							target:TakeDamageInfo(damageInfo)
+							target:EmitSound("npc/zombie/zombie_hit.wav", 100, math.random(60, 80))
+							target:ViewPunch(VectorRand():Angle() * 0.05)
+							target:SetVelocity(force)
+							if math.random(0, 100) > 50 then
 								target.Infection = target.Infection + math.Rand(200,750)
 							end
 						else
 							local damageInfo = DamageInfo()
-								damageInfo:SetAttacker(self)
-								damageInfo:SetDamage(math.random(40, 60) * ( 1 - (target.StatDefense * 0.015)))
-								damageInfo:SetDamageType(DMG_CLUB)
+							damageInfo:SetAttacker(self)
+							damageInfo:SetDamage(math.random(40, 60) * (1 - (target.StatDefense * 0.015)))
+							damageInfo:SetDamageType(DMG_CLUB)
 
-								local force = target:GetAimVector() * -600
-								force.z = 180
+							local force = target:GetAimVector() * -600
+							force.z = 180
 
-								damageInfo:SetDamageForce(force)
-								target:TakeDamageInfo(damageInfo)
-								target:EmitSound("npc/zombie/zombie_hit.wav", 100, math.random(60, 80))
-								target:ViewPunch(VectorRand():Angle() * 0.05)
-								target:SetVelocity(force)
-								if math.random(0, 100) > 50 then
+							damageInfo:SetDamageForce(force)
+							target:TakeDamageInfo(damageInfo)
+							target:EmitSound("npc/zombie/zombie_hit.wav", 100, math.random(60, 80))
+							target:ViewPunch(VectorRand():Angle() * 0.05)
+							target:SetVelocity(force)
+							if math.random(0, 100) > 50 then
 								target.Infection = target.Infection + math.Rand(120,500)
-								end
 							end
+						end
 					end
 				end)
 
@@ -313,11 +297,11 @@ function ENT:RunBehaviour()
 					end
 				end)
 
-		self:StartActivity(self.AttackAnim)
+				self:StartActivity(self.AttackAnim)
 
-		coroutine.wait(self.AttackWaitTime)
+				coroutine.wait(self.AttackWaitTime)
 
-		self:StartActivity( self.WalkAnim )	
+				self:StartActivity(self.WalkAnim)	
 
 			else
 				self:StartActivity(self.RunAnim)
@@ -333,7 +317,7 @@ function ENT:RunBehaviour()
 --				end
 				
 				if self.IsEnraged == 1 then
-					self.loco:SetDesiredSpeed( 400 )
+					self.loco:SetDesiredSpeed(400) 
 				else
 					self.loco:SetDesiredSpeed(250)
 				end
@@ -343,14 +327,13 @@ function ENT:RunBehaviour()
 					tolerance = 80,
 					maxage = 2
 				})
-
 			end
 		else
 			self.target = nil
 			self.CanScream = true
 			self:StartActivity(self.WalkAnim)
 			if self.IsEnraged == 1 then
-				self.loco:SetDesiredSpeed(90)
+				self.loco:SetDesiredSpeed(80)
 			else
 				self.loco:SetDesiredSpeed(65)
 			end
@@ -359,23 +342,23 @@ function ENT:RunBehaviour()
 				maxage = 2
 			})
 
-	if (!self.target) then
-		for k, v in pairs(player.GetAll()) do
-			if (v:Alive() and self:GetRangeTo(v) <= (2500 * self.RageLevel)) then
---				self:AlertNearby(v)
-				self.target = v
---				self:PlaySequenceAndWait("wave_smg1", 0.9)
-				if self.CanScream == true then
-				self:EmitSound("npc/ichthyosaur/attack_growl1.wav", 100, 100)
-				self.CanScream = false
+			if (!self.target) then
+				for k, v in pairs(player.GetAll()) do
+					if (v:Alive() and self:GetRangeTo(v) <= (2500 * self.RageLevel)) then
+--						self:AlertNearby(v)
+						self.target = v
+--						self:PlaySequenceAndWait("wave_smg1", 0.9)
+						if self.CanScream == true then
+							self:EmitSound("npc/ichthyosaur/attack_growl1.wav", 100, 100)
+							self.CanScream = false
+						end
+						break
+					end
 				end
-				break
 			end
-		end
-	end
 
 
-
+--idk what this one does
 --			if (math.random(1, 8) == 2) then
 --				self:EmitSound("npc/zombie/zombie_voice_idle"..math.random(2, 7)..".wav", 100, 60)
 /*
@@ -388,7 +371,6 @@ function ENT:RunBehaviour()
 --			end
 
 		end
-
 		coroutine.yield()
 	end
 end
@@ -460,9 +442,9 @@ function ENT:OnInjured(damageInfo)
 	end
 	end
 
-	if self:Health() - dmg <= 10000 then
+	if (self:Health() - dmg) <= 10000 then
 		self.RageLevel = 5
-		self.loco:SetDesiredSpeed( 400 )
+		self.loco:SetDesiredSpeed(400)
 		if self.IsEnraged == 0 then
 			SystemBroadcast("[BOSS]: The Tyrant is now Enraged!", Color(255,105,105,255), false)
 			self.nexttoss = CurTime()
@@ -473,7 +455,7 @@ function ENT:OnInjured(damageInfo)
 		self.RageLevel = 3
 	end
 		
---	if( attacker:IsPlayer() ) then
+--	if(attacker:IsPlayer()) then
 --	self:AlertNearby(attacker, 1000)
 --	end
 end
@@ -489,7 +471,7 @@ function ENT:AttackProp(targetprops)
 			local sounds = {}
 				sounds[1] = (self.Attack1)
 				sounds[2] = (self.Attack2)
-				self:EmitSound( sounds[math.random(1,2)] )
+				self:EmitSound(sounds[math.random(1,2)])
 			end
 			*/
 	
@@ -506,7 +488,7 @@ function ENT:AttackProp(targetprops)
 			util.ScreenShake(v:GetPos(), 8, 6, math.Rand(0.3, 0.5), 400)
 			end
 		coroutine.wait(self.AttackFinishTime)
-		self:StartActivity( self.WalkAnim )	
+		self:StartActivity(self.WalkAnim)	
 			return true
 		end
 	end

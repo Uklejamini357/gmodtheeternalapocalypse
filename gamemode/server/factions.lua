@@ -91,7 +91,7 @@ function CreateFaction( ply, name, col, public )
 	ply.Money = ply.Money - factioncost
 	print(ply:Nick().." has created a faction for "..factioncost.." "..Config["Currency"].."s named: "..tostring(name))
 	SystemBroadcast(ply:Nick().." has created a faction named: "..tostring(name), Color(205,205,255,255), true)
-	FullyUpdatePlayer(ply)
+	TEANetUpdatePeriodicStats(ply)
 
 	net.Start("RecvFactions")
 	net.WriteTable(Factions)
@@ -101,6 +101,7 @@ end
 
 function JoinFaction(ply, fac)
 	if !ply:IsValid() or !Factions[fac] then return false end
+	if ply:Team() != 1 then SystemMessage(ply, "You can't join a faction while already in a faction!", Color(255,205,205,255), true) return false end
 	local facdata = Factions[fac]
 	local public = facdata["public"] or false
 
@@ -108,7 +109,7 @@ function JoinFaction(ply, fac)
 	if !public and !table.HasValue(ply.InvitedTo, fac) then SystemMessage(ply, "This faction is not public! You must be invited to join it", Color(255,205,205,255), true) return false end
 
 	ply:SetTeam( tonumber(facdata["index"]) )
-	SystemMessage(ply, "You joined the faction: "..team.GetName(ply:Team()).."", Color(205,205,255,255), true)
+	SystemMessage(ply, "You joined the faction: "..team.GetName(ply:Team()), Color(205,205,255,255), true)
 	net.Start("RecvFactions")
 	net.WriteTable(Factions)
 	net.Broadcast()

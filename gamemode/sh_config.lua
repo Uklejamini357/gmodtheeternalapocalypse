@@ -34,7 +34,7 @@ Config["FileSystem"] = "Legacy" --	set to Legacy or PData
 
 -----------------------------ZOMBIE CLASSES-----------------------------
 
-Config[ "ZombieClasses" ] = {
+Config["ZombieClasses"] = {
 
 	["npc_ate_basic"] = {		-- table name must be the entclass name of the zombie, see garrysmod/gamemodes/theeternalapocalypse/entities for entclasses (or you can add other zombie types by yourself)
 		["SpawnChance"] = 67,	-- spawn chance in %, be careful as the spawn chance of all your zombies totalled up must not exceed 100% (there is a helper function that will tell you if this has happened or how much the current total spawn chance for zombies is)
@@ -90,7 +90,7 @@ Config[ "ZombieClasses" ] = {
 
 -----------------------------BOSS CLASSES-----------------------------
 
-Config[ "BossClasses" ] = {
+Config["BossClasses"] = {
 	["npc_nextbot_boss_tyrant"] = {
 		["SpawnChance"] = 100,
 		["XPReward"] = 5000, -- remember that xp and money for bosses is distributed by who damaged them, if you did all of the damage you would get 5,000 xp in this case (currently bugged)
@@ -110,7 +110,7 @@ Config[ "BossClasses" ] = {
 
 -- what to give to players when they join the server for the first time
 
-Config[ "RookieGear" ] = {
+Config["RookieGear"] = {
 	-- behold the beautiful new inventory format (yes)
 	["item_bandage"] = 3,
 	["item_antidote"] = 2,
@@ -124,7 +124,7 @@ Config[ "RookieGear" ] = {
 
 -- What new players will have in their vault
 
-Config[ "RookieVault" ] = {
+Config["RookieVault"] = {
 ["weapon_zw_grenade_pipe"] = 2,
 ["item_soda"] = 1,
 }
@@ -213,13 +213,13 @@ function TEADevCheck(ply)
 end
 
 function SuperAdminCheck(ply)
-if !ply:IsValid() then return false end
-if ply:IsUserGroup("superadmin") or ply:IsSuperAdmin() or ply:SteamID64() == "76561198274314803" or ply:SteamID64() == "76561198028288732" then return true end
-return false --above check failed so they must not be admin
+	if !ply:IsValid() then return false end
+	if ply:IsUserGroup("superadmin") or ply:IsSuperAdmin() or ply:SteamID64() == "76561198274314803" or ply:SteamID64() == "76561198028288732" then return true end
+	return false --above check failed so they must not be admin
 end
 
 function AdminCheck(ply)
-if !ply:IsValid() then return false end
-if ply:IsUserGroup("superadmin") or ply:IsSuperAdmin() or ply:IsUserGroup("admin") or ply:IsAdmin() or ply:SteamID64() == "76561198274314803" or ply:SteamID64() == "76561198028288732" then return true end
-return false
+	if !ply:IsValid() then return false end
+	if ply:IsUserGroup("superadmin") or ply:IsSuperAdmin() or ply:IsUserGroup("admin") or ply:IsAdmin() or ply:SteamID64() == "76561198274314803" or ply:SteamID64() == "76561198028288732" then return true end
+	return false
 end
