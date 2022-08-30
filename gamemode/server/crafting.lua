@@ -1,5 +1,5 @@
 --Crafting system is in progress
---It's hard pls help | expect it to be added in v0.10.6 or any other
+--Ver. 0.10.5. Now it will be time to add crafting system.
 
 function TEACraftItem(ply, str)
     print("Function does not exist")

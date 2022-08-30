@@ -44,7 +44,7 @@ concommand.Add("ate_togglepvp", TogglePVP)
 
 
 function TrashProps(ply)
-if !ply:IsValid() then return false end
+	if !ply:IsValid() then return false end
 	for k, v in pairs(ents.GetAll()) do
 		if v:GetNWEntity("owner") == ply then v:Remove() end
 	end
@@ -62,7 +62,7 @@ if !ply:Alive() then SystemMessage(ply, "You can't drop money while dead!", Colo
 --if timer exists then function must be cancelled, else some users can use to spam this command and lag it
 if timer.Exists("dropcashcooldown_"..ply:UniqueID()) then SystemMessage(ply, "Wait before you drop more money!", Color(255,205,205,255), true)
 print(ply:Nick().." attempted to drop money while on cooldown!") return false end
-timer.Create("dropcashcooldown_"..ply:UniqueID(), 2, 1, function() end)
+timer.Create("dropcashcooldown_"..ply:UniqueID(), 1.5, 1, function() end)
 
 local cash = math.floor(args[1])
 local plycash = tonumber(ply.Money)

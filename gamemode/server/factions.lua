@@ -222,11 +222,16 @@ function PlayerDisbandFaction(ply, fac)
 
 	for k, v in pairs(team.GetPlayers(tonumber(Factions[fac]["index"]))) do
 		v:SetTeam(1)
-		SystemMessage(v, "Your faction has been disbanded!", Color(255,205,205,255), true)
+		ClearFactionStructures(v)
+		if ply == v then
+			SystemMessage(v, "You have disbanded your faction "..plyfaction.."!", Color(255,205,205,255), true)
+		else
+			SystemMessage(v, "Your faction "..plyfaction.." has been disbanded by "..ply:Nick().."!", Color(255,205,205,255), true)
+		end
 		AutoDisbandFaction(plyfaction)
 	end
 	Factions[fac] = nil
---SystemBroadcast(ply:Nick().." has disbanded the faction: "..plyfaction, Color(255,205,255,255), true)
+--	SystemBroadcast(ply:Nick().." has disbanded the faction: "..plyfaction, Color(255,205,255,255), true)
 
 	net.Start("RecvFactions")
 	net.WriteTable(Factions)

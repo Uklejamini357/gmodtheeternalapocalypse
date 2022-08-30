@@ -85,7 +85,7 @@ SpecialSpawns = {
 		["Cost"] = 200,
 		["Model"] = "models/props_c17/light_cagelight02_on.mdl",
 		["Description"] = "An electric lamp that can light up dark areas.  Runs off battery and doesn't require power from a core",
-		["Max"] = 8,
+		["Max"] = 10,
 	},
 
 	["structure_door"] = {
@@ -106,7 +106,7 @@ SpecialSpawns = {
 
 	["structure_base_core"] = {
 		["Name"] = "Faction Base Core",
-		["Cost"] = 15000,
+		["Cost"] = 18000,
 		["Model"] = "models/props/de_train/processor_nobase.mdl",
 		["Description"] = "The core of your factions base.  Powers all faction structures and prevents enemies from building in or wandering into your territory.",
 		["Max"] = 1,

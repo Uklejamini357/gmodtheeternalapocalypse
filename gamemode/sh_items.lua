@@ -8,15 +8,15 @@ Item template:
 	["Model"] = "models/Items/HealthKit.mdl",			-- the items model
 	["Description"] = "stuff",				-- the description will show up in the trader buy menu and in your inventory when you mouse over it
 	["Weight"] = 1,						-- weight in kilograms (if your american and want to use imperial then your shit out of luck m8)
-	["Supply"] = 0,						-- how many of these items does each trader have in stock? stock refills every 24 hours.  Putting 0 means unlimited stock, Putting -1 as stock will make it so the item isn't sold by traders
+	["Supply"] = 0,						-- how many of these items does each trader have in stock? stock refills every 24 hours. (Stock limits don't work, will try to fix/add one)  Putting 0 means unlimited stock, Putting -1 as stock will make it so the item isn't sold by traders
 	["Rarity"] = 1,						-- 0 = trash, 1 = junk, 2 = common, 3 = uncommon, 4 = rare, 5 = super rare, 6 = epic, 7 = mythic, 8 = legendary, 9 = godly, 10 = event, 11 = unobtainable, any other = pending
 	["Category"] = 1,					-- 1 = supplies, 2 = ammunition, 3 = weapons, 4 = armor, any other = ignored by trader
 	["UseFunc"] = stuff 				-- the function to call when the player uses the item from their inventory, you will need lua skillz here
-	["DropFunc"] = stuff 				-- the function to call when the player drops the item
+	["DropFunc"] = stuff 				-- the function to call when the player drops the item, just like usefunc, you need to know lua here
 }
 
 
-// IMPORTANT NOTE: use and drop functions must always return true or false here.  Returning true will subtract one of that item type from the player, returning false will make it so nothing is subtracted.
+// IMPORTANT NOTE: Use and drop functions must always return true or false here.  Returning true will subtract one of that item type from the player, returning false will make it so nothing is subtracted.
 see server/player_inventory.lua for more info
 
 
@@ -626,22 +626,18 @@ ItemsList = {
 	["upgradestatimmune"] = {
 		["Name"] = "[REMOVED ITEM]",
 		["Cost"] = 0,
-		["Model"] = "models/player/items/humans/graduation_cap.mdl",
+		["Model"] = "models/items/healthkit.mdl",
 		["Description"] = "It is necessary to use this item.",
 		["Weight"] = 0,
 		["Supply"] = -1,
 		["Rarity"] = 11,
-		["Category"] = 2,
+		["Category"] = 1,
 		["UseFunc"] = function(ply) SendChat(ply, "NO!") return true end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "upgradestatimmune") return drop end,
 	},
 
 
-
-
 -- crafting related
-
-
 
 
 	["item_craft_fueltank"] = {
@@ -1247,7 +1243,7 @@ ItemsList = {
 
 	["weapon_zw_fuckinator"] = {
 		["Name"] = "TheFuckinator",
-		["Cost"] = 40000,
+		["Cost"] = 35000,
 		["Model"] = "models/weapons/w_pist_p228.mdl",
 		["Description"] = "TheFuckinator_d",
 		["Weight"] = 8.74, --i absolutely have no idea about this one except increasing its' size again
@@ -1528,6 +1524,7 @@ ItemsList = {
 		["Category"] = 3,
 		["UseFunc"] = function(ply) local bool = UseFunc_EquipNade(ply, "weapon_zw_grenade_pipe", "nade_pipebombs") return bool end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_grenade_pipe") if drop then ply:StripWeapon("weapon_zw_grenade_pipe")end  return drop end,
+		["IsGrenade"] = true
 	},
 
     ["weapon_zw_grenade_flare"] = {
@@ -1541,6 +1538,7 @@ ItemsList = {
 		["Category"] = 3,
 		["UseFunc"] = function(ply) local bool = UseFunc_EquipNade(ply, "weapon_zw_grenade_flare", "nade_flares") return bool end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_grenade_flare") if drop then ply:StripWeapon("weapon_zw_grenade_flare")end  return drop end,
+		["IsGrenade"] = true
 	},
 
     ["weapon_zw_grenade_frag"] = {
@@ -1554,6 +1552,7 @@ ItemsList = {
 		["Category"] = 3,
 		["UseFunc"] = function(ply) local bool = UseFunc_EquipNade(ply, "weapon_zw_grenade_frag", "Grenade") return bool end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_grenade_frag") if drop then ply:StripWeapon("weapon_zw_grenade_frag")end  return drop end,
+		["IsGrenade"] = true
 	},
 
     ["weapon_zw_grenade_molotov"] = {
@@ -1567,6 +1566,7 @@ ItemsList = {
 		["Category"] = 3,
 		["UseFunc"] = function(ply) local bool = UseFunc_EquipNade(ply, "weapon_zw_grenade_molotov", "nade_molotov") return bool end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_grenade_molotov") if drop then ply:StripWeapon("weapon_zw_grenade_molotov")end  return drop end,
+		["IsGrenade"] = true
 	},
 
 
@@ -2114,8 +2114,8 @@ ItemsList = {
 		["Model"] = "models/weapons/w_winchester_1887.mdl",
 		["Description"] = "M9kWinchester87_d",
 		["Weight"] = 3.12,
-		["Supply"] = -1,
-		["Rarity"] = 2,
+		["Supply"] = 1,
+		["Rarity"] = 6,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_1887winchester") return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_1887winchester") if drop then ply:StripWeapon("m9k_1887winchester")end  return drop end,
@@ -2179,8 +2179,8 @@ ItemsList = {
 		["Model"] = "models/weapons/w_snip_int.mdl",
 		["Description"] = "M9kIntervention_d",
 		["Weight"] = 8.46,
-		["Supply"] = -1,
-		["Rarity"] = 2,
+		["Supply"] = 0,
+		["Rarity"] = 7,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_intervention") return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_intervention") if drop then ply:StripWeapon("m9k_intervention") end return drop end,
@@ -2296,8 +2296,8 @@ ItemsList = {
 		["Model"] = "models/weapons/w_hk_ump45.mdl",
 		["Description"] = "M9kHKUMP45_d",
 		["Weight"] = 2.95,
-		["Supply"] = -1,
-		["Rarity"] = 2,
+		["Supply"] = 1,
+		["Rarity"] = 6,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_ump45") return false end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_ump45") if drop then ply:StripWeapon("m9k_ump45")end  return drop end,
@@ -2550,7 +2550,7 @@ ItemsList = {
 		["UseFunc"] = function(ply) UseFunc_EquipArmor(ply, "item_armor_mercenary_guerilla") end,
 		["DropFunc"] = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_mercenary_guerilla") return drop end,
 		["ArmorStats"] = {
-			["reduction"] = 15.625,
+			["reduction"] = 16.25,
 			["speedloss"] = 25,
 			["slots"] = 2,
 			["battery"] = 50,
@@ -2784,7 +2784,7 @@ ItemsList = {
 			["reduction"] = 35,
 			["speedloss"] = 35,
 			["slots"] = 3,
-			["battery"] = 150,
+			["battery"] = 100,
 			["carryweight"] = 0,
 			["allowmodels"] = {"models/player/stalker/monolith_vet.mdl"}
 		}
@@ -3055,6 +3055,7 @@ function UseFunc_EquipArmor(ply, item)
 		SendUseDelay(ply, 3)
 		ply:EmitSound("npc/combine_soldier/zipline_hitground2.wav")
 		timer.Simple(3, function()
+			if !ply:IsValid() or !ply:Alive() then return false end
 			SystemMessage(ply, "You unequipped "..translate.ClientGet(ply, used["Name"])..".", Color(205,255,205,255), false)
 			UseFunc_RemoveArmor(ply, item)
 		end)
@@ -3158,10 +3159,10 @@ end
 return true end
 
 function UseFunc_GiveAmmo(ply, amount, type)
-if !SERVER then return false end
-if !ply:IsValid() or !ply:Alive() then return false end
-if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "Can't use ammo while sleeping!") return false end
-if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "Can't use ammo while using an item!") return false end
+	if !SERVER then return false end
+	if !ply:IsValid() or !ply:Alive() then return false end
+	if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "Can't use ammo while sleeping!") return false end
+	if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "Can't use ammo while using an item!") return false end
 	ply:GiveAmmo(amount, type)
 return true end
 
@@ -3183,7 +3184,6 @@ if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, translate.C
 			return true
 	else
 		SendChat(ply, "You could have healed yourself, before you died.") -- if they try to call this function when they are dead
-		print(ply.StatMedSkill)
 		return false
 	end
 end
@@ -3204,7 +3204,6 @@ function UseFunc_HealInfection(ply, usetime, infection, snd)
 			return true
 	else
 		SendChat(ply, "You could have healed yourself, before you died.") -- if they try to call this function when they are dead
-		print(ply.StatMedSkill)
 		return false
 	end
 end

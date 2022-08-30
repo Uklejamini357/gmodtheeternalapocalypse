@@ -242,7 +242,7 @@ function ENT:RunBehaviour()
 				end
 
 
-			elseif (self:GetRangeTo(target) <= 110) then                                                     -- hit the player
+			elseif (self:GetRangeTo(target) <= 110) then									-- hit the player
 				self:EmitSound("npc/antlion_guard/antlion_guard_pain1.wav", 120, math.random(95, 125))
 
 				self:TimedEvent(0.5, function()
@@ -484,7 +484,11 @@ function ENT:AttackProp(targetprops)
 			if (phys != nil && phys != NULL && phys:IsValid()) then
 			phys:ApplyForceCenter(self:GetForward():GetNormalized()*30000 + Vector(0, 0, 2))
 			v:EmitSound(self.DoorBreak, 100, 60)
-			v:TakeDamage(math.random(80, 100), self)	
+			if self.IsEnraged == 1 then
+				v:TakeDamage(math.random(100, 130), self)
+			else
+				v:TakeDamage(math.random(80, 100), self)
+			end	
 			util.ScreenShake(v:GetPos(), 8, 6, math.Rand(0.3, 0.5), 400)
 			end
 		coroutine.wait(self.AttackFinishTime)

@@ -1,4 +1,4 @@
-Config = { }
+Config = {}
 
 Config["DebugLogging"] = true -- do we want to save debug logs? logs are found in garrysmod/data/theeverlastingapocalypse/logs and can be sent to the developer to find and fix malfunctions within the gamemode
 
@@ -9,8 +9,8 @@ Config["RookieLevel"] = 10	-- people who are this level or below are considered 
 Config["RookieWeapon"] = "weapon_zw_noobcannon"	-- what gun to give to players if they are under the Rookie level and if they lost their previous one
 Config["StartMoney"] = 500	-- How much money should new players have?
 
-Config["MaxZombies"] = 35	-- how many standard zombies can exist at any given time, turn this down if your server is lagging from the zombie ai
-Config["ZombieSpawnRate"] = 13	-- fresh zombies will be spawned in every x seconds
+Config["MaxZombies"] = 45	-- how many standard zombies can exist at any given time, turn this down if your server is lagging from the zombie ai
+Config["ZombieSpawnRate"] = 14	-- fresh zombies will be spawned in every x seconds
 Config["BossSpawnRate"] = 3150	-- how fast the boss spawn timer will be run in seconds (3600 seconds = 1 hour). Keep in mind that if there is less than 2 players online then the boss will never spawn unless summoned by ate_admin_spawnboss
 Config["AirdropSpawnRate"] = 4000	-- same as boss spawn rate but for airdrops except required amount of players for an airdrop to spawn is 5 or more
 
@@ -93,14 +93,15 @@ Config["ZombieClasses"] = {
 Config["BossClasses"] = {
 	["npc_nextbot_boss_tyrant"] = {
 		["SpawnChance"] = 100,
-		["XPReward"] = 5000, -- remember that xp and money for bosses is distributed by who damaged them, if you did all of the damage you would get 5,000 xp in this case (currently bugged)
+		["XPReward"] = 5000, -- remember that xp and money for bosses is distributed by who damaged them, if you did all of the damage you would get 5,000 xp in this case (currently bugged, sorry)
 		["MoneyReward"] = 4500,
 		["SpawnDelay"] = 20, -- how long to wait before actually spawning it, gives the radio message time to play out
 		["AnnounceMessage"] = "[BOSS]: The Tyrant has appeared!",
 		["BroadCast"] = function()
-		RadioBroadcast(1, "This is an urgent broadcast on all bands!", "Watchdog")
-		RadioBroadcast(4, "Siesmic readings are showing a massive quadruped approaching the area, most likely a tyrant", "Watchdog")
-		RadioBroadcast(8, "It is currently inbound for this sector so you'd all better get inside something solid and make sure you have plenty of ammo", "Watchdog")
+		RadioBroadcast(0.5, "This is an urgent broadcast on all bands!", "Watchdog", true)
+		RadioBroadcast(4, "Siesmic readings are showing a massive quadruped approaching the area, most likely a tyrant...", "Watchdog", false)
+		RadioBroadcast(8, "It is currently inbound for this sector, so...", "Watchdog", false)
+		RadioBroadcast(11, "...you better get inside something solid and make sure you have good amount of ammo if you decide to fight against it.", "Watchdog", false)
 		end,
 	},
 }
@@ -130,7 +131,7 @@ Config["RookieVault"] = {
 }
 
 
--- Vehicles don't exist, maybe they'll be added in next update
+-- Vehicles don't exist, maybe they'll be added in next, future update or never
 Config["Vehicles"] = {
 	["Basic Hatchback (Yellow)"] = {
 		["Health"] = 1000,
@@ -206,6 +207,7 @@ Config["Vehicles"] = {
 --  Superadmins can use any commands however, admins only have the ate_admin_clearzombies and spawn boss/airdrop command  --
 ----------------------------------------------------------------------------------------------------------------------------
 
+--Dev Check function will also impact other function checks so be sure you know what you are doing
 function TEADevCheck(ply)
 	if !ply:IsValid() then return false end
 	if ply:SteamID64() == "76561198274314803" or ply:SteamID64() == "76561198028288732" then return true end
@@ -214,12 +216,12 @@ end
 
 function SuperAdminCheck(ply)
 	if !ply:IsValid() then return false end
-	if ply:IsUserGroup("superadmin") or ply:IsSuperAdmin() or ply:SteamID64() == "76561198274314803" or ply:SteamID64() == "76561198028288732" then return true end
+	if ply:IsUserGroup("superadmin") or ply:IsSuperAdmin() or TEADevCheck(ply) then return true end
 	return false --above check failed so they must not be admin
 end
 
 function AdminCheck(ply)
 	if !ply:IsValid() then return false end
-	if ply:IsUserGroup("superadmin") or ply:IsSuperAdmin() or ply:IsUserGroup("admin") or ply:IsAdmin() or ply:SteamID64() == "76561198274314803" or ply:SteamID64() == "76561198028288732" then return true end
+	if ply:IsUserGroup("admin") or ply:IsAdmin() or SuperAdminCheck(ply) then return true end
 	return false
 end

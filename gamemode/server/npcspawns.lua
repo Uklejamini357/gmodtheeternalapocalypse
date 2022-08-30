@@ -100,10 +100,10 @@ end
 
 
 function SpawnZombies()
-if ( ZombieCount() > Config[ "MaxZombies" ] ) then return false end
+	local tea_config_zombiespawning = GetConVar( "tea_config_zombiespawning" )
+	if ( ZombieCount() > Config[ "MaxZombies" ] ) or tea_config_zombiespawning:GetInt() < 1 then return false end
 	if( ZombieData != "" ) then
 
-		local tea_config_zombiespawning = GetConVar( "tea_config_zombiespawning" )
 		local ZombiesList = string.Explode( "\n", ZombieData )
 		for k, v in RandomPairs( ZombiesList ) do
 			Zed = string.Explode( ";", v )
@@ -176,13 +176,9 @@ ply:ConCommand( "playgamesound buttons/button15.wav" )
 end
 concommand.Add( "ate_clearzombiespawns", ClearZombies )
 
-
-
-
-
-
+CanSpawnBoss = false --used for admin commands
 function SpawnBoss()
-if CanSpawnBoss != 1 and table.Count(player.GetAll()) < 2 then return end
+if !CanSpawnBoss and table.Count(player.GetAll()) < 2 then return end
 
 local bspawned = false
 
@@ -263,21 +259,24 @@ function Payout(ply, xp, cash)
 		local XPBonus = math.floor( XPGain * (ply.StatKnowledge * 0.02) )
 		local MoneyBonus = math.floor( MoneyGain * (ply.StatSalvage * 0.02) )
 
-		ply.XP = CurXP + XPGain + XPBonus
-		ply.Bounty = ply.Bounty + MoneyGain + MoneyBonus
+		local TXPGain = XPGain + XPBonus
+		local TMoneyGain = MoneyGain + MoneyBonus
+
+		ply.XP = CurXP + TXPGain
+		ply.Bounty = ply.Bounty + TMoneyGain
 		ply:SetNWInt( "PlyBounty", ply.Bounty )
 		
-		print(ply:Nick().." gained "..XPGain + XPBonus.." XP ("..XPGain..", +"..XPBonus.." with Knowledge Skill level "..ply.StatKnowledge..", Total "..ply.XP..")")
-		print(ply:Nick().." gained "..MoneyGain + MoneyBonus.." "..Config["Currency"].."s to their bounty ("..MoneyGain..", +"..MoneyBonus.." with Salvage Skill level "..ply.StatSalvage..", Total "..ply.Bounty..")")
+		print(ply:Nick().." gained "..TXPGain.." XP ("..XPGain..", +"..XPBonus.." with Knowledge Skill level "..ply.StatKnowledge..", Total "..ply.XP..")")
+		print(ply:Nick().." gained "..TMoneyGain.." "..Config["Currency"].."s to their bounty ("..MoneyGain..", +"..MoneyBonus.." with Salvage Skill level "..ply.StatSalvage..", Total "..ply.Bounty..")")
 
 		if tonumber(ply.Level) < 50 + (5 * ply.Prestige) then
 			PlayerGainLevel(ply)
 		end
 		
 		net.Start("Payout")
-		net.WriteFloat( XPGain + XPBonus )
-		net.WriteFloat( MoneyGain + MoneyBonus )
-		net.Send( ply )
+		net.WriteFloat(TXPGain)
+		net.WriteFloat(TMoneyGain)
+		net.Send(ply)
 
 		TEANetUpdatePeriodicStats(ply)
 	end
@@ -320,46 +319,68 @@ end
 
 
 function TestZombies( ply, cmd, args )
-local class = tostring(args[1]) or "npc_ate_basic"
+	if !ply:IsValid() then return end
+	if !SuperAdminCheck( ply ) then 
+		SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
+		ply:ConCommand( "playgamesound buttons/button8.wav" )
+		return
+	end
 
-if !SuperAdminCheck( ply ) then 
-	SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
-	ply:ConCommand( "playgamesound buttons/button8.wav" )
-	return
+	local class = tostring(args[1]) or "npc_ate_basic"
+	local vStart = ply:GetShootPos()
+	local vForward = ply:GetAimVector()
+	local trace = {}
+	trace.start = vStart
+	trace.endpos = vStart + (vForward * 5000)
+	trace.filter = ply
+	local tr = util.TraceLine( trace )
+
+	local SpawnZombie = ents.Create(class)
+	SpawnZombie:SetPos(tr.HitPos)
+	SpawnZombie:SetAngles(Angle(0, 0, 0))
+	SpawnZombie.XPMin = 1
+	SpawnZombie.XPMax = 1
+	SpawnZombie.MoneyMin = 1
+	SpawnZombie.MoneyMax = 1
+	SpawnZombie:Spawn()
+	SpawnZombie:Activate()
+
+	undo.Create("Test Zombie")
+	undo.AddEntity(SpawnZombie)
+	undo.SetPlayer(ply)
+	undo.Finish()
+
+	SystemMessage(ply, "Spawned zombie "..class, Color(205,255,205,255), true)
+	ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has spawned a zombie "..class.."!")
+	print("[ADMIN COMMAND USED] "..ply:Nick().." has spawned a zombie "..class.."!")
 end
+concommand.Add( "tea_dev_createtestzombie", TestZombies )
 
-local vStart = ply:GetShootPos()
-local vForward = ply:GetAimVector()
-local trace = {}
-trace.start = vStart
-trace.endpos = vStart + (vForward * 5000)
-trace.filter = ply
-local tr = util.TraceLine( trace )
+function SpawnTestZombie(ply, cmd, args)
+	if !ply:IsValid() then return end
+	if !TEADevCheck(ply) then 
+		SystemMessage(ply, translate.ClientGet(ply, "TEADevCheckFailed"), Color(255,205,205,255), true)
+		ply:ConCommand( "playgamesound buttons/button8.wav" )
+		return
+	end
 
-local SpawnZombie = ents.Create( class )
-SpawnZombie:SetPos( tr.HitPos )
-SpawnZombie:SetAngles( Angle( 0, 0, 0 ) )
-SpawnZombie.XPMin = 1
-SpawnZombie.XPMax = 1
-SpawnZombie.MoneyMin = 1
-SpawnZombie.MoneyMax = 1
-SpawnZombie:Spawn()
-SpawnZombie:Activate()
+	local class = tostring(args[1]) or "npc_ate_basic"
+	local xp = tonumber(args[2]) or 0
+	local cash = tonumber(args[3]) or 0
+	local shouldsendchat = tostring(args[5]) or false
+	local isboss = args[4] or false
+	
+	local vStart = ply:GetShootPos()
+	local vForward = ply:GetAimVector()
+	local trace = {}
+	trace.start = vStart
+	trace.endpos = vStart + (vForward * 5000)
+	trace.filter = ply
+	local tr = util.TraceLine( trace )
+	
+	CreateZombie(class, tr.HitPos, Angle(0,0,0), xp, cash, isboss)
 
-
-undo.Create ("Test Zombie")
-undo.AddEntity (SpawnZombie)
-undo.SetPlayer (ply)
-undo.Finish()
-
-SystemMessage(ply, "Spawned zombie "..class, Color(205,255,205,255), true)
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has spawned a zombie "..class.."!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." has spawned a zombie "..class.."!")
+	SystemMessage(ply, "Spawned zombie "..class.." with reward of "..xp.."XP and "..cash.." cash! (Is boss zombie: "..tostring(isboss)..")", Color(205,255,205,255), true)
 end
-concommand.Add( "tea_dev_createzombie", TestZombies )
-
-
-
-
-
-
+concommand.Add("tea_dev_spawnzombie", SpawnTestZombie )
+	

@@ -35,41 +35,13 @@ function ENT:Initialize()
 	self:SetCollisionGroup( COLLISION_GROUP_WORLD )
 
 	self:SetColor(Color(105, 105, 105, 100))
-/*
-	timer.Simple(3, function() 
-	if self:IsValid() then
-	self:SetMaterial("")
-	self:SetColor(Color(255, 255, 255, 255))
-	self.IsBuilt = true
-	self:SetCollisionGroup( COLLISION_GROUP_NONE )
-	end
-	end)
-*/
+
 
 	local phys = self.Entity:GetPhysicsObject()
 	if (phys:IsValid()) then
 		phys:Wake()
 	end	
 
-/*
-	timer.Simple(3, function()
-	if not self:IsValid() then return false end
-
-
-	local ent = self
-	local mins, maxs = ent:LocalToWorld(ent:OBBMins( )), ent:LocalToWorld(ent:OBBMaxs( ))
-	local cube = ents.FindInBox( mins, maxs )
-
-		for _,v in pairs(cube) do
-			if v:IsPlayer() or v:IsNPC() or v.Type == "nextbot" then self:Remove()
-			if v:IsPlayer() then
- 			SendChat( v, "Unable to build prop, biological obstruction detected" )
- 			end
-		end
-	end
-
-end)
-*/
 
 end
 
@@ -155,13 +127,14 @@ end
 
 		self:SetColor(Color(swag +5,swag+5,swag+5,255))
 
-		if self.integrity - damage < 0 or self.IsBuilt == false then
-			if attacker:IsPlayer() then
-			Payout(attacker, 850, 850, 1000, 1000)
+		if self.integrity - damage < 0 or !self.IsBuilt then
+			if attacker:IsPlayer() and self.IsBuilt then
+				Payout(attacker, 850, 850, 1000, 1000)
+			elseif attacker:IsPlayer() and !self.IsBuilt then
+				SystemMessage(attacker, "nice try", Color(255,230,230,255), false)
 			end
 
 			self:BreakPanel()
---			self.Entity:EmitSound("physics/wood/wood_plank_break"..math.random(1,2)..".wav", 100, 100)
 			self.Entity:EmitSound("physics/metal/metal_box_break2.wav", 80, 100)              
 			self.Entity:Remove()
 		end

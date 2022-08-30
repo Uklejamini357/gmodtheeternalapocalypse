@@ -77,7 +77,11 @@ function AddToVault(ply, str)
 		ply.Vault[str] = 1
 	end
 
-	SystemRemoveItem(ply, str, true)
+	if ItemsList[str]["IsGrenade"] then
+		SystemRemoveItem(ply, str, false)
+	else
+		SystemRemoveItem(ply, str, true)
+	end
 end
 
 function WithdrawFromVault(ply, str)

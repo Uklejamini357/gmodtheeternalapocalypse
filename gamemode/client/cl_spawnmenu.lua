@@ -2,19 +2,19 @@
 
 
 function GM:OnSpawnMenuOpen()
-	gui.EnableScreenClicker( true )
+	gui.EnableScreenClicker(true)
 	PropMenu()
-	PropsFrame:SetVisible( true )
+	PropsFrame:SetVisible(true)
 	PropsFrame:SetAlpha(0)
 	PropsFrame:AlphaTo(255, 0.2, 0)
 end
 
-function GM:OnSpawnMenuClose( )
-if PropsFrame:IsValid() then
-	PropsFrame:SetVisible(false)
-	PropsFrame:Remove()
-	gui.EnableScreenClicker(false)
-end
+function GM:OnSpawnMenuClose()
+	if PropsFrame:IsValid() then
+		PropsFrame:SetVisible(false)
+		PropsFrame:Remove()
+		gui.EnableScreenClicker(false)
+	end
 end
 
 
@@ -33,20 +33,28 @@ function PropMenu()
 	surface.DrawOutlinedRect(0, 0, PropsFrame:GetWide(), PropsFrame:GetTall())
 	end
 
-local PropertySheet = vgui.Create( "DPropertySheet", PropsFrame )
-PropertySheet:SetPos( 5, 5 )
-PropertySheet:SetSize( 990, 690 )
-PropertySheet.Paint = function()
+	local PropertySheet = vgui.Create( "DPropertySheet", PropsFrame )
+	PropertySheet:SetPos( 5, 5 )
+	PropertySheet:SetSize( 990, 690 )
+	PropertySheet.Paint = function()
 		surface.SetDrawColor(0, 0, 0, 100)
 		surface.DrawRect(0, 0, PropertySheet:GetWide(), PropertySheet:GetTall())
-	for k, v in pairs(PropertySheet.Items) do
-		if (!v.Tab) then continue end
+		if GetConVar("tea_config_propcostenabled"):GetInt() < 1 then
+			local text1 = vgui.Create("DLabel", PropsFrame)
+			text1:SetFont("TargetIDSmall")
+			text1:SetText("Prop spawning cost disabled (faction structures are the exception)")
+			text1:SetColor(Color(205,205,205,255))
+			text1:SetPos(500, 10)
+			text1:SizeToContents()
+		end
+		for k, v in pairs(PropertySheet.Items) do
+			if (!v.Tab) then continue end
 	
-		v.Tab.Paint = function(self,w,h)
-			draw.RoundedBox(0, 0, 0, w, h, Color(50,25,25))
+			v.Tab.Paint = function(self,w,h)
+				draw.RoundedBox(0, 0, 0, w, h, Color(50,25,25))
+			end
 		end
 	end
-end
 
 ----------------------------------------------flimsy props-------------------------------------------------------
  
@@ -92,14 +100,16 @@ for k, v in SortedPairsByMemberValue( FLIMSYPROPS, "COST" ) do
 	local x,y = ItemName:GetPos();
 	ItemName:SetPos( x, y + 20)
 
-	local ItemCost = vgui.Create( "DLabel", ItemBackground )
-	ItemCost:SetFont( "TargetIDSmall" )
-	ItemCost:SetColor( Color(155,255,155,255) )
-	ItemCost:SetText( translate.Get("Cost")..": ".. math.floor(v.COST * discount).." "..Config[ "Currency" ].."s" )
-	ItemCost:SizeToContents()
-	ItemCost:Center()
-	local x,y = ItemCost:GetPos();
-	ItemCost:SetPos( x, y + 40)
+	if GetConVar("tea_config_propcostenabled"):GetInt() >= 1 then
+		local ItemCost = vgui.Create( "DLabel", ItemBackground )
+		ItemCost:SetFont( "TargetIDSmall" )
+		ItemCost:SetColor( Color(155,255,155,255) )
+		ItemCost:SetText( translate.Get("Cost")..": ".. math.floor(v.COST * discount).." "..Config[ "Currency" ].."s" )
+		ItemCost:SizeToContents()
+		ItemCost:Center()
+		local x,y = ItemCost:GetPos();
+		ItemCost:SetPos( x, y + 40)
+	end
 
 	local ItemToughness = vgui.Create( "DLabel", ItemBackground )
 	ItemToughness:SetFont( "TargetIDSmall" )
@@ -188,6 +198,7 @@ for k, v in SortedPairsByMemberValue( TOUGHPROPS, "COST" ) do
 	local x,y = ItemName:GetPos();
 	ItemName:SetPos( x, y + 20)
 
+	if GetConVar("tea_config_propcostenabled"):GetInt() >= 1 then
 	local ItemCost = vgui.Create( "DLabel", ItemBackground )
 	ItemCost:SetFont( "TargetIDSmall" )
 	ItemCost:SetColor( Color(155,255,155,255) )
@@ -196,6 +207,7 @@ for k, v in SortedPairsByMemberValue( TOUGHPROPS, "COST" ) do
 	ItemCost:Center()
 	local x,y = ItemCost:GetPos();
 	ItemCost:SetPos( x, y + 40)
+	end
 
 	local ItemToughness = vgui.Create( "DLabel", ItemBackground )
 	ItemToughness:SetFont( "TargetIDSmall" )

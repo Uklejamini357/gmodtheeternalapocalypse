@@ -84,7 +84,7 @@ function Damagemods(target, dmginfo)
 		dmginfo:ScaleDamage(0.5)
 	end
 
-	if target:IsPlayer() and target:IsValid() and tonumber(target.Prestige) >= 15 then
+	if target:IsPlayer() and target:IsValid() and tonumber(target.Prestige) >= 8 then
 		dmginfo:ScaleDamage(0.95)
 	end
 
@@ -192,28 +192,31 @@ end)
 */
 
 function GM:PlayerDeathThink(ply)
-
-	if ply.RespawnTime < CurTime() then 
+	if ply.RespawnTime == nil then
+		if (ply:KeyPressed(IN_ATTACK) || ply:KeyPressed(IN_ATTACK2) || ply:KeyPressed(IN_JUMP)) then
+			ply:Spawn()
+		end
+	elseif ply.RespawnTime < CurTime() then 
 		if (ply:KeyPressed(IN_ATTACK) || ply:KeyPressed(IN_ATTACK2) || ply:KeyPressed(IN_JUMP)) then
 			ply:Spawn()
 		end
 	end
-	
 end
 
 function GM:DoPlayerDeath(ply, attacker, dmginfo)
 	ply:ConCommand("play theeternalapocalypse/gameover_music.wav")
 
 	local tea_server_respawntime = GetConVar("tea_server_respawntime")
+	local respawn = tea_server_respawntime:GetFloat()
 
 	if ply.IsAlive == 1 then
-	ply.RespawnTime = CurTime() + tea_server_respawntime:GetFloat()
+	ply.RespawnTime = CurTime() + respawn
 	end
 
 	if tonumber(ply.Bounty) >= 5 then
 	local cashloss = ply.Bounty * math.Rand(0.3, 0.4)
 	local bountyloss = ply.Bounty - cashloss
-	print(ply:Nick().." has died with "..ply.Bounty.." bounty, dropped money worth of "..math.floor(cashloss).." "..Config["Currency"].."s and survived for "..math.floor(CurTime() - ply.SurvivalTime).." seconds! "..tea_server_respawntime:GetFloat().." seconds until able to respawn")
+	print(ply:Nick().." has died with "..ply.Bounty.." bounty, dropped money worth of "..math.floor(cashloss).." "..Config["Currency"].."s and survived for "..math.floor(CurTime() - ply.SurvivalTime).." seconds! "..respawn.." seconds until able to respawn")
 
 	local EntDrop = ents.Create("ate_cash")
 	EntDrop:SetPos(ply:GetPos() + Vector(0, 0, 10))
@@ -224,7 +227,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 		
 		SystemMessage(ply, "You died and dropped your bounty cash worth of "..math.floor(cashloss).." "..Config["Currency"].."s! The remaining "..math.ceil(bountyloss).." "..Config["Currency"].."s is lost forever! Always remember to cash in your bounty at traders, especially when having high bounty.", Color(255,205,205,255), true)
 	else
-		print(ply:Nick().." has died with "..ply.Bounty.." bounty and survived for "..math.floor(CurTime() - ply.SurvivalTime).." seconds! ".. tea_server_respawntime:GetFloat() .." seconds until able to respawn")
+		print(ply:Nick().." has died with "..ply.Bounty.." bounty and survived for "..math.floor(CurTime() - ply.SurvivalTime).." seconds! "..respawn.." seconds until able to respawn")
 	end
 
 	if ply.IsAlive == 1 then --to prevent player from spamming the same thing in chat when dying while dead

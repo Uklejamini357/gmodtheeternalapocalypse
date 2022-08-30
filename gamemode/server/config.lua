@@ -16,3 +16,19 @@ StatsListServer =
 	"StatSurvivor;Survivor;4% slower hunger/fatigue loss",
 	"StatAgility;Agility;+2 jumppower"
 }
+
+StatsListServer2 =
+{
+	"Level",
+	"Prestige",
+	"XP",
+	"Bounty",
+	"Money",
+	"StatPoints",
+	"Stamina",
+	"Hunger",
+	"Thirst",
+	"Fatigue",
+	"Infection",
+	"Battery"
+}

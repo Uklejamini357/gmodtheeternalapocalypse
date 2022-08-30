@@ -1,4 +1,4 @@
--- Miscellaneous stuff
+-- Misc stuff
 
 function ULXResetSkills(ply)
 	if !SERVER then return false end
@@ -7,7 +7,7 @@ function ULXResetSkills(ply)
 	local refund = 0 + ply.StatPoints
 	ply.StatPoints = 0
 
-	for k, v in pairs( StatsListServer ) do
+	for k, v in pairs(StatsListServer) do
 		local TheStatPieces = string.Explode( ";", v )
 		local TheStatName = TheStatPieces[1]
 		refund = refund + tonumber(ply[ TheStatName ])

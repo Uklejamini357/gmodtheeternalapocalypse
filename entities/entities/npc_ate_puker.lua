@@ -29,18 +29,20 @@ self.FallAnim = (ACT_IDLE_ON_FIRE)
 self.ZombieStats = {
 ["Model"] = "models/zombie/poison.mdl",
 
-["Damage"] = 25, -- how much damage per strike?
-["Force"] = 300, -- how far to knock the player back upon striking them
-["Infection"] = 100, -- percentage chance to infect them
-["Reach"] = 73, -- how far can the zombies attack reach? in source units
-["StrikeDelay"] = 1.1, -- how long does it take for the zombie to deal damage after beginning an attack
-["AfterStrikeDelay"] = 1.5, -- how long should the zombie wait after a strike lands until reverting to its behaviour cycle
+--refer to entites/entities/npc_ate_basic.lua
+["Damage"] = 25,
+["PropDamage"] = 20,
+["Force"] = 300,
+["Infection"] = 100,
+["Reach"] = 73,
+["StrikeDelay"] = 1.1,
+["AfterStrikeDelay"] = 1.5,
 
-["Health"] = 450, -- self explanatory
-["MoveSpeedWalk"] = 55, -- zombies move speed when idly wandering around
-["MoveSpeedRun"] = 60, -- zombies move speed when moving towards a target
-["VisionRange"] = 1200, -- how far is the zombies standard sight range in source units, this will be tripled when they are frenzied
-["LoseTargetRange"] = 1500, -- how far must the target be from the zombie before it will lose interest and revert to wandering, this will be tripled when the zombie is frenzied
+["Health"] = 450,
+["MoveSpeedWalk"] = 55,
+["MoveSpeedRun"] = 60,
+["VisionRange"] = 1200,
+["LoseTargetRange"] = 1500,
 
 ["Ability1"] = true,
 ["Ability1Range"] = 800,

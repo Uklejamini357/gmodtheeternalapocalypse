@@ -21,23 +21,25 @@ self.FallAnim = (ACT_IDLE_ON_FIRE)
 self.ZombieStats = {
 ["Model"] = "models/zombie/classic.mdl",
 
-["Damage"] = 31, -- how much damage per strike?
-["Force"] = 400, -- how far to knock the player back upon striking them
-["Infection"] = 8, -- percentage chance to infect them
-["Reach"] = 60, -- how far can the zombies attack reach? in source units
-["StrikeDelay"] = 0.8, -- how long does it take for the zombie to deal damage after beginning an attack
-["AfterStrikeDelay"] = 1, -- how long should the zombie wait after a strike lands until reverting to its behaviour cycle
+--refer to entites/entities/npc_ate_basic.lua
+["Damage"] = 31,
+["PropDamage"] = 40,
+["Force"] = 400,
+["Infection"] = 8,
+["Reach"] = 60,
+["StrikeDelay"] = 0.8,
+["AfterStrikeDelay"] = 1,
 
-["Health"] = 180, -- self explanatory
-["MoveSpeedWalk"] = 50, -- zombies move speed when idly wandering around
-["MoveSpeedRun"] = 85, -- zombies move speed when moving towards a target
-["VisionRange"] = 1200, -- how far is the zombies standard sight range in source units, this will be tripled when they are frenzied
-["LoseTargetRange"] = 1500, -- how far must the target be from the zombie before it will lose interest and revert to wandering, this will be tripled when the zombie is frenzied
+["Health"] = 180,
+["MoveSpeedWalk"] = 50,
+["MoveSpeedRun"] = 85,
+["VisionRange"] = 1200,
+["LoseTargetRange"] = 1500,
 
-["Ability1"] = false, -- does the zombie have a special ability?
-["Ability1Range"] = 0, -- at what range from the player will this ability be triggered
-["Ability1Cooldown"] = 0, -- how many seconds before this ability can be activated again
-["Ability1TrigDelay"] = 0, -- the actual ability will run this many seconds after the condition for it being triggered, used for the leaper zombie
+["Ability1"] = false,
+["Ability1Range"] = 0,
+["Ability1Cooldown"] = 0,
+["Ability1TrigDelay"] = 0,
 
 }
 

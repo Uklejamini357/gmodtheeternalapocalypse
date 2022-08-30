@@ -22,6 +22,7 @@ self.ZombieStats = {
 ["Model"] = "models/zombie/classic.mdl",
 
 ["Damage"] = 31, -- how much damage per strike?
+["PropDamage"] = 35, -- damage done to props per attack (normal damage is not impacted)
 ["Force"] = 400, -- how far to knock the player back upon striking them
 ["Infection"] = 8, -- percentage chance to infect them
 ["Reach"] = 60, -- how far can the zombies attack reach? in source units
@@ -30,7 +31,7 @@ self.ZombieStats = {
 
 ["Health"] = 180, -- self explanatory
 ["MoveSpeedWalk"] = 50, -- zombies move speed when idly wandering around
-["MoveSpeedRun"] = 85, -- zombies move speed when moving towards a target
+["MoveSpeedRun"] = 75, -- zombies move speed when moving towards a target
 ["VisionRange"] = 1200, -- how far is the zombies standard sight range in source units, this will be tripled when they are frenzied
 ["LoseTargetRange"] = 1500, -- how far must the target be from the zombie before it will lose interest and revert to wandering, this will be tripled when the zombie is frenzied
 
@@ -163,18 +164,18 @@ end
 end
 
 function ENT:Think()
-if !IsValid(self) then return end
+	if !SERVER then return end --once again, clientside error here, so this was added to prevent further clientside errors
+	if !IsValid(self) then return end
 
 -- need to drown them in water otherwise the stupid fucks will just skip happily along the sea floor
-if  ( self:WaterLevel() >= 3 ) then
-	local drown = DamageInfo()
-	drown:SetDamage( 10000 )
-	drown:SetDamageType( DMG_DROWN )
-	drown:SetAttacker( game.GetWorld() )
-	drown:SetDamageForce( Vector( 0, 0, 0 ) )
-	self:TakeDamageInfo( drown )
-end
-
+	if self:WaterLevel() >= 3 then
+		local drown = DamageInfo()
+		drown:SetDamage(10000)
+		drown:SetDamageType(DMG_DROWN)
+		drown:SetAttacker(game.GetWorld())
+		drown:SetDamageForce(Vector(0, 0, 0))
+		self:TakeDamageInfo(drown)
+	end
 end
 
 
@@ -363,7 +364,7 @@ if (phys != nil && phys != NULL && phys:IsValid()) then
 phys:ApplyForceCenter(self:GetForward():GetNormalized()*30000 + Vector(0, 0, 2))
 target:EmitSound(self.Hit, 100, math.random(80, 110))
 target:EmitSound(self.DoorBreak)
-target:TakeDamage(self.ZombieStats["Damage"], self)	
+target:TakeDamage(self.ZombieStats["PropDamage"] or self.ZombieStats["Damage"], self)	
 util.ScreenShake(target:GetPos(), 5, 5, math.Rand(0.2, 0.4), 300)
 end
 coroutine.wait(self.ZombieStats["AfterStrikeDelay"])
@@ -417,7 +418,7 @@ if(skin) then
 end
 
 ent:Spawn()
-timer.Simple( 30, function() ResetDoor(target, ent) end)
+timer.Simple(30, function() ResetDoor(target, ent) end)
 coroutine.wait(self.ZombieStats["AfterStrikeDelay"])
 self:StartActivity( self.WalkAnim )
 end

@@ -127,7 +127,7 @@ end
 	
 	MyVaultWeight = vgui.Create( "DLabel", TraderFrame )
 	MyVaultWeight:SetFont( "TargetID" )
-	MyVaultWeight:SetPos( 740, TraderFrame:GetTall() - 42)
+	MyVaultWeight:SetPos( 700, TraderFrame:GetTall() - 42)
 	MyVaultWeight:SetSize( 350, 25)
 	MyVaultWeight:SetColor( Color(255,255,255,255) )
 	MyVaultWeight:SetText("Vault Capacity: "..CalculateVaultClient().."kg / "..Config["VaultSize"].."kg")

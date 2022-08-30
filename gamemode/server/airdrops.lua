@@ -71,66 +71,58 @@ concommand.Add("ate_clearairdropspawns", ClearAD)
 
 
 
-
+CanSpawnAirdrop = false
 function SpawnAirdrop()
+	if !CanSpawnAirdrop and table.Count(player.GetAll()) < 5 then return end
 
-if CanSpawnAirdrop != 1 and table.Count(player.GetAll()) < 5 then return end
+	RadioBroadcast(0.5, "Christmas has come early ladies!", "Shamus", true)
+	RadioBroadcast(4, "Got a little present for y'all to entertain yourselves with!", "Shamus", false)
+	RadioBroadcast(11, "Attention survivors! That airdrop crate is fitted with an IFF jammer.", "Watchdog", false)
+	RadioBroadcast(15, "In addition, if you go near it you'll need to watch your back or risk being shot by other loot hunters!", "Watchdog", false)
 
+	timer.Simple(25, function()
+		local cratedropped = false
 
-RadioBroadcast(1, "Attention survivors! This announcement might be important.", "Shamus")
-RadioBroadcast(5, "I got a little present for y'all to entertain yourselves with!", "Shamus")
-RadioBroadcast(10, "Be careful survivors! That airdrop crate is fitted with an IFF jammer.", "Watchdog")
-RadioBroadcast(15, "If you go near it you'll need to watch your back or risk being shot by other loot hunters!", "Watchdog")
+		if  DropData == "" then return end
 
+		local DropList = string.Explode("\n", DropData)
+		for k, v in RandomPairs(DropList) do
+			if cratedropped then break end
+			local Booty = string.Explode(";", v)
+			local pos = util.StringToType(Booty[1], "Vector")
+			local ang = util.StringToType(Booty[2], "Angle")
 
-timer.Simple(20, function()
+			local dropent = ents.Create("airdrop_cache")
+			dropent:SetPos(pos)
+			dropent:SetAngles(ang)
+			local testinv = {
+				["Junk"] = {math.random(0, 2), 1, 1},
+				["Ammo"] = {math.random(1, 2), 1, 3},
+				["Meds"] = {math.random(0, 1), 1, 3},
+				["Food"] = {math.random(0, 2), 1, 3},
+				["Sellables"] = {math.random(0, 1), 1, 2},
+			}
 
-local cratedropped = false
+			local dropchance = math.random(1, 150)
+			if dropchance > 100 then
+				testinv["TyrantWeapons"] = {1, 1, 1}
+			elseif dropchance > 40 then
+				testinv["FactionWeapons"] = {1, 1, 1}
+			else
+				testinv["RookieWeapons"] = {1, 1, 1}
+			end
 
-if  DropData == "" then return end
+			local loot = RollLootTable(testinv)
+			MakeLootContainer(dropent, loot)
 
-	local DropList = string.Explode("\n", DropData)
-	for k, v in RandomPairs(DropList) do
-		if cratedropped then break end
-		local Booty = string.Explode(";", v)
-		local pos = util.StringToType(Booty[1], "Vector")
-		local ang = util.StringToType(Booty[2], "Angle")
-
-		local dropent = ents.Create("airdrop_cache")
-		dropent:SetPos(pos)
-		dropent:SetAngles(ang)
-		local testinv = {
-			["Junk"] = {math.random(0, 2), 1, 1},
-			["Ammo"] = {math.random(1, 2), 1, 3},
-			["Meds"] = {math.random(0, 1), 1, 3},
-			["Food"] = {math.random(0, 2), 1, 3},
-			["Sellables"] = {math.random(0, 1), 1, 2},
-		}
-
-		local dropchance = math.random(1, 150)
-		if dropchance > 100 then
-			testinv["TyrantWeapons"] = {1, 1, 1}
-		elseif dropchance > 40 then
-			testinv["FactionWeapons"] = {1, 1, 1}
-		else
-			testinv["RookieWeapons"] = {1, 1, 1}
+			dropent:Spawn()
+			dropent:Activate()
+			cratedropped = true
 		end
 
-		local loot = RollLootTable(testinv)
-		MakeLootContainer(dropent, loot)
-
-		dropent:Spawn()
-		dropent:Activate()
-		cratedropped = true
-	end
-
-
-for k, v in pairs(player.GetAll()) do v:EmitSound("ambient/overhead/hel1.wav") end
-
-SystemBroadcast("An air drop crate has appeared!", Color(255,255,255,255), false)
-
-end)
-
+	for k, v in pairs(player.GetAll()) do v:EmitSound("ambient/overhead/hel1.wav") end
+	SystemBroadcast("An air drop crate has appeared!", Color(255,255,255,255), false)
+	end)
 end
 timer.Create("AirdropSpawnTimer", tonumber(Config[ "AirdropSpawnRate" ]), 0, SpawnAirdrop)
 

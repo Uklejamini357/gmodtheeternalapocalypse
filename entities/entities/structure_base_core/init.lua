@@ -39,18 +39,7 @@ function ENT:Initialize()
 
 	self:SetMaterial("models/wireframe")
 	self:SetCollisionGroup( COLLISION_GROUP_WORLD )
-
 	self:SetColor(Color(105, 105, 105, 100))
-/*
-	timer.Simple(3, function() 
-	if self:IsValid() then
-	self:SetMaterial("")
-	self:SetColor(Color(255, 255, 255, 255))
-	self.IsBuilt = true
-	self:SetCollisionGroup( COLLISION_GROUP_NONE )
-	end
-	end)
-*/
 
 	local phys = self.Entity:GetPhysicsObject()
 	if (phys:IsValid()) then
@@ -164,11 +153,11 @@ function ENT:OnTakeDamage( dmg )
 
 		self:SetColor(Color(swag +5,swag+5,swag+5,255))
 
-		if self.integrity - damage < 0 or self.IsBuilt == false then
+		if self.integrity - damage < 0 or !self.IsBuilt then
 			self:BreakPanel()
 --			self.Entity:EmitSound("physics/wood/wood_plank_break"..math.random(1,2)..".wav", 100, 100)
 			self.Entity:EmitSound("npc/dog/car_impact1.wav", 120, 100)
-			SystemBroadcast("The "..team.GetName(owner:Team()).."s base has been destroyed!", Color(205,205,255,255), true)
+			SystemBroadcast("The "..team.GetName(owner:Team()).."'s base has been destroyed!", Color(205,205,255,255), true)
 			if self.IsBuilt then
 			local EntDrop = ents.Create( "loot_cache_faction" )
 			EntDrop:SetPos( self:GetPos() + Vector(0, 0, 30) )
@@ -178,8 +167,11 @@ function ENT:OnTakeDamage( dmg )
 			EntDrop:Activate()
 
 			if attacker:IsPlayer() then
-			Payout(attacker, 5000, 5000, 5000, 5000)
+			Payout(attacker, 4500, 4500, 5000, 5000)
 			end
+		else
+			SystemMessage(attacker, "Well... What did you expect?", Color(255,170,170,255))
+			Payout(attacker, 1500, 1500, 2000, 2000)
 
 			end
 

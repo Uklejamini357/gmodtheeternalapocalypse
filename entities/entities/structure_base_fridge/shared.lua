@@ -138,9 +138,11 @@ end
 
 		self:SetColor(Color(swag +5,swag+5,swag+5,255))
 
-		if self.integrity - damage < 0 or self.IsBuilt == false then
-			if attacker:IsPlayer() then
-			Payout(attacker, 250, 250, 250, 250)
+		if self.integrity - damage < 0 or !self.IsBuilt then
+			if attacker:IsPlayer() and self.IsBuilt then
+				Payout(attacker, 400, 400, 450, 450)
+			elseif attacker:IsPlayer() and !self.IsBuilt then
+				SystemMessage(attacker, "nice try", Color(255,230,230,255), false)
 			end
 			self:BreakPanel()
 --			self.Entity:EmitSound("physics/wood/wood_plank_break"..math.random(1,2)..".wav", 100, 100)

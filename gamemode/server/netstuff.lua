@@ -31,6 +31,7 @@ util.AddNetworkString("InviteFaction") -- invite faction
 util.AddNetworkString("KickFromFaction")
 util.AddNetworkString("DisbandFaction")
 util.AddNetworkString("WraithBlind") -- rape your vision when you get hit by a wraith
+util.AddNetworkString("PrestigeEffect") -- blinding effect but with white screen when prestiged
 util.AddNetworkString("Payout") -- sell cl_hud and server/npcspawns
 util.AddNetworkString("Prestige") -- see player_data.lua
 --util.AddNetworkString("Respawn")
@@ -106,12 +107,13 @@ function SystemBroadcast(msg, color, sys) -- same as system message, just broadc
 	end
 end
 
-function RadioBroadcast(time, msg, sender)
+function RadioBroadcast(time, msg, sender, rad)
 	timer.Simple(time, function()
 		for k, v in pairs(player.GetAll()) do
 			net.Start("RadioMessage")
 			net.WriteString(sender)
 			net.WriteString(msg)
+			net.WriteBool(rad)
 			net.Send(v)
 		end
 	end)

@@ -18,7 +18,6 @@ AddCSLuaFile("client/cl_lootmenu.lua")
 AddCSLuaFile("client/cl_adminmenu.lua")
 AddCSLuaFile("client/cl_deathscreen.lua")
 AddCSLuaFile("client/cl_statsmenu.lua")
-AddCSLuaFile("client/cl_net.lua")
 
 
 
@@ -65,7 +64,6 @@ end
 function GM:ShowTeam(ply)
 	if !SuperAdminCheck(ply) then return false end
 	ply:SendLua("AdminMenu()")
-	ply:ConCommand("playgamesound buttons/button24.wav")
 end
 
 function GM:ShowSpare1(ply)
@@ -109,12 +107,12 @@ end
 function GM:OnPlayerHitGround(ply, inWater, onFloater, speed)
     if speed > (400 + (2 * ply.StatAgility)) then
         ply:ViewPunch(Angle(5, 0, 0))
-		if !ply:HasGodMode() then
+		if !ply.StatsPaused then
         ply.Stamina = math.Clamp( ply.Stamina - (15 * (1 - (ply.StatAgility * 0.01) - (ply.StatEndurance * 0.045)) ), 0, 100 )
 		end
     elseif speed > (140 + (2 * ply.StatAgility)) then
 		ply:ViewPunch(Angle(math.random(1, 1.2), 0, math.random(-0.2, 0.2)))
-		if !ply:HasGodMode() then
+		if !ply.StatsPaused then
 			ply.Stamina = math.Clamp( ply.Stamina - (7.5 * (1 - (ply.StatAgility * 0.01) - (ply.StatEndurance * 0.045)) ), 0, 100 )
 		end
     end
@@ -134,35 +132,61 @@ timer.Create( "HealthRegen", 10, 0, HealthRegen )
 function GM:Think()
 
 	for k, ply in pairs( player.GetAll() ) do
-	if !ply:HasGodMode() then
-		if !ply:IsValid() then continue end
+		if !ply.StatsPaused then
+			if !ply:IsValid() then continue end
 
-		local endurance = ((ply.StatEndurance - (0.15 * ply.StatSpeed)) / 500)
-		-- hunger, thirst, fatigue, infection
-		ply.Hunger = math.Clamp(ply.Hunger - (0.065 * (1 - (ply.StatSurvivor * 0.04)) ), 0, 10000)
-		ply.Thirst = math.Clamp(ply.Thirst - (0.0782 * (1 - (ply.StatSurvivor * 0.0425)) ), 0, 10000)
+			local endurance = ((ply.StatEndurance - (0.15 * ply.StatSpeed)) / 500)
+			-- hunger, thirst, fatigue, infection
+			ply.Hunger = math.Clamp(ply.Hunger - (0.065 * (1 - (ply.StatSurvivor * 0.04)) ), 0, 10000)
+			ply.Thirst = math.Clamp(ply.Thirst - (0.0782 * (1 - (ply.StatSurvivor * 0.0425)) ), 0, 10000)
 
-		if !timer.Exists("DyingFromStats"..ply:UniqueID()) and (ply.Thirst <= 0 or ply.Hunger <= 0 or ply.Fatigue >= 10000 or ply.Infection >= 10000) and ply:Alive() then
-			timer.Create("DyingFromStats"..ply:UniqueID(), 30, 1, function()
-				if ply:Alive() then ply:Kill() end
-			end)
-		elseif (timer.Exists("DyingFromStats"..ply:UniqueID()) and (ply.Thirst >= 1 and ply.Hunger >= 1 and ply.Fatigue <= 9999 and ply.Infection <= 9999)) or !ply:Alive() then
-			timer.Destroy("DyingFromStats"..ply:UniqueID())
-		end
+			if !timer.Exists("DyingFromStats"..ply:UniqueID()) and (ply.Thirst <= 0 or ply.Hunger <= 0 or ply.Fatigue >= 10000 or ply.Infection >= 10000) and ply:Alive() then
+				timer.Create("DyingFromStats"..ply:UniqueID(), 30, 1, function()
+					if ply:Alive() then ply:Kill() end
+				end)
+			elseif (timer.Exists("DyingFromStats"..ply:UniqueID()) and (ply.Thirst >= 1 and ply.Hunger >= 1 and ply.Fatigue <= 9999 and ply.Infection <= 9999)) or !ply:Alive() then
+				timer.Destroy("DyingFromStats"..ply:UniqueID())
+			end
 
-		ply.Fatigue = math.Clamp(ply.Fatigue + (0.045 * (1 - (ply.StatSurvivor * 0.035))), 0, 10000)
+			ply.Fatigue = math.Clamp(ply.Fatigue + (0.045 * (1 - (ply.StatSurvivor * 0.035))), 0, 10000)
 
-		--random chance of getting infected per tick is extremely rare, but has chance if survived for more than 10 minutes, can decrease chance of this happening by increasing immunity skill level
-		local infectionchance = math.random(0, 2000000 + (100000 * ply.StatImmunity) - (CurTime() - ply.SurvivalTime))
-		if (infectionchance <= 0 and math.floor(CurTime() - ply.SurvivalTime) >= 600) and ply.Infection <= 0 and ply:Alive() then
-			print(ply:Nick().." has caught infection!")
-			SendChat(ply, translate.ClientGet(ply, "PlyCaughtInfection"))
-		end
-		if (ply.Infection > 0 or (infectionchance <= 0 and math.floor(CurTime() - ply.SurvivalTime) >= 600)) and ply:Alive() then
-			ply.Infection = math.Clamp( ply.Infection + (0.1176 * (1 - (ply.StatImmunity * 0.04)) ), 0, 10000 )
-		end
+			local armorstr = ply:GetNWString("ArmorType") or "none"
+			local armortype = ItemsList[armorstr]
+			if ply:FlashlightIsOn() then
+				if ply.Battery <= 0 then
+					ply:Flashlight(false)
+					ply:AllowFlashlight(false)
+					ply.CanUseFlashlight = false
+				else
+					if armorstr and armortype then
+						ply.Battery = math.Clamp(ply.Battery - 0.07, 0, 100 + armortype["ArmorStats"]["battery"])
+					else
+						ply.Battery = math.Clamp(ply.Battery - 0.07, 0, 100)
+					end
+				end
+			else
+				if armorstr and armortype then
+					ply.Battery = math.Clamp(ply.Battery + 0.0135, 0, 100 + armortype["ArmorStats"]["battery"])
+				else
+					ply.Battery = math.Clamp(ply.Battery + 0.0135, 0, 100)
+				end
+					if ply.Battery >= 15 then
+						ply:AllowFlashlight(true)
+						ply.CanUseFlashlight = true
+				end
+			end
 
-		if ply:GetMoveType() == MOVETYPE_NOCLIP then if timer.Exists("DrownTimer"..ply:UniqueID()) then timer.Destroy("DrownTimer"..ply:UniqueID()) end
+			--random chance of getting infected per tick is extremely rare, but has chance if survived for more than 10 minutes, can decrease chance of this happening by increasing immunity skill level
+			local infectionchance = math.random(0, 2000000 + (100000 * ply.StatImmunity) - (CurTime() - ply.SurvivalTime))
+			if (infectionchance <= 0 and math.floor(CurTime() - ply.SurvivalTime) >= 600) and ply.Infection <= 0 and ply:Alive() then
+				print(ply:Nick().." has caught infection!")
+				SendChat(ply, translate.ClientGet(ply, "PlyCaughtInfection"))
+			end
+			if (ply.Infection > 0 or (infectionchance <= 0 and math.floor(CurTime() - ply.SurvivalTime) >= 600)) and ply:Alive() then
+				ply.Infection = math.Clamp( ply.Infection + (0.1176 * (1 - (ply.StatImmunity * 0.04)) ), 0, 10000 )
+			end
+
+			if ply:GetMoveType() == MOVETYPE_NOCLIP then if timer.Exists("DrownTimer"..ply:UniqueID()) then timer.Destroy("DrownTimer"..ply:UniqueID()) end
 			elseif ply:GetMoveType() != MOVETYPE_NOCLIP then
 				if ( ply:KeyDown( IN_FORWARD ) or ply:KeyDown( IN_BACK ) or ply:KeyDown( IN_MOVELEFT ) or ply:KeyDown( IN_MOVERIGHT ) ) then
 					PlayerIsMoving = true
@@ -191,16 +215,16 @@ function GM:Think()
 					ply.Stamina = math.Clamp( ply.Stamina - (0.0655 - endurance), 0, 100 )
 					if timer.Exists("DrownTimer"..ply:UniqueID()) then timer.Destroy("DrownTimer"..ply:UniqueID()) end
 				elseif PlayerIsMoving and ply:KeyDown( IN_DUCK ) then
-					ply.Stamina = math.Clamp( ply.Stamina + 0.0057, 0, 100 )
+					ply.Stamina = math.Clamp( ply.Stamina + 0.00597, 0, 100 )
 					if timer.Exists("DrownTimer"..ply:UniqueID()) then timer.Destroy("DrownTimer"..ply:UniqueID()) end
 				elseif PlayerIsMoving then
-					ply.Stamina = math.Clamp( ply.Stamina + 0.00251, 0, 100 )
+					ply.Stamina = math.Clamp( ply.Stamina + 0.00291, 0, 100 )
 					if timer.Exists("DrownTimer"..ply:UniqueID()) then timer.Destroy("DrownTimer"..ply:UniqueID()) end
 				elseif ply:KeyDown( IN_DUCK ) then
-					ply.Stamina = math.Clamp( ply.Stamina + 0.02, 0, 100 )
+					ply.Stamina = math.Clamp( ply.Stamina + 0.022, 0, 100 )
 					if timer.Exists("DrownTimer"..ply:UniqueID()) then timer.Destroy("DrownTimer"..ply:UniqueID()) end
 				else
-					ply.Stamina = math.Clamp( ply.Stamina + 0.023, 0, 100 )
+					ply.Stamina = math.Clamp( ply.Stamina + 0.027, 0, 100 )
 					if timer.Exists("DrownTimer"..ply:UniqueID()) then timer.Destroy("DrownTimer"..ply:UniqueID()) end
 				end
 		
@@ -315,13 +339,11 @@ end
 
 
 function GM:PlayerInitialSpawn(ply)
-
 	self.BaseClass:PlayerInitialSpawn(ply)
 
 	ply:AllowFlashlight(true)
 
 	------------------
-
 	ply.SurvivalTime = math.floor(CurTime())
 	ply.BestSurvivalTime = 0
 	ply.ZKills = 0
@@ -334,7 +356,7 @@ function GM:PlayerInitialSpawn(ply)
 	ply.Thirst = 10000
 	ply.Fatigue = 0
 	ply.Infection = 0
-	ply.Battery = 100 --planned for flashlights
+	ply.Battery = 100
 	ply.ChosenModel = "models/player/kleiner.mdl"
 	ply.XP = 0 
 	ply.Level = 1
@@ -349,6 +371,7 @@ function GM:PlayerInitialSpawn(ply)
 	ply.Territory = "none"
 	ply.Bounty = 0
 	ply.EquippedArmor = "none"
+	ply.StatsPaused = false
 	ply.Inventory = {}
 	------------------
 	
@@ -356,11 +379,10 @@ function GM:PlayerInitialSpawn(ply)
 	LoadPlayerInventory(ply)
 	LoadPlayerVault(ply)
 	print("loading datafiles for "..ply:Nick())
-	
---	ply.PvP = false
+
 	ply:SetNWBool("pvp", false)
 	ply:SetNWString("ArmorType", "none")
-	ply:SetTeam( 1 )
+	ply:SetTeam(1)
 
 	net.Start("RecvFactions")
 	net.WriteTable(Factions)
@@ -373,7 +395,7 @@ function GM:PlayerInitialSpawn(ply)
 
 end
 
-local function IsPosBlocked( pos )
+local function IsPosBlocked(pos)
 local tr = {
 	start = pos,
 	endpos = pos,
@@ -435,20 +457,20 @@ function GM:PlayerSpawn(ply)
 	end
 	if tea_server_spawnprotection_duration:GetFloat() > 0 and tea_server_spawnprotection:GetInt() > 0 then
 		timer.Create("IsSpawnProtectionTimerEnabled"..ply:UniqueID(), tea_server_spawnprotection_duration:GetFloat(), 1, function()
-		if !ply:IsValid() or !ply:Alive() then return end
-		ply:GodDisable()
-		ply:PrintMessage(HUD_PRINTCENTER, translate.ClientGet(ply, "PlySpawnProtExpired"))
-		timer.Destroy("IsSpawnProtectionTimerEnabled"..ply:UniqueID())
+			if !ply:IsValid() or !ply:Alive() then return end
+			ply:GodDisable()
+			ply:PrintMessage(HUD_PRINTCENTER, translate.ClientGet(ply, "PlySpawnProtExpired"))
+			timer.Destroy("IsSpawnProtectionTimerEnabled"..ply:UniqueID())
 		end)
 	end
 
 	timer.Simple(0.2, function()
-	RecalcPlayerSpeed(ply)
+		RecalcPlayerSpeed(ply)
+		timer.Simple(3, function()
+			RecalcPlayerSpeed(ply) --shouldn't have that many timers but whatever
+		end)
 	end)
 
-	timer.Simple(3, function()
-	RecalcPlayerSpeed(ply)
-	end)
 
 	ply:SetNWBool("pvp", false)
 	ply:SetPvPGuarded(0)
@@ -507,7 +529,7 @@ function GM:PlayerLoadout(ply)
 	ply:SelectWeapon("ate_fists")
 end
 
--- not really used but left in for debug functions eg. testzombies
+
 function GM:PlayerSpawnedProp( userid, model, prop )
 	prop.owner = userid
 	prop.model = model
@@ -530,8 +552,7 @@ local armorspeed = 0
 local walkspeed = Config["WalkSpeed"]
 local runspeed = Config["RunSpeed"]
 local plyarmor = ply:GetNWString("ArmorType")
---local tea_server_walkspeed = GetConVar("tea_server_walkspeed")
---local tea_server_runspeed = GetConVar("tea_server_runspeed")
+
 
 if !ply:IsValid() then return end
 if plyarmor and plyarmor != "none" then
@@ -541,7 +562,7 @@ end
 
 --maybe i'll get to reworking it so when user's walkspeed is around like 133% of slow walk speed they will have slow walk speed set to 75% of their walk speed
 if ply.SlowDown == 1 then
-	GAMEMODE:SetPlayerSpeed(ply, ((walkspeed * 0.6) - (armorspeed / 1.2)) + ply.StatSpeed * 2.1, ((runspeed * 0.6) - armorspeed / 0.6) + ply.StatSpeed * 4.2 )
+	GAMEMODE:SetPlayerSpeed(ply, ((walkspeed - (armorspeed / 2)) + ply.StatSpeed * 3.5) * 0.6, ((runspeed - armorspeed) + ply.StatSpeed * 7) * 0.6)
 	ply:SetSlowWalkSpeed(60)
 else
 	GAMEMODE:SetPlayerSpeed(ply, (walkspeed - (armorspeed / 2)) + ply.StatSpeed * 3.5, (runspeed - armorspeed) + ply.StatSpeed * 7 )
@@ -561,7 +582,6 @@ end
 
 function GM:PlayerShouldTaunt( ply, actid )
 	return true
-
 end
 
 local function CheckForDerp()

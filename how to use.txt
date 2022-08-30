@@ -68,6 +68,7 @@ Adding your own items and weapons is as easy as it gets, all you need to do is e
 sh_items.lua - handles all ingame items, if you aren't sure what your doing then read over the existing items and see how they work.
 
 sh_loot.lua - loot tables, determines what can be dropped from who or where
+(ALWAYS INCLUDE ARMORS AT CATEGORY 4, thank you)
 
 sh_spawnables.lua - controls which props and structures are available for players to build (some may be broken, some won't be able to be salvaged)
 

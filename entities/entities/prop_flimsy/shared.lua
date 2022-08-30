@@ -104,7 +104,10 @@ end
 	local attacker = dmg:GetAttacker()
 
 	if attacker:IsPlayer() and attacker:IsValid() and attacker:Team() == 1 and attacker:GetNWBool("pvp") != true and self:GetNWEntity("owner") != attacker then -- this should stop little shitters from wrecking your base while not in pvp mode
-	SystemMessage(attacker, "You cannot damage other players props unless you have PvP mode enabled!", Color(255,205,205,255), true)
+		if !timer.Exists("NoPvPMsgAntiSpamTimer"..attacker:UniqueID()) then
+			SystemMessage(attacker, "You cannot damage other players props unless you have PvP mode enabled!", Color(255,205,205,255), true)
+			timer.Create("NoPvPMsgAntiSpamTimer"..attacker:UniqueID(), 0.5, 1, function() end)
+		end
 	return false 
 	end
 
@@ -118,22 +121,20 @@ end
 	end
 	self:SetStructureHealth( currenthealth )
 
-		local shit = math.floor(maxhealth / 500)
-		local swag
-		if shit == 1 then swag = math.Clamp(currenthealth / 2 , 0, 255)
-		elseif shit == 2 then swag = math.Clamp(currenthealth / 4 , 0, 255)
-		else
-		swag = math.Clamp(currenthealth / 6 , 0, 255)
-		end
+	local shit = math.floor(maxhealth / 500)
+	local swag
+	if shit == 1 then swag = math.Clamp(currenthealth / 2 , 0, 255)
+	elseif shit == 2 then swag = math.Clamp(currenthealth / 4 , 0, 255)
+	else swag = math.Clamp(currenthealth / 6 , 0, 255)
+	end
 
-		self:SetColor(Color(swag +5,swag+5,swag+5,255))
+	self:SetColor(Color(swag +5,swag+5,swag+5,255))
 
-		if currenthealth < 0 or self.IsBuilt == false then
-			self:BreakPanel()
---			self.Entity:EmitSound("physics/wood/wood_plank_break"..math.random(1,2)..".wav", 100, 100)
-			self.Entity:EmitSound("physics/metal/metal_box_break2.wav", 80, 100)              
-			self.Entity:Remove()
-		end
+	if currenthealth < 0 or !self.IsBuilt then
+		self:BreakPanel()
+		self.Entity:EmitSound("physics/metal/metal_box_break2.wav", 80, 100)              
+		self.Entity:Remove()
+	end
 end
 
 
@@ -151,9 +152,8 @@ function ENT:BreakPanel()
 	util.Effect("HelicopterMegaBomb", effectdata)
 
 	local sparkeffect = effectdata
-		sparkeffect:SetMagnitude(3)
-		sparkeffect:SetRadius(8)
-		sparkeffect:SetScale(5)
-		util.Effect("Sparks", sparkeffect)
-
+	sparkeffect:SetMagnitude(3)
+	sparkeffect:SetRadius(8)
+	sparkeffect:SetScale(5)
+	util.Effect("Sparks", sparkeffect)
 end

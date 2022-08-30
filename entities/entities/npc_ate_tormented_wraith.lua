@@ -33,18 +33,20 @@ self.FallAnim = (ACT_IDLE_ON_FIRE)
 self.ZombieStats = {
 ["Model"] = "models/zombie/fast.mdl",
 
-["Damage"] = 27, -- how much damage per strike?
-["Force"] = 180, -- how far to knock the player back upon striking them
-["Infection"] = 12, -- percentage chance to infect them
-["Reach"] = 70, -- how far can the zombies attack reach? in source units
-["StrikeDelay"] = 0.36, -- how long does it take for the zombie to deal damage after beginning an attack
-["AfterStrikeDelay"] = 1, -- how long should the zombie wait after a strike lands until reverting to its behaviour cycle
+--refer to entites/entities/npc_ate_basic.lua
+["Damage"] = 22,
+["PropDamage"] = 25,
+["Force"] = 180,
+["Infection"] = 12,
+["Reach"] = 70,
+["StrikeDelay"] = 0.36,
+["AfterStrikeDelay"] = 1,
 
-["Health"] = 400, -- self explanatory
-["MoveSpeedWalk"] = 65, -- zombies move speed when idly wandering around
-["MoveSpeedRun"] = 200, -- zombies move speed when moving towards a target
-["VisionRange"] = 1200, -- how far is the zombies standard sight range in source units, this will be tripled when they are frenzied
-["LoseTargetRange"] = 1500, -- how far must the target be from the zombie before it will lose interest and revert to wandering, this will be tripled when the zombie is frenzied
+["Health"] = 400,
+["MoveSpeedWalk"] = 65,
+["MoveSpeedRun"] = 200,
+["VisionRange"] = 1200,
+["LoseTargetRange"] = 1500,
 
 ["Ability1"] = true,
 ["Ability1Range"] = 500,
@@ -71,9 +73,9 @@ self.PainSounds = {"npc/stalker/stalker_die1.wav",
 "npc/stalker/stalker_die2.wav", 
 }
 
-self.DieSounds = {"npc/stalker/stalker_die1.wav",
+/*self.DieSounds = {"npc/stalker/stalker_die1.wav",
 "npc/stalker/stalker_die2.wav", 
-}
+}*/
 
 self.DoorBreak = Sound("npc/zombie/zombie_pound_door.wav")
 
@@ -135,4 +137,13 @@ self:SetMaterial("models/effects/vol_lightmask01")
 end)
 
 return false
+end
+
+function ENT:OnKilled(damageInfo)
+	local attacker = damageInfo:GetAttacker()
+	self:EmitSound("npc/combine_soldier/die1.wav", 100, math.Rand(90, 100))
+	self:BecomeRagdoll(damageInfo)
+	timer.Simple(0.25, function() -- there was one case scenario where a zombie disappeared without leaving a corpse during server lag so i had to increase timer
+	self:Remove()
+	end)
 end

@@ -63,8 +63,10 @@ if !ply:IsValid() or !ply:Alive() or !ent:IsValid() then return false end
 
 local refund = checktable[ent:GetModel()]["COST"]
 if refund == nil then return false end
-ply.Money = ply.Money + math.floor(refund * 0.45)
-SystemMessage(ply, "You salvaged one of your props and gained "..math.floor(refund * 0.45).." Gold", Color(205,205,255,255), true)
+if GetConVar("tea_config_propcostenabled"):GetInt() >= 1 then
+	ply.Money = ply.Money + math.floor(refund * 0.45)
+	SystemMessage(ply, "You salvaged one of your props and gained "..math.floor(refund * 0.45).." Gold", Color(205,205,255,255), true)
+end
 ent:EmitSound("physics/wood/wood_furniture_break"..math.random(1,2)..".wav", 100, math.random(95,105))
 ent:Remove()
 
@@ -174,7 +176,9 @@ function MakeProp(ply, model, pos, ang)
 		prop:SetNWInt("ate_maxintegrity", 500 * (checktable[model]["TOUGHNESS"] or 1) )
 		prop:SetNWInt("ate_integrity", 500 * (checktable[model]["TOUGHNESS"] or 1) )
 		prop:SetNWEntity("owner", ply)
-		ply.Money = tonumber(ply.Money) - (pcost * discount)
+		if GetConVar("tea_config_propcostenabled"):GetInt() >= 1 then
+			ply.Money = tonumber(ply.Money) - (pcost * discount)
+		end
 	else
 		local prop = ents.Create( "prop_strong" )
 		prop:SetModel(model)
@@ -189,7 +193,9 @@ function MakeProp(ply, model, pos, ang)
 		prop:SetNWInt("ate_maxintegrity", 500 * (checktable[model]["TOUGHNESS"] or 1) )
 		prop:SetNWInt("ate_integrity", 500 * (checktable[model]["TOUGHNESS"] or 1) )
 		prop:SetNWEntity("owner", ply)
-		ply.Money = tonumber(ply.Money) - (pcost * discount)
+		if GetConVar("tea_config_propcostenabled"):GetInt() >= 1 then
+			ply.Money = tonumber(ply.Money) - (pcost * discount)
+		end
 	end
 	TEANetUpdatePeriodicStats(ply)
 

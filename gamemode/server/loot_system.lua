@@ -201,6 +201,7 @@ net.Receive("UseCrate", function(len, ply)
 		PlaceInContainer(ply, item, ent)
 	else
 		WithdrawFromContainer(ply, item, ent)
+		ply:PrintMessage(4, translate.ClientFormat(ply, "LootTaken", translate.ClientGet(ply, ItemsList[item]["Name"])))
 	end
 end)
 

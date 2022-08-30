@@ -7,23 +7,24 @@ GM.AltName	= "After The End Reborn"
 GM.Author 	= "Uklejamini"
 GM.Email 	= "[Insert Email here]"
 GM.Website 	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.10.4"
+GM.Version	= "0.10.5"
 
 team.SetUp(1, "Loner", Color(100, 50, 50, 255)) --loner basic team
 
 --feel free to edit these or add new cvars at any time, FCVAR_NOTIFY - notifies when convar is changed, FCVAR_REPLICATED - can only be changed by server operator to prevent some issues, FCVAR_ARCHIVE - saves convar values to server.vdf
-local tea_server_respawntime = CreateConVar("tea_server_respawntime", 15, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Modifies respawn time for players. Do not set it too high or players won't be able to respawn. Set to 0 for no respawn delay. Recommended values: 10 - 20. (Default: 15)", 0, 60)
-local tea_server_moneyreward = CreateConVar("tea_server_moneyreward", 1, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Modifies Money gain rewards for killing zombies. This convar is dynamic (affects all zombies) and does not affect XP rewards for destroying faction structures. Useful for making events or modifying difficulty. (Default: 1)", 0.5, 2.5)
-local tea_server_xpreward = CreateConVar("tea_server_xpreward", 1, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Modifies XP gain multiplier for killing zombies. This convar is dynamic (affects all zombies) and does not affect Money rewards for destroying faction structures. Useful for making events or modifying difficulty. (Default: 1)", 0.5, 2.5)
-local tea_server_spawnprotection = CreateConVar("tea_server_spawnprotection", 1, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Enable temporary god mode on spawning? Convar tea_server_spawnprotection_duration must be above 0 for it to work! 1 for true, 0 for false (Default: 1)", 0, 1)
-local tea_server_spawnprotection_duration = CreateConVar("tea_server_spawnprotection_duration", 3, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "How long should god mode after spawning last? (in seconds) Convar tea_server_spawnprotection is required for it to work! (Default: 1.5)", 0, 5)
-local tea_server_debugging = CreateConVar("tea_server_debugging", 0, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Enables debugging features. YOU CAN ENABLE THIS FOR DEDICATED SERVER AS LONG AS YOU USE IT ONLY FOR TESTING PURPOSES. (Default: 0)", 0, 1)
-local tea_server_voluntarypvp = CreateConVar("tea_server_voluntarypvp", 1, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Enables whether players are free to pvp voluntarily or have forced PvP. (Default: 1)", 0, 1)
-local tea_server_dbsaving = CreateConVar("tea_server_dbsaving", 1, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Allow saving players' progress to database? Disabling it temporarily is only good when messing with something and don't want to affect anyone's stats. 1 for true, 0 for false (Default: 1)", 0, 1)
-local tea_config_maxcaches = CreateConVar("tea_config_maxcaches", 10, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "How many caches should there be at any given time? (Default: 10)", 0, 100)
-local tea_config_factioncost = CreateConVar("tea_config_factioncost", 1000, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "How much creating the faction should cost? (Default: 1000)", 0, 10000)
-local tea_config_maxprops = CreateConVar("tea_config_maxprops", 60, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "How many props can players create? (Default: 60)", 0, 1000)
-local tea_config_zombiespawning = CreateConVar("tea_config_zombiespawning", 1, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Should zombies spawn at their zombie spawn? Consider disabling it if adding zombie spawns. (Default: 1)", 0, 1)
+local tea_server_respawntime = CreateConVar("tea_server_respawntime", 15, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Modifies respawn time for players. Do not set it too high or players won't be able to respawn. Set to 0 for no respawn delay. Recommended values: 10 - 20.", 0, 60)
+local tea_server_moneyreward = CreateConVar("tea_server_moneyreward", 1, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Modifies Money gain rewards for killing zombies. This convar is dynamic (affects all zombies) and does not affect XP rewards for destroying faction structures. Useful for making events or modifying difficulty.", 0.5, 2.5)
+local tea_server_xpreward = CreateConVar("tea_server_xpreward", 1, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Modifies XP gain multiplier for killing zombies. This convar is dynamic (affects all zombies) and does not affect Money rewards for destroying faction structures. Useful for making events or modifying difficulty.", 0.5, 2.5)
+local tea_server_spawnprotection = CreateConVar("tea_server_spawnprotection", 1, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Enable temporary god mode on spawning? Convar tea_server_spawnprotection_duration must be above 0 for it to work! 1 for true, 0 for false", 0, 1)
+local tea_server_spawnprotection_duration = CreateConVar("tea_server_spawnprotection_duration", 3, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "How long should god mode after spawning last? (in seconds) Convar tea_server_spawnprotection is required for it to work!", 0, 5)
+local tea_server_debugging = CreateConVar("tea_server_debugging", 0, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Enables debugging features. YOU CAN ENABLE THIS FOR DEDICATED SERVER AS LONG AS YOU USE IT ONLY FOR TESTING PURPOSES.", 0, 1)
+local tea_server_voluntarypvp = CreateConVar("tea_server_voluntarypvp", 1, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Enables whether players are free to pvp voluntarily or have forced PvP.", 0, 1)
+local tea_server_dbsaving = CreateConVar("tea_server_dbsaving", 1, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Allow saving players' progress to database? Disabling it temporarily is only good when messing with something and don't want to affect anyone's stats. 1 for true, 0 for false", 0, 1)
+local tea_config_maxcaches = CreateConVar("tea_config_maxcaches", 10, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "How many caches should there be at any given time?", 0, 100)
+local tea_config_factioncost = CreateConVar("tea_config_factioncost", 1000, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "How much creating the faction should cost?", 0, 10000)
+local tea_config_maxprops = CreateConVar("tea_config_maxprops", 60, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "How many props can players create?", 0, 1000)
+local tea_config_zombiespawning = CreateConVar("tea_config_zombiespawning", 1, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Should zombies spawn at their zombie spawn? Consider disabling it if adding zombie spawns.", 0, 1)
+local tea_config_propcostenabled = CreateConVar("tea_config_propcostenabled", 1, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Enable prop spawning cost money? Good for making events that needs props to make.", 0, 1)
 
 function GM:ShutDown()
 	if SERVER then
@@ -86,17 +87,21 @@ function GM:PlayerShouldTakeDamage(ply, attacker)
 	return true
 end
 
-
-
 function SendChat(ply, msg)
-	if (!ply) then return end
-
+	if !ply:IsPlayer() then return end
 	ply:PrintMessage(3, msg);
 end
 
-
 function GetReqXP(ply)
-	return math.floor(749 + (ply.Level  * 113) ^ 1.1416)
+	local basexpreq = 712
+	local addxpperlevel = 111
+	local noideawhatthisis = 1.1416
+	local prestigebonus = 9
+	if SERVER then
+		return math.floor(basexpreq + (ply.Prestige * prestigebonus) + (ply.Level  * addxpperlevel) ^ noideawhatthisis)
+	else
+		return math.floor(basexpreq + (Myprestige * prestigebonus) + (Mylevel  * addxpperlevel) ^ noideawhatthisis)
+	end
 end
 
 /*

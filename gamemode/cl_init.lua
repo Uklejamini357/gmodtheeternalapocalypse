@@ -17,7 +17,6 @@ include("client/cl_lootmenu.lua")
 include("client/cl_adminmenu.lua")
 include("client/cl_deathscreen.lua")
 include("client/cl_statsmenu.lua")
---include( "client/cl_net.lua" )
 
 
 SelectedProp = "models/props_debris/wood_board04a.mdl" -- need to set this to something here to avoid a massive error spew
@@ -124,7 +123,6 @@ local radiosounds = {
 	"npc/metropolice/vo/malcompliant10107my1020.wav",
 	"npc/metropolice/vo/ivegot408hereatlocation.wav",
 	"npc/metropolice/vo/investigating10-103.wav",
-	"npc/metropolice/vo/is10-108.wav",
 	"npc/metropolice/vo/ihave10-30my10-20responding.wav",
 	"npc/metropolice/vo/holdingon10-14duty.wav",
 	"npc/metropolice/vo/gota10-107sendairwatch.wav",
@@ -135,10 +133,12 @@ local radiosounds = {
 net.Receive("RadioMessage", function(length, client)
 local sender = net.ReadString()
 local msg = net.ReadString()
+local rad = net.ReadBool()
 
 chat.AddText( Color(155,255,155,255), "[Radio] "..sender..": ", Color(205,205,205,255), msg )
---surface.PlaySound("npc/metropolice/vo/off"..math.random(1,4)..".wav")
+if rad then
 surface.PlaySound(table.Random(radiosounds))
+end
 
 end)
 

@@ -15,8 +15,9 @@ local armorstr = ply:GetNWString("ArmorType") or "none"
 local armortype = ItemsList[armorstr]
 local maxweight = 0
 local defaultcarryweight = Config["MaxCarryWeight"]
+if ply.StatsPaused then return 1e300 end
 if ply:GetNWString("ArmorType") == "none" then
-	if tonumber(ply.Prestige) >= 10 then
+	if tonumber(ply.Prestige) >= 6 then
 		maxweight = defaultcarryweight + 5 + ((ply.StatStrength or 0) * 1.53)
 	elseif tonumber(ply.Prestige) >= 3 then
 		maxweight = defaultcarryweight + 2 + ((ply.StatStrength or 0) * 1.53)
@@ -25,7 +26,7 @@ if ply:GetNWString("ArmorType") == "none" then
 	end
 else
 	local addcarryweight = armortype["ArmorStats"]["carryweight"]
-	if tonumber(ply.Prestige) >= 10 then
+	if tonumber(ply.Prestige) >= 6 then
 		maxweight = defaultcarryweight + 5 + ((ply.StatStrength or 0) * 1.53) + addcarryweight
 	elseif tonumber(ply.Prestige) >= 3 then
 		maxweight = defaultcarryweight + 2 + ((ply.StatStrength or 0) * 1.53) + addcarryweight
@@ -224,7 +225,11 @@ net.Receive("SellItem", function(length, client)
 	local sellprice = item["Cost"] * (0.2 + (client.StatBarter * 0.005))
 
 	if client.Inventory[str] then
-		SystemRemoveItem( client, str, true )
+		if ItemsList[str]["IsGrenade"] then
+			SystemRemoveItem(client, str, false)
+		else
+			SystemRemoveItem(client, str, true)
+		end
 	else 
 		SendChat(client, translate.ClientGet(client, "HasNotGotItem"))
 	return false

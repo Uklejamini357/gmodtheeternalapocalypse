@@ -1,29 +1,33 @@
+--Admin commands
+--Feel free to edit this unless you don't know how to do so
+
 function AdminGiveItem(ply, cmd, args)
-if !ply:IsValid() then return false end
+	if !ply:IsValid() then return false end
+	if !SuperAdminCheck(ply) then 
+		SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
+		ply:ConCommand("playgamesound buttons/button8.wav")
+		return
+	end
 
-if !SuperAdminCheck(ply) then 
-	SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
-	ply:ConCommand("playgamesound buttons/button8.wav")
-	return
-end
+	local name = args[1]
+	local addqty = math.floor(args[2] or 1)
+	local item = ItemsList[name]
+	if !item then
+		SystemMessage(ply, translate.ClientGet(ply, "ItemNonExistant"), Color(255,205,205,255), true) 
+		ply:ConCommand("playgamesound buttons/button8.wav")
+	return false end
+	if addqty < 1 then SendChat(ply, "You can't give negative values with ate_sadmin_giveitem! Use ate_sadmin_removeitem instead.") return false end
+	if addqty > 1000 then SendChat(ply, "You can't give yourself that many items!") return false end
 
-local name = args[1]
-local addqty = args[2] or 1
-local item = ItemsList[name]
-if !item then
-	SystemMessage(ply, translate.ClientGet(ply, "ItemNonExistant"), Color(255,205,205,255), true) 
-	ply:ConCommand("playgamesound buttons/button8.wav")
-return false end
+	if (CalculateWeight(ply) + (item.Weight * addqty)) > (CalculateMaxWeight(ply)) then SendChat(ply, "You are lacking inventory space! Drop some items first.") return false end
 
-if (CalculateWeight(ply) + (item.Weight * addqty)) > (CalculateMaxWeight(ply)) then SendChat(ply, "You are lacking inventory space! Drop some items first.") return false end
+	SystemGiveItem(ply, name, addqty)
 
-SystemGiveItem(ply, name, addqty)
-
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.."x "..translate.Get(item["Name"]))
-print("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.."x "..translate.Get(item["Name"]))
-SystemMessage(ply, "You gave yourself "..addqty.."x "..translate.ClientGet(ply, item["Name"]), Color(155,255,155,255), true)
-FullyUpdatePlayer(ply)
-ply:ConCommand("playgamesound buttons/button3.wav")
+	ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.."x "..translate.Get(item["Name"]))
+	print("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.."x "..translate.Get(item["Name"]))
+	SystemMessage(ply, "You gave yourself "..addqty.."x "..translate.ClientGet(ply, item["Name"]), Color(155,255,155,255), true)
+	FullyUpdatePlayer(ply)
+	ply:ConCommand("playgamesound buttons/button3.wav")
 end
 concommand.Add("ate_sadmin_giveitem", AdminGiveItem)
 
@@ -74,10 +78,9 @@ ply:ConCommand("playgamesound buttons/button3.wav")
 end
 concommand.Add("ate_sadmin_givecash", AdminGiveCash)
 
-
+--This command only cleans up all props, and not the faction structures.
 function AdminClearProps(ply, cmd, args)
 if !ply:IsValid() then return false end
-
 if !SuperAdminCheck(ply) then 
 	SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
 	ply:ConCommand("playgamesound buttons/button15.wav")
@@ -87,7 +90,6 @@ end
 	for k, v in pairs(ents.FindByClass("prop_flimsy")) do
 		v:Remove()
 	end
-
 	for k, v in pairs(ents.FindByClass("prop_strong")) do
 		v:Remove()
 	end
@@ -130,236 +132,6 @@ function AdminClearZeds(ply, cmd, args)
 end
 concommand.Add("ate_admin_clearzombies", AdminClearZeds)
 
-function TEADevGiveLevel(ply, cmd, args)
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck(ply) then 
-	SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
-	ply:ConCommand("playgamesound buttons/button8.wav")
-	return
-end
-
-local addqty = args[1] or 1
-
-ply.Level = ply.Level + addqty
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." levels!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." levels!")
-SystemMessage(ply, "You gave yourself "..addqty.." levels!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer(ply)
-ply:SetNWInt("PlyLevel", ply.Level)
-ply:ConCommand("playgamesound buttons/button3.wav")
-end
-concommand.Add("tea_dev_givelevels", TEADevGiveLevel)
-
-
-function TEADevGiveXP(ply, cmd, args)
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck(ply) then 
-	SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
-	ply:ConCommand("playgamesound buttons/button8.wav")
-	return
-end
-
-local addqty = args[1] or 1
-
-ply.XP = ply.XP + addqty
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." XP!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." XP!")
-SystemMessage(ply, "You gave yourself "..addqty.." XP!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer(ply)
-ply:ConCommand("playgamesound buttons/button3.wav")
-end
-concommand.Add("tea_dev_givexp", TEADevGiveXP)
-
-function TEADevGiveBounty(ply, cmd, args)
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck(ply) then 
-	SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
-	ply:ConCommand("playgamesound buttons/button8.wav")
-	return
-end
-
-local addqty = args[1] or 1
-
-ply.Bounty = ply.Bounty + addqty
-ply:SetNWInt("PlyBounty", ply.Bounty)
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." bounty!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." bounty!")
-SystemMessage(ply, "You gave yourself "..addqty.." Bounty!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer(ply)
-ply:ConCommand("playgamesound buttons/button3.wav")
-end
-concommand.Add("tea_dev_givebounty", TEADevGiveBounty)
-
-function TEADevGiveStatPoints(ply, cmd, args)
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck(ply) then 
-	SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
-	ply:ConCommand("playgamesound buttons/button8.wav")
-	return
-end
-
-local addqty = args[1] or 1
-
-ply.StatPoints = ply.StatPoints + addqty
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." Skill points!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." Skill points!")
-SystemMessage(ply, "You gave yourself "..addqty.." Skill points!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer(ply)
-ply:ConCommand("playgamesound buttons/button3.wav")
-end
-concommand.Add("tea_dev_givestatpoints", TEADevGiveStatPoints)
-
---this was probably one of the hardest commands i've ever added
-function TEADevGiveStat(ply, cmd, args)
-	if !ply:IsValid() then return false end
-
-	if !SuperAdminCheck(ply) then 
-		SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
-		ply:ConCommand("playgamesound buttons/button8.wav")
-		return
-	end
-	
-	local statname = args[1]
-	local addqty = args[2]
-	if statname == nil then
-		ply:PrintMessage(2, "Usage:\nArgument #1: Stat Name\nInclude only stat name, do not include Stat before stat name! (Examples: Agility, Speed or Strength)\n \nList:")
-		for k,v in ipairs(StatsListServer) do ply:PrintMessage(2, v) end
-	return end
-	if addqty == nil then return end
-	local stat = "Stat"..statname
-	if statname == "Points" then --when they manage to increase their skill points with this command while it's supposed to increase their skill level
-		SystemMessage(ply, "You can't increase your Skill Points with this command! Use tea_dev_givestatpoints instead!", Color(255,205,205,255), true)
-		ply:ConCommand("playgamesound buttons/button8.wav")
-		return
-	end
-
-	ply[stat] = ply[stat] + addqty
-	ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." increased their "..statname.." Skill for "..addqty.." point(s)!")
-	print("[ADMIN COMMAND USED] "..ply:Nick().." increased their "..statname.." Skill for "..addqty.." point(s)!")
-	SystemMessage(ply, "You increased your "..statname.." Skill for "..addqty.." point(s)!", Color(155,255,155,255), true)
-
-	CalculateMaxHealth(ply)
-	CalculateMaxArmor(ply)
-	CalculateJumpPower(ply)
-	RecalcPlayerSpeed(ply)
-	FullyUpdatePlayer(ply)
-	ply:ConCommand("playgamesound buttons/button3.wav")
-end
-concommand.Add("tea_dev_givestat", TEADevGiveStat)
-
-
-function TEADevGiveStamina(ply, cmd, args)
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck(ply) then 
-	SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
-	ply:ConCommand("playgamesound buttons/button8.wav")
-	return
-end
-
-local addqty = args[1] or 1
-
-ply.Stamina = ply.Stamina + addqty
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.."% Stamina!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.."% Stamina!")
-SystemMessage(ply, "You gave yourself "..addqty.."% Stamina!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer(ply)
-ply:ConCommand("playgamesound buttons/button3.wav")
-end
-concommand.Add("tea_dev_givestamina", TEADevGiveStamina)
-
-function TEADevGiveHunger(ply, cmd, args)
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck(ply) then 
-	SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
-	ply:ConCommand("playgamesound buttons/button8.wav")
-	return
-end
-
-local addqty = args[1] or 1
-
-ply.Hunger = ply.Hunger + (addqty * 100)
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.."% Hunger!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.."% Hunger!")
-SystemMessage(ply, "You gave yourself "..addqty.."% Hunger!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer(ply)
-ply:ConCommand("playgamesound buttons/button3.wav")
-end
-concommand.Add("tea_dev_givehunger", TEADevGiveHunger)
-
-function TEADevGiveThirst(ply, cmd, args)
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck(ply) then 
-	SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
-	ply:ConCommand("playgamesound buttons/button8.wav")
-	return
-end
-
-local addqty = args[1] or 1
-
-ply.Thirst = ply.Thirst + (addqty * 100)
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.."% Thirst!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.."% Thirst!")
-SystemMessage(ply, "You gave yourself "..addqty.."% Thirst!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer(ply)
-ply:ConCommand("playgamesound buttons/button3.wav")
-end
-concommand.Add("tea_dev_givethirst", TEADevGiveThirst)
-
-function TEADevGiveFatigue(ply, cmd, args)
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck(ply) then 
-	SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
-	ply:ConCommand("playgamesound buttons/button8.wav")
-	return
-end
-
-local addqty = args[1] or 1
-
-ply.Fatigue = ply.Fatigue + (addqty * 100)
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.."% Fatigue!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.."% Fatigue!")
-SystemMessage(ply, "You gave yourself "..addqty.."% Fatigue!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer(ply)
-ply:ConCommand("playgamesound buttons/button3.wav")
-end
-concommand.Add("tea_dev_givefatigue", TEADevGiveFatigue)
-
-function TEADevGiveInfection(ply, cmd, args)
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck(ply) then 
-	SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
-	ply:ConCommand("playgamesound buttons/button8.wav")
-	return
-end
-
-local addqty = args[1] or 1
-
-ply.Infection = ply.Infection + (addqty * 100)
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.."% Infection!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.."% Infection!")
-SystemMessage(ply, "You gave yourself "..addqty.."% Infection!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer(ply)
-ply:ConCommand("playgamesound buttons/button3.wav")
-end
-concommand.Add("tea_dev_giveinfection", TEADevGiveInfection)
 
 function PlayerForceGainLevel(ply)
 
@@ -405,267 +177,6 @@ FullyUpdatePlayer(ply)
 end
 concommand.Add("tea_dev_forcelevel_noxp", PlayerForceGainLevelNoXP)
 
-function TEADevSetCash(ply, cmd, args)
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck(ply) then 
-	SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
-	ply:ConCommand("playgamesound buttons/button8.wav")
-	return
-end
-
-local setqty = args[1]
-if setqty == nil then return end
-
-ply.Money = setqty
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." set their money to "..setqty.."!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." set their money to "..setqty.."!")
-SystemMessage(ply, "You set your money to "..setqty.."!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer(ply)
-ply:ConCommand("playgamesound buttons/button3.wav")
-end
-concommand.Add("tea_dev_setmoney", TEADevSetCash)
-
-
-function TEADevSetLevel(ply, cmd, args)
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck(ply) then 
-	SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
-	ply:ConCommand("playgamesound buttons/button8.wav")
-	return
-end
-
-local setqty = args[1]
-if setqty == nil then return end
-
-ply.Level = setqty
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." set their level to "..setqty.."!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." set their level to "..setqty.."!")
-SystemMessage(ply, "You set your level to "..setqty.."!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer(ply)
-ply:ConCommand("playgamesound buttons/button3.wav")
-end
-concommand.Add("tea_dev_setlevel", TEADevSetLevel)
-
-
-function TEADevSetXP(ply, cmd, args)
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck(ply) then 
-	SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
-	ply:ConCommand("playgamesound buttons/button8.wav")
-	return
-end
-
-local setqty = args[1]
-if setqty == nil then return end
-
-ply.XP = setqty
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." set their XP to "..setqty.."!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." set their XP to "..setqty.."!")
-SystemMessage(ply, "You set your XP to "..setqty.."!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer(ply)
-ply:ConCommand("playgamesound buttons/button3.wav")
-end
-concommand.Add("tea_dev_setxp", TEADevSetXP)
-
-function TEADevSetStatPoints(ply, cmd, args)
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck(ply) then 
-	SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
-	ply:ConCommand("playgamesound buttons/button8.wav")
-	return
-end
-
-local setqty = args[1]
-if setqty == nil then return end
-
-ply.StatPoints = setqty
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." set their Skill points value to "..setqty.."!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." set their Skill points value to "..setqty.."!")
-SystemMessage(ply, "You set your Skill points value to "..setqty.."!", Color(155,255,155,255), true)
-
-
-FullyUpdatePlayer(ply)
-ply:ConCommand("playgamesound buttons/button3.wav")
-end
-concommand.Add("tea_dev_setstatpoints", TEADevSetStatPoints)
-
-function TEADevSetBounty(ply, cmd, args)
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck(ply) then 
-	SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
-	ply:ConCommand("playgamesound buttons/button8.wav")
-	return
-end
-
-local setqty = args[1]
-if setqty == nil then return end
-
-ply.Bounty = setqty
-ply:SetNWInt("PlyBounty", ply.Bounty)
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." set their Bounty to "..setqty.."!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." set their Bounty to "..setqty.."!")
-SystemMessage(ply, "You set your Bounty to "..setqty.."!", Color(155,255,155,255), true)
-
-
-FullyUpdatePlayer(ply)
-ply:ConCommand("playgamesound buttons/button3.wav")
-end
-concommand.Add("tea_dev_setbounty", TEADevSetBounty)
-
-function TEADevGiveStat(ply, cmd, args)
-	if !ply:IsValid() then return false end
-
-	if !SuperAdminCheck(ply) then 
-		SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
-		ply:ConCommand("playgamesound buttons/button8.wav")
-		return
-	end
-	
-	local statname = args[1] 
-	local setqty = args[2]
-	if statname == nil then
-		ply:PrintMessage(2, "Usage:\nArgument #1: Stat Name\nInclude only stat name, do not include Stat before stat name! (Examples: Agility, Speed or Strength)\n \nList:")
-		for k,v in ipairs(StatsListServer) do ply:PrintMessage(2, v) end
-	return end
-	if setqty == nil then return end
-	local stat = "Stat"..statname
-	if statname == "Points" then
-		SystemMessage(ply, "You can't set your Skill Points with this command! Use tea_dev_setstatpoints instead!", Color(255,205,205,255), true)
-		ply:ConCommand("playgamesound buttons/button8.wav")
-		return
-	end
-
-	ply[stat] = setqty
-	ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." set their "..statname.." Skill value to "..setqty.."!")
-	print("[ADMIN COMMAND USED] "..ply:Nick().." set their "..statname.." Skill value to "..setqty.."!")
-	SystemMessage(ply, "You set your "..statname.." Skill value to "..setqty.."!", Color(155,255,155,255), true)
-
-	CalculateMaxHealth(ply)
-	CalculateMaxArmor(ply)
-	CalculateJumpPower(ply)
-	RecalcPlayerSpeed(ply)
-	FullyUpdatePlayer(ply)
-	ply:ConCommand("playgamesound buttons/button3.wav")
-end
-concommand.Add("tea_dev_setstat", TEADevGiveStat)
-
-function TEADevSetStamina(ply, cmd, args)
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck(ply) then 
-	SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
-	ply:ConCommand("playgamesound buttons/button8.wav")
-	return
-end
-
-local setqty = args[1]
-if setqty == nil then return end
-
-ply.Stamina = setqty
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." set their Stamina to "..setqty.."%!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." set their Stamina to "..setqty.."%!")
-SystemMessage(ply, "You set your Stamina to "..setqty.."%!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer(ply)
-ply:ConCommand("playgamesound buttons/button3.wav")
-end
-concommand.Add("tea_dev_setstamina", TEADevSetStamina)
-
-function TEADevSetHunger(ply, cmd, args)
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck(ply) then 
-	SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
-	ply:ConCommand("playgamesound buttons/button8.wav")
-	return
-end
-
-local setqty = args[1]
-if setqty == nil then return end
-
-ply.Hunger = setqty * 100
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." set their Hunger to "..setqty.."%!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." set their Hunger to "..setqty.."%!")
-SystemMessage(ply, "You set your Hunger to "..setqty.."%!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer(ply)
-ply:ConCommand("playgamesound buttons/button3.wav")
-end
-concommand.Add("tea_dev_sethunger", TEADevSetHunger)
-
-function TEADevSetThirst(ply, cmd, args)
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck(ply) then 
-	SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
-	ply:ConCommand("playgamesound buttons/button8.wav")
-	return
-end
-
-local setqty = args[1]
-if setqty == nil then return end
-
-ply.Thirst = setqty * 100
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." set their Thirst to "..setqty.."%!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." set their Thirst to "..setqty.."%!")
-SystemMessage(ply, "You set your Thirst to "..setqty.."%!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer(ply)
-ply:ConCommand("playgamesound buttons/button3.wav")
-end
-concommand.Add("tea_dev_setthirst", TEADevSetThirst)
-
-function TEADevSetFatigue(ply, cmd, args)
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck(ply) then 
-	SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
-	ply:ConCommand("playgamesound buttons/button8.wav")
-	return
-end
-
-local setqty = args[1]
-if setqty == nil then return end
-
-ply.Fatigue = setqty * 100
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." set their Fatigue to "..setqty.."%!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." set their Fatigue to "..setqty.."%!")
-SystemMessage(ply, "You set your Fatigue to "..setqty.."%!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer(ply)
-ply:ConCommand("playgamesound buttons/button3.wav")
-end
-concommand.Add("tea_dev_setfatigue", TEADevSetFatigue)
-
-function TEADevSetInfection(ply, cmd, args)
-if !ply:IsValid() then return false end
-
-if !SuperAdminCheck(ply) then 
-	SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
-	ply:ConCommand("playgamesound buttons/button8.wav")
-	return
-end
-
-local setqty = args[1]
-if setqty == nil then return end
-
-ply.Infection = setqty * 100
-ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." set their Infection to "..setqty.."%!")
-print("[ADMIN COMMAND USED] "..ply:Nick().." set their Infection to "..setqty.."%!")
-SystemMessage(ply, "You set your Infection to "..setqty.."%!", Color(155,255,155,255), true)
-
-FullyUpdatePlayer(ply)
-ply:ConCommand("playgamesound buttons/button3.wav")
-end
-concommand.Add("tea_dev_setinfection", TEADevSetInfection)
 
 function TEAAdminSystemBroadcast(ply, cmd, args)
 if !ply:IsValid() then return false end
@@ -699,11 +210,11 @@ if !AdminCheck(ply) then
 	return
 end
 
-CanSpawnBoss = 1
+CanSpawnBoss = true
 SpawnBoss()
-CanSpawnBoss = 0
+CanSpawnBoss = false
 ply:ConCommand("playgamesound buttons/button3.wav")
-SystemMessage(ply, "Command received, boss spawning soon.", Color(155,255,155,255), true)
+SystemMessage(ply, "Command received, boss will spawn soon.", Color(155,255,155,255), true)
 ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has used spawn boss command!")
 print("[ADMIN COMMAND USED] "..ply:Nick().." has used spawn boss command!")
 end
@@ -716,11 +227,11 @@ if !AdminCheck(ply) then
 	return
 end
 
-CanSpawnAirdrop = 1
+CanSpawnAirdrop = true
 SpawnAirdrop()
-CanSpawnAirdrop = 0
+CanSpawnAirdrop = false
 ply:ConCommand("playgamesound buttons/button3.wav")
-SystemMessage(ply, "Command received, airdrop is dropping soon.", Color(155,255,155,255), true)
+SystemMessage(ply, "Command received, airdrop will arrive soon.", Color(155,255,155,255), true)
 ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has used spawn airdrop command!")
 print("[ADMIN COMMAND USED] "..ply:Nick().." has used spawn airdrop command!")
 end

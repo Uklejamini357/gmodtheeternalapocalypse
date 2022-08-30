@@ -96,7 +96,10 @@ function ENT:OnTakeDamage( dmg )
 	local attacker = dmg:GetAttacker()
 
 	if attacker:IsPlayer() and attacker:IsValid() and attacker:Team() == 1 and attacker:GetNWBool("pvp") != true and self:GetNWEntity("owner") != attacker then -- this should stop little shitters from wrecking your base while not in pvp mode
-	SystemMessage(attacker, "You cannot damage other players props unless you have PvP mode enabled!", Color(255,205,205,255), true)
+		if !timer.Exists("NoPvPMsgAntiSpamTimer"..attacker:UniqueID()) then
+			SystemMessage(attacker, "You cannot damage other players props unless you have PvP mode enabled!", Color(255,205,205,255), true)
+			timer.Create("NoPvPMsgAntiSpamTimer"..attacker:UniqueID(), 0.5, 1, function() end)
+		end
 	return false 
 	end
 
@@ -121,7 +124,7 @@ function ENT:OnTakeDamage( dmg )
 
 		self:SetColor(Color(swag +5,swag+5,swag+5,255))
 
-		if currenthealth < 0 or self.IsBuilt == false then
+		if currenthealth < 0 or !self.IsBuilt then
 			self:BreakPanel()
 --			self.Entity:EmitSound("physics/wood/wood_plank_break"..math.random(1,2)..".wav", 100, 100)
 			self.Entity:EmitSound("physics/metal/metal_box_break2.wav", 80, 100)              
