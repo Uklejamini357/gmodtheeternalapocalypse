@@ -79,13 +79,13 @@ end
 concommand.Add("ate_sadmin_givecash", AdminGiveCash)
 
 --This command only cleans up all props, and not the faction structures.
-function AdminClearProps(ply, cmd, args)
-if !ply:IsValid() then return false end
-if !SuperAdminCheck(ply) then 
-	SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
-	ply:ConCommand("playgamesound buttons/button15.wav")
-	return
-end
+function TEAAdminClearProps(ply, cmd, args)
+	if !ply:IsValid() then return false end
+	if !SuperAdminCheck(ply) then 
+		SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
+		ply:ConCommand("playgamesound buttons/button8.wav")
+		return
+	end
 
 	for k, v in pairs(ents.FindByClass("prop_flimsy")) do
 		v:Remove()
@@ -98,13 +98,10 @@ end
 	print("[ADMIN COMMAND USED] "..ply:Nick().." has cleaned up all props!")
 	SystemMessage(ply, "Cleaned up all props!", Color(155,255,155,255), true)
 	ply:ConCommand("playgamesound buttons/button3.wav") 
-	return
-
 end
-concommand.Add("ate_sadmin_clearprops", AdminClearProps)
+concommand.Add("ate_sadmin_clearprops", TEAAdminClearProps)
 
-
-function AdminClearZeds(ply, cmd, args)
+function TEAAdminClearZeds(ply, cmd, args)
 	if !ply:IsValid() then return false end
 	if !AdminCheck(ply) then 
 		SystemMessage(ply, translate.ClientGet(ply, "TEAAdminCheckFailed"), Color(255,205,205,255), true)
@@ -130,7 +127,47 @@ function AdminClearZeds(ply, cmd, args)
 		end
 	end
 end
-concommand.Add("ate_admin_clearzombies", AdminClearZeds)
+concommand.Add("ate_admin_clearzombies", TEAAdminClearZeds)
+
+function TEAAdminClearLoots(ply, cmd, args)
+	if !ply:IsValid() then return false end
+	if !AdminCheck(ply) then
+		SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
+		ply:ConCommand("playgamesound buttons/button8.wav")
+		return
+	end
+	
+	if args[1] == "force" then
+		if !SuperAdminCheck(ply) then
+			SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
+			ply:ConCommand("playgamesound buttons/button8.wav")
+			return
+		end
+			for k, v in pairs(ents.FindByClass("loot_cache_boss")) do
+			v:Remove()
+		end
+		for k, v in pairs(ents.FindByClass("loot_cache_faction")) do
+			v:Remove()
+		end
+		ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has cleaned up all loot caches!")
+		print("[ADMIN COMMAND USED] "..ply:Nick().." has cleaned up all loot caches!")
+		SystemMessage(ply, "Cleaned up all loot caches!", Color(155,255,155,255), true)
+	else
+		ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has cleaned up normal loot caches!")
+		print("[ADMIN COMMAND USED] "..ply:Nick().." has cleaned up normal loot caches!")
+		SystemMessage(ply, "Cleaned up normal loot caches!", Color(155,255,155,255), true)
+	end
+	for k, v in pairs(ents.FindByClass("loot_cache")) do
+		v:Remove()
+	end
+	for k, v in pairs(ents.FindByClass("loot_cache_weapon")) do
+		v:Remove()
+	end
+	
+	
+	ply:ConCommand("playgamesound buttons/button3.wav") 	
+end
+concommand.Add("ate_admin_clearloots", TEAAdminClearLoots)
 
 
 function PlayerForceGainLevel(ply)

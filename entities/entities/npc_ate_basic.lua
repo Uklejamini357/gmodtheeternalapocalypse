@@ -191,11 +191,12 @@ if CLIENT then return end
 local target = self.target
 
 
-if IsValid(target) and target:Alive() and self:GetRangeTo(target) <= (1500 * self.RageLevel) then
+
+if IsValid(target) and target:Alive() and self:GetRangeTo(target) <= (1500 * self.RageLevel) and !target.StatsPaused then
 	self.loco:FaceTowards(target:GetPos())
 
 	if self.NxtTick < 1 then
-		if math.random( 1,500) < 25 then
+		if math.random(1, 500) < 25 then
 			self:EmitSound( table.Random(self.IdleSounds) )
 		end
 
@@ -266,7 +267,7 @@ self:MoveToPos(self:GetPos() + Vector(math.random(-256, 256), math.random(-256, 
 -- find ourselves a new target
 	if (!self.target) then
 		for k, v in pairs(player.GetAll()) do
-			if (v:Alive() and self:GetRangeTo(v) <= (1200 * self.RageLevel)) then
+			if (v:Alive() and self:GetRangeTo(v) <= (1200 * self.RageLevel) and !v.StatsPaused) then
 				self.target = v
 				if self.CanScream == true then
 				self:EmitSound(table.Random(self.AlertSounds), 90, math.random(90, 110))

@@ -50,31 +50,26 @@ function Damagemods(target, dmginfo)
 				timer.Create("NoPvPMsgAntiSpamTimer"..attacker:UniqueID(), 0.5, 1, function() end)
 			end
 			dmginfo:SetDamage(0)
-		return false
-			
-	end
-		
-	
-
-
-	if timer.Exists("pvpnominge_"..target:UniqueID()) then timer.Destroy("pvpnominge_"..target:UniqueID()) end
-	timer.Create("pvpnominge_"..target:UniqueID(), 60, 1, function() -- this timer actually does nothing, its only purpose is to be checked if it exists for target
-		if !target:IsValid() then return false end
-		timer.Destroy("pvpnominge_"..target:UniqueID())
-	end)
-
-	if timer.Exists("pvpnominge_"..attacker:UniqueID()) then timer.Destroy("pvpnominge_"..attacker:UniqueID()) end
-	timer.Create("pvpnominge_"..attacker:UniqueID(), 60, 1, function() -- same as above but for attacker
-		if !attacker:IsValid() then return false end
-		timer.Destroy("pvpnominge_"..attacker:UniqueID())
-	end)
+			return false
+		end
 
 
 
+
+		if timer.Exists("pvpnominge_"..target:UniqueID()) then timer.Destroy("pvpnominge_"..target:UniqueID()) end
+		timer.Create("pvpnominge_"..target:UniqueID(), 60, 1, function() -- this timer actually does nothing, its only purpose is to be checked if it exists for target
+			if !target:IsValid() then return false end
+			timer.Destroy("pvpnominge_"..target:UniqueID())
+		end)
+
+		if timer.Exists("pvpnominge_"..attacker:UniqueID()) then timer.Destroy("pvpnominge_"..attacker:UniqueID()) end
+		timer.Create("pvpnominge_"..attacker:UniqueID(), 60, 1, function() -- same as above but for attacker
+			if !attacker:IsValid() then return false end
+			timer.Destroy("pvpnominge_"..attacker:UniqueID())
+		end)
 	end
 
 	local tea_server_debugging = GetConVar("tea_server_debugging")
-
 	if !attacker:IsValid() then return end
 	if target:GetClass() == "trader" then return end
 
@@ -124,7 +119,7 @@ function Damagemods(target, dmginfo)
 		print(attacker:Nick().." has damaged "..target:Nick().." for "..dmginfo:GetDamage().." damage!")
 	end
 
-	for _, ent in pairs (ents.FindByClass("trader")) do
+	for _, ent in pairs(ents.FindByClass("trader")) do
 		if target:IsPlayer() and ent:GetPos():Distance(target:GetPos()) < 120 then
 			dmginfo:ScaleDamage(0.9)
 		end

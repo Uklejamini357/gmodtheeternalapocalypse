@@ -210,13 +210,12 @@ function GiveLeader(ply, target)
 	net.Start("RecvFactions")
 	net.WriteTable(Factions)
 	net.Broadcast()
-
 end
 
 
 function PlayerDisbandFaction(ply, fac)
 	if !Factions[fac] or !ply:IsValid() then return false end
-	if ply:Team() == 1 then SystemMessage(ply, "You aren't in a faction!", Color(255,205,205,255), true) return false end
+	if ply:Team() == 1 then SystemMessage(ply, "You are not in a faction!", Color(255,205,205,255), true) return false end
 	if Factions[fac]["leader"] != ply then SystemMessage(ply, "You cannot disband a faction you aren't the leader of", Color(255,205,205,255), true) return false end
 	local plyfaction = team.GetName(ply:Team())
 

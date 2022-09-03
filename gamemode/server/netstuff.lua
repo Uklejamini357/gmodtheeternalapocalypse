@@ -11,28 +11,31 @@ util.AddNetworkString("UpdateStatistics")
 util.AddNetworkString("UpdatePerks")
 util.AddNetworkString("UpdateInventory")
 util.AddNetworkString("UpdateTargetStats")
+util.AddNetworkString("UpdateMasteryStats") -- for future update v0.10.7
 util.AddNetworkString("UpgradePerk")
 util.AddNetworkString("UpdateVault")
 
-util.AddNetworkString("UseItem") -- see player_inventory.lua
-util.AddNetworkString("UseGun") -- see player_inventory.lua
-util.AddNetworkString("BuyItem") -- see player_inventory.lua
-util.AddNetworkString("SellItem") -- see player_inventory.lua
+util.AddNetworkString("UseItem") -- for the following 4 below, see player_inventory.lua
+util.AddNetworkString("UseGun")
+util.AddNetworkString("BuyItem")
+util.AddNetworkString("SellItem")
 util.AddNetworkString("OpenTraderMenu") -- see cl_tradermenu.lua
+util.AddNetworkString("CraftItem") -- see server/crafting.lua
+util.AddNetworkString("CraftSpecialItem") -- see server/crafting.lua
 util.AddNetworkString("SystemMessage")
 util.AddNetworkString("RadioMessage")
 util.AddNetworkString("UseDelay") -- delays on using items
 
 util.AddNetworkString("RecvFactions") -- see factions.lua and cl_scoreboard.lua
-util.AddNetworkString("CreateFaction") -- see factions.lua
-util.AddNetworkString("JoinFaction") -- see factions.lua
+util.AddNetworkString("CreateFaction") -- see factions.lua for below until WraithBlind
+util.AddNetworkString("JoinFaction")
 util.AddNetworkString("GiveLeader")
-util.AddNetworkString("InviteFaction") -- invite faction
+util.AddNetworkString("InviteFaction")
 util.AddNetworkString("KickFromFaction")
 util.AddNetworkString("DisbandFaction")
 util.AddNetworkString("WraithBlind") -- rape your vision when you get hit by a wraith
 util.AddNetworkString("PrestigeEffect") -- blinding effect but with white screen when prestiged
-util.AddNetworkString("Payout") -- sell cl_hud and server/npcspawns
+util.AddNetworkString("Payout") -- see cl_hud and server/npcspawns.lua
 util.AddNetworkString("Prestige") -- see player_data.lua
 --util.AddNetworkString("Respawn")
 
@@ -78,6 +81,7 @@ function TEANetUpdatePerks(ply)
 	net.Send(ply)
 end
 
+
 function TEANetUpdateStatistics(ply)
 	net.Start("UpdateStatistics")
 	net.WriteFloat(ply.BestSurvivalTime)
@@ -96,8 +100,12 @@ function TEANetUpdatePlayerStatistics(ply, target)
 	net.Send(ply)
 end
 
+function TEANetUpdateMasteryStats(ply)
+	net.Start("UpdateMasteryStats")
+	net.Send(ply)
+end
 
-function SystemBroadcast(msg, color, sys) -- same as system message, just broadcasts it to everybody instead of accepting a ply argument
+function SystemBroadcast(msg, color, sys) -- same as system message, just broadcasts it to everybody instead of accepting a ply argument (Will probably be removed in the future in favor of translation support)
 	for k, v in pairs(player.GetAll()) do
 		net.Start("SystemMessage")
 		net.WriteString(msg)

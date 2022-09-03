@@ -4,7 +4,7 @@ AddCSLuaFile()
 SWEP.PrintName	= "Hands"
 
 SWEP.Author		= "LegendofRobbo"
-SWEP.Purpose	= "Use right click to pick up some stuff up and left click to attack"
+SWEP.Purpose	= "Use right click to pick up some stuff up and left click to attack\nHold E and attack to switch fire modes"
 
 SWEP.DrawCrosshair	= false
 SWEP.Spawnable	= true
@@ -14,7 +14,7 @@ SWEP.DrawAmmo	= false
 SWEP.ViewModel	= "models/weapons/c_arms_citizen.mdl"
 SWEP.WorldModel	= ""
 
-SWEP.ViewModelFOV	= 52
+SWEP.ViewModelFOV	= 58
 SWEP.Slot			= 0
 SWEP.SlotPos		= 0
 

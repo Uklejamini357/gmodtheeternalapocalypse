@@ -11,35 +11,36 @@ return totalweight
 end
 
 function CalculateMaxWeight(ply)
-local armorstr = ply:GetNWString("ArmorType") or "none"
-local armortype = ItemsList[armorstr]
-local maxweight = 0
-local defaultcarryweight = Config["MaxCarryWeight"]
-if ply.StatsPaused then return 1e300 end
-if ply:GetNWString("ArmorType") == "none" then
+	local armorstr = ply:GetNWString("ArmorType") or "none"
+	local armortype = ItemsList[armorstr]
+	local maxweight = 0
+	local defaultcarryweight = Config["MaxCarryWeight"]
+	if ply.StatsPaused then return 1e300 end
 	if tonumber(ply.Prestige) >= 6 then
-		maxweight = defaultcarryweight + 5 + ((ply.StatStrength or 0) * 1.53)
+		if ply:GetNWString("ArmorType") == "none" then
+			maxweight = defaultcarryweight + 5 + ((ply.StatStrength or 0) * 1.53)
+		else
+			maxweight = defaultcarryweight + 5 + ((ply.StatStrength or 0) * 1.53) + armortype["ArmorStats"]["carryweight"]
+		end
 	elseif tonumber(ply.Prestige) >= 3 then
-		maxweight = defaultcarryweight + 2 + ((ply.StatStrength or 0) * 1.53)
+		if ply:GetNWString("ArmorType") == "none" then
+			maxweight = defaultcarryweight + 2 + ((ply.StatStrength or 0) * 1.53)
+		else
+			maxweight = defaultcarryweight + 2 + ((ply.StatStrength or 0) * 1.53) + armortype["ArmorStats"]["carryweight"]
+		end
 	else
-		maxweight = defaultcarryweight + ((ply.StatStrength or 0) * 1.53)
+		if ply:GetNWString("ArmorType") == "none" then
+			maxweight = defaultcarryweight + ((ply.StatStrength or 0) * 1.53)
+		else
+			maxweight = defaultcarryweight + ((ply.StatStrength or 0) * 1.53) + armortype["ArmorStats"]["carryweight"]
+		end
 	end
-else
-	local addcarryweight = armortype["ArmorStats"]["carryweight"]
-	if tonumber(ply.Prestige) >= 6 then
-		maxweight = defaultcarryweight + 5 + ((ply.StatStrength or 0) * 1.53) + addcarryweight
-	elseif tonumber(ply.Prestige) >= 3 then
-		maxweight = defaultcarryweight + 2 + ((ply.StatStrength or 0) * 1.53) + addcarryweight
-	else
-		maxweight = defaultcarryweight + ((ply.StatStrength or 0) * 1.53) + addcarryweight
-	end
-end
-return maxweight
+	return maxweight
 end
 
 function SendInventory( ply )
 FullyUpdatePlayer( ply )
-timer.Simple( 1, function() if !ply:IsValid() then return end SendVault( ply ) end)
+timer.Simple(1, function() if !ply:IsValid() then return end SendVault(ply) end)
 end
 concommand.Add("refresh_inventory", SendInventory)
 

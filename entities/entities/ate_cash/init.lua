@@ -85,7 +85,7 @@ function ENT:Initialize()
 	end 
 end
 
-function ENT:SpawnFunction( userid, tr )
+function ENT:SpawnFunction(userid, tr)
 end
 
 function ENT:Use( activator, caller )

@@ -1060,59 +1060,49 @@ function PrestigeEffect()
 	
 	surface.SetDrawColor(255, 255, 255, math.Round(math.Clamp(pralpha, 0, 255)))
 	surface.DrawRect(-1, -1, surface.ScreenWidth() + 1, surface.ScreenHeight() + 1)
-	end
+end
 hook.Add("RenderScreenspaceEffects", "PrestigeEffect", PrestigeEffect)
 
 
 hook.Add("PostDrawOpaqueRenderables", "circle", function()
-for _, ent in pairs (ents.FindByClass("structure_base_core")) do
+	for _, ent in pairs (ents.FindByClass("structure_base_core")) do
+		if ent:GetPos():Distance(LocalPlayer():GetPos()) < 2000 and ent:GetNWEntity("owner"):IsValid() and ent:GetMaterial() != "models/wireframe" then
+			local Pos = ent:GetPos()
+			local Ang = ent:GetAngles()
+			local owner = ent:GetNWEntity("owner")
+			if !owner:IsValid() then continue end
+			local ownercol = team.GetColor(owner:Team()) or Color(0, 0, 0, 0)
+			cam.Start3D2D(Pos + ent:GetUp() * 10, Ang, 0.6)
+			local TexturedQuadStructure =
+			{
+				texture	= surface.GetTextureID('particle/particle_ring_sharp'),
+				color	= ownercol,
+				x	= -1500,
+				y	= -1500,
+				w	= 3000,
+				h	= 3000
+			}
+			draw.TexturedQuad(TexturedQuadStructure)
+			cam.End3D2D()
+		end
+	end
 
-	if ent:GetPos():Distance(LocalPlayer():GetPos()) < 2000 and ent:GetNWEntity("owner"):IsValid() and ent:GetMaterial() != "models/wireframe" then
-	local Pos = ent:GetPos()
-	local Ang = ent:GetAngles()
-	local owner = ent:GetNWEntity("owner")
-	if !owner:IsValid() then continue end
-	local ownercol = team.GetColor(owner:Team()) or Color(0, 0, 0, 0)
-	cam.Start3D2D(Pos + ent:GetUp() * 10, Ang, 0.6)
-local TexturedQuadStructure =
-{
-	texture = surface.GetTextureID( 'particle/particle_ring_sharp' ),
-	color   = ownercol,
-	x 	= -1500,
-	y 	= -1500,
-	w 	= 3000,
-	h 	= 3000
-}
-
-draw.TexturedQuad( TexturedQuadStructure )
-	cam.End3D2D()
-
-end
-
-end
-
-for _, ent in pairs (ents.FindByClass("airdrop_cache")) do
-
-	if ent:GetPos():Distance(LocalPlayer():GetPos()) < 2000 and ent:GetNWBool("ADActive") then
-	local Pos = ent:GetPos()
-	local Ang = Angle(0,0,0)
-	cam.Start3D2D(Pos + ent:GetUp() * 10, Ang, 0.6)
-local TexturedQuadStructure =
-{
-	texture = surface.GetTextureID( 'particle/particle_ring_blur' ),
-	color   = Color(255,0,0),
-	x 	= -2000,
-	y 	= -2000,
-	w 	= 4000,
-	h 	= 4000,
-}
-
-draw.TexturedQuad( TexturedQuadStructure )
-	cam.End3D2D()
-
-end
-
-end
-
+	for _, ent in pairs (ents.FindByClass("airdrop_cache")) do
+		if ent:GetPos():Distance(LocalPlayer():GetPos()) < 2000 and ent:GetNWBool("ADActive") then
+			local Pos = ent:GetPos()
+			local Ang = Angle(0,0,0)
+			cam.Start3D2D(Pos + ent:GetUp() * 10, Ang, 0.6)
+			local TexturedQuadStructure =
+			{
+				texture = surface.GetTextureID( 'particle/particle_ring_blur' ),
+				color   = Color(255,0,0),
+				x 	= -2000,
+				y 	= -2000,
+				w 	= 4000,
+				h 	= 4000,
+			}
+			draw.TexturedQuad(TexturedQuadStructure)	
+			cam.End3D2D()
+		end
+	end
 end)
-

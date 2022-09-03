@@ -140,7 +140,7 @@ function ENT:RunBehaviour()
 		if CLIENT then return end
 		local target = self.target
 
-		if (IsValid(target) and target:Alive()) then
+		if (IsValid(target) and target:Alive() and !target.StatsPaused) then
 			local data = {}
 			data.start = self:GetPos()
 			data.endpos = self:GetPos() + self:GetForward()*128
@@ -159,7 +159,7 @@ function ENT:RunBehaviour()
 			end
 		end
 
-		if (IsValid(target) and target:Alive() and self:GetRangeTo(target) <= (2500 * self.RageLevel)) then
+		if (IsValid(target) and target:Alive() and self:GetRangeTo(target) <= (2500 * self.RageLevel) and !target.StatsPaused) then
 			self.loco:FaceTowards(target:GetPos())
 
 			if (self:GetRangeTo(target) <= 400 && self.nextslam < CurTime() && self:HasLOS()) then 
@@ -236,7 +236,7 @@ function ENT:RunBehaviour()
 				phys:SetVelocity(trace.Normal * 1000 + (self:GetAngles():Up() * (self:GetPos():Length(trace.HitPos) * 0.03)) + (self:GetAngles():Forward() * (self:GetPos():Length(trace.HitPos) * 0.03)))
 
 				if self.IsEnraged == 1 then
-					self.nexttoss = CurTime() + 6
+					self.nexttoss = CurTime() + 7
 				else
 					self.nexttoss = CurTime() + 10
 				end
@@ -298,11 +298,8 @@ function ENT:RunBehaviour()
 				end)
 
 				self:StartActivity(self.AttackAnim)
-
 				coroutine.wait(self.AttackWaitTime)
-
 				self:StartActivity(self.WalkAnim)	
-
 			else
 				self:StartActivity(self.RunAnim)
 
@@ -317,7 +314,7 @@ function ENT:RunBehaviour()
 --				end
 				
 				if self.IsEnraged == 1 then
-					self.loco:SetDesiredSpeed(400) 
+					self.loco:SetDesiredSpeed(340) 
 				else
 					self.loco:SetDesiredSpeed(250)
 				end
@@ -344,7 +341,7 @@ function ENT:RunBehaviour()
 
 			if (!self.target) then
 				for k, v in pairs(player.GetAll()) do
-					if (v:Alive() and self:GetRangeTo(v) <= (2500 * self.RageLevel)) then
+					if (v:Alive() and self:GetRangeTo(v) <= (2500 * self.RageLevel) and !v.StatsPaused) then
 --						self:AlertNearby(v)
 						self.target = v
 --						self:PlaySequenceAndWait("wave_smg1", 0.9)
@@ -436,17 +433,17 @@ function ENT:OnInjured(damageInfo)
 	end
 
 	if attacker:IsPlayer() then
-	if !self.DamagedBy[attacker] then self.DamagedBy[attacker] = math.Clamp(dmg, 0, self:GetMaxHealth())
-	else
-	self.DamagedBy[attacker] = math.Clamp(self.DamagedBy[attacker] + dmg, 0, self:GetMaxHealth())
-	end
+		if !self.DamagedBy[attacker] then self.DamagedBy[attacker] = math.Clamp(dmg, 0, self:GetMaxHealth())
+		else
+			self.DamagedBy[attacker] = math.Clamp(self.DamagedBy[attacker] + dmg, 0, self:GetMaxHealth())
+		end
 	end
 
 	if (self:Health() - dmg) <= 10000 then
 		self.RageLevel = 5
-		self.loco:SetDesiredSpeed(400)
 		if self.IsEnraged == 0 then
 			SystemBroadcast("[BOSS]: The Tyrant is now Enraged!", Color(255,105,105,255), false)
+			self.loco:SetDesiredSpeed(340)
 			self.nexttoss = CurTime()
 			self:SetColor(Color(255,128,128,255))
 		end
@@ -454,10 +451,7 @@ function ENT:OnInjured(damageInfo)
 	else
 		self.RageLevel = 3
 	end
-		
---	if(attacker:IsPlayer()) then
---	self:AlertNearby(attacker, 1000)
---	end
+
 end
 
 function ENT:AttackProp(targetprops)

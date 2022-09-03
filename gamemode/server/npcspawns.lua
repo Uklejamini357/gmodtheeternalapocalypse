@@ -89,7 +89,7 @@ for k, v in pairs(Config[ "BossClasses" ]) do
 		v["BroadCast"]()
 		timer.Simple(tonumber(v["SpawnDelay"]), function()
 		SystemBroadcast(v["AnnounceMessage"], Color(255,105,105,255), false)
-		for k, v in pairs(player.GetAll()) do v:EmitSound("music/stingers/hl1_stinger_song8.mp3") end
+		for k, v in pairs(player.GetAll()) do v:EmitSound("*#music/stingers/hl1_stinger_song8.mp3") end
 		CreateZombie( k, pos, ang, v["XPReward"], v["MoneyReward"], true )
 		end)
 		break
@@ -229,7 +229,7 @@ local tea_server_moneyreward = GetConVar("tea_server_moneyreward")
 
 	if ( ent.Type == "nextbot" or ent:IsNPC() ) and (ent.XPReward and ent.MoneyReward) then
 		if ent.LastAttacker and ent.LastAttacker:IsValid() then
-		Payout( ent.LastAttacker, ent.XPReward * tea_server_xpreward:GetFloat(), ent.MoneyReward * tea_server_moneyreward:GetFloat() )
+		Payout(ent.LastAttacker, ent.XPReward * tea_server_xpreward:GetFloat(), ent.MoneyReward * tea_server_moneyreward:GetFloat())
 		ent.LastAttacker.ZKills = ent.LastAttacker.ZKills + 1
 		TEANetUpdateStatistics(ent.LastAttacker)
 		elseif ent.DamagedBy then

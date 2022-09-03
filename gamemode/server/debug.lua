@@ -3,7 +3,7 @@ local DebugLogs = {}
 -- Much better logging system, now logs when the message was added (HH:MM:SS)
 function ate_DebugLog(str)
 if Config["DebugLogging"] != true then return end
-table.insert(DebugLogs, "["..os.date( "%H:%M:%S" ).."] "..str)
+table.insert(DebugLogs, "["..os.date("%H:%M:%S").."] "..str)
 end
 
 -- It should work now, especially without local function Savelog()

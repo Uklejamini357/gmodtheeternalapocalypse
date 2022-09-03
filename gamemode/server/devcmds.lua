@@ -254,6 +254,39 @@ function TEADevGivePerk(ply, cmd, args)
 end
 concommand.Add("tea_dev_giveperk", TEADevGivePerk)
 
+function TEADevGiveStat(ply, cmd, args)
+	if !ply:IsValid() then return false end
+	if !TEADevCheck(ply) then 
+		SystemMessage(ply, translate.ClientGet(ply, "TEADevCheckFailed"), Color(255,205,205,255), true)
+		ply:ConCommand("playgamesound buttons/button8.wav")
+		return
+	end
+	
+	local statname = args[1] 
+	local addqty = tonumber(args[2])
+	if statname == nil then
+		ply:PrintMessage(2, "Usage:\nArgument #1: Stat Name\nInclude only (periodic) stats!\n \nList:")
+		for k,v in ipairs(StatsListServer2) do ply:PrintMessage(2, v) end
+	return end
+	if addqty == nil then return end
+/*	if string.lower(statname) == "StatAgility" then
+		SystemMessage(ply, "You can't set your Perk Values with this command! Use tea_dev_setperk instead!", Color(255,205,205,255), true)
+		ply:ConCommand("playgamesound buttons/button8.wav")
+		return
+	end*/
+
+	ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." increased their "..statname.." values for "..addqty.."!")
+	print("[ADMIN COMMAND USED] "..ply:Nick().." increased their "..statname.." values for "..addqty.."!")
+	SystemMessage(ply, "You gave yourself "..statname.." values for "..addqty.."!", Color(155,255,155,255), true)
+
+    ply[statname] = ply[statname] + addqty
+
+	RecalcPlayerSpeed(ply)
+	FullyUpdatePlayer(ply)
+	ply:ConCommand("playgamesound buttons/button3.wav")
+end
+concommand.Add("tea_dev_givestat", TEADevGiveStat)
+
 function TEADevSetPerk(ply, cmd, args)
 	if !ply:IsValid() then return false end
 

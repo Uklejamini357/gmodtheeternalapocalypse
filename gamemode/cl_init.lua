@@ -4,6 +4,7 @@ include("sh_items.lua")
 include("sh_loot.lua")
 include("sh_spawnables.lua")
 include("sh_config.lua")
+include("sh_crafting.lua")
 include("client/cl_scoreboard.lua")
 include("client/cl_hud.lua")
 include("client/cl_modelsmenu.lua")
@@ -37,30 +38,30 @@ end
 
 function GM:Initialize()
 	self.BaseClass:Initialize()
-surface.CreateFont( "AmmoText", {
-	font = "arial",
-	size = 30,
-	weight = 700,
-	blursize = 0,
-	scanlines = 0,
-	antialias = true,
-} )
+surface.CreateFont("AmmoText", {
+	font	= "arial",
+	size	= 30,
+	weight	= 700,
+	blursize	= 0,
+	scanlines	= 0,
+	antialias	= true,
+})
 
-surface.CreateFont( "OtherText", {
-	font = "arial",
-	size = 15,
-	weight = 700,
-	blursize = 0,
-	scanlines = 0,
-	antialias = true,
-} )
+surface.CreateFont("OtherText", {
+	font	= "arial",
+	size	= 15,
+	weight	= 700,
+	blursize	= 0,
+	scanlines	= 0,
+	antialias	= true,
+})
 
-surface.CreateFont( "CounterShit", {
-    font    = "csd",
-    size    = 38,
-    weight  = 400,
-    antialias = true,
-    shadow = false
+surface.CreateFont("CounterShit", {
+    font	= "csd",
+    size	= 38,
+    weight	= 400,
+    antialias	= true,
+    shadow	= false
 })
 
 end
@@ -88,9 +89,12 @@ end
 end
 hook.Add( "CalcView", "DeathView", DeathView )
 
-timer.Simple(1, function()
-RunConsoleCommand("refresh_inventory")
-end)
+function GM:OnReloaded()
+	timer.Simple(1, function()
+		RunConsoleCommand("refresh_inventory")
+	end)
+	print(GM.Name.." files reloaded")
+end
 
 function GM:OnUndo( name, strCustomString )
 	

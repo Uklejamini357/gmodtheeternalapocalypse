@@ -7,17 +7,17 @@ TPlyKills = 0
 TPlyDeaths = 0
 
 net.Receive("UpdateTargetStats", function(length)
-local tnick = net.ReadString()
-local tbestsurvtim = net.ReadFloat()
-local tzkills = net.ReadFloat()
-local tplykills = net.ReadFloat()
-local tplydeaths = net.ReadFloat()
+    local tnick = net.ReadString()
+    local tbestsurvtim = net.ReadFloat()
+    local tzkills = net.ReadFloat()
+    local tplykills = net.ReadFloat()
+    local tplydeaths = net.ReadFloat()
 
-TNick = tnick
-TBestSurvivalTime = tbestsurvtim
-TZKills = tzkills
-TPlyKills = tplykills
-TPlyDeaths = tplydeaths
+    TNick = tnick
+    TBestSurvivalTime = tbestsurvtim
+    TZKills = tzkills
+    TPlyKills = tplykills
+    TPlyDeaths = tplydeaths
 end)
 
 function StatsMenu()

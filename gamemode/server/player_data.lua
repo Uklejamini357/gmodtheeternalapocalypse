@@ -1,9 +1,9 @@
 function LoadPlayer(ply)
-	if not file.IsDir("theeternalapocalypse/players/" .. string.lower(string.gsub(ply:SteamID(), ":", "_")) .. "", "DATA") then
-	   file.CreateDir("theeternalapocalypse/players/" .. string.lower(string.gsub(ply:SteamID(), ":", "_") .. ""))
+	if not file.IsDir("theeternalapocalypse/players/".. string.lower(string.gsub(ply:SteamID(), ":", "_")), "DATA") then
+	   file.CreateDir("theeternalapocalypse/players/".. string.lower(string.gsub(ply:SteamID(), ":", "_")))
 	end
-	if (file.Exists("theeternalapocalypse/players/" .. string.lower(string.gsub(ply:SteamID(), ":", "_") .. "/profile.txt"), "DATA")) then
-		local TheFile = file.Read("theeternalapocalypse/players/" .. string.lower(string.gsub(ply:SteamID(), ":", "_") .. "/profile.txt"), "DATA")
+	if (file.Exists("theeternalapocalypse/players/".. string.lower(string.gsub(ply:SteamID(), ":", "_") .."/profile.txt"), "DATA")) then
+		local TheFile = file.Read("theeternalapocalypse/players/".. string.lower(string.gsub(ply:SteamID(), ":", "_") .."/profile.txt"), "DATA")
 		local DataPieces = string.Explode("\n", TheFile)
 
 		local Output = {}
@@ -12,11 +12,13 @@ function LoadPlayer(ply)
 			local TheLine = string.Explode(";", v) -- convert txt string to stats table
 
 			ply[TheLine[1]] = TheLine[2]  -- dump all their stats into their player table
-			print(TheLine[1].." = "..TheLine[2])
+			if GetConVar("tea_server_debugging"):GetInt() >= 1 then
+				print(TheLine[1].." = "..TheLine[2])
+			end
 		end
 
---		print("Loaded player: " .. ply:Nick() .." ("..ply:SteamID()..")")
-		ate_DebugLog("Loaded player: " .. ply:Nick() .." ("..ply:SteamID()..") from file: ".."theeternalapocalypse/players/" .. string.lower(string.gsub(ply:SteamID(), ":", "_") .. "/profile.txt"))
+--		print("Loaded player: ".. ply:Nick() .." ("..ply:SteamID()..")")
+		ate_DebugLog("Loaded player: ".. ply:Nick() .." ("..ply:SteamID()..") from file: ".."theeternalapocalypse/players/".. string.lower(string.gsub(ply:SteamID(), ":", "_") .."/profile.txt"))
 
 		ply:SetNWInt("PlyLevel", ply.Level)
 		ply:SetNWInt("PlyPrestige", ply.Prestige)
@@ -50,7 +52,7 @@ function LoadPlayer(ply)
 		end
 
 		print("Created a new profile for "..ply:Nick() .." ("..ply:SteamID()..")")
-		ate_DebugLog("Created new data file for: "..ply:Nick().." ("..ply:SteamID()..") located at: ".."theeternalapocalypse/players/" .. string.lower(string.gsub(ply:SteamID(), ":", "_") .. "/profile.txt"))
+		ate_DebugLog("Created new data file for: "..ply:Nick().." ("..ply:SteamID()..") located at: ".."theeternalapocalypse/players/".. string.lower(string.gsub(ply:SteamID(), ":", "_") .."/profile.txt"))
 
 		SavePlayer(ply)
 
@@ -104,8 +106,8 @@ function SavePlayer(ply)
 	
 	print("✓ ".. ply:Nick() .." profile saved into database")	
 
-	file.Write("theeternalapocalypse/players/"..string.lower(string.gsub(ply:SteamID(), ":", "_") .. "/profile.txt"), StringToWrite)
-	ate_DebugLog("Saved player: "..ply:Nick().." ("..ply:SteamID()..") to file: ".."theeternalapocalypse/players/" ..string.lower(string.gsub(ply:SteamID(), ":", "_") .. "/profile.txt"))
+	file.Write("theeternalapocalypse/players/"..string.lower(string.gsub(ply:SteamID(), ":", "_") .."/profile.txt"), StringToWrite)
+	ate_DebugLog("Saved player: "..ply:Nick().." ("..ply:SteamID()..") to file: ".."theeternalapocalypse/players/"..string.lower(string.gsub(ply:SteamID(), ":", "_") .."/profile.txt"))
 end
 
 --Bonus multipliers for various supporters (and the dev)
@@ -255,11 +257,11 @@ function PrepareStats(ply)
 	else
 		ply.Battery = 100
 	end
+	ply.HPRegen = 0
 	ply.SurvivalTime = math.floor(CurTime())
 
 -- send their stats to them so their hud can display it (this function is called every tick, see server/netstuff.lua)
 	TEANetUpdateStats(ply)
-
 end
 
 

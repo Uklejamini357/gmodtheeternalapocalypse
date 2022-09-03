@@ -34,7 +34,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) local healing = UseFunc_Heal(ply, 3, 11, 0, "comrade_vodka/inv_bandages.ogg") return healing end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_bandage") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_bandage") return drop end
 	},
 
 	["item_medkit"] = {
@@ -47,7 +47,7 @@ ItemsList = {
 		["Rarity"] = 3,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) local healing = UseFunc_Heal(ply, 3, 45, 5, "comrade_vodka/inv_aptecka.ogg") return healing end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_medkit") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_medkit") return drop end
 	},
 
 	["item_armymedkit"] = {
@@ -60,7 +60,7 @@ ItemsList = {
 		["Rarity"] = 4,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) local healing = UseFunc_Heal(ply, 3, 70, 20, "comrade_vodka/inv_aptecka.ogg") return healing end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_armymedkit") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_armymedkit") return drop end
 	},
 
 	["item_scientificmedkit"] = {
@@ -73,7 +73,7 @@ ItemsList = {
 		["Rarity"] = 5,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) local healing = UseFunc_Heal(ply, 3, 100, 60, "comrade_vodka/inv_aptecka.ogg") return healing end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_scientificmedkit") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_scientificmedkit") return drop end
 	},
 
 	["item_antidote"] = {
@@ -86,7 +86,7 @@ ItemsList = {
 		["Rarity"] = 3,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) local healing = UseFunc_HealInfection(ply, 4, 40, "items/medshot4.wav") return healing end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_antidote") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_antidote") return drop end
 	},
 
 	["item_egg"] = {
@@ -99,7 +99,7 @@ ItemsList = {
 		["Rarity"] = 0,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) local food = UseFunc_Eat(ply, 1, 0, 4, -1, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_egg") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_egg") return drop end
 	},
 
 	["item_milk"] = {
@@ -112,7 +112,7 @@ ItemsList = {
 		["Rarity"] = 1,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) local food = UseFunc_Drink(ply, 4, 0, 3, 20, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_milk") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_milk") return drop end
 	},
 
 	["item_soda"] = {
@@ -125,7 +125,7 @@ ItemsList = {
 		["Rarity"] = 1,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) local food = UseFunc_Drink(ply, 3, 1, 8, 35, 5, -1, "comrade_vodka/inv_drink_can2.ogg") return food end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_soda") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_soda") return drop end
 	},
 
 	["item_energydrink"] = {
@@ -138,7 +138,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) local food = UseFunc_Drink(ply, 4, 1, 5, 30, 55, -8, "comrade_vodka/inv_drink_can.ogg") return food end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_energydrink") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_energydrink") return drop end
 	},
 
 	["item_energydrink_nonstop"] = {
@@ -151,7 +151,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) local food = UseFunc_Drink(ply, 4, 2, 6, 32, 85, -11, "comrade_vodka/inv_drink_can.ogg") return food end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_energydrink_nonstop") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_energydrink_nonstop") return drop end
 	},
 
 	["item_beerbottle"] = {
@@ -164,7 +164,7 @@ ItemsList = {
 		["Rarity"] = 3,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) local food = UseFunc_Drink(ply, 5, 1, 9, 5, -15, 10, "npc/barnacle/barnacle_gulp2.wav") return food end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_beerbottle") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_beerbottle") return drop end
 	},
 
 
@@ -178,7 +178,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) local food = UseFunc_Eat(ply, 2, 3, 20, -10, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_tinnedfood") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_tinnedfood") return drop end
 	},
 
 	["item_potato"] = {
@@ -191,7 +191,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) local food = UseFunc_Eat(ply, 2, 2, 22, -8, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_potato") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_potato") return drop end
 	},
 
 	["item_traderfood"] = {
@@ -204,7 +204,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) local food = UseFunc_Eat(ply, 5, 4, 47, -15, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_traderfood") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_traderfood") return drop end
 	},
 
 	["item_trout"] = {
@@ -217,7 +217,7 @@ ItemsList = {
 		["Rarity"] = 3,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) local food = UseFunc_Eat(ply, 6, 5, 65, -4, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_trout") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_trout") return drop end
 	},
 
 	["item_melon"] = {
@@ -230,7 +230,7 @@ ItemsList = {
 		["Rarity"] = 3,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) local food = UseFunc_Eat(ply, 7, 7, 85, 20, 3, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_melon") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_melon") return drop end
 	},
 
 	["item_burger"] = {
@@ -243,7 +243,7 @@ ItemsList = {
 		["Rarity"] = 7,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) local food = UseFunc_Eat(ply, 5, 30, 100, 15, 90, -15, "vo/npc/male01/yeah02.wav") return food end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_burger") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_burger") return drop end
 	},
 
 	["item_hotdog"] = {
@@ -256,7 +256,7 @@ ItemsList = {
 		["Rarity"] = 6,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) local food = UseFunc_Eat(ply, 5, 20, 80, 10, 40, -15, "vo/npc/male01/nice.wav") return food end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_hotdog") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_hotdog") return drop end
 	},
 
 	["item_donut"] = {
@@ -269,7 +269,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) local food = UseFunc_Eat(ply, 3, 2, 25, -7, 5, -1, "npc/barnacle/barnacle_gulp2.wav") return food end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_donut") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_donut") return drop end
 	},
 
 	["item_bed"] = {
@@ -295,7 +295,7 @@ ItemsList = {
 		["Rarity"] = 5,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) UseFunc_Sleep(ply, false) return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_sleepingbag") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_sleepingbag") return drop end
 	},
 
 	["item_amnesiapills"] = {
@@ -308,7 +308,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) local bool = UseFunc_Respec(ply) return bool end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_amnesiapills") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_amnesiapills") return drop end
 	},
 
 	["item_armorbattery"] = {
@@ -320,8 +320,8 @@ ItemsList = {
 		["Supply"] = 6,
 		["Rarity"] = 4,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) local armor = UseFunc_Armor(ply, 2, 15, "items/battery_pickup.wav") return armor end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_armorbattery") return drop end,
+		["UseFunc"] = function(ply) local armor = UseFunc_Armor(ply, 2, 50, 15, "items/battery_pickup.wav") return armor end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_armorbattery") return drop end
 	},
 
 	["item_armorkevlar"] = {
@@ -333,8 +333,8 @@ ItemsList = {
 		["Supply"] = 3,
 		["Rarity"] = 5,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) local armor = UseFunc_Armor(ply, 4, 35, "npc/combine_soldier/zipline_hitground2.wav") return armor end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_armorkevlar") return drop end,
+		["UseFunc"] = function(ply) local armor = UseFunc_Armor(ply, 4, 0, 35, "npc/combine_soldier/zipline_hitground2.wav") return armor end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_armorkevlar") return drop end
 	},
 
 
@@ -357,7 +357,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) SendChat(ply, translate.ClientGet(ply, "ItemNoUseSellable")) return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_radio") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_radio") return drop end
 	},
 
 	["item_scrap"] = {
@@ -369,8 +369,8 @@ ItemsList = {
 		["Supply"] = -1,
 		["Rarity"] = 2,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) local armor = UseFunc_Armor(ply, 3, 10, "npc/combine_soldier/zipline_hitground2.wav") return armor end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_scrap") return drop end,
+		["UseFunc"] = function(ply) local armor = UseFunc_Armor(ply, 3, 0, 10, "npc/combine_soldier/zipline_hitground2.wav") return armor end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_scrap") return drop end
 	},
 
 	["item_chems"] = {
@@ -383,7 +383,7 @@ ItemsList = {
 		["Rarity"] = 3,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) SendChat(ply, translate.ClientGet(ply, "ItemNoUseSellable")) return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_chems") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_chems") return drop end
 	},
 
 	["item_tv"] = {
@@ -396,7 +396,7 @@ ItemsList = {
 		["Rarity"] = 3,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) SendChat(ply, translate.ClientGet(ply, "ItemNoUseSellable")) return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_tv") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_tv") return drop end
 	},
 
 	["item_beer"] = {
@@ -409,7 +409,7 @@ ItemsList = {
 		["Rarity"] = 3,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) SendChat(ply, translate.ClientGet(ply, "ItemNoUseSellable")) return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_beer") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_beer") return drop end
 	},
 
 	["item_hamradio"] = {
@@ -422,7 +422,7 @@ ItemsList = {
 		["Rarity"] = 3,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) SendChat(ply, translate.ClientGet(ply, "ItemNoUseSellable")) return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_hamradio") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_hamradio") return drop end
 	},
 
 	["item_computer"] = {
@@ -435,7 +435,7 @@ ItemsList = {
 		["Rarity"] = 4,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) SendChat(ply, translate.ClientGet(ply, "ItemNoUseSellable")) return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_computer") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_computer") return drop end
 	},
 
 
@@ -449,7 +449,7 @@ ItemsList = {
 		["Rarity"] = 11,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) SendChat(ply, translate.ClientGet(ply, "ItemNoUseWeapon")) return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_blueprint_sawbow") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_blueprint_sawbow") return drop end
 	},
 
 	["item_blueprint_railgun"] = {
@@ -462,7 +462,7 @@ ItemsList = {
 		["Rarity"] = 11,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) SendChat(ply, translate.ClientGet(ply, "ItemNoUseWeapon")) return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_blueprint_railgun") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_blueprint_railgun") return drop end
 	},
 
 
@@ -488,7 +488,7 @@ ItemsList = {
 		["Rarity"] = 0,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) SendChat(ply, translate.ClientGet(ply, "ItemNoUse")) return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_tin") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_tin") return drop end
 	},
 
 	["item_junk_boot"] = {
@@ -501,7 +501,7 @@ ItemsList = {
 		["Rarity"] = 0,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) SendChat(ply, translate.ClientGet(ply, "ItemNoUse")) return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_boot") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_boot") return drop end
 	},
 
 
@@ -515,7 +515,7 @@ ItemsList = {
 		["Rarity"] = 0,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) SendChat(ply, translate.ClientGet(ply, "ItemNoUse")) return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_paper") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_paper") return drop end
 	},
 
 	["item_junk_keyboard"] = {
@@ -528,7 +528,7 @@ ItemsList = {
 		["Rarity"] = 0,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) SendChat(ply, translate.ClientGet(ply, "ItemNoUse")) return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_keyboard") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_keyboard") return drop end
 	},
 
 	["item_junk_gardenpot"] = {
@@ -541,7 +541,7 @@ ItemsList = {
 		["Rarity"] = 0,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) SendChat(ply, translate.ClientGet(ply, "ItemNoUse")) return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_gardenpot") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_gardenpot") return drop end
 	},
 
 	["item_junk_paint"] = {
@@ -554,7 +554,7 @@ ItemsList = {
 		["Rarity"] = 0,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) SendChat(ply, translate.ClientGet(ply, "ItemNoUse")) return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_paint") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_paint") return drop end
 	},
 
 	["item_junk_doll"] = {
@@ -567,7 +567,7 @@ ItemsList = {
 		["Rarity"] = 0,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) SendChat(ply, translate.ClientGet(ply, "ItemNoUse")) return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_doll") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_doll") return drop end
 	},
 
 	["item_junk_pot"] = {
@@ -580,7 +580,7 @@ ItemsList = {
 		["Rarity"] = 0,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) SendChat(ply, translate.ClientGet(ply, "ItemNoUse")) return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_pot") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_pot") return drop end
 	},
 
 	["item_junk_hula"] = {
@@ -593,7 +593,7 @@ ItemsList = {
 		["Rarity"] = 0,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) SendChat(ply, translate.ClientGet(ply, "ItemNoUse")) return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_hula") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_hula") return drop end
 	},
 
 	["item_junk_nailbox"] = {
@@ -606,7 +606,7 @@ ItemsList = {
 		["Rarity"] = 0,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) SendChat(ply, translate.ClientGet(ply, "ItemNoUse")) return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_nailbox") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_nailbox") return drop end
 	},
 
 	["item_junk_twig"] = {
@@ -619,7 +619,7 @@ ItemsList = {
 		["Rarity"] = 0,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) SendChat(ply, translate.ClientGet(ply, "ItemNoUse")) return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_twig") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_twig") return drop end
 	},
 
 	--secret item?????
@@ -633,7 +633,7 @@ ItemsList = {
 		["Rarity"] = 11,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) SendChat(ply, "NO!") return true end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "upgradestatimmune") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "upgradestatimmune") return drop end
 	},
 
 
@@ -650,7 +650,7 @@ ItemsList = {
 		["Rarity"] = 11,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) SendChat(ply, translate.ClientGet(ply, "ItemNoUseVehicle")) return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_craft_fueltank") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_craft_fueltank") return drop end
 	},
 
 	["item_craft_wheel"] = {
@@ -663,7 +663,7 @@ ItemsList = {
 		["Rarity"] = 11,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) SendChat(ply, translate.ClientGet(ply, "ItemNoUseVehicle")) return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_craft_wheel") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_craft_wheel") return drop end
 	},
 
 	["item_craft_oil"] = {
@@ -676,7 +676,7 @@ ItemsList = {
 		["Rarity"] = 11,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) SendChat(ply, translate.ClientGet(ply, "ItemNoUseVehicle")) return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_craft_oil") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_craft_oil") return drop end
 	},
 
 	["item_craft_battery"] = {
@@ -688,8 +688,8 @@ ItemsList = {
 		["Supply"] = -1,
 		["Rarity"] = 11,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) SendChat(ply, "I can't do anything with this just now, i should go find a crafting station or vehicle dealer") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_craft_battery") return drop end,
+		["UseFunc"] = function(ply) SendChat(ply, translate.ClientGet(ply, "ItemNoUseCraftable")) return false end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_craft_battery") return drop end
 	},
 
 	["item_craft_ecb"] = {
@@ -701,8 +701,8 @@ ItemsList = {
 		["Supply"] = -1,
 		["Rarity"] = 11,
 		["Category"] = 1,
-		["UseFunc"] = function(ply) SendChat(ply, "I can't do anything with this just now, i should go find a crafting station or vehicle dealer") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_craft_ecb") return drop end,
+		["UseFunc"] = function(ply) SendChat(ply, translate.ClientGet(ply, "ItemNoUseCraftable")) return false end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_craft_ecb") return drop end
 	},
 
 	["item_craft_engine_small"] = {
@@ -715,7 +715,7 @@ ItemsList = {
 		["Rarity"] = 11,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) SendChat(ply, translate.ClientGet(ply, "ItemNoUseVehicle")) return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_craft_engine_small") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_craft_engine_small") return drop end
 	},
 
 	["item_craft_engine_large"] = {
@@ -728,7 +728,7 @@ ItemsList = {
 		["Rarity"] = 11,
 		["Category"] = 1,
 		["UseFunc"] = function(ply) SendChat(ply, translate.ClientGet(ply, "ItemNoUseVehicle")) return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_craft_engine_large") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_craft_engine_large") return drop end
 	},
 
 
@@ -753,7 +753,7 @@ ItemsList = {
 		["Rarity"] = 1,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_noobcannon") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_noobcannon") if drop then ply:StripWeapon("weapon_zw_noobcannon") end return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_noobcannon") if drop then ply:StripWeapon("weapon_zw_noobcannon") end return drop end
 	},
 
 	["weapon_zw_pigsticker"] = {
@@ -766,7 +766,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_pigsticker") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_pigsticker") if drop then ply:StripWeapon("weapon_zw_pigsticker") end return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_pigsticker") if drop then ply:StripWeapon("weapon_zw_pigsticker") end return drop end
 	},
 
 	["weapon_zw_axe"] = {
@@ -779,7 +779,7 @@ ItemsList = {
 		["Rarity"] = 3,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_axe") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_axe") if drop then ply:StripWeapon("weapon_zw_axe")end return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_axe") if drop then ply:StripWeapon("weapon_zw_axe")end return drop end
 	},
 
 	["weapon_ate_wrench"] = {
@@ -792,7 +792,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_ate_wrench") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_ate_wrench") if drop then ply:StripWeapon("weapon_ate_wrench")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_ate_wrench") if drop then ply:StripWeapon("weapon_ate_wrench") end return drop end
 	},
 
 	["weapon_zw_scrapsword"] = {
@@ -805,7 +805,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_scrapsword") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_scrapsword") if drop then ply:StripWeapon("weapon_zw_scrapsword")end return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_scrapsword") if drop then ply:StripWeapon("weapon_zw_scrapsword")end return drop end
 	},
 
 	["weapon_zw_g20"] = {
@@ -818,7 +818,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_g20") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_g20") if drop then ply:StripWeapon("weapon_zw_g20")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_g20") if drop then ply:StripWeapon("weapon_zw_g20") end return drop end
 	},
 
 	["weapon_zw_57"] = {
@@ -831,7 +831,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_57") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_57") if drop then ply:StripWeapon("weapon_zw_57")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_57") if drop then ply:StripWeapon("weapon_zw_57") end return drop end
 	},
 
 	["weapon_zw_u45"] = {
@@ -844,7 +844,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_u45") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_u45") if drop then ply:StripWeapon("weapon_zw_u45")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_u45") if drop then ply:StripWeapon("weapon_zw_u45") end return drop end
 	},
 
 
@@ -858,7 +858,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_warren50") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_warren50") if drop then ply:StripWeapon("weapon_zw_warren50")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_warren50") if drop then ply:StripWeapon("weapon_zw_warren50") end return drop end
 	},
 
 	["weapon_zw_python"] = {
@@ -871,7 +871,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_python") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_python") if drop then ply:StripWeapon("weapon_zw_python")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_python") if drop then ply:StripWeapon("weapon_zw_python") end return drop end
 	},
 
 	["weapon_zw_dual"] = {
@@ -884,7 +884,7 @@ ItemsList = {
 		["Rarity"] = 4,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_dual") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_dual") if drop then ply:StripWeapon("weapon_zw_dual")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_dual") if drop then ply:StripWeapon("weapon_zw_dual") end return drop end
 	},
 
 	["weapon_zw_satan"] = {
@@ -897,7 +897,7 @@ ItemsList = {
 		["Rarity"] = 4,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_satan") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_satan") if drop then ply:StripWeapon("weapon_zw_satan")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_satan") if drop then ply:StripWeapon("weapon_zw_satan") end return drop end
 	},
 
 	["weapon_zw_mp11"] = {
@@ -910,7 +910,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_mp11") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_mp11") if drop then ply:StripWeapon("weapon_zw_mp11")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_mp11") if drop then ply:StripWeapon("weapon_zw_mp11") end return drop end
 	},
 
 	["weapon_zw_rg900"] = {
@@ -923,7 +923,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_rg900") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_rg900") if drop then ply:StripWeapon("weapon_zw_rg900")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_rg900") if drop then ply:StripWeapon("weapon_zw_rg900") end return drop end
 	},
 
 	["weapon_zw_k5a"] = {
@@ -936,7 +936,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_k5a") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_k5a") if drop then ply:StripWeapon("weapon_zw_k5a")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_k5a") if drop then ply:StripWeapon("weapon_zw_k5a") end return drop end
 	},
 
 	["weapon_zw_stinger"] = {
@@ -949,7 +949,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_stinger") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_stinger") if drop then ply:StripWeapon("weapon_zw_stinger")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_stinger") if drop then ply:StripWeapon("weapon_zw_stinger") end return drop end
 	},
 
 	["weapon_zw_bosch"] = {
@@ -962,7 +962,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_bosch") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_bosch") if drop then ply:StripWeapon("weapon_zw_bosch")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_bosch") if drop then ply:StripWeapon("weapon_zw_bosch") end return drop end
 	},
 
 	["weapon_zw_k8"] = {
@@ -975,7 +975,7 @@ ItemsList = {
 		["Rarity"] = 3,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_k8") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_k8") if drop then ply:StripWeapon("weapon_zw_k8")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_k8") if drop then ply:StripWeapon("weapon_zw_k8") end return drop end
 	},
 
 	["weapon_zw_k8c"] = {
@@ -988,7 +988,7 @@ ItemsList = {
 		["Rarity"] = 4,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_k8c") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_k8c") if drop then ply:StripWeapon("weapon_zw_k8c")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_k8c") if drop then ply:StripWeapon("weapon_zw_k8c") end return drop end
 	},
 
 	["weapon_zw_shredder"] = {
@@ -1001,7 +1001,7 @@ ItemsList = {
 		["Rarity"] = 4,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_shredder") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_shredder") if drop then ply:StripWeapon("weapon_zw_shredder")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_shredder") if drop then ply:StripWeapon("weapon_zw_shredder") end return drop end
 	},
 
 	["weapon_zw_enforcer"] = {
@@ -1014,7 +1014,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_enforcer") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_enforcer") if drop then ply:StripWeapon("weapon_zw_enforcer")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_enforcer") if drop then ply:StripWeapon("weapon_zw_enforcer") end return drop end
 	},
 
 	["weapon_zw_sweeper"] = {
@@ -1027,7 +1027,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_sweeper") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_sweeper") if drop then ply:StripWeapon("weapon_zw_sweeper")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_sweeper") if drop then ply:StripWeapon("weapon_zw_sweeper") end return drop end
 	},
 
 	["weapon_zw_ranger"] = {
@@ -1040,7 +1040,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_ranger") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_ranger") if drop then ply:StripWeapon("weapon_zw_ranger")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_ranger") if drop then ply:StripWeapon("weapon_zw_ranger") end return drop end
 	},
 
 	["weapon_zw_fusil"] = {
@@ -1053,12 +1053,12 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_fusil") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_fusil") if drop then ply:StripWeapon("weapon_zw_fusil")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_fusil") if drop then ply:StripWeapon("weapon_zw_fusil") end return drop end
 	},
 
 	["weapon_zw_stugcommando"] = {
 		["Name"] = "StugCommando",
-		["Cost"] = 9750, --time to increase cost again
+		["Cost"] = 9750, 
 		["Model"] = "models/weapons/w_rif_sg552.mdl",
 		["Description"] = "StugCommando_d",
 		["Weight"] = 4.45,
@@ -1066,7 +1066,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_stugcommando") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_stugcommando") if drop then ply:StripWeapon("weapon_zw_stugcommando")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_stugcommando") if drop then ply:StripWeapon("weapon_zw_stugcommando") end return drop end
 	},
 
 
@@ -1080,7 +1080,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_krukov") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_krukov") if drop then ply:StripWeapon("weapon_zw_krukov")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_krukov") if drop then ply:StripWeapon("weapon_zw_krukov") end return drop end
 	},
 
 	["weapon_zw_l303"] = {
@@ -1093,7 +1093,7 @@ ItemsList = {
 		["Rarity"] = 3,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_l303") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_l303") if drop then ply:StripWeapon("weapon_zw_l303")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_l303") if drop then ply:StripWeapon("weapon_zw_l303") end return drop end
 	},
 
 	["weapon_zw_scar"] = {
@@ -1106,7 +1106,7 @@ ItemsList = {
 		["Rarity"] = 5,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_scar") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_scar") if drop then ply:StripWeapon("weapon_zw_scar")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_scar") if drop then ply:StripWeapon("weapon_zw_scar") end return drop end
 	},
 
 	["weapon_zw_lmg"] = {
@@ -1119,7 +1119,7 @@ ItemsList = {
 		["Rarity"] = 3,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_lmg") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_lmg") if drop then ply:StripWeapon("weapon_zw_lmg")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_lmg") if drop then ply:StripWeapon("weapon_zw_lmg") end return drop end
 	},
 
 
@@ -1133,12 +1133,12 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_antelope") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_antelope") if drop then ply:StripWeapon("weapon_zw_antelope")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_antelope") if drop then ply:StripWeapon("weapon_zw_antelope") end return drop end
 	},
 
 	["weapon_zw_scimitar"] = {
 		["Name"] = "KohlK24Scimitar",
-		["Cost"] = 12250, --wouldn't be a bad weapon with that low cost would it? now its' cost is higher
+		["Cost"] = 12250,
 		["Model"] = "models/weapons/w_snip_g3sg1.mdl",
 		["Description"] = "KohlK24Scimitar_d",
 		["Weight"] = 5.4,
@@ -1146,7 +1146,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_scimitar") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_scimitar") if drop then ply:StripWeapon("weapon_zw_scimitar")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_scimitar") if drop then ply:StripWeapon("weapon_zw_scimitar") end return drop end
 	},
 
 	["weapon_zw_blackhawk"] = {
@@ -1159,7 +1159,7 @@ ItemsList = {
 		["Rarity"] = 4,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_blackhawk") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_blackhawk") if drop then ply:StripWeapon("weapon_zw_blackhawk")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_blackhawk") if drop then ply:StripWeapon("weapon_zw_blackhawk") end return drop end
 	},
 
 	["weapon_zw_punisher"] = {
@@ -1172,7 +1172,7 @@ ItemsList = {
 		["Rarity"] = 5,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_punisher") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_punisher") if drop then ply:StripWeapon("weapon_zw_punisher")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_punisher") if drop then ply:StripWeapon("weapon_zw_punisher") end return drop end
 	},
 	
 	["weapon_zw_scrapcrossbow"] = {
@@ -1185,7 +1185,7 @@ ItemsList = {
 		["Rarity"] = 4,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_scrapcrossbow") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_scrapcrossbow") if drop then ply:StripWeapon("weapon_zw_scrapcrossbow")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_scrapcrossbow") if drop then ply:StripWeapon("weapon_zw_scrapcrossbow") end return drop end
 	},
 
 	["weapon_zw_winchester"] = {
@@ -1198,7 +1198,7 @@ ItemsList = {
 		["Rarity"] = 5,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_winchester") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_winchester") if drop then ply:StripWeapon("weapon_zw_winchester")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_winchester") if drop then ply:StripWeapon("weapon_zw_winchester") end return drop end
 	},
 
 	["weapon_zw_perrin"] = {
@@ -1211,7 +1211,7 @@ ItemsList = {
 		["Rarity"] = 5,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_perrin") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_perrin") if drop then ply:StripWeapon("weapon_zw_perrin")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_perrin") if drop then ply:StripWeapon("weapon_zw_perrin") end return drop end
 	},
 
 	["weapon_zw_dammerung"] = {
@@ -1224,7 +1224,7 @@ ItemsList = {
 		["Rarity"] = 6,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_dammerung") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_dammerung") if drop then ply:StripWeapon("weapon_zw_dammerung")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_dammerung") if drop then ply:StripWeapon("weapon_zw_dammerung") end return drop end
 	},
 
 	["weapon_zw_rpg"] = {
@@ -1237,7 +1237,7 @@ ItemsList = {
 		["Rarity"] = 3,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_rpg") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_rpg") if drop then ply:StripWeapon("weapon_zw_rpg")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_rpg") if drop then ply:StripWeapon("weapon_zw_rpg") end return drop end
 	},
 
 
@@ -1246,12 +1246,12 @@ ItemsList = {
 		["Cost"] = 35000,
 		["Model"] = "models/weapons/w_pist_p228.mdl",
 		["Description"] = "TheFuckinator_d",
-		["Weight"] = 8.74, --i absolutely have no idea about this one except increasing its' size again
+		["Weight"] = 8.74,
 		["Supply"] = -1,
 		["Rarity"] = 7,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_fuckinator") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_fuckinator") if drop then ply:StripWeapon("weapon_zw_fuckinator")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_fuckinator") if drop then ply:StripWeapon("weapon_zw_fuckinator") end return drop end
 	},
 
 	["weapon_zw_germanator"] = {
@@ -1264,7 +1264,7 @@ ItemsList = {
 		["Rarity"] = 5,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_germanator") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_germanator") if drop then ply:StripWeapon("weapon_zw_germanator")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_germanator") if drop then ply:StripWeapon("weapon_zw_germanator") end return drop end
 	},
 
 	["weapon_zw_807"] = {
@@ -1277,7 +1277,7 @@ ItemsList = {
 		["Rarity"] = 5,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_807") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_807") if drop then ply:StripWeapon("weapon_zw_807")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_807") if drop then ply:StripWeapon("weapon_zw_807") end return drop end
 	},
 
 	["weapon_mad_crowbar"] = {
@@ -1290,7 +1290,7 @@ ItemsList = {
 		["Rarity"] = 9,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_mad_crowbar") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_mad_crowbar") if drop then ply:StripWeapon("weapon_mad_crowbar")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_mad_crowbar") if drop then ply:StripWeapon("weapon_mad_crowbar") end return drop end
 	},
 
 
@@ -1307,7 +1307,7 @@ ItemsList = {
 		["Rarity"] = 1,
 		["Category"] = 2,
 		["UseFunc"] = function(ply) local bool = UseFunc_GiveAmmo(ply, 100, "Pistol") return bool end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_pistolammo") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_pistolammo") return drop end
 	},
 
 	["item_m9k_smgammo"] = {
@@ -1320,7 +1320,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 2,
 		["UseFunc"] = function(ply) local bool = UseFunc_GiveAmmo(ply, 100, "SMG1") return bool end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_m9k_smgammo") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_m9k_smgammo") return drop end
 	},
 
 	["item_m9k_assaultammo"] = {
@@ -1333,7 +1333,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 2,
 		["UseFunc"] = function(ply) local bool = UseFunc_GiveAmmo(ply, 100, "AR2") return bool end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_m9k_assaultammo") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_m9k_assaultammo") return drop end
 	},
 
 	["item_m9k_sniperammo"] = {
@@ -1346,7 +1346,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 2,
 		["UseFunc"] = function(ply) local bool = UseFunc_GiveAmmo(ply, 50, "SniperPenetratedRound") return bool end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_m9k_sniperammo") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_m9k_sniperammo") return drop end
 	},
 
 	["item_magammo"] = {
@@ -1359,7 +1359,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 2,
 		["UseFunc"] = function(ply) local bool = UseFunc_GiveAmmo(ply, 50, "357") return bool end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_magammo") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_magammo") return drop end
 	},
 
 	["item_buckshotammo"] = {
@@ -1372,7 +1372,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 2,
 		["UseFunc"] = function(ply) local bool = UseFunc_GiveAmmo(ply, 50, "Buckshot") return bool end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_buckshotammo") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_buckshotammo") return drop end
 	},
 
 	["item_rifleammo"] = {
@@ -1385,7 +1385,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 2,
 		["UseFunc"] = function(ply) local bool = UseFunc_GiveAmmo(ply, 100, "ammo_rifle") return bool end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_rifleammo") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_rifleammo") return drop end
 	},
 
 	["item_sniperammo"] = {
@@ -1398,7 +1398,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 2,
 		["UseFunc"] = function(ply) local bool = UseFunc_GiveAmmo(ply, 50, "ammo_sniper") return bool end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_sniperammo") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_sniperammo") return drop end
 	},
 
 	["item_crossbowbolt"] = {
@@ -1411,7 +1411,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 2,
 		["UseFunc"] = function(ply) local bool = UseFunc_GiveAmmo(ply, 6, "XBowBolt") return bool end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_crossbowbolt") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_crossbowbolt") return drop end
 	},
 
 	["item_crossbowbolt_crate"] = {
@@ -1424,7 +1424,7 @@ ItemsList = {
 		["Rarity"] = 3,
 		["Category"] = 2,
 		["UseFunc"] = function(ply) local bool = UseFunc_GiveAmmo(ply, 25, "XBowBolt") return bool end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_crossbowbolt_crate") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_crossbowbolt_crate") return drop end
 	},
 
 	["item_rocketammo"] = {
@@ -1437,11 +1437,11 @@ ItemsList = {
 		["Rarity"] = 3,
 		["Category"] = 2,
 		["UseFunc"] = function(ply) local bool = UseFunc_GiveAmmo(ply, 1, "RPG_Round") return bool end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_rocketammo") return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "item_rocketammo") return drop end
 	},
 
 
--- Weapons not included in AtE
+-- Following weapons not included in AtE, so they are included in this release
 
 
     ["weapon_zw_falcon"] = {
@@ -1454,7 +1454,7 @@ ItemsList = {
 		["Rarity"] = 3,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_falcon") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_falcon") if drop then ply:StripWeapon("weapon_zw_falcon") end return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_falcon") if drop then ply:StripWeapon("weapon_zw_falcon") end return drop end
 	},
 
     ["weapon_zw_spas"] = {
@@ -1467,7 +1467,7 @@ ItemsList = {
 		["Rarity"] = 4,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_spas") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_spas") if drop then ply:StripWeapon("weapon_zw_spas") end return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_spas") if drop then ply:StripWeapon("weapon_zw_spas") end return drop end
 	},
 
     ["weapon_zw_lbr"] = {
@@ -1480,7 +1480,7 @@ ItemsList = {
 		["Rarity"] = 5,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_lbr") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_lbr") if drop then ply:StripWeapon("weapon_zw_lbr") end return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_lbr") if drop then ply:StripWeapon("weapon_zw_lbr") end return drop end
 	},
 
 
@@ -1496,8 +1496,8 @@ ItemsList = {
 		["Supply"] = -1,
 		["Rarity"] = 11,
 		["Category"] = 3,
-		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_plasmalauncher") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_plasmalauncher") if drop then ply:StripWeapon("weapon_zw_plasmalauncher")end  return drop end,
+		["UseFunc"] = function(ply) SendChat(ply, "You could gladly use that weapon, but the ENTITY CLASS FOR THIS DOESN'T EXIST!!!") /*UseFunc_EquipGun(ply, "weapon_zw_plasmalauncher")*/ return false end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_plasmalauncher") if drop then ply:StripWeapon("weapon_zw_plasmalauncher") end return drop end
 	},
 
     ["weapon_zw_minigun"] = {
@@ -1510,7 +1510,7 @@ ItemsList = {
 		["Rarity"] = 6,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_minigun") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_minigun") if drop then ply:StripWeapon("weapon_zw_minigun")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_minigun") if drop then ply:StripWeapon("weapon_zw_minigun") end return drop end
 	},
 
     ["weapon_zw_grenade_pipe"] = {
@@ -1523,7 +1523,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) local bool = UseFunc_EquipNade(ply, "weapon_zw_grenade_pipe", "nade_pipebombs") return bool end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_grenade_pipe") if drop then ply:StripWeapon("weapon_zw_grenade_pipe")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_grenade_pipe") if drop then ply:StripWeapon("weapon_zw_grenade_pipe") end return drop end,
 		["IsGrenade"] = true
 	},
 
@@ -1537,7 +1537,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) local bool = UseFunc_EquipNade(ply, "weapon_zw_grenade_flare", "nade_flares") return bool end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_grenade_flare") if drop then ply:StripWeapon("weapon_zw_grenade_flare")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_grenade_flare") if drop then ply:StripWeapon("weapon_zw_grenade_flare") end return drop end,
 		["IsGrenade"] = true
 	},
 
@@ -1551,7 +1551,7 @@ ItemsList = {
 		["Rarity"] = 3,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) local bool = UseFunc_EquipNade(ply, "weapon_zw_grenade_frag", "Grenade") return bool end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_grenade_frag") if drop then ply:StripWeapon("weapon_zw_grenade_frag")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_grenade_frag") if drop then ply:StripWeapon("weapon_zw_grenade_frag") end return drop end,
 		["IsGrenade"] = true
 	},
 
@@ -1565,13 +1565,13 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) local bool = UseFunc_EquipNade(ply, "weapon_zw_grenade_molotov", "nade_molotov") return bool end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_grenade_molotov") if drop then ply:StripWeapon("weapon_zw_grenade_molotov")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "weapon_zw_grenade_molotov") if drop then ply:StripWeapon("weapon_zw_grenade_molotov") end return drop end,
 		["IsGrenade"] = true
 	},
 
 
 -- M9k guns
--- decreasing their cost because they're too expensive
+
 
     ["m9k_coltpython"] = {
 		["Name"] = "M9KColtPython",
@@ -1583,7 +1583,7 @@ ItemsList = {
 		["Rarity"] = 3,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_coltpython") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_coltpython") if drop then ply:StripWeapon("m9k_coltpython")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_coltpython") if drop then ply:StripWeapon("m9k_coltpython") end return drop end
 	},
 
     ["m9k_glock"] = {
@@ -1596,7 +1596,7 @@ ItemsList = {
 		["Rarity"] = 4,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_glock") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_glock") if drop then ply:StripWeapon("m9k_glock")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_glock") if drop then ply:StripWeapon("m9k_glock") end return drop end
 	},
 
     ["m9k_hk45"] = {
@@ -1609,7 +1609,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_hk45") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_hk45") if drop then ply:StripWeapon("m9k_hk45") end return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_hk45") if drop then ply:StripWeapon("m9k_hk45") end return drop end
 	},
 
     ["m9k_m92beretta"] = {
@@ -1622,7 +1622,7 @@ ItemsList = {
 		["Rarity"] = 3,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_m92beretta") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_m92beretta") if drop then ply:StripWeapon("m9k_m92beretta") end return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_m92beretta") if drop then ply:StripWeapon("m9k_m92beretta") end return drop end
 	},
 
     ["m9k_luger"] = {
@@ -1635,7 +1635,7 @@ ItemsList = {
 		["Rarity"] = 3,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_luger") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_luger") if drop then ply:StripWeapon("m9k_luger")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_luger") if drop then ply:StripWeapon("m9k_luger") end return drop end
 	},
 
     ["m9k_ragingbull"] = {
@@ -1648,7 +1648,7 @@ ItemsList = {
 		["Rarity"] = 4,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_ragingbull") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_ragingbull") if drop then ply:StripWeapon("m9k_ragingbull")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_ragingbull") if drop then ply:StripWeapon("m9k_ragingbull") end return drop end
 	},
 
     ["m9k_scoped_taurus"] = {
@@ -1661,7 +1661,7 @@ ItemsList = {
 		["Rarity"] = 4,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_scoped_taurus") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_scoped_taurus") if drop then ply:StripWeapon("m9k_scoped_taurus")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_scoped_taurus") if drop then ply:StripWeapon("m9k_scoped_taurus") end return drop end
 	},
 
     ["m9k_remington1858"] = {
@@ -1674,7 +1674,7 @@ ItemsList = {
 		["Rarity"] = 3,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_remington1858") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_remington1858") if drop then ply:StripWeapon("m9k_remington1858")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_remington1858") if drop then ply:StripWeapon("m9k_remington1858") end return drop end
 	},
 
     ["m9k_model3russian"] = {
@@ -1687,7 +1687,7 @@ ItemsList = {
 		["Rarity"] = 3,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_model3russian") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_model3russian") if drop then ply:StripWeapon("m9k_model3russian")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_model3russian") if drop then ply:StripWeapon("m9k_model3russian") end return drop end
 	},
 
     ["m9k_model500"] = {
@@ -1700,7 +1700,7 @@ ItemsList = {
 		["Rarity"] = 4,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_model500") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_model500") if drop then ply:StripWeapon("m9k_model500")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_model500") if drop then ply:StripWeapon("m9k_model500") end return drop end
 	},
 
     ["m9k_model627"] = {
@@ -1713,7 +1713,7 @@ ItemsList = {
 		["Rarity"] = 4,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_model627") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_model627") if drop then ply:StripWeapon("m9k_model627")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_model627") if drop then ply:StripWeapon("m9k_model627") end return drop end
 	},
 
     ["m9k_sig_p229r"] = {
@@ -1726,7 +1726,7 @@ ItemsList = {
 		["Rarity"] = 3,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_sig_p229r") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_sig_p229r") if drop then ply:StripWeapon("m9k_sig_p229r")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_sig_p229r") if drop then ply:StripWeapon("m9k_sig_p229r") end return drop end
 	},
 	
     ["m9k_acr"] = {
@@ -1739,7 +1739,7 @@ ItemsList = {
 		["Rarity"] = 6,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_acr") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_acr") if drop then ply:StripWeapon("m9k_acr")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_acr") if drop then ply:StripWeapon("m9k_acr") end return drop end
 	},
 	
     ["m9k_ak47"] = {
@@ -1752,7 +1752,7 @@ ItemsList = {
 		["Rarity"] = 6,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_ak47") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_ak47") if drop then ply:StripWeapon("m9k_ak47")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_ak47") if drop then ply:StripWeapon("m9k_ak47") end return drop end
 	},
 	
     ["m9k_ak74"] = {
@@ -1765,10 +1765,8 @@ ItemsList = {
 		["Rarity"] = 6,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_ak74") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_ak74") if drop then ply:StripWeapon("m9k_ak74")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_ak74") if drop then ply:StripWeapon("m9k_ak74") end return drop end
 	},
-	
-	--rest of m9k guns not included because they are still... unfinished (and i'm running out of ideas what to do next)
 
     ["m9k_amd65"] = {
 		["Name"] = "M9kAMD65",
@@ -1780,7 +1778,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_amd65") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_amd65") if drop then ply:StripWeapon("m9k_amd65") end return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_amd65") if drop then ply:StripWeapon("m9k_amd65") end return drop end
 	},
 	
     ["m9k_an94"] = {
@@ -1793,7 +1791,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_an94") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_an94") if drop then ply:StripWeapon("m9k_an94") end return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_an94") if drop then ply:StripWeapon("m9k_an94") end return drop end
 	},
 
     ["m9k_val"] = {
@@ -1806,7 +1804,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_val") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_val") if drop then ply:StripWeapon("m9k_val") end return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_val") if drop then ply:StripWeapon("m9k_val") end return drop end
 	},
 
     ["m9k_f2000"] = {
@@ -1819,7 +1817,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_f2000") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_f2000") if drop then ply:StripWeapon("m9k_f2000")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_f2000") if drop then ply:StripWeapon("m9k_f2000") end return drop end
 	},
 
     ["m9k_fal"] = {
@@ -1832,7 +1830,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_fal") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_fal") if drop then ply:StripWeapon("m9k_fal")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_fal") if drop then ply:StripWeapon("m9k_fal") end return drop end
 	},
 
     ["m9k_g36"] = {
@@ -1845,7 +1843,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_g36") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_g36") if drop then ply:StripWeapon("m9k_g36")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_g36") if drop then ply:StripWeapon("m9k_g36") end return drop end
 	},
 
     ["m9k_m416"] = {
@@ -1858,7 +1856,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_m416") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_m416") if drop then ply:StripWeapon("m9k_m416")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_m416") if drop then ply:StripWeapon("m9k_m416") end return drop end
 	},
 
     ["m9k_g3a3"] = {
@@ -1871,7 +1869,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_g3a3") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_g3a3") if drop then ply:StripWeapon("m9k_g3a3")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_g3a3") if drop then ply:StripWeapon("m9k_g3a3") end return drop end
 	},
 
     ["m9k_l85"] = {
@@ -1884,7 +1882,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_l85") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_l85") if drop then ply:StripWeapon("m9k_l85")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_l85") if drop then ply:StripWeapon("m9k_l85") end return drop end
 	},
 
     ["m9k_m16a4_acog"] = {
@@ -1897,7 +1895,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_m16a4_acog") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_m16a4_acog") if drop then ply:StripWeapon("m9k_m16a4_acog")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_m16a4_acog") if drop then ply:StripWeapon("m9k_m16a4_acog") end return drop end
 	},
 
     ["m9k_vikhr"] = {
@@ -1910,7 +1908,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_vikhr") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_vikhr") if drop then ply:StripWeapon("m9k_vikhr")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_vikhr") if drop then ply:StripWeapon("m9k_vikhr") end return drop end
 	},
 
     ["m9k_auga3"] = {
@@ -1923,7 +1921,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_auga3") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_auga3") if drop then ply:StripWeapon("m9k_auga3")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_auga3") if drop then ply:StripWeapon("m9k_auga3") end return drop end
 	},
 
     ["m9k_tar21"] = {
@@ -1936,7 +1934,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_tar21") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_tar21") if drop then ply:StripWeapon("m9k_tar21")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_tar21") if drop then ply:StripWeapon("m9k_tar21") end return drop end
 	},
 
     ["m9k_ares_shrike"] = {
@@ -1949,7 +1947,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_ares_shrike") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_ares_shrike") if drop then ply:StripWeapon("m9k_ares_shrike")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_ares_shrike") if drop then ply:StripWeapon("m9k_ares_shrike") end return drop end
 	},
 
     ["m9k_fg42"] = {
@@ -1962,7 +1960,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_fg42") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_fg42") if drop then ply:StripWeapon("m9k_fg42")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_fg42") if drop then ply:StripWeapon("m9k_fg42") end return drop end
 	},
 
     ["m9k_m1918bar"] = {
@@ -1975,7 +1973,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_m1918bar") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_m1918bar") if drop then ply:StripWeapon("m9k_m1918bar")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_m1918bar") if drop then ply:StripWeapon("m9k_m1918bar") end return drop end
 	},
 
     ["m9k_m60"] = {
@@ -1988,7 +1986,7 @@ ItemsList = {
 		["Rarity"] = 8,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_m60") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_m60") if drop then ply:StripWeapon("m9k_m60")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_m60") if drop then ply:StripWeapon("m9k_m60") end return drop end
 	},
 
     ["m9k_pkm"] = {
@@ -2001,7 +1999,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_pkm") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_pkm") if drop then ply:StripWeapon("m9k_pkm") end return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_pkm") if drop then ply:StripWeapon("m9k_pkm") end return drop end
 	},
 
     ["m9k_m3"] = {
@@ -2014,7 +2012,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_m3") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_m3") if drop then ply:StripWeapon("m9k_m3")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_m3") if drop then ply:StripWeapon("m9k_m3") end return drop end
 	},
 
     ["m9k_browningauto5"] = {
@@ -2027,7 +2025,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_browningauto5") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_browningauto5") if drop then ply:StripWeapon("m9k_browningauto5")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_browningauto5") if drop then ply:StripWeapon("m9k_browningauto5") end return drop end
 	},
 
     ["m9k_ithacam37"] = {
@@ -2040,7 +2038,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_ithacam37") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_ithacam37") if drop then ply:StripWeapon("m9k_ithacam37")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_ithacam37") if drop then ply:StripWeapon("m9k_ithacam37") end return drop end
 	},
 
     ["m9k_mossberg590"] = {
@@ -2053,7 +2051,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_mossberg590") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_mossberg590") if drop then ply:StripWeapon("m9k_mossberg590")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_mossberg590") if drop then ply:StripWeapon("m9k_mossberg590") end return drop end
 	},
 
     ["m9k_jackhammer"] = {
@@ -2066,7 +2064,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_jackhammer") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_jackhammer") if drop then ply:StripWeapon("m9k_jackhammer")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_jackhammer") if drop then ply:StripWeapon("m9k_jackhammer") end return drop end
 	},
 
     ["m9k_spas12"] = {
@@ -2079,7 +2077,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_spas12") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_spas12") if drop then ply:StripWeapon("m9k_spas12")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_spas12") if drop then ply:StripWeapon("m9k_spas12") end return drop end
 	},
 
     ["m9k_striker12"] = {
@@ -2092,7 +2090,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_striker12") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_striker12") if drop then ply:StripWeapon("m9k_striker12")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_striker12") if drop then ply:StripWeapon("m9k_striker12") end return drop end
 	},
 
     ["m9k_1897winchester"] = {
@@ -2105,7 +2103,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_1897winchester") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_1897winchester") if drop then ply:StripWeapon("m9k_1897winchester")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_1897winchester") if drop then ply:StripWeapon("m9k_1897winchester") end return drop end
 	},
 
     ["m9k_1887winchester"] = {
@@ -2118,7 +2116,7 @@ ItemsList = {
 		["Rarity"] = 6,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_1887winchester") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_1887winchester") if drop then ply:StripWeapon("m9k_1887winchester")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_1887winchester") if drop then ply:StripWeapon("m9k_1887winchester") end return drop end
 	},
 
     ["m9k_barret_m82"] = {
@@ -2131,7 +2129,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_barret_m82") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_barret_m82") if drop then ply:StripWeapon("m9k_barret_m82") end return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_barret_m82") if drop then ply:StripWeapon("m9k_barret_m82") end return drop end
 	},
 
     ["m9k_m98b"] = {
@@ -2144,7 +2142,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_m98b") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_m98b") if drop then ply:StripWeapon("m9k_m98b")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_m98b") if drop then ply:StripWeapon("m9k_m98b") end return drop end
 	},
 
     ["m9k_svu"] = {
@@ -2157,7 +2155,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_svu") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_svu") if drop then ply:StripWeapon("m9k_svu")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_svu") if drop then ply:StripWeapon("m9k_svu") end return drop end
 	},
 
     ["m9k_sl8"] = {
@@ -2170,7 +2168,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_sl8") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_sl8") if drop then ply:StripWeapon("m9k_sl8") end return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_sl8") if drop then ply:StripWeapon("m9k_sl8") end return drop end
 	},
 
     ["m9k_intervention"] = {
@@ -2183,7 +2181,7 @@ ItemsList = {
 		["Rarity"] = 7,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_intervention") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_intervention") if drop then ply:StripWeapon("m9k_intervention") end return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_intervention") if drop then ply:StripWeapon("m9k_intervention") end return drop end
 	},
 
     ["m9k_m24"] = {
@@ -2196,7 +2194,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_m24") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_m24") if drop then ply:StripWeapon("m9k_m24")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_m24") if drop then ply:StripWeapon("m9k_m24") end return drop end
 	},
 
     ["m9k_psg1"] = {
@@ -2209,7 +2207,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_psg1") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_psg1") if drop then ply:StripWeapon("m9k_psg1") end return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_psg1") if drop then ply:StripWeapon("m9k_psg1") end return drop end
 	},
 
     ["m9k_remington7615p"] = {
@@ -2222,7 +2220,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_remington7615p") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_remington7615p") if drop then ply:StripWeapon("m9k_remington7615p") end return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_remington7615p") if drop then ply:StripWeapon("m9k_remington7615p") end return drop end
 	},
 
     ["m9k_svt40"] = {
@@ -2235,7 +2233,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_svt40") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_svt40") if drop then ply:StripWeapon("m9k_svt40")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_svt40") if drop then ply:StripWeapon("m9k_svt40") end return drop end
 	},
 
     ["m9k_contender"] = {
@@ -2248,7 +2246,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_contender") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_contender") if drop then ply:StripWeapon("m9k_contender")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_contender") if drop then ply:StripWeapon("m9k_contender") end return drop end
 	},
 
     ["m9k_honeybadger"] = {
@@ -2261,7 +2259,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_honeybadger") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_honeybadger") if drop then ply:StripWeapon("m9k_honeybadger")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_honeybadger") if drop then ply:StripWeapon("m9k_honeybadger") end return drop end
 	},
 
     ["m9k_mp5"] = {
@@ -2274,7 +2272,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_mp5") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_mp5") if drop then ply:StripWeapon("m9k_mp5")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_mp5") if drop then ply:StripWeapon("m9k_mp5") end return drop end
 	},
 
     ["m9k_mp7"] = {
@@ -2287,7 +2285,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_mp7") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_mp7") if drop then ply:StripWeapon("m9k_mp7")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_mp7") if drop then ply:StripWeapon("m9k_mp7") end return drop end
 	},
 
     ["m9k_ump45"] = {
@@ -2300,7 +2298,7 @@ ItemsList = {
 		["Rarity"] = 6,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_ump45") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_ump45") if drop then ply:StripWeapon("m9k_ump45")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_ump45") if drop then ply:StripWeapon("m9k_ump45") end return drop end
 	},
 
     ["m9k_kac_pdw"] = {
@@ -2313,7 +2311,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_kac_pdw") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_kac_pdw") if drop then ply:StripWeapon("m9k_kac_pdw")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_kac_pdw") if drop then ply:StripWeapon("m9k_kac_pdw") end return drop end
 	},
 
     ["m9k_vector"] = {
@@ -2326,7 +2324,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_vector") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_vector") if drop then ply:StripWeapon("m9k_vector")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_vector") if drop then ply:StripWeapon("m9k_vector") end return drop end
 	},
 
     ["m9k_magpulpdr"] = {
@@ -2339,7 +2337,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_magpulpdr") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_magpulpdr") if drop then ply:StripWeapon("m9k_magpulpdr")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_magpulpdr") if drop then ply:StripWeapon("m9k_magpulpdr") end return drop end
 	},
 
     ["m9k_mp5sd"] = {
@@ -2352,7 +2350,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_mp5sd") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_mp5sd") if drop then ply:StripWeapon("m9k_mp5sd")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_mp5sd") if drop then ply:StripWeapon("m9k_mp5sd") end return drop end
 	},
 
     ["m9k_mp9"] = {
@@ -2365,7 +2363,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_mp9") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_mp9") if drop then ply:StripWeapon("m9k_mp9")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_mp9") if drop then ply:StripWeapon("m9k_mp9") end return drop end
 	},
 
     ["m9k_tec9"] = {
@@ -2378,7 +2376,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_tec9") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_tec9") if drop then ply:StripWeapon("m9k_tec9")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_tec9") if drop then ply:StripWeapon("m9k_tec9") end return drop end
 	},
 
     ["m9k_thompson"] = {
@@ -2391,7 +2389,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_thompson") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_thompson") if drop then ply:StripWeapon("m9k_thompson")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_thompson") if drop then ply:StripWeapon("m9k_thompson") end return drop end
 	},
 
     ["m9k_uzi"] = {
@@ -2404,7 +2402,7 @@ ItemsList = {
 		["Rarity"] = 2,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "m9k_uzi") return false end,
-		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_uzi") if drop then ply:StripWeapon("m9k_uzi")end  return drop end,
+		["DropFunc"] = function(ply) local drop = UseFunc_DropItem(ply, "m9k_uzi") if drop then ply:StripWeapon("m9k_uzi") end return drop end
 	},
 
 
@@ -3203,18 +3201,25 @@ function UseFunc_HealInfection(ply, usetime, infection, snd)
 			end)
 			return true
 	else
-		SendChat(ply, "You could have healed yourself, before you died.") -- if they try to call this function when they are dead
+		SendChat(ply, "You could have healed yourself, before you died.")
 		return false
 	end
 end
 
-function UseFunc_Armor(ply, usetime, armor, snd)
+function UseFunc_Armor(ply, usetime, battery, armor, snd)
 if !SERVER then return false end
 if !ply:IsValid() then return false end
 if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "Can't use item while sleeping!") return false end
 if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, translate.ClientGet(ply, "ItemNoUseCooldown")) return false end
 	if ply:Alive() then
 			if ply:Armor() >= ply:GetMaxArmor() then SendChat(ply, "Your armor is already at full condition.") return false end
+			local armorstr = ply:GetNWString("ArmorType") or "none"
+			local armortype = ItemsList[armorstr]
+			if armortype and armorstr then
+				ply.Battery = math.Clamp(ply.Battery + battery, 0, 100 + armortype["ArmorStats"]["battery"])
+			else
+				ply.Battery = math.Clamp(ply.Battery + battery, 0, 100)
+			end
 			ply:SetArmor(math.Clamp(ply:Armor() + (armor * (1 + (ply.StatEngineer * 0.02))), 0, ply:GetMaxArmor()))
 			ply:EmitSound(snd, 100, 100)
 			SendUseDelay(ply, usetime)

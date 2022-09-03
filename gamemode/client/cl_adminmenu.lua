@@ -318,10 +318,6 @@ function AdminMenu()
 
 
 
-
-
-
-
 	local SpawnMenu = vgui.Create( "DPanelList", PropertySheet )
 	SpawnMenu:SetTall( 500 )
 	SpawnMenu:SetWide( 690 )
@@ -486,17 +482,9 @@ function AdminMenu()
 	SpawnMenuProperties:AddSheet("Supplies", SpawnMenuAmmo, "icon16/box.png", false, false, "Food, Medical Supplies, Misc items, for survival")
 	SpawnMenuProperties:AddSheet("Weapons", SpawnMenuGuns, "icon16/bomb.png", false, false, "Good guns that cost a lot and uses ammo, but also melee that cost less.")
 	SpawnMenuProperties:AddSheet("Armor", SpawnMenuArmor, "icon16/shield.png", false, false, "Protective Armor to protect yourself from any sort of danger")
-
---	DoTraderList(1, SupplyPanel)
---	DoTraderList(2, AmmoPanel)
---	DoTraderList(3, GunPanel)
---	DoTraderList(4, ArmorPanel)
-
-
 	
-
-	PropertySheet:AddSheet("Admin Commands", AdminCmds, "icon16/bin.png", false, false, "Get a list of admin commands")
-	PropertySheet:AddSheet("Superadmin Commands", SAdminCmds, "icon16/shield.png", false, false, "Use superadmin commands")
+	PropertySheet:AddSheet("Admin Commands", AdminCmds, "icon16/shield.png", false, false, "Get a list of admin commands")
+	PropertySheet:AddSheet("Superadmin Commands", SAdminCmds, "icon16/shield_add.png", false, false, "Use superadmin commands")
 	PropertySheet:AddSheet("Spawn Menu", SpawnMenu, "icon16/table.png", false, false, "Spawn or give yourself some stuff\n(SUPERADMIN ONLY)")
 
 end

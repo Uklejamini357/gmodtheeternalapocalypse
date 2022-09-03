@@ -14,7 +14,7 @@ Config["ZombieSpawnRate"] = 14	-- fresh zombies will be spawned in every x secon
 Config["BossSpawnRate"] = 3150	-- how fast the boss spawn timer will be run in seconds (3600 seconds = 1 hour). Keep in mind that if there is less than 2 players online then the boss will never spawn unless summoned by ate_admin_spawnboss
 Config["AirdropSpawnRate"] = 4000	-- same as boss spawn rate but for airdrops except required amount of players for an airdrop to spawn is 5 or more
 
-Config["MaxCarryWeight"] = 37.4	-- how much carry weight should we have by default (in kg)
+Config["MaxCarryWeight"] = 36.72	-- how much carry weight should we have by default (in kg)
 Config["WalkSpeed"] = 135	--	remember that the speed skill increases your walk speed by 3.5 for each level, so at 200 walkspeed players can reach a possible maximum of 235 sprint speed
 Config["RunSpeed"] = 260	--	speed skill increases your running speed by 7 per skill level, so if default is 300, players can reach max of 370 run speed
 
@@ -35,7 +35,6 @@ Config["FileSystem"] = "Legacy" --	set to Legacy or PData
 -----------------------------ZOMBIE CLASSES-----------------------------
 
 Config["ZombieClasses"] = {
-
 	["npc_ate_basic"] = {		-- table name must be the entclass name of the zombie, see garrysmod/gamemodes/theeternalapocalypse/entities for entclasses (or you can add other zombie types by yourself)
 		["SpawnChance"] = 67,	-- spawn chance in %, be careful as the spawn chance of all your zombies totalled up must not exceed 100% (there is a helper function that will tell you if this has happened or how much the current total spawn chance for zombies is)
 		["XPReward"] = 48,		-- average xp reward for killing this zombie, varies with the VaryRewards setting above
@@ -84,12 +83,11 @@ Config["ZombieClasses"] = {
 		["MoneyReward"] = 700,
 	},
 
-		
-
 }
 
 -----------------------------BOSS CLASSES-----------------------------
 
+--PLEASE do not change or add any boss classes, it will break it. (i will add more bosses in future)
 Config["BossClasses"] = {
 	["npc_nextbot_boss_tyrant"] = {
 		["SpawnChance"] = 100,
