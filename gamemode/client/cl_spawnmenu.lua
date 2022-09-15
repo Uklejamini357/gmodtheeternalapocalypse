@@ -19,27 +19,28 @@ end
 
 
 function PropMenu()
-	PropsFrame = vgui.Create( "DFrame" )
+	PropsFrame = vgui.Create("DFrame")
 	PropsFrame:SetSize(1000, 700)
 	PropsFrame:Center()
 	PropsFrame:SetTitle("")
-	PropsFrame:SetDraggable( false )
-	PropsFrame:SetVisible( true )
-	PropsFrame:ShowCloseButton( false )
+	PropsFrame:SetDraggable(false)
+	PropsFrame:SetVisible(true)
+	PropsFrame:ShowCloseButton(false)
 	PropsFrame:MakePopup()
 	PropsFrame.Paint = function()
-		draw.RoundedBox( 2,  0,  0, PropsFrame:GetWide(), PropsFrame:GetTall(), Color( 0, 0, 0, 200 ) )
+		draw.RoundedBox( 2, 0, 0, PropsFrame:GetWide(), PropsFrame:GetTall(), Color( 0, 0, 0, 200 ) )
 		surface.SetDrawColor(150, 0, 0 ,255)
 		surface.DrawOutlinedRect(0, 0, PropsFrame:GetWide(), PropsFrame:GetTall())
 	end
 
+	local tea_config_propcostenabled = tobool(GetConVarNumber("tea_config_propcostenabled"))
 	local PropertySheet = vgui.Create( "DPropertySheet", PropsFrame )
 	PropertySheet:SetPos( 5, 5 )
 	PropertySheet:SetSize( 990, 690 )
 	PropertySheet.Paint = function()
 		surface.SetDrawColor(0, 0, 0, 100)
 		surface.DrawRect(0, 0, PropertySheet:GetWide(), PropertySheet:GetTall())
-		if GetConVar("tea_config_propcostenabled"):GetInt() < 1 then
+		if not tea_config_propcostenabled then
 			local text1 = vgui.Create("DLabel", PropsFrame)
 			text1:SetFont("TargetIDSmall")
 			text1:SetText("Prop spawning cost disabled (faction structures are the exception)")
@@ -98,7 +99,7 @@ function PropMenu()
 		local x,y = ItemName:GetPos();
 		ItemName:SetPos( x, y + 20)
 
-		if GetConVar("tea_config_propcostenabled"):GetInt() >= 1 then
+		if tea_config_propcostenabled then
 			local ItemCost = vgui.Create( "DLabel", ItemBackground )
 			ItemCost:SetFont( "TargetIDSmall" )
 			ItemCost:SetColor( Color(155,255,155,255) )
@@ -192,7 +193,7 @@ function PropMenu()
 		local x,y = ItemName:GetPos();
 		ItemName:SetPos( x, y + 20)
 
-		if GetConVar("tea_config_propcostenabled"):GetInt() >= 1 then
+		if tea_config_propcostenabled then
 			local ItemCost = vgui.Create( "DLabel", ItemBackground )
 			ItemCost:SetFont( "TargetIDSmall" )
 			ItemCost:SetColor( Color(155,255,155,255) )

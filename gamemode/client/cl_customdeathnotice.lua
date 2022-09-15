@@ -27,30 +27,57 @@ killicon.AddFont( "weapon_physcannon",	"HL2MPTypeDeath",	",",	Color_Icon )
 local Deaths = {}
 
 local RDtext = {
-"trashed",
-"ripped apart",
-"slaughtered",
-"chewed up and spat out",
-"wrecked",
-"stomped on",
-"turned inside-out",
-"ruined",
-"violated",
-"vanquished",
-"butchered",
-"chopped up",
-"sliced and diced",
-"dominated",
-"blasted",
-"wiped out of the reality",
-"die'ed",
-"no mercified",
-"destroyed"
+	"trashed",
+	"ripped apart",
+	"slaughtered",
+	"chewed up and spat out",
+	"wrecked",
+	"stomped on",
+	"turned inside-out",
+	"ruined",
+	"violated",
+	"vanquished",
+	"butchered",
+	"chopped up",
+	"sliced and diced",
+	"dominated",
+	"blasted",
+	"wiped out of the reality",
+	"die'ed",
+	"no mercified",
+	"destroyed",
+	"put off their misery"
 }
 
-local function PlayerIDOrNameToString( var )
+local function CheckAttacker(attacker)
+	if attacker == "npc_ate_basic" then attacker = "Shambler Zombie"
+		elseif attacker == "npc_ate_leaper" then attacker = "Leaper Zombie"
+		elseif attacker == "npc_ate_tank" then attacker = "Tank Zombie"
+		elseif attacker == "npc_ate_wraith" then attacker = "Wraith Zombie"
+		elseif attacker == "npc_ate_lord" then attacker = "Zombie Lord"
+		elseif attacker == "npc_ate_tormented_wraith" then attacker = "Tormented Wraith"
+		elseif attacker == "npc_ate_superlord" then attacker = "Zombie Superlord"
+		elseif attacker == "npc_ate_fleshpile" or attacker == "obj_fleshbomb" then attacker = "Fleshpile Zombie"
+		elseif attacker == "npc_nextbot_boss_tyrant" or attacker == "obj_bigrock" then attacker = "The Tyrant"
+		elseif attacker == "stormfox_mapice" then attacker = "Ice"
+		elseif attacker == "worldspawn" then attacker = "World"
+		elseif attacker == "trigger_hurt" then attacker = "An Unknown Cause"
+		elseif attacker == "monster_nihilanth" then attacker = "Nihilanth"
+		elseif attacker == "env_explosion" then attacker = "An Explosion"
+		elseif attacker == "prop_physics" then attacker = "Physics Prop"
+		elseif attacker == "func_pushable" then attacker = "Object"
+		elseif attacker == "npc_handgrenade" then attacker = "This Grenade..."
+		elseif attacker == "airdrop_cache" then attacker = "Airdrop Cache"
+		elseif attacker == "npc_zombie" then attacker = "HL2 Zombie"
+		elseif attacker == "npc_fastzombie" then attacker = "HL2 Fast Zombie"
+		elseif attacker == "npc_poisonzombie" then attacker = "HL2 Poison Zombie"
+		elseif attacker == "gmod_gamerules" then attacker = "That Damned GMod GameRULES"
+	end
+	return attacker
+end
 
-	if ( type( var ) == "string" ) then
+local function PlayerIDOrNameToString( var )
+	if type( var ) == "string" then
 		if ( var == "" ) then return "" end
 		return "#" .. var
 	end
@@ -59,13 +86,11 @@ local function PlayerIDOrNameToString( var )
 	
 	if ( !IsValid( ply ) ) then return "NULL!" end
 	
-	return ply:Name()
-
+	return ply:Nick()
 end
 
 
 local function RecvPlayerKilledByPlayer()
-
 	local victim	= net.ReadEntity()
 	local inflictor	= net.ReadString()
 	local attacker	= net.ReadEntity()
@@ -73,8 +98,7 @@ local function RecvPlayerKilledByPlayer()
 	if ( !IsValid( attacker ) ) then return end
 	if ( !IsValid( victim ) ) then return end
 	
-	GAMEMODE:AddDeathNotice( attacker:Name(), attacker:Team(), inflictor, victim:Name(), victim:Team() )
-
+	GAMEMODE:AddDeathNotice( attacker:Nick(), attacker:Team(), inflictor, victim:Nick(), victim:Team() )
 end
 net.Receive( "PlayerKilledByPlayer", RecvPlayerKilledByPlayer )
 
@@ -82,7 +106,7 @@ local function RecvPlayerKilledSelf()
 
 	local victim = net.ReadEntity()
 	if ( !IsValid( victim ) ) then return end
-	GAMEMODE:AddDeathNotice( nil, 0, "suicide", victim:Name(), victim:Team() )
+	GAMEMODE:AddDeathNotice( nil, 0, "suicide", victim:Nick(), victim:Team() )
 
 end
 net.Receive( "PlayerKilledSelf", RecvPlayerKilledSelf )
@@ -90,30 +114,12 @@ net.Receive( "PlayerKilledSelf", RecvPlayerKilledSelf )
 local function RecvPlayerKilled()
 
 	local victim	= net.ReadEntity()
-	if ( !IsValid( victim ) ) then return end
+	if (!IsValid(victim)) then return end
 	local inflictor	= net.ReadString()
-	local attacker	= net.ReadString()
-	if attacker == "npc_ate_basic" then attacker = "Shambler Zombie" end
-	if attacker == "npc_ate_leaper" then attacker = "Leaper Zombie" end
-	if attacker == "npc_ate_tank" then attacker = "Tank Zombie" end
-	if attacker == "npc_ate_wraith" then attacker = "Wraith Zombie" end
-	if attacker == "npc_ate_fleshpile" then attacker = "Fleshpile Zombie" end
-	if attacker == "npc_ate_lord" then attacker = "Zombie Lord" end
-	if attacker == "npc_ate_tormented_wraith" then attacker = "Tormented Wraith" end
-	if attacker == "npc_ate_superlord" then attacker = "Zombie Superlord" end
-	if attacker == "npc_nextbot_boss_tyrant" then attacker = "The Tyrant" end
-	if attacker == "obj_bigrock" then attacker = "The Tyrant" end
-	if attacker == "obj_fleshbomb" then attacker = "Fleshpile Zombie" end
-	if attacker == "stormfox_mapice" then attacker = "Ice" end
-	if attacker == "worldspawn" then attacker = "World" end
-	if attacker == "trigger_hurt" then attacker = "An Unknown Cause" end
-	if attacker == "monster_nihilanth" then attacker = "Nihilanth" end
-	if attacker == "env_explosion" then attacker = "An Explosion" end
-	if attacker == "func_pushable" then attacker = "Object" end
-	if attacker == "npc_handgrenade" then attacker = "This Grenade..." end
+	local attackertype	= net.ReadString()
+	local attacker = CheckAttacker(attackertype)
 
-
-	GAMEMODE:AddDeathNotice( attacker, -1, inflictor, victim:Name(), victim:Team() )
+	GAMEMODE:AddDeathNotice( attacker, -1, inflictor, victim:Nick(), victim:Team() )
 
 end
 net.Receive( "PlayerKilled", RecvPlayerKilled )
@@ -121,21 +127,21 @@ net.Receive( "PlayerKilled", RecvPlayerKilled )
 local function RecvPlayerKilledNPC()
 
 	local victimtype = net.ReadString()
-	local victim	= "#" .. victimtype
+	local victim = CheckAttacker(victimtype)
 	local inflictor	= net.ReadString()
 	local attacker	= net.ReadEntity()
 
 	--
 	-- For some reason the killer isn't known to us, so don't proceed.
 	--
-	if ( !IsValid( attacker ) ) then return end
+	if (!IsValid(attacker)) then return end
 	
-	GAMEMODE:AddDeathNotice( attacker:Name(), attacker:Team(), inflictor, victim, -1 )
+	GAMEMODE:AddDeathNotice( attacker:Nick(), attacker:Team(), inflictor, victim, -1 )
 	
 	local bIsLocalPlayer = ( IsValid(attacker) && attacker == LocalPlayer() )
 	
-	local bIsEnemy = IsEnemyEntityName( victimtype )
-	local bIsFriend = IsFriendEntityName( victimtype )
+	local bIsEnemy = IsEnemyEntityName( victim )
+	local bIsFriend = IsFriendEntityName( victim )
 	
 	if ( bIsLocalPlayer && bIsEnemy ) then
 		achievements.IncBaddies()
@@ -154,9 +160,11 @@ net.Receive( "PlayerKilledNPC", RecvPlayerKilledNPC )
 
 local function RecvNPCKilledNPC()
 
-	local victim	= "#" .. net.ReadString()
+	local victimtype	= net.ReadString()
+	local victim = CheckAttacker(victimtype)
 	local inflictor	= net.ReadString()
-	local attacker	= "#" .. net.ReadString()
+	local attackertype	= net.ReadString()
+	local attacker = CheckAttacker(attackertype)
 
 	GAMEMODE:AddDeathNotice( attacker, -1, inflictor, victim, -1 )
 
@@ -164,9 +172,10 @@ end
 net.Receive( "NPCKilledNPC", RecvNPCKilledNPC )
 
 --[[---------------------------------------------------------
-   Name: gamemode:AddDeathNotice( Victim, Attacker, Weapon )
-   Desc: Adds an death notice entry
+	Name: gamemode:AddDeathNotice( Victim, Attacker, Weapon )
+	Desc: Adds an death notice entry
 -----------------------------------------------------------]]
+
 function GM:AddDeathNotice( Victim, team1, Inflictor, Attacker, team2 )
 
 	local Death = {}

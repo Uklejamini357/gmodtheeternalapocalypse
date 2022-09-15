@@ -16,7 +16,7 @@ function AdminGiveItem(ply, cmd, args)
 		SystemMessage(ply, translate.ClientGet(ply, "ItemNonExistant"), Color(255,205,205,255), true) 
 		ply:ConCommand("playgamesound buttons/button8.wav")
 	return false end
-	if addqty < 1 then SendChat(ply, "You can't give negative values with ate_sadmin_giveitem! Use ate_sadmin_removeitem instead.") return false end
+	if addqty < 1 then SendChat(ply, "You can't give negative values with tea_sadmin_giveitem! Use tea_sadmin_removeitem instead.") return false end
 	if addqty > 1000 then SendChat(ply, "You can't give yourself that many items!") return false end
 
 	if (CalculateWeight(ply) + (item.Weight * addqty)) > (CalculateMaxWeight(ply)) then SendChat(ply, "You are lacking inventory space! Drop some items first.") return false end
@@ -29,7 +29,7 @@ function AdminGiveItem(ply, cmd, args)
 	FullyUpdatePlayer(ply)
 	ply:ConCommand("playgamesound buttons/button3.wav")
 end
-concommand.Add("ate_sadmin_giveitem", AdminGiveItem)
+concommand.Add("tea_sadmin_giveitem", AdminGiveItem)
 
 function AdminRemoveItem(ply, cmd, args)
 	if !ply:IsValid() then return false end
@@ -55,7 +55,7 @@ function AdminRemoveItem(ply, cmd, args)
 	FullyUpdatePlayer(ply)
 	ply:ConCommand("playgamesound buttons/button3.wav")
 	end
-	concommand.Add("ate_sadmin_removeitem", AdminRemoveItem)
+	concommand.Add("tea_sadmin_removeitem", AdminRemoveItem)
 
 function AdminGiveCash(ply, cmd, args)
 if !ply:IsValid() then return false end
@@ -76,7 +76,7 @@ SystemMessage(ply, "You gave yourself "..addqty.." "..Config["Currency"].."s!", 
 FullyUpdatePlayer(ply)
 ply:ConCommand("playgamesound buttons/button3.wav")
 end
-concommand.Add("ate_sadmin_givecash", AdminGiveCash)
+concommand.Add("tea_sadmin_givecash", AdminGiveCash)
 
 --This command only cleans up all props, and not the faction structures.
 function TEAAdminClearProps(ply, cmd, args)
@@ -99,7 +99,7 @@ function TEAAdminClearProps(ply, cmd, args)
 	SystemMessage(ply, "Cleaned up all props!", Color(155,255,155,255), true)
 	ply:ConCommand("playgamesound buttons/button3.wav") 
 end
-concommand.Add("ate_sadmin_clearprops", TEAAdminClearProps)
+concommand.Add("tea_sadmin_clearprops", TEAAdminClearProps)
 
 function TEAAdminClearZeds(ply, cmd, args)
 	if !ply:IsValid() then return false end
@@ -127,7 +127,7 @@ function TEAAdminClearZeds(ply, cmd, args)
 		end
 	end
 end
-concommand.Add("ate_admin_clearzombies", TEAAdminClearZeds)
+concommand.Add("tea_admin_clearzombies", TEAAdminClearZeds)
 
 function TEAAdminClearLoots(ply, cmd, args)
 	if !ply:IsValid() then return false end
@@ -165,9 +165,9 @@ function TEAAdminClearLoots(ply, cmd, args)
 	end
 	
 	
-	ply:ConCommand("playgamesound buttons/button3.wav") 	
+	ply:ConCommand("playgamesound buttons/button15.wav") 	
 end
-concommand.Add("ate_admin_clearloots", TEAAdminClearLoots)
+concommand.Add("tea_admin_clearloots", TEAAdminClearLoots)
 
 
 function PlayerForceGainLevel(ply)
@@ -230,7 +230,7 @@ local cg = args[3] or 255
 local cb = args[4] or 255
 
 if message == nil then
-SystemMessage(ply, "Usage: ate_sadmin_systembroadcast (message) (red color value) (green color value) (blue color value)", Color(255,255,255,255), true)
+SystemMessage(ply, "Usage: tea_sadmin_systembroadcast (message) (red color value) (green color value) (blue color value)", Color(255,255,255,255), true)
 return end
 
 SystemBroadcast(message, Color(cr,cg,cb,255), true)
@@ -238,7 +238,7 @@ ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." broadcasted a message with t
 print("[ADMIN COMMAND USED] "..ply:Nick().." broadcasted a message with text '"..message.."' and color ("..cr..","..cg..","..cb..")!")
 
 end
-concommand.Add("ate_sadmin_systembroadcast", TEAAdminSystemBroadcast)
+concommand.Add("tea_sadmin_systembroadcast", TEAAdminSystemBroadcast)
 
 function TEAAdminSpawnBoss(ply)
 if !AdminCheck(ply) then 
@@ -255,7 +255,7 @@ SystemMessage(ply, "Command received, boss will spawn soon.", Color(155,255,155,
 ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has used spawn boss command!")
 print("[ADMIN COMMAND USED] "..ply:Nick().." has used spawn boss command!")
 end
-concommand.Add("ate_admin_spawnboss", TEAAdminSpawnBoss)
+concommand.Add("tea_admin_spawnboss", TEAAdminSpawnBoss)
 
 function TEAAdminSpawnAirdrop(ply)
 if !AdminCheck(ply) then 
@@ -272,7 +272,7 @@ SystemMessage(ply, "Command received, airdrop will arrive soon.", Color(155,255,
 ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has used spawn airdrop command!")
 print("[ADMIN COMMAND USED] "..ply:Nick().." has used spawn airdrop command!")
 end
-concommand.Add("ate_admin_spawnairdrop", TEAAdminSpawnAirdrop)
+concommand.Add("tea_admin_spawnairdrop", TEAAdminSpawnAirdrop)
 
 function TEAForceSavePlayer(ply)
 if !SuperAdminCheck(ply) then 
@@ -310,7 +310,7 @@ SystemMessage(ply, "Refreshed all spawns and traders.", Color(155,255,155,255), 
 ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has refreshed all spawns and traders!")
 print("[ADMIN COMMAND USED] "..ply:Nick().." has refreshed all spawns and traders!")
 end
-concommand.Add("ate_sadmin_refresheverything", TEARefreshEverything)
+concommand.Add("tea_sadmin_refresheverything", TEARefreshEverything)
 
 function TEASpawnItem(ply, cmd, args) 
 if !ply:IsValid() then return false end
@@ -323,7 +323,7 @@ end
 
 local name = args[1]
 local item = ItemsList[name]
-if item == nil then SendChat(ply, "Usage: ate_sadmin_spawnitem [Item ID] (Spawn a dropped item in front of you)") return false end
+if item == nil then SendChat(ply, "Usage: tea_sadmin_spawnitem [Item ID] (Spawn a dropped item in front of you)") return false end
 if !item then SystemMessage(ply, translate.ClientGet(ply, "ItemNonExistant"), Color(255,205,205,255), true) 
 ply:ConCommand("playgamesound buttons/button8.wav") return false end
 
@@ -360,7 +360,7 @@ SystemMessage(ply, "You spawned a dropped item: "..translate.ClientGet(ply, item
 
 ply:ConCommand("playgamesound buttons/button3.wav")
 end
-concommand.Add("ate_sadmin_spawnitem", TEASpawnItem)
+concommand.Add("tea_sadmin_spawnitem", TEASpawnItem)
 
 function TEASpawnMoney(ply, cmd, args) 
 	if !ply:IsValid() then return false end
@@ -372,7 +372,7 @@ function TEASpawnMoney(ply, cmd, args)
 	end
 	
 	local cash = args[1] or 0
-	if cash == 0 or tonumber(cash) < 0 then SendChat(ply, "Usage: ate_sadmin_spawnmoney (amount) - Spawn a desired amount of money in front of you [Amount can't be negative]") return end
+	if cash == 0 or tonumber(cash) < 0 then SendChat(ply, "Usage: tea_sadmin_spawnmoney (amount) - Spawn a desired amount of money in front of you [Amount can't be negative]") return end
 	
 	local vStart = ply:GetShootPos()
 	local vForward = ply:GetAimVector()
@@ -398,5 +398,26 @@ function TEASpawnMoney(ply, cmd, args)
 	
 	ply:ConCommand("playgamesound buttons/button3.wav")
 end
-concommand.Add("ate_sadmin_spawnmoney", TEASpawnMoney)
+concommand.Add("tea_sadmin_spawnmoney", TEASpawnMoney)
 
+function TEASAdminNoTarget(ply, cmd) --useful for events (but not for abusing)
+    if !ply:IsValid() then return false end
+	if !SuperAdminCheck(ply) then 
+		SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
+		ply:ConCommand("playgamesound buttons/button8.wav")
+		return
+	end
+    
+    if ply.HasNoTarget != true then
+        ply.HasNoTarget = true
+		ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has enabled notarget for themselves!")
+		print("[ADMIN COMMAND USED] "..ply:Nick().." has enabled notarget for themselves!")
+		SystemMessage(ply, "Enabled notarget!", Color(155,255,155,255), true)
+    else
+        ply.HasNoTarget = false
+		ate_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has disabled notarget for themselves!")
+		print("[ADMIN COMMAND USED] "..ply:Nick().." has disabled notarget for themselves!")
+		SystemMessage(ply, "Disabled notarget!", Color(155,255,155,255), true)
+    end
+end
+concommand.Add("tea_sadmin_notarget", TEASAdminNoTarget)

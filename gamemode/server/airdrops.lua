@@ -1,7 +1,6 @@
 local DropData = ""
 
 
-
 function LoadAD()
 if not file.IsDir("theeternalapocalypse/spawns/"..string.lower(game.GetMap()), "DATA") then
    file.CreateDir("theeternalapocalypse/spawns/"..string.lower(game.GetMap()))
@@ -15,7 +14,7 @@ end
 		print("No airdrop spawnpoints found for this map")
 	end
 end
-LoadAD()
+
 
 function AddAD(ply, cmd, args)
 	if !SuperAdminCheck(ply) then 
@@ -48,7 +47,7 @@ function AddAD(ply, cmd, args)
 	ply:ConCommand("playgamesound buttons/button3.wav")
 
 end
-concommand.Add("ate_addairdropspawn", AddAD)
+concommand.Add("tea_addairdropspawn", AddAD)
 
 
 function ClearAD(ply, cmd, args)
@@ -67,7 +66,7 @@ print("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all airdrop spawnpoint
 ate_DebugLog("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all airdrop spawnpoints!")
 ply:ConCommand("playgamesound buttons/button15.wav")
 end
-concommand.Add("ate_clearairdropspawns", ClearAD)
+concommand.Add("tea_clearairdropspawns", ClearAD)
 
 
 
@@ -76,11 +75,11 @@ function SpawnAirdrop()
 	if !CanSpawnAirdrop and table.Count(player.GetAll()) < 5 then return end
 
 	RadioBroadcast(0.5, "Christmas has come early ladies!", "Shamus", true)
-	RadioBroadcast(4, "Got a little present for y'all to entertain yourselves with!", "Shamus", false)
+	RadioBroadcast(3, "I've got a little present for y'all to entertain yourselves with!", "Shamus", false)
 	RadioBroadcast(11, "Attention survivors! That airdrop crate is fitted with an IFF jammer.", "Watchdog", false)
-	RadioBroadcast(15, "In addition, if you go near it you'll need to watch your back or risk being shot by other loot hunters!", "Watchdog", false)
+	RadioBroadcast(16.5, "In addition, if you go near it you'll need to watch your back or risk being shot by other loot hunters!", "Watchdog", false)
 
-	timer.Simple(25, function()
+	timer.Simple(20, function()
 		local cratedropped = false
 
 		if  DropData == "" then return end

@@ -192,7 +192,7 @@ local target = self.target
 
 
 
-if IsValid(target) and target:Alive() and self:GetRangeTo(target) <= (1500 * self.RageLevel) and !target.StatsPaused then
+if IsValid(target) and target:Alive() and (self:GetRangeTo(target) <= (1500 * self.RageLevel) or tobool(GetConVarNumber("tea_config_zombieapocalypse"))) and !target.HasNoTarget then
 	self.loco:FaceTowards(target:GetPos())
 
 	if self.NxtTick < 1 then
@@ -267,7 +267,7 @@ self:MoveToPos(self:GetPos() + Vector(math.random(-256, 256), math.random(-256, 
 -- find ourselves a new target
 	if (!self.target) then
 		for k, v in pairs(player.GetAll()) do
-			if (v:Alive() and self:GetRangeTo(v) <= (1200 * self.RageLevel) and !v.StatsPaused) then
+			if (v:Alive() and (self:GetRangeTo(v) <= (1200 * self.RageLevel) or tobool(GetConVarNumber("tea_config_zombieapocalypse"))) and !v.HasNoTarget) then
 				self.target = v
 				if self.CanScream == true then
 				self:EmitSound(table.Random(self.AlertSounds), 90, math.random(90, 110))

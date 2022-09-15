@@ -17,8 +17,9 @@ AddCSLuaFile("client/cl_tradermenu.lua")
 AddCSLuaFile("client/cl_dermahooks.lua")
 AddCSLuaFile("client/cl_lootmenu.lua")
 AddCSLuaFile("client/cl_adminmenu.lua")
-AddCSLuaFile("client/cl_deathscreen.lua")
+--AddCSLuaFile("client/cl_deathscreen.lua")
 AddCSLuaFile("client/cl_statsmenu.lua")
+AddCSLuaFile("client/cl_helpmenu.lua")
 
 
 
@@ -29,12 +30,12 @@ include("sh_loot.lua")
 include("sh_spawnables.lua")
 include("sh_config.lua")
 include("sh_crafting.lua")
+include("server/admincmd.lua")
+include("server/devcmds.lua")
 include("server/netstuff.lua")
 include("server/server_util.lua")
 include("server/config.lua")
 include("server/commands.lua")
-include("server/admincmd.lua")
-include("server/devcmds.lua")
 include("server/player_data.lua")
 include("server/player_inventory.lua")
 include("server/player_props.lua")
@@ -49,6 +50,7 @@ include("server/weather_events.lua")
 include("server/specialstuff.lua")
 include("server/spawnpoints.lua")
 include("server/crafting.lua")
+include("server/mastery.lua")
 
 
 --include("time_weather.lua")
@@ -58,9 +60,6 @@ Factions = Factions or {}
 DEBUG = false
 
 function GM:ShowHelp(ply)
-
-	ply:SendLua("hook.Run('StartSearch')")
-
 end
 
 function GM:ShowTeam(ply)
@@ -73,29 +72,29 @@ function GM:ShowSpare1(ply)
 end
 
 function CalculateStartingHealth(ply)
-if tonumber(ply.Prestige) >= 2 then
-	ply:SetHealth(105 + (5 * ply.StatHealth))
-	ply:SetMaxHealth(105 + (5 * ply.StatHealth))
-else
-	ply:SetHealth(100 + (5 * ply.StatHealth))
-	ply:SetMaxHealth(100 + (5 * ply.StatHealth))
-end
+	if tonumber(ply.Prestige) >= 2 then
+		ply:SetHealth(105 + (5 * ply.StatHealth))
+		ply:SetMaxHealth(105 + (5 * ply.StatHealth))
+	else
+		ply:SetHealth(100 + (5 * ply.StatHealth))
+		ply:SetMaxHealth(100 + (5 * ply.StatHealth))
+	end
 end
 
 function CalculateMaxHealth(ply)
-if tonumber(ply.Prestige) >= 2 then
-	ply:SetMaxHealth(105 + (5 * ply.StatHealth))
-else
-	ply:SetMaxHealth(100 + (5 * ply.StatHealth))
-end
+	if tonumber(ply.Prestige) >= 2 then
+		ply:SetMaxHealth(105 + (5 * ply.StatHealth))
+	else
+		ply:SetMaxHealth(100 + (5 * ply.StatHealth))
+	end
 end
 
 function CalculateMaxArmor(ply)
-if tonumber(ply.Prestige) >= 5 then
-	ply:SetMaxArmor(105 + (2 * ply.StatEngineer))
-else
-	ply:SetMaxArmor(100 + (2 * ply.StatEngineer))
-end
+	if tonumber(ply.Prestige) >= 5 then
+		ply:SetMaxArmor(105 + (2 * ply.StatEngineer))
+	else
+		ply:SetMaxArmor(100 + (2 * ply.StatEngineer))
+	end
 end
 
 function CalculateJumpPower(ply)
@@ -145,8 +144,8 @@ function GM:Think()
 		ply.Thirst = math.Clamp(ply.Thirst - (0.0782 * (1 - (ply.StatSurvivor * 0.0425))), 0, 10000)
 
 		if !timer.Exists("DyingFromStats"..ply:UniqueID()) and (ply.Thirst <= 0 or ply.Hunger <= 0 or ply.Fatigue >= 10000 or ply.Infection >= 10000) and ply:Alive() then
-			timer.Create("DyingFromStats"..ply:UniqueID(), 30, 1, function()
-				if ply:Alive() then ply:Kill() end
+			timer.Create("DyingFromStats"..ply:UniqueID(), 25, 1, function()
+				if ply:IsValid() and ply:Alive() then ply:Kill() end
 			end)
 		elseif (timer.Exists("DyingFromStats"..ply:UniqueID()) and (ply.Thirst >= 1 and ply.Hunger >= 1 and ply.Fatigue <= 9999 and ply.Infection <= 9999)) or !ply:Alive() then
 			timer.Destroy("DyingFromStats"..ply:UniqueID())
@@ -162,16 +161,16 @@ function GM:Think()
 				ply.CanUseFlashlight = false
 			else
 				if armorstr and armortype then
-					ply.Battery = math.Clamp(ply.Battery - 0.07, 0, 100 + armortype["ArmorStats"]["battery"])
+					ply.Battery = math.Clamp(ply.Battery - 0.05, 0, 100 + armortype["ArmorStats"]["battery"])
 				else
-					ply.Battery = math.Clamp(ply.Battery - 0.07, 0, 100)
+					ply.Battery = math.Clamp(ply.Battery - 0.05, 0, 100)
 				end
 			end
 		else
 			if armorstr and armortype then
-				ply.Battery = math.Clamp(ply.Battery + 0.0155, 0, 100 + armortype["ArmorStats"]["battery"])
+				ply.Battery = math.Clamp(ply.Battery + 0.0115, 0, 100 + armortype["ArmorStats"]["battery"])
 			else
-				ply.Battery = math.Clamp(ply.Battery + 0.0155, 0, 100)
+				ply.Battery = math.Clamp(ply.Battery + 0.0115, 0, 100)
 			end
 			if ply.Battery >= 15 then
 				ply:AllowFlashlight(true)
@@ -179,9 +178,10 @@ function GM:Think()
 			end
 		end
 
-		if ply:Health() < ply:GetMaxHealth() and ply.Thirst >= (3000 - (125 * ply.StatSurvivor)) and ply.Hunger >= (3000 - (150 * ply.StatSurvivor)) and ply.Fatigue <= (7000 + (150 * ply.StatSurvivor)) and ply.Infection <= (5000 - (100 * ply.StatImmunity)) then
+-- in case if player's HPRegen value is nil then it's set to 0
+		if ply.HPRegen and ply:Health() < ply:GetMaxHealth() and ply.Thirst >= (3000 - (125 * ply.StatSurvivor)) and ply.Hunger >= (3000 - (150 * ply.StatSurvivor)) and ply.Fatigue <= (7000 + (150 * ply.StatSurvivor)) and ply.Infection <= (5000 - (100 * ply.StatImmunity)) then
 			ply.HPRegen = math.Clamp(ply.HPRegen + 0.0015 + (ply.StatMedSkill * 0.0001), 0, ply:GetMaxHealth())
-		elseif ply.HPRegen > 0 then
+		elseif !ply.HPRegen or ply.HPRegen > 0 then
 			ply.HPRegen = 0
 		end
 
@@ -212,8 +212,8 @@ function GM:Think()
 				ply.Thirst = math.Clamp(ply.Thirst + 0.243 , 0, 10000)
 				if tonumber(ply.Stamina) <= 0 then
 					if !timer.Exists("DrownTimer"..ply:UniqueID()) then
-						timer.Create("DrownTimer"..ply:UniqueID(), 10, 1, function()
-							if ply:Alive() then ply:Kill() end
+						timer.Create("DrownTimer"..ply:UniqueID(), 8, 1, function()
+							if ply:IsValid() and ply:Alive() then ply:Kill() end
 						end)
 					end
 				else
@@ -278,22 +278,21 @@ function GM:InitPostEntity()
 end
 
 function GM:PlayerDisconnected(ply)
-
 	SystemBroadcast(ply:Nick().." has left the server", Color(255,255,155,255), false)
 
 	if ply.Bounty >= 5 then
-	local cashloss = ply.Bounty * math.Rand(0.3, 0.4)
-	local bountyloss = ply.Bounty - cashloss
-	print(ply:Nick() .." has left the server with "..ply.Bounty.." bounty and dropped money worth of "..math.floor(cashloss).." "..Config["Currency"].."s!")
+		local cashloss = ply.Bounty * math.Rand(0.3, 0.4)
+		local bountyloss = ply.Bounty - cashloss
+		print(ply:Nick() .." has left the server with "..ply.Bounty.." bounty and dropped money worth of "..math.floor(cashloss).." "..Config["Currency"].."s!")
 
-	local EntDrop = ents.Create("ate_cash")
+		local EntDrop = ents.Create("ate_cash")
 		EntDrop:SetPos(ply:GetPos() + Vector(0, 0, 10))
 		EntDrop:SetAngles(Angle(0, 0, 0))
 		EntDrop:SetNWInt("CashAmount", math.floor(cashloss))
 		EntDrop:Spawn()
 		EntDrop:Activate()
 	end
-
+	
 	SavePlayer(ply)
 	SavePlayerInventory(ply)
 	SavePlayerVault(ply)
@@ -307,13 +306,11 @@ function GM:PlayerDisconnected(ply)
 	local plyfaction = team.GetName(ply:Team())
 	if team.NumPlayers(ply:Team()) > 1 && Factions[plyfaction]["leader"] == ply then
 		timer.Simple(0.4, function() --this time it should work properly
-		SelectRandomLeader(plyfaction)
+			SelectRandomLeader(plyfaction)
 		end)
 	elseif team.NumPlayers(ply:Team()) <= 1 then
 		AutoDisbandFaction(plyfaction)
 	end
-
-
 end
 
 
@@ -323,13 +320,50 @@ function GM:PlayerConnect(name, ip)
 	end
 end
 
+local function CheckForDerp()
+	local chance = 0
+	for k, v in pairs(Config["ZombieClasses"]) do
+		chance = chance + v.SpawnChance
+	end
+	if chance > 100 then ErrorNoHalt("\n\n------=== CONFIGURATION ERROR ===------ \nThe total zombie spawn chance of this server has exceeded 100% (Currently "..chance.."%)!\nSome zombie types may not be able to spawn, see theeternalapocalypse/gamemode/sh_config.lua for more info\n\n")
+	elseif chance < 100 then MsgC(Color(255,127,127,255), "Check for zombie spawn chance... "..chance.."% (Not perfect)\n")
+	else MsgC(Color(191,191,255,255), "Check for zombie spawn chance... "..chance.."% (OK)\n") end
+end
+
+function GM:Initialize()
+	MsgC(Color(255,191,191,255), "\n==============================================\n\n")
+	MsgC(Color(255,191,191,255), GAMEMODE.Name.." ("..GAMEMODE.AltName..") Gamemode Loaded Successfully\n\n")
+	MsgC(Color(255,191,191,255), "Made by "..GAMEMODE.Author.."\n\n")
+	MsgC(Color(255,191,191,255), "Original Creator: LegendofRobbo\n\n")
+	MsgC(Color(255,191,191,255), "Version: "..GAMEMODE.Version.."\n\n")
+	MsgC(Color(255,191,191,255), "Github: https://github.com/Uklejamini357/gmodtheeternalapocalypse \n\n")
+	MsgC(Color(255,191,191,255), "Remember to check out github site for new updates\n\n")
+	MsgC(Color(255,191,191,255), "==============================================\n\n")
+	LoadLoot()
+	LoadAD()
+	LoadZombies()
+	LoadTraders()
+	LoadPlayerSpawns()
+	DebugLogs = {}
+	CheckForDerp()
+end
+
 function GM:OnReloaded()
 	timer.Simple(0.4, function()
 		for k, v in pairs(player.GetAll()) do
 			FullyUpdatePlayer(v)
 		end
-		print("Gamemode reloaded")
 	end)
+	MsgC(Color(255,191,255,255), "\n==============================================\n\n")
+	MsgC(Color(255,191,255,255), "Gamemode lua files have been refreshed! Reloading spawns.\n\n")
+	MsgC(Color(255,191,255,255), "==============================================\n\n")
+
+	LoadLoot()
+	LoadAD()
+	LoadZombies()
+	LoadTraders()
+	LoadPlayerSpawns()
+	CheckForDerp()
 end
 
 
@@ -338,38 +372,58 @@ function GM:PlayerInitialSpawn(ply)
 	ply:AllowFlashlight(true)
 	ply.CanUseFlashlight = true
 
-	------------------
+	-------- Normal Stats --------
 	ply.SurvivalTime = math.floor(CurTime())
-	ply.BestSurvivalTime = 0
-	ply.ZKills = 0
-	ply.playerskilled = 0
-	ply.playerdeaths = 0
-	ply.SlowDown = 0
-	ply.IsAlive = 1
 	ply.Stamina = 100
 	ply.Hunger = 10000
 	ply.Thirst = 10000
 	ply.Fatigue = 0
 	ply.Infection = 0
 	ply.Battery = 100
+	ply.HPRegen = 0
 	ply.ChosenModel = "models/player/kleiner.mdl"
+	ply.Inventory = {} -- very important, the gamemode will not work without it!
 	ply.XP = 0 
+	ply.Money = 0
+	ply.Bounty = 0
 	ply.Level = 1
 	ply.Prestige = 0
-	ply.Money = 0
 	ply.StatPoints = 0
 	ply.PropCount = 0
-	ply.CanUseItem = true
 	ply.InvitedTo = {} -- stores faction invites
 	ply.SelectedProp = "models/props_debris/wood_board04a.mdl"
 	ply:SetPvPGuarded(0)
 	ply.Territory = "none"
-	ply.Bounty = 0
 	ply.EquippedArmor = "none"
+	ply.BestSurvivalTime = 0
+	ply.ZKills = 0
+	ply.playerskilled = 0
+	ply.playerdeaths = 0
+	----------------
+	
+/*	-------- Mastery Stats --------
+	ply.MasteryMeleeXP = 0
+	ply.MasteryMeleeLevel = 0
+	ply.MasteryPvPXP = 0
+	ply.MasteryPvPLevel = 0
+	----------------*/
+	
+	-------- Special Stats --------
+	ply.SlowDown = 0
+	ply.IsAlive = true
+	ply.SpawnProtected = false
+	ply.DropCashCDcount = 0
 	ply.StatsPaused = false
-	ply.Inventory = {}
-	ply.HPRegen = 0
-	------------------
+	ply.HasNoTarget = false
+	ply.CanUseItem = true
+	----------------
+
+
+	for k, v in pairs(StatsListServer) do
+		local TheStatPieces = string.Explode(";", v)
+		local TheStatName = TheStatPieces[1]
+		ply[TheStatName] = 0
+	end
 	
 	LoadPlayer(ply)
 	LoadPlayerInventory(ply)
@@ -430,8 +484,6 @@ function GM:PlayerSpawn(ply)
 	self.BaseClass:PlayerSpawn(ply)
 	player_manager.SetPlayerClass(ply, "player_ate")
 
-	ply.SlowDown = 0
-	ply.IsAlive = 1
 	RecalcPlayerModel(ply)
 
 	for k, v in pairs(ents.FindByClass("bed")) do
@@ -448,15 +500,14 @@ function GM:PlayerSpawn(ply)
 
 	if tea_server_spawnprotection_duration:GetFloat() > 0 and tea_server_spawnprotection:GetInt() >= 1 then
 		if !ply:Alive() then return end
-		ply:GodEnable()
+		ply.SpawnProtected = true
 		ply:PrintMessage(HUD_PRINTCENTER, translate.ClientFormat(ply, "PlySpawnProtEnabled", tea_server_spawnprotection_duration:GetFloat()))
 	end
 	if tea_server_spawnprotection_duration:GetFloat() > 0 and tea_server_spawnprotection:GetInt() > 0 then
 		timer.Create("IsSpawnProtectionTimerEnabled"..ply:UniqueID(), tea_server_spawnprotection_duration:GetFloat(), 1, function()
 			if !ply:IsValid() or !ply:Alive() then return end
-			ply:GodDisable()
+			ply.SpawnProtected = false
 			ply:PrintMessage(HUD_PRINTCENTER, translate.ClientGet(ply, "PlySpawnProtExpired"))
-			timer.Destroy("IsSpawnProtectionTimerEnabled"..ply:UniqueID())
 		end)
 	end
 
@@ -558,10 +609,10 @@ end
 --maybe i'll get to reworking it so when user's walkspeed is around like 133% of slow walk speed they will have slow walk speed set to 75% of their walk speed
 if ply.SlowDown == 1 then
 	GAMEMODE:SetPlayerSpeed(ply, ((walkspeed - (armorspeed / 2)) + ply.StatSpeed * 3.5) * 0.6, ((runspeed - armorspeed) + ply.StatSpeed * 7) * 0.6)
-	ply:SetSlowWalkSpeed(60)
+	ply:SetSlowWalkSpeed(math.Clamp(((walkspeed - (armorspeed / 2)) + ply.StatSpeed * 3.5) * 0.45, 1, 100))
 else
 	GAMEMODE:SetPlayerSpeed(ply, (walkspeed - (armorspeed / 2)) + ply.StatSpeed * 3.5, (runspeed - armorspeed) + ply.StatSpeed * 7)
-	ply:SetSlowWalkSpeed(100)
+	ply:SetSlowWalkSpeed(math.Clamp(((walkspeed - (armorspeed / 2)) + ply.StatSpeed * 3.5) * 0.75, 1, 100))
 end
 end
 
@@ -579,17 +630,6 @@ function GM:PlayerShouldTaunt(ply, actid)
 	return true
 end
 
-local function CheckForDerp()
-	local chance = 0
-	for k, v in pairs(Config["ZombieClasses"]) do
-		chance = chance + v.SpawnChance
-	end
-	if chance > 100 then ErrorNoHalt("Configuration Error! The total zombie spawn chance of this server has exceeded 100% (Currently "..chance.."%)! Some zombie types may not be able to spawn, see theeternalapocalypse/gamemode/sh_config.lua for more info\n")
-	elseif chance < 100 then print("Current zombie spawn chance: "..chance.."% (Not perfect)")
-	else print("Current zombie spawn chance: "..chance.."% (OK)") end
-end
-CheckForDerp()
-
 function GM:AddResources()
 	for _, filename in pairs(file.Find("sound/theeternalapocalypse/*.wav", "GAME")) do
 		resource.AddFile("sound/theeternalapocalypse/*.wav"..filename)
@@ -600,6 +640,7 @@ function GM:AddResources()
 	for _, filename in pairs(file.Find("sound/theeternalapocalypse/*.ogg", "GAME")) do
 		resource.AddFile("sound/theeternalapocalypse/*.ogg"..filename)
 	end
+
 	resource.AddWorkshop("128089118") -- m9k assault rifles
 	resource.AddWorkshop("128091208") -- m9k heavy weapons
 	resource.AddWorkshop("128093075") -- m9k small arms pack
@@ -610,12 +651,3 @@ function GM:AddResources()
 	resource.AddWorkshop("1680884607") -- project stalker sounds 
 	resource.AddWorkshop("2438451886") -- stalker item models pack
 end
-
-print("\n==============================================\n")
-print(GM.Name.." ("..GM.AltName..") Gamemode Loaded Successfully\n")
-print("Made by "..GM.Author.."\n")
-print("Original Creator: LegendofRobbo\n")
-print("Version: "..GM.Version.."\n")
-print("Github: https://github.com/Uklejamini357/gmodtheeternalapocalypse \n")
-print("Be sure to check out github site for new updates\n")
-print("==============================================\n")

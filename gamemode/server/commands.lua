@@ -40,7 +40,7 @@ timer.Create("pvptoggle_"..ply:UniqueID(), 5, 1, function()
 end)
 
 end
-concommand.Add("ate_togglepvp", TogglePVP)
+concommand.Add("tea_togglepvp", TogglePVP)
 
 
 function TrashProps(ply)
@@ -53,45 +53,49 @@ function TrashProps(ply)
 	SystemMessage(ply, "You cleared all your props.", Color(205,205,255,255), true)
 	print(ply:Nick() .." has cleared all props!")
 end
-concommand.Add("ate_clearmyprops", TrashProps)
+concommand.Add("tea_clearmyprops", TrashProps)
 
 
 function DropCash(ply, cmd, args)
-if !ply:IsValid() then return false end
-if !ply:Alive() then SystemMessage(ply, "You can't drop money while dead!", Color(255,0,0,255), false) return false end
+	if !ply:IsValid() then return false end
+	if !ply:Alive() then SystemMessage(ply, "You can't drop money when dead!", Color(255,0,0,255), false) return false end
 --if timer exists then function must be cancelled, else some users can use to spam this command and lag it
-if timer.Exists("dropcashcooldown_"..ply:UniqueID()) then SystemMessage(ply, "Wait before you drop more money!", Color(255,205,205,255), true)
-print(ply:Nick().." attempted to drop money while on cooldown!") return false end
-timer.Create("dropcashcooldown_"..ply:UniqueID(), 1.5, 1, function() end)
+	if timer.Exists("dropcashcooldown_"..ply:UniqueID()) then
+		ply.DropCashCDcount = ply.DropCashCDcount + 1
+		if ply.DropCashCDcount >= 7 then
+			ply:Kick("[The Eternal Apocalypse System]\nThis was unexcepted...\n\nKick Reason: Attempted to spam the drop cash command!")
+		else
+			SystemMessage(ply, "Wait before you drop more money!", Color(255,205,205,255), true)
+			print(ply:Nick().." attempted to drop money while on cooldown!")
+		end
+	return false end
+	timer.Create("dropcashcooldown_"..ply:UniqueID(), 1.5, 1, function() if ply:IsValid() then ply.DropCashCDcount = 0 end end)
 
-local cash = math.floor(args[1])
-local plycash = tonumber(ply.Money)
+	local cash = math.floor(args[1])
+	local plycash = tonumber(ply.Money)
 
-if cash < 1 then SystemMessage(ply, "Invalid drop amount, must be at least 1 "..Config["Currency"].."!", Color(255,205,205,255), true) return false end
-if plycash < cash then SystemMessage(ply, "You don't have that many "..Config["Currency"].."s!", Color(255,205,205,255), true) return false end
+	if cash < 1 then SystemMessage(ply, "Invalid drop amount, must be at least 1 "..Config["Currency"].."!", Color(255,205,205,255), true) return false end
+	if plycash < cash then SystemMessage(ply, "You don't have that many "..Config["Currency"].."s!", Color(255,205,205,255), true) return false end
+	ply.Money = plycash - cash
 
+	print(ply:Nick().." has dropped "..cash.." "..Config["Currency"].."s!")
 
-ply.Money = plycash - cash
+	local vStart = ply:GetShootPos()
+	local vForward = ply:GetAimVector()
+	local trace = {}
+	trace.start = vStart
+	trace.endpos = vStart + (vForward * 70)
+	trace.filter = ply
+	local tr = util.TraceLine(trace)
+	local EntDrop = ents.Create("ate_cash")
+	EntDrop:SetPos(tr.HitPos + Vector(0, 0, 5))
+	EntDrop:SetAngles(Angle( 0, 0, 0 ))
+	EntDrop:SetNWInt("CashAmount", cash)
+	EntDrop:Spawn()
+	EntDrop:Activate()
 
-print(ply:Nick().." has dropped "..cash.." "..Config["Currency"].."s!")
-
-local vStart = ply:GetShootPos()
-local vForward = ply:GetAimVector()
-local trace = {}
-trace.start = vStart
-trace.endpos = vStart + (vForward * 70)
-trace.filter = ply
-local tr = util.TraceLine(trace)
-local EntDrop = ents.Create("ate_cash")
-EntDrop:SetPos(tr.HitPos + Vector(0, 0, 5))
-EntDrop:SetAngles(Angle( 0, 0, 0 ))
-EntDrop:SetNWInt("CashAmount", cash)
-EntDrop:Spawn()
-EntDrop:Activate()
-
-SystemMessage(ply, "You dropped "..cash.." "..Config[ "Currency" ].."s!", Color(205,255,205,255), true)
-
-TEANetUpdatePeriodicStats(ply)
+	SystemMessage(ply, "You dropped "..cash.." "..Config[ "Currency" ].."s!", Color(205,255,205,255), true)
+	TEANetUpdatePeriodicStats(ply)
 
 end
-concommand.Add("ate_dropcash", DropCash)
+concommand.Add("tea_dropcash", DropCash)

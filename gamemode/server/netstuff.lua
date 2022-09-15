@@ -36,6 +36,7 @@ util.AddNetworkString("DisbandFaction")
 util.AddNetworkString("WraithBlind") -- rape your vision when you get hit by a wraith
 util.AddNetworkString("PrestigeEffect") -- blinding effect but with white screen when prestiged
 util.AddNetworkString("Payout") -- see cl_hud and server/npcspawns.lua
+util.AddNetworkString("GainMasteryProgress") -- see server/mastery.lua
 util.AddNetworkString("Prestige") -- see player_data.lua
 --util.AddNetworkString("Respawn")
 

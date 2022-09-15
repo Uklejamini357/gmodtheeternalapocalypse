@@ -65,7 +65,7 @@ function AdminMenu()
 	draw.RoundedBox( 2, 0, 0, clearzeds:GetWide(), clearzeds:GetTall(), Color(0, 0, 0, 130) )
 	end
 	clearzeds.DoClick = function()
-	RunConsoleCommand("ate_admin_clearzombies")
+	RunConsoleCommand("tea_admin_clearzombies")
 	end
 
 	local forceclearzeds = vgui.Create("DButton", AdminCmds)
@@ -79,7 +79,7 @@ function AdminMenu()
 	draw.RoundedBox( 2, 0, 0, forceclearzeds:GetWide(), forceclearzeds:GetTall(), Color(0, 0, 0, 130) )
 	end
 	forceclearzeds.DoClick = function()
-	RunConsoleCommand("ate_admin_clearzombies", "force")
+	RunConsoleCommand("tea_admin_clearzombies", "force")
 	end
 
 	local spawnboss = vgui.Create("DButton", AdminCmds)
@@ -93,7 +93,7 @@ function AdminMenu()
 	draw.RoundedBox( 2, 0, 0, spawnboss:GetWide(), spawnboss:GetTall(), Color(0, 0, 0, 130) )
 	end
 	spawnboss.DoClick = function()
-	RunConsoleCommand("ate_admin_spawnboss")
+	RunConsoleCommand("tea_admin_spawnboss")
 	end
 
 	local spawnairdrop = vgui.Create("DButton", AdminCmds)
@@ -107,7 +107,7 @@ function AdminMenu()
 	draw.RoundedBox( 2, 0, 0, spawnairdrop:GetWide(), spawnairdrop:GetTall(), Color(0, 0, 0, 130) )
 	end
 	spawnairdrop.DoClick = function()
-	RunConsoleCommand("ate_admin_spawnairdrop")
+	RunConsoleCommand("tea_admin_spawnairdrop")
 	end
 
 
@@ -136,7 +136,7 @@ function AdminMenu()
 		draw.RoundedBox( 2, 0, 0, addadspawn:GetWide(), addadspawn:GetTall(), Color(0, 0, 0, 130) )
 	end
 	addadspawn.DoClick = function()
-		RunConsoleCommand("ate_addairdropspawn")
+		RunConsoleCommand("tea_addairdropspawn")
 	end
 
 	local clearadspawns = vgui.Create("DButton", SAdminCmds)
@@ -150,7 +150,7 @@ function AdminMenu()
 	draw.RoundedBox( 2, 0, 0, clearadspawns:GetWide(), clearadspawns:GetTall(), Color(0, 0, 0, 130) )
 	end
 	clearadspawns.DoClick = function()
-	RunConsoleCommand("ate_clearairdropspawns")
+	RunConsoleCommand("tea_clearairdropspawns")
 	end
 	
 	local stext2 = vgui.Create("DLabel", SAdminCmds)
@@ -171,7 +171,7 @@ function AdminMenu()
 	draw.RoundedBox( 2, 0, 0, addlootspawn:GetWide(), addlootspawn:GetTall(), Color(0, 0, 0, 130) )
 	end
 	addlootspawn.DoClick = function()
-	RunConsoleCommand("ate_addlootspawn")
+	RunConsoleCommand("tea_addlootspawn")
 	end
 
 	local clearlootspawns = vgui.Create("DButton", SAdminCmds)
@@ -185,7 +185,7 @@ function AdminMenu()
 	draw.RoundedBox( 2, 0, 0, clearlootspawns:GetWide(), clearlootspawns:GetTall(), Color(0, 0, 0, 130) )
 	end
 	clearlootspawns.DoClick = function()
-	RunConsoleCommand("ate_clearlootspawns")
+	RunConsoleCommand("tea_clearlootspawns")
 	end
 
 	local stext3 = vgui.Create("DLabel", SAdminCmds)
@@ -206,7 +206,7 @@ function AdminMenu()
 	draw.RoundedBox( 2, 0, 0, addplyspawn:GetWide(), addplyspawn:GetTall(), Color(0, 0, 0, 130) )
 	end
 	addplyspawn.DoClick = function()
-	RunConsoleCommand("ate_addplayerspawnpoint", "Spawnpoint_name")
+	RunConsoleCommand("tea_addplayerspawnpoint", "Spawnpoint_name")
 	end
 
 	local clearplyspawns = vgui.Create("DButton", SAdminCmds)
@@ -220,7 +220,7 @@ function AdminMenu()
 	draw.RoundedBox( 2, 0, 0, clearplyspawns:GetWide(), clearplyspawns:GetTall(), Color(0, 0, 0, 130) )
 	end
 	clearplyspawns.DoClick = function()
-	RunConsoleCommand("ate_clearplayerspawnpoints", "No name")
+	RunConsoleCommand("tea_clearplayerspawnpoints", "No name")
 	end
 
 	local stext4 = vgui.Create("DLabel", SAdminCmds)
@@ -241,7 +241,7 @@ function AdminMenu()
 	draw.RoundedBox( 2, 0, 0, addtraderspawn:GetWide(), addtraderspawn:GetTall(), Color(0, 0, 0, 130) )
 	end
 	addtraderspawn.DoClick = function()
-	RunConsoleCommand("ate_addtrader")
+	RunConsoleCommand("tea_addtrader")
 	end
 	
 	local cleartraderspawns = vgui.Create("DButton", SAdminCmds)
@@ -255,7 +255,7 @@ function AdminMenu()
 	draw.RoundedBox( 2, 0, 0, cleartraderspawns:GetWide(), cleartraderspawns:GetTall(), Color(0, 0, 0, 130) )
 	end
 	cleartraderspawns.DoClick = function()
-	RunConsoleCommand("ate_cleartraderspawns")
+	RunConsoleCommand("tea_cleartraderspawns")
 	end
 
 	local stext5 = vgui.Create("DLabel", SAdminCmds)
@@ -276,7 +276,7 @@ function AdminMenu()
 		draw.RoundedBox( 2, 0, 0, addzombiespawn:GetWide(), addzombiespawn:GetTall(), Color(0, 0, 0, 130) )
 	end
 	addzombiespawn.DoClick = function()
-		RunConsoleCommand("ate_addzombiespawn")
+		RunConsoleCommand("tea_addzombiespawn")
 	end
 
 	local clearzombiespawns = vgui.Create("DButton", SAdminCmds)
@@ -290,7 +290,7 @@ function AdminMenu()
 	draw.RoundedBox( 2, 0, 0, clearzombiespawns:GetWide(), clearzombiespawns:GetTall(), Color(0, 0, 0, 130) )
 	end
 	clearzombiespawns.DoClick = function()
-	RunConsoleCommand("ate_clearzombiespawns")
+	RunConsoleCommand("tea_clearzombiespawns")
 	end
 	
 	local stext6 = vgui.Create("DLabel", SAdminCmds)
@@ -312,7 +312,7 @@ function AdminMenu()
 		draw.RoundedBox( 2, 0, 0, clearprops:GetWide(), clearprops:GetTall(), Color(0, 0, 0, 130) )
 	end
 	clearprops.DoClick = function()
-		RunConsoleCommand("ate_sadmin_clearprops")
+		RunConsoleCommand("tea_sadmin_clearprops")
 	end
 
 
@@ -400,7 +400,7 @@ function AdminMenu()
 			local ItemDisplay = vgui.Create( "SpawnIcon", ItemBackground )
 			ItemDisplay:SetPos( 10, 10 )
 			ItemDisplay:SetModel( v.Model )
-			ItemDisplay:SetToolTip(translate.Get(v.Description).."\n(Item ID: "..k..")")
+			ItemDisplay:SetToolTip(translate.Get(v.Description).."\n(Item ID: "..k..", , Base Cost: "..v.Cost.." "..Config["Currency"].."s)")
 			ItemDisplay:SetSize(60,60)
 			ItemDisplay.PaintOver = function()
 				return
@@ -448,7 +448,7 @@ function AdminMenu()
 				draw.RoundedBox( 2, 0, 0, SpawnButton:GetWide(), SpawnButton:GetTall(), Color(0, 50, 0, 130) )
 			end
 			SpawnButton.DoClick = function()
-				RunConsoleCommand("ate_sadmin_spawnitem", k)
+				RunConsoleCommand("tea_sadmin_spawnitem", k)
 				timer.Simple(0.5, function()
 					CheckWeight:SetText(translate.Get("CurrentlyCarrying")..": "..CalculateWeightClient().."kg    "..translate.Get("MaxWeight")..": "..CalculateMaxWeightClient().."kg")
 				end)
@@ -465,7 +465,7 @@ function AdminMenu()
 				draw.RoundedBox( 2, 0, 0, GiveButton:GetWide(), GiveButton:GetTall(), Color(0, 50, 0, 130) )
 			end
 			GiveButton.DoClick = function()
-				RunConsoleCommand("ate_sadmin_giveitem", k, GiveAmount:GetInt())
+				RunConsoleCommand("tea_sadmin_giveitem", k, GiveAmount:GetInt())
 				timer.Simple(0.5, function()
 					CheckWeight:SetText(translate.Get("CurrentlyCarrying")..": "..CalculateWeightClient().."kg    "..translate.Get("MaxWeight")..": "..CalculateMaxWeightClient().."kg")
 				end)

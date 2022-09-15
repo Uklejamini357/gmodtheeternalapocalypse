@@ -119,7 +119,7 @@ local function uwotm8( tab, parent )
 			local ItemDisplay = vgui.Create( "SpawnIcon", ItemBackground )
 			ItemDisplay:SetPos( 5, 5 )
 			ItemDisplay:SetModel( v.Model )
-			ItemDisplay:SetToolTip(translate.Get(v.Description).."\n("..translate.Get("ItemID")..": "..k..")")
+			ItemDisplay:SetToolTip(translate.Get(v.Description).."\n("..translate.Get("ItemID")..": "..k..", Base Cost: "..v.Cost.." "..Config["Currency"].."s)")
 			ItemDisplay:SetSize(56,56)
 			ItemDisplay.PaintOver = function()
 				return

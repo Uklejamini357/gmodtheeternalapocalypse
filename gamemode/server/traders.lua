@@ -13,7 +13,6 @@ end
 		print( "No traders file for this map" )
 	end
 end
-LoadTraders()
 
 function SpawnTraders()
 	if( TradersData != "" ) then
@@ -59,7 +58,7 @@ function AddTrader( ply, cmd, args )
 	ply:ConCommand("playgamesound buttons/button3.wav")
 	timer.Simple(1, function() SpawnTraders() end)
 end
-concommand.Add( "ate_addtrader", AddTrader )
+concommand.Add( "tea_addtrader", AddTrader )
 
 function ClearTraders( ply, cmd, args )
 if !SuperAdminCheck( ply ) then 
@@ -75,7 +74,7 @@ print("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all trader spawnpoints
 ate_DebugLog("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all trader spawnpoints!")
 ply:ConCommand("playgamesound buttons/button15.wav")
 end
-concommand.Add( "ate_cleartraderspawns", ClearTraders )
+concommand.Add( "tea_cleartraderspawns", ClearTraders )
 
 function RefreshTraders(ply, cmd, args)
 if !SuperAdminCheck( ply ) then 
@@ -86,4 +85,4 @@ end
 LoadTraders()
 timer.Simple(1, function() SpawnTraders() end)
 end
-concommand.Add( "ate_refreshtraders", RefreshTraders )
+concommand.Add( "tea_refreshtraders", RefreshTraders )

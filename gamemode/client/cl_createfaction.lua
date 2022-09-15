@@ -83,7 +83,7 @@ function FactionMenu()
 		FactionFrame:Remove()
 	end
 end
-concommand.Add("ate_createfaction", FactionMenu)
+concommand.Add("tea_createfaction", FactionMenu)
 
 
 function ManageMenu()
@@ -252,4 +252,4 @@ function ManageMenu()
 		Plist2:AddItem( clicker )
 	end
 end
-concommand.Add("ate_managefaction", ManageMenu)
+concommand.Add("tea_managefaction", ManageMenu)

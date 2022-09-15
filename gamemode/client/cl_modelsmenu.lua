@@ -104,4 +104,4 @@ ModelFrame:Remove()
 end
 
 end
-concommand.Add("ate_changemodel", ModelMenu)
+concommand.Add("tea_changemodel", ModelMenu)

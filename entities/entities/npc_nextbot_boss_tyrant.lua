@@ -140,7 +140,7 @@ function ENT:RunBehaviour()
 		if CLIENT then return end
 		local target = self.target
 
-		if (IsValid(target) and target:Alive() and !target.StatsPaused) then
+		if (IsValid(target) and target:Alive() and !target.HasNoTarget) then
 			local data = {}
 			data.start = self:GetPos()
 			data.endpos = self:GetPos() + self:GetForward()*128
@@ -159,7 +159,7 @@ function ENT:RunBehaviour()
 			end
 		end
 
-		if (IsValid(target) and target:Alive() and self:GetRangeTo(target) <= (2500 * self.RageLevel) and !target.StatsPaused) then
+		if (IsValid(target) and target:Alive() and (self:GetRangeTo(target) <= (2500 * self.RageLevel) or tobool(GetConVarNumber("tea_config_zombieapocalypse"))) and !target.HasNoTarget) then
 			self.loco:FaceTowards(target:GetPos())
 
 			if (self:GetRangeTo(target) <= 400 && self.nextslam < CurTime() && self:HasLOS()) then 
@@ -341,7 +341,7 @@ function ENT:RunBehaviour()
 
 			if (!self.target) then
 				for k, v in pairs(player.GetAll()) do
-					if (v:Alive() and self:GetRangeTo(v) <= (2500 * self.RageLevel) and !v.StatsPaused) then
+					if (v:Alive() and (self:GetRangeTo(v) <= (2500 * self.RageLevel) or tobool(GetConVarNumber("tea_config_zombieapocalypse"))) and !v.HasNoTarget) then
 --						self:AlertNearby(v)
 						self.target = v
 --						self:PlaySequenceAndWait("wave_smg1", 0.9)

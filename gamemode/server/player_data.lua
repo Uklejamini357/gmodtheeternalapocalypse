@@ -12,7 +12,7 @@ function LoadPlayer(ply)
 			local TheLine = string.Explode(";", v) -- convert txt string to stats table
 
 			ply[TheLine[1]] = TheLine[2]  -- dump all their stats into their player table
-			if GetConVar("tea_server_debugging"):GetInt() >= 1 then
+			if GetConVarNumber("tea_server_debugging") >= 1 then
 				print(TheLine[1].." = "..TheLine[2])
 			end
 		end
@@ -58,7 +58,6 @@ function LoadPlayer(ply)
 
 		TEANetUpdatePeriodicStats(ply)
 		TEANetUpdateStatistics(ply)
-
 	end
 end
 
@@ -67,7 +66,7 @@ function SavePlayer(ply)
 	local tea_server_dbsaving = GetConVar("tea_server_dbsaving")
 	local Data = {}
 
-	if AllowSave != 1 and tea_server_dbsaving:GetInt() < 1 then print("Warning! Database saving is disabled! Players will not have their progress saved during this time. Set ConVar 'tea_server_dbsaving' to 1 in order to enable database saving.") return end
+	if AllowSave != 1 and !tobool(tea_server_dbsaving:GetString()) then print("------=== WARNING ===------\n\nDatabase saving is disabled! Players will not have their progress saved during this time.\nSet ConVar 'tea_server_dbsaving' to 1 in order to enable database saving.\n\n------=== WARNING ===------") return end
 	Data["BestSurvivalTime"] = ply.BestSurvivalTime
 	Data["ZKills"] = ply.ZKills
 	Data["XP"] = ply.XP
@@ -259,6 +258,8 @@ function PrepareStats(ply)
 	end
 	ply.HPRegen = 0
 	ply.SurvivalTime = math.floor(CurTime())
+	ply.SlowDown = false
+	ply.IsAlive = true
 
 -- send their stats to them so their hud can display it (this function is called every tick, see server/netstuff.lua)
 	TEANetUpdateStats(ply)

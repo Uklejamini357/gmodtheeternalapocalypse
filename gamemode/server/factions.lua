@@ -65,20 +65,18 @@ end)
 
 
 function CreateFaction( ply, name, col, public )
-	local tea_config_factioncost = GetConVar("tea_config_factioncost")
-	local factioncost = tea_config_factioncost:GetFloat()
+	local factioncost = GetConVarNumber("tea_config_factioncost")
 	if !ply:IsValid() then return false end
 	if ply:Team() != 1 then SystemMessage(ply, "You can't create a new faction while in a faction!", Color(255,205,205,255), true) return false end
 	if name == "" then SystemMessage(ply, "You can't create a faction with no name!", Color(255,205,205,255), true) return false end --will try to further expand it
 	if ((col.r + col.g + col.b) < 75) then SystemMessage(ply, "You can't create a faction with a black colour! Try a brighter colour instead!", Color(255,205,205,255), true) return false end
-	if (tonumber(ply.Money) <= factioncost) then SystemMessage(ply, "You can't afford to make a faction! making a faction costs "..factioncost.." "..Config[ "Currency" ].."s", Color(255,205,205,255), true) return false end
+	if (tonumber(ply.Money) <= factioncost) then SystemMessage(ply, "You can't afford to make a faction! making a faction costs "..factioncost.." "..Config["Currency"].."s", Color(255,205,205,255), true) return false end
 	if string.len(name) > 20 then SystemMessage(ply, "Your faction name cannot be longer than 20 characters!", Color(255,205,205,255), true) return false end
 
 	FactionIndex = FactionIndex + 1
-
 	if FactionIndex > 100 then FactionIndex = 2 end
 	
-	Factions[ name ] = 
+	Factions[name] = 
 	{
 	["index"] = FactionIndex,
 	["color"] = col,
@@ -159,7 +157,7 @@ if timer.Exists("pvpnominge_"..ply:UniqueID()) then SystemMessage(ply, "You cann
 	net.WriteTable(Factions)
 	net.Broadcast()
 end
-concommand.Add( "ate_leavefaction", LeaveFaction )
+concommand.Add( "tea_leavefaction", LeaveFaction )
 
 
 function InviteFaction(ply, target)
@@ -203,7 +201,7 @@ function GiveLeader(ply, target)
 	if Factions[plyfaction]["leader"] != ply then SystemMessage(ply, "You aren't the leader of your faction!", Color(255,205,205,255), true) return false end
 	
 	Factions[plyfaction]["leader"] = target
-	SystemMessage(ply, "You have ceded leadership of your faction to : "..target:Nick(), Color(205,205,255,255), true)
+	SystemMessage(ply, "You have ceded leadership of your faction to: "..target:Nick(), Color(205,205,255,255), true)
 	SystemMessage(target, ply:Nick().." has given faction leader to you! You now own the faction: "..plyfaction, Color(205,205,255,255), true)
 	SystemBroadcast(ply:Nick().." has selected "..target:Nick().." to be the new leader of "..plyfaction, Color(205,205,255,255), true)
 

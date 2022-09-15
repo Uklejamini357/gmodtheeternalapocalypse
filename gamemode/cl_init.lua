@@ -16,8 +16,9 @@ include("client/cl_tradermenu.lua")
 include("client/cl_dermahooks.lua")
 include("client/cl_lootmenu.lua")
 include("client/cl_adminmenu.lua")
-include("client/cl_deathscreen.lua")
+--include("client/cl_deathscreen.lua")
 include("client/cl_statsmenu.lua")
+include("client/cl_helpmenu.lua")
 
 
 SelectedProp = "models/props_debris/wood_board04a.mdl" -- need to set this to something here to avoid a massive error spew
@@ -99,23 +100,22 @@ end
 function GM:OnUndo( name, strCustomString )
 	
 -- this is still needed by the test zombies function
-notification.AddLegacy( "Undo: "..name, 2, 3 )
-surface.PlaySound( "buttons/button15.wav" )
+	notification.AddLegacy( "Undo: "..name, 2, 3 )
+	surface.PlaySound( "buttons/button15.wav" )
 
 end
 
 
 net.Receive( "SystemMessage", function( length, client )
-local msg = net.ReadString()
-local col = net.ReadColor()
-local sys = net.ReadBool()
+	local msg = net.ReadString()
+	local col = net.ReadColor()
+	local sys = net.ReadBool()
 
-if sys then
-chat.AddText( Color(255,255,255,255), "[System] ", col, msg )
-else
-chat.AddText( col, msg )
-end
-
+	if sys then
+		chat.AddText( Color(255,255,255,255), "[System] ", col, msg )
+	else
+		chat.AddText( col, msg )
+	end
 end)
 
 
@@ -165,7 +165,7 @@ print("ate_help_skills - Prints Skills Help into console")
 print("")
 print("ate_admin_help_debugging - Some debug stuff for superadmins")
 end
-concommand.Add("ate_help", ATEHelp)
+concommand.Add("tea_help", ATEHelp)
 
 function ATEHelpGeneral()
 print("General Help:")
@@ -174,7 +174,7 @@ print("When you spawn in, you get fists and build tool. You can never lose those
 print("This is survival gamemode. The goal is to survive, not getting killed by zombies, find loot and level up in order to gain more rewards.")
 print("By killing zombies, you gain xp and bounty, then cash in your bounty at trader. Then use your skill points to gain more advantage in survivalism.")
 end
-concommand.Add("ate_help_general", ATEHelpGeneral)
+concommand.Add("tea_help_general", ATEHelpGeneral)
 
 function ATEHelpStats()
 print("Stats Help:")
@@ -191,7 +191,7 @@ print("")
 print("Additional info:")
 print("If your stamina is depleted, you won't be able to sprint until you get your stamina to at least 30%.")
 end
-concommand.Add("ate_help_stats", ATEHelpStats)
+concommand.Add("tea_help_stats", ATEHelpStats)
 
 function ATEHelpZombies()
 print("Zombies Help:")
@@ -201,7 +201,7 @@ print("Each zombie has unique abilities and stats. From leaping to calling zombi
 print("There is currently one boss, The Tyrant. It can throw rocks, that causes tremendous damage")
 print("and can cause a shockwave. It is also extremely tough, so having plenty of ammo is a must.")
 end
-concommand.Add("ate_help_zombies", ATEHelpZombies)
+concommand.Add("tea_help_zombies", ATEHelpZombies)
 
 function ATEHelpTrader()
 print("Trader Help:")
@@ -211,7 +211,7 @@ print("Some items are not sold by trader and must be found as a loot. Such items
 print("to rare weapons, some weapons that can be found from bosses and airdrops.")
 print("Traders can also buy items from you, but they pay you for less price.")
 end
-concommand.Add("ate_help_trader", ATEHelpTrader)
+concommand.Add("tea_help_trader", ATEHelpTrader)
 
 function ATEHelpLoot()
 print("Loot Help:")
@@ -224,7 +224,7 @@ print("This includes junk items that are completely useless.")
 print("")
 print("Once you pick up ANY of the loot mentioned above, including the airdrop caches being opened, a message will be broadcasted in chat.")
 end
-concommand.Add("ate_help_loot", ATEHelpLoot)
+concommand.Add("tea_help_loot", ATEHelpLoot)
 
 function ATEHelpSkills()
 print("Skills Help:")
@@ -243,7 +243,7 @@ print("Speed Skill: Increases Walking Speed by 3.5 units and 7 units per level."
 print("Strength Skill: Increases max carry weight by 1.53kg per level.")
 print("Survivor Skill: Decreases hunger decreasing by 4% per level and decreases fatigue progressing by 3.5% per level.")
 end
-concommand.Add("ate_help_skills", ATEHelpSkills)
+concommand.Add("tea_help_skills", ATEHelpSkills)
 
 function ATEHelpAdminDebugging()
 print("Admin Debugging Help:")
@@ -251,4 +251,4 @@ print("")
 print("You cannot.")
 
 end
-concommand.Add("ate_admin_help_debugging", ATEHelpAdminDebugging)
+concommand.Add("tea_admin_help_debugging", ATEHelpAdminDebugging)

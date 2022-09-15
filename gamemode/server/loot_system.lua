@@ -27,7 +27,6 @@ end
 		print("No loot spawnpoints found for this map")
 	end
 end
-LoadLoot()
 
 function AddLoot(ply, cmd, args)
 	if !SuperAdminCheck(ply) then
@@ -51,59 +50,56 @@ function AddLoot(ply, cmd, args)
 	ate_DebugLog("[SPAWNPOINTS MODIFIED] "..ply:Nick().." has added a loot spawnpoint at position "..tostring(ply:GetPos()).."!")
 	ply:ConCommand("playgamesound buttons/button3.wav")
 end
-concommand.Add("ate_addlootspawn", AddLoot)
+concommand.Add("tea_addlootspawn", AddLoot)
 
 
 function ClearLoot(ply, cmd, args)
-if !SuperAdminCheck(ply) then 
-	SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
-	ply:ConCommand("playgamesound buttons/button8.wav")
-	return
-end
+	if !SuperAdminCheck(ply) then 
+		SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
+		ply:ConCommand("playgamesound buttons/button8.wav")
+		return
+	end
 
-if file.Exists(	"theeternalapocalypse/spawns/"..string.lower(game.GetMap()).."/loot.txt", "DATA") then
-	file.Delete("theeternalapocalypse/spawns/"..string.lower(game.GetMap()).."/loot.txt")
+	if file.Exists(	"theeternalapocalypse/spawns/"..string.lower(game.GetMap()).."/loot.txt", "DATA") then
+		file.Delete("theeternalapocalypse/spawns/"..string.lower(game.GetMap()).."/loot.txt")
+	end
+	SendChat(ply, "Deleted all loot spawnpoints")
+	print("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all loot spawnpoints!")
+	ate_DebugLog("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all loot spawnpoints!")
+	ply:ConCommand("playgamesound buttons/button15.wav")
 end
-SendChat(ply, "Deleted all loot spawnpoints")
-print("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all loot spawnpoints!")
-ate_DebugLog("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all loot spawnpoints!")
-ply:ConCommand("playgamesound buttons/button15.wav")
-end
-concommand.Add("ate_clearlootspawns", ClearLoot)
-
-
+concommand.Add("tea_clearlootspawns", ClearLoot)
 
 
 
 function SpawnLoot()
-local tea_config_maxcaches = GetConVar("tea_config_maxcaches")
-if (LootCount() >= tea_config_maxcaches:GetInt()) then return false end -- dont even bother running any checks if theres already too much loot
+	local tea_config_maxcaches = GetConVarNumber("tea_config_maxcaches")
+	if (LootCount() >= tea_config_maxcaches) then return false end -- dont even bother running any checks if theres already too much loot
 		if (LootData != "") then
 
-			local LootList = string.Explode("\n", LootData)
-			for k, v in RandomPairs(LootList) do
-			if (LootCount() >= tea_config_maxcaches:GetInt()) then break end
-				local Booty = string.Explode(";", v)
-				local pos = util.StringToType(Booty[1], "Vector")
-				local ang = util.StringToType(Booty[2], "Angle")
-				if math.random(1,20) > 3 then
-					local EntDrop = ents.Create("loot_cache")
-					EntDrop:SetPos(pos)
-					EntDrop:SetAngles(ang)
-					EntDrop.LootType = table.Random(LootTable1)["Class"]
-					EntDrop:Spawn()
-					EntDrop:Activate()
-				else
-					local EntDrop = ents.Create("loot_cache_weapon")
-					EntDrop:SetPos(pos)
-					EntDrop:SetAngles(ang)
-					EntDrop.LootType = table.Random(LootTable2)["Class"]
-					EntDrop:Spawn()
-					EntDrop:Activate()
-				end
-
+		local LootList = string.Explode("\n", LootData)
+		for k, v in RandomPairs(LootList) do
+			if (LootCount() >= tea_config_maxcaches) then break end
+			local Booty = string.Explode(";", v)
+			local pos = util.StringToType(Booty[1], "Vector")
+			local ang = util.StringToType(Booty[2], "Angle")
+			if math.random(1,20) > 3 then
+				local EntDrop = ents.Create("loot_cache")
+				EntDrop:SetPos(pos)
+				EntDrop:SetAngles(ang)
+				EntDrop.LootType = table.Random(LootTable1)["Class"]
+				EntDrop:Spawn()
+				EntDrop:Activate()
+			else
+				local EntDrop = ents.Create("loot_cache_weapon")
+				EntDrop:SetPos(pos)
+				EntDrop:SetAngles(ang)
+				EntDrop.LootType = table.Random(LootTable2)["Class"]
+				EntDrop:Spawn()
+				EntDrop:Activate()
 			end
 		end
+	end
 end
 timer.Create("LootSpawnTimer", 60, 0, SpawnLoot)
 
@@ -201,7 +197,7 @@ net.Receive("UseCrate", function(len, ply)
 		PlaceInContainer(ply, item, ent)
 	else
 		WithdrawFromContainer(ply, item, ent)
-		ply:PrintMessage(4, translate.ClientFormat(ply, "LootTaken", translate.ClientGet(ply, ItemsList[item]["Name"])))
+		ply:PrintTranslatedMessage(4, "LootTaken", translate.ClientGet(ply, ItemsList[item]["Name"]))
 	end
 end)
 

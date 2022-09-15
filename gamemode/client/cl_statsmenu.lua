@@ -1,4 +1,4 @@
-print("Why?")
+MsgC("Why?\n")
 
 TNick = 0
 TBestSurvivalTime = 0

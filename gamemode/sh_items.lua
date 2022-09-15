@@ -735,9 +735,7 @@ ItemsList = {
 
 
 
-
 -- guns
-
 
 
 
@@ -749,7 +747,7 @@ ItemsList = {
 		["Model"] = "models/weapons/w_pist_glock18.mdl",
 		["Description"] = "NoobCannon_d",
 		["Weight"] = 1.1,
-		["Supply"] = -1, -- -1 stock means the traders will never sell this item
+		["Supply"] = -1, -- -1 stock means the traders will never sell this item (yea we get it)
 		["Rarity"] = 1,
 		["Category"] = 3,
 		["UseFunc"] = function(ply) UseFunc_EquipGun(ply, "weapon_zw_noobcannon") return false end,
@@ -2960,82 +2958,79 @@ ItemsList = {
 
 
 function UseFunc_Sleep(ply, bheal)
-if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, translate.ClientGet(ply, "ItemNoSleepCooldownSleeping")) return false end
-if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "Can't sleep while using an item!") return false end
-if ply.Fatigue <= 2000 then SendChat(ply, "You are not tired") return false end
-if ply.Hunger <= 3000 then SendChat(ply, "You are hungry, you should eat something.") return false end
-if ply.Thirst <= 3000 then SendChat(ply, "You are thirsty, you should drink something.") return false end
-if ply.Infection >= 8000 then SendChat(ply, "You are greatly infected") return false end
-SendChat(ply, "You are now asleep")
-umsg.Start("DrawSleepOverlay", ply)
-umsg.End()
-ply.Fatigue = 0
-ply:Freeze(true)
-timer.Create("IsSleeping_"..ply:UniqueID(), 25, 1, function()
-	ply:Freeze(false)
-	timer.Destroy("IsSleeping_"..ply:UniqueID())
-end)
-if bheal then
-ply:SetHealth(ply:GetMaxHealth())
-end
+	if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, translate.ClientGet(ply, "ItemNoSleepCooldownSleeping")) return false end
+	if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "Can't sleep while using an item!") return false end
+	if ply.Fatigue <= 2000 then SendChat(ply, "You are not tired") return false end
+	if ply.Hunger <= 3000 then SendChat(ply, "You are hungry, you should eat something.") return false end
+	if ply.Thirst <= 3000 then SendChat(ply, "You are thirsty, you should drink something.") return false end
+	if ply.Infection >= 8000 then SendChat(ply, "You are greatly infected") return false end
+	SendChat(ply, "You are now asleep")
+	umsg.Start("DrawSleepOverlay", ply)
+	umsg.End()
+	ply.Fatigue = 0
+	ply:Freeze(true)
+	timer.Create("IsSleeping_"..ply:UniqueID(), 25, 1, function() ply:Freeze(false) end)
+	if bheal then
+		ply:SetHealth(ply:GetMaxHealth())
+	end
 end
 
 
 function UseFunc_DropItem(ply, item)
-if !SERVER then return false end
-if !ply:IsValid() or !ItemsList[item] then return false end
-if !ply:Alive() then SendChat(ply, "no dropping items when dead") return false end
-if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "Can't drop an item while sleeping!") return false end
-if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "Can't drop an item while using one!") return false end
+	if !SERVER then return false end
+	if !ply:IsValid() or !ItemsList[item] then return false end
+	if !ply:Alive() then SendChat(ply, "no dropping items when dead") return false end
+	if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "Can't drop an item while sleeping!") return false end
+	if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "Can't drop an item while using one!") return false end
 
-local vStart = ply:GetShootPos()
-local vForward = ply:GetAimVector()
-local trace = {}
-trace.start = vStart
-trace.endpos = vStart + (vForward * 70)
-trace.filter = ply
-local tr = util.TraceLine(trace)
-local EntDrop = ents.Create("ate_droppeditem")
-EntDrop:SetPos(tr.HitPos)
-EntDrop:SetAngles(Angle(0, 0, 0))
-EntDrop:SetModel(ItemsList[item]["Model"])
-EntDrop:SetNWString("ItemClass", item)
-EntDrop:Spawn()
-EntDrop:Activate()
+	local vStart = ply:GetShootPos()
+	local vForward = ply:GetAimVector()
+	local trace = {}
+	trace.start = vStart
+	trace.endpos = vStart + (vForward * 70)
+	trace.filter = ply
+	local tr = util.TraceLine(trace)
+	local EntDrop = ents.Create("ate_droppeditem")
+	EntDrop:SetPos(tr.HitPos)
+	EntDrop:SetAngles(Angle(0, 0, 0))
+	EntDrop:SetModel(ItemsList[item]["Model"])
+	EntDrop:SetNWString("ItemClass", item)
+	EntDrop:Spawn()
+	EntDrop:Activate()
 
 return true end
 
 
 function UseFunc_DropArmor(ply, item) -- same as drop item but we don't want to set the dropped item to a playermodel do we?
-if !SERVER then return false end
-if !ply:IsValid() or !ItemsList[item] then return false end
-if !ply:Alive() then SendChat(ply, "no dropping items when dead") return false end
-if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "Can't drop armor while sleeping!") return false end
-if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "Can't drop armor while using an item!") return false end
-if timer.Exists("Isplyequippingarmor"..ply:UniqueID().."_"..item) then SendChat(ply, "Can't drop armor while currently equipping one!") return false end
-if !timer.Exists("Plywantstodropequippedarmor"..ply:UniqueID()) and ply:GetNWString("ArmorType") == item then
-	SendChat(ply, "WARNING! You are about to drop an armor that you have it equipped, drop the same armor again within 10 seconds to confirm.")
-	timer.Create("Plywantstodropequippedarmor"..ply:UniqueID(), 10, 1, function() end)
-return false end
+	if !SERVER then return false end
+	if !ply:IsValid() or !ItemsList[item] then return false end
+	if !ply:Alive() then SendChat(ply, "no dropping items when dead") return false end
+	if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "Can't drop armor while sleeping!") return false end
+	if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, "Can't drop armor while using an item!") return false end
+	if timer.Exists("Isplyequippingarmor"..ply:UniqueID().."_"..item) then SendChat(ply, "Can't drop armor while currently equipping one!") return false end
+	if !timer.Exists("Plywantstodropequippedarmor"..ply:UniqueID()) and ply:GetNWString("ArmorType") == item then
+		SendChat(ply, "WARNING! You are about to drop an armor that you have it equipped, drop the same armor again within 10 seconds to confirm.")
+		timer.Create("Plywantstodropequippedarmor"..ply:UniqueID(), 10, 1, function() end)
+	return false end
 
-local vStart = ply:GetShootPos()
-local vForward = ply:GetAimVector()
-local trace = {}
-trace.start = vStart
-trace.endpos = vStart + (vForward * 70)
-trace.filter = ply
-local tr = util.TraceLine(trace)
-local EntDrop = ents.Create("ate_droppeditem")
-EntDrop:SetPos(tr.HitPos)
-EntDrop:SetAngles(Angle(0, 0, 0))
-EntDrop:SetModel("models/props/cs_office/cardboard_box01.mdl")
-EntDrop:SetNWString("ItemClass", item)
-EntDrop:Spawn()
-EntDrop:Activate()
+	local vStart = ply:GetShootPos()
+	local vForward = ply:GetAimVector()
+	local trace = {}
+	trace.start = vStart
+	trace.endpos = vStart + (vForward * 70)
+	trace.filter = ply
+	local tr = util.TraceLine(trace)
+	local EntDrop = ents.Create("ate_droppeditem")
+	EntDrop:SetPos(tr.HitPos)
+	EntDrop:SetAngles(Angle(0, 0, 0))
+	EntDrop:SetModel("models/props/cs_office/cardboard_box01.mdl")
+	EntDrop:SetNWString("ItemClass", item)
+	EntDrop:Spawn()
+	EntDrop:Activate()
 
-if ply.EquippedArmor == tostring(item) then
-UseFunc_RemoveArmor(ply, item)
-end
+	if ply.EquippedArmor == tostring(item) then
+		UseFunc_RemoveArmor(ply, item)
+	end
 
 return true end
 
@@ -3099,7 +3094,6 @@ function UseFunc_RemoveArmor(ply, item)
 	ply:SetNWString("ArmorType", "none")
 	RecalcPlayerModel(ply)
 	RecalcPlayerSpeed(ply)
-
 	return false
 end
 
@@ -3196,9 +3190,7 @@ function UseFunc_HealInfection(ply, usetime, infection, snd)
 			ply.Infection = math.Clamp(ply.Infection - (infection * 100), 0, 10000)
 			ply:EmitSound(snd, 100, 100)
 			SendUseDelay(ply, usetime)
-			timer.Create("Isplyusingitem"..ply:UniqueID(), usetime, 1, function()
-			timer.Destroy("Isplyusingitem"..ply:UniqueID())
-			end)
+			timer.Create("Isplyusingitem"..ply:UniqueID(), usetime, 1, function() end)
 			return true
 	else
 		SendChat(ply, "You could have healed yourself, before you died.")
@@ -3207,26 +3199,24 @@ function UseFunc_HealInfection(ply, usetime, infection, snd)
 end
 
 function UseFunc_Armor(ply, usetime, battery, armor, snd)
-if !SERVER then return false end
-if !ply:IsValid() then return false end
-if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "Can't use item while sleeping!") return false end
-if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, translate.ClientGet(ply, "ItemNoUseCooldown")) return false end
+	if !SERVER then return false end
+	if !ply:IsValid() then return false end
+	if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "Can't use item while sleeping!") return false end
+	if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, translate.ClientGet(ply, "ItemNoUseCooldown")) return false end
 	if ply:Alive() then
-			if ply:Armor() >= ply:GetMaxArmor() then SendChat(ply, "Your armor is already at full condition.") return false end
-			local armorstr = ply:GetNWString("ArmorType") or "none"
-			local armortype = ItemsList[armorstr]
-			if armortype and armorstr then
-				ply.Battery = math.Clamp(ply.Battery + battery, 0, 100 + armortype["ArmorStats"]["battery"])
-			else
-				ply.Battery = math.Clamp(ply.Battery + battery, 0, 100)
-			end
-			ply:SetArmor(math.Clamp(ply:Armor() + (armor * (1 + (ply.StatEngineer * 0.02))), 0, ply:GetMaxArmor()))
-			ply:EmitSound(snd, 100, 100)
-			SendUseDelay(ply, usetime)
-			timer.Create("Isplyusingitem"..ply:UniqueID(), usetime, 1, function()
-			timer.Destroy("Isplyusingitem"..ply:UniqueID())
-			end)
-			return true
+		if ply:Armor() >= ply:GetMaxArmor() then SendChat(ply, "Your armor is already at full condition.") return false end
+		local armorstr = ply:GetNWString("ArmorType") or "none"
+		local armortype = ItemsList[armorstr]
+		if armortype and armorstr then
+			ply.Battery = math.Clamp(ply.Battery + battery, 0, 100 + armortype["ArmorStats"]["battery"])
+		else
+			ply.Battery = math.Clamp(ply.Battery + battery, 0, 100)
+		end
+		ply:SetArmor(math.Clamp(ply:Armor() + (armor * (1 + (ply.StatEngineer * 0.02))), 0, ply:GetMaxArmor()))
+		ply:EmitSound(snd, 100, 100)
+		SendUseDelay(ply, usetime)
+		timer.Create("Isplyusingitem"..ply:UniqueID(), usetime, 1, function() end)
+		return true
 	else
 		SendChat(ply, "You could have charged your armor battery before you died!")
 		return false
@@ -3234,23 +3224,22 @@ if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, translate.C
 end
 
 function UseFunc_Eat(ply, usetime, health, hunger, thirst, stamina, fatigue, snd)
-if !SERVER then return false end
-if !ply:IsValid() then return false end
-if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "Can't use item while sleeping!") return false end
-if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, translate.ClientGet(ply, "ItemNoUseCooldown")) return false end
+	if !SERVER then return false end
+	if !ply:IsValid() then return false end
+	if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "Can't use item while sleeping!") return false end
+	if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, translate.ClientGet(ply, "ItemNoUseCooldown")) return false end
 	if ply:Alive() then
-			if ply.Hunger > 9500 then SendChat(ply, "I am not hungry, I should save this for later.") return false end
-			ply:SetHealth(math.Clamp(ply:Health() + health, 0, ply:GetMaxHealth()))
-			ply.Hunger = math.Clamp(ply.Hunger + (hunger * 100), 0, 10000)
-			ply.Thirst = math.Clamp(ply.Thirst + (thirst * 100), 0, 10000)
-			ply.Stamina = math.Clamp(ply.Stamina + stamina, 0, 100)
-			ply.Fatigue = math.Clamp(ply.Fatigue + (fatigue * 100), 0, 10000)
-			ply:EmitSound(snd, 100, 100)
-			SendUseDelay(ply, usetime)
-			timer.Create("Isplyusingitem"..ply:UniqueID(), usetime, 1, function()
-			timer.Destroy("Isplyusingitem"..ply:UniqueID())
-			end)
-			return true
+		if !timer.Exists("plywantstoeat"..ply:UniqueID()) and ply.Hunger > 9500 then timer.Create("plywantstoeat"..ply:UniqueID(), 10, 1, function() end) SendChat(ply, "I am not hungry, I should save this for later. \n(Use the item again within 10 seconds to confirm usage)") return false end
+		ply:SetHealth(math.Clamp(ply:Health() + health, 0, ply:GetMaxHealth()))
+		ply.Hunger = math.Clamp(ply.Hunger + (hunger * 100), 0, 10000)
+		ply.Thirst = math.Clamp(ply.Thirst + (thirst * 100), 0, 10000)
+		ply.Stamina = math.Clamp(ply.Stamina + stamina, 0, 100)
+		ply.Fatigue = math.Clamp(ply.Fatigue + (fatigue * 100), 0, 10000)
+		ply:EmitSound(snd, 100, 100)
+		SendUseDelay(ply, usetime)
+		timer.Create("Isplyusingitem"..ply:UniqueID(), usetime, 1, function() end)
+		timer.Destroy("plywantstoeat"..ply:UniqueID())
+		return true
 	else
 		SendChat(ply, "You don't have to eat when you're dead.") -- if they try to call this function when they are dead
 		return false
@@ -3258,24 +3247,23 @@ if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, translate.C
 end
 
 function UseFunc_Drink(ply, usetime, health, hunger, thirst, stamina, fatigue, snd)
-if !SERVER then return false end
-if !ply:IsValid() then return false end
-if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "Can't use item while sleeping!") return false end
-if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, translate.ClientGet(ply, "ItemNoUseCooldown")) return false end
-if ply:WaterLevel() == 3 then SendChat(ply, "It is impossible to drink when you are underwater. Get out of the water if you want to drink.") return false end
+	if !SERVER then return false end
+	if !ply:IsValid() then return false end
+	if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "Can't use item while sleeping!") return false end
+	if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, translate.ClientGet(ply, "ItemNoUseCooldown")) return false end
+	if ply:WaterLevel() == 3 then SendChat(ply, "It is impossible to drink when you are underwater. Get out of the water if you want to drink.") return false end
 	if ply:Alive() then
-			if !timer.Exists("plywantstouseitem"..ply:UniqueID()) and ply.Thirst > 9500 then timer.Create("plywantstouseitem"..ply:UniqueID(), 10, 1, function() timer.Destroy("plywantstouseitem"..ply:UniqueID()) end) SendChat(ply, "You are not thirsty, consider saving this for later. Use item again within 10 seconds to confirm usage.") return false end
-			ply:SetHealth(math.Clamp(ply:Health() + health, 0, ply:GetMaxHealth()))
-			ply.Hunger = math.Clamp(ply.Hunger + (hunger * 100), 0, 10000)
-			ply.Thirst = math.Clamp(ply.Thirst + (thirst * 100), 0, 10000)
-			ply.Stamina = math.Clamp(ply.Stamina + stamina, 0, 100)
-			ply.Fatigue = math.Clamp(ply.Fatigue + (fatigue * 100), 0, 10000)
-			ply:EmitSound(snd, 100, 100)
-			SendUseDelay(ply, usetime)
-			timer.Create("Isplyusingitem"..ply:UniqueID(), usetime, 1, function()
-			timer.Destroy("plywantstouseitem"..ply:UniqueID())
-			end)
-			return true
+		if !timer.Exists("plywantstodrink"..ply:UniqueID()) and ply.Thirst > 9500 then timer.Create("plywantstodrink"..ply:UniqueID(), 10, 1, function() end) SendChat(ply, "You are not thirsty, consider saving this for later. \n(Use item again within 10 seconds to confirm usage)") return false end
+		ply:SetHealth(math.Clamp(ply:Health() + health, 0, ply:GetMaxHealth()))
+		ply.Hunger = math.Clamp(ply.Hunger + (hunger * 100), 0, 10000)
+		ply.Thirst = math.Clamp(ply.Thirst + (thirst * 100), 0, 10000)
+		ply.Stamina = math.Clamp(ply.Stamina + stamina, 0, 100)
+		ply.Fatigue = math.Clamp(ply.Fatigue + (fatigue * 100), 0, 10000)
+		ply:EmitSound(snd, 100, 100)
+		SendUseDelay(ply, usetime)
+		timer.Create("Isplyusingitem"..ply:UniqueID(), usetime, 1, function() end)
+		timer.Destroy("plywantstodrink"..ply:UniqueID())
+		return true
 	else
 		SendChat(ply, "You should not drink when you're dead.")
 		return false
@@ -3283,36 +3271,34 @@ if ply:WaterLevel() == 3 then SendChat(ply, "It is impossible to drink when you 
 end
 
 function UseFunc_Respec(ply)
-if !SERVER then return false end
-if !ply:IsValid() or !ply:Alive() then return false end
-if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "Can't use item while sleeping!") return false end
-if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, translate.ClientGet(ply, "ItemNoUseCooldown")) return false end
+	if !SERVER then return false end
+	if !ply:IsValid() or !ply:Alive() then return false end
+	if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "Can't use item while sleeping!") return false end
+	if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, translate.ClientGet(ply, "ItemNoUseCooldown")) return false end
 
-local refund = 0 + ply.StatPoints
-ply.StatPoints = 0
+	local refund = 0 + ply.StatPoints
+	ply.StatPoints = 0
 
-for k, v in pairs(StatsListServer) do
-	local TheStatPieces = string.Explode(";", v)
-	local TheStatName = TheStatPieces[1]
-	refund = refund + tonumber(ply[ TheStatName ])
-	ply[ TheStatName ] = 0
-end
+	for k, v in pairs(StatsListServer) do
+		local TheStatPieces = string.Explode(";", v)
+		local TheStatName = TheStatPieces[1]
+		refund = refund + tonumber(ply[TheStatName])
+		ply[TheStatName] = 0
+	end
 
-ply.StatPoints = refund
+	ply.StatPoints = refund
 
-CalculateMaxHealth(ply)
-CalculateMaxArmor(ply)
-CalculateJumpPower(ply)
-RecalcPlayerSpeed(ply)
+	CalculateMaxHealth(ply)
+	CalculateMaxArmor(ply)
+	CalculateJumpPower(ply)
+	RecalcPlayerSpeed(ply)
 
-ply:EmitSound("npc/barnacle/barnacle_gulp2.wav")
+	ply:EmitSound("npc/barnacle/barnacle_gulp2.wav")
 
-TEANetUpdatePeriodicStats(ply)
+	TEANetUpdatePeriodicStats(ply)
+	TEANetUpdatePerks(ply)
 
-TEANetUpdatePerks(ply)
+	SystemMessage(ply, translate.ClientGet(ply, "ItemUsedSkillsReset"), Color(255,255,205,255), true)
 
-SystemMessage(ply, translate.ClientGet(ply, "ItemUsedSkillsReset"), Color(255,255,205,255), true)
-
-return true
-
+	return true
 end

@@ -1,4 +1,4 @@
-------------------------------------------------------------------------------------------------------------------------ZOMBIES!
+---------------- Zombies! ----------------
 
 local ZombieData = ""
 
@@ -25,7 +25,6 @@ end
 		print( "No zombie spawnpoints found for this map" )
 	end
 end
-LoadZombies() --load them right away
 
 -- note: added the ability to create bosses with this function, setting isboss to true will make the monster distribute its xp reward to all attackers and announce its death
 function CreateZombie(class, pos, ang, xp, cash, isboss)
@@ -33,8 +32,8 @@ function CreateZombie(class, pos, ang, xp, cash, isboss)
 	local class = tostring(class)
 
 	local SpawnZombie = ents.Create( class )
-	SpawnZombie:SetPos( pos )
-	SpawnZombie:SetAngles( ang )
+	SpawnZombie:SetPos(pos)
+	SpawnZombie:SetAngles(ang)
 	SpawnZombie.XPReward = xp
 	SpawnZombie.MoneyReward = cash
 	if isboss then
@@ -67,42 +66,40 @@ if deserted == true then ent:Remove() end
 end
 
 
-function SpawnRandomZombie( pos, ang )
-local dice = math.random(0, 100)
-local total = 0
-for k, v in pairs(Config[ "ZombieClasses" ]) do
-	total = total + v["SpawnChance"]
-	if total >= dice then
-		CreateZombie( k, pos, ang, v["XPReward"], v["MoneyReward"], false )
-		break
+function SpawnRandomZombie(pos, ang)
+	local dice = math.random(0, 100)
+	local total = 0
+	for k, v in pairs(Config[ "ZombieClasses" ]) do
+		total = total + v["SpawnChance"]
+		if total >= dice then
+			CreateZombie(k, pos, ang, v["XPReward"], v["MoneyReward"], false)
+			break
+		end
 	end
 end
 
-end
-
-function SpawnRandomBoss( pos, ang )
-local dice = math.random(0, 100)
-local total = 0
-for k, v in pairs(Config[ "BossClasses" ]) do
-	total = total + v["SpawnChance"]
-	if total >= dice then
-		v["BroadCast"]()
-		timer.Simple(tonumber(v["SpawnDelay"]), function()
-		SystemBroadcast(v["AnnounceMessage"], Color(255,105,105,255), false)
-		for k, v in pairs(player.GetAll()) do v:EmitSound("*#music/stingers/hl1_stinger_song8.mp3") end
-		CreateZombie( k, pos, ang, v["XPReward"], v["MoneyReward"], true )
-		end)
-		break
+function SpawnRandomBoss(pos, ang)
+	local dice = math.random(0, 100)
+	local total = 0
+	for k, v in pairs(Config[ "BossClasses" ]) do
+		total = total + v["SpawnChance"]
+		if total >= dice then
+			v["BroadCast"]()
+			timer.Simple(tonumber(v["SpawnDelay"]), function()
+				SystemBroadcast(v["AnnounceMessage"], Color(255,105,105,255), false)
+				for k, v in pairs(player.GetAll()) do v:EmitSound("*#music/stingers/hl1_stinger_song8.mp3") end
+				CreateZombie( k, pos, ang, v["XPReward"], v["MoneyReward"], true )
+			end)
+			break
+		end
 	end
-end
-
 end
 
 
 function SpawnZombies()
-	local tea_config_zombiespawning = GetConVar( "tea_config_zombiespawning" )
-	if ( ZombieCount() > Config[ "MaxZombies" ] ) or tea_config_zombiespawning:GetInt() < 1 then return false end
-	if( ZombieData != "" ) then
+	local tea_config_zombiespawning = tobool(GetConVarNumber("tea_config_zombiespawning"))
+	if ZombieCount() > Config["MaxZombies"] or not tea_config_zombiespawning then return false end
+	if ZombieData != "" then
 
 		local ZombiesList = string.Explode( "\n", ZombieData )
 		for k, v in RandomPairs( ZombiesList ) do
@@ -123,7 +120,7 @@ function SpawnZombies()
 			end
 
 			if inplyrange == false or inzedrange == false then continue end
-			if ( ZombieCount() > Config[ "MaxZombies" ] ) or tea_config_zombiespawning:GetInt() < 1 then break end
+			if ZombieCount() > Config["MaxZombies"] or not tea_config_zombiespawning then break end
 
 
 
@@ -135,15 +132,15 @@ end
 timer.Create( "ZombieSpawnTimer", tonumber(Config[ "ZombieSpawnRate" ]), 0, SpawnZombies )
 
 
-function AddZombie( ply, cmd, args )
-	if !SuperAdminCheck( ply ) then 
+function AddZombie(ply, cmd, args)
+	if !SuperAdminCheck(ply) then 
 		SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
-		ply:ConCommand( "playgamesound buttons/button8.wav" )
+		ply:ConCommand("playgamesound buttons/button8.wav")
 		return
 	end
 
-	if( ZombieData == "" ) then
-		NewData = tostring( ply:GetPos() ) .. ";" .. tostring( ply:GetAngles() )
+	if ZombieData == "" then
+		NewData = tostring(ply:GetPos()) ..";".. tostring(ply:GetAngles())
 	else
 		NewData = ZombieData .. "\n" .. tostring( ply:GetPos() ) .. ";" .. tostring( ply:GetAngles() )
 	end
@@ -157,7 +154,7 @@ function AddZombie( ply, cmd, args )
 	ate_DebugLog("[SPAWNPOINTS MODIFIED] "..ply:Nick().." has added a zombie spawnpoint at position "..tostring(ply:GetPos()).."!")
 	ply:ConCommand( "playgamesound buttons/button3.wav" )
 end
-concommand.Add( "ate_addzombiespawn", AddZombie )
+concommand.Add("tea_addzombiespawn", AddZombie)
 
 function ClearZombies( ply, cmd, args )
 if !SuperAdminCheck( ply ) then 
@@ -174,7 +171,7 @@ print("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all zombie spawnpoints
 ate_DebugLog("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all zombie spawnpoints!")
 ply:ConCommand( "playgamesound buttons/button15.wav" )
 end
-concommand.Add( "ate_clearzombiespawns", ClearZombies )
+concommand.Add( "tea_clearzombiespawns", ClearZombies )
 
 CanSpawnBoss = false --used for admin commands
 function SpawnBoss()
@@ -182,7 +179,7 @@ if !CanSpawnBoss and table.Count(player.GetAll()) < 2 then return end
 
 local bspawned = false
 
-if( ZombieData != "" ) then
+if ZombieData != "" then
 
 	local ZombiesList = string.Explode( "\n", ZombieData )
 	for k, v in RandomPairs( ZombiesList ) do
@@ -224,18 +221,18 @@ end
 hook.Add("EntityTakeDamage", "StoreAttacker", StoreAttacker)
 
 function NPCReward(ent)
-local tea_server_xpreward = GetConVar("tea_server_xpreward")
-local tea_server_moneyreward = GetConVar("tea_server_moneyreward")
+	local tea_server_xpreward = GetConVarNumber("tea_server_xpreward")
+	local tea_server_moneyreward = GetConVarNumber("tea_server_moneyreward")
 
-	if ( ent.Type == "nextbot" or ent:IsNPC() ) and (ent.XPReward and ent.MoneyReward) then
+	if (ent.Type == "nextbot" or ent:IsNPC()) and (ent.XPReward and ent.MoneyReward) then
 		if ent.LastAttacker and ent.LastAttacker:IsValid() then
-		Payout(ent.LastAttacker, ent.XPReward * tea_server_xpreward:GetFloat(), ent.MoneyReward * tea_server_moneyreward:GetFloat())
+		Payout(ent.LastAttacker, ent.XPReward * tea_server_xpreward, ent.MoneyReward * tea_server_moneyreward)
 		ent.LastAttacker.ZKills = ent.LastAttacker.ZKills + 1
 		TEANetUpdateStatistics(ent.LastAttacker)
 		elseif ent.DamagedBy then
 			for k, v in pairs(ent.DamagedBy) do
 				local pay = tonumber(v / 4)	-- i really need to rework this one since doing 4 damage to bosses grants +1XP and +1$ reward
-				Payout(k, math.Round(pay * tea_server_xpreward:GetFloat()), math.Round(pay * tea_server_moneyreward:GetFloat()))
+				Payout(k, math.Round(pay * tea_server_xpreward), math.Round(pay * tea_server_moneyreward))
 			end
 
 			local EntDrop = ents.Create("loot_cache_boss")
@@ -360,15 +357,15 @@ function SpawnTestZombie(ply, cmd, args)
 	if !ply:IsValid() then return end
 	if !TEADevCheck(ply) then 
 		SystemMessage(ply, translate.ClientGet(ply, "TEADevCheckFailed"), Color(255,205,205,255), true)
-		ply:ConCommand( "playgamesound buttons/button8.wav" )
+		ply:ConCommand("playgamesound buttons/button8.wav")
 		return
 	end
 
 	local class = tostring(args[1]) or "npc_ate_basic"
-	local xp = tonumber(args[2]) or 0
-	local cash = tonumber(args[3]) or 0
-	local shouldsendchat = tostring(args[5]) or false
-	local isboss = args[4] or false
+	local xp = tonumber(args[2]) or 100
+	local cash = tonumber(args[3]) or 50
+	local isboss = tobool(args[4]) or false
+	local shouldsendchat = tostring(args[5]) or true
 	
 	local vStart = ply:GetShootPos()
 	local vForward = ply:GetAimVector()
@@ -379,8 +376,7 @@ function SpawnTestZombie(ply, cmd, args)
 	local tr = util.TraceLine( trace )
 	
 	CreateZombie(class, tr.HitPos, Angle(0,0,0), xp, cash, isboss)
-
-	SystemMessage(ply, "Spawned zombie "..class.." with reward of "..xp.."XP and "..cash.." cash! (Is boss zombie: "..tostring(isboss)..")", Color(205,255,205,255), true)
+	if tobool(shouldsendchat) then SystemMessage(ply, "Spawned zombie "..class.." with reward of "..xp.." XP and "..cash.." cash! (Is boss zombie: "..tostring(isboss)..")", Color(205,255,205,255), true) end
 end
 concommand.Add("tea_dev_spawnzombie", SpawnTestZombie )
 	

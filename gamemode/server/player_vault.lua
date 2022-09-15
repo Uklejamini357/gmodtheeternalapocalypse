@@ -18,37 +18,34 @@ concommand.Add("refresh_vault", SendVault)
 
 
 function LoadPlayerVault( ply )
-
-local LoadedData
-if Config[ "FileSystem" ] == "Legacy" then
+	local LoadedData
+	if Config[ "FileSystem" ] == "Legacy" then
 
 	if file.Exists( "theeternalapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" ) .. "/vault.txt"), "DATA" ) then
 		LoadedData = file.Read( "theeternalapocalypse/players/" .. string.lower(string.gsub( ply:SteamID(), ":", "_" ) .. "/vault.txt"), "DATA" )
 	end
 
-elseif Config[ "FileSystem" ] == "PData" then
+	elseif Config["FileSystem"] == "PData" then
 		LoadedData = ply:GetPData( "ate_playervault" )
-else
-	print("Bruh, did you try to setup incorrectly? Set your damned filesystem option to a proper setting in sh_config.lua")
+	else
+		print("Bruh, did you try to setup incorrectly? Set your damned filesystem option to a proper setting in sh_config.lua")
+	end
+
+	if LoadedData then 
+		local formatted = util.JSONToTable( LoadedData )
+		ply.Vault = formatted
+	else
+		ply.Vault = table.Copy( Config[ "RookieVault" ] )
+	end
+
+	timer.Simple(1, function() SendVault(ply) end)
+	timer.Simple(2, function() SavePlayerVault(ply) end)
 end
 
-if LoadedData then 
-	local formatted = util.JSONToTable( LoadedData )
-	ply.Vault = formatted
-else
-	ply.Vault = table.Copy( Config[ "RookieVault" ] )
-end
 
-timer.Simple(1, function() SendVault(ply) end)
-timer.Simple(2, function() SavePlayerVault(ply) end)
-
-end
-
-
-
-function SavePlayerVault( ply )
+function SavePlayerVault(ply)
 local tea_server_dbsaving = GetConVar("tea_server_dbsaving")
-if AllowSave != 1 and tea_server_dbsaving:GetInt() < 1 then return end
+if AllowSave != 1 and !tobool(GetConVar("tea_server_dbsaving"):GetString()) then return end
 
 	if Config[ "FileSystem" ] == "Legacy" then
 		local data = util.TableToJSON(ply.Vault)

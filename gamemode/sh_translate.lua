@@ -2,6 +2,8 @@
 -- Feel free to use this in your own addons.
 -- See the languages folder to add your own languages.
 
+--[[Copied from ZS because was too lazy to add one by myself, anyways it was edited a bit for file reduce]]
+
 translate = {}
 
 local Languages = {}

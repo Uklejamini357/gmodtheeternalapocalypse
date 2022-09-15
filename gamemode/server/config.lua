@@ -30,5 +30,5 @@ StatsListServer2 =
 	"Thirst",
 	"Fatigue",
 	"Infection",
-	"Battery"
+	"Battery",
 }

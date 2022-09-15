@@ -13,7 +13,7 @@ end
 		print("No player spawns file for this map")
 	end
 end
-LoadPlayerSpawns()
+
 
 function SpawnPlayer(ply)
 	if ply.Spawnpoint then
@@ -66,7 +66,7 @@ function AddPlayerSpawn(ply, cmd, args)
 	LoadPlayerSpawns() --reload them
 	timer.Simple(0.5, function() LoadPlayerSpawns() end) -- and again (to prevent any unnecessary missing spawnpoints)
 end
-concommand.Add("ate_addplayerspawnpoint", AddPlayerSpawn)
+concommand.Add("tea_addplayerspawnpoint", AddPlayerSpawn)
 
 function ClearPlayerSpawns(ply, cmd, args)
 	if !SuperAdminCheck(ply) then 
@@ -83,7 +83,7 @@ function ClearPlayerSpawns(ply, cmd, args)
 	ate_DebugLog("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all player spawnpoints!")
 	ply:ConCommand("playgamesound buttons/button15.wav")
 end
-concommand.Add("ate_clearplayerspawnpoints", ClearPlayerSpawns)
+concommand.Add("tea_clearplayerspawnpoints", ClearPlayerSpawns)
 
 function RefreshPlayerSpawns(ply, cmd, args)
 	if !SuperAdminCheck(ply) then 
@@ -93,4 +93,4 @@ function RefreshPlayerSpawns(ply, cmd, args)
 	end
 	LoadPlayerSpawns()
 end
-concommand.Add("ate_refreshplayerspawnpoints", RefreshPlayerSpawns)
+concommand.Add("tea_refreshplayerspawnpoints", RefreshPlayerSpawns)

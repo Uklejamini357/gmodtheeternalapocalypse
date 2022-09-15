@@ -147,7 +147,7 @@ function CMenu()
 	draw.RoundedBox(2, 0, 0, PVPButton:GetWide(), PVPButton:GetTall(), Color(0, 0, 0, 130))
 	end
 	PVPButton.DoClick = function()
-	RunConsoleCommand("ate_togglepvp")
+	RunConsoleCommand("tea_togglepvp")
 	RunConsoleCommand("-menu_context")
 	end
 
@@ -206,7 +206,7 @@ local ConfirmFrame = vgui.Create("DFrame")
 	draw.RoundedBox(2,0,0, doclear:GetWide(), doclear:GetTall(), Color(0,0,0,130))
 	end
 	doclear.DoClick = function()
-	RunConsoleCommand("ate_clearmyprops")
+	RunConsoleCommand("tea_clearmyprops")
 	ConfirmFrame:Remove()
 	end
 
@@ -351,7 +351,7 @@ local AdarFrame = vgui.Create("DFrame")
 	draw.RoundedBox(2, 0, 0, dodropcash:GetWide(), dodropcash:GetTall(), Color(0, 0, 0, 130))
 	end
 	dodropcash.DoClick = function()
-	RunConsoleCommand("ate_dropcash", Cash:GetValue())
+	RunConsoleCommand("tea_dropcash", Cash:GetValue())
 	AdarFrame:Remove()
 	end
 

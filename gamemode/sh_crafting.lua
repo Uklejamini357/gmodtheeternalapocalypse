@@ -1,5 +1,3 @@
---Those are only examples for now. They don't do anything.
-
 CraftableList = {
     ["item_medkit"] = {
         ["Description"] = "Medkit_dcr",
@@ -29,3 +27,13 @@ CraftableSpecialList = {
 		},
 	},
 }
+
+
+/*
+{"item_craft_wheel", 4},
+{"item_craft_engine_small", 1},
+{"item_craft_battery", 1},
+{"item_craft_fueltank", 1},
+{"item_craft_oil", 1},
+{"item_scrap", 5}
+*/

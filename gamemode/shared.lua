@@ -7,7 +7,7 @@ GM.AltName	= "After The End Reborn"
 GM.Author 	= "Uklejamini"
 GM.Email 	= "[Insert Email here]"
 GM.Website 	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.10.6a" --it was supposed to be v0.10.6 but screw it, the crafting system is too much.
+GM.Version	= "0.10.6b"
 
 team.SetUp(1, "Loner", Color(100, 50, 50, 255)) --loner basic team
 
@@ -25,6 +25,7 @@ local tea_config_factioncost = CreateConVar("tea_config_factioncost", 1000, {FCV
 local tea_config_maxprops = CreateConVar("tea_config_maxprops", 60, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "How many props can players create?", 0, 1000)
 local tea_config_zombiespawning = CreateConVar("tea_config_zombiespawning", 1, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Should zombies spawn at their zombie spawn? Consider disabling it if adding zombie spawns.", 0, 1)
 local tea_config_propcostenabled = CreateConVar("tea_config_propcostenabled", 1, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Enable prop spawning cost money? Good for making events that needs props to make.", 0, 1)
+local tea_config_zombieapocalypse = CreateConVar("tea_config_zombieapocalypse", 0, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Should zombies closest to players see them anywhere? Only good if making event or mini-game like zombie survival or something.", 0, 1) --Be sure to have good navmesh so zombies can navigate through the map!
 
 function GM:ShutDown()
 	if SERVER then

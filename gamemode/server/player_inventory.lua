@@ -77,7 +77,7 @@ end
 
 function SavePlayerInventory(ply)
 	local tea_server_dbsaving = GetConVar("tea_server_dbsaving")
-	if AllowSave != 1 and tea_server_dbsaving:GetInt() < 1 then return end
+	if AllowSave != 1 and !tobool(tea_server_dbsaving:GetString()) then return end
 	if !ply:IsValid() then return end
 
 	if Config[ "FileSystem" ] == "Legacy" then
@@ -94,11 +94,14 @@ function SavePlayerInventory(ply)
 end
 
 function SaveTimer()
+	local tea_server_dbsaving = GetConVar("tea_server_dbsaving")
 	local i = 0
-	for k, ply in pairs( player.GetAll() ) do
+	if !tobool(tea_server_dbsaving:GetString()) then print("------=== WARNING ===------\n\nDatabase saving is disabled! Players will not have their progress saved during this time.\nSet ConVar 'tea_server_dbsaving' to 1 in order to enable database saving.\n\n------=== WARNING ===------") return end
+	for k, ply in pairs(player.GetAll()) do
 		if ply:IsValid() then
 			i = i + 1
-			timer.Simple( i * 0.5, function()
+			if !tobool(tea_server_dbsaving:GetString()) then return end
+			timer.Simple(i * 0.5, function()
 				if !ply:IsValid() then return end
 				SavePlayer(ply)
 				SavePlayerInventory(ply)
@@ -108,7 +111,6 @@ function SaveTimer()
 	end
 end
 timer.Create("SaveTimer", 180, 0, SaveTimer)
-
 
 function SystemGiveItem(ply, str, qty)
 
@@ -204,7 +206,7 @@ function playa:BuyItem(str)
 	if ((CalculateWeight(self) + item["Weight"]) > CalculateMaxWeight(self)) then SendChat(self, translate.ClientFormat(self, "NotEnoughSpace", -CalculateMaxWeight(self) + CalculateWeight(self) + item["Weight"], translate.ClientGet(self, "kg"))) return false end
 
 	SystemGiveItem(self, str)
-	self:PrintMessage(HUD_PRINTCONSOLE, translate.ClientFormat(self, "TraderBoughtItem", translate.ClientGet(self, item["Name"]), buyprice, Config["Currency"]))
+	self:PrintTranslatedMessage(HUD_PRINTCONSOLE, "TraderBoughtItem", translate.ClientGet(self, item["Name"]), buyprice, Config["Currency"])
 	self.Money = math.floor(self.Money - (item["Cost"] * (1 - (self.StatBarter * 0.015)))) -- reduce buy cost by 1.5% per barter level
 	SendInventory(self)
 	self:EmitSound("items/ammopickup.wav", 100, 100)
@@ -240,7 +242,7 @@ net.Receive("SellItem", function(length, client)
 		UseFunc_RemoveArmor(client, str)
 	end
 
-	client:PrintMessage(HUD_PRINTCONSOLE, translate.ClientFormat(client, "TraderSoldItem", translate.ClientGet(client, item["Name"]), sellprice, Config["Currency"]))
+	client:PrintTranslatedMessage(HUD_PRINTCONSOLE, "TraderSoldItem", translate.ClientGet(client, item["Name"]), sellprice, Config["Currency"])
 	client.Money = math.floor(client.Money + sellprice) -- base sell price 20% of the original buy price plus 0.5% per barter level to max of 25%
 	SendInventory(client)
 	client:EmitSound("physics/cardboard/cardboard_box_break3.wav", 100, 100)

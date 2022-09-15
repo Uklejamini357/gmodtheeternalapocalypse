@@ -1,3 +1,6 @@
+--Dev commands
+--Do not change, unless there are bugs or if adding more
+
 function TEASpawnLoot(ply) 
     if !ply:IsValid() then return false end
     

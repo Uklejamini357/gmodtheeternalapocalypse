@@ -39,40 +39,39 @@ return false
 end
 
 function DestroyProp(ply, ent)
-if !ply:IsValid() or !ply:Alive() then return false end
-if !ent:IsValid() or !ent:GetClass() == "prop_flimsy" or !ent:GetClass() == "prop_strong" then return false end
-local owner = ent:GetNWEntity("owner")
-if !owner:IsValid() or !owner:Alive() then return false end
+	if !ply:IsValid() or !ply:Alive() then return false end
+	if !ent:IsValid() or !ent:GetClass() == "prop_flimsy" or !ent:GetClass() == "prop_strong" then return false end
+	local owner = ent:GetNWEntity("owner")
+	if !owner:IsValid() or !owner:Alive() then return false end
 
-local ptype
-local checktable
-if FLIMSYPROPS[ent:GetModel()] then ptype = 1
-elseif TOUGHPROPS[ent:GetModel()] then ptype = 2
-else return false end
+	local ptype
+	local checktable
+	if FLIMSYPROPS[ent:GetModel()] then ptype = 1
+	elseif TOUGHPROPS[ent:GetModel()] then ptype = 2
+	else return false end
 
-if ptype == 1 then checktable = FLIMSYPROPS
-elseif ptype == 2 then checktable = TOUGHPROPS
-else return false end
+	if ptype == 1 then checktable = FLIMSYPROPS
+	elseif ptype == 2 then checktable = TOUGHPROPS
+	else return false end
 
-if owner != ply then SystemMessage(ply, "You don't own this prop!", Color(255,205,205,255), true) return false end
+	if owner != ply then SystemMessage(ply, "You don't own this prop!", Color(255,205,205,255), true) return false end
 
-SendUseDelay( ply, 2 )
+	SendUseDelay( ply, 2 )
 
-timer.Simple(2, function()
-if !ply:IsValid() or !ply:Alive() or !ent:IsValid() then return false end
+	timer.Simple(2, function()
+		if !ply:IsValid() or !ply:Alive() or !ent:IsValid() then return false end
 
-local refund = checktable[ent:GetModel()]["COST"]
-if refund == nil then return false end
-if GetConVar("tea_config_propcostenabled"):GetInt() >= 1 then
-	ply.Money = ply.Money + math.floor(refund * 0.45)
-	SystemMessage(ply, "You salvaged one of your props and gained "..math.floor(refund * 0.45).." Gold", Color(205,205,255,255), true)
-end
-ent:EmitSound("physics/wood/wood_furniture_break"..math.random(1,2)..".wav", 100, math.random(95,105))
-ent:Remove()
+		local refund = checktable[ent:GetModel()]["COST"]
+		if refund == nil then return false end
+		if tobool(GetConVarNumber("tea_config_propcostenabled")) then
+			ply.Money = ply.Money + math.floor(refund * 0.45)
+			SystemMessage(ply, "You salvaged one of your props and gained "..math.floor(refund * 0.45).." Gold", Color(205,205,255,255), true)
+		end
+		ent:EmitSound("physics/wood/wood_furniture_break"..math.random(1,2)..".wav", 100, math.random(95,105))
+		ent:Remove()
 
-TEANetUpdatePeriodicStats(ply)
-end)
-
+		TEANetUpdatePeriodicStats(ply)
+	end)
 end
 
 function DestroyStructure(ply, ent)
@@ -149,7 +148,7 @@ function MakeProp(ply, model, pos, ang)
 	local cash = tonumber(ply.Money)
 	local pcost = checktable[model]["COST"]
 	local discount = 1 - (ply.StatEngineer * 0.02)
-	local tea_config_maxprops = GetConVar("tea_config_maxprops")
+	local tea_config_maxprops = GetConVarNumber("tea_config_maxprops")
 
 	if (cash < (pcost * discount)) then SystemMessage(ply, "Unable to spawn prop due to insufficient Gold!", Color(255,205,205,255), true) return false end
 
@@ -157,8 +156,8 @@ function MakeProp(ply, model, pos, ang)
 		if pos:Distance(v:GetPos()) < 250 then SystemMessage(ply, "Unable to spawn prop! Too close to a trader!", Color(255,205,205,255), true) return false end
 	end
 
-	if CountProps(ply) >= tea_config_maxprops:GetInt() then 
-	SendChat( ply, "You cannot have more than ".. tea_config_maxprops:GetInt() .." prop(s)!" )
+	if CountProps(ply) >= tea_config_maxprops then 
+	SendChat( ply, "You cannot have more than "..tea_config_maxprops.." prop(s)!" )
 		return false
 	end
 
@@ -176,7 +175,7 @@ function MakeProp(ply, model, pos, ang)
 		prop:SetNWInt("ate_maxintegrity", 500 * (checktable[model]["TOUGHNESS"] or 1) )
 		prop:SetNWInt("ate_integrity", 500 * (checktable[model]["TOUGHNESS"] or 1) )
 		prop:SetNWEntity("owner", ply)
-		if GetConVar("tea_config_propcostenabled"):GetInt() >= 1 then
+		if tobool(GetConVarNumber("tea_config_propcostenabled")) then
 			ply.Money = tonumber(ply.Money) - (pcost * discount)
 		end
 	else
@@ -193,7 +192,7 @@ function MakeProp(ply, model, pos, ang)
 		prop:SetNWInt("ate_maxintegrity", 500 * (checktable[model]["TOUGHNESS"] or 1) )
 		prop:SetNWInt("ate_integrity", 500 * (checktable[model]["TOUGHNESS"] or 1) )
 		prop:SetNWEntity("owner", ply)
-		if GetConVar("tea_config_propcostenabled"):GetInt() >= 1 then
+		if tobool(GetConVarNumber("tea_config_propcostenabled")) then
 			ply.Money = tonumber(ply.Money) - (pcost * discount)
 		end
 	end
