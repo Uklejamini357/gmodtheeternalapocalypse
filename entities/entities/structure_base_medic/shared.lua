@@ -1,6 +1,6 @@
 ENT.Type 			= "anim"
 ENT.Base 			= "base_gmodentity"
-ENT.PrintName			= "Auto Medic"
+ENT.PrintName			= "Auto-Medic"
 ENT.Author			= "LegendofRobbo"
 /*
  function ENT:SetupDataTables()
@@ -17,7 +17,6 @@ return false
 end
 
 function ENT:Initialize()
-
 	local selfent = self.Entity
 	self.IsBuilt = false
 	self.UseTimer = CurTime()
@@ -28,62 +27,32 @@ function ENT:Initialize()
 	self.Entity:SetMoveType( MOVETYPE_VPHYSICS )
 	self.Entity:SetSolid( SOLID_VPHYSICS )
 	self.Entity:SetUseType( 3 )
---	self:SetModel("models/props_c17/light_cagelight02_on.mdl")
+
 
 	self:SetMaterial("models/wireframe")
 	self:SetCollisionGroup( COLLISION_GROUP_WORLD )
-
 	self:SetColor(Color(105, 105, 105, 100))
-/*
-	timer.Simple(3, function() 
-	if self:IsValid() then
-	self:SetMaterial("")
-	self:SetColor(Color(255, 255, 255, 255))
-	self.IsBuilt = true
-	self:SetCollisionGroup( COLLISION_GROUP_NONE )
-	end
-	end)
-*/
+
 
 	local phys = self.Entity:GetPhysicsObject()
 	if (phys:IsValid()) then
 		phys:Wake()
 	end	
 
-/*
-	timer.Simple(3, function()
-	if not self:IsValid() then return false end
-
-
-	local ent = self
-	local mins, maxs = ent:LocalToWorld(ent:OBBMins( )), ent:LocalToWorld(ent:OBBMaxs( ))
-	local cube = ents.FindInBox( mins, maxs )
-
-		for _,v in pairs(cube) do
-			if v:IsPlayer() or v:IsNPC() or v.Type == "nextbot" then self:Remove()
-			if v:IsPlayer() then
- 			SendChat( v, "Unable to build prop, biological obstruction detected" )
- 			end
-		end
-	end
-
-end)
-*/
-
 end
 
 function ENT:Use(activator, caller)
 local owner = self:GetNWEntity("owner")
 if !self.IsBuilt then return false end
-if self.UseTimer > CurTime() then SystemMessage(activator, "The auto medic needs time to recharge!", Color(255,205,205,255), true) return false end
+if self.UseTimer > CurTime() then SystemMessage(activator, "The auto-medic needs "..math.ceil(self.UseTimer - CurTime()).." more seconds to fully recharge!", Color(255,205,205,255), true) return false end
 if activator:Team() != owner:Team() then SystemMessage(activator, "This doesn't belong to your faction!", Color(255,205,205,255), true) return false end
 
-activator:SetHealth( 100 + ( activator.StatHealth * 5 ) )
+activator:SetHealth(activator:GetMaxHealth()) --for a long time i didn't even notice that (bruh)
 activator.Infection = 0
 
 activator:EmitSound("items/medshot4.wav")
 SystemMessage(activator, "You healed yourself at the auto medic!", Color(205,255,205,255), false)
-self.UseTimer = CurTime() + 10
+self.UseTimer = CurTime() + 20
 
 end 
 
@@ -97,7 +66,6 @@ end
 end
 
 function ENT:Think() 
-
 end
 
 
@@ -145,7 +113,6 @@ end
 			end
 
 			self:BreakPanel()
---			self.Entity:EmitSound("physics/wood/wood_plank_break"..math.random(1,2)..".wav", 100, 100)
 			self.Entity:EmitSound("physics/metal/metal_box_break2.wav", 80, 100)              
 			self.Entity:Remove()
 		end

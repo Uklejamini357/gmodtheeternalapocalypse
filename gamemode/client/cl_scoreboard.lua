@@ -1,4 +1,4 @@
--------------------------------- Scoreboard --------------------------------
+---------------- Scoreboard ----------------
 
 function CalculateMaxWeightClient()
 	local maxweight = 0
@@ -64,18 +64,33 @@ if !LocalFactions["Loner"] then LocalFactions["Loner"] =
 	}
 end
 
-local bestsurvtim = 0
+Mybestsurvtim = 0
+Myzmbskilled = 0
+Myplyskilled = 0
+Myplydeaths = 0
+Mymmeleexp = 0
+Mymmeleelvl = 0
+Mympvpxp = 0
+Mympvplvl = 0
 
 net.Receive("UpdateStatistics", function(length)
-	local besttimesurvived = net.ReadFloat()
-	local zkills = net.ReadFloat()
-	local playerskilled = net.ReadFloat()
-	local playerdeaths = net.ReadFloat()
+	local st1 = net.ReadFloat()
+	local st2 = net.ReadFloat()
+	local st3 = net.ReadFloat()
+	local st4 = net.ReadFloat()
+	local st5 = net.ReadFloat()
+	local st6 = net.ReadFloat()
+	local st7 = net.ReadFloat()
+	local st8 = net.ReadFloat()
 
-	bestsurvtim = besttimesurvived
-	zmbskilled = zkills
-	plyskilled = playerskilled
-	plydeaths = playerdeaths
+	Mybestsurvtim = st1
+	Myzmbskilled = st2
+	Myplyskilled = st3
+	Myplydeaths = st4
+	Mymmeleexp = st5
+	Mymmeleelvl = st6
+	Mympvpxp = st7
+	Mympvplvl = st8
 end)
 
 net.Receive("UpdatePerks", function(length)
@@ -129,7 +144,6 @@ net.Receive("UpdateInventory", function(length)
 			["Qty"] = v,
 		}
 	end
---table.Merge(LocalInventory, data)
 end)
 
 net.Receive("UpdateVault", function(length)
@@ -150,7 +164,6 @@ net.Receive("UpdateVault", function(length)
 			["Qty"] = v,
 		}
 	end
---table.Merge(LocalVault, data)
 end)
 
 net.Receive("RecvFactions", function(length, client)
@@ -193,39 +206,37 @@ function ScoreBoard:Create()
 	ScoreBoardFrame:ShowCloseButton(false)
 	ScoreBoardFrame:MakePopup()
 	ScoreBoardFrame.Paint = function()
-	draw.RoundedBox(2,  0,  0, ScoreBoardFrame:GetWide(), ScoreBoardFrame:GetTall(), Color(0, 0, 0, 200))
-	surface.SetDrawColor(150, 0, 0 ,255)
-	surface.DrawOutlinedRect(0, 0, ScoreBoardFrame:GetWide(), ScoreBoardFrame:GetTall())
-	surface.DrawOutlinedRect(ScoreBoardFrame:GetWide() - 260, 25, 250, 201)
-	surface.DrawOutlinedRect(ScoreBoardFrame:GetWide() - 260, 230, 250, 70)
-	surface.SetDrawColor(0, 0, 0 ,155)
-	surface.DrawRect(ScoreBoardFrame:GetWide() - 260, 25, 250, 205)
-	surface.DrawRect(ScoreBoardFrame:GetWide() - 260, 230, 250, 70)
-	local armorstr = LocalPlayer():GetNWString("ArmorType") or "none"
-	local armortype = ItemsList[armorstr]
-	if armorstr and armortype then
-		draw.SimpleText(translate.Get("Armor")..": "..translate.Get(armortype.Name), "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 235, Color(255,255,255,255))
-		draw.SimpleText(translate.Get("ArmorProtection")..": "..armortype["ArmorStats"]["reduction"].."%  ("..armortype["ArmorStats"]["reduction"] + ((Perks.Defense or 0) * 1.5).."% total)", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 250, Color(205,255,205,255))
-		if armortype["ArmorStats"]["speedloss"] < 0 then
-		draw.SimpleText(translate.Get("ArmorSpeed")..": Increased ("..-(armortype["ArmorStats"]["speedloss"] / 10)..")", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 265, Color(205,205,255,255))
-		elseif armortype["ArmorStats"]["speedloss"] == 0 then
+		draw.RoundedBox(2,  0,  0, ScoreBoardFrame:GetWide(), ScoreBoardFrame:GetTall(), Color(0, 0, 0, 200))
+		surface.SetDrawColor(150, 0, 0 ,255)
+		surface.DrawOutlinedRect(0, 0, ScoreBoardFrame:GetWide(), ScoreBoardFrame:GetTall())
+		surface.DrawOutlinedRect(ScoreBoardFrame:GetWide() - 260, 25, 250, 201)
+		surface.DrawOutlinedRect(ScoreBoardFrame:GetWide() - 260, 230, 250, 70)
+		surface.SetDrawColor(0, 0, 0 ,155)
+		surface.DrawRect(ScoreBoardFrame:GetWide() - 260, 25, 250, 205)
+		surface.DrawRect(ScoreBoardFrame:GetWide() - 260, 230, 250, 70)
+		local armorstr = LocalPlayer():GetNWString("ArmorType") or "none"
+		local armortype = ItemsList[armorstr]
+		if armorstr and armortype then
+			draw.SimpleText(translate.Get("Armor")..": "..translate.Get(armortype.Name), "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 235, Color(255,255,255,255))
+			draw.SimpleText(translate.Get("ArmorProtection")..": "..armortype["ArmorStats"]["reduction"].."%  ("..armortype["ArmorStats"]["reduction"] + ((Perks.Defense or 0) * 1.5).."% total)", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 250, Color(205,255,205,255))
+			if armortype["ArmorStats"]["speedloss"] < 0 then
+				draw.SimpleText(translate.Get("ArmorSpeed")..": Increased ("..-(armortype["ArmorStats"]["speedloss"] / 10)..")", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 265, Color(205,205,255,255))
+			elseif armortype["ArmorStats"]["speedloss"] == 0 then
+				draw.SimpleText(translate.Get("ArmorSpeed")..": None", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 265, Color(205,205,255,255))
+			else
+				draw.SimpleText(translate.Get("ArmorSpeed")..": Decreased (-"..(armortype["ArmorStats"]["speedloss"] / 10)..")", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 265, Color(205,205,255,255))
+			end
+			if armortype["ArmorStats"]["carryweight"] > 0 then
+				draw.SimpleText(translate.Get("MaxWeight")..": +"..armortype["ArmorStats"]["carryweight"].."kg", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 280, Color(255,255,175,255))
+			else
+				draw.SimpleText(translate.Get("MaxWeight")..": "..armortype["ArmorStats"]["carryweight"].."kg", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 280, Color(255,230,205,255))
+			end
+		else
+			draw.SimpleText(translate.Get("NoArmor"), "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 235, Color(255,255,255,255))
+			draw.SimpleText(translate.Get("ArmorProtection")..": 0% ("..(Perks.Defense or 0) * 1.5 .."% "..translate.Get("Total")..")", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 250, Color(205,255,205,255))
 			draw.SimpleText(translate.Get("ArmorSpeed")..": None", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 265, Color(205,205,255,255))
-		else
-			draw.SimpleText(translate.Get("ArmorSpeed")..": Decreased (-"..(armortype["ArmorStats"]["speedloss"] / 10)..")", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 265, Color(205,205,255,255))
+			draw.SimpleText(translate.Get("MaxWeight")..": +0kg", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 280, Color(255,235,205,255))
 		end
-		if armortype["ArmorStats"]["carryweight"] > 0 then
-			draw.SimpleText(translate.Get("MaxWeight")..": +"..armortype["ArmorStats"]["carryweight"].."kg", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 280, Color(255,255,175,255))
-		else
-			draw.SimpleText(translate.Get("MaxWeight")..": "..armortype["ArmorStats"]["carryweight"].."kg", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 280, Color(255,230,205,255))
-		end
-		
-	else
-		draw.SimpleText(translate.Get("NoArmor"), "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 235, Color(255,255,255,255))
-		draw.SimpleText(translate.Get("ArmorProtection")..": 0% ("..(Perks.Defense or 0) * 1.5 .."% "..translate.Get("Total")..")", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 250, Color(205,255,205,255))
-		draw.SimpleText(translate.Get("ArmorSpeed")..": None", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 265, Color(205,205,255,255))
-		draw.SimpleText(translate.Get("MaxWeight")..": +0kg", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 280, Color(255,235,205,255))
-	end
-
 	end
 	
 	
@@ -239,33 +250,27 @@ function ScoreBoard:Create()
 		surface.DrawRect(0, 0, PropertySheet:GetWide(), PropertySheet:GetTall())
 --		surface.SetDrawColor(255, 0, 0, 255)
 --		surface.DrawOutlinedRect(0, 0, PropertySheet:GetWide(), PropertySheet:GetTall())
-	for k, v in pairs(PropertySheet.Items) do
-	if (!v.Tab) then continue end
+		for k, v in pairs(PropertySheet.Items) do
+			if (!v.Tab) then continue end
+			v.Tab.Paint = function(self,w,h)
+				draw.RoundedBox(0, 0, 0, w, h, Color(50,25,25))
+			end
+		end
+	end
 	
-	v.Tab.Paint = function(self,w,h)
-		draw.RoundedBox(0, 0, 0, w, h, Color(50,25,25))
-	end
-	end
-	end
-	
-
-
-
-
 
 
 	
 -----------------------------------------Inventory---------------------------------------------------------------
-
 
 	local InvForm = vgui.Create("DForm", PropertySheet)
 	InvForm:SetSize(675, 700)
 	InvForm:SetPadding(4)
 	InvForm:SetName("Items")
 	InvForm.Paint = function()
-	draw.RoundedBox(2,  0,  0, InvForm:GetWide(), InvForm:GetTall(), Color(0, 0, 0, 100))
-	surface.SetDrawColor(150, 0, 0 ,255)
-	surface.DrawOutlinedRect(0, 0, InvForm:GetWide(), InvForm:GetTall())
+		draw.RoundedBox(2,  0,  0, InvForm:GetWide(), InvForm:GetTall(), Color(0, 0, 0, 100))
+		surface.SetDrawColor(150, 0, 0 ,255)
+		surface.DrawOutlinedRect(0, 0, InvForm:GetWide(), InvForm:GetTall())
 	end
 
 	local TheListPanel = vgui.Create("DPanelList", InvForm)
@@ -278,316 +283,305 @@ function ScoreBoard:Create()
 
 
 	local function DoInvPanel()
-	InvForm:SetName(translate.Get("CurrentlyCarrying")..": "..CalculateWeightClient().."kg    "..translate.Get("MaxWeight")..": "..CalculateMaxWeightClient().."kg")
+		InvForm:SetName(translate.Get("CurrentlyCarrying")..": "..CalculateWeightClient().."kg    "..translate.Get("MaxWeight")..": "..CalculateMaxWeightClient().."kg")
+			for k, v in SortedPairsByMemberValue(LocalInventory, "Weight", true) do
+				local ItemBackground = vgui.Create("DPanel")
+				ItemBackground:SetPos(5, 5)
+				ItemBackground:SetSize(350, 65)
+				ItemBackground.Paint = function() -- Paint function
+					surface.SetDrawColor(50, 50, 50 ,255)
+					surface.DrawOutlinedRect(0, 0, ItemBackground:GetWide(), ItemBackground:GetTall())
+					surface.SetDrawColor(0, 0, 0 ,200)
+					surface.DrawRect(0, 0, ItemBackground:GetWide(), ItemBackground:GetTall())
+				end
 
-	for k, v in SortedPairsByMemberValue(LocalInventory, "Weight", true) do
-
-				
-		local ItemBackground = vgui.Create("DPanel")
-		ItemBackground:SetPos(5, 5)
-		ItemBackground:SetSize(350, 65)
-		ItemBackground.Paint = function() -- Paint function
-			surface.SetDrawColor(50, 50, 50 ,255)
-			surface.DrawOutlinedRect(0, 0, ItemBackground:GetWide(), ItemBackground:GetTall())
-			surface.SetDrawColor(0, 0, 0 ,200)
-			surface.DrawRect(0, 0, ItemBackground:GetWide(), ItemBackground:GetTall())
-		end
-
-		local ItemDisplay = vgui.Create("SpawnIcon", ItemBackground)
-		ItemDisplay:SetPos(5, 5)
-		ItemDisplay:SetModel(v.Model)
-		ItemDisplay:SetToolTip(translate.Get(v.Description).."\n("..translate.Get("ItemID")..": "..k..", Base Cost: "..v.Cost.." "..Config["Currency"].."s)")
-		ItemDisplay:SetSize(60,60)
-		ItemDisplay.PaintOver = function()
-			return
-		end
-		ItemDisplay.OnMousePressed = function()
-			return false
-		end
+				local ItemDisplay = vgui.Create("SpawnIcon", ItemBackground)
+				ItemDisplay:SetPos(5, 5)
+				ItemDisplay:SetModel(v.Model)
+				ItemDisplay:SetToolTip(translate.Format("ItemDescription", translate.Get(v.Description), translate.Get("ItemID"), k, v.Cost, Config["Currency"]))
+				ItemDisplay:SetSize(60,60)
+				ItemDisplay.PaintOver = function()
+					return
+				end
+				ItemDisplay.OnMousePressed = function()
+					return false
+				end
 			
 
-		local ItemName = vgui.Create("DLabel", ItemBackground)
-		ItemName:SetPos(80, 10)
-		ItemName:SetFont("TargetIDSmall")
-		ItemName:SetColor(Color(255,255,255,255))
-		ItemName:SetText(translate.Get(v.Name).." ("..v.Weight..""..translate.Get("kg")..")")
-		ItemName:SizeToContents()
+				local ItemName = vgui.Create("DLabel", ItemBackground)
+				ItemName:SetPos(80, 10)
+				ItemName:SetFont("TargetIDSmall")
+				ItemName:SetColor(Color(255,255,255,255))
+				ItemName:SetText(translate.Get(v.Name).." ("..v.Weight..""..translate.Get("kg")..")")
+				ItemName:SizeToContents()
 
-		local ItemQty = vgui.Create("DLabel", ItemBackground)
-		ItemQty:SetPos(300, 25)
-		ItemQty:SetFont("QtyFont")
-		ItemQty:SetColor(Color(255,255,255,255))
-		ItemQty:SetText(v.Qty.."x")
-		ItemQty:SizeToContents()
+				local ItemQty = vgui.Create("DLabel", ItemBackground)
+				ItemQty:SetPos(300, 25)
+				ItemQty:SetFont("QtyFont")
+				ItemQty:SetColor(Color(255,255,255,255))
+				ItemQty:SetText(v.Qty.."x")
+				ItemQty:SizeToContents()
 
-		local EquipButton = vgui.Create("DButton", ItemBackground)
-		EquipButton:SetSize(80, 20)
-		EquipButton:SetPos(80, 35)
-		EquipButton:SetText(translate.Get("Use"))
-		EquipButton:SetTextColor(Color(255, 255, 255, 255))
-		EquipButton.Paint = function(panel)
-		surface.SetDrawColor(0, 150, 0 ,255)
-		surface.DrawOutlinedRect(0, 0, EquipButton:GetWide(), EquipButton:GetTall())
-		draw.RoundedBox(2, 0, 0, EquipButton:GetWide(), EquipButton:GetTall(), Color(0, 50, 0, 130))
-		end
-		EquipButton.DoClick = function()
-			net.Start("UseItem")
-			net.WriteString(k)
-			net.WriteBool(true)
-			net.SendToServer()
-			timer.Simple(0.3, function() 
-				if TheListPanel:IsValid() then
-					TheListPanel:Clear()
-					DoInvPanel()
+				local EquipButton = vgui.Create("DButton", ItemBackground)
+				EquipButton:SetSize(80, 20)
+				EquipButton:SetPos(80, 35)
+				EquipButton:SetText(translate.Get("Use"))
+				EquipButton:SetTextColor(Color(255, 255, 255, 255))
+				EquipButton.Paint = function(panel)
+					surface.SetDrawColor(0, 150, 0 ,255)
+					surface.DrawOutlinedRect(0, 0, EquipButton:GetWide(), EquipButton:GetTall())
+					draw.RoundedBox(2, 0, 0, EquipButton:GetWide(), EquipButton:GetTall(), Color(0, 50, 0, 130))
 				end
-			end)
-		end
-
-		local DropButton = vgui.Create("DButton", ItemBackground)
-		DropButton:SetSize(80, 20)
-		DropButton:SetPos(170, 35)
-		DropButton:SetText(translate.Get("Drop"))
-		DropButton:SetTextColor(Color(255, 255, 255, 255))
-		DropButton.Paint = function(panel)
-			surface.SetDrawColor(150, 75, 0 ,255)
-			surface.DrawOutlinedRect(0, 0, DropButton:GetWide(), DropButton:GetTall())
-			draw.RoundedBox(2, 0, 0, DropButton:GetWide(), DropButton:GetTall(), Color(50, 25, 0, 130))
-		end
-		DropButton.DoClick = function()
-			net.Start("UseItem")
-			net.WriteString(k)
-			net.WriteBool(false)
-			net.SendToServer()
-			timer.Simple(0.3, function() 
-				if TheListPanel:IsValid() then
-					TheListPanel:Clear()
-					DoInvPanel()
+				EquipButton.DoClick = function()
+					net.Start("UseItem")
+					net.WriteString(k)
+					net.WriteBool(true)
+					net.SendToServer()
+					timer.Simple(0.3, function() 
+						if TheListPanel:IsValid() then
+							TheListPanel:Clear()
+							DoInvPanel()
+						end
+					end)
 				end
-			end)
-		end
 
-		TheListPanel:AddItem(ItemBackground)
-	end
-end
-
-DoInvPanel()
-
-
-
-
-
-local Scores = vgui.Create("DPanelList", PropertySheet)
-Scores:SetSize(650, 400)
-Scores:SetPadding(5)
-Scores:SetSpacing(5)
-Scores:EnableHorizontal(false)
-Scores:EnableVerticalScrollbar(true)
-Scores:SetPos(10, 30)
-Scores:SetName("")
-
-
-for k, v in pairs(player.GetAll()) do
-
-	local plypanel = vgui.Create("DPanel", Scores)
-	plypanel:SetPos(0, 100)
-	plypanel:SetSize(570, 60)
-	plypanel.Paint = function() -- Paint function
-		draw.RoundedBoxEx(8,1,1,plypanel:GetWide(),plypanel:GetTall(),Color(0, 0, 0, 150), false, false, false, false)
-		surface.SetDrawColor(150, 0, 0 ,255)
-		surface.DrawOutlinedRect(1, 1, plypanel:GetWide() - 1 , plypanel:GetTall() - 1)
-	end
-
-	
-	local plyname = vgui.Create("DLabel", plypanel)
-	plyname:SetPos(62, 22)
-	plyname:SetFont("TargetIDSmall")
-	plyname:SetColor(Color(255,255,255,255))
-	plyname:SetText(v:Nick())
-	plyname:SizeToContents()
-
-	local plyname2 = vgui.Create("DLabel", plypanel)
-	plyname2:SetPos(240, 12)
-	plyname2:SetFont("TargetIDSmall")
-	plyname2:SetColor(team.GetColor(v:Team()))
-	plyname2:SetText(translate.Get("Faction")..": "..team.GetName(v:Team()))
-	plyname2:SetSize(180, 15)
-
-	local plylvl = vgui.Create("DLabel", plypanel)
-	plylvl:SetPos(430, 12)
-	plylvl:SetFont("TargetIDSmall")
-	plylvl:SetColor(Color(255,255,255,255))
-	plylvl:SetText("Lvl: " .. v:GetNWInt("PlyLevel", 1))
-	plylvl:SizeToContents()
-
-	local plyping = vgui.Create("DLabel", plypanel)
-	plyping:SetPos(510, 12)
-	plyping:SetFont("TargetIDSmall")
-	plyping:SetColor(Color(255,math.Clamp(255 - (0.5 * v:Ping()), 0, 255),math.Clamp(255 - (0.5 * v:Ping()), 0, 255),255))
-	plyping:SetText(translate.Get("Ping")..": " .. v:Ping())
-	plyping:SizeToContents()
-
-	local plyprestige = vgui.Create("DLabel", plypanel)
-	plyprestige:SetPos(240, 32)
-	plyprestige:SetFont("TargetIDSmall")
-	plyprestige:SetColor(Color(255,127,255,255))
-	plyprestige:SetText(translate.Get("Prestige")..": " .. v:GetNWInt("PlyPrestige", 0))
-	plyprestige:SizeToContents()
-
-	local plykills = vgui.Create("DLabel", plypanel)
-	plykills:SetPos(430, 32)
-	plykills:SetFont("TargetIDSmall")
-	plykills:SetColor(Color(255,255,255,255))
-	plykills:SetText(translate.Get("Frags")..": " .. v:Frags())
-	plykills:SizeToContents()
-
-	local plydeaths = vgui.Create("DLabel", plypanel)
-	plydeaths:SetPos(510, 32)
-	plydeaths:SetFont("TargetIDSmall")
-	plydeaths:SetColor(Color(255,255,255,255))
-	plydeaths:SetText(translate.Get("Deaths")..": " .. v:Deaths())
-	plydeaths:SizeToContents()
-
-
-	local av = vgui.Create("AvatarImage", plypanel)
-	av:SetPos(17,11)
-	av:SetSize(40, 40)
-	av:SetPlayer(v)
-		
-	plypanel.m_SpecialImage = vgui.Create("DImage", plypanel)
-	plypanel.m_SpecialImage:SetPos(1, 22)
-	plypanel.m_SpecialImage:SetSize(16, 16)
-	plypanel.m_SpecialImage:SetMouseInputEnabled(true)
-	plypanel.m_SpecialImage:SetVisible(false)
-	if gamemode.Call("IsSpecialPerson", v, plypanel.m_SpecialImage) then
-		plypanel.m_SpecialImage:SetVisible(true)
-	else
-		plypanel.m_SpecialImage:SetTooltip()
-		plypanel.m_SpecialImage:SetVisible(false)
-	end
-	
-
-	
-	local mutechat = vgui.Create("DButton", plypanel)
-	mutechat:SetSize(45, 23)
-	mutechat:SetPos(655, 7)
-	mutechat:SetText(translate.Get("Mute"))
-	mutechat:SetTextColor(Color(255, 255, 255, 255))
-	mutechat.Paint = function(panel)
-		if v:IsValid() and v:IsMuted() then
-			surface.SetDrawColor(150, 0, 0 ,255)
-			surface.DrawOutlinedRect(0, 0, mutechat:GetWide(), mutechat:GetTall())
-			surface.SetDrawColor(100, 0, 0 ,155)
-			surface.DrawRect(0, 0, mutechat:GetWide(), mutechat:GetTall())
-			mutechat:SetToolTip("Player is muted")
-		elseif v:IsValid() then
-			surface.SetDrawColor(125, 125, 125 ,255)
-			surface.DrawOutlinedRect(0, 0, mutechat:GetWide(), mutechat:GetTall())
-			surface.SetDrawColor(25, 25, 25 ,155)
-			surface.DrawRect(0, 0, mutechat:GetWide(), mutechat:GetTall())
-			mutechat:SetToolTip("Player is not muted")
-		end
-	end
-	mutechat.DoClick = function()
-		if v:IsValid() then
-			v:SetMuted(!v:IsMuted())
-		else
-			chat.AddText(Color(255,205,205,255), "This player doesn't exist!")
-		end
-		surface.PlaySound("buttons/button9.wav")
-	end
-			
-	local profile = vgui.Create("DButton", plypanel)
-	profile:SetSize(45, 23)
-	profile:SetPos(655, 32)
-	profile:SetText(translate.Get("Profile"))
-	profile:SetToolTip("See their profile")
-	profile:SetTextColor(Color(255, 255, 255, 255))
-	profile.Paint = function(panel)
-		surface.SetDrawColor(0, 0, 100 ,255)
-		surface.DrawOutlinedRect(0, 0, profile:GetWide(), profile:GetTall())
-		surface.SetDrawColor(0, 0, 50 ,155)
-		surface.DrawRect(0, 0, profile:GetWide(), profile:GetTall())
-	end
-	profile.DoClick = function()
-		if v:IsValid() then
-			v:ShowProfile()
-		else
-			chat.AddText(Color(255,205,205,255), "This player doesn't exist!")
-		end
-		surface.PlaySound("buttons/button7.wav")
-	end
-
-	local checkstats = vgui.Create("DButton", plypanel)
-	checkstats:SetSize(40, 22)
-	checkstats:SetPos(610, 33)
-	checkstats:SetText("Stats")
-	checkstats:SetToolTip("See the statistics of a player")
-	checkstats:SetTextColor(Color(55, 255, 255, 255))
-	checkstats.Paint = function(panel)
-		surface.SetDrawColor(0, 100, 100 ,255)
-		surface.DrawOutlinedRect(0, 0, checkstats:GetWide(), checkstats:GetTall())
-		surface.SetDrawColor(0, 50, 50 ,155)
-		surface.DrawRect(0, 0, checkstats:GetWide(), checkstats:GetTall())
-	end
-	checkstats.DoClick = function()
-		if v:IsValid() then
-			net.Start("UpdateTargetStats")
-			net.WriteEntity(v)
-			net.SendToServer()
-			StatsMenu()
-		else
-			chat.AddText(Color(255,205,205,255), "This player doesn't exist!")
-		end
-		surface.PlaySound("buttons/button9.wav")
-	end
-
-	
-	local pvp = vgui.Create("DPanel", plypanel)
-	pvp:SetPos(610, 7)
-	pvp:SetSize(40, 24)
-	pvp.Paint = function() -- Paint function
-		surface.SetDrawColor(150, 0, 0 ,255)
-		surface.DrawOutlinedRect(1, 1, pvp:GetWide() - 1 , pvp:GetTall() - 1)
-		surface.SetDrawColor(100, 0, 0 ,105)
-		if v:IsValid() then
-			if v:Team() == 1 and v:GetNWBool("pvp") == false then
-				draw.DrawText(translate.Get("PvP"), "DermaDefault", 12, 5, Color(55,55,55))
-				pvp:SetToolTip("PVP DISABLED")
-			else
-				draw.DrawText(translate.Get("PvP"), "DermaDefault", 12, 5, Color(255,255,255))
-				surface.DrawRect(1, 1, pvp:GetWide() - 1 , pvp:GetTall() - 1)
-				pvp:SetToolTip("PVP ENABLED")
+				local DropButton = vgui.Create("DButton", ItemBackground)
+				DropButton:SetSize(80, 20)
+				DropButton:SetPos(170, 35)
+				DropButton:SetText(translate.Get("Drop"))
+				DropButton:SetTextColor(Color(255, 255, 255, 255))
+				DropButton.Paint = function(panel)
+					surface.SetDrawColor(150, 75, 0 ,255)
+					surface.DrawOutlinedRect(0, 0, DropButton:GetWide(), DropButton:GetTall())
+					draw.RoundedBox(2, 0, 0, DropButton:GetWide(), DropButton:GetTall(), Color(50, 25, 0, 130))
+				end
+				DropButton.DoClick = function()
+				net.Start("UseItem")
+				net.WriteString(k)
+				net.WriteBool(false)
+				net.SendToServer()
+				timer.Simple(0.3, function() 
+					if TheListPanel:IsValid() then
+						TheListPanel:Clear()
+						DoInvPanel()
+					end
+				end)
 			end
+			TheListPanel:AddItem(ItemBackground)
 		end
 	end
+	DoInvPanel()
 
-	timer.Create("UpdateScoreboard", 2, 0, function() --every 2 seconds, if scoreboard panel exists for client, the players' ping text on scoreboard will update
-		if plyping:IsValid() and v:IsValid() then 
+
+	local Scores = vgui.Create("DPanelList", PropertySheet)
+	Scores:SetSize(650, 400)
+	Scores:SetPadding(5)
+	Scores:SetSpacing(5)
+	Scores:EnableHorizontal(false)
+	Scores:EnableVerticalScrollbar(true)
+	Scores:SetPos(10, 30)
+	Scores:SetName("")
+
+	local function SetUpScoreBoard()
+		for k, v in pairs(player.GetAll()) do
+			local plypanel = vgui.Create("DPanel", Scores)
+			plypanel:SetPos(0, 100)
+			plypanel:SetSize(570, 60)
+			plypanel.Paint = function() -- Paint function
+				draw.RoundedBoxEx(8,1,1,plypanel:GetWide(),plypanel:GetTall(),Color(0, 0, 0, 150), false, false, false, false)
+				surface.SetDrawColor(150, 0, 0 ,255)
+				surface.DrawOutlinedRect(1, 1, plypanel:GetWide() - 1 , plypanel:GetTall() - 1)
+			end
+
+			local plyname = vgui.Create("DLabel", plypanel)
+			plyname:SetPos(62, 22)
+			plyname:SetFont("TargetIDSmall")
+			plyname:SetColor(Color(255,255,255,255))
+			plyname:SetText(v:Nick())
+			plyname:SizeToContents()
+
+			local plyname2 = vgui.Create("DLabel", plypanel)
+			plyname2:SetPos(240, 12)
+			plyname2:SetFont("TargetIDSmall")
+			plyname2:SetColor(team.GetColor(v:Team()))
+			plyname2:SetText(translate.Get("Faction")..": "..team.GetName(v:Team()))
+			plyname2:SetSize(180, 15)
+
+			local plylvl = vgui.Create("DLabel", plypanel)
+			plylvl:SetPos(430, 12)
+			plylvl:SetFont("TargetIDSmall")
+			plylvl:SetColor(Color(255,255,255,255))
+			plylvl:SetText("Lvl: " .. v:GetNWInt("PlyLevel", 1))
+			plylvl:SizeToContents()
+
+			local plyping = vgui.Create("DLabel", plypanel)
+			plyping:SetPos(510, 12)
+			plyping:SetFont("TargetIDSmall")
 			plyping:SetColor(Color(255,math.Clamp(255 - (0.5 * v:Ping()), 0, 255),math.Clamp(255 - (0.5 * v:Ping()), 0, 255),255))
 			plyping:SetText(translate.Get("Ping")..": " .. v:Ping())
 			plyping:SizeToContents()
-		elseif !plyping:IsValid() then
-			timer.Destroy("UpdateScoreboard") --to prevent any error
+
+			local plyprestige = vgui.Create("DLabel", plypanel)
+			plyprestige:SetPos(240, 32)
+			plyprestige:SetFont("TargetIDSmall")
+			plyprestige:SetColor(Color(255,127,255,255))
+			plyprestige:SetText(translate.Get("Prestige")..": " .. v:GetNWInt("PlyPrestige", 0))
+			plyprestige:SizeToContents()
+
+			local plykills = vgui.Create("DLabel", plypanel)
+			plykills:SetPos(430, 32)
+			plykills:SetFont("TargetIDSmall")
+			plykills:SetColor(Color(255,255,255,255))
+			plykills:SetText(translate.Get("Frags")..": " .. v:Frags())
+			plykills:SizeToContents()
+
+			local plydeaths = vgui.Create("DLabel", plypanel)
+			plydeaths:SetPos(510, 32)
+			plydeaths:SetFont("TargetIDSmall")
+			plydeaths:SetColor(Color(255,255,255,255))
+			plydeaths:SetText(translate.Get("Deaths")..": " .. v:Deaths())
+			plydeaths:SizeToContents()
+
+
+			local av = vgui.Create("AvatarImage", plypanel)
+			av:SetPos(17,11)
+			av:SetSize(40, 40)
+			av:SetPlayer(v)
+		
+			plypanel.m_img = vgui.Create("DImage", plypanel)
+			plypanel.m_img:SetPos(1, 22)
+			plypanel.m_img:SetSize(16, 16)
+			plypanel.m_img:SetMouseInputEnabled(true)
+			plypanel.m_img:SetVisible(false)
+			if gamemode.Call("IsSpecialPerson", v, plypanel.m_img) then
+				plypanel.m_img:SetVisible(true)
+			else
+				plypanel.m_img:SetTooltip()
+				plypanel.m_img:SetVisible(false)
+			end
+
+
+			local mutechat = vgui.Create("DButton", plypanel)
+			mutechat:SetSize(45, 23)
+			mutechat:SetPos(655, 7)
+			mutechat:SetText(translate.Get("Mute"))
+			mutechat:SetTextColor(Color(255, 255, 255, 255))
+			mutechat.Paint = function(panel)
+				if v:IsValid() and v:IsMuted() then
+					surface.SetDrawColor(150, 0, 0 ,255)
+					surface.DrawOutlinedRect(0, 0, mutechat:GetWide(), mutechat:GetTall())
+					surface.SetDrawColor(100, 0, 0 ,155)
+					surface.DrawRect(0, 0, mutechat:GetWide(), mutechat:GetTall())
+					mutechat:SetToolTip("Player is muted")
+				elseif v:IsValid() then
+					surface.SetDrawColor(125, 125, 125 ,255)
+					surface.DrawOutlinedRect(0, 0, mutechat:GetWide(), mutechat:GetTall())
+					surface.SetDrawColor(25, 25, 25 ,155)
+					surface.DrawRect(0, 0, mutechat:GetWide(), mutechat:GetTall())
+					mutechat:SetToolTip("Player is not muted")
+				end
+			end
+			mutechat.DoClick = function()
+				if v:IsValid() then
+					v:SetMuted(!v:IsMuted())
+				else
+					chat.AddText(Color(255,205,205,255), "This player doesn't exist!")
+				end
+				surface.PlaySound("buttons/button9.wav")
+			end
+			
+			local profile = vgui.Create("DButton", plypanel)
+			profile:SetSize(45, 23)
+			profile:SetPos(655, 32)
+			profile:SetText(translate.Get("Profile"))
+			profile:SetToolTip("See their profile")
+			profile:SetTextColor(Color(255, 255, 255, 255))
+			profile.Paint = function(panel)
+				surface.SetDrawColor(0, 0, 100 ,255)
+				surface.DrawOutlinedRect(0, 0, profile:GetWide(), profile:GetTall())
+				surface.SetDrawColor(0, 0, 50 ,155)
+				surface.DrawRect(0, 0, profile:GetWide(), profile:GetTall())
+			end
+			profile.DoClick = function()
+				if v:IsValid() then
+					v:ShowProfile()
+				else
+					chat.AddText(Color(255,205,205,255), "This player doesn't exist!")
+				end
+				surface.PlaySound("buttons/button7.wav")
+			end
+
+			local checkstats = vgui.Create("DButton", plypanel)
+			checkstats:SetSize(40, 22)
+			checkstats:SetPos(610, 33)
+			checkstats:SetText("Stats")
+			checkstats:SetToolTip("See the statistics of a player")
+			checkstats:SetTextColor(Color(55, 255, 255, 255))
+			checkstats.Paint = function(panel)
+				surface.SetDrawColor(0, 100, 100 ,255)
+				surface.DrawOutlinedRect(0, 0, checkstats:GetWide(), checkstats:GetTall())
+				surface.SetDrawColor(0, 50, 50 ,155)
+				surface.DrawRect(0, 0, checkstats:GetWide(), checkstats:GetTall())
+			end
+			checkstats.DoClick = function()
+				if v:IsValid() then
+					if ButtonCD then return end
+					net.Start("UpdateTargetStats")
+					net.WriteEntity(v)
+					net.SendToServer()
+					StatsMenu()
+					ButtonCD = true
+					timer.Simple(1, function() ButtonCD = false end) 
+				else
+					chat.AddText(Color(255,205,205,255), "This player doesn't exist!")
+				end
+				surface.PlaySound("buttons/button9.wav")
+			end
+
+	
+			local pvp = vgui.Create("DPanel", plypanel)
+			pvp:SetPos(610, 7)
+			pvp:SetSize(40, 24)
+			pvp.Paint = function() -- Paint function
+				surface.SetDrawColor(150, 0, 0 ,255)
+				surface.DrawOutlinedRect(1, 1, pvp:GetWide() - 1 , pvp:GetTall() - 1)
+				surface.SetDrawColor(100, 0, 0 ,105)
+				if v:IsValid() then
+					if v:Team() == 1 and v:GetNWBool("pvp") == false then
+						draw.DrawText(translate.Get("PvP"), "DermaDefault", 12, 5, Color(55,55,55))
+						pvp:SetToolTip("PVP DISABLED")
+					else
+						draw.DrawText(translate.Get("PvP"), "DermaDefault", 12, 5, Color(255,255,255))
+						surface.DrawRect(1, 1, pvp:GetWide() - 1 , pvp:GetTall() - 1)
+						pvp:SetToolTip("PVP ENABLED")
+					end
+				end
+			end
+			Scores:AddItem(plypanel)	
 		end
-	end)
-	Scores:AddItem(plypanel)
+	end
+	SetUpScoreBoard()
+	local function RefreshScores() 
+		timer.Simple(3, function()
+			if !IsValid(Scores) then return end
+			Scores:Clear()
+			SetUpScoreBoard()
+			RefreshScores()
+		end)
+	end
+	RefreshScores()
 
-end
 
+---------------- Join Faction ----------------
 
-
------------------------------------------Join Faction---------------------------------------------------------------
-
-
-local FactionList = vgui.Create("DPanelList", PropertySheet)
-FactionList:SetSize(650, 250)
-FactionList:SetPadding(5)
-FactionList:SetSpacing(5)
-FactionList:EnableHorizontal(false)
-FactionList:EnableVerticalScrollbar(true)
-FactionList:SetPos(10, 80)
-FactionList:SetName("")
-
+	local FactionList = vgui.Create("DPanelList", PropertySheet)
+	FactionList:SetSize(650, 250)
+	FactionList:SetPadding(5)
+	FactionList:SetSpacing(5)
+	FactionList:EnableHorizontal(false)
+	FactionList:EnableVerticalScrollbar(true)
+	FactionList:SetPos(10, 80)
+	FactionList:SetName("")
 
 	local plypanel2 = vgui.Create("DPanel", FactionList)
 	plypanel2:SetPos(0, 0)
@@ -653,9 +647,6 @@ FactionList:SetName("")
 
 	for k, v in pairs(LocalFactions) do
 		if team.NumPlayers(v.index) == 0 then continue end -- ignore empty teams
-		local function CheckIfFactionPublic()
-			if v.public then return "Yes" else return "No" end
-		end
 
 		local plypanel = vgui.Create("DPanel", FactionList)
 		plypanel:SetPos(0, 0)
@@ -699,7 +690,7 @@ FactionList:SetName("")
 		public:SetPos(500, 12)
 		public:SetFont("TargetIDSmall")
 		public:SetColor(Color(255,255,255,255))
-		public:SetText("Public: "..CheckIfFactionPublic())
+		public:SetText(v.public and "Public: Yes" or "Public: No")
 		public:SizeToContents()
 
 		local joinfaction = vgui.Create("DButton", plypanel)
@@ -719,7 +710,6 @@ FactionList:SetName("")
 			net.WriteString(k)
 			net.SendToServer()
 		end
-
 		FactionList:AddItem(plypanel)
 	end
 	
@@ -732,10 +722,8 @@ FactionList:SetName("")
 		surface.SetDrawColor(150, 0, 0 ,255)
 		surface.DrawOutlinedRect(0, 0, w, h)
 
---Will add a help panel in some time, with buttons to show more panels and stuff
-		draw.SimpleText("(This isn't translated to rus, need a helper)", "TargetID", 10, 10, Color(255,255,255,255))
-		draw.SimpleText("Welcome to The Eternal Apocalypse. Also known as After The End Reborn.", "TargetID", 10, 30, Color(255,255,255,255))
-		draw.SimpleText("In this gamemode:", "TargetID", 10, 60, Color(155,155,155,255))
+		draw.SimpleText("Welcome to The Eternal Apocalypse. Also known as After The End Reborn.", "TargetID", 10, 10, Color(255,255,255,255))
+		draw.SimpleText("In this gamemode,", "TargetID", 10, 60, Color(155,155,155,255))
 		draw.SimpleText("Most zombies are buffed, new weapons are added. Unused/Cut items are added", "TargetID", 10, 90, Color(155,155,155,255))
 		draw.SimpleText("back. Health Regen function is also changed, it regenerates less hp. So you gotta carry", "TargetID", 10, 110, Color(155,155,155,255))
 		draw.SimpleText("more meds. Same thing applies for Weight system. 37.4 kg as carry weight, +1.53kg per", "TargetID", 10, 130, Color(155,155,155,255))
@@ -754,7 +742,7 @@ FactionList:SetName("")
 		draw.SimpleText("F3 (gm_showspare1): Open Drop Money Panel", "TargetID", 10, 420, Color(155,255,255,255))
 		draw.SimpleText("F4 (gm_showspare2): [Function Not Implemented]", "TargetID", 10, 440, Color(155,255,255,255))
 		draw.SimpleText("Just a few more notes:", "TargetID", 10, 480, Color(155,255,155,255))
-		draw.SimpleText("- I will add new help panel in the future. It will take time, however.", "TargetID", 10, 510, Color(255,205,255,255))
+		draw.SimpleText("- This game mode is not finished yet. Expect bugs and other errors.", "TargetID", 10, 510, Color(255,205,255,255))
 		draw.SimpleText("- You can change your HUD Style you like with client ConVar tea_cl_hudstyle", "TargetID", 10, 530, Color(205,205,205,255))
 		draw.SimpleText("- Gamemode works the same as ZsRPG and AtE, but most of its' functions are changed", "TargetID", 10, 550, Color(255,255,155,255))
 		draw.SimpleText("- SELECTING BUILD TOOL FOR FIRST TIME IN SESSION HAS A CHANCE TO CRASH YOUR", "TargetID", 10, 570, Color(255,55,55,255))
@@ -765,18 +753,16 @@ FactionList:SetName("")
 
 -----------------Craft Form (not finished and not included)-----------------------
 
-
+/*
 	local CraftForm = vgui.Create("DPanel", PropertySheet)
 	CraftForm:SetSize(675, 700)
 	CraftForm.Paint = function(self,w,h)
 		draw.RoundedBox(2, 0, 0, w, h, Color(0,0,0,100))
 		surface.SetDrawColor(150, 0, 0 ,255)
 		surface.DrawOutlinedRect(0, 0, w, h)
-
-		draw.SimpleText("This is too hard to make. Will be delayed to other version.", "TargetID", 15, 25, Color(155,155,155,255))
-
+--		draw.SimpleText("This is too hard to make. Will be delayed to other version.", "TargetID", 15, 25, Color(155,155,155,255))
 	end
-/*
+
 	local CraftablesPanel = vgui.Create("DPanelList", CraftForm)
 	CraftablesPanel:SetTall(635)
 	CraftablesPanel:SetWide(755)
@@ -785,102 +771,147 @@ FactionList:SetName("")
 	CraftablesPanel:EnableHorizontal(true)
    	CraftablesPanel:SetSpacing(5)
 
-	local function RefreshItemList()
+	local function DoCraftablesList()
 		for k,v in SortedPairs(CraftableList) do
+			local RequiredItems = {}
+			for j,l,e in pairs(CraftableList[k]["Requirements"]) do
+				table.insert(RequiredItems, l, translate.Get(ItemsList[j]["Name"]))
+			end
 
-		local ItemBG = vgui.Create("DPanel", CraftablesPanel)
-		ItemBG:SetPos(5, 5)
-		ItemBG:SetSize(345, 80)
-		ItemBG.Paint = function() -- Paint function
-			draw.RoundedBoxEx(8, 1, 1, ItemBG:GetWide() - 2, ItemBG:GetTall() - 2,Color(0, 0, 0, 50), false, false, false, false)
-			surface.SetDrawColor(50, 50, 50 ,255)
-			surface.DrawOutlinedRect(0, 0, ItemBG:GetWide(), ItemBG:GetTall())
-		end
+			PrintTable(RequiredItems)
+			local ItemBG = vgui.Create("DPanel", CraftablesPanel)
+			ItemBG:SetPos(5, 5)
+			ItemBG:SetSize(345, 80)
+			ItemBG.Paint = function() -- Paint function
+				draw.RoundedBoxEx(8, 1, 1, ItemBG:GetWide() - 2, ItemBG:GetTall() - 2,Color(0, 0, 0, 50), false, false, false, false)
+				surface.SetDrawColor(50, 50, 50 ,255)
+				surface.DrawOutlinedRect(0, 0, ItemBG:GetWide(), ItemBG:GetTall())
+			end
 	
-		local ItemDisplay = vgui.Create("SpawnIcon", ItemBG)
-		ItemDisplay:SetPos(10, 10)
-		ItemDisplay:SetModel(v.Model)
-		ItemDisplay:SetToolTip(v.Description.."\n(Item ID: "..k..")")
-		ItemDisplay:SetSize(60,60)
-		ItemDisplay.PaintOver = function()
-			return
-		end
-		ItemDisplay.OnMousePressed = function()
-			return false
-		end
+			local ItemDisplay = vgui.Create("SpawnIcon", ItemBG)
+			ItemDisplay:SetPos(8, 8)
+			ItemDisplay:SetModel(v.Model)
+			ItemDisplay:SetToolTip(translate.Format("ItemCraftingDescription", translate.Get(v.Description), translate.Get("ItemID"), k, ""))
+			ItemDisplay:SetSize(64,64)
+			ItemDisplay.PaintOver = function() return end
+			ItemDisplay.OnMousePressed = function() return false end
 	
-		local ItemName = vgui.Create("DLabel", ItemBG)
-		ItemName:SetPos(80, 10)
-		ItemName:SetSize(180, 15)
-		ItemName:SetColor(Color(205,205,205,255))
-		ItemName:SetText(ItemsList[k]["Name"])
+			local ItemName = vgui.Create("DLabel", ItemBG)
+			ItemName:SetPos(85, 10)
+			ItemName:SetSize(180, 15)
+			ItemName:SetColor(Color(205,205,205,255))
+			ItemName:SetText(ItemsList[k]["Name"])
 
-		local ItemWeight = vgui.Create("DLabel", ItemBG)
-		ItemWeight:SetFont("TargetIDSmall")
-		ItemWeight:SetPos(80, 42)
-		ItemWeight:SetSize(170, 15)
-		ItemWeight:SetColor(Color(155,155,255,255))
-		ItemWeight:SetText("Weight: ".. ItemsList[k]["Weight"].."kg")
+			local ItemWeight = vgui.Create("DLabel", ItemBG)
+			ItemWeight:SetFont("TargetIDSmall")
+			ItemWeight:SetPos(85, 42)
+			ItemWeight:SetSize(170, 15)
+			ItemWeight:SetColor(Color(155,155,255,255))
+			ItemWeight:SetText("Weight: ".. ItemsList[k]["Weight"].."kg")
 
-		local CraftButton = vgui.Create("DButton", ItemBG)
-		CraftButton:SetSize(60, 20)
-		CraftButton:SetPos(275, 50)
-		CraftButton:SetText("Craft!")
-		CraftButton:SetTextColor(Color(255, 255, 255, 255))
-		CraftButton.Paint = function(panel)
-			surface.SetDrawColor(0, 150, 0 ,255)
-			surface.DrawOutlinedRect(0, 0, CraftButton:GetWide(), CraftButton:GetTall())
-			draw.RoundedBox(2, 0, 0, CraftButton:GetWide(), CraftButton:GetTall(), Color(0, 50, 0, 130))
+			local CraftButton = vgui.Create("DButton", ItemBG)
+			CraftButton:SetSize(60, 20)
+			CraftButton:SetPos(275, 50)
+			CraftButton:SetText("Craft!")
+			CraftButton:SetTextColor(Color(255, 255, 255, 255))
+			CraftButton.Paint = function(panel)
+				surface.SetDrawColor(0, 150, 0 ,255)
+				surface.DrawOutlinedRect(0, 0, CraftButton:GetWide(), CraftButton:GetTall())
+				draw.RoundedBox(2, 0, 0, CraftButton:GetWide(), CraftButton:GetTall(), Color(0, 50, 0, 130))
+			end
+			CraftButton.DoClick = function()
+				net.Start("CraftItem")
+				net.WriteString(k)
+				net.SendToServer()
+			end
+			CraftablesPanel:AddItem(ItemBG)
 		end
-		CraftButton.DoClick = function()
-			chat.AddText("Function non-existant")
-			net.Start("CraftItem")
-			net.WriteString(k)
-			net.SendToServer()
-		end
-	CraftablesPanel:AddItem(ItemBG)
 	end
-end
-RefreshItemList()*/
-
+	DoCraftablesList()
+*/
 
 ---------------Statistics Form------------------
 
-local StatisticsForm = vgui.Create("DPanel", PropertySheet)
-StatisticsForm:SetSize(675, 700)
-StatisticsForm.Paint = function(self, w, h)
-draw.RoundedBox(2,  0,  0, w, h, Color(0, 0, 0, 100))
-surface.SetDrawColor(150, 0, 0 ,255)
-surface.DrawOutlinedRect(0, 0, w, h)
+	local StatisticsForm = vgui.Create("DPanel", PropertySheet)
+	StatisticsForm:SetSize(675, 700)
+	StatisticsForm.Paint = function(self, w, h)
+		draw.RoundedBox(2,  0,  0, w, h, Color(0, 0, 0, 100))
+		surface.SetDrawColor(150, 0, 0 ,255)
+		surface.DrawOutlinedRect(0, 0, w, h)
 
-draw.SimpleText("Best Survival Time: "..bestsurvtim.."s", "TargetID", 15, 10, Color(255,255,255,255))
-draw.SimpleText("Zombies Killed in Total: "..zmbskilled, "TargetID", 15, 35, Color(255,255,255,255))
-draw.SimpleText("Players killed in Total: "..plyskilled, "TargetID", 15, 60, Color(255,255,255,255))
-draw.SimpleText("Your Deaths in Total: "..plydeaths, "TargetID", 15, 85, Color(255,255,255,255))
+		draw.SimpleText("Best Survival Time: "..Mybestsurvtim.."s", "TargetID", 15, 10, Color(255,255,255,255))
+		draw.SimpleText("Zombies Killed in Total: "..Myzmbskilled, "TargetID", 15, 35, Color(255,255,255,255))
+		draw.SimpleText("Players killed in Total: "..Myplyskilled, "TargetID", 15, 60, Color(255,255,255,255))
+		draw.SimpleText("Your Deaths in Total: "..Myplydeaths, "TargetID", 15, 85, Color(255,255,255,255))
 
-end
+		surface.SetDrawColor(0, 0, 0 ,255)
+		surface.DrawOutlinedRect(15, 140, 200, 8)
+		surface.SetDrawColor(50,0,0,75)
+		surface.DrawRect(15, 140, 200, 8)
+	
+		local bar1 = math.Clamp( 200 * (Mymmeleexp / GetReqMasteryMeleeXP()), 0, 200)
+		surface.SetDrawColor(150,0,0,160)
+		surface.DrawRect(15, 140, bar1, 8)
+
+		surface.SetDrawColor(0, 0, 0 ,255)
+		surface.DrawOutlinedRect(15, 185, 200, 8)
+		surface.SetDrawColor(50,0,0,75)
+		surface.DrawRect(15, 185, 200, 8)
+	
+		local bar2 = math.Clamp( 200 * (Mympvpxp / GetReqMasteryPvPXP()), 0, 200)
+		surface.SetDrawColor(150,0,0,160)
+		surface.DrawRect(15, 185, bar2, 8 )
+	end
+
+	local sttext1 = vgui.Create("DLabel", StatisticsForm)
+	sttext1:SetFont("TargetID")
+	sttext1:SetTextColor(Color(205,205,205,255))
+	sttext1:SetText("Mastery Melee XP: ".. math.floor(Mymmeleexp) .."/".. GetReqMasteryMeleeXP().." (Level "..math.floor(Mymmeleelvl)..")")
+	sttext1:SetToolTip("Increases melee damage by 0.5% per level, increases when doing melee damage to zombies. \nGain rate increased when damaging players with melee weapons instead.")
+	sttext1:SetMouseInputEnabled(true)
+	sttext1:SizeToContents()
+	sttext1:SetPos(15, 115)
+
+	local sttext2 = vgui.Create("DLabel", StatisticsForm)
+	sttext2:SetFont("TargetID")
+	sttext2:SetTextColor(Color(205,205,205,255))
+	sttext2:SetText("Mastery PvP XP: ".. math.floor(Mympvpxp) .."/".. GetReqMasteryPvPXP().." (Level "..math.floor(Mympvplvl)..")")
+	sttext2:SetToolTip("Increases Damage against players by 0.5% per level, increases when killing players. \nGain rate increased when they have higher level and prestige.")
+	sttext2:SetMouseInputEnabled(true)
+	sttext2:SizeToContents()
+	sttext2:SetPos(15, 160)
+
+	timer.Create("UpdateStatisticsScoreBoard", 0, 0, function()
+		if IsValid(ScoreBoardFrame) then
+			sttext1:SetText("Mastery Melee XP: ".. math.floor(Mymmeleexp) .."/".. GetReqMasteryMeleeXP().." (Level "..math.floor(Mymmeleelvl)..")") sttext1:SizeToContents()
+			sttext2:SetText("Mastery PvP XP: ".. math.floor(Mympvpxp) .."/".. GetReqMasteryPvPXP().." (Level "..math.floor(Mympvplvl)..")") sttext2:SizeToContents()
+		else
+			timer.Destroy("UpdateStatisticsScoreBoard")
+		end
+	end)
+
+
 
 ---------------Achievements Form------------------
-
-local AchsForm = vgui.Create("DPanel", PropertySheet)
-AchsForm:SetSize(675, 700)
-AchsForm.Paint = function(self, w, h)
-draw.RoundedBox(2, 0, 0, w, h, Color(0, 0, 0, 100))
-surface.SetDrawColor(150, 0, 0 ,255)
-surface.DrawOutlinedRect(0, 0, w, h)
-
-draw.SimpleText("For this one, it's a lot to add for me", "TargetID", 15, 10, Color(255,192,0,255))
-draw.SimpleText("Estimated version to be added will probably be in v0.10.8", "TargetID", 15, 35, Color(255,192,0,255))
-
-end
+/*
+	local AchsForm = vgui.Create("DPanel", PropertySheet)
+	AchsForm:SetSize(675, 700)
+	AchsForm.Paint = function(self, w, h)
+		draw.RoundedBox(2, 0, 0, w, h, Color(0, 0, 0, 100))
+		surface.SetDrawColor(150, 0, 0 ,255)
+		surface.DrawOutlinedRect(0, 0, w, h)
+		draw.SimpleText("For this one, it's a lot to add for me", "TargetID", 15, 10, Color(255,192,0,255))
+		draw.SimpleText("Estimated version to be added will probably be in v0.10.8", "TargetID", 15, 35, Color(255,192,0,255))
+	end
+*/
 ------------------------------------Sheets----------------------------------------
-PropertySheet:AddSheet(translate.Get("Inventory"), InvForm, "icon16/basket.png", false, false, translate.Get("Inventory_d"))
-PropertySheet:AddSheet(translate.Get("Factions"), FactionList, "icon16/user_red.png", false, false, translate.Get("Factions_d"))
-PropertySheet:AddSheet(translate.Get("Scoreboard"), Scores, "icon16/group.png", false, false, translate.Get("Scoreboard_d"))
-PropertySheet:AddSheet(translate.Get("Help"), HelpForm, "icon16/note.png", false, false, translate.Get("Help_d"))
-PropertySheet:AddSheet(translate.Get("Crafting"), CraftForm, "icon16/wrench_orange.png", false, false, translate.Get("Crafting_d"))
-PropertySheet:AddSheet(translate.Get("Statistics"), StatisticsForm, "icon16/user.png", false, false, translate.Get("Statistics_d"))
-PropertySheet:AddSheet(translate.Get("Achievements"), AchsForm, "icon16/award_star_silver_3.png", false, false, translate.Get("Achievements_d"))
+	PropertySheet:AddSheet(translate.Get("Inventory"), InvForm, "icon16/basket.png", false, false, translate.Get("Inventory_d"))
+	PropertySheet:AddSheet(translate.Get("Factions"), FactionList, "icon16/user_red.png", false, false, translate.Get("Factions_d"))
+	PropertySheet:AddSheet(translate.Get("Scoreboard"), Scores, "icon16/group.png", false, false, translate.Get("Scoreboard_d"))
+	PropertySheet:AddSheet(translate.Get("Help"), HelpForm, "icon16/note.png", false, false, translate.Get("Help_d"))
+--	PropertySheet:AddSheet(translate.Get("Crafting"), CraftForm, "icon16/wrench_orange.png", false, false, translate.Get("Crafting_d"))
+	PropertySheet:AddSheet(translate.Get("Statistics"), StatisticsForm, "icon16/user.png", false, false, translate.Get("Statistics_d"))
+--	PropertySheet:AddSheet(translate.Get("Achievements"), AchsForm, "icon16/award_star_silver_3.png", false, false, translate.Get("Achievements_d"))
 
 
 
@@ -890,14 +921,13 @@ PropertySheet:AddSheet(translate.Get("Achievements"), AchsForm, "icon16/award_st
 	SecondarySheet:SetPos(ScoreBoardFrame:GetWide() - 260, 300)
 	SecondarySheet:SetSize(250, ScoreBoardFrame:GetTall() - 300)
 	SecondarySheet.Paint = function()
-	draw.RoundedBox(2,  0,  0, SecondarySheet:GetWide(), SecondarySheet:GetTall(), Color(0, 0, 0, 100))
-	for k, v in pairs(SecondarySheet.Items) do
-	if (!v.Tab) then continue end
-	
-	v.Tab.Paint = function(self,w,h)
-		draw.RoundedBox(0, 0, 0, w, h, Color(50,25,25))
-	end
-	end
+		draw.RoundedBox(2,  0,  0, SecondarySheet:GetWide(), SecondarySheet:GetTall(), Color(0, 0, 0, 100))
+		for k, v in pairs(SecondarySheet.Items) do
+			if (!v.Tab) then continue end
+			v.Tab.Paint = function(self,w,h)
+				draw.RoundedBox(0, 0, 0, w, h, Color(50,25,25))
+			end
+		end
 	end
 
 	
@@ -905,20 +935,18 @@ PropertySheet:AddSheet(translate.Get("Achievements"), AchsForm, "icon16/award_st
 	local StatsForm = vgui.Create("DPanelList", ScoreBoardFrame)
 	StatsForm:SetSize(675, 600)
 	StatsForm:SetPos(0, 0)
-	--StatsForm:EnableHorizontal(false)
 	StatsForm:EnableVerticalScrollbar(true)
 	StatsForm:SetSpacing(10) 
 	StatsForm:SetName("")
 	StatsForm.Paint = function()
---	draw.RoundedBox(12,  0,  0, StatsForm:GetWide(), StatsForm:GetTall(), Color(0, 0, 0, 100))
-	surface.SetDrawColor(0, 0, 0 ,100)
-	surface.DrawRect(0, 0, StatsForm:GetWide(), StatsForm:GetTall())
+		surface.SetDrawColor(0, 0, 0 ,100)
+		surface.DrawRect(0, 0, StatsForm:GetWide(), StatsForm:GetTall())
 	end
 	StatsForm.VBar.Paint = function()
-	draw.RoundedBox(2,  0,  0, StatsForm.VBar:GetWide(), StatsForm.VBar:GetTall(), Color(30, 30, 30, 50))
+		draw.RoundedBox(2,  0,  0, StatsForm.VBar:GetWide(), StatsForm.VBar:GetTall(), Color(30, 30, 30, 50))
 	end
 	StatsForm.VBar.btnGrip.Paint = function()
-	draw.RoundedBox(2,  0,  0, StatsForm.VBar.btnGrip:GetWide(), StatsForm.VBar.btnGrip:GetTall(), Color(40, 0, 0, 50))
+		draw.RoundedBox(2,  0,  0, StatsForm.VBar.btnGrip:GetWide(), StatsForm.VBar.btnGrip:GetTall(), Color(40, 0, 0, 50))
 	end
 	
 	local ModelInfo = vgui.Create("DModelPanel", ScoreBoardFrame)
@@ -942,19 +970,17 @@ PropertySheet:AddSheet(translate.Get("Achievements"), AchsForm, "icon16/award_st
 	ModelButton:SetToolTip("Change your look")
 	ModelButton:SetTextColor(Color(255, 255, 255, 255))
 	ModelButton.Paint = function(panel)
-	surface.SetDrawColor(150, 0, 0 ,255)
-	surface.DrawOutlinedRect(0, 0, ModelButton:GetWide(), ModelButton:GetTall())
-	draw.RoundedBox(2, 0, 0, ModelButton:GetWide(), ModelButton:GetTall(), Color(50, 0, 0, 130))
-			end
-			ModelButton.DoClick = function()
-			RunConsoleCommand("tea_changemodel")
-			RunConsoleCommand("-score")
-			end
+		surface.SetDrawColor(150, 0, 0 ,255)
+		surface.DrawOutlinedRect(0, 0, ModelButton:GetWide(), ModelButton:GetTall())
+		draw.RoundedBox(2, 0, 0, ModelButton:GetWide(), ModelButton:GetTall(), Color(50, 0, 0, 130))
+	end
+	ModelButton.DoClick = function()
+		RunConsoleCommand("tea_changemodel")
+		RunConsoleCommand("-score")
+	end
 
 
 	function ModelInfo.Entity:GetPlayerColor() return LocalPlayer():GetPlayerColor() end
---	StatsForm:AddItem(ModelInfo)
-
 	local function DoStatsList()
 		for k, v in SortedPairs(Perks) do
 			local LabelDefense = vgui.Create("DLabel")
@@ -963,7 +989,7 @@ PropertySheet:AddSheet(translate.Get("Achievements"), AchsForm, "icon16/award_st
 			LabelDefense:SetToolTip(translate.Get(k.."_d"))
 			LabelDefense:SizeToContents()
 			StatsForm:AddItem(LabelDefense)
-		
+
 			local Button = vgui.Create("DButton")
 			Button:SetPos(50, 100)
 			Button:SetSize(10, 20)
@@ -1011,6 +1037,7 @@ function GM:CreateScoreboard()
 end
 
 function GM:ScoreboardShow()
+	if IsValid(ScoreBoardFrame) then ScoreBoardFrame:Remove() end
 	ScoreBoard:Create()
 	ScoreBoardFrame:SetVisible(true)
 	gui.EnableScreenClicker(true)
@@ -1019,9 +1046,8 @@ function GM:ScoreboardShow()
 end
 
 function GM:ScoreboardHide()
-	if ScoreBoardFrame:IsValid() then
-		ScoreBoardFrame:SetVisible(false)
-		ScoreBoardFrame:Remove()
-		gui.EnableScreenClicker(false)
-	end
+	if !IsValid(ScoreBoardFrame) then return end
+	ScoreBoardFrame:SetVisible(false)
+	ScoreBoardFrame:Remove()
+	gui.EnableScreenClicker(false)
 end

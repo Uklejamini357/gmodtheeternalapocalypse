@@ -1,8 +1,9 @@
 --if you find this text, congratulations
 
 function AdminMenu()
+	if IsValid(AdmMenuFrame) then AdmMenuFrame:Remove() end
 	timer.Simple(0.2, function() surface.PlaySound("buttons/button24.wav") end)
-	local AdmMenuFrame = vgui.Create( "DFrame" )
+	AdmMenuFrame = vgui.Create( "DFrame" )
 	AdmMenuFrame:SetSize( 1000, 700 )
 	AdmMenuFrame:Center()
 	AdmMenuFrame:SetTitle ("Administration Panel")
@@ -400,7 +401,7 @@ function AdminMenu()
 			local ItemDisplay = vgui.Create( "SpawnIcon", ItemBackground )
 			ItemDisplay:SetPos( 10, 10 )
 			ItemDisplay:SetModel( v.Model )
-			ItemDisplay:SetToolTip(translate.Get(v.Description).."\n(Item ID: "..k..", , Base Cost: "..v.Cost.." "..Config["Currency"].."s)")
+			ItemDisplay:SetToolTip(translate.Get(v.Description).."\n(Item ID: "..k..", Base Cost: "..v.Cost.." "..Config["Currency"].."s)")
 			ItemDisplay:SetSize(60,60)
 			ItemDisplay.PaintOver = function()
 				return
@@ -449,9 +450,6 @@ function AdminMenu()
 			end
 			SpawnButton.DoClick = function()
 				RunConsoleCommand("tea_sadmin_spawnitem", k)
-				timer.Simple(0.5, function()
-					CheckWeight:SetText(translate.Get("CurrentlyCarrying")..": "..CalculateWeightClient().."kg    "..translate.Get("MaxWeight")..": "..CalculateMaxWeightClient().."kg")
-				end)
 			end
 
 			local GiveButton = vgui.Create("DButton", ItemBackground)
@@ -470,6 +468,23 @@ function AdminMenu()
 					CheckWeight:SetText(translate.Get("CurrentlyCarrying")..": "..CalculateWeightClient().."kg    "..translate.Get("MaxWeight")..": "..CalculateMaxWeightClient().."kg")
 				end)
 			end
+
+			if TEADevCheck(LocalPlayer()) and cat == 4 then
+				local EquipButton = vgui.Create("DButton", ItemBackground)
+				EquipButton:SetSize(60, 15)
+				EquipButton:SetPos(80, 60)
+				EquipButton:SetText("Equip")
+				EquipButton:SetToolTip("THIS WORKS ONLY FOR DEVS!!")
+				EquipButton:SetTextColor(Color(255, 255, 255, 255))
+				EquipButton.Paint = function(panel)
+					surface.SetDrawColor(0, 150, 0 ,255)
+					surface.DrawOutlinedRect(0, 0, EquipButton:GetWide(), EquipButton:GetTall())
+					draw.RoundedBox( 2, 0, 0, EquipButton:GetWide(), EquipButton:GetTall(), Color(0, 50, 0, 130) )
+				end
+				EquipButton.DoClick = function()
+					RunConsoleCommand("tea_dev_forceequiparmor", k)
+				end
+			end
 		parent:AddItem(ItemBackground)
 		end
 	end
@@ -481,7 +496,7 @@ function AdminMenu()
 	SpawnMenuProperties:AddSheet("Ammunition", SpawnMenuSupplies, "icon16/briefcase.png", false, false, "Ammunition needed for your guns to shoot")
 	SpawnMenuProperties:AddSheet("Supplies", SpawnMenuAmmo, "icon16/box.png", false, false, "Food, Medical Supplies, Misc items, for survival")
 	SpawnMenuProperties:AddSheet("Weapons", SpawnMenuGuns, "icon16/bomb.png", false, false, "Good guns that cost a lot and uses ammo, but also melee that cost less.")
-	SpawnMenuProperties:AddSheet("Armor", SpawnMenuArmor, "icon16/shield.png", false, false, "Protective Armor to protect yourself from any sort of danger")
+	SpawnMenuProperties:AddSheet("Armor", SpawnMenuArmor, "icon16/shield.png", false, false, "Protective Armor to protect yourself from any sort of danger\n(also includes option to equip armors which works only for devs)")
 	
 	PropertySheet:AddSheet("Admin Commands", AdminCmds, "icon16/shield.png", false, false, "Get a list of admin commands")
 	PropertySheet:AddSheet("Superadmin Commands", SAdminCmds, "icon16/shield_add.png", false, false, "Use superadmin commands")

@@ -2,7 +2,9 @@
 
 
 function GM:OnSpawnMenuOpen()
+	if IsValid(PropsFrame) then PropsFrame:Remove() end
 	gui.EnableScreenClicker(true)
+	timer.Create("EnableScreenClicker_PropMenu", 0, 0, function() gui.EnableScreenClicker(true) end)
 	PropMenu()
 	PropsFrame:SetVisible(true)
 	PropsFrame:SetAlpha(0)
@@ -10,11 +12,11 @@ function GM:OnSpawnMenuOpen()
 end
 
 function GM:OnSpawnMenuClose()
-	if PropsFrame:IsValid() then
-		PropsFrame:SetVisible(false)
-		PropsFrame:Remove()
-		gui.EnableScreenClicker(false)
-	end
+	if !IsValid(PropsFrame) then return end
+	PropsFrame:SetVisible(false)
+	PropsFrame:Remove()
+	if timer.Exists("EnableScreenClicker_PropMenu") then timer.Destroy("EnableScreenClicker_PropMenu") end
+	gui.EnableScreenClicker(false)
 end
 
 
@@ -26,7 +28,6 @@ function PropMenu()
 	PropsFrame:SetDraggable(false)
 	PropsFrame:SetVisible(true)
 	PropsFrame:ShowCloseButton(false)
-	PropsFrame:MakePopup()
 	PropsFrame.Paint = function()
 		draw.RoundedBox( 2, 0, 0, PropsFrame:GetWide(), PropsFrame:GetTall(), Color( 0, 0, 0, 200 ) )
 		surface.SetDrawColor(150, 0, 0 ,255)
@@ -288,7 +289,7 @@ function PropMenu()
 		local ItemCost = vgui.Create( "DLabel", ItemBackground )
 		ItemCost:SetFont( "TargetIDSmall" )
 		ItemCost:SetColor( Color(155,255,155,255) )
-		ItemCost:SetText( translate.Get("Cost")..": ".. v.Cost.." "..Config[ "Currency" ].."s" )
+		ItemCost:SetText(translate.Get("Cost")..": ".. v.Cost.." "..Config[ "Currency" ].."s" )
 		ItemCost:SizeToContents()
 		ItemCost:Center()
 		local x,y = ItemCost:GetPos();

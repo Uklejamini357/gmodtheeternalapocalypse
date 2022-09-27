@@ -3275,6 +3275,7 @@ function UseFunc_Respec(ply)
 	if !ply:IsValid() or !ply:Alive() then return false end
 	if timer.Exists("IsSleeping_"..ply:UniqueID()) then SendChat(ply, "Can't use item while sleeping!") return false end
 	if timer.Exists("Isplyusingitem"..ply:UniqueID()) then SendChat(ply, translate.ClientGet(ply, "ItemNoUseCooldown")) return false end
+	if ply.StatsReset and ply.StatsReset > os.time() then SendChat(ply, "Can't use an item! Wait for "..ply.StatsReset - os.time().." more seconds!") return false end
 
 	local refund = 0 + ply.StatPoints
 	ply.StatPoints = 0
@@ -3298,7 +3299,7 @@ function UseFunc_Respec(ply)
 	TEANetUpdatePeriodicStats(ply)
 	TEANetUpdatePerks(ply)
 
+	ply.StatsReset = os.time() + 86400
 	SystemMessage(ply, translate.ClientGet(ply, "ItemUsedSkillsReset"), Color(255,255,205,255), true)
-
 	return true
 end

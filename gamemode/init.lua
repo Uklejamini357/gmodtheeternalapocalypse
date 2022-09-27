@@ -1,4 +1,4 @@
-AddCSLuaFile("cl_init.lua")
+AddCSLuaFile("cl_init.lua") -- clientside init file
 AddCSLuaFile("shared.lua")
 AddCSLuaFile("sh_translate.lua")
 AddCSLuaFile("sh_items.lua")
@@ -17,49 +17,50 @@ AddCSLuaFile("client/cl_tradermenu.lua")
 AddCSLuaFile("client/cl_dermahooks.lua")
 AddCSLuaFile("client/cl_lootmenu.lua")
 AddCSLuaFile("client/cl_adminmenu.lua")
---AddCSLuaFile("client/cl_deathscreen.lua")
 AddCSLuaFile("client/cl_statsmenu.lua")
 AddCSLuaFile("client/cl_helpmenu.lua")
+AddCSLuaFile("client/cl_bosspanel.lua")
+--AddCSLuaFile("client/cl_deathscreen.lua") -- if you want, but it's unfinished
 
 
-
+---- Clientside & Serverside ----
 include("shared.lua")
-include("sh_translate.lua")
-include("sh_items.lua")
-include("sh_loot.lua")
-include("sh_spawnables.lua")
-include("sh_config.lua")
-include("sh_crafting.lua")
-include("server/admincmd.lua")
-include("server/devcmds.lua")
-include("server/netstuff.lua")
+include("sh_translate.lua") -- translation file
+include("sh_items.lua") -- items for inventory
+include("sh_loot.lua") -- for loots
+include("sh_spawnables.lua") -- spawnable props with build tool
+include("sh_config.lua") -- gamemode config
+include("sh_crafting.lua") -- list for craftable items
+---- Serverside only ----
+include("server/admincmd.lua") -- admin commands
+include("server/devcmds.lua") -- commands for dev, do not edit unless using for good purposes
+include("server/netstuff.lua") -- just some network functions
 include("server/server_util.lua")
 include("server/config.lua")
-include("server/commands.lua")
-include("server/player_data.lua")
-include("server/player_inventory.lua")
-include("server/player_props.lua")
-include("server/player_vault.lua")
-include("server/npcspawns.lua")
-include("server/traders.lua")
-include("server/airdrops.lua")
-include("server/factions.lua")
-include("server/loot_system.lua")
-include("server/debug.lua")
-include("server/weather_events.lua")
-include("server/specialstuff.lua")
-include("server/spawnpoints.lua")
-include("server/crafting.lua")
-include("server/mastery.lua")
-
-
---include("time_weather.lua")
+include("server/commands.lua") -- Drop cash, toggle pvp and such other commands
+include("server/player_data.lua") -- Data management for players
+include("server/player_inventory.lua") -- Player Inventory management for players
+include("server/player_props.lua") -- Managing with props
+include("server/player_vault.lua") -- And vault
+include("server/npcspawns.lua") -- Zombie spawns
+include("server/traders.lua") -- Traders
+include("server/airdrops.lua") -- Airdrops
+include("server/factions.lua") -- Anything here included for faction
+include("server/loot_system.lua") -- loots
+include("server/debug.lua") -- Debug stuff, highly advised not to edit
+include("server/specialstuff.lua") -- anything uncategorized, hard to name or for server can be added here
+include("server/spawnpoints.lua") -- spawnpoints
+include("server/crafting.lua") -- crafting managing
+include("server/mastery.lua") -- Mastery for various types, including pvp and melee
+--include("server/weather_events.lua") -- excluded because file is empty
+--include("time_weather.lua") -- excluded due to file being non-existant
 
 
 Factions = Factions or {}
 DEBUG = false
 
 function GM:ShowHelp(ply)
+	ply:SendLua("HelpMenu()")
 end
 
 function GM:ShowTeam(ply)
@@ -70,6 +71,10 @@ end
 function GM:ShowSpare1(ply)
 	ply:SendLua("DropGoldMenu()")
 end
+
+function GM:ShowSpare2(ply)
+end
+
 
 function CalculateStartingHealth(ply)
 	if tonumber(ply.Prestige) >= 2 then
@@ -132,7 +137,6 @@ timer.Create("HealthRegen", 2, 0, HealthRegen)
 
 
 function GM:Think()
-
 	for k, ply in pairs(player.GetAll()) do
 		if !ply:IsValid() or !ply:Alive() then continue end
 		if ply.StatsPaused then TEANetUpdateStats(ply) continue end
@@ -203,7 +207,7 @@ function GM:Think()
 				PlayerIsMoving = false
 			end
 
-/*		if ply:KeyPressed(IN_JUMP) then
+/*		if ply:OnGround() and ply:KeyPressed(IN_JUMP) then
 			ply.Stamina = ply.Stamina - 5
 		end
 */ -- Trying to find function that drains stamina on jumping, but this one doesn't really work
@@ -260,21 +264,12 @@ function GM:InitPostEntity()
 	RunConsoleCommand("M9KDefaultClip", "0") --it's set to 0 so the users don't abuse use and drop commands on m9k weapons over and over again
 	RunConsoleCommand("M9KDisablePenetration", "1") --they were op, time to nerf them again (unless you want them to remain the same, remove or exclude this string)
 	RunConsoleCommand("sv_defaultdeployspeed", "1") --so that users don't just switch weapons too quickly
---Don't disable this function below, unless you want to have some fun
-	for k, v in pairs(ents.FindByClass("npc_*")) do
-		v:Remove()
-	end
-	for k, v in pairs(ents.FindByClass("weapon_*")) do
-		v:Remove()
-	end
-	for k, v in pairs(ents.FindByClass("item_*")) do
-		v:Remove()
-	end
 
-	for k, v in pairs(ents.FindByClass("prop_physics")) do
-		v.maxhealth = 2000
-		v:SetHealth(2000)
-	end
+	--Don't disable this function below, unless you want to have some fun
+	for k, v in pairs(ents.FindByClass("npc_*")) do v:Remove() end
+	for k, v in pairs(ents.FindByClass("weapon_*")) do v:Remove() end
+	for k, v in pairs(ents.FindByClass("item_*")) do v:Remove() end
+	for k, v in pairs(ents.FindByClass("prop_physics")) do v.maxhealth = 2000 v:SetHealth(2000) end --i'm looking forward for new function to scale props health with their size
 end
 
 function GM:PlayerDisconnected(ply)
@@ -296,10 +291,10 @@ function GM:PlayerDisconnected(ply)
 	SavePlayer(ply)
 	SavePlayerInventory(ply)
 	SavePlayerVault(ply)
-	for k, v in pairs(ents.GetAll()) do
+	for k,v in pairs(ents.GetAll()) do
 		if v:GetNWEntity("owner") == ply then v:Remove() end
+		if v.BossMonster and v.DamagedBy[ply] then v.DamagedBy[ply] = nil end
 	end
-
 
 	if ply:Team() == 1 then return false end -- don't bother disbanding or switching faction leader if they are a loner
 
@@ -339,6 +334,11 @@ function GM:Initialize()
 	MsgC(Color(255,191,191,255), "Github: https://github.com/Uklejamini357/gmodtheeternalapocalypse \n\n")
 	MsgC(Color(255,191,191,255), "Remember to check out github site for new updates\n\n")
 	MsgC(Color(255,191,191,255), "==============================================\n\n")
+
+	GAMEMODE.ZombieSpawningEnabled = true
+	GAMEMODE.CanSpawnBoss = false
+	GAMEMODE.CanSpawnAirdrop = false
+
 	LoadLoot()
 	LoadAD()
 	LoadZombies()
@@ -350,13 +350,9 @@ end
 
 function GM:OnReloaded()
 	timer.Simple(0.4, function()
-		for k, v in pairs(player.GetAll()) do
-			FullyUpdatePlayer(v)
-		end
+		for k, v in pairs(player.GetAll()) do FullyUpdatePlayer(v) end
 	end)
-	MsgC(Color(255,191,255,255), "\n==============================================\n\n")
-	MsgC(Color(255,191,255,255), "Gamemode lua files have been refreshed! Reloading spawns.\n\n")
-	MsgC(Color(255,191,255,255), "==============================================\n\n")
+	print("\n")
 
 	LoadLoot()
 	LoadAD()
@@ -364,6 +360,10 @@ function GM:OnReloaded()
 	LoadTraders()
 	LoadPlayerSpawns()
 	CheckForDerp()
+end
+
+function GM:PostCleanupMap()
+	timer.Simple(0.5, function() SpawnTraders() end)
 end
 
 
@@ -401,12 +401,12 @@ function GM:PlayerInitialSpawn(ply)
 	ply.playerdeaths = 0
 	----------------
 	
-/*	-------- Mastery Stats --------
+	-------- Mastery Stats --------
 	ply.MasteryMeleeXP = 0
 	ply.MasteryMeleeLevel = 0
 	ply.MasteryPvPXP = 0
 	ply.MasteryPvPLevel = 0
-	----------------*/
+	----------------
 	
 	-------- Special Stats --------
 	ply.SlowDown = 0
@@ -416,8 +416,13 @@ function GM:PlayerInitialSpawn(ply)
 	ply.StatsPaused = false
 	ply.HasNoTarget = false
 	ply.CanUseItem = true
+	ply.MeleeDamageDealt = 0
+	ply.StatsReset = 0
 	----------------
 
+	-------- Other --------
+
+	ply:SendLua(GAMEMODE.ZombieSpawningEnabled and "GAMEMODE.ZombieSpawningEnabled = true" or "GAMEMODE.ZombieSpawningEnabled = false")
 
 	for k, v in pairs(StatsListServer) do
 		local TheStatPieces = string.Explode(";", v)
@@ -425,10 +430,10 @@ function GM:PlayerInitialSpawn(ply)
 		ply[TheStatName] = 0
 	end
 	
+	print("Loading datafiles for "..ply:Nick().."...\n")
 	LoadPlayer(ply)
 	LoadPlayerInventory(ply)
 	LoadPlayerVault(ply)
-	print("loading datafiles for "..ply:Nick())
 
 	ply:SetNWBool("pvp", false)
 	ply:SetNWString("ArmorType", "none")
@@ -437,12 +442,10 @@ function GM:PlayerInitialSpawn(ply)
 	net.Start("RecvFactions")
 	net.WriteTable(Factions)
 	net.Send(ply)
-	
 	TEANetUpdateStatistics(ply)
 
 	SystemBroadcast(translate.Format("PlayerHasSpawned", ply:Nick()), Color(255,255,155,255), false)
 	ForceEquipArmor(ply, ply.EquippedArmor)
-
 end
 
 local function IsPosBlocked(pos)
@@ -483,7 +486,6 @@ end
 function GM:PlayerSpawn(ply)
 	self.BaseClass:PlayerSpawn(ply)
 	player_manager.SetPlayerClass(ply, "player_ate")
-
 	RecalcPlayerModel(ply)
 
 	for k, v in pairs(ents.FindByClass("bed")) do
@@ -495,16 +497,16 @@ function GM:PlayerSpawn(ply)
 
 	if timer.Exists("pvpnominge_"..ply:UniqueID()) then timer.Destroy("pvpnominge_"..ply:UniqueID()) end
 
-	local tea_server_spawnprotection = GetConVar("tea_server_spawnprotection")
-	local tea_server_spawnprotection_duration = GetConVar("tea_server_spawnprotection_duration")
+	local tea_server_spawnprotection = GetConVar("tea_server_spawnprotection"):GetInt() >= 1
+	local tea_server_spawnprotection_duration = GetConVar("tea_server_spawnprotection_duration"):GetFloat()
 
-	if tea_server_spawnprotection_duration:GetFloat() > 0 and tea_server_spawnprotection:GetInt() >= 1 then
+	if tea_server_spawnprotection_duration > 0 and tea_server_spawnprotection then
 		if !ply:Alive() then return end
 		ply.SpawnProtected = true
-		ply:PrintMessage(HUD_PRINTCENTER, translate.ClientFormat(ply, "PlySpawnProtEnabled", tea_server_spawnprotection_duration:GetFloat()))
+		ply:PrintMessage(HUD_PRINTCENTER, translate.ClientFormat(ply, "PlySpawnProtEnabled", tea_server_spawnprotection_duration))
 	end
-	if tea_server_spawnprotection_duration:GetFloat() > 0 and tea_server_spawnprotection:GetInt() > 0 then
-		timer.Create("IsSpawnProtectionTimerEnabled"..ply:UniqueID(), tea_server_spawnprotection_duration:GetFloat(), 1, function()
+	if tea_server_spawnprotection_duration > 0 and tea_server_spawnprotection then
+		timer.Create("IsSpawnProtectionTimerEnabled"..ply:UniqueID(), tea_server_spawnprotection_duration, 1, function()
 			if !ply:IsValid() or !ply:Alive() then return end
 			ply.SpawnProtected = false
 			ply:PrintMessage(HUD_PRINTCENTER, translate.ClientGet(ply, "PlySpawnProtExpired"))
@@ -524,7 +526,7 @@ function GM:PlayerSpawn(ply)
 	CalculateStartingHealth(ply)
 	CalculateMaxArmor(ply)
 	CalculateJumpPower(ply)
-	ply:ConCommand("play common/null.wav")
+	ply:ConCommand("play common/null.wav") ply:ConCommand("play *#common/null.wav")
 	RecalcPlayerModel(ply)
 	PrepareStats(ply)
 	FullyUpdatePlayer(ply)
@@ -538,31 +540,25 @@ function GM:PlayerSpawn(ply)
 end
 
 
-
 -- not like setplayermodel, just reads their model and colour settings and sets them to it
 function RecalcPlayerModel(ply)
-if ply:IsBot() then ply:SetModel("models/player/soldier_stripped.mdl") return end
+	if ply:IsBot() then ply:SetModel("models/player/soldier_stripped.mdl") return end -- this only works for bots
+	if !ply.ChosenModel then ply.ChosenModel = "models/player/kleiner.mdl" end
+	if !ply.ChosenModelColor then ply.ChosenModelColor = Vector(0.25, 0, 0) end
 
-if !ply.ChosenModel then ply.ChosenModel = "models/player/kleiner.mdl" end
-if !ply.ChosenModelColor then ply.ChosenModelColor = Vector(0.25, 0, 0) end
+	if type(ply.ChosenModelColor) == "string" then ply.ChosenModelColor = Vector(ply.ChosenModelColor) end
+	ply:SetPlayerColor(ply.ChosenModelColor)
 
-if type(ply.ChosenModelColor) == "string" then ply.ChosenModelColor = Vector(ply.ChosenModelColor) end
-ply:SetPlayerColor(ply.ChosenModelColor)
-
-if !ItemsList[ply.EquippedArmor] or ItemsList[ply.EquippedArmor]["ArmorStats"]["allowmodels"] == nil then
-	if !table.HasValue(DefaultModels, ply.ChosenModel) then
-		ply.ChosenModel = table.Random(DefaultModels)
+	if !ItemsList[ply.EquippedArmor] or ItemsList[ply.EquippedArmor]["ArmorStats"]["allowmodels"] == nil then
+		if !table.HasValue(DefaultModels, ply.ChosenModel) then
+			ply.ChosenModel = table.Random(DefaultModels)
+		end
+		ply:SetModel(ply.ChosenModel)
+		return false
 	end
 
-	ply:SetModel(ply.ChosenModel)
-	return false
-end
-
-
-local models = ItemsList[ply.EquippedArmor]["ArmorStats"]["allowmodels"]
-
-if !models[ply.ChosenModel] then ply.ChosenModel = table.Random(models) ply:SetModel(ply.ChosenModel) end
-
+	local models = ItemsList[ply.EquippedArmor]["ArmorStats"]["allowmodels"]
+	if !models[ply.ChosenModel] then ply.ChosenModel = table.Random(models) ply:SetModel(ply.ChosenModel) end
 end
 
 function GM:PlayerLoadout(ply)
@@ -571,7 +567,6 @@ function GM:PlayerLoadout(ply)
 	if SuperAdminCheck(ply) then -- Superadmins are given physgun on their spawn
 		ply:Give("weapon_physgun")
 	end
-	
 	ply:SelectWeapon("ate_fists")
 end
 
@@ -594,29 +589,27 @@ function GM:PlayerNoClip(ply, on)
 end
 
 function RecalcPlayerSpeed(ply)
-local armorspeed = 0
-local walkspeed = Config["WalkSpeed"]
-local runspeed = Config["RunSpeed"]
-local plyarmor = ply:GetNWString("ArmorType")
+	local armorspeed = 0
+	local walkspeed = Config["WalkSpeed"]
+	local runspeed = Config["RunSpeed"]
+	local plyarmor = ply:GetNWString("ArmorType")
 
+	if !ply:IsValid() then return end
+	if plyarmor and plyarmor != "none" then
+		local armortype = ItemsList[plyarmor]
+		armorspeed = tonumber(armortype["ArmorStats"]["speedloss"])
+	end
 
-if !ply:IsValid() then return end
-if plyarmor and plyarmor != "none" then
-local armortype = ItemsList[plyarmor]
-armorspeed = tonumber(armortype["ArmorStats"]["speedloss"])
+	if ply.SlowDown == 1 then
+		GAMEMODE:SetPlayerSpeed(ply, ((walkspeed - (armorspeed / 2)) + ply.StatSpeed * 3.5) * 0.6, ((runspeed - armorspeed) + ply.StatSpeed * 7) * 0.6)
+		ply:SetSlowWalkSpeed(math.Clamp(((walkspeed - (armorspeed / 2)) + ply.StatSpeed * 3.5) * 0.45, 1, 100))
+	else
+		GAMEMODE:SetPlayerSpeed(ply, (walkspeed - (armorspeed / 2)) + ply.StatSpeed * 3.5, (runspeed - armorspeed) + ply.StatSpeed * 7)
+		ply:SetSlowWalkSpeed(math.Clamp(((walkspeed - (armorspeed / 2)) + ply.StatSpeed * 3.5) * 0.75, 1, 100))
+	end
 end
 
---maybe i'll get to reworking it so when user's walkspeed is around like 133% of slow walk speed they will have slow walk speed set to 75% of their walk speed
-if ply.SlowDown == 1 then
-	GAMEMODE:SetPlayerSpeed(ply, ((walkspeed - (armorspeed / 2)) + ply.StatSpeed * 3.5) * 0.6, ((runspeed - armorspeed) + ply.StatSpeed * 7) * 0.6)
-	ply:SetSlowWalkSpeed(math.Clamp(((walkspeed - (armorspeed / 2)) + ply.StatSpeed * 3.5) * 0.45, 1, 100))
-else
-	GAMEMODE:SetPlayerSpeed(ply, (walkspeed - (armorspeed / 2)) + ply.StatSpeed * 3.5, (runspeed - armorspeed) + ply.StatSpeed * 7)
-	ply:SetSlowWalkSpeed(math.Clamp(((walkspeed - (armorspeed / 2)) + ply.StatSpeed * 3.5) * 0.75, 1, 100))
-end
-end
-
--- ULX overrides this and screws up our voice system... maybe it will be fixed or not
+-- ULX admin mod POSSIBLY overrides this and screws up our voice system... maybe it will be fixed or not
 function GM:PlayerCanHearPlayersVoice(listener, talker)
 	if listener:GetPos():Distance(talker:GetPos()) <= 1250 then
 		return true, false
@@ -624,7 +617,6 @@ function GM:PlayerCanHearPlayersVoice(listener, talker)
 		return false, false
 	end
 end
-
 
 function GM:PlayerShouldTaunt(ply, actid)
 	return true

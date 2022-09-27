@@ -1,6 +1,6 @@
 CraftableList = {
     ["item_medkit"] = {
-        ["Description"] = "Medkit_dcr",
+        ["Description"] = "Medkit_d",
 		["Model"] = "models/wick/wrbstalker/anomaly/items/wick_dev_aptechka_low.mdl",
 		["Requirements"] = {
 			["item_craft_wheel"] = 4,
@@ -15,7 +15,7 @@ CraftableList = {
 
 CraftableSpecialList = {
     ["weapon_zw_plasmalauncher"] = {
-        ["Description"] = "Medkit_dcr",
+        ["Description"] = "Medkit_d",
 		["Model"] = "models/wick/wrbstalker/anomaly/items/wick_dev_aptechka_low.mdl",
 		["Requirements"] = {
 			["item_craft_wheel"] = 4,
@@ -28,7 +28,7 @@ CraftableSpecialList = {
 	},
 }
 
-
+-- this is only needed in case of error
 /*
 {"item_craft_wheel", 4},
 {"item_craft_engine_small", 1},

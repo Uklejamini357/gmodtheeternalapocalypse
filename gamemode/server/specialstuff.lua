@@ -10,7 +10,7 @@ function ULXResetSkills(ply)
 	for k, v in pairs(StatsListServer) do
 		local TheStatPieces = string.Explode( ";", v )
 		local TheStatName = TheStatPieces[1]
-		refund = refund + tonumber(ply[ TheStatName ])
+		refund = refund + tonumber(ply[TheStatName])
 		ply[ TheStatName ] = 0
 	end
 
@@ -28,9 +28,3 @@ function ULXResetSkills(ply)
 
 	return true
 end
-
-hook.Add("PlayerDeathSound", "DeFlatline", function() return true end)
-local noise = Sound("common/null.wav") --feel free to edit it
-hook.Add("PlayerDeath", "NewSound", function(vic,unused1,unused2)
-vic:EmitSound(noise)
-end)

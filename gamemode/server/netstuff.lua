@@ -11,9 +11,9 @@ util.AddNetworkString("UpdateStatistics")
 util.AddNetworkString("UpdatePerks")
 util.AddNetworkString("UpdateInventory")
 util.AddNetworkString("UpdateTargetStats")
-util.AddNetworkString("UpdateMasteryStats") -- for future update v0.10.7
 util.AddNetworkString("UpgradePerk")
 util.AddNetworkString("UpdateVault")
+util.AddNetworkString("UpdateRespawnTimer")
 
 util.AddNetworkString("UseItem") -- for the following 4 below, see player_inventory.lua
 util.AddNetworkString("UseGun")
@@ -38,6 +38,7 @@ util.AddNetworkString("PrestigeEffect") -- blinding effect but with white screen
 util.AddNetworkString("Payout") -- see cl_hud and server/npcspawns.lua
 util.AddNetworkString("GainMasteryProgress") -- see server/mastery.lua
 util.AddNetworkString("Prestige") -- see player_data.lua
+util.AddNetworkString("BossKilled") -- called when boss is killed
 --util.AddNetworkString("Respawn")
 
 function TEANetUpdateStats(ply)
@@ -89,6 +90,10 @@ function TEANetUpdateStatistics(ply)
 	net.WriteFloat(ply.ZKills)
 	net.WriteFloat(ply.playerskilled)
 	net.WriteFloat(ply.playerdeaths)
+	net.WriteFloat(ply.MasteryMeleeXP)
+	net.WriteFloat(ply.MasteryMeleeLevel)
+	net.WriteFloat(ply.MasteryPvPXP)
+	net.WriteFloat(ply.MasteryPvPLevel)
 	net.Send(ply)
 end
 
@@ -98,11 +103,10 @@ function TEANetUpdatePlayerStatistics(ply, target)
 	net.WriteFloat(target.ZKills)
 	net.WriteFloat(target.playerskilled)
 	net.WriteFloat(target.playerdeaths)
-	net.Send(ply)
-end
-
-function TEANetUpdateMasteryStats(ply)
-	net.Start("UpdateMasteryStats")
+	net.WriteFloat(target.MasteryMeleeXP)
+	net.WriteFloat(target.MasteryMeleeLevel)
+	net.WriteFloat(target.MasteryPvPXP)
+	net.WriteFloat(target.MasteryPvPLevel)
 	net.Send(ply)
 end
 
@@ -159,10 +163,7 @@ net.Receive("ChangeModel", function(length, client)
 	client.ChosenModelColor = col
 
 	SendUseDelay(client, 1)
-	timer.Create("changemodelcooldown_"..client:UniqueID(), 120, 0, function()
-		if !client:IsValid() then return false end
-		timer.Destroy("changemodelcooldown_"..client:UniqueID())
-	end) 
+	timer.Create("changemodelcooldown_"..client:UniqueID(), 120, 1, function() end) 
 timer.Simple(0.75, function() RecalcPlayerModel(client) end)
 
 end)
@@ -226,5 +227,11 @@ net.Receive("UpdateTargetStats", function(length, client)
 	net.WriteFloat(target.ZKills)
 	net.WriteFloat(target.playerskilled)
 	net.WriteFloat(target.playerdeaths)
+	net.WriteFloat(target.MasteryMeleeXP)
+	net.WriteFloat(target.MasteryMeleeLevel)
+	net.WriteFloat(GetReqMasteryMeleeXP(target))
+	net.WriteFloat(target.MasteryPvPXP)
+	net.WriteFloat(target.MasteryPvPLevel)
+	net.WriteFloat(GetReqMasteryPvPXP(target))
 	net.Send(ply)
 end)

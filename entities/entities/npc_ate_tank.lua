@@ -29,7 +29,7 @@ self.ZombieStats = {
 
 --refer to entites/entities/npc_ate_basic.lua
 ["Damage"] = 45,
-["PropDamage"] = 100,
+["PropDamage"] = 85,
 ["Force"] = 400,
 ["Infection"] = 17,
 ["Reach"] = 85,

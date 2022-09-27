@@ -1,29 +1,28 @@
 --DeriveGamemode( "sandbox" )
 
-include( "player_class/player_ate.lua" )
+include("player_class/player_ate.lua")
 
-GM.Name 	= "The Eternal Apocalypse"
+GM.Name		= "The Eternal Apocalypse"
 GM.AltName	= "After The End Reborn"
-GM.Author 	= "Uklejamini"
-GM.Email 	= "[Insert Email here]"
-GM.Website 	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.10.6b"
+GM.Author	= "Uklejamini"
+GM.Email	= "[Insert Email here]"
+GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
+GM.Version	= "0.10.7"
 
 team.SetUp(1, "Loner", Color(100, 50, 50, 255)) --loner basic team
 
---feel free to edit these or add new cvars at any time, FCVAR_NOTIFY - notifies when convar is changed, FCVAR_REPLICATED - can only be changed by server operator to prevent some issues, FCVAR_ARCHIVE - saves convar values to server.vdf
+--feel free to edit these or add new cvars at any time, FCVAR_NOTIFY - notifies when convar is changed, FCVAR_REPLICATED - can only be changed by server operator to prevent some issues, FCVAR_ARCHIVE - saves convar values to server.vdf, see gmod wiki for more info
 local tea_server_respawntime = CreateConVar("tea_server_respawntime", 15, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Modifies respawn time for players. Do not set it too high or players won't be able to respawn. Set to 0 for no respawn delay. Recommended values: 10 - 20.", 0, 60)
 local tea_server_moneyreward = CreateConVar("tea_server_moneyreward", 1, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Modifies Money gain rewards for killing zombies. This convar is dynamic (affects all zombies) and does not affect XP rewards for destroying faction structures. Useful for making events or modifying difficulty.", 0.5, 2.5)
 local tea_server_xpreward = CreateConVar("tea_server_xpreward", 1, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Modifies XP gain multiplier for killing zombies. This convar is dynamic (affects all zombies) and does not affect Money rewards for destroying faction structures. Useful for making events or modifying difficulty.", 0.5, 2.5)
 local tea_server_spawnprotection = CreateConVar("tea_server_spawnprotection", 1, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Enable temporary god mode on spawning? Convar tea_server_spawnprotection_duration must be above 0 for it to work! 1 for true, 0 for false", 0, 1)
 local tea_server_spawnprotection_duration = CreateConVar("tea_server_spawnprotection_duration", 3, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "How long should god mode after spawning last? (in seconds) Convar tea_server_spawnprotection is required for it to work!", 0, 5)
-local tea_server_debugging = CreateConVar("tea_server_debugging", 0, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Enables debugging features. YOU CAN ENABLE THIS FOR DEDICATED SERVER AS LONG AS YOU USE IT ONLY FOR TESTING PURPOSES.", 0, 1)
-local tea_server_voluntarypvp = CreateConVar("tea_server_voluntarypvp", 1, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Enables whether players are free to pvp voluntarily or have forced PvP.", 0, 1)
+local tea_server_debugging = CreateConVar("tea_server_debugging", 0, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Enables debugging features. Use value '2' for advanced debug mode. WARNING: YOU CAN ENABLE THIS FOR DEDICATED SERVER AS LONG AS YOU USE IT ONLY FOR TESTING PURPOSES.", 0, 2)
+local tea_server_voluntarypvp = CreateConVar("tea_server_voluntarypvp", 1, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Enables whether players are free to pvp voluntarily or have forced PvP. If value is less than 0, PvP will be entirely disabled and players will not be able to damage others.", -1, 1)
 local tea_server_dbsaving = CreateConVar("tea_server_dbsaving", 1, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Allow saving players' progress to database? Disabling it temporarily is only good when messing with something and don't want to affect anyone's stats. 1 for true, 0 for false", 0, 1)
 local tea_config_maxcaches = CreateConVar("tea_config_maxcaches", 10, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "How many caches should there be at any given time?", 0, 100)
 local tea_config_factioncost = CreateConVar("tea_config_factioncost", 1000, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "How much creating the faction should cost?", 0, 10000)
 local tea_config_maxprops = CreateConVar("tea_config_maxprops", 60, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "How many props can players create?", 0, 1000)
-local tea_config_zombiespawning = CreateConVar("tea_config_zombiespawning", 1, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Should zombies spawn at their zombie spawn? Consider disabling it if adding zombie spawns.", 0, 1)
 local tea_config_propcostenabled = CreateConVar("tea_config_propcostenabled", 1, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Enable prop spawning cost money? Good for making events that needs props to make.", 0, 1)
 local tea_config_zombieapocalypse = CreateConVar("tea_config_zombieapocalypse", 0, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Should zombies closest to players see them anywhere? Only good if making event or mini-game like zombie survival or something.", 0, 1) --Be sure to have good navmesh so zombies can navigate through the map!
 
@@ -105,26 +104,42 @@ function GetReqXP(ply)
 	end
 end
 
-/*
-function GetReqXP(ply)
-	local level = ply.Level
-	return math.floor( 1000 * 1.12^(level - 1) )
+function GetReqMasteryMeleeXP(ply)
+	local xpreq = 984
+	local addexpperlevel = 242
+	local probnothing_idk = 1.193
+	if SERVER then
+		return math.floor(xpreq + ((ply.MasteryMeleeLevel * addexpperlevel) ^ probnothing_idk))
+	else
+		return math.floor(xpreq + (Mymmeleelvl * addexpperlevel) ^ probnothing_idk)
+	end
 end
-*/
 
-local playa = FindMetaTable("Player") --this one's best
+function GetReqMasteryPvPXP(ply)
+	local expreq = 593
+	local addxpprlevel = 85
+	local whatisthat = 1.153
+	if SERVER then
+		return math.floor(expreq + (ply.MasteryPvPLevel * addxpprlevel) ^ whatisthat)
+	else
+		return math.floor(expreq + (Mympvplvl  * addxpprlevel) ^ whatisthat)
+	end
+end
+
+
+local meta = FindMetaTable("Player")
 
 -- 0 = no pvp guard, 1 = pvp guarded, 2 = pvp forced
-function playa:SetPvPGuarded(int)
+function meta:SetPvPGuarded(int)
 	if !SERVER then return end
 	self:SetNWInt("PvPGuard", math.Clamp(int, 0, 2) )
 end
 
-function playa:IsPvPGuarded()
+function meta:IsPvPGuarded()
 	if self:GetNWInt("PvPGuard") == 1 then return true else return false end
 end
 
-function playa:IsPvPForced()
+function meta:IsPvPForced()
 	if self:GetNWInt("PvPGuard") == 2 then return true else return false end
 end
 

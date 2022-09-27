@@ -9,81 +9,79 @@ ENT.AdminOnly = true
 
 
 function ENT:SetUpStats()
-
-self:SetMaterial("models/flesh")
-self:SetColor(Color(100,205,100,255))
+	self:SetMaterial("models/flesh")
+	self:SetColor(Color(100,205,100,255))
 
 -- dont bother changing any of this unless you like derpy shit
-self.CanScream = true
-self.RageLevel = 1
-self.SpeedBuff = 1
+	self.CanScream = true
+	self.RageLevel = 1
+	self.SpeedBuff = 1
 
 -- animations for the StartActivity function
-self.AttackAnim = (ACT_MELEE_ATTACK1)
-self.WalkAnim = (ACT_WALK)
-self.RunAnim = (ACT_WALK)
-self.FlinchAnim = (ACT_FLINCH_PHYSICS)
-self.FallAnim = (ACT_IDLE_ON_FIRE)
+	self.AttackAnim = (ACT_MELEE_ATTACK1)
+	self.WalkAnim = (ACT_WALK)
+	self.RunAnim = (ACT_WALK)
+	self.FlinchAnim = (ACT_FLINCH_PHYSICS)
+	self.FallAnim = (ACT_IDLE_ON_FIRE)
 
 
-self.ZombieStats = {
-["Model"] = "models/zombie/poison.mdl",
+	self.ZombieStats = {
+		["Model"] = "models/zombie/poison.mdl",
 
 --refer to entites/entities/npc_ate_basic.lua
-["Damage"] = 25,
-["PropDamage"] = 20,
-["Force"] = 300,
-["Infection"] = 100,
-["Reach"] = 73,
-["StrikeDelay"] = 1.1,
-["AfterStrikeDelay"] = 1.5,
+		["Damage"] = 25,
+		["PropDamage"] = 20,
+		["Force"] = 300,
+		["Infection"] = 100,
+		["Reach"] = 73,
+		["StrikeDelay"] = 1.1,
+		["AfterStrikeDelay"] = 1.5,
 
-["Health"] = 450,
-["MoveSpeedWalk"] = 55,
-["MoveSpeedRun"] = 60,
-["VisionRange"] = 1200,
-["LoseTargetRange"] = 1500,
+		["Health"] = 450,
+		["MoveSpeedWalk"] = 55,
+		["MoveSpeedRun"] = 60,
+		["VisionRange"] = 1200,
+		["LoseTargetRange"] = 1500,
 
-["Ability1"] = true,
-["Ability1Range"] = 800,
-["Ability1Cooldown"] = 1,
-["Ability1TrigDelay"] = 0.4,
+		["Ability1"] = true,
+		["Ability1Range"] = 800,
+		["Ability1Cooldown"] = 1,
+		["Ability1TrigDelay"] = 0.4,
 
-}
+	}
 
 
-self.AttackSounds = {"npc/antlion_guard/angry1.wav",
-"npc/antlion_guard/angry2.wav", 
-"npc/antlion_guard/angry3.wav", 
-}
+	self.AttackSounds = {"npc/antlion_guard/angry1.wav",
+		"npc/antlion_guard/angry2.wav", 
+		"npc/antlion_guard/angry3.wav", 
+	}
 
-self.AlertSounds = {"npc/barnacle/barnacle_tongue_pull1.wav"}
+	self.AlertSounds = {"npc/barnacle/barnacle_tongue_pull1.wav"}
 
-self.IdleSounds = {"npc/barnacle/barnacle_die1.wav",
-"npc/barnacle/barnacle_die2.wav", 
-}
+	self.IdleSounds = {"npc/barnacle/barnacle_die1.wav",
+		"npc/barnacle/barnacle_die2.wav", 
+	}
 
-self.PainSounds = {"npc/barnacle/barnacle_die1.wav",
-"npc/barnacle/barnacle_die2.wav", 
-}
+	self.PainSounds = {"npc/barnacle/barnacle_die1.wav",
+		"npc/barnacle/barnacle_die2.wav", 
+	}
 
-self.DieSounds = {"npc/zombie/zombie_die1.wav",
-"npc/zombie/zombie_die2.wav", 
-"npc/zombie/zombie_die3.wav"
-}
+	self.DieSounds = {"npc/zombie/zombie_die1.wav",
+		"npc/zombie/zombie_die2.wav", 
+		"npc/zombie/zombie_die3.wav"
+	}
 
-self.DoorBreak = Sound("npc/zombie/zombie_pound_door.wav")
+	self.DoorBreak = Sound("npc/zombie/zombie_pound_door.wav")
 
-self.Hit = Sound("npc/zombie/zombie_hit.wav")
-self.Miss = Sound("npc/zombie/claw_miss1.wav")
-
-self.Ability1CD = CurTime()
+	self.Hit = Sound("npc/zombie/zombie_hit.wav")
+	self.Miss = Sound("npc/zombie/claw_miss1.wav")
+	self.Ability1CD = CurTime()
 
 end
 
 
 function ENT:SpecialSkill1()
-if !self.target:IsValid() or !self:CanSeeTarget() then return false end
+if !IsValid(self.target) or !self:CanSeeTarget() then return false end
 
 
 local tracedata = {}

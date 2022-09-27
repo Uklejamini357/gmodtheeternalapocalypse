@@ -37,7 +37,7 @@ function SaveLog()
 end
 timer.Create("ate_savelogs_timer", 480, 0, SaveLog)
 
-function TEADevSaveLog(ply, cmd, args)
+function TEASaveLog(ply, cmd, args)
 	if !ply:IsValid() then return end
 	if !SuperAdminCheck(ply) then 
 		SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
@@ -47,5 +47,34 @@ function TEADevSaveLog(ply, cmd, args)
 	SystemMessage(ply, "Logs saved", Color(255,255,255,255), true)
 	SaveLog()
 end
-concommand.Add("tea_debug_savelogs", TEADevSaveLog)
+concommand.Add("tea_debug_savelogs", TEASaveLog)
 --Because now I made it so the logs saving on server shutdown, it was made to save less frequent
+
+function TEAReadLogs(ply, cmd, args)
+	if !SuperAdminCheck(ply) then 
+		SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
+		ply:ConCommand("playgamesound buttons/button8.wav")
+		return
+	end
+	local filename = string.Replace(os.date("%d/%m/%Y"), "/", "_")
+	local arg1 = args[1] or filename
+
+	if !file.Exists("theeternalapocalypse/logs/"..arg1..".txt", "DATA") then return end	
+	local TheFile = file.Read("theeternalapocalypse/logs/"..arg1..".txt", "DATA")
+	local DataPieces = string.Explode("\n", TheFile)
+
+	ply:SendLua([[MsgC(Color(63,127,191,255), "\n------=== STARTING MESSAGE OF THE LOGS ===------\n\n")]])
+	for k, v in pairs(DataPieces) do
+	    local TheLine = string.Explode(";", v)
+
+		ply:PrintMessage(2, TheLine[1])
+	end
+
+	if filename == arg1 then
+		for k,v in pairs(DebugLogs) do
+			ply:PrintMessage(2, v)
+		end
+	end
+	ply:SendLua([[MsgC(Color(63,127,191,255), "\n------=== ENDING MESSAGE OF THE LOGS ===------\n\n")]])
+end
+concommand.Add("tea_debug_readlogsfile", TEAReadLogs)

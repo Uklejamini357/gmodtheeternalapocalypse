@@ -1,4 +1,4 @@
-local playa = FindMetaTable("Player")
+local meta = FindMetaTable("Player")
 
 function CalculateWeight(ply)
 local totalweight = 0
@@ -38,9 +38,10 @@ function CalculateMaxWeight(ply)
 	return maxweight
 end
 
-function SendInventory( ply )
-FullyUpdatePlayer( ply )
-timer.Simple(1, function() if !ply:IsValid() then return end SendVault(ply) end)
+function SendInventory(ply)
+	if !ply:IsValid() then return end
+	FullyUpdatePlayer(ply)
+	SendVault(ply)
 end
 concommand.Add("refresh_inventory", SendInventory)
 
@@ -96,7 +97,7 @@ end
 function SaveTimer()
 	local tea_server_dbsaving = GetConVar("tea_server_dbsaving")
 	local i = 0
-	if !tobool(tea_server_dbsaving:GetString()) then print("------=== WARNING ===------\n\nDatabase saving is disabled! Players will not have their progress saved during this time.\nSet ConVar 'tea_server_dbsaving' to 1 in order to enable database saving.\n\n------=== WARNING ===------") return end
+	if !tobool(tea_server_dbsaving:GetString()) then print("------=== WARNING ===------\n\nDatabase saving is disabled! Players will not have their progress saved during this time.\nSet ConVar 'tea_server_dbsaving' to 1 in order to enable database saving.\n\n------======------") return end
 	for k, ply in pairs(player.GetAll()) do
 		if ply:IsValid() then
 			i = i + 1
@@ -190,7 +191,7 @@ net.Receive("BuyItem", function(length, client)
 end)
 
 
-function playa:BuyItem(str)
+function meta:BuyItem(str)
 	--if !client.CanBuy then SendChat(client, "Hey calm down there bud, don't rush the system") return false end -- cancel the function if they are spamming net messages
 	if !ItemsList[str] then SendChat(self, translate.ClientGet(self, "ItemNonExistant")) return end -- if the item doenst exist
 
@@ -246,7 +247,6 @@ net.Receive("SellItem", function(length, client)
 	client.Money = math.floor(client.Money + sellprice) -- base sell price 20% of the original buy price plus 0.5% per barter level to max of 25%
 	SendInventory(client)
 	client:EmitSound("physics/cardboard/cardboard_box_break3.wav", 100, 100)
-
 	TEANetUpdatePeriodicStats(client)
 
 end)
@@ -258,8 +258,8 @@ end)
 net.Receive("UseGun", function( length, client )
 	local item = net.ReadString()
 	if client.Inventory[item] then
-		client:Give( item )
-		client:SelectWeapon( item )
+		client:Give(item)
+		client:SelectWeapon(item)
 	else
 		SendChat(client, translate.ClientGet(client, "HasNotGotItem"))
 	end

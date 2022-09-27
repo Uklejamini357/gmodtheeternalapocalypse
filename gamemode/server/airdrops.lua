@@ -1,10 +1,9 @@
 local DropData = ""
 
-
 function LoadAD()
-if not file.IsDir("theeternalapocalypse/spawns/"..string.lower(game.GetMap()), "DATA") then
-   file.CreateDir("theeternalapocalypse/spawns/"..string.lower(game.GetMap()))
-end
+	if not file.IsDir("theeternalapocalypse/spawns/"..string.lower(game.GetMap()), "DATA") then
+		file.CreateDir("theeternalapocalypse/spawns/"..string.lower(game.GetMap()))
+	end
 	if file.Exists("theeternalapocalypse/spawns/" .. string.lower(game.GetMap()) .. "/airdrops.txt", "DATA") then
 		DropData = "" --reset it
 		DropData = file.Read("theeternalapocalypse/spawns/" .. string.lower(game.GetMap()) .. "/airdrops.txt", "DATA")
@@ -69,10 +68,8 @@ end
 concommand.Add("tea_clearairdropspawns", ClearAD)
 
 
-
-CanSpawnAirdrop = false
 function SpawnAirdrop()
-	if !CanSpawnAirdrop and table.Count(player.GetAll()) < 5 then return end
+	if !GAMEMODE.CanSpawnAirdrop and table.Count(player.GetAll()) < 5 then return end
 
 	RadioBroadcast(0.5, "Christmas has come early ladies!", "Shamus", true)
 	RadioBroadcast(3, "I've got a little present for y'all to entertain yourselves with!", "Shamus", false)

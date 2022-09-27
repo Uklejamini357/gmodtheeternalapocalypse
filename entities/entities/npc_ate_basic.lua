@@ -90,21 +90,21 @@ self.Ability1CD = CurTime()
 end
 
 function ENT:CanSeeTarget()
-if !self:IsValid() then return false end
-if self.target != nil then
-	local tracedata = {}
-	tracedata.start = self:GetPos() + Vector(0, 0, 30)
-	tracedata.endpos = self.target:GetPos() + Vector(0, 0, 30)
-	tracedata.filter = self
-	local trace = util.TraceLine(tracedata)
-	if trace.HitWorld == false then
-		return true
-	else 
-	return false
+	if !self:IsValid() then return false end
+	if self.target != nil then
+		local tracedata = {}
+		tracedata.start = self:GetPos() + Vector(0, 0, 30)
+		tracedata.endpos = self.target:GetPos() + Vector(0, 0, 30)
+		tracedata.filter = self
+		local trace = util.TraceLine(tracedata)
+		if !trace.HitWorld then
+			return true
+		else 
+			return false
+		end
+	else
+		return false
 	end
-else
-return false
-end
 end
 
 
@@ -139,28 +139,27 @@ function ENT:DelayedCallback(delay, callback)
 end
 
 function ENT:OnContact( ent )
-if self.NextVehicleCollide > CurTime() then return end
-if ent:IsVehicle() and ent:GetVelocity():Length() > 300 then
-	ent:EmitSound("physics/flesh/flesh_bloody_break.wav", 100, math.random( 80, 90) )
+	if self.NextVehicleCollide > CurTime() then return end
+	if ent:IsVehicle() and ent:GetVelocity():Length() > 300 then
+		ent:EmitSound("physics/flesh/flesh_bloody_break.wav", 100, math.random( 80, 90) )
 
-	local ded2 = DamageInfo()
-	ded2:SetDamage( 0 )
-	print( "taken: "..math.min( (self:Health() / 4), ent:GetVelocity():Length() / 28 ).." dealt: "..ent:GetVelocity():Length() / 2.5 )
-	ded2:SetDamageType( DMG_VEHICLE )
-	local f = (ent:GetPos() - self:GetPos() * 200) * ent:GetVelocity():Length() / 800
-	ded2:SetDamageForce( f )
-	ent:TakeDamageInfo( ded2 )
+		local ded2 = DamageInfo()
+		ded2:SetDamage(0)
+		print("taken: "..math.min((self:Health() / 4), ent:GetVelocity():Length() / 28).." | dealt: "..ent:GetVelocity():Length() / 2.5)
+		ded2:SetDamageType( DMG_VEHICLE )
+		local f = (ent:GetPos() - self:GetPos() * 200) * ent:GetVelocity():Length() / 800
+		ded2:SetDamageForce( f )
+		ent:TakeDamageInfo( ded2 )
 
-	local ded = DamageInfo()
+		local ded = DamageInfo()
 
-	ded:SetDamage( ent:GetVelocity():Length() )
-	ded:SetDamageType( DMG_VEHICLE )
-	if ent:GetDriver():IsValid() then ded:SetAttacker( ent:GetDriver() ) else ded:SetAttacker( game.GetWorld() ) end
-	self:TakeDamageInfo( ded )
+		ded:SetDamage( ent:GetVelocity():Length() )
+		ded:SetDamageType( DMG_VEHICLE )
+		if ent:GetDriver():IsValid() then ded:SetAttacker( ent:GetDriver() ) else ded:SetAttacker( game.GetWorld() ) end
+		self:TakeDamageInfo(ded)
 
-	self.NextVehicleCollide = CurTime() + 0.5
-
-end
+		self.NextVehicleCollide = CurTime() + 0.5
+	end
 end
 
 function ENT:Think()
@@ -232,7 +231,7 @@ if self.ZombieStats["Ability1"] and self:GetRangeTo(target) <= self.ZombieStats[
 end
 
 -- check if we have a player within arms reach and bash them if they are
-		if (self:GetRangeTo(target) <= self.ZombieStats["Reach"] * 0.8 && self:CanSeeTarget() ) then
+		if (self:GetRangeTo(target) <= self.ZombieStats["Reach"] * 0.8 && self:CanSeeTarget()) then
 
 			self:AttackPlayer(target)
 

@@ -75,40 +75,38 @@ function DestroyProp(ply, ent)
 end
 
 function DestroyStructure(ply, ent)
-if !ply:IsValid() or !ply:Alive() then return false end
-if !ent:IsValid() or !SpecialSpawns[ent:GetClass()] then return false end
-local owner = ent:GetNWEntity("owner")
-if !owner:IsValid() or !owner:Alive() then return false end
+	if !ply:IsValid() or !ply:Alive() then return false end
+	if !ent:IsValid() or !SpecialSpawns[ent:GetClass()] then return false end
+	local owner = ent:GetNWEntity("owner")
+	if !owner:IsValid() or !owner:Alive() then return false end
 
-if owner != ply then SystemMessage(ply, "You don't own this structure!", Color(255,205,205,255), true) return false end
+	if owner != ply then SystemMessage(ply, "You don't own this structure!", Color(255,205,205,255), true) return false end
 
-SendUseDelay( ply, 2 )
+	SendUseDelay( ply, 2 )
+	timer.Simple(2, function()
+		if !ply:IsValid() or !ply:Alive() or !ent:IsValid() then return false end
 
-timer.Simple(2, function()
-if !ply:IsValid() or !ply:Alive() or !ent:IsValid() then return false end
+		local refund = SpecialSpawns[ent:GetClass()]["Cost"]
+		if refund == nil then return false end
+		ply.Money = ply.Money + math.floor(refund * 0.5)
+		SystemMessage(ply, "You salvaged one of your buildings and gained "..math.floor(refund * 0.5).." Gold", Color(205,205,255,255), true)
+		ent:EmitSound("physics/wood/wood_furniture_break"..math.random(1,2)..".wav", 100, math.random(95,105))
+		ent:Remove()
 
-local refund = SpecialSpawns[ent:GetClass()]["Cost"]
-if refund == nil then return false end
-ply.Money = ply.Money + math.floor(refund * 0.5)
-SystemMessage(ply, "You salvaged one of your buildings and gained "..math.floor(refund * 0.5).." Gold", Color(205,205,255,255), true)
-ent:EmitSound("physics/wood/wood_furniture_break"..math.random(1,2)..".wav", 100, math.random(95,105))
-ent:Remove()
-
-TEANetUpdatePeriodicStats(ply)
-end)
-
+		TEANetUpdatePeriodicStats(ply)
+	end)
 end
 
 
 
 
 function CheckFactionBases(pos)
-local check = ents.FindInSphere(pos, 950)
-for k, v in pairs(check) do
-	if v:GetClass() == "structure_base_core" or v:GetClass() == "trader" or v:GetClass() == "spawn_guard" then return false end
-end
+	local check = ents.FindInSphere(pos, 950)
+	for k, v in pairs(check) do
+		if v:GetClass() == "structure_base_core" or v:GetClass() == "trader" or v:GetClass() == "spawn_guard" then return false end
+	end
 
-return true
+	return true
 end
 
 
@@ -118,12 +116,12 @@ function entmeta:GetStructureHealth()
 return self:GetNWInt( "ate_integrity", 0 )
 end
 
-function entmeta:SetStructureHealth( val )
-return self:SetNWInt( "ate_integrity", val )
+function entmeta:SetStructureHealth(val)
+return self:SetNWInt("ate_integrity", val)
 end
 
 function entmeta:GetStructureMaxHealth()
-return self:GetNWInt( "ate_maxintegrity", 0 )
+return self:GetNWInt("ate_maxintegrity", 0)
 end
 
 
@@ -197,7 +195,6 @@ function MakeProp(ply, model, pos, ang)
 		end
 	end
 	TEANetUpdatePeriodicStats(ply)
-
 end
 
 

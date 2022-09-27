@@ -44,6 +44,12 @@ function LoadPlayer(ply)
 		ply.Money = tonumber(Config["StartMoney"])
 		ply.StatPoints = 0
 		ply.EquippedArmor = "none"
+		ply.StatsReset = 0
+
+		ply.MasteryMeleeXP = 0
+		ply.MasteryMeleeLevel = 0
+		ply.MasteryPvPXP = 0
+		ply.MasteryPvPLevel = 0
 		
 		for k, v in pairs(StatsListServer) do
 			local TheStatPieces = string.Explode(";", v)
@@ -63,10 +69,10 @@ end
 
 
 function SavePlayer(ply)
-	local tea_server_dbsaving = GetConVar("tea_server_dbsaving")
+	local tea_server_dbsaving = GetConVar("tea_server_dbsaving"):GetFloat() >= 1
 	local Data = {}
 
-	if AllowSave != 1 and !tobool(tea_server_dbsaving:GetString()) then print("------=== WARNING ===------\n\nDatabase saving is disabled! Players will not have their progress saved during this time.\nSet ConVar 'tea_server_dbsaving' to 1 in order to enable database saving.\n\n------=== WARNING ===------") return end
+	if AllowSave != 1 and !tea_server_dbsaving then print("------=== WARNING ===------\n\nDatabase saving is disabled! Players will not have their progress saved during this time.\nSet ConVar 'tea_server_dbsaving' to 1 in order to enable database saving.\n\n------======------") return end
 	Data["BestSurvivalTime"] = ply.BestSurvivalTime
 	Data["ZKills"] = ply.ZKills
 	Data["XP"] = ply.XP
@@ -78,7 +84,13 @@ function SavePlayer(ply)
 	Data["StatPoints"] = ply.StatPoints
 	Data["EquippedArmor"] = ply.EquippedArmor
 	Data["ChosenModel"] = ply.ChosenModel
+	Data["StatsReset"] = ply.StatsReset
 	Data["ChosenModelColor"] = tostring(ply.ChosenModelColor)
+
+	Data["MasteryMeleeXP"] = ply.MasteryMeleeXP
+	Data["MasteryMeleeLevel"] = ply.MasteryMeleeLevel
+	Data["MasteryPvPXP"] = ply.MasteryPvPXP
+	Data["MasteryPvPLevel"] = ply.MasteryPvPLevel
 
 
 	for k, v in pairs(StatsListServer) do
@@ -111,6 +123,7 @@ end
 
 --Bonus multipliers for various supporters (and the dev)
 function TEAXPBonus(ply)
+	if !ply:IsValid() then return end
 	local xpmul = 1
 	if tonumber(ply.Prestige) >= 15 then --check if player has prestige 15 then it will give another 1.1x xp mul 
 		xpmul = xpmul * 1.15
@@ -126,6 +139,7 @@ function TEAXPBonus(ply)
 end
 
 function TEACashBonus(ply) --works the same as XPBonus with the exception of giving cash bonus
+	if !ply:IsValid() then return end
 	local cashmul = 1
 	if tonumber(ply.Prestige) >= 1 then
 		cashmul = cashmul * 1.05
@@ -143,17 +157,17 @@ end
 --level up
 function PlayerGainLevel(ply)
 	if ply.XP >= GetReqXP(ply) then
-		if ply.IsLevelingAllowed != true and tonumber(ply.Level) >= 50 + (ply.Prestige * 5) then
+		if ply.IsLevelingAllowed != true and tonumber(ply.Level) >= GAMEMODE.MaxLevel + (ply.Prestige * GAMEMODE.LevelsPerPrestige) then
 			SendChat(ply, "Level Maxed, prestige to level further.")
 			return
 		end
 		ply.XP = ply.XP - GetReqXP(ply)
-		local moneyreward = 65 + math.floor((ply.Level ^ 1.1217) * 19 + (ply.Level * 5) + (ply.Prestige * 2.6892))
+		local moneyreward = 65 + math.floor((ply.Level ^ 1.1217) * 17 + (ply.Level * 5) + (ply.Prestige * 2.6892))
 		ply.Money = ply.Money + moneyreward
 		ply.Level = ply.Level + 1
 		ply.StatPoints = ply.StatPoints + 1
-		print(ply:Nick().." has leveled up from Level "..ply.Level.." to Level ".. ply.Level + 1 .." with a reward of "..moneyreward.." "..Config["Currency"].."s and reduction of "..GetReqXP(ply).." XP! (XP now: "..ply.XP..")")
-		SendChat(ply, translate.Format("PlyLevelUp", ply.Level, moneyreward, Config["Currency"]))
+		print(ply:Nick().." has leveled up to Level "..ply.Level.." with a reward of "..moneyreward.." "..Config["Currency"].."s and reduction of "..GetReqXP(ply).." XP! (XP now: "..ply.XP..")")
+		SendChat(ply, translate.ClientFormat(ply, "PlyLevelUp", ply.Level, moneyreward, Config["Currency"]))
 		ply:ConCommand("playvol theeternalapocalypse/levelup.wav 0.55")
 		
 		ply:SetNWInt("PlyLevel", ply.Level)
@@ -161,7 +175,7 @@ function PlayerGainLevel(ply)
 		TEANetUpdatePeriodicStats(ply)
 		
 		timer.Simple(0.05, function() -- Timer was created to prevent Buffer Overflow if user has too much XP if user levels up
-			if ply.XP >= GetReqXP(ply) and tonumber(ply.Level) < 50 + (ply.Prestige * 5) then
+			if ply.XP >= GetReqXP(ply) and tonumber(ply.Level) < GAMEMODE.MaxLevel + (ply.Prestige * GAMEMODE.LevelsPerPrestige) then
 					PlayerGainLevel(ply) -- This is so the user will gain another level if user has required xp for next level and will repeat
 			end
 		end)
@@ -169,13 +183,13 @@ function PlayerGainLevel(ply)
 end
 
 net.Receive("Prestige", function(length, ply)
-GainPrestige(ply)
+	GainPrestige(ply)
 end)
 
 -- Always forever --
 function GainPrestige(ply)
 	if !ply:Alive() then SendChat(ply, "Must be alive in order to prestige!") return end
-	if tonumber(ply.Level) >= 50 + (5 * ply.Prestige) then
+	if tonumber(ply.Level) >= GAMEMODE.MaxLevel + (GAMEMODE.LevelsPerPrestige * ply.Prestige) then
 		ply.Prestige = ply.Prestige + 1
 		ply.Level = 1
 		ply.XP = 0
@@ -236,7 +250,7 @@ function GainPrestige(ply)
 		CalculateMaxArmor(ply)
 		CalculateJumpPower(ply)
 	else
-		SystemMessage(ply, "You must be at least level ".. 50 + (5 * ply.Prestige) .." to prestige!", Color(255,155,155,255), true)
+		SystemMessage(ply, "You must be at least level ".. GAMEMODE.MaxLevel + (GAMEMODE.LevelsPerPrestige * ply.Prestige) .." to prestige!", Color(255,155,155,255), true)
 		ply:ConCommand("playgamesound buttons/button10.wav")
 	end
 end
@@ -251,11 +265,7 @@ function PrepareStats(ply)
 	ply.Thirst = 10000
 	ply.Fatigue = 0
 	ply.Infection = 0
-	if armorstr and armortype then
-		ply.Battery = 100 + armortype["ArmorStats"]["battery"]
-	else
-		ply.Battery = 100
-	end
+	if armorstr and armortype then ply.Battery = 100 + armortype["ArmorStats"]["battery"] else ply.Battery = 100 end
 	ply.HPRegen = 0
 	ply.SurvivalTime = math.floor(CurTime())
 	ply.SlowDown = false
@@ -268,7 +278,6 @@ end
 
 function FullyUpdatePlayer(ply)
 	if !ply:IsValid() then return end
-
 	net.Start("UpdateInventory")
 	net.WriteTable(ply.Inventory)
 	net.Send(ply)

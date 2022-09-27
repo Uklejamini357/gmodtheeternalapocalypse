@@ -90,6 +90,7 @@ function SpawnLoot()
 				EntDrop.LootType = table.Random(LootTable1)["Class"]
 				EntDrop:Spawn()
 				EntDrop:Activate()
+				if GetConVar("tea_server_debugging"):GetInt() >= 2 then print("Loot cache spawned:", "\nloot_cache", pos, ang, "Loot Type: "..EntDrop.LootType) end
 			else
 				local EntDrop = ents.Create("loot_cache_weapon")
 				EntDrop:SetPos(pos)
@@ -97,12 +98,20 @@ function SpawnLoot()
 				EntDrop.LootType = table.Random(LootTable2)["Class"]
 				EntDrop:Spawn()
 				EntDrop:Activate()
+				if GetConVar("tea_server_debugging"):GetInt() >= 2 then print("Loot cache spawned:", "\nloot_cache_weapon", pos, ang, "Loot Type: "..EntDrop.LootType) end
 			end
 		end
 	end
 end
 timer.Create("LootSpawnTimer", 60, 0, SpawnLoot)
-
+concommand.Add("tea_dev_spawnloots", function(ply, cmd)
+	if !TEADevCheck(ply) then 
+		SystemMessage(ply, translate.ClientGet(ply, "TEADevCheckFailed"), Color(255,205,205,255), true)
+		ply:ConCommand("playgamesound buttons/button8.wav")
+		return
+	end
+	SpawnLoot()
+end)
 
 
 function MakeLootContainer(ent, items, size, env) -- env is a bool for environment caches such as airdrops and random loot

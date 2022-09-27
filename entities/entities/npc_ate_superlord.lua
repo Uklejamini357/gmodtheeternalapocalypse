@@ -3,7 +3,7 @@ AddCSLuaFile()
 ENT.Base = "npc_ate_basic"
 ENT.PrintName = "Zombie Superlord" --Superlord as a miniboss
 ENT.Category = ""
-ENT.Author = "LegendofRobbo"
+ENT.Author = "Uklejamini"
 ENT.Spawnable = true
 ENT.AdminOnly = true
 

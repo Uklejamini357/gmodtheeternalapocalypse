@@ -19,7 +19,7 @@ function Damagemods(target, dmginfo)
 		end
 	end
 
-	local tea_server_voluntarypvp = tobool(GetConVarNumber("tea_server_voluntarypvp"))
+	local tea_server_voluntarypvp = GetConVar("tea_server_voluntarypvp"):GetInt()
 	if target:IsPlayer() and attacker:IsPlayer() and target != attacker and !target:IsPvPForced() and target.Territory != team.GetName(attacker:Team()) then
 		 
 		if target:Alive() and attacker:IsPlayer() and target:IsPlayer() and (target:HasGodMode() or target.SpawnProtected) then
@@ -30,14 +30,21 @@ function Damagemods(target, dmginfo)
 			dmginfo:SetDamage(0)
 		return false end
 
-		if target:Alive() and attacker:Team() == 1 and attacker:GetNWBool("pvp") == false and tea_server_voluntarypvp then
+		if target:Alive() and tea_server_voluntarypvp <= -1 then
+			if !timer.Exists("NoPvPMsgAntiSpamTimer"..attacker:UniqueID()) then
+				SystemMessage(attacker, "PvP is entirely disabled!", Color(255,205,205,255), true)
+				timer.Create("NoPvPMsgAntiSpamTimer"..attacker:UniqueID(), 0.5, 1, function() end)
+			end
+			dmginfo:SetDamage(0)
+			return false
+		elseif target:Alive() and attacker:Team() == 1 and attacker:GetNWBool("pvp") == false and tea_server_voluntarypvp >= 1 then
 			if !timer.Exists("NoPvPMsgAntiSpamTimer"..attacker:UniqueID()) then
 				SystemMessage(attacker, "Your PvP is not enabled!", Color(255,205,205,255), true)
 				timer.Create("NoPvPMsgAntiSpamTimer"..attacker:UniqueID(), 0.5, 1, function() end)
 			end
 			dmginfo:SetDamage(0)
 			return false
-		elseif target:Alive() and target:Team() == 1 and target:GetNWBool("pvp") == false and tea_server_voluntarypvp then
+		elseif target:Alive() and target:Team() == 1 and target:GetNWBool("pvp") == false and tea_server_voluntarypvp >= 1 then
 			if !timer.Exists("NoPvPMsgAntiSpamTimer"..attacker:UniqueID()) then
 				SystemMessage(attacker, "You can't attack loners unless they have PvP enabled!", Color(255,205,205,255), true)
 				timer.Create("NoPvPMsgAntiSpamTimer"..attacker:UniqueID(), 0.5, 1, function() end)
@@ -69,7 +76,7 @@ function Damagemods(target, dmginfo)
 		end)
 	end
 
-	local tea_server_debugging = tobool(GetConVarNumber("tea_server_debugging"))
+	local tea_server_debugging = GetConVar("tea_server_debugging")
 	if target:IsPlayer() and target.SpawnProtected then
 		dmginfo:SetDamage(0)
 		return false
@@ -79,7 +86,7 @@ function Damagemods(target, dmginfo)
 	if target:GetClass() == "trader" then return end
 
 	if dmginfo:GetDamageType() == DMG_CRUSH and target:IsPlayer() and attacker:GetClass() == "obj_bigrock" then
-		dmginfo:SetDamage((dmginfo:GetDamage() * 0.01) + 1)
+		dmginfo:SetDamage(1 + (dmginfo:GetDamage() * 0.01))
 	elseif dmginfo:GetDamageType() == DMG_CRUSH and target:IsPlayer() then
 		dmginfo:ScaleDamage(0.5)
 	end
@@ -88,41 +95,48 @@ function Damagemods(target, dmginfo)
 		dmginfo:ScaleDamage(0.95)
 	end
 
-	if dmginfo:GetDamageType() == DMG_BLAST and (target.Type == "nextbot" or target:IsNPC()) then --AI NPCs and nextbots need to take more damage if they take explosive damage so it will be much better and explosives will be more useful
+	if attacker:GetClass() != "trigger_hurt" and dmginfo:GetDamageType() == DMG_BLAST and (target.Type == "nextbot" or target:IsNPC()) then --AI NPCs and nextbots need to take more damage if they take explosive damage so it will be much better and explosives will be more useful
 		dmginfo:ScaleDamage(2.7)
-	end
-
-	if dmginfo:GetDamageType() == DMG_BLAST and target:IsPlayer() then --Players need to take more damage from explosions since thanks to armor they can tank some big damage
+	elseif attacker:GetClass() != "trigger_hurt" and dmginfo:GetDamageType() == DMG_BLAST and target:IsPlayer() then --Players need to take more damage from explosions since thanks to armor they can tank some big damage
 		dmginfo:ScaleDamage(1.55)
 	end
 
 	if !target:IsPlayer() and attacker:IsPlayer() then
-		dmginfo:ScaleDamage(1 + (0.01 * attacker.StatDamage))
-		if target:IsPlayer() or target.Type == "nextbot" or target:IsNPC() then
+		if dmginfo:GetDamageType() == DMG_GENERIC then
+			dmginfo:ScaleDamage(1 + (0.01 * attacker.StatDamage) + (0.005 * math.Clamp(attacker.MasteryMeleeLevel, 0, 10)))
+		else
+			dmginfo:ScaleDamage(1 + (0.01 * attacker.StatDamage))
+		end
+		if target.Type == "nextbot" or target:IsNPC() then
+			if dmginfo:GetDamageType() == DMG_GENERIC then
+				attacker.MeleeDamageDealt = attacker.MeleeDamageDealt + math.Clamp(0.035 * dmginfo:GetDamage(), 0, 0.035 * target:Health())
+				timer.Create("MeleeMasteryGain"..attacker:UniqueID(), 5, 1, function() if attacker:IsValid() then attacker:GainMasteryXP(attacker.MeleeDamageDealt, "Melee") attacker.MeleeDamageDealt = 0 end end)
+			end
 			attacker:PrintTranslatedMessage(HUD_PRINTCENTER, "DmgDealt", dmginfo:GetDamage())
-			if !timer.Exists("HitSFX_"..attacker:UniqueID()) then --prevent spamming hitsounds too hard
-				attacker:ConCommand("playvol theeternalapocalypse/hitsound.wav 0.225") --unless you don't like it maybe i'll add option for clients to toggle hit sounds in future update
+			if attacker:GetInfoNum("tea_cl_hitsounds", 1) >= 1 and attacker:GetInfoNum("tea_cl_hitsounds_volnpc", 0.225) > 0 and !timer.Exists("HitSFX_"..attacker:UniqueID()) then
+				attacker:ConCommand("playvol theeternalapocalypse/hitsound.wav "..attacker:GetInfoNum("tea_cl_hitsounds_volnpc", 0.225))
 				timer.Create("HitSFX_"..attacker:UniqueID(), 0.15, 1, function() end)
 			end
 		end
 	end
 
-	
 	if target:IsPlayer() and target:Alive() and attacker != target and attacker:IsPlayer() and dmginfo:GetDamageType() == DMG_GENERIC and (!target:IsPvPGuarded() and !attacker:IsPvPGuarded()) then
-		dmginfo:ScaleDamage(1 + (0.01 * attacker.StatDamage))
+		dmginfo:ScaleDamage(1 + (0.01 * attacker.StatDamage) + (0.005 * math.Clamp(attacker.MasteryMeleeLevel, 0, 10)))
 		attacker:PrintTranslatedMessage(HUD_PRINTCENTER, "DmgDealt", dmginfo:GetDamage())
-		if !timer.Exists("HitSFX_"..attacker:UniqueID()) then
-			attacker:ConCommand("playvol theeternalapocalypse/hitsound.wav 0.3")
+		attacker.MeleeDamageDealt = attacker.MeleeDamageDealt + math.Clamp(0.05 * dmginfo:GetDamage(), 0, 0.05 * target:Health())
+		timer.Create("MeleeMasteryGain"..attacker:UniqueID(), 5, 1, function() if attacker:IsValid() then attacker:GainMasteryXP(attacker.MeleeDamageDealt, "Melee") attacker.MeleeDamageDealt = 0 end end)
+		if attacker:GetInfoNum("tea_cl_hitsounds", 1) >= 1 and attacker:GetInfoNum("tea_cl_hitsounds_vol", 0.3) > 0 and !timer.Exists("HitSFX_"..attacker:UniqueID()) then
+			attacker:ConCommand("playvol theeternalapocalypse/hitsound.wav "..attacker:GetInfoNum("tea_cl_hitsounds_vol", 0.3))
 			timer.Create("HitSFX_"..attacker:UniqueID(), 0.15, 1, function() end)
 		end
 		print(attacker:Nick().." has damaged "..target:Nick().." for "..dmginfo:GetDamage().." damage!")
 	elseif target:IsPlayer() and target:Alive() and attacker != target and attacker:IsPlayer() and (!target:IsPvPGuarded() and !attacker:IsPvPGuarded()) then
 		attacker:PrintTranslatedMessage(HUD_PRINTCENTER, "DmgDealt", dmginfo:GetDamage())
-		if !timer.Exists("HitSFX_"..attacker:UniqueID()) then
-			attacker:ConCommand("playvol theeternalapocalypse/hitsound.wav 0.3")
+		if attacker:GetInfoNum("tea_cl_hitsounds", 1) >= 1 and attacker:GetInfoNum("tea_cl_hitsounds_vol", 0.3) > 0 and !timer.Exists("HitSFX_"..attacker:UniqueID()) then
+			attacker:ConCommand("playvol theeternalapocalypse/hitsound.wav "..attacker:GetInfoNum("tea_cl_hitsounds_vol", 0.3))
 			timer.Create("HitSFX_"..attacker:UniqueID(), 0.15, 1, function() end)
 		end
-		print(attacker:Nick().." has damaged "..target:Nick().." for "..dmginfo:GetDamage().." damage!")
+		if tea_server_debugging:GetInt() >= 2 then print(attacker:Nick().." has damaged "..target:Nick().." for "..dmginfo:GetDamage().." damage!") end
 	end
 	
 	for _, ent in pairs(ents.FindByClass("trader")) do
@@ -130,16 +144,11 @@ function Damagemods(target, dmginfo)
 			dmginfo:ScaleDamage(0.9)
 		end
 	end
-	
-	/*
-	if attacker:IsPlayer() and dmginfo:GetDamageType() == DMG_GENERIC then
-		attacker.MasteryMeleeXP = attacker.MasteryMeleeXP + dmginfo:GetDamage()
-	end
-*/
-	if tea_server_debugging then
+
+	if tea_server_debugging:GetInt() >= 2 then
 		if target:IsPlayer() and target:Alive() and !target:IsPvPGuarded() and (!target.SpawnProtected and !target:HasGodMode()) then
-		target:PrintTranslatedMessage(HUD_PRINTCENTER, "DmgTaken", dmginfo:GetDamage())
-		print(target:Nick().." has taken "..dmginfo:GetDamage().." damage!")
+			target:PrintTranslatedMessage(HUD_PRINTCENTER, "DmgTaken", dmginfo:GetDamage())
+			print(target:Nick().." has taken "..dmginfo:GetDamage().." damage!")
 		end
 	end
 end
@@ -150,29 +159,24 @@ function GM:ScalePlayerDamage(ply, group, dmginfo)
 	local plyarmor = ply:GetNWString("ArmorType")
 
 	if plyarmor and plyarmor != "none" then
-	local armortype = ItemsList[plyarmor]
-	armorvalue = tonumber((armortype["ArmorStats"]["reduction"]) / 100)
+		local armortype = ItemsList[plyarmor]
+		armorvalue = tonumber((armortype["ArmorStats"]["reduction"]) / 100)
 	end
 
 	local attacker = dmginfo:GetAttacker()
 
 	if attacker:IsPlayer() then
-		local defencebonus = dmginfo:GetDamage() * (0.015 * ply.StatDefense) --taken from damage
-		local armorbonus = dmginfo:GetDamage() * armorvalue
-		local attackbonus = dmginfo:GetDamage() * (0.01 * attacker.StatDamage) --added to damage
-		local TheTotalDamage = dmginfo:GetDamage() + attackbonus - (defencebonus + armorbonus)
+		local defencebonus = 0.015 * ply.StatDefense --taken from damage
+		local armorbonus = armorvalue
+		local attackbonus = (0.01 * attacker.StatDamage) + (0.005 * math.Clamp(attacker.MasteryPvPLevel, 0, 10)) --added to damage
+		local TheTotalDamage = (dmginfo:GetDamage() * (1 + attackbonus)) * (1 - (defencebonus + armorbonus))
+				
+		if group == HITGROUP_HEAD then dmginfo:SetDamage(2 * TheTotalDamage)
+		elseif group == HITGROUP_STOMACH then dmginfo:SetDamage(0.8 * TheTotalDamage)
+		elseif group == HITGROUP_LEG then dmginfo:SetDamage(0.4 * TheTotalDamage)
+		else dmginfo:SetDamage(TheTotalDamage) end
 
-
-		if group == HITGROUP_HEAD then
-			dmginfo:SetDamage(2 * TheTotalDamage)
-		elseif group == HITGROUP_CHEST then
-			dmginfo:SetDamage(TheTotalDamage)
-		elseif group == HITGROUP_STOMACH then
-			dmginfo:SetDamage(0.8 * TheTotalDamage)
-		elseif group == HITGROUP_LEG then
-			dmginfo:SetDamage(0.4 * TheTotalDamage)
-		end
-	-- the other half of this logic is within the actual trader entity, should stop queerbaits from trader camping with pvp on
+		-- the other half of this logic is within the actual trader entity, should stop queerbaits from trader camping with pvp on
 		if ply:IsPvPGuarded() or attacker:IsPvPGuarded() then
 			dmginfo:SetDamage(0)
 		end
@@ -202,17 +206,58 @@ function GM:PlayerDeathThink(ply)
 		elseif ply.RespawnTime < CurTime() then
 			ply:Spawn()
 		end
-	 
 	end
 end
 
+function GM:PlayerDeath(ply, inflictor, attacker)
+	if IsValid(attacker) && attacker:IsVehicle() && IsValid(attacker:GetDriver()) then
+		attacker = attacker:GetDriver()
+	end
+
+	if !IsValid(inflictor) && IsValid(attacker) then
+		inflictor = attacker
+	end
+
+	if IsValid(inflictor) && inflictor == attacker && (inflictor:IsPlayer() || inflictor:IsNPC()) then
+		inflictor = inflictor:GetActiveWeapon()
+		if !IsValid(inflictor) then inflictor = attacker end
+	end
+
+	player_manager.RunClass(ply, "Death", inflictor, attacker)
+
+	if attacker == ply then
+		net.Start("PlayerKilledSelf")
+		net.WriteEntity(ply)
+		net.Broadcast()
+		MsgAll(ply:Nick() .. " suicided!\n")
+	return end
+
+	if attacker:IsPlayer() then
+		net.Start("PlayerKilledByPlayer")
+		net.WriteEntity(ply)
+		net.WriteString(inflictor:GetClass())
+		net.WriteEntity(attacker)
+		net.Broadcast()
+		MsgAll(attacker:Nick().." killed "..ply:Nick().." using "..inflictor:GetClass().."\n")
+	return end
+
+	net.Start("PlayerKilled")
+	net.WriteEntity(ply)
+	net.WriteString(inflictor:GetClass())
+	net.WriteString(attacker:GetClass())
+	net.Broadcast()
+
+	MsgAll(ply:Nick().." was killed by "..attacker:GetClass().."\n")
+end
+
 function GM:DoPlayerDeath(ply, attacker, dmginfo)
-	ply:ConCommand("play theeternalapocalypse/gameover_music.wav")
+	local respawn = GetConVar("tea_server_respawntime"):GetFloat()
 
-	local respawn = GetConVarNumber("tea_server_respawntime")
-
-	if ply.IsAlive then
+	if ply.IsAlive then 
 		ply.RespawnTime = CurTime() + respawn
+		net.Start("UpdateRespawnTimer")
+		net.WriteFloat(CurTime() + respawn)
+		net.Send(ply)
 	end
 
 	if tonumber(ply.Bounty) >= 5 then
@@ -284,13 +329,13 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 	else*/if attacker:IsPlayer() and attacker != ply then
 		attacker:AddFrags(1) 
 		attacker.playerskilled = attacker.playerskilled + 1
+		timer.Simple(1, function() attacker:GainMasteryXP(math.Rand(2 + (0.11 * ply.Level), 3 + (0.13 * ply.Level)), "PvP") end)
 		TEANetUpdateStatistics(attacker)
 	end
 
 	if ply:GetActiveWeapon() == NULL then return end --you don't need to worry about it, you still drop the weapon you held from your inventory when you die
 	if (ply:GetActiveWeapon():GetClass() != "gmod_tool" and ply:GetActiveWeapon():GetClass() != "weapon_physgun" and ply:GetActiveWeapon():GetClass() != "ate_fists" and ply:GetActiveWeapon():GetClass() != "ate_buildtool") then
 		local weapon_name = ply:GetActiveWeapon():GetClass()
-		
 		if ItemsList[weapon_name] and ply.Inventory[weapon_name] then
 			SystemRemoveItem(ply, weapon_name)
 
@@ -305,6 +350,15 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 			SendInventory(ply)
 		end
 	end	
+end
+
+function GM:PostPlayerDeath(ply)
+	ply:SendLua([[if GetConVar("tea_cl_deathsfx"):GetInt() >= 1 then RunConsoleCommand("play", GetConVar("tea_cl_deathsound"):GetString()) end]])
+end
+
+function GM:PlayerDeathSound(ply)
+
+	return false
 end
 	
 function GM:PlayerTraceAttack(ply, dmginfo, dir, trace)

@@ -1,8 +1,6 @@
---Crafting system is in progress
---So hard that i have to delay this to other version.
+--Crafting system is finally (semi-)implemented (BETA, EXPECT BUGS)
 
-RequiredItems = {}
-/*
+
 net.Receive("CraftItem", function(length, client)
 	local str = net.ReadString()
 	if !CraftableList[str] then return false end
@@ -13,15 +11,35 @@ end)
 
 function TEACraftItem(ply, str)
 	if !CraftableList[str] then return false end
+	local RequiredItems = {}
+	local HaveItems = {}
 	for k,v in pairs(CraftableList[str]["Requirements"]) do
-		print(ply.Inventory[k], v, k)
-		if ply.Inventory[k] == nil or ply.Inventory[k] < v then
-			SendChat(ply, "You don't have the required items to craft this!") continue
+		table.insert(RequiredItems, v, k)
+	end
+
+	for k,v in pairs(CraftableList[str]["Requirements"]) do
+		if ply.Inventory[k] == nil or ply.Inventory[k] < v then continue
 		elseif ply.Inventory[k] > v then
-			ply.Inventory[k] = ply.Inventory[k] - v
+			table.insert(HaveItems, v, k)
 		elseif ply.Inventory[k] == v then
-			ply.Inventory[k] = nil
+			table.insert(HaveItems, v, k)
 		end
+	end
+
+	if table.concat(HaveItems," ") == table.concat(RequiredItems," ") then
+		for k,v in pairs(CraftableList[str]["Requirements"]) do
+			if ply.Inventory[k] == nil or ply.Inventory[k] < v then continue
+			elseif ply.Inventory[k] > v then
+				ply.Inventory[k] = ply.Inventory[k] - v
+			elseif ply.Inventory[k] == v then
+				ply.Inventory = nil
+			end
+		end
+		SystemGiveItem(ply, str, 1)
+		SendInventory(ply)
+		SendChat(ply, "Successfully crafted an item!")
+	else
+		SendChat(ply, "You don't have the required items to craft this!")
 	end
 end
 
@@ -35,16 +53,35 @@ end)
 
 function TEACraftSpecialItem(ply, str)
 	if !CraftableSpecialList[str] then return false end
+	local RequiredItems = {}
+	local HaveItems = {}
 	for k,v in pairs(CraftableSpecialList[str]["Requirements"]) do
-		print(ply.Inventory[k], v, k)
-		if ply.Inventory[k] == nil or ply.Inventory[k] < v then
-			SendChat(ply, "You don't have the required items to craft this!") return
+		table.insert(RequiredItems, v, k)
+	end
+
+	for k,v in pairs(CraftableSpecialList[str]["Requirements"]) do
+		if ply.Inventory[k] == nil or ply.Inventory[k] < v then continue
 		elseif ply.Inventory[k] > v then
-			ply.Inventory[k] = ply.Inventory[k] - v
+			table.insert(HaveItems, v, k)
 		elseif ply.Inventory[k] == v then
-			ply.Inventory[k] = nil
+			table.insert(HaveItems, v, k)
 		end
 	end
-	
+
+	if table.concat(HaveItems," ") == table.concat(RequiredItems," ") then
+		for k,v in pairs(CraftableSpecialList[str]["Requirements"]) do
+			if ply.Inventory[k] == nil or ply.Inventory[k] < v then continue
+			elseif ply.Inventory[k] > v then
+				ply.Inventory[k] = ply.Inventory[k] - v
+			elseif ply.Inventory[k] == v then
+				ply.Inventory = nil
+			end
+		end
+		SystemGiveItem(ply, str, 1)
+		SendInventory(ply)
+		SendChat(ply, "Successfully crafted an item!")
+	else
+		SendChat(ply, "You don't have the required items to craft this!")
+	end
 end
-*/
+

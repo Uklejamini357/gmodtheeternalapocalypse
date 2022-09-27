@@ -2,17 +2,13 @@
 
 Factions = Factions or {}
 
-
 Factions["Loner"] = 
 {
-		["index"] = 1,
-		["color"] = Color( 100, 50, 50, 255 ),
-		["public"] = true,
-		["leader"] = nil
+	["index"] = 1,
+	["color"] = Color( 100, 50, 50, 255 ),
+	["public"] = true,
+	["leader"] = nil
 }
-
-
-
 
 FactionIndex = FactionIndex or 2
 
@@ -47,7 +43,7 @@ end)
 net.Receive("KickFromFaction", function(length, client)
 	local target = net.ReadEntity()
 	if !client:IsValid() or !target:IsValid() then return false end
-	if team.GetName(client:Team()) == "Loner" then SystemMessage(client, "You can't kick somebody if you arent the faction leader", Color(255,205,205,255), true) return false end
+	if team.GetName(client:Team()) == "Loner" then SystemMessage(client, "You can't kick somebody if you aren't the faction leader", Color(255,205,205,255), true) return false end
 	BootFromFaction(client, target)
 end)
 
@@ -64,8 +60,8 @@ net.Receive("DisbandFaction", function(length, client)
 end)
 
 
-function CreateFaction( ply, name, col, public )
-	local factioncost = GetConVarNumber("tea_config_factioncost")
+function CreateFaction(ply, name, col, public)
+	local factioncost = GetConVar("tea_config_factioncost"):GetFloat()
 	if !ply:IsValid() then return false end
 	if ply:Team() != 1 then SystemMessage(ply, "You can't create a new faction while in a faction!", Color(255,205,205,255), true) return false end
 	if name == "" then SystemMessage(ply, "You can't create a faction with no name!", Color(255,205,205,255), true) return false end --will try to further expand it
@@ -78,10 +74,10 @@ function CreateFaction( ply, name, col, public )
 	
 	Factions[name] = 
 	{
-	["index"] = FactionIndex,
-	["color"] = col,
-	["public"] = public,
-	["leader"] = ply,
+		["index"] = FactionIndex,
+		["color"] = col,
+		["public"] = public,
+		["leader"] = ply,
 	}
 	
 	team.SetUp(FactionIndex, tostring(name), Color(col.r, col.g, col.b, 255))
@@ -228,7 +224,6 @@ function PlayerDisbandFaction(ply, fac)
 		AutoDisbandFaction(plyfaction)
 	end
 	Factions[fac] = nil
---	SystemBroadcast(ply:Nick().." has disbanded the faction: "..plyfaction, Color(255,205,255,255), true)
 
 	net.Start("RecvFactions")
 	net.WriteTable(Factions)
@@ -237,11 +232,11 @@ end
 
 
 function AutoDisbandFaction(fac)
-if !Factions[fac] then return false end
-Factions[fac] = nil
-SystemBroadcast("The faction: "..fac.." has no more members and has been disbanded", Color(205,205,255,255), true)
+	if !Factions[fac] then return false end
+	Factions[fac] = nil
+	SystemBroadcast("The faction: "..fac.." has no more members and has been disbanded", Color(205,205,255,255), true)
 
-net.Start("RecvFactions")
-net.WriteTable(Factions)
-net.Broadcast()
+	net.Start("RecvFactions")
+	net.WriteTable(Factions)
+	net.Broadcast()
 end

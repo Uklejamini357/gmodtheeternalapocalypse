@@ -12,13 +12,11 @@ ENT.Spawnable			= false
 ENT.AdminOnly			= false
 
 
-
-function ENT:SpawnFunction( ply, tr ) -- spawnfunction isnt actually used within zombified world but i left it here for debug purposes
+function ENT:SpawnFunction(ply, tr) -- spawnfunction isnt actually used within zombified world but i left it here for debug purposes (alright)
 return false
 end
 
 function ENT:Initialize()
-
 	local selfent = self.Entity
 	self.IsBuilt = false
 	self.UseTimer = CurTime()
@@ -33,7 +31,6 @@ function ENT:Initialize()
 
 	self:SetMaterial("models/wireframe")
 	self:SetCollisionGroup( COLLISION_GROUP_WORLD )
-
 	self:SetColor(Color(105, 105, 105, 100))
 
 
@@ -41,8 +38,6 @@ function ENT:Initialize()
 	if (phys:IsValid()) then
 		phys:Wake()
 	end	
-
-
 end
 
 function ENT:Use(activator, caller)
@@ -50,7 +45,7 @@ local owner = self:GetNWEntity("owner")
 if !self.IsBuilt then return false end
 --if self.IsPowered == 0 then SystemMessage(activator, "This isn't powered by faction base core!", Color(255,205,205,255), true) return false end
 if activator:Team() != owner:Team() then SystemMessage(activator, "This doesn't belong to your faction!", Color(255,205,205,255), true) return false end
-if self.UseTimer > CurTime() then SystemMessage(activator, "You must wait for "..math.ceil(self.UseTimer - CurTime()).." seconds before being able to use this structure again!", Color(255,205,205,255), true) return false end
+if self.UseTimer > CurTime() then SystemMessage(activator, "You must wait for "..math.ceil(self.UseTimer - CurTime()).." more seconds before being able to refill your ammo again!", Color(255,205,205,255), true) return false end
 
 if activator:GetAmmoCount( "Pistol" ) < 200 then
 	activator:SetAmmo( 200, "Pistol" )
@@ -72,35 +67,24 @@ if activator:GetAmmoCount( "SMG1" ) < 100 then
 end
 activator:EmitSound("items/ammopickup.wav")
 SystemMessage(activator, "You refilled your ammo!", Color(205,255,205,255), true)
-self.UseTimer = CurTime() + 5
+self.UseTimer = CurTime() + 30
 
 end 
 
 function ENT:FinishBuild()
-if self:IsValid() then
-self:SetMaterial("")
-self:SetColor(Color(255, 255, 255, 255))
-self.IsBuilt = true
---self.IsPowered = 0
-self:SetCollisionGroup( COLLISION_GROUP_NONE )
-end
+	if self:IsValid() then
+		self:SetMaterial("")
+		self:SetColor(Color(255, 255, 255, 255))
+		self.IsBuilt = true
+		--self.IsPowered = 0
+		self:SetCollisionGroup( COLLISION_GROUP_NONE )
+	end
 end
 
-function ENT:Think() 
-
-end
+function ENT:Think() end
 
 
 function ENT:OnTakeDamage( dmg )
-/*
-self:SetHealth( self:Health() - dmg:GetDamage() )
-local ColorAmount =  ( ( self:Health() / self.maxhealth ) * 255 )
-self:SetColor( Color(ColorAmount, ColorAmount, ColorAmount, 255) )
-if self:Health() <= 0 then
-	self:GibBreakClient(Vector(math.random(-50, 50),math.random(-50, 50),math.random(-50, 50)))
-	self:Remove()
-end
-*/
 	local damage = dmg:GetDamage()
 	local attacker = dmg:GetAttacker()
 
@@ -125,7 +109,7 @@ end
 		swag = math.Clamp(self.integrity / 6 , 0, 255)
 		end
 
-		self:SetColor(Color(swag +5,swag+5,swag+5,255))
+		self:SetColor(Color(swag + 5,swag + 5,swag + 5,255))
 
 		if self.integrity - damage < 0 or !self.IsBuilt then
 			if attacker:IsPlayer() and self.IsBuilt then
@@ -143,10 +127,7 @@ end
 
 function ENT:PhysicsUpdate() end
 
-function ENT:PhysicsCollide( data, physobj ) 
-
-
-end
+function ENT:PhysicsCollide(data, physobj) end
 
 function ENT:BreakPanel()
 	local vPoint = self:GetPos()
@@ -158,9 +139,8 @@ function ENT:BreakPanel()
 	util.Effect("HelicopterMegaBomb", effectdata)
 
 	local sparkeffect = effectdata
-		sparkeffect:SetMagnitude(3)
-		sparkeffect:SetRadius(8)
-		sparkeffect:SetScale(5)
-		util.Effect("Sparks", sparkeffect)
-
+	sparkeffect:SetMagnitude(3)
+	sparkeffect:SetRadius(8)
+	sparkeffect:SetScale(5)
+	util.Effect("Sparks", sparkeffect)
 end

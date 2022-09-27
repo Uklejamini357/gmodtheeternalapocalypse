@@ -23,7 +23,6 @@ function ENT:SpawnFunction( ply, tr ) -- spawnfunction isnt actually used within
 end
 
 function ENT:Initialize()
-
 	local selfent = self.Entity
 	self.IsBuilt = false
 	self.BuildLevel = 1
@@ -36,42 +35,11 @@ function ENT:Initialize()
 	self:SetCollisionGroup( COLLISION_GROUP_WORLD )
 
 	self:SetColor(Color(105, 105, 105, 100))
-/*
-	timer.Simple(3, function() 
-	if self:IsValid() then
-	self:SetMaterial("")
-	self:SetColor(Color(255, 255, 255, 255))
-	self.IsBuilt = true
-	self:SetCollisionGroup( COLLISION_GROUP_NONE )
-	end
-	end)
-*/
 
 	local phys = self.Entity:GetPhysicsObject()
 	if (phys:IsValid()) then
 		phys:Wake()
-	end	
-
-/*
-	timer.Simple(3, function()
-	if not self:IsValid() then return false end
-
-
-	local ent = self
-	local mins, maxs = ent:LocalToWorld(ent:OBBMins( )), ent:LocalToWorld(ent:OBBMaxs( ))
-	local cube = ents.FindInBox( mins, maxs )
-
-		for _,v in pairs(cube) do
-			if v:IsPlayer() or v:IsNPC() or v.Type == "nextbot" then self:Remove()
-			if v:IsPlayer() then
- 			SendChat( v, "Unable to build prop, biological obstruction detected" )
- 			end
-		end
 	end
-
-end)
-*/
-
 end
 
 function ENT:Use(activator, caller)

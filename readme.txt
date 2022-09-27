@@ -10,3 +10,7 @@ And with addition of prestiging system, numerous bug fixes, stats menu and more.
 
 You are free to make copy of it as long as you give credit to me and the original creator.
 You can suggest anything, with the exception of functions that are too advanced. I'm not really a lua master.
+
+!! IMPORTANT !!
+
+If you are making custom content or editing the gamemode, please change the text in languages file.

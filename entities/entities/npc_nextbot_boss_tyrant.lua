@@ -84,20 +84,17 @@ end
 end
 
 function ENT:Initialize()
-
-	self.DamagedBy = {}
+	if CLIENT then return end
 	self:SetModel("models/sin/quadralex.mdl")
 --	self.breathing = CreateSound(self, "npc/zombie_poison/pz_breathe_loop1.wav")
 --	self.breathing:Play()
 --	self.breathing:ChangePitch(60, 0)
 --	self.breathing:ChangeVolume(0.3, 0)
-	if SERVER then
-		self.loco:SetDeathDropHeight(700) --bug with tyrant fixed?
-		self.loco:SetAcceleration(800)
-		self:SetHealth(30000)
-		self:SetMaxHealth(30000)
-	end
-	self.IsEnraged = 0
+	self.loco:SetDeathDropHeight(700) --bug with tyrant fixed?
+	self.loco:SetAcceleration(800)
+	self:SetHealth(33000)
+	self:SetMaxHealth(33000)
+	self.IsEnraged = false
 	self:SetModelScale(0.8, 0)
 	self:SetCollisionBounds(Vector(-34,-34, 0), Vector(34, 34, 84))
 	--	self:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
@@ -108,7 +105,7 @@ function ENT:Initialize()
 	self.nextslam = CurTime()
 
 	timer.Simple(1200, function()
-		if self:IsValid() and SERVER then --it was rare bug that runs clientside and creates clientside error
+		if self:IsValid() then
 			self:Remove()
 			SystemBroadcast("[BOSS]: The Tyrant was not killed and has left the area!", Color(255,105,105,255), false)
 		end
@@ -186,7 +183,7 @@ function ENT:RunBehaviour()
 
 					for k, v in pairs(slammed) do
 						if v:IsPlayer() and v:Alive() and v:IsOnGround() then 
-							if self.IsEnraged == 1 then
+							if self.IsEnraged then
 								local damageInfo = DamageInfo()
 								damageInfo:SetAttacker(self)
 								damageInfo:SetDamage(65 * (1 - (v.StatDefense * 0.015)))
@@ -235,7 +232,7 @@ function ENT:RunBehaviour()
 				phys:AddAngleVelocity(Vector(math.random(-100, 100), math.random(-100, 100), math.random(-100, 100)))
 				phys:SetVelocity(trace.Normal * 1000 + (self:GetAngles():Up() * (self:GetPos():Length(trace.HitPos) * 0.03)) + (self:GetAngles():Forward() * (self:GetPos():Length(trace.HitPos) * 0.03)))
 
-				if self.IsEnraged == 1 then
+				if self.IsEnraged then
 					self.nexttoss = CurTime() + 7
 				else
 					self.nexttoss = CurTime() + 10
@@ -253,7 +250,7 @@ function ENT:RunBehaviour()
 					if not (self:IsValid() && self:Health() > 0) then return end
 					
 					if (IsValid(target) and self:GetRangeTo(target) <= 155) then
-						if self.IsEnraged == 1 then			
+						if self.IsEnraged then			
 							local damageInfo = DamageInfo()
 							damageInfo:SetAttacker(self)
 							damageInfo:SetDamage(math.random(50, 75) * (1 - (target.StatDefense * 0.015)))
@@ -313,7 +310,7 @@ function ENT:RunBehaviour()
 --					self.nextYell = CurTime() + math.random(4, 8)
 --				end
 				
-				if self.IsEnraged == 1 then
+				if self.IsEnraged then
 					self.loco:SetDesiredSpeed(340) 
 				else
 					self.loco:SetDesiredSpeed(250)
@@ -329,7 +326,7 @@ function ENT:RunBehaviour()
 			self.target = nil
 			self.CanScream = true
 			self:StartActivity(self.WalkAnim)
-			if self.IsEnraged == 1 then
+			if self.IsEnraged then
 				self.loco:SetDesiredSpeed(80)
 			else
 				self.loco:SetDesiredSpeed(65)
@@ -432,22 +429,17 @@ function ENT:OnInjured(damageInfo)
 	self.target = attacker
 	end
 
-	if attacker:IsPlayer() then
-		if !self.DamagedBy[attacker] then self.DamagedBy[attacker] = math.Clamp(dmg, 0, self:GetMaxHealth())
-		else
-			self.DamagedBy[attacker] = math.Clamp(self.DamagedBy[attacker] + dmg, 0, self:GetMaxHealth())
-		end
-	end
+
 
 	if (self:Health() - dmg) <= 10000 then
 		self.RageLevel = 5
-		if self.IsEnraged == 0 then
+		if !self.IsEnraged then
 			SystemBroadcast("[BOSS]: The Tyrant is now Enraged!", Color(255,105,105,255), false)
 			self.loco:SetDesiredSpeed(340)
 			self.nexttoss = CurTime()
 			self:SetColor(Color(255,128,128,255))
 		end
-		self.IsEnraged = 1
+		self.IsEnraged = true
 	else
 		self.RageLevel = 3
 	end
@@ -476,9 +468,9 @@ function ENT:AttackProp(targetprops)
 		
 			local phys = v:GetPhysicsObject()
 			if (phys != nil && phys != NULL && phys:IsValid()) then
-			phys:ApplyForceCenter(self:GetForward():GetNormalized()*30000 + Vector(0, 0, 2))
+			phys:ApplyForceCenter(self:GetForward():GetNormalized() * 30000 + Vector(0, 0, 2))
 			v:EmitSound(self.DoorBreak, 100, 60)
-			if self.IsEnraged == 1 then
+			if self.IsEnraged then
 				v:TakeDamage(math.random(100, 130), self)
 			else
 				v:TakeDamage(math.random(80, 100), self)

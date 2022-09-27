@@ -1,6 +1,7 @@
 	-------------------------------- Faction Menu --------------------------------
 
 function FactionMenu()
+	if IsValid(FactionFrame) then FactionFrame:Remove() end
 
 	local FactionColor = Color(255,255,255,255)
 	FactionFrame = vgui.Create( "DFrame" )
@@ -87,6 +88,7 @@ concommand.Add("tea_createfaction", FactionMenu)
 
 
 function ManageMenu()
+	if IsValid(ManageFrame) then ManageFrame:Remove() end
 	if LocalPlayer():Team() == 1 then chat.AddText(Color(255,255,255,255), "[System] ", Color(255,205,205,255), "You are not in a faction!") return false end
 
 	ManageFrame = vgui.Create( "DFrame" )
@@ -149,6 +151,7 @@ function ManageMenu()
 	end
 
 	for k, v in pairs( team.GetPlayers(LocalPlayer():Team()) ) do
+		if LocalPlayer() == v then continue end
 		local plypanel = vgui.Create( "DPanel" )
 		plypanel:SetPos( 0, 0 )
 		plypanel:SetSize( 350, 30 )
@@ -249,7 +252,7 @@ function ManageMenu()
 			net.WriteEntity(v)
 			net.SendToServer()
 		end
-		Plist2:AddItem( clicker )
+		Plist2:AddItem(clicker)
 	end
 end
 concommand.Add("tea_managefaction", ManageMenu)

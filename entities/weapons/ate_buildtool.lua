@@ -279,28 +279,28 @@ end
 
 
 if CLIENT then
-function SWEP:OnRemove()
-	if IsValid(self:GetDTEntity(0)) then
-		self:GetDTEntity(0):Remove()
-	elseif IsValid(self.Ghost) then
-		self.Ghost:Remove()
+	function SWEP:OnRemove()
+		if IsValid(self:GetDTEntity(0)) then
+			self:GetDTEntity(0):Remove()
+		elseif IsValid(self.Ghost) then
+			self.Ghost:Remove()
+		end
 	end
-end
 
-function SWEP:Holster()
-	if IsValid(self:GetDTEntity(0)) then
-		self:GetDTEntity(0):Remove()
-	elseif IsValid(self.Ghost) then
-		self.Ghost:Remove()
+	function SWEP:Holster()
+		if IsValid(self:GetDTEntity(0)) then
+			self:GetDTEntity(0):Remove()
+		elseif IsValid(self.Ghost) then
+			self.Ghost:Remove()
+		end
 	end
-end
 
-function SWEP:AdjustMouseSensitivity()
-	if self.IsRotating==true then
-		return 0
+	function SWEP:AdjustMouseSensitivity()
+		if self.IsRotating == true then
+			return 0
+		end
+		return 1
 	end
-	return 1
-end
 end
 
 

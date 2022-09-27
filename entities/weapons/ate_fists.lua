@@ -221,17 +221,17 @@ function SWEP:DealDamage()
 		local dmginfo = DamageInfo()
 	
 		local attacker = self.Owner
-		if ( !IsValid( attacker ) ) then attacker = self end
-		dmginfo:SetAttacker( attacker )
+		if (!IsValid(attacker)) then attacker = self end
+		dmginfo:SetAttacker(attacker)
 
-		dmginfo:SetInflictor( self )
-		dmginfo:SetDamage( math.Rand( 8, 11 ) )
+		dmginfo:SetInflictor(self)
+		dmginfo:SetDamage(math.Rand(8, 11))
 
-		if ( anim == "fists_left" ) then
+		if anim == "fists_left" then
 			dmginfo:SetDamageForce( self.Owner:GetRight() * 4912 + self.Owner:GetForward() * 9998 ) -- Yes we need those specific numbers
-		elseif ( anim == "fists_right" ) then
+		elseif anim == "fists_right" then
 			dmginfo:SetDamageForce( self.Owner:GetRight() * -4912 + self.Owner:GetForward() * 9989 )
-		elseif ( anim == "fists_uppercut" ) then
+		elseif anim == "fists_uppercut" then
 			dmginfo:SetDamageForce( self.Owner:GetUp() * 5158 + self.Owner:GetForward() * 10012 )
 			dmginfo:SetDamage( math.Rand( 14, 27 ) )
 		end

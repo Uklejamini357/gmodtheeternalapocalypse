@@ -1,27 +1,28 @@
-Config = {}
+-------- CONFIG --------
 
-Config["DebugLogging"] = true -- do we want to save debug logs? logs are found in garrysmod/data/theeverlastingapocalypse/logs and can be sent to the developer to find and fix malfunctions within the gamemode
-
-
-Config["Currency"] = "Dollar"	-- the 's' is added onto strings where needed, for example if you put the currency as "Dollar" it will come out as "Dollars" as needed
-
-Config["RookieLevel"] = 10	-- people who are this level or below are considered Rookies
-Config["RookieWeapon"] = "weapon_zw_noobcannon"	-- what gun to give to players if they are under the Rookie level and if they lost their previous one
-Config["StartMoney"] = 500	-- How much money should new players have?
-
-Config["MaxZombies"] = 45	-- how many standard zombies can exist at any given time, turn this down if your server is lagging from the zombie ai
-Config["ZombieSpawnRate"] = 14	-- fresh zombies will be spawned in every x seconds
-Config["BossSpawnRate"] = 3150	-- how fast the boss spawn timer will be run in seconds (3600 seconds = 1 hour). Keep in mind that if there is less than 2 players online then the boss will never spawn unless summoned by ate_admin_spawnboss
-Config["AirdropSpawnRate"] = 4000	-- same as boss spawn rate but for airdrops except required amount of players for an airdrop to spawn is 5 or more
-
-Config["MaxCarryWeight"] = 36.72	-- how much carry weight should we have by default (in kg)
-Config["WalkSpeed"] = 135	--	remember that the speed skill increases your walk speed by 3.5 for each level, so at 200 walkspeed players can reach a possible maximum of 235 sprint speed
-Config["RunSpeed"] = 260	--	speed skill increases your running speed by 7 per skill level, so if default is 300, players can reach max of 370 run speed
+Config = {
+	["DebugLogging"] = true, -- Save debug logs once per every while?
+-- Logs will be found found in garrysmod/data/theeternalapocalypse/logs and can be sent to the developer to find and fix bugs in the gamemode
+-- NOTE: Also Logs who uses admin commands, will add separate logging system in future
 
 
-Config["VaultSize"] = 175 --	vault size in kg
-Config["FileSystem"] = "Legacy" --	set to Legacy or PData
--- legacy saves player data as text files under garrysmod/data/theeverlastingapocalypse/profiles/(players steamid)/
+	["Currency"] = "Dollar",	-- the 's' is added onto strings where needed, for example if you put the currency as "Dollar" it will come out as "Dollars" as needed
+
+	["RookieLevel"] = 10,	-- people who are this level or below are considered Rookies
+	["RookieWeapon"] = "weapon_zw_noobcannon",	-- what gun to give to players if they are under the Rookie level and if they lost their previous one
+	["StartMoney"] = 500,	-- How much money should new players have?
+
+	["ZombieSpawnRate"] = 14,	-- fresh zombies will be spawned in every x seconds
+	["BossSpawnRate"] = 3150,	-- how fast the boss spawn timer will be run in seconds (3600 seconds = 1 hour). Keep in mind that if there is less than 2 players online then the boss will never spawn unless summoned by tea_admin_spawnboss
+	["AirdropSpawnRate"] = 4000,	-- same as boss spawn rate but for airdrops except required amount of players for an airdrop to spawn is 5 or more
+
+	["MaxCarryWeight"] = 36.72,	-- how much carry weight should we have by default (in kg)
+	["VaultSize"] = 175, --	vault size in kg
+
+	["WalkSpeed"] = 135,	--	remember that the speed skill increases your walk speed by 3.5 for each level, so at 200 walkspeed players can reach a possible maximum of 235 sprint speed
+	["RunSpeed"] = 260,	--	speed skill increases your running speed by 7 per skill level, so if default is 300, players can reach max of 370 run speed
+	["FileSystem"] = "Legacy" --	set to Legacy or PData
+-- legacy saves player data as text files under garrysmod/data/theeternalapocalypse/profiles/(players steamid)/
 -- Pdata saves their data to the servers sql file (garrysmod/sv.db)
 -- Use the pdata system if you are having issues with text file saving/loading or if you prefer everything to be in the sql file.
 -- No there isn't support for MySQL and there proably won't be unless you code it yourself.
@@ -31,6 +32,11 @@ Config["FileSystem"] = "Legacy" --	set to Legacy or PData
 --Config["MaxProps"] = 60
 --Config["FactionCost"] = 1000	-- do you want faction making to cost money?
 --Config["VoluntaryPVP"] = true	-- Is PvP voluntary? Set to false to always force pvp, useful on gigantic maps like rp_stalker or if you just enjoy a more day-z ish experience
+}
+
+GM.MaxLevel = 50
+GM.LevelsPerPrestige = 5
+GM.MaxZombies = 45
 
 -----------------------------ZOMBIE CLASSES-----------------------------
 
@@ -87,19 +93,19 @@ Config["ZombieClasses"] = {
 
 -----------------------------BOSS CLASSES-----------------------------
 
---PLEASE do not change or add any boss classes, it will break it. (i will add more bosses in future)
+-- Error with non-tyrant boss entity is fixed. Feel free to now add any new non-tyrant boss you like.
 Config["BossClasses"] = {
 	["npc_nextbot_boss_tyrant"] = {
 		["SpawnChance"] = 100,
-		["XPReward"] = 5000, -- remember that xp and money for bosses is distributed by who damaged them, if you did all of the damage you would get 5,000 xp in this case (currently bugged, sorry)
+		["XPReward"] = 5000, -- remember that xp and money for bosses is distributed by who damaged them, if you did all of the damage you would get 5,000 xp in this case
 		["MoneyReward"] = 4500,
 		["SpawnDelay"] = 20, -- how long to wait before actually spawning it, gives the radio message time to play out
 		["AnnounceMessage"] = "[BOSS]: The Tyrant has appeared!",
 		["BroadCast"] = function()
-		RadioBroadcast(0.5, "This is an urgent broadcast on all bands!", "Watchdog", true)
-		RadioBroadcast(4, "Siesmic readings are showing a massive quadruped approaching the area, most likely a tyrant...", "Watchdog", false)
-		RadioBroadcast(8, "It is currently inbound for this sector, so...", "Watchdog", false)
-		RadioBroadcast(11, "...you better get inside something solid and make sure you have good amount of ammo if you decide to fight against it.", "Watchdog", false)
+			RadioBroadcast(0.5, "This is an urgent broadcast on all bands!", "Watchdog", true)
+			RadioBroadcast(4, "Siesmic readings are showing a massive quadruped approaching the area, most likely a tyrant...", "Watchdog", false)
+			RadioBroadcast(8, "It is currently inbound for this sector, so...", "Watchdog", false)
+			RadioBroadcast(11, "...you better get inside something solid and make sure you have good amount of ammo if you decide to fight against it.", "Watchdog", false)
 		end,
 	},
 }
@@ -124,8 +130,8 @@ Config["RookieGear"] = {
 -- What new players will have in their vault
 
 Config["RookieVault"] = {
-["weapon_zw_grenade_pipe"] = 2,
-["item_soda"] = 1,
+	["weapon_zw_grenade_pipe"] = 2,
+	["item_soda"] = 1,
 }
 
 

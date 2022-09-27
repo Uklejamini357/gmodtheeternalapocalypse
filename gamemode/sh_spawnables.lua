@@ -78,8 +78,8 @@ TOUGHPROPS["models/props_c17/Lockers001a.mdl"] = {NAME = "Lockers", COST = 425, 
 TOUGHPROPS["models/props_trainstation/trashcan_indoor001b.mdl"] = {NAME = "Trash Can", COST = 325, TOUGHNESS = 3}
 TOUGHPROPS["models/props/cs_office/Shelves_metal.mdl"] = {NAME = "Metal Shelves", COST = 350, TOUGHNESS = 3}
 
+-- Maybe I will add new structure in future
 SpecialSpawns = {
-	
 	["structure_lamp"] = {
 		["Name"] = "Electric Lamp",
 		["Cost"] = 200,

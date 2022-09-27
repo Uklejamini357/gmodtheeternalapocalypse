@@ -190,8 +190,8 @@ function TEADevPayout(ply, cmd, args)
 		return
 	end
 	
-	local xp = args[1] or nil
-	local cash = args[2] or 0
+	local xp = tonumber(args[1]) or nil
+	local cash = tonumber(args[2]) or 0
 
 	if xp == nil or cash == nil then SendChat(ply, "Use this for test! Modifiers such as skills do apply! (tea_dev_payout {xp} {bounty})") return end
 	Payout(ply, xp, cash)
@@ -202,7 +202,6 @@ concommand.Add("tea_dev_payout", TEADevPayout)
 
 function TEARefillStats(ply, cmd)
     if !ply:IsValid() then return false end
-    
     if !TEADevCheck(ply) then 
         SystemMessage(ply, translate.ClientGet(ply, "TEADevCheckFailed"), Color(255,205,205,255), true)
         ply:ConCommand("playgamesound buttons/button8.wav")
@@ -230,7 +229,7 @@ function TEADevGivePerk(ply, cmd, args)
 	end
 	
 	local statname = args[1]
-	local addqty = args[2]
+	local addqty = tonumber(args[2])
 	if statname == nil then
 		ply:PrintMessage(2, "Usage:\nArgument #1: Perk Name\nInclude only stat name, do not include Stat before stat name! (Examples: Agility, Speed or Strength)\n \nList:")
 		for k,v in ipairs(StatsListServer) do ply:PrintMessage(2, v) end
@@ -300,7 +299,7 @@ function TEADevSetPerk(ply, cmd, args)
 	end
 	
 	local statname = args[1] 
-	local setqty = args[2]
+	local setqty = tonumber(args[2])
 	if statname == nil then
 		ply:PrintMessage(2, "Usage:\nArgument #1: Perk Name\nInclude only stat name, do not include Stat before stat name! (Examples: Agility, Speed or Strength)\n \nList:")
 		for k,v in ipairs(StatsListServer) do ply:PrintMessage(2, v) end
@@ -377,9 +376,66 @@ function TEADevPauseStats(ply, cmd)
 end
 concommand.Add("tea_dev_pausestats", TEADevPauseStats)
 
+function TEADevForceEquipArmor(ply, cmd, args)
+	if !SuperAdminCheck(ply) then 
+		SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
+		ply:ConCommand("playgamesound buttons/button8.wav")
+		return
+	end
+	local name = args[1]
+	local item = ItemsList[name]
+
+	if !item then
+		UseFunc_RemoveArmor(ply)
+		SystemMessage(ply, "You forced to remove armor from yourself!", Color(155,255,155,255), true)
+	else
+		ForceEquipArmor(ply, name)
+		SystemMessage(ply, "You forced yourself to equip armor '"..translate.ClientGet(ply, item["Name"]).."'!", Color(155,255,155,255), true)
+	end
+end
+concommand.Add("tea_dev_forceequiparmor", TEADevForceEquipArmor)
+
+function PlayerForceGainLevel(ply)
+	if !TEADevCheck(ply) then 
+		SystemMessage(ply, translate.ClientGet(ply, "TEADevCheckFailed"), Color(255,205,205,255), true)
+		ply:ConCommand("playgamesound buttons/button8.wav")
+		return
+	end
+
+	local CurrentXP = ply.XP
+	local RequiredXP = GetReqXP(ply)
+	ply.IsLevelingAllowed = true
+	ply.XP = 1e999
+	PlayerGainLevel(ply)
+	ply.IsLevelingAllowed = false
+	ply.XP = CurrentXP - RequiredXP
+	FullyUpdatePlayer(ply)
+end
+concommand.Add("tea_dev_forcelevel", PlayerForceGainLevel)
+
+function PlayerForceGainLevelNoXP(ply)
+	if !TEADevCheck(ply) then 
+		SystemMessage(ply, translate.ClientGet(ply, "TEADevCheckFailed"), Color(255,205,205,255), true)
+		ply:ConCommand("playgamesound buttons/button8.wav")
+		return
+	end
+	
+	local CurrentXP = ply.XP
+	local RequiredXP = GetReqXP(ply)
+	ply.IsLevelingAllowed = true
+	ply.XP = 1e999
+	PlayerGainLevel(ply)
+	ply.IsLevelingAllowed = false
+	ply.XP = CurrentXP
+	FullyUpdatePlayer(ply)
+end
+concommand.Add("tea_dev_forcelevel_noxp", PlayerForceGainLevelNoXP)
+
+
 /*
-SetCash
+Cash
 Level
+Prestige
 XP
 Bounty
 StatPoints

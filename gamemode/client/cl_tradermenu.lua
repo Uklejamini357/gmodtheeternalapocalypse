@@ -4,6 +4,7 @@ net.Receive("OpenTraderMenu", function()
 end)
 
 function TraderMenu()
+	if IsValid(TraderFrame) then TraderFrame:Remove() end
 	TraderFrame = vgui.Create( "DFrame" )
 	TraderFrame:SetSize( 1000, 700 )
 	TraderFrame:Center()
@@ -148,7 +149,7 @@ function TraderMenu()
 			local ItemDisplay = vgui.Create( "SpawnIcon", ItemBackground )
 			ItemDisplay:SetPos( 10, 10 )
 			ItemDisplay:SetModel( v.Model )
-			ItemDisplay:SetToolTip(translate.Get(v.Description).."\n(Item ID: "..k..", Base Cost: "..v.Cost.." "..Config["Currency"].."s)")
+			ItemDisplay:SetToolTip(translate.Format("ItemDescription", translate.Get(v.Description), translate.Get("ItemID"), k, v.Cost, Config["Currency"]))
 			ItemDisplay:SetSize(60,60)
 			ItemDisplay.PaintOver = function()
 				return
@@ -206,7 +207,7 @@ function TraderMenu()
 				net.Start("BuyItem")
 				net.WriteString(k)
 				net.SendToServer()
-				timer.Simple(0.3, function() MyWeight:SetText(translate.Get("CurrentlyCarrying").." "..CalculateWeightClient().."kg / "..CalculateMaxWeightClient().."kg") MyMoney:SetText("My Wallet: "..Mymoney) end)
+				timer.Simple(0.3, function() MyWeight:SetText(translate.Get("CurrentlyCarrying").." "..CalculateWeightClient().."kg / "..CalculateMaxWeightClient().."kg") MyMoney:SetText("My Wallet: "..Mymoney) DoSellPanel() end)
 			end
 --		end
 			parent:AddItem( ItemBackground )
@@ -222,7 +223,9 @@ function TraderMenu()
 
 
 
-	local function DoSellPanel()
+	function DoSellPanel()
+		if !IsValid(TraderFrame) then return end
+		SellPanel:Clear()
 		for k, v in SortedPairsByMemberValue(LocalInventory, "Weight", true) do
 			if !ItemsList[k] then continue end -- ignore invalid shit
 			local icost = ((ItemsList[k]["Cost"] or 0) * (0.2 + ((Perks.Barter or 0) * 0.005)) ) or 0
@@ -238,10 +241,10 @@ function TraderMenu()
 				surface.DrawRect(0, 0, ItemBackground:GetWide(), ItemBackground:GetTall())
 			end
 
-			local ItemDisplay = vgui.Create( "SpawnIcon", ItemBackground )
+			local ItemDisplay = vgui.Create("SpawnIcon", ItemBackground)
 			ItemDisplay:SetPos(5, 5)
 			ItemDisplay:SetModel(v.Model)
-			ItemDisplay:SetToolTip(translate.Get(v.Description).."\n(Item ID: "..k..", Base Cost: "..v.Cost.." "..Config["Currency"].."s)")
+			ItemDisplay:SetToolTip(translate.Format("ItemDescription", translate.Get(v.Description), translate.Get("ItemID"), k, v.Cost, Config["Currency"]))
 			ItemDisplay:SetSize(60,60)
 			ItemDisplay.PaintOver = function()
 				return
@@ -291,8 +294,7 @@ function TraderMenu()
 					net.SendToServer()
 					timer.Simple(0.3, function() MyWeight:SetText(translate.Get("CurrentlyCarrying")..": "..CalculateWeightClient().."kg / "..CalculateMaxWeightClient().."kg") MyMoney:SetText("My Wallet: "..Mymoney) end)
 						timer.Simple(0.25, function() 
-							if SellPanel:IsValid() then
-								SellPanel:Clear()
+							if IsValid(SellPanel) then
 								DoSellPanel()
 							end
 						end)
@@ -316,9 +318,11 @@ function TraderMenu()
 					timer.Simple(0.4, function() MyWeight:SetText(translate.Get("CurrentlyCarrying").." "..CalculateWeightClient().."kg / "..CalculateMaxWeightClient().."kg") MyMoney:SetText("My Wallet: "..Mymoney) end)
 					timer.Simple(0.4, function() MyVaultWeight:SetText("Vault Capacity: "..CalculateVaultClient().."kg / "..Config["VaultSize"].."kg") end)
 					timer.Simple(0.4, function() 
-						if SellPanel:IsValid() then
-							SellPanel:Clear()
+						if IsValid(SellPanel) then
 							DoSellPanel()
+						end
+						if IsValid(VaultPanel) then
+							DoVaultPanel()
 						end
 					end)
 				end
@@ -336,11 +340,13 @@ function TraderMenu()
 
 
 
-	local function DoVaultPanel()
+	function DoVaultPanel()
+		if !IsValid(TraderFrame) then return end
+		VaultPanel:Clear()
 		for k, v in SortedPairsByMemberValue( LocalVault, "Weight", true ) do
-			if ! ItemsList[k] then continue end -- ignore invalid shit
+			if !ItemsList[k] then continue end -- ignore invalid items
 
-			local ItemBackground = vgui.Create( "DPanel" )
+			local ItemBackground = vgui.Create("DPanel")
 			ItemBackground:SetPos( 5, 5 )
 			ItemBackground:SetSize( 350, 65 )
 			ItemBackground.Paint = function() -- Paint function
@@ -353,7 +359,7 @@ function TraderMenu()
 			local ItemDisplay = vgui.Create( "SpawnIcon", ItemBackground )
 			ItemDisplay:SetPos( 5, 5 )
 			ItemDisplay:SetModel( v.Model )
-			ItemDisplay:SetToolTip(translate.Get(v.Description).."\n(Item ID: "..k..", Base Cost: "..v.Cost.." "..Config["Currency"].."s)")
+			ItemDisplay:SetToolTip(translate.Format("ItemDescription", translate.Get(v.Description), translate.Get("ItemID"), k, v.Cost, Config["Currency"]))
 			ItemDisplay:SetSize(60,60)
 			ItemDisplay.PaintOver = function()
 				return
@@ -393,25 +399,27 @@ function TraderMenu()
 				timer.Simple(0.4, function() MyWeight:SetText(translate.Get("CurrentlyCarrying").." "..CalculateWeightClient().."kg / "..CalculateMaxWeightClient().."kg") MyMoney:SetText("My Wallet: "..Mymoney) end)
 				timer.Simple(0.4, function() MyVaultWeight:SetText("Vault Capacity: "..CalculateVaultClient().."kg / "..Config["VaultSize"].."kg") end)
 				timer.Simple(0.4, function() 
-					if VaultPanel:IsValid() then
-						VaultPanel:Clear()
+					if IsValid(VaultPanel) then
 						DoVaultPanel()
+					end
+					if IsValid(SellPanel) then
+						DoSellPanel()
 					end
 				end)
 			end
-			VaultPanel:AddItem( ItemBackground )
+			VaultPanel:AddItem(ItemBackground)
 		end
 	end
 	DoVaultPanel()
 
 
 
-	PropertySheet:AddSheet( "Ammunition", AmmoPanel, "icon16/briefcase.png", false, false, "Ammunition needed for your guns to shoot" )
-	PropertySheet:AddSheet( "Supplies", SupplyPanel, "icon16/box.png", false, false, "Food, Medical Supplies, Misc items, for survival" )
-	PropertySheet:AddSheet( "Weapons", GunPanel, "icon16/bomb.png", false, false, "Good guns that cost a lot and uses ammo, but also melee that cost less." )
-	PropertySheet:AddSheet( "Armor", ArmorPanel, "icon16/shield.png", false, false, "Protective Armor to protect yourself from any sort of danger" )
-	PropertySheet:AddSheet( "My Items", SellPanel, "icon16/money_dollar.png", false, false, "Sell your items that you don't need for cash")
-	PropertySheet:AddSheet( "Item Vault", VaultPanel, "icon16/building.png", false, false, "Store your stuff that you don't need" )
+	PropertySheet:AddSheet("Ammunition", AmmoPanel, "icon16/briefcase.png", false, false, "Ammunition needed for your guns to shoot")
+	PropertySheet:AddSheet("Supplies", SupplyPanel, "icon16/box.png", false, false, "Food, Medical Supplies, Misc items, for survival")
+	PropertySheet:AddSheet("Weapons", GunPanel, "icon16/bomb.png", false, false, "Good guns that cost a lot and uses ammo, but also melee that cost less.")
+	PropertySheet:AddSheet("Armor", ArmorPanel, "icon16/shield.png", false, false, "Protective Armor to protect yourself from any sort of danger")
+	PropertySheet:AddSheet("My Items", SellPanel, "icon16/money_dollar.png", false, false, "Sell your items that you don't need for cash")
+	PropertySheet:AddSheet("Item Vault", VaultPanel, "icon16/building.png", false, false, "Store your stuff that you don't need")
 /*
 	PropertySheet:AddSheet( "Special Functions", Specials, "icon16/star.png", false, false, "Use this menu to trade in your bounty and speak to the trader about various issues" )
 */
