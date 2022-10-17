@@ -2555,7 +2555,7 @@ ItemsList = {
 		}
 	},
 
-	["item_armor_mercernary_arctic"] = {
+	["item_armor_mercenary_arctic"] = {
 		["Name"] = "ArcticMercArmor",
 		["Cost"] = 27500,
 		["Model"] = "models/player/arctic.mdl",
