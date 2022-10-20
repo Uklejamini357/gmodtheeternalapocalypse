@@ -168,7 +168,7 @@ function GM:ScalePlayerDamage(ply, group, dmginfo)
 	if attacker:IsPlayer() then
 		local defencebonus = 0.015 * ply.StatDefense --taken from damage
 		local armorbonus = armorvalue
-		local attackbonus = (0.01 * attacker.StatDamage) + (0.005 * math.Clamp(attacker.MasteryPvPLevel, 0, 10)) --added to damage
+		local attackbonus = (0.01 * attacker.StatDamage) --added to damage
 		local TheTotalDamage = (dmginfo:GetDamage() * (1 + attackbonus)) * (1 - (defencebonus + armorbonus))
 				
 		if group == HITGROUP_HEAD then dmginfo:SetDamage(2 * TheTotalDamage)
@@ -327,9 +327,9 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 		return false
 
 	else*/if attacker:IsPlayer() and attacker != ply then
-		attacker:AddFrags(1) 
+		attacker:AddFrags(1)
 		attacker.playerskilled = attacker.playerskilled + 1
-		timer.Simple(1, function() attacker:GainMasteryXP(math.Rand(2 + (0.11 * ply.Level), 3 + (0.13 * ply.Level)), "PvP") end)
+		timer.Simple(1, function() attacker:GainMasteryXP(math.Rand(11 + (0.15 * ply.Level), 15 + (0.18 * ply.Level)), "PvP") end)
 		TEANetUpdateStatistics(attacker)
 	end
 
