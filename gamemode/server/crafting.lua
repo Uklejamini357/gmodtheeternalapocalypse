@@ -3,63 +3,84 @@
 
 net.Receive("CraftItem", function(length, client)
 	local str = net.ReadString()
-	if !CraftableList[str] then return false end
+	if !GAMEMODE.CraftableList[str] then return false end
 	if client:IsValid() and client:Alive() then
-		TEACraftItem(client, str)
+		tea_CraftItem(client, str)
 	end
 end)
 
-function TEACraftItem(ply, str)
-	if !CraftableList[str] then return false end
+function tea_CraftItem(ply, str)
+	if !GAMEMODE.CraftableList[str] then return false end
 	local RequiredItems = {}
 	local HaveItems = {}
-	for k,v in pairs(CraftableList[str]["Requirements"]) do
+	for k,v in pairs(GAMEMODE.CraftableList[str]["Requirements"]) do
 		table.insert(RequiredItems, v, k)
 	end
 
-	for k,v in pairs(CraftableList[str]["Requirements"]) do
+	for k,v in pairs(GAMEMODE.CraftableList[str]["Requirements"]) do
 		if ply.Inventory[k] == nil or ply.Inventory[k] < v then continue
-		elseif ply.Inventory[k] > v then
-			table.insert(HaveItems, v, k)
-		elseif ply.Inventory[k] == v then
+		elseif ply.Inventory[k] >= v then
 			table.insert(HaveItems, v, k)
 		end
 	end
 
-	if table.concat(HaveItems," ") == table.concat(RequiredItems," ") then
-		for k,v in pairs(CraftableList[str]["Requirements"]) do
+	RequiredItems = table.ToString(RequiredItems)
+	HaveItems = table.ToString(HaveItems)
+
+	if HaveItems == RequiredItems then
+		for k,v in pairs(GAMEMODE.CraftableList[str]["Requirements"]) do
 			if ply.Inventory[k] == nil or ply.Inventory[k] < v then continue
 			elseif ply.Inventory[k] > v then
 				ply.Inventory[k] = ply.Inventory[k] - v
 			elseif ply.Inventory[k] == v then
-				ply.Inventory = nil
+				ply.Inventory[k] = nil
 			end
 		end
-		SystemGiveItem(ply, str, 1)
-		SendInventory(ply)
+
+		local vStart = ply:GetShootPos()
+		local vForward = ply:GetAimVector()
+		local trace = {}
+		trace.start = vStart
+		trace.endpos = vStart + (vForward * 70)
+		trace.filter = ply
+		local tr = util.TraceLine(trace)
+		local EntDrop = ents.Create("ate_droppeditem")
+		EntDrop:SetPos(tr.HitPos)
+		EntDrop:SetAngles(Angle(0, 0, 0))
+		EntDrop:SetModel(GAMEMODE.ItemsList[str]["Category"] == 4 and "models/props/cs_office/cardboard_box01.mdl" or GAMEMODE.ItemsList[str]["Model"])
+		EntDrop:SetNWString("ItemClass", str)
+		EntDrop:Spawn()
+		EntDrop:Activate()
+		EntDrop:SetVelocity(ply:GetForward() * 80 + Vector(0,0,50))
+
+		tea_SendInventory(ply)
 		SendChat(ply, "Successfully crafted an item!")
 	else
-		SendChat(ply, "You don't have the required items to craft this!")
+		SystemMessage(ply, "You don't have the required items to craft this!", Color(255,205,205), true)
+		SystemMessage(ply, "You need:", Color(255,205,205), false)
+		for k,v in pairs(GAMEMODE.CraftableList[str]["Requirements"]) do
+			SystemMessage(ply, "	"..v.."x "..translate.Get(k.."_n"), Color(255,230,230), false)
+		end
 	end
 end
 
 net.Receive("CraftSpecialItem", function(length, client)
 	local str = net.ReadString()
-	if !CraftableSpecialList[str] then return false end
+	if !GAMEMODE.CraftableSpecialList[str] then return false end
 	if client:IsValid() and client:Alive() and client:IsPvPGuarded() then
-		TEACraftSpecialItem(client, str)
+		tea_CraftSpecialItem(client, str)
 	end
 end)
 
-function TEACraftSpecialItem(ply, str)
-	if !CraftableSpecialList[str] then return false end
+function tea_CraftSpecialItem(ply, str)
+	if !GAMEMODE.CraftableSpecialList[str] then return false end
 	local RequiredItems = {}
 	local HaveItems = {}
-	for k,v in pairs(CraftableSpecialList[str]["Requirements"]) do
+	for k,v in pairs(GAMEMODE.CraftableSpecialList[str]["Requirements"]) do
 		table.insert(RequiredItems, v, k)
 	end
 
-	for k,v in pairs(CraftableSpecialList[str]["Requirements"]) do
+	for k,v in pairs(GAMEMODE.CraftableSpecialList[str]["Requirements"]) do
 		if ply.Inventory[k] == nil or ply.Inventory[k] < v then continue
 		elseif ply.Inventory[k] > v then
 			table.insert(HaveItems, v, k)
@@ -68,20 +89,43 @@ function TEACraftSpecialItem(ply, str)
 		end
 	end
 
-	if table.concat(HaveItems," ") == table.concat(RequiredItems," ") then
-		for k,v in pairs(CraftableSpecialList[str]["Requirements"]) do
+	RequiredItems = table.ToString(RequiredItems)
+	HaveItems = table.ToString(HaveItems)
+
+	if HaveItems == RequiredItems then
+		for k,v in pairs(GAMEMODE.CraftableSpecialList[str]["Requirements"]) do
 			if ply.Inventory[k] == nil or ply.Inventory[k] < v then continue
 			elseif ply.Inventory[k] > v then
 				ply.Inventory[k] = ply.Inventory[k] - v
 			elseif ply.Inventory[k] == v then
-				ply.Inventory = nil
+				ply.Inventory[k] = nil
 			end
 		end
-		SystemGiveItem(ply, str, 1)
-		SendInventory(ply)
+
+		local vStart = ply:GetShootPos()
+		local vForward = ply:GetAimVector()
+		local trace = {}
+		trace.start = vStart
+		trace.endpos = vStart + (vForward * 70)
+		trace.filter = ply
+		local tr = util.TraceLine(trace)
+		local EntDrop = ents.Create("ate_droppeditem")
+		EntDrop:SetPos(tr.HitPos)
+		EntDrop:SetAngles(Angle(0, 0, 0))
+		EntDrop:SetModel(GAMEMODE.ItemsList[str]["Category"] == 4 and "models/props/cs_office/cardboard_box01.mdl" or GAMEMODE.ItemsList[str]["Model"])
+		EntDrop:SetNWString("ItemClass", str)
+		EntDrop:Spawn()
+		EntDrop:Activate()
+		EntDrop:SetVelocity(ply:GetForward() * 80 + Vector(0,0,50))
+		
+		tea_SendInventory(ply)
 		SendChat(ply, "Successfully crafted an item!")
 	else
-		SendChat(ply, "You don't have the required items to craft this!")
+		SystemMessage(ply, "You don't have the required items to craft this!", Color(255,205,205), true)
+		SystemMessage(ply, "You need:", Color(255,205,205), false)
+		for k,v in pairs(GAMEMODE.CraftableList[str]["Requirements"]) do
+			SystemMessage(ply, "	"..v.."x "..translate.Get(k.."_n"), Color(255,230,230), false)
+		end
 	end
 end
 

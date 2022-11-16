@@ -1,7 +1,7 @@
 -- tier 1 loot aka junk
 -- No more adding weight string needed!
 
-LootTable1 = {
+GM.LootTable1 = {
 	["item_bandage"] = {
 		["Qty"] = 2,
 		["Class"] = "item_bandage",
@@ -67,9 +67,9 @@ LootTable1 = {
 		["Class"] = "item_m9k_assaultammo",
 	},
 
-	["weapon_zw_pigsticker"] = {
+	["weapon_tea_pigsticker"] = {
 		["Qty"] = 1,
-		["Class"] = "weapon_zw_pigsticker",
+		["Class"] = "weapon_tea_pigsticker",
 	},
 
 	["item_scrap"] = {
@@ -82,25 +82,34 @@ LootTable1 = {
 		["Class"] = "item_chems",
 	},
 
-	["weapon_zw_grenade_pipe"] = {
+	["weapon_tea_grenade_pipe"] = {
 		["Qty"] = 2,
-		["Class"] = "weapon_zw_grenade_pipe",
+		["Class"] = "weapon_tea_grenade_pipe",
 	},
 
-	["weapon_zw_grenade_flare"] = {
+	["weapon_tea_grenade_flare"] = {
 		["Qty"] = 2,
-		["Class"] = "weapon_zw_grenade_flare",
+		["Class"] = "weapon_tea_grenade_flare",
 	},
 
-	["weapon_zw_grenade_frag"] = {
-		["Qty"] = 2,
-		["Class"] = "weapon_zw_grenade_frag",
+	["weapon_tea_grenade_frag"] = {
+		["Qty"] = 1,
+		["Class"] = "weapon_tea_grenade_frag",
+	},
+	
+	["item_craft_battery"] = {
+		["Qty"] = 1,
+		["Class"] = "item_craft_battery",
 	},
 
 }
 
-LootTable2 = {
-
+GM.LootTable2 = {
+	["item_rocketammo"] = {
+		["Qty"] = 2,
+		["Class"] = "item_rocketammo"
+	},
+	
 	["item_sleepingbag"] = {
 		["Qty"] = 1,
 		["Class"] = "item_sleepingbag",
@@ -111,39 +120,34 @@ LootTable2 = {
 		["Class"] = "item_armorbattery",
 	},
 
-	["weapon_zw_axe"] = {
+	["weapon_tea_axe"] = {
 		["Qty"] = 1,
-		["Class"] = "weapon_zw_axe",
+		["Class"] = "weapon_tea_axe",
 	},
 
-	["weapon_zw_dual"] = {
+	["weapon_tea_falcon"] = {
 		["Qty"] = 1,
-		["Class"] = "weapon_zw_dual",
+		["Class"] = "weapon_tea_falcon",
 	},
 
-	["weapon_zw_blackhawk"] = {
+	["weapon_tea_dual"] = {
 		["Qty"] = 1,
-		["Class"] = "weapon_zw_blackhawk",
+		["Class"] = "weapon_tea_dual",
 	},
 
-	["weapon_zw_shredder"] = {
+	["weapon_tea_shredder"] = {
 		["Qty"] = 1,
-		["Class"] = "weapon_zw_shredder",
+		["Class"] = "weapon_tea_shredder",
 	},
 
-	["weapon_zw_satan"] = {
+	["weapon_tea_satan"] = {
 		["Qty"] = 1,
-		["Class"] = "weapon_zw_satan",
+		["Class"] = "weapon_tea_satan",
 	},
 
-	["weapon_zw_k8c"] = {
+	["weapon_tea_k8c"] = {
 		["Qty"] = 1,
-		["Class"] = "weapon_zw_k8c",
-	},
-
-	["weapon_zw_l303"] = {
-		["Qty"] = 1,
-		["Class"] = "weapon_zw_l303",
+		["Class"] = "weapon_tea_k8c",
 	},
 
 	["item_tv"] = {
@@ -166,14 +170,14 @@ LootTable2 = {
 		["Class"] = "item_computer",
 	},
 
-	["weapon_zw_grenade_frag"] = {
-		["Qty"] = 5,
-		["Class"] = "weapon_zw_grenade_frag",
+	["weapon_tea_grenade_frag"] = {
+		["Qty"] = 3,
+		["Class"] = "weapon_tea_grenade_frag",
 	},
 
-	["weapon_zw_807"] = {
+	["weapon_tea_807"] = {
 		["Qty"] = 1,
-		["Class"] = "weapon_zw_807",
+		["Class"] = "weapon_tea_807",
 	},
 
 --m9k stuff
@@ -183,40 +187,71 @@ LootTable2 = {
 		["Class"] = "m9k_model500",
 	},
 
-
 }
 
 
-
-LootTableBoss = {
-	["weapon_zw_scar"] = {
+GM.LootTable3 = {
+	["weapon_tea_scrapsword"] = {
 		["Qty"] = 1,
-		["Class"] = "weapon_zw_scar",
+		["Class"] = "weapon_tea_scrapsword"
 	},
 
-	["weapon_zw_minigun"] = {
+	["weapon_tea_blackhawk"] = {
 		["Qty"] = 1,
-		["Class"] = "weapon_zw_minigun",
+		["Class"] = "weapon_tea_blackhawk",
 	},
 
-	["weapon_zw_scrapcrossbow"] = {
-		["Qty"] = 1,
-		["Class"] = "weapon_zw_scrapcrossbow",
+	["weapon_tea_grenade_frag"] = {
+		["Qty"] = 5,
+		["Class"] = "weapon_tea_grenade_frag",
 	},
 
-	["weapon_zw_punisher"] = {
+	["weapon_tea_combinepistol"] = {
 		["Qty"] = 1,
-		["Class"] = "weapon_zw_punisher",
+		["Class"] = "weapon_tea_combinepistol",
+	},
+	
+	["item_armor_jacket_leather"] = {
+		["Qty"] = 1,
+		["Class"] = "item_armor_jacket_leather",
 	},
 
-	["weapon_zw_blackhawk"] = {
+	["weapon_tea_l303"] = {
 		["Qty"] = 1,
-		["Class"] = "weapon_zw_blackhawk",
+		["Class"] = "weapon_tea_l303",
+	},
+}
+
+
+GM.LootTableBoss = {
+	["weapon_tea_scar"] = {
+		["Qty"] = 1,
+		["Class"] = "weapon_tea_scar",
 	},
 
-	["weapon_zw_grenade_frag"] = {
+	["weapon_tea_minigun"] = {
+		["Qty"] = 1,
+		["Class"] = "weapon_tea_minigun",
+	},
+
+	["weapon_tea_scrapcrossbow"] = {
+		["Qty"] = 1,
+		["Class"] = "weapon_tea_scrapcrossbow",
+	},
+
+	["weapon_tea_punisher"] = {
+		["Qty"] = 1,
+		["Class"] = "weapon_tea_punisher",
+	},
+
+	["weapon_tea_blackhawk"] = {
+		["Qty"] = 1,
+		["Class"] = "weapon_tea_blackhawk",
+	},
+
+	["weapon_tea_grenade_frag"] = {
 		["Qty"] = 10,
-		["Class"] = "weapon_zw_grenade_frag",
+		["Class"] = "weapon_tea_grenade_frag",
 	},
 
 	["item_burger"] = {
@@ -224,38 +259,33 @@ LootTableBoss = {
 		["Class"] = "item_burger",
 	},
 
-	["weapon_zw_k8c"] = {
+	["weapon_tea_k8c"] = {
 		["Qty"] = 1,
-		["Class"] = "weapon_zw_k8c",
+		["Class"] = "weapon_tea_k8c",
 	},
 
-	["weapon_zw_germanator"] = {
+	["weapon_tea_germanator"] = {
 		["Qty"] = 1,
-		["Class"] = "weapon_zw_germanator",
+		["Class"] = "weapon_tea_germanator",
 	},
 
 }
 
 
-LootTableFaction = {
-	["weapon_zw_perrin"] = {
+GM.LootTableFaction = {
+	["weapon_tea_perrin"] = {
 		["Qty"] = 1,
-		["Class"] = "weapon_zw_perrin",
+		["Class"] = "weapon_tea_perrin",
 	},
 
-	["weapon_zw_winchester"] = {
+	["weapon_tea_winchester"] = {
 		["Qty"] = 1,
-		["Class"] = "weapon_zw_winchester",
+		["Class"] = "weapon_tea_winchester",
 	},
 
-	["weapon_zw_fuckinator"] = {
+	["weapon_tea_dammerung"] = {
 		["Qty"] = 1,
-		["Class"] = "weapon_zw_fuckinator",
-	},
-
-	["weapon_zw_dammerung"] = {
-		["Qty"] = 1,
-		["Class"] = "weapon_zw_dammerung",
+		["Class"] = "weapon_tea_dammerung",
 	},
 
 	["m9k_ak47"] = {
@@ -267,8 +297,8 @@ LootTableFaction = {
 
 --i will try to add m9k's to loot tables
 
-LootTable = {}
-LootTable.Junk = {
+GM.LootTable = {}
+GM.LootTable.Junk = {
 	"item_junk_tin",
 	"item_junk_boot",
 	"item_junk_paper",
@@ -282,7 +312,7 @@ LootTable.Junk = {
 	"item_junk_keyboard",
 }
 
-LootTable.Food = {
+GM.LootTable.Food = {
 	"item_soda",
 	"item_milk",
 	"item_beerbottle",
@@ -296,7 +326,7 @@ LootTable.Food = {
 	"item_energydrink_nonstop"
 }
 
-LootTable.Meds = {
+GM.LootTable.Meds = {
 	"item_bandage",
 	"item_medkit",
 	"item_armymedkit",
@@ -304,7 +334,7 @@ LootTable.Meds = {
 	"item_antidote",
 }
 
-LootTable.Sellables = {
+GM.LootTable.Sellables = {
 	"item_radio",
 	"item_scrap",
 	"item_chems",
@@ -314,7 +344,7 @@ LootTable.Sellables = {
 	"item_computer",
 }
 
-LootTable.Ammo = {
+GM.LootTable.Ammo = {
 	"item_pistolammo",
 	"item_magammo",
 	"item_buckshotammo",
@@ -324,42 +354,46 @@ LootTable.Ammo = {
 	"item_m9k_smgammo",
 	"item_m9k_assaultammo",
 	"item_m9k_sniperammo",
-	"weapon_zw_grenade_flare",
-	"weapon_zw_grenade_pipe",
-	"weapon_zw_grenade_frag",
+	"weapon_tea_grenade_flare",
+	"weapon_tea_grenade_pipe",
+	"weapon_tea_grenade_frag",
 }
 
-LootTable.RookieWeapons = {
-	"weapon_zw_pigsticker",
-	"weapon_zw_axe",
-	"weapon_zw_wrench",
-	"weapon_zw_g20",
-	"weapon_zw_57",
-	"weapon_zw_u45",
-	"weapon_zw_python",
-	"weapon_zw_grenade_frag",
-	"weapon_zw_grenade_molotov",
+GM.LootTable.RookieWeapons = {
+	"weapon_tea_pigsticker",
+	"weapon_tea_axe",
+	"weapon_tea_wrench",
+	"weapon_tea_g20",
+	"weapon_tea_57",
+	"weapon_tea_u45",
+	"weapon_tea_python",
+	"weapon_tea_grenade_frag",
+--	"weapon_tea_grenade_molotov", --excluded due to causing crashes
 }
 
 -- the stuff you get from killing the tyrant boss
-LootTable.TyrantWeapons = {
-	"weapon_zw_scar",
-	"weapon_zw_minigun",
-	"weapon_zw_scrapcrossbow",
-	"weapon_zw_punisher",
-	"weapon_zw_blackhawk",
+GM.LootTable.TyrantWeapons = {
+	"weapon_tea_scar",
+	"weapon_tea_minigun",
+	"weapon_tea_scrapcrossbow",
+	"weapon_tea_punisher",
+	"weapon_tea_blackhawk",
 	"item_hotdog",
 	"item_burger",
-	"weapon_zw_k8c",
-	"weapon_zw_germanator",
-	"weapon_mad_crowbar",
+	"weapon_tea_k8c",
+	"weapon_tea_germanator",
 }
 
 -- faction weapons are acquired from destroying enemy faction bases
-LootTable.FactionWeapons = {
-	"weapon_zw_perrin",
-	"weapon_zw_winchester",
-	"weapon_zw_fuckinator",
-	"weapon_zw_dammerung",
+GM.LootTable.FactionWeapons = {
+	"weapon_tea_perrin",
+	"weapon_tea_winchester",
+	"weapon_tea_dammerung",
 	"m9k_ak47",
+}
+
+-- special weapons are acquired only from the airdrop and nothing else, rare chance to appear (airdrop-exclusive items)
+GM.LootTable.SpecialWeapons = {
+	"weapon_tea_crowbar", -- to get this thing you need to get lucky
+	"weapon_tea_fuckinator",
 }

@@ -42,30 +42,37 @@ function ENT:Initialize()
 end
 
 function ENT:Use(activator, caller)
-local owner = self:GetNWEntity("owner")
-if !self.IsBuilt then return false end
-if self.UseTimer > CurTime() then SystemMessage(activator, "The auto-medic needs "..math.ceil(self.UseTimer - CurTime()).." more seconds to fully recharge!", Color(255,205,205,255), true) return false end
-if activator:Team() != owner:Team() then SystemMessage(activator, "This doesn't belong to your faction!", Color(255,205,205,255), true) return false end
+	local owner = self:GetNWEntity("owner")
+	if !self.IsBuilt then return false end
+	if !self.IsPowered then SystemMessage(activator, "This isn't powered by faction base core!", Color(255,205,205,255), true) return false end
+	if self.UseTimer > CurTime() then SystemMessage(activator, "The auto-medic needs "..math.ceil(self.UseTimer - CurTime()).." more seconds to fully recharge!", Color(255,205,205,255), true) return false end
+	if activator:Team() != owner:Team() then SystemMessage(activator, "This doesn't belong to your faction!", Color(255,205,205,255), true) return false end
 
-activator:SetHealth(activator:GetMaxHealth()) --for a long time i didn't even notice that (bruh)
-activator.Infection = 0
+	activator:SetHealth(activator:GetMaxHealth())
+	activator.Infection = 0
 
-activator:EmitSound("items/medshot4.wav")
-SystemMessage(activator, "You healed yourself at the auto medic!", Color(205,255,205,255), false)
-self.UseTimer = CurTime() + 20
-
-end 
+	activator:EmitSound("items/medshot4.wav")
+	SystemMessage(activator, "You healed yourself at the auto medic!", Color(205,255,205,255), false)
+	self.UseTimer = CurTime() + 20
+end
 
 function ENT:FinishBuild()
-if self:IsValid() then
-self:SetMaterial("")
-self:SetColor(Color(255, 255, 255, 255))
-self.IsBuilt = true
-self:SetCollisionGroup( COLLISION_GROUP_NONE )
-end
+	if self:IsValid() then
+		self:SetMaterial("")
+		self:SetColor(Color(255, 255, 255, 255))
+		self.IsBuilt = true
+		self:SetCollisionGroup( COLLISION_GROUP_NONE )
+	end
 end
 
-function ENT:Think() 
+function ENT:Think()
+	local powered = false
+	for k,v in pairs(ents.FindInSphere(self:GetPos(), 900)) do
+		if v:GetClass() == "structure_base_core" and v.IsBuilt and v:GetNWEntity("owner") and v:GetNWEntity("owner"):Team() == self:GetNWEntity("owner"):Team() then
+			powered = true
+		end
+	end
+	self.IsPowered = powered
 end
 
 

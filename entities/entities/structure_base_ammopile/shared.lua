@@ -41,47 +41,53 @@ function ENT:Initialize()
 end
 
 function ENT:Use(activator, caller)
-local owner = self:GetNWEntity("owner")
-if !self.IsBuilt then return false end
---if self.IsPowered == 0 then SystemMessage(activator, "This isn't powered by faction base core!", Color(255,205,205,255), true) return false end
-if activator:Team() != owner:Team() then SystemMessage(activator, "This doesn't belong to your faction!", Color(255,205,205,255), true) return false end
-if self.UseTimer > CurTime() then SystemMessage(activator, "You must wait for "..math.ceil(self.UseTimer - CurTime()).." more seconds before being able to refill your ammo again!", Color(255,205,205,255), true) return false end
+	local owner = self:GetNWEntity("owner")
+	if !self.IsBuilt then return false end
+	if !self.IsPowered then SystemMessage(activator, "This isn't powered by faction base core!", Color(255,205,205,255), true) return false end
+	if activator:Team() != owner:Team() then SystemMessage(activator, "This doesn't belong to your faction!", Color(255,205,205,255), true) return false end
+	if self.UseTimer > CurTime() then SystemMessage(activator, "You must wait for "..math.ceil(self.UseTimer - CurTime()).." more seconds before being able to refill your ammo again!", Color(255,205,205,255), true) return false end
 
-if activator:GetAmmoCount( "Pistol" ) < 200 then
-	activator:SetAmmo( 200, "Pistol" )
+	if activator:GetAmmoCount( "Pistol" ) < 200 then
+		activator:SetAmmo( 200, "Pistol" )
+	end
+	if activator:GetAmmoCount( "Buckshot" ) < 100 then
+		activator:SetAmmo( 100, "Buckshot" )
+	end
+	if activator:GetAmmoCount( "ammo_rifle" ) < 250 then
+		activator:SetAmmo( 250, "ammo_rifle" )
+	end
+	if activator:GetAmmoCount( "357" ) < 100 then
+		activator:SetAmmo( 100, "357" )
+	end
+	if activator:GetAmmoCount( "ammo_sniper" ) < 100 then
+		activator:SetAmmo( 100, "ammo_sniper" )
+	end
+	if activator:GetAmmoCount( "SMG1" ) < 100 then
+		activator:SetAmmo( 100, "SMG1" )
+	end
+	activator:EmitSound("items/ammopickup.wav")
+	SystemMessage(activator, "You refilled your ammo!", Color(205,255,205,255), true)
+	self.UseTimer = CurTime() + 40
 end
-if activator:GetAmmoCount( "Buckshot" ) < 100 then
-	activator:SetAmmo( 100, "Buckshot" )
-end
-if activator:GetAmmoCount( "ammo_rifle" ) < 250 then
-	activator:SetAmmo( 250, "ammo_rifle" )
-end
-if activator:GetAmmoCount( "357" ) < 100 then
-	activator:SetAmmo( 100, "357" )
-end
-if activator:GetAmmoCount( "ammo_sniper" ) < 100 then
-	activator:SetAmmo( 100, "ammo_sniper" )
-end
-if activator:GetAmmoCount( "SMG1" ) < 100 then
-	activator:SetAmmo( 100, "SMG1" )
-end
-activator:EmitSound("items/ammopickup.wav")
-SystemMessage(activator, "You refilled your ammo!", Color(205,255,205,255), true)
-self.UseTimer = CurTime() + 30
-
-end 
 
 function ENT:FinishBuild()
 	if self:IsValid() then
 		self:SetMaterial("")
 		self:SetColor(Color(255, 255, 255, 255))
 		self.IsBuilt = true
-		--self.IsPowered = 0
 		self:SetCollisionGroup( COLLISION_GROUP_NONE )
 	end
 end
 
-function ENT:Think() end
+function ENT:Think()
+	local powered = false
+	for k,v in pairs(ents.FindInSphere(self:GetPos(), 900)) do
+		if v:GetClass() == "structure_base_core" and v.IsBuilt and v:GetNWEntity("owner") and v:GetNWEntity("owner"):Team() == self:GetNWEntity("owner"):Team() then
+			powered = true
+		end
+	end
+	self.IsPowered = powered
+end
 
 
 function ENT:OnTakeDamage( dmg )

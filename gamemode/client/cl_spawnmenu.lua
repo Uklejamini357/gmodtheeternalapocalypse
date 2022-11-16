@@ -1,60 +1,87 @@
 -------------------------------- Propmenu (spawnmenu) --------------------------------
 
+pPropsFrame = nil
 
 function GM:OnSpawnMenuOpen()
-	if IsValid(PropsFrame) then PropsFrame:Remove() end
+	if IsValid(PropsFrame) then PropsFrame:Close() end
 	gui.EnableScreenClicker(true)
 	timer.Create("EnableScreenClicker_PropMenu", 0, 0, function() gui.EnableScreenClicker(true) end)
 	PropMenu()
-	PropsFrame:SetVisible(true)
-	PropsFrame:SetAlpha(0)
-	PropsFrame:AlphaTo(255, 0.2, 0)
 end
 
 function GM:OnSpawnMenuClose()
-	if !IsValid(PropsFrame) then return end
-	PropsFrame:SetVisible(false)
-	PropsFrame:Remove()
+	if IsValid(PropsFrame) then
+		PropsFrame:Close()
+	end
 	if timer.Exists("EnableScreenClicker_PropMenu") then timer.Destroy("EnableScreenClicker_PropMenu") end
 	gui.EnableScreenClicker(false)
 end
 
 
 function PropMenu()
+	if IsValid(PropsFrame) and pPropsFrame then
+		PropsFrame:SetAlpha(0)
+		PropsFrame:AlphaTo(255, 0.2, 0)
+		PropsFrame:SetVisible(true)
+		return
+	end
+	
 	PropsFrame = vgui.Create("DFrame")
 	PropsFrame:SetSize(1000, 700)
 	PropsFrame:Center()
+	PropsFrame:SetAlpha(0)
+	PropsFrame:AlphaTo(255, 0.2, 0)
 	PropsFrame:SetTitle("")
 	PropsFrame:SetDraggable(false)
-	PropsFrame:SetVisible(true)
 	PropsFrame:ShowCloseButton(false)
+	PropsFrame:SetDeleteOnClose(false)
 	PropsFrame.Paint = function()
-		draw.RoundedBox( 2, 0, 0, PropsFrame:GetWide(), PropsFrame:GetTall(), Color( 0, 0, 0, 200 ) )
-		surface.SetDrawColor(150, 0, 0 ,255)
+		draw.RoundedBox(2, 0, 0, PropsFrame:GetWide(), PropsFrame:GetTall(), Color( 0, 0, 0, 200 ) )
+		surface.SetDrawColor(150, 150, 0 ,255)
 		surface.DrawOutlinedRect(0, 0, PropsFrame:GetWide(), PropsFrame:GetTall())
 	end
 
-	local tea_config_propcostenabled = tobool(GetConVarNumber("tea_config_propcostenabled"))
-	local PropertySheet = vgui.Create( "DPropertySheet", PropsFrame )
-	PropertySheet:SetPos( 5, 5 )
-	PropertySheet:SetSize( 990, 690 )
+	pPropsFrame = PropsFrame
+
+	local tea_config_propcostenabled = tobool(GetConVar("tea_config_propcostenabled"):GetFloat())
+	local PropertySheet = vgui.Create("DPropertySheet", PropsFrame)
+	PropertySheet:SetPos(5, 5)
+	PropertySheet:SetSize(990, 690)
 	PropertySheet.Paint = function()
 		surface.SetDrawColor(0, 0, 0, 100)
 		surface.DrawRect(0, 0, PropertySheet:GetWide(), PropertySheet:GetTall())
 		if not tea_config_propcostenabled then
 			local text1 = vgui.Create("DLabel", PropsFrame)
 			text1:SetFont("TargetIDSmall")
-			text1:SetText("Prop spawning cost disabled (faction structures are the exception)")
+			text1:SetText("Prop spawning cost disabled (excluding faction structures)")
 			text1:SetColor(Color(205,205,205,255))
-			text1:SetPos(500, 10)
+			text1:SetPos(400, 10)
 			text1:SizeToContents()
 		end
 		for k, v in pairs(PropertySheet.Items) do
 			if (!v.Tab) then continue end
 			v.Tab.Paint = function(self,w,h)
-				draw.RoundedBox(0, 0, 0, w, h, Color(50,25,25))
+				draw.RoundedBox(0, 0, 0, w, h, Color(50,50,25))
 			end
 		end
+	end
+	
+	local RefreshButton = vgui.Create("DButton", PropertySheet)
+	RefreshButton:SetText("Refresh Panel")
+	RefreshButton:SetTextColor(Color(255,255,230))
+	RefreshButton:SetToolTip("In case if something is wrong with this panel, click this button.\nIf this didn't work, report the problem to the author.")
+	RefreshButton:SetPos(800, 5)
+	RefreshButton:SetSize(120,20)
+	RefreshButton.Paint = function(panel)
+		surface.SetDrawColor(150, 150, 0 ,255)
+		surface.DrawOutlinedRect(0, 0, RefreshButton:GetWide(), RefreshButton:GetTall())
+		draw.RoundedBox(2, 0, 0, RefreshButton:GetWide(), RefreshButton:GetTall(), Color(50, 50, 0, 130))
+	end
+	RefreshButton.DoClick = function()
+		pPropsFrame = nil
+		PropsFrame:Remove()
+		gamemode.Call("OnSpawnMenuOpen")
+		surface.PlaySound("common/wpn_select.wav")
 	end
 
 ----------------------------------------------flimsy props-------------------------------------------------------
@@ -104,7 +131,7 @@ function PropMenu()
 			local ItemCost = vgui.Create( "DLabel", ItemBackground )
 			ItemCost:SetFont( "TargetIDSmall" )
 			ItemCost:SetColor( Color(155,255,155,255) )
-			ItemCost:SetText( translate.Get("Cost")..": ".. math.floor(v.COST * discount).." "..Config[ "Currency" ].."s" )
+			ItemCost:SetText( translate.Get("cost")..": ".. math.floor(v.COST * discount).." "..GAMEMODE.Config[ "Currency" ].."s" )
 			ItemCost:SizeToContents()
 			ItemCost:Center()
 			local x,y = ItemCost:GetPos();
@@ -144,7 +171,7 @@ function PropMenu()
 		ItemClicker.Paint = function() -- Paint function
 			return false
 		end
-		ItemClicker.DoClick = function() RunConsoleCommand("use","ate_buildtool")
+		ItemClicker.DoClick = function() RunConsoleCommand("use","tea_buildtool")
 			surface.PlaySound("common/wpn_select.wav")
 			ChooseProp(tostring(k))
 		end
@@ -198,7 +225,7 @@ function PropMenu()
 			local ItemCost = vgui.Create( "DLabel", ItemBackground )
 			ItemCost:SetFont( "TargetIDSmall" )
 			ItemCost:SetColor( Color(155,255,155,255) )
-			ItemCost:SetText( translate.Get("Cost")..": ".. math.floor(v.COST * discount).." "..Config[ "Currency" ].."s" )
+			ItemCost:SetText( translate.Get("cost")..": ".. math.floor(v.COST * discount).." "..GAMEMODE.Config[ "Currency" ].."s" )
 			ItemCost:SizeToContents()
 			ItemCost:Center()
 			local x,y = ItemCost:GetPos();
@@ -239,7 +266,7 @@ function PropMenu()
 		ItemClicker.Paint = function() -- Paint function
 			return false
 		end
-		ItemClicker.DoClick = function() RunConsoleCommand("use","ate_buildtool")
+		ItemClicker.DoClick = function() RunConsoleCommand("use","tea_buildtool")
 			surface.PlaySound("common/wpn_select.wav")
 			ChooseProp( tostring(k) )
 		end
@@ -289,7 +316,7 @@ function PropMenu()
 		local ItemCost = vgui.Create( "DLabel", ItemBackground )
 		ItemCost:SetFont( "TargetIDSmall" )
 		ItemCost:SetColor( Color(155,255,155,255) )
-		ItemCost:SetText(translate.Get("Cost")..": ".. v.Cost.." "..Config[ "Currency" ].."s" )
+		ItemCost:SetText(translate.Get("cost")..": ".. v.Cost.." "..GAMEMODE.Config[ "Currency" ].."s" )
 		ItemCost:SizeToContents()
 		ItemCost:Center()
 		local x,y = ItemCost:GetPos();
@@ -299,7 +326,7 @@ function PropMenu()
 		ItemClicker:SetText("")
 		ItemClicker:SetPos( 15, 125 )
 		ItemClicker:SetTextColor( Color(255,255,255,255) )
-		ItemClicker:SetText(translate.Get("PlaceBlueprint"))
+		ItemClicker:SetText(translate.Get("placeblueprint"))
 		ItemClicker:SetSize( 120, 20 )
 		ItemClicker.Paint = function() -- Paint function
 			surface.SetDrawColor(20, 20, 60 ,200)
@@ -307,7 +334,7 @@ function PropMenu()
 			surface.SetDrawColor(0, 0, 150 ,255)
 			surface.DrawOutlinedRect( 0, 0, ItemClicker:GetWide(), ItemClicker:GetTall() )
 		end
-		ItemClicker.DoClick = function() RunConsoleCommand("use","ate_buildtool")
+		ItemClicker.DoClick = function() RunConsoleCommand("use","tea_buildtool")
 			surface.PlaySound("common/wpn_select.wav")
 			ChooseStructure( k )
 		end
@@ -315,7 +342,7 @@ function PropMenu()
 	end
 
 
-	PropertySheet:AddSheet( translate.Get("PropMNPSheet1"), FlimsyPanel, "icon16/bin.png", false, false, translate.Get("PropMNPSheet1_d") )
-	PropertySheet:AddSheet( translate.Get("PropMNPSheet2"), StrongPanel, "icon16/shield.png", false, false, translate.Get("PropMNPSheet2_d") )
-	PropertySheet:AddSheet( translate.Get("PropMNPSheet3"), SpecialPanel, "icon16/brick.png", false, false, translate.Get("PropMNPSheet3_d") )
+	PropertySheet:AddSheet( translate.Get("propsheet1"), FlimsyPanel, "icon16/bin.png", false, false, translate.Get("propsheet1_d") )
+	PropertySheet:AddSheet( translate.Get("propsheet2"), StrongPanel, "icon16/shield.png", false, false, translate.Get("propsheet2_d") )
+	PropertySheet:AddSheet( translate.Get("propsheet3"), SpecialPanel, "icon16/brick.png", false, false, translate.Get("propsheet3_d") )
 end

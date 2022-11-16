@@ -66,7 +66,7 @@ function CreateFaction(ply, name, col, public)
 	if ply:Team() != 1 then SystemMessage(ply, "You can't create a new faction while in a faction!", Color(255,205,205,255), true) return false end
 	if name == "" then SystemMessage(ply, "You can't create a faction with no name!", Color(255,205,205,255), true) return false end --will try to further expand it
 	if ((col.r + col.g + col.b) < 75) then SystemMessage(ply, "You can't create a faction with a black colour! Try a brighter colour instead!", Color(255,205,205,255), true) return false end
-	if (tonumber(ply.Money) <= factioncost) then SystemMessage(ply, "You can't afford to make a faction! making a faction costs "..factioncost.." "..Config["Currency"].."s", Color(255,205,205,255), true) return false end
+	if (tonumber(ply.Money) <= factioncost) then SystemMessage(ply, "You can't afford to make a faction! making a faction costs "..factioncost.." "..GAMEMODE.Config["Currency"].."s", Color(255,205,205,255), true) return false end
 	if string.len(name) > 20 then SystemMessage(ply, "Your faction name cannot be longer than 20 characters!", Color(255,205,205,255), true) return false end
 
 	FactionIndex = FactionIndex + 1
@@ -83,9 +83,9 @@ function CreateFaction(ply, name, col, public)
 	team.SetUp(FactionIndex, tostring(name), Color(col.r, col.g, col.b, 255))
 	ply:SetTeam(FactionIndex)
 	ply.Money = ply.Money - factioncost
-	print(ply:Nick().." has created a faction for "..factioncost.." "..Config["Currency"].."s named: "..tostring(name))
-	SystemBroadcast(ply:Nick().." has created a faction named: "..tostring(name), Color(205,205,255,255), true)
-	TEANetUpdatePeriodicStats(ply)
+	print(ply:Nick().." has created a faction for "..factioncost.." "..GAMEMODE.Config["Currency"].."s named: "..tostring(name))
+	tea_SystemBroadcast(ply:Nick().." has created a faction named: "..tostring(name), Color(205,205,255,255), true)
+	tea_NetUpdatePeriodicStats(ply)
 
 	net.Start("RecvFactions")
 	net.WriteTable(Factions)
@@ -146,7 +146,7 @@ if timer.Exists("pvpnominge_"..ply:UniqueID()) then SystemMessage(ply, "You cann
 		AutoDisbandFaction( plyfaction )
 	end
 
-	ply:SetTeam( 1 )
+	ply:SetTeam(1)
 	ClearFactionStructures(ply)
 
 	net.Start("RecvFactions")
@@ -180,7 +180,7 @@ function SelectRandomLeader(fac)
 	if !Factions[fac] then return false end
 	local index = Factions[fac]["index"]
 	Factions[fac]["leader"] = table.Random(team.GetPlayers(index))
-	SystemBroadcast(translate.Format("FactionSelectNewFacLeader", Factions[fac]["leader"]:Nick(), fac), Color(205,205,255,255), true)
+	tea_SystemBroadcast(translate.Format("factionnewleader", Factions[fac]["leader"]:Nick(), fac), Color(205,205,255,255), true)
 
 	net.Start("RecvFactions")
 	net.WriteTable(Factions)
@@ -199,7 +199,7 @@ function GiveLeader(ply, target)
 	Factions[plyfaction]["leader"] = target
 	SystemMessage(ply, "You have ceded leadership of your faction to: "..target:Nick(), Color(205,205,255,255), true)
 	SystemMessage(target, ply:Nick().." has given faction leader to you! You now own the faction: "..plyfaction, Color(205,205,255,255), true)
-	SystemBroadcast(ply:Nick().." has selected "..target:Nick().." to be the new leader of "..plyfaction, Color(205,205,255,255), true)
+	tea_SystemBroadcast(ply:Nick().." has selected "..target:Nick().." to be the new leader of "..plyfaction, Color(205,205,255,255), true)
 
 	net.Start("RecvFactions")
 	net.WriteTable(Factions)
@@ -234,7 +234,7 @@ end
 function AutoDisbandFaction(fac)
 	if !Factions[fac] then return false end
 	Factions[fac] = nil
-	SystemBroadcast("The faction: "..fac.." has no more members and has been disbanded", Color(205,205,255,255), true)
+	tea_SystemBroadcast("The faction: "..fac.." has no more members and has been disbanded", Color(205,205,255,255), true)
 
 	net.Start("RecvFactions")
 	net.WriteTable(Factions)

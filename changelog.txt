@@ -1,0 +1,249 @@
+-------- Ver. 0.11.0 (Beta A) of 16 November 2022 --------
+
++ Added After The End Sweps pack into gamemode files (will be used mostly for balance changes)
++ Added AR2 Combine Pistol and AR2 Combine Rifle weapons
++ Added AWM the AWP weapon, with 112 damage and not 105
++ Added Steyr AUG A1 from MAD Cows Weapon pack, with clip size of 35
++ Added Achievements? (not really though, still work in progress)
++ Added new ConVars with options to:
+Client:
+    Show decimal values on HUD
+    Use reload key to pick up items (disabled by default)
+    Disable earringing sound
+    Disable first person death (works only for admins)
+    No vision effects (once again, for admins, but it's still work in progress)
+Server:
+	Enable Faction Structures Cost
+    Bonus Perks for special Players
+    Zombie Health multiplier
+	Zombie Speed multiplier (works for TEA zombies and not for zombies outside TEA)
+	Trader "Prop-Spawning exclusion" zone
+
++ New colored text for items in inventory, spawn menu, trader menu, etc. (colors vary on Rarity)
++ New rarity text & color format
++ Added Options Menu (F4 menu)
++ Added function with attacking zombies, the system forgets the target's last attacker if target did not take damage from attacker within 15 seconds
++ Added function to add invalid items to invalid inventory while trying to add them to inventory
++ Added Environmental Protection to Armor Stats (Environmental Protection protects from attacker classes "trigger_hurt", "point_hurt", "env_fire", "entityflame" and not anything else)
++ Added functional Crafting system (Functional, but not with bugs right?)
++ Added new admin command (no, they are only available to devs and the command just sets convar values created by lua)
++ Added function where some faction structures need to be powered by faction base core (no more cheap ammo i guess, sorry about that)
++ Added new loot type: Rare loot cache (contains loot with rating in-between faction ones and the loot cache weapon)
++ Added death sounds (hope that they are not too offensive)
++ Added Auto-Maintenance system when the server is up for too long
++ Added New Zombie Boss
++ More debug modes (WORK IN PROGRESS!!!!!)
++ Added door health (can be configured)
+
+- Removed Cocktail Molotov by default (this thing can just crash the server so include this at your own risk)
+- Removed code to automatically add 1 workshop addon
+
+; Reworked doors being destroyed by zombies (they now deal damage to doors instead of instantly destroying them, also added animation of zombies attacking the doors)
+; Tyrant can now break props and doors
+; Changed Admin Menu, Prop Menu Frames to close instead of remove (Might be buggy for the prop menu, so added refresh panel button for prop menu.
+The panels that were closed will be opened with same things from the last time the panel was closed)
+; New damage calculating functions (don't know if they work and won't bother testing them)
+
+/ Increased zombie prop damaging rate (Zombies now attack props and doors more often every tick)
+/ Added back MARS rifle and debuffed its' damage to 40 instead of 42
+/ Tweaked TEA zombie stats
+/ Zombies now damage props & doors more often
+/ Renamed Health skill to Vitality
+/ Changed most panels' outlines colors to yellow instead of red (seems more dated, i don't know)
+/ Renamed creating "existing" 'Arial' font
+
+= Nerfed Minigun accuracy from 0.037 to 0.053
+= Nerfed The Fuckinator to do 800 damage instead of 1000
+= FN Scar now has lower firerate, but does 34 damage instead of 30
+= The punisher now does 145 damage instead of 150
+= Bosch-Sterling B-60 now does 21 damage instead of 20
+= Blackhawk Sniper now does 87 damage instead of 85
+= Increased cool down between usages for ammo pile faction structure from 30 sec to 40 sec
+= Rebalanced M9K guns cost
+= Removed The fuckinator from faction loot caches, airdrop faction LootTable and added to airdrop special LootTable ([not] sorry about that.)
+
+* Fixed PvP Guarded mode giving players pvp toggling cooldown if player with pvp enabled (and guarded) damaged them
+
+? And more... (i don't know what else did i add there)
+
+-------- Ver. 0.10.7a of 20 October 2022 (Mini Update) --------
+
+- Remove benefits from increased damage depending on mastery PvP level (that could have turned the gamemode from PvE to absolute PvP)
+
+* Greatly increased Mastery PvP XP gain from killing players
+
+-------- Ver. 0.10.7 of 27 September 2022 --------
+
++ New ConVars for clients
++ Boss Panel (now shown when boss is defeated/removed (or if boss literally left the area))
++ New help menu (WORK IN PROGRESS)
++ Added Mastery, Melee and PvP (for now)
++ Added new PvP mode, being 100% cooperative and no PvP AT ALL
++ On cleanup, traders will respawn in order to avoid traders gone missing
++ Added new dev commands
+
++- Added new images (which some may be quite buggy) and removed 1 image
+
+; Reworked death notice (again)
+; Reworked scoreboard (now refreshes completely every 3sec)
+; Reworked PvP damage
+
+= Tank Zombie now does 85 damage to props instead of 100
+= Tyrant now has 33,000 HP instead of 30,000
+= Ammo Pile now has cooldown of 30 seconds instead of 5 between usages
+= Auto-Medic now has cooldown of 20 seconds between usages (and now it heals to max health instead of 100 + (5 * Health stat value)
+
+* Fixed Loot menu because of 'Cost' value in text
+* Fixed and reworked bosses (now compatible with any boss)
+
+? and some other stuff i don't remember (or too much to say)
+
+-------- Ver. 0.10.6b of 15 September 2022 --------
+
++ Added Notarget command for superadmins. While player has enabled notarget, zombies can't target them.
++ Added Base Cost to tooltips in inventory, trader and loot menu panel.
++ Added Help Panel (THIS IS UNFINISHED AND THERE IS NOTHING IN THAT PANEL YET)
++ Now kicks players who just spam the dropcash command too much
++ Added GainMasteryXP and GainMasteryLevel functions, but they don't do anything since mastery system wasn't fully implemented yet
++ Added option to confirm usage when using food item
++ Added ConVar tea_config_zombieapocalypse, that makes all zombies know players' exact position and will charge towards them. (Unless they have notarget enabled)
+
++- Rewritten some HUD position
++- Made Walkspeed being set to 75% of walkspeed, max walkspeed is 100
++- Changed most concommands starting from string "ate_" to "tea_"
++- Changed spawnprotection system, now instead of enabling god mode, now instead enables value SpawnProtected for player. If has value, any damage done to player is set to 0.
+
+; Reworked Custom Death Notice (kinda)
+
+= Decreased battery drain rate while flashlight is on, but also decreased battery recharge rate
+
+-------- Ver. 0.10.6a of 03 September 2022 --------
+
++ Updated Admin and Dev commands
++ Armor type now scales max battery.
++ Added ToolTips when hovering cursor over skill text and buttons.
+
+; Reworked HP Regen. Now it's called every 2 seconds and if player's HPRegen arithmetic field is more than 1 and player's health is less than their max health.
+Otherwise, their arithmetic value "HPRegen" is set to 0.
+
+/ Changed inventory fonts
+/ Changed functions of calculating max weight.
+/ Changed "LANGUAGE" global to "LANG". This saves more space.
+
+= Nerfed Tyrant (Speed and time between throwing rocks)
+
+? Other changes ?
+
+-------- Ver. 0.10.5 of 30 August 2022 --------
+
+Just improvements, additions, as always.
+
++ ATE Zombies now do different damage to props. Otherwise, they would do normal damage to props.
++ Added Spawn Menu. Feel free to spawn/give yourself items from spawn menu panel in F2 Administration Panel.
++ New vision effect when prestiging.
++ New m9k weapons
+
++- RadioBroadcast function now either plays sound or does not. And spawn airdrop/boss functions now have function to play radiobroadcast sound only once.
+
+= Reduced Prestige requirements for advantages.
+
+? And some other changes
+
+-------- Ver. 0.10.4 of 25 August 2022 --------
+
++ More m9k weapons added, but they're still in progress unfortunately.
+
+; Reworked Wrench properties, build level now depends on structure type.
+; Build tool prop rotating reworked
+
+/ Once again, optimization of loots (now more compatible with translation system)
+/ Spawns data is now stored in specific folders. (Example: theeternalapocalypse/spawns/(gamemap)/loot.txt)
+
+* Now you can't join factions while in a faction to prevent bug (once again)
+
+? And some other stuff which i don't know how to describe it
+
+//**
+(AFTER THE END REBORN)
+**//
+
+-------- Ver. 0.10.3 of 20 August 2022 --------
+
++ A brand new XP/Cash Bonus function, now added lifetime statistics to data saving.
++ A brand new hitsound, taken from deathlegends content. ((Not) Sorry about that.)
+
+- Removed the need of weight string in sh_loot.lua (now loot caches calculate item weight multiplied by item quantity from sh_items.lua)
+
+/ Nextbots no longer spam pain sounds when injured (added timer)
+/ Rewritten entire tea_dev_givestat[defense, speed, health] into tea_dev_givestat
+/ And updated 'how to use.txt' file.
+
+= Changed level requirement for prestige from 50 + (10 per prestige) to 50 + (5 per prestige)
+= Balance changes for items, and for loot? None! (Literally)
+
+* Fixed tyrant creating clientside error when player found the boss (and fixed possibility of tyrant being able to slam while dead but not removed)
+* Fix of giveitem admin command
+
+-------- Ver. 0.10.2 of 12 August 2022 --------
+
++ Good amount of (not so) QoL changes
++ Telling how much space is needed if when not having enough space for item you want to take.
++ New HUD Style has been added (tea_cl_hudstyle)
++ More debugging features
++ Added MaxCarryWeight config in sh_config.lua so it will be easier to configurate default max weight.
++ Added statistics that will be saved into database.
++ Added timer when trying to damage player with PvP disabled or target has god mode enabled (0.5s cooldown per each message)
++ Added some zombie types onto spawn Zombie Classes config, IsSpecialPerson function added, and some correcting.
+
+/ Increased timer duration for SaveTimer, added back net message anti-spam (didn't notice it before due to testing).
+
+= Tormented Wraith now slows down players, Trader is no longer targetted by normal NPCs.
+
+* Set Leader option in manage faction menu now works (finally), some netstuff optimization.
+
+-------- Ver. 0.10.1a of 6 August 2022 --------
+
+? Unknown changes
+
+-------- Ver. 0.10.1 of 30 July 2022 --------
+
++ Added polish and russian language support (they are unfinished and are still in progress)
++ Added some admin commands
++ Added a function to remove current armor when having one equipped
+
+* Some bug fixes
+* Fixed a respawning bug caused because of gmod updates (again)
+
+-------- Ver. 0.10.0b of 28 July 2022 --------
+
++ Superlord now gives infection no matter what, with addition of being enraged.
++ Tyrant can now get enraged if it receives damage below 10000 health.
++ Made function so that when the faction baes core gets attacked, now notifies entire faction.
++ Added admin command "Spawn Item"
+
++- Renamed command ate_debug_createzombie.
+
+/ Decreased color alpha overlay on hud by a bit, tweaked scoreboard, now displays Item ID on inventory properly
+/ Decreased default Vault Size from 200 to 175kg. Once again, increased weight of all exoskeletons.
+/ Strong props now receive 5% overall bullet damage, to prevent strong props from being a little bit too overpowered.
+
+-------- Ver. 0.10.0a of 27 July 2022 --------
+
++ Added Thirst, Survival Time, Prestiging system, New weight calculating system
++ Added New Skill: Agility
++ Admin panel (Unfinished)
++ New Sleep Overlay
++ Give Physgun for Superadmins on Spawn
++ Debug logging on modifying/removing spawns and on using admin command
++ Take 10% less damage from all sources when inside trader area
++ Many functions to prevent using items too much and to prevent from abusing armor equipping
+
+/ Debuff of defense skill (now provides +1.5% protection per level)
+/ Rework for fists
+/ Harder to Gain Levels
+/ Random infection at any time (dependent on survival time)
+/ Airdrops can now drop bad weapons
+/ Debuff for damage skill. (2.5% damage against players to 1% per point)
+
+* Fixed error due to none Max Armor in player class
+

@@ -29,13 +29,12 @@ function CountStructures(ply, struc)
 end
 
 function CheckBases(ply, pos)
-local bases = ents.FindInSphere(pos, 950)
-for k, v in pairs(bases) do
-	if v:GetClass() == "structure_base_core" and v.IsBuilt == true and v:GetNWEntity("owner"):Team() != ply:Team() then return true end
-end
+	local bases = ents.FindInSphere(pos, 950)
+	for k, v in pairs(bases) do
+		if v:GetClass() == "structure_base_core" and v.IsBuilt == true and v:GetNWEntity("owner"):Team() != ply:Team() then return true end
+	end
 
-return false
-
+	return false
 end
 
 function DestroyProp(ply, ent)
@@ -63,14 +62,14 @@ function DestroyProp(ply, ent)
 
 		local refund = checktable[ent:GetModel()]["COST"]
 		if refund == nil then return false end
-		if tobool(GetConVarNumber("tea_config_propcostenabled")) then
+		if GetConVar("tea_config_propcostenabled"):GetInt() >= 1 then
 			ply.Money = ply.Money + math.floor(refund * 0.45)
 			SystemMessage(ply, "You salvaged one of your props and gained "..math.floor(refund * 0.45).." Gold", Color(205,205,255,255), true)
 		end
 		ent:EmitSound("physics/wood/wood_furniture_break"..math.random(1,2)..".wav", 100, math.random(95,105))
 		ent:Remove()
 
-		TEANetUpdatePeriodicStats(ply)
+		tea_NetUpdatePeriodicStats(ply)
 	end)
 end
 
@@ -88,12 +87,14 @@ function DestroyStructure(ply, ent)
 
 		local refund = SpecialSpawns[ent:GetClass()]["Cost"]
 		if refund == nil then return false end
-		ply.Money = ply.Money + math.floor(refund * 0.5)
-		SystemMessage(ply, "You salvaged one of your buildings and gained "..math.floor(refund * 0.5).." Gold", Color(205,205,255,255), true)
+		if GetConVar("tea_config_factionstructurecostenabled"):GetInt() >= 1 then
+			ply.Money = ply.Money + math.floor(refund * 0.5)
+			SystemMessage(ply, "You salvaged one of your buildings and gained "..math.floor(refund * 0.5).." Gold", Color(205,205,255,255), true)
+		end
 		ent:EmitSound("physics/wood/wood_furniture_break"..math.random(1,2)..".wav", 100, math.random(95,105))
 		ent:Remove()
 
-		TEANetUpdatePeriodicStats(ply)
+		tea_NetUpdatePeriodicStats(ply)
 	end)
 end
 
@@ -113,15 +114,15 @@ end
 local entmeta = FindMetaTable("Entity")
 
 function entmeta:GetStructureHealth()
-return self:GetNWInt( "ate_integrity", 0 )
+	return self:GetNWInt("ate_integrity", 0)
 end
 
 function entmeta:SetStructureHealth(val)
-return self:SetNWInt("ate_integrity", val)
+	return self:SetNWInt("ate_integrity", val)
 end
 
 function entmeta:GetStructureMaxHealth()
-return self:GetNWInt("ate_maxintegrity", 0)
+	return self:GetNWInt("ate_maxintegrity", 0)
 end
 
 
@@ -146,12 +147,12 @@ function MakeProp(ply, model, pos, ang)
 	local cash = tonumber(ply.Money)
 	local pcost = checktable[model]["COST"]
 	local discount = 1 - (ply.StatEngineer * 0.02)
-	local tea_config_maxprops = GetConVarNumber("tea_config_maxprops")
+	local tea_config_maxprops = GetConVar("tea_config_maxprops"):GetInt()
 
-	if (cash < (pcost * discount)) then SystemMessage(ply, "Unable to spawn prop due to insufficient Gold!", Color(255,205,205,255), true) return false end
+	if cash < (pcost * discount) and GetConVar("tea_config_propcostenabled"):GetInt() >= 1 then SystemMessage(ply, "Unable to spawn prop due to insufficient Gold!", Color(255,205,205,255), true) return false end
 
 	for k, v in pairs(ents.FindByClass("trader")) do
-		if pos:Distance(v:GetPos()) < 250 then SystemMessage(ply, "Unable to spawn prop! Too close to a trader!", Color(255,205,205,255), true) return false end
+		if pos:Distance(v:GetPos()) < GetConVar("tea_config_propspawndistance"):GetFloat() then SystemMessage(ply, "Unable to spawn prop! Too close to a trader!", Color(255,205,205,255), true) return false end
 	end
 
 	if CountProps(ply) >= tea_config_maxprops then 
@@ -173,7 +174,7 @@ function MakeProp(ply, model, pos, ang)
 		prop:SetNWInt("ate_maxintegrity", 500 * (checktable[model]["TOUGHNESS"] or 1) )
 		prop:SetNWInt("ate_integrity", 500 * (checktable[model]["TOUGHNESS"] or 1) )
 		prop:SetNWEntity("owner", ply)
-		if tobool(GetConVarNumber("tea_config_propcostenabled")) then
+		if GetConVar("tea_config_propcostenabled"):GetInt() >= 1 then
 			ply.Money = tonumber(ply.Money) - (pcost * discount)
 		end
 	else
@@ -190,11 +191,11 @@ function MakeProp(ply, model, pos, ang)
 		prop:SetNWInt("ate_maxintegrity", 500 * (checktable[model]["TOUGHNESS"] or 1) )
 		prop:SetNWInt("ate_integrity", 500 * (checktable[model]["TOUGHNESS"] or 1) )
 		prop:SetNWEntity("owner", ply)
-		if tobool(GetConVarNumber("tea_config_propcostenabled")) then
+		if GetConVar("tea_config_propcostenabled"):GetInt() >= 1 then
 			ply.Money = tonumber(ply.Money) - (pcost * discount)
 		end
 	end
-	TEANetUpdatePeriodicStats(ply)
+	tea_NetUpdatePeriodicStats(ply)
 end
 
 
@@ -208,10 +209,10 @@ function MakeStructure(ply, struc, pos, ang)
 	local cash = tonumber(ply.Money)
 	local pcost = SpecialSpawns[struc]["Cost"]
 
-	if (cash < pcost) then SystemMessage(ply, "Unable to create structure: insufficient Gold!", Color(255,205,205,255), true) return false end
+	if (cash < pcost) and GetConVar("tea_config_factionstructurecostenabled"):GetInt() >= 1 then SystemMessage(ply, "Unable to create structure: insufficient Gold!", Color(255,205,205,255), true) return false end
 
 	if CountStructures(ply, struc) >= SpecialSpawns[struc]["Max"] then 
-	SystemMessage(ply, "You cannot have more than "..SpecialSpawns[struc]["Max"].." "..SpecialSpawns[struc]["Name"].."s", Color(255,205,205,255), true)
+		SystemMessage(ply, "You cannot have more than "..SpecialSpawns[struc]["Max"].." "..SpecialSpawns[struc]["Name"].."s", Color(255,205,205,255), true)
 		return false
 	end
 
@@ -230,9 +231,11 @@ function MakeStructure(ply, struc, pos, ang)
 	phys:Wake()
 	phys:EnableMotion(false)
 	prop:SetNWEntity("owner", ply)
-	ply.Money = tonumber(ply.Money) - pcost
+	if GetConVar("tea_config_factionstructurecostenabled"):GetInt() >= 1 then
+		ply.Money = tonumber(ply.Money) - pcost
+	end
 
-	TEANetUpdatePeriodicStats(ply)
+	tea_NetUpdatePeriodicStats(ply)
 
 end
 

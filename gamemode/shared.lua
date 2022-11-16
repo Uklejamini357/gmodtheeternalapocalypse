@@ -1,41 +1,78 @@
---DeriveGamemode( "sandbox" )
+--DeriveGamemode("sandbox") --no, that will screw up the gamemode.
 
 include("player_class/player_ate.lua")
+include("mad/mad_shared.lua")
+
 
 GM.Name		= "The Eternal Apocalypse"
 GM.AltName	= "After The End Reborn"
 GM.Author	= "Uklejamini"
-GM.Email	= "[Insert Email here]"
+GM.Email	= "N/A"
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.10.7a"
+GM.Version	= "0.11.0 - Everything is changed (Beta A)"
 
 team.SetUp(1, "Loner", Color(100, 50, 50, 255)) --loner basic team
 
---feel free to edit these or add new cvars at any time, FCVAR_NOTIFY - notifies when convar is changed, FCVAR_REPLICATED - can only be changed by server operator to prevent some issues, FCVAR_ARCHIVE - saves convar values to server.vdf, see gmod wiki for more info
-local tea_server_respawntime = CreateConVar("tea_server_respawntime", 15, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Modifies respawn time for players. Do not set it too high or players won't be able to respawn. Set to 0 for no respawn delay. Recommended values: 10 - 20.", 0, 60)
-local tea_server_moneyreward = CreateConVar("tea_server_moneyreward", 1, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Modifies Money gain rewards for killing zombies. This convar is dynamic (affects all zombies) and does not affect XP rewards for destroying faction structures. Useful for making events or modifying difficulty.", 0.5, 2.5)
-local tea_server_xpreward = CreateConVar("tea_server_xpreward", 1, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Modifies XP gain multiplier for killing zombies. This convar is dynamic (affects all zombies) and does not affect Money rewards for destroying faction structures. Useful for making events or modifying difficulty.", 0.5, 2.5)
-local tea_server_spawnprotection = CreateConVar("tea_server_spawnprotection", 1, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Enable temporary god mode on spawning? Convar tea_server_spawnprotection_duration must be above 0 for it to work! 1 for true, 0 for false", 0, 1)
-local tea_server_spawnprotection_duration = CreateConVar("tea_server_spawnprotection_duration", 3, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "How long should god mode after spawning last? (in seconds) Convar tea_server_spawnprotection is required for it to work!", 0, 5)
-local tea_server_debugging = CreateConVar("tea_server_debugging", 0, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Enables debugging features. Use value '2' for advanced debug mode. WARNING: YOU CAN ENABLE THIS FOR DEDICATED SERVER AS LONG AS YOU USE IT ONLY FOR TESTING PURPOSES.", 0, 2)
-local tea_server_voluntarypvp = CreateConVar("tea_server_voluntarypvp", 1, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Enables whether players are free to pvp voluntarily or have forced PvP. If value is less than 0, PvP will be entirely disabled and players will not be able to damage others.", -1, 1)
-local tea_server_dbsaving = CreateConVar("tea_server_dbsaving", 1, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Allow saving players' progress to database? Disabling it temporarily is only good when messing with something and don't want to affect anyone's stats. 1 for true, 0 for false", 0, 1)
-local tea_config_maxcaches = CreateConVar("tea_config_maxcaches", 10, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "How many caches should there be at any given time?", 0, 100)
-local tea_config_factioncost = CreateConVar("tea_config_factioncost", 1000, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "How much creating the faction should cost?", 0, 10000)
-local tea_config_maxprops = CreateConVar("tea_config_maxprops", 60, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "How many props can players create?", 0, 1000)
-local tea_config_propcostenabled = CreateConVar("tea_config_propcostenabled", 1, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Enable prop spawning cost money? Good for making events that needs props to make.", 0, 1)
-local tea_config_zombieapocalypse = CreateConVar("tea_config_zombieapocalypse", 0, {FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Should zombies closest to players see them anywhere? Only good if making event or mini-game like zombie survival or something.", 0, 1) --Be sure to have good navmesh so zombies can navigate through the map!
+--feel free to edit these or add new cvars at any time, FCVAR_NOTIFY - notifies when convar is changed (there's new messaging function now, when convar is changed), FCVAR_REPLICATED - can only be changed by server operator to prevent some issues, FCVAR_ARCHIVE - saves convar values to server.vdf, see gmod wiki for more info
+CreateConVar("tea_server_respawntime", 15, {FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Modifies respawn time for players. Warning: Do not set it too high or players won't be able to respawn. Set to 0 for no respawn delay. Recommended values: 10 - 20.", 0, 60)
+CreateConVar("tea_server_moneyreward", 1, {FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Modifies Money gain rewards for killing zombies. This convar is dynamic (affects all zombies) and does not affect XP rewards for destroying faction structures.\
+Useful for making events or modifying difficulty.", 0.1, 10)
+CreateConVar("tea_server_xpreward", 1, {FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Modifies XP gain multiplier for killing zombies. This convar is dynamic (affects all zombies) and does not affect Money rewards for destroying faction structures.\
+Useful for making events or modifying difficulty.", 0.1, 10)
+CreateConVar("tea_server_spawnprotection", 1, {FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Should give players temporary damage invulnerability on spawn? Convar tea_server_spawnprotection_duration must be above 0 for it to work!", 0, 1)
+CreateConVar("tea_server_spawnprotection_duration", 3, {FCVAR_REPLICATED, FCVAR_ARCHIVE}, "How long should god mode after spawning last? (in seconds) Convar tea_server_spawnprotection is required for it to work!", 0, 10)
+CreateConVar("tea_server_debugging", 0, {FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Enables debugging features. Use value '2' for advanced debug mode. WARNING: YOU CAN ENABLE THIS FOR DEDICATED SERVER AS LONG AS YOU USE IT ONLY FOR TESTING PURPOSES.", 0, 4)
+CreateConVar("tea_server_voluntarypvp", 1, {FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Enables whether players are free to pvp voluntarily or have forced PvP. If disabled, players will have forced PvP at any time. (Note: Factions don't have friendly fire)", 0, 1)
+CreateConVar("tea_server_dbsaving", 1, {FCVAR_REPLICATED}, "Allow saving players' progress to database? It is recommended to keep this enabled, unless when testing something.", 0, 1)
+CreateConVar("tea_server_bonusperks", 1, {FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Should bonus XP and bonus Cash perks for special players be enabled?", 0, 1)
+CreateConVar("tea_config_maxcaches", 10, {FCVAR_REPLICATED, FCVAR_ARCHIVE}, "How many caches should there be at any given time?", 0, 250)
+CreateConVar("tea_config_factioncost", 1000, {FCVAR_REPLICATED, FCVAR_ARCHIVE}, "How much creating the faction should cost?", 0, 10000)
+CreateConVar("tea_config_maxprops", 60, {FCVAR_REPLICATED, FCVAR_ARCHIVE}, "How many props can players create? Note: It's recommended to keep this on middle-low values, such as 75-125.", 0, 500)
+CreateConVar("tea_config_propcostenabled", 1, {FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Enable prop spawning cost money? Recommended to keep this on. Good for making events that needs props.", 0, 1)
+CreateConVar("tea_config_factionstructurecostenabled", 1, {FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Enables whether spawning faction structures should cost money or not. Recommended to keep this on. Good for making events that needs faction structures.\
+Note: ", 0, 1)
+CreateConVar("tea_config_zombieapocalypse", 0, {FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Should zombies closest to players see them anywhere? WARNING: THIS ONLY WORKS FOR ZOMBIES MADE IN THE GAMEMODE AND MAY CAUSE LAG ON VERY LARGE MAPS!! Good for making event or mini-game like zombie survival or something.", 0, 1) --Be sure to have good navmesh so zombies can navigate through the map!
+CreateConVar("tea_config_zombiehpmul", 1, {FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Modifies Zombie Health for future spawned zombies. Best use with this is to increase XP and Cash gain multiplier as the convar value is higher. Useful for events or modifying difficulty.", 0.2, 5)
+CreateConVar("tea_config_zombiespeedmul", 1, {FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Modifies Zombies' speed, whether they should move faster or slower. NOTE: THIS ONLY WORKS WITH ZOMBIES THAT ARE MADE FOR THIS GAMEMDOE AND NOT MADE OUTSIDE OF THE GAMEMODE! Useful for events or modifying difficulty.", 0.4, 3)
+CreateConVar("tea_config_propspawndistance", 250, {FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Determines how close can players spawn props from nearest trader", 0, 500)
+
+
+if SERVER then
+	local function ConVar_Changed(cvar, old, new)
+		PrintMessage(HUD_PRINTTALK, Format("ConVar '%s' value is changed from '%s' to '%s'", cvar, old, new))
+		print(Format("ConVar '%s' value is changed from '%s' to '%s'", cvar, old, new))
+	end
+
+	cvars.AddChangeCallback("tea_server_respawntime", ConVar_Changed, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_server_respawntime")
+	cvars.AddChangeCallback("tea_server_moneyreward", ConVar_Changed, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_server_moneyreward")
+	cvars.AddChangeCallback("tea_server_xpreward", ConVar_Changed, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_server_xpreward")
+	cvars.AddChangeCallback("tea_server_spawnprotection", ConVar_Changed, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_server_spawnprotection")
+	cvars.AddChangeCallback("tea_server_spawnprotection_duration", ConVar_Changed, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_server_spawnprotection_duration")
+	cvars.AddChangeCallback("tea_server_debugging", ConVar_Changed, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_server_debugging")
+	cvars.AddChangeCallback("tea_server_voluntarypvp", ConVar_Changed, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_server_voluntarypvp")
+	cvars.AddChangeCallback("tea_server_dbsaving", ConVar_Changed, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_server_dbsaving")
+	cvars.AddChangeCallback("tea_server_bonusperks", ConVar_Changed, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_server_bonusperks")
+	cvars.AddChangeCallback("tea_config_maxcaches", ConVar_Changed, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_config_maxcaches")
+	cvars.AddChangeCallback("tea_config_factioncost", ConVar_Changed, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_config_factioncost")
+	cvars.AddChangeCallback("tea_config_maxprops", ConVar_Changed, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_config_maxprops")
+	cvars.AddChangeCallback("tea_config_propcostenabled", ConVar_Changed, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_config_propcostenabled")
+	cvars.AddChangeCallback("tea_config_factionstructurecostenabled", ConVar_Changed, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_config_factionstructurecostenabled")
+	cvars.AddChangeCallback("tea_config_zombieapocalypse", ConVar_Changed, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_config_zombieapocalypse")
+	cvars.AddChangeCallback("tea_config_zombiehpmul", ConVar_Changed, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_config_zombiehpmul")
+	cvars.AddChangeCallback("tea_config_zombiespeedmul", ConVar_Changed, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_config_zombiespeedmul")
+	cvars.AddChangeCallback("tea_config_propspawndistance", ConVar_Changed, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_config_propspawndistance")
+end
 
 function GM:ShutDown()
 	if SERVER then
 		for k, v in pairs(player.GetAll()) do
-			SavePlayer(v)
-			SavePlayerInventory(v)
-			SavePlayerVault(v)
+			tea_SavePlayer(v)
+			tea_SavePlayerInventory(v)
+			tea_SavePlayerVault(v)
 		end
 		print("WARNING! WARNING!! THE OBJECT IS GONE!!")
-		ate_DebugLog("Server shutting down/changing map")
-		SaveLog()
+		tea_DebugLog("Server shutting down/changing map")
+		tea_SaveLog()
 	end
 end
 
@@ -94,9 +131,9 @@ end
 
 function GetReqXP(ply)
 	local basexpreq = 712
-	local addxpperlevel = 111
-	local noideawhatthisis = 1.1416
-	local prestigebonus = 9
+	local addxpperlevel = 103
+	local noideawhatthisis = 1.1236
+	local prestigebonus = 8
 	if SERVER then
 		return math.floor(basexpreq + (ply.Prestige * prestigebonus) + (ply.Level  * addxpperlevel) ^ noideawhatthisis)
 	else
@@ -106,8 +143,8 @@ end
 
 function GetReqMasteryMeleeXP(ply)
 	local xpreq = 984
-	local addexpperlevel = 242
-	local probnothing_idk = 1.193
+	local addexpperlevel = 165
+	local probnothing_idk = 1.161
 	if SERVER then
 		return math.floor(xpreq + ((ply.MasteryMeleeLevel * addexpperlevel) ^ probnothing_idk))
 	else
@@ -126,6 +163,53 @@ function GetReqMasteryPvPXP(ply)
 	end
 end
 
+function tea_CheckItemRarity(rarity)
+	local rarecol
+	local raretext
+
+	if rarity == 0 then
+		rarecol = Color(155,155,155,255)
+		raretext = "Trash"
+	elseif rarity == 1 then
+		rarecol = Color(205,205,205,255)
+		raretext = "Junk"
+	elseif rarity == 2 then
+		rarecol = Color(230,230,230,255)
+		raretext = "Common"
+	elseif rarity == 3 then
+		rarecol = Color(205,255,205,255)
+		raretext = "Uncommon"
+	elseif rarity == 4 then
+		rarecol = Color(155,155,255,255)
+		raretext = "Rare"
+	elseif rarity == 5 then
+		rarecol = Color(255,205,0,255)
+		raretext = "Super Rare"
+	elseif rarity == 6 then
+		rarecol = Color(255,155,255,255)
+		raretext = "Epic"
+	elseif rarity == 7 then
+		rarecol = Color(255,105,105,255)
+		raretext = "Mythic"
+	elseif rarity == 8 then
+		rarecol = Color(205,55,205,255)
+		raretext = "Legendary"
+	elseif rarity == 9 then
+		rarecol = Color(255,0,155,255)
+		raretext = "Godly"
+	elseif rarity == 10 then
+		rarecol = Color(55,55,255,255)
+		raretext = "Event"
+	elseif
+		rarity == 11 then rarecol = Color(255,255,255,255)
+		raretext = "Unobtainable"
+	else
+		rarecol = Color(96,96,96,255)
+		raretext = "Uncategorized"
+	end
+
+	return raretext, rarecol
+end
 
 local meta = FindMetaTable("Player")
 
@@ -136,15 +220,36 @@ function meta:SetPvPGuarded(int)
 end
 
 function meta:IsPvPGuarded()
-	if self:GetNWInt("PvPGuard") == 1 then return true else return false end
+	if self:GetNWInt("PvPGuard") == 1 then return true
+	else return false end
 end
 
 function meta:IsPvPForced()
-	if self:GetNWInt("PvPGuard") == 2 then return true else return false end
+	if self:GetNWInt("PvPGuard") == 2 then return true
+	else return false end
 end
 
+function meta:SlowPlayerDown(value, time)
+	
+	self.SlowDown = math.max(value, self.SlowDown)
 
--- the default models aka what poorfags look like before they buy armor
+	tea_RecalcPlayerSpeed(self)
+	timer.Create("tea_SLOWDOWN_"..self:EntIndex(), time, 1, function()
+		if !self:IsValid() then return end
+		self.SlowDown = 0
+		tea_RecalcPlayerSpeed(self)
+	end)
+end
+
+function GM.ProcessToTime_HHMMSS(value) -- this is still work in progress (bugs: can display as 1:54:5 instead of 1:54:05)
+	local hours = math.floor(value / 3600)
+	local minutes = math.floor((value / 60) - (hours * 60))
+	local seconds = value - ((hours * 3600) + (minutes * 60))
+
+	return hours, minutes, seconds
+end
+
+-- the default models aka what poor players look like before they buy armor
 DefaultModels = 
 {
 	"models/player/kleiner.mdl",

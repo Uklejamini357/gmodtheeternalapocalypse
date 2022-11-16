@@ -16,8 +16,8 @@ function TraderMenu()
 	TraderFrame:ShowCloseButton( true )
 	TraderFrame:MakePopup()
 	TraderFrame.Paint = function()
-		draw.RoundedBox( 2,  0,  0, TraderFrame:GetWide(), TraderFrame:GetTall(), Color( 0, 0, 0, 200 ) )
-		surface.SetDrawColor(150, 0, 0 ,255)
+		draw.RoundedBox( 2, 0, 0, TraderFrame:GetWide(), TraderFrame:GetTall(), Color( 0, 0, 0, 200 ) )
+		surface.SetDrawColor(150, 150, 0 ,255)
 		surface.DrawOutlinedRect(0, 0, TraderFrame:GetWide(), TraderFrame:GetTall())
 		surface.DrawLine(0, TraderFrame:GetTall() - 60, TraderFrame:GetWide(), TraderFrame:GetTall() - 60)
 	end
@@ -32,7 +32,7 @@ function TraderMenu()
 		for k, v in pairs(PropertySheet.Items) do
 			if (!v.Tab) then continue end
 			v.Tab.Paint = function(self,w,h)
-				draw.RoundedBox(0, 0, 0, w, h, Color(50,25,25))
+				draw.RoundedBox(0, 0, 0, w, h, Color(50,50,25))
 			end
 		end
 	end
@@ -91,18 +91,18 @@ function TraderMenu()
 	Specials:SetPos( 5, 25 )
 	
 	MyWeight = vgui.Create( "DLabel", TraderFrame )
-	MyWeight:SetFont( "TargetID" )
-	MyWeight:SetPos( 10, TraderFrame:GetTall() - 42)
-	MyWeight:SetSize( 350, 25)
-	MyWeight:SetColor( Color(255,255,255,255) )
-	MyWeight:SetText(translate.Get("CurrentlyCarrying").." "..CalculateWeightClient().."kg / "..CalculateMaxWeightClient().."kg")
+	MyWeight:SetFont("TargetIDSmall")
+	MyWeight:SetPos(10, TraderFrame:GetTall() - 42)
+	MyWeight:SetSize(350, 25)
+	MyWeight:SetColor(Color(255,255,255,255))
+	MyWeight:SetText(translate.Format("weight_1", CalculateWeightClient()).." / "..CalculateMaxWeightClient().."kg")
 	
 	MyMoney = vgui.Create( "DLabel", TraderFrame )
-	MyMoney:SetFont( "TargetID" )
-	MyMoney:SetPos( 350, TraderFrame:GetTall() - 42)
-	MyMoney:SetSize( 350, 25)
+	MyMoney:SetFont("TargetID")
+	MyMoney:SetPos(350, TraderFrame:GetTall() - 50)
+	MyMoney:SetSize(350, 41)
 	MyMoney:SetColor( Color(155,255,155,255) )
-	MyMoney:SetText("My Wallet: "..Mymoney)
+	MyMoney:SetText("My Wallet: "..math.floor(Mymoney).."\nMy bounty: "..math.floor(Mybounty))
 	
 	local CastBounty = vgui.Create("DButton", TraderFrame)
 	CastBounty:SetSize( 120, 45 )
@@ -117,26 +117,27 @@ function TraderMenu()
 	CastBounty.DoClick = function()
 		net.Start("CashBounty")
 		net.SendToServer()
-		timer.Simple(0.3, function() MyMoney:SetText("My Wallet: "..Mymoney) end)
+		timer.Simple(0.3, function() MyMoney:SetText("My Wallet: "..math.floor(Mymoney).."\nMy bounty: "..math.floor(Mybounty)) end)
 	end
 	
 	
-	MyVaultWeight = vgui.Create( "DLabel", TraderFrame )
-	MyVaultWeight:SetFont( "TargetID" )
-	MyVaultWeight:SetPos( 700, TraderFrame:GetTall() - 42)
-	MyVaultWeight:SetSize( 350, 25)
-	MyVaultWeight:SetColor( Color(255,255,255,255) )
-	MyVaultWeight:SetText("Vault Capacity: "..CalculateVaultClient().."kg / "..Config["VaultSize"].."kg")
+	MyVaultWeight = vgui.Create("DLabel", TraderFrame)
+	MyVaultWeight:SetFont("TargetIDSmall")
+	MyVaultWeight:SetColor(Color(255,255,255,255))
+	MyVaultWeight:SetSize(350,25)
+	MyVaultWeight:SetText("Vault Capacity: "..CalculateVaultClient().."kg / "..GAMEMODE.Config["VaultSize"].."kg")
+	MyVaultWeight:SetPos(TraderFrame:GetWide() - (MyVaultWeight:GetWide() - 80), TraderFrame:GetTall() - 42)
 	
 	
 	--------------------------------------------supplies-------------------------------------------------------------
 	
 	
 	function DoTraderList(cat, parent)
-		for k, v in SortedPairsByMemberValue( ItemsList, "Cost" ) do
+		for k, v in SortedPairsByMemberValue( GAMEMODE.ItemsList, "Cost" ) do
 			if v.Supply <= -1 or v.Category != cat then continue end -- skip items with -1 supply or that are in the wrong category
 --			if v.Category != cat then continue end --those are included so you can see new items you add if you exclude the above and include this one
-			
+
+			local raretext,rarecol = tea_CheckItemRarity(v.Rarity)
 			local ItemBackground = vgui.Create( "DPanel" )
 			ItemBackground:SetPos( 5, 5 )
 			ItemBackground:SetSize( 280, 80 )
@@ -145,11 +146,11 @@ function TraderMenu()
 				surface.SetDrawColor(50, 50, 50 ,255)
 				surface.DrawOutlinedRect(0, 0, ItemBackground:GetWide(), ItemBackground:GetTall())
 			end
-			
+
 			local ItemDisplay = vgui.Create( "SpawnIcon", ItemBackground )
-			ItemDisplay:SetPos( 10, 10 )
-			ItemDisplay:SetModel( v.Model )
-			ItemDisplay:SetToolTip(translate.Format("ItemDescription", translate.Get(v.Description), translate.Get("ItemID"), k, v.Cost, Config["Currency"]))
+			ItemDisplay:SetPos(10, 10)
+			ItemDisplay:SetModel(v.Model)
+			ItemDisplay:SetToolTip(translate.Format("item_descr_1", translate.Get(k.."_d"), k, v.Cost, GAMEMODE.Config["Currency"], raretext))
 			ItemDisplay:SetSize(60,60)
 			ItemDisplay.PaintOver = function()
 				return
@@ -157,40 +158,34 @@ function TraderMenu()
 			ItemDisplay.OnMousePressed = function()
 				return false
 			end
-			
+
 			local ItemName = vgui.Create( "DLabel", ItemBackground )
-			ItemName:SetPos( 80, 10)
-			ItemName:SetSize( 170, 15)
-			ItemName:SetColor( Color(205,205,205,255) )
-			ItemName:SetText( translate.Get(v.Name) )
-			
+			ItemName:SetPos(80, 10)
+			ItemName:SetSize(170, 15)
+			ItemName:SetColor(rarecol)
+			ItemName:SetText(translate.Get(k.."_n"))
+
 			local ItemCost = vgui.Create( "DLabel", ItemBackground )
 			ItemCost:SetFont( "TargetIDSmall" )
 			ItemCost:SetPos( 80, 25)
 			ItemCost:SetSize( 170, 15)
 			ItemCost:SetColor( Color(155,255,155,255) )
 			ItemCost:SetText( "Cost: ".. math.floor((v.Cost * (1 - ((Perks.Barter or 0) * 0.015)))) )
-			
+
 			local ItemWeight = vgui.Create( "DLabel", ItemBackground )
 			ItemWeight:SetFont( "TargetIDSmall" )
 			ItemWeight:SetPos( 80, 42)
 			ItemWeight:SetSize( 170, 15)
 			ItemWeight:SetColor( Color(155,155,255,255) )
 			ItemWeight:SetText( "Weight: ".. v.Weight.."kg" )
-			
-			local ItemSupply = vgui.Create( "DLabel", ItemBackground )
-			ItemSupply:SetFont( "TargetIDSmall" )
-			ItemSupply:SetPos( 80, 58)
-			ItemSupply:SetSize( 170, 15)
-			ItemSupply:SetColor( Color(255,155,155,255) )
-	
-			if v.Supply == 0 then
-				ItemSupply:SetText( "Supply: Unlimited" )
-			elseif v.Supply == -1 then
-				ItemSupply:SetText( "Supply: None" )
-			else
-				ItemSupply:SetText( "Supply: ".. v.Supply.." / "..v.Supply )
-			end
+
+			local ItemSupply = vgui.Create("DLabel", ItemBackground)
+			ItemSupply:SetFont("TargetIDSmall")
+			ItemSupply:SetPos(80, 58)
+			ItemSupply:SetText(v.Supply == 0 and "Supply: Unlimited" or v.Supply == -1 and "Supply: None" or "Supply: ".. v.Supply.." / "..v.Supply)
+			ItemSupply:SetSize(170, 15)
+			ItemSupply:SetColor(Color(255,155,155,255))
+
 
 --	if v.Supply != -1 then
 			local BuyButton = vgui.Create("DButton", ItemBackground)
@@ -207,7 +202,11 @@ function TraderMenu()
 				net.Start("BuyItem")
 				net.WriteString(k)
 				net.SendToServer()
-				timer.Simple(0.3, function() MyWeight:SetText(translate.Get("CurrentlyCarrying").." "..CalculateWeightClient().."kg / "..CalculateMaxWeightClient().."kg") MyMoney:SetText("My Wallet: "..Mymoney) DoSellPanel() end)
+				timer.Simple(0.3, function()
+					MyWeight:SetText(translate.Format("weight_1", CalculateWeightClient()).." / "..CalculateMaxWeightClient().."kg")
+					MyMoney:SetText("My Wallet: "..math.floor(Mymoney).."\nMy bounty: "..math.floor(Mybounty))
+					DoSellPanel()
+				end)
 			end
 --		end
 			parent:AddItem( ItemBackground )
@@ -227,11 +226,12 @@ function TraderMenu()
 		if !IsValid(TraderFrame) then return end
 		SellPanel:Clear()
 		for k, v in SortedPairsByMemberValue(LocalInventory, "Weight", true) do
-			if !ItemsList[k] then continue end -- ignore invalid shit
-			local icost = ((ItemsList[k]["Cost"] or 0) * (0.2 + ((Perks.Barter or 0) * 0.005)) ) or 0
+			if !GAMEMODE.ItemsList[k] then continue end -- ignore invalid shit
+			local icost = ((GAMEMODE.ItemsList[k]["Cost"] or 0) * (0.2 + ((Perks.Barter or 0) * 0.005)) ) or 0
 --			if icost < 1 then continue end -- dont sell shit that isnt worth anything
 
-			local ItemBackground = vgui.Create( "DPanel" )
+			local raretext,rarecol = tea_CheckItemRarity(v.Rarity)
+			local ItemBackground = vgui.Create("DPanel")
 			ItemBackground:SetPos( 5, 5 )
 			ItemBackground:SetSize( 350, 70 )
 			ItemBackground.Paint = function() -- Paint function
@@ -244,7 +244,7 @@ function TraderMenu()
 			local ItemDisplay = vgui.Create("SpawnIcon", ItemBackground)
 			ItemDisplay:SetPos(5, 5)
 			ItemDisplay:SetModel(v.Model)
-			ItemDisplay:SetToolTip(translate.Format("ItemDescription", translate.Get(v.Description), translate.Get("ItemID"), k, v.Cost, Config["Currency"]))
+			ItemDisplay:SetToolTip(translate.Format("item_descr_1", translate.Get(k.."_d"), k, v.Cost, GAMEMODE.Config["Currency"], raretext))
 			ItemDisplay:SetSize(60,60)
 			ItemDisplay.PaintOver = function()
 				return
@@ -257,8 +257,8 @@ function TraderMenu()
 			local ItemName = vgui.Create( "DLabel", ItemBackground )
 			ItemName:SetPos( 80, 10 )
 			ItemName:SetFont( "TargetIDSmall" )
-			ItemName:SetColor( Color(255,255,255,255) )
-			ItemName:SetText( translate.Get(v.Name).." ("..v.Weight.."kg)" )
+			ItemName:SetColor( rarecol )
+			ItemName:SetText( translate.Get(k.."_n").." ("..v.Weight.."kg)" )
 			ItemName:SizeToContents()
 
 			if icost > 1 then
@@ -292,7 +292,10 @@ function TraderMenu()
 					net.Start("SellItem")
 					net.WriteString(k)
 					net.SendToServer()
-					timer.Simple(0.3, function() MyWeight:SetText(translate.Get("CurrentlyCarrying")..": "..CalculateWeightClient().."kg / "..CalculateMaxWeightClient().."kg") MyMoney:SetText("My Wallet: "..Mymoney) end)
+					timer.Simple(0.3, function()
+						MyWeight:SetText(translate.Format("weight_1", CalculateWeightClient()).." / "..CalculateMaxWeightClient().."kg")
+						MyMoney:SetText("My Wallet: "..math.floor(Mymoney).."\nMy bounty: "..math.floor(Mybounty))
+					end)
 						timer.Simple(0.25, function() 
 							if IsValid(SellPanel) then
 								DoSellPanel()
@@ -315,8 +318,13 @@ function TraderMenu()
 					net.Start("AddVault")
 					net.WriteString(k)
 					net.SendToServer()
-					timer.Simple(0.4, function() MyWeight:SetText(translate.Get("CurrentlyCarrying").." "..CalculateWeightClient().."kg / "..CalculateMaxWeightClient().."kg") MyMoney:SetText("My Wallet: "..Mymoney) end)
-					timer.Simple(0.4, function() MyVaultWeight:SetText("Vault Capacity: "..CalculateVaultClient().."kg / "..Config["VaultSize"].."kg") end)
+					timer.Simple(0.4, function()
+						MyWeight:SetText(translate.Format("weight_1", CalculateWeightClient()).." / "..CalculateMaxWeightClient().."kg")
+						MyMoney:SetText("My Wallet: "..math.floor(Mymoney).."\nMy bounty: "..math.floor(Mybounty))
+					end)
+					timer.Simple(0.4, function()
+						MyVaultWeight:SetText("Vault Capacity: "..CalculateVaultClient().."kg / "..GAMEMODE.Config["VaultSize"].."kg")
+					end)
 					timer.Simple(0.4, function() 
 						if IsValid(SellPanel) then
 							DoSellPanel()
@@ -344,8 +352,9 @@ function TraderMenu()
 		if !IsValid(TraderFrame) then return end
 		VaultPanel:Clear()
 		for k, v in SortedPairsByMemberValue( LocalVault, "Weight", true ) do
-			if !ItemsList[k] then continue end -- ignore invalid items
-
+			if !GAMEMODE.ItemsList[k] then continue end -- ignore invalid items
+			
+			local raretext,rarecol = tea_CheckItemRarity(v.Rarity)
 			local ItemBackground = vgui.Create("DPanel")
 			ItemBackground:SetPos( 5, 5 )
 			ItemBackground:SetSize( 350, 65 )
@@ -359,7 +368,7 @@ function TraderMenu()
 			local ItemDisplay = vgui.Create( "SpawnIcon", ItemBackground )
 			ItemDisplay:SetPos( 5, 5 )
 			ItemDisplay:SetModel( v.Model )
-			ItemDisplay:SetToolTip(translate.Format("ItemDescription", translate.Get(v.Description), translate.Get("ItemID"), k, v.Cost, Config["Currency"]))
+			ItemDisplay:SetToolTip(translate.Format("item_descr_1", translate.Get(k.."_d"), k, v.Cost, GAMEMODE.Config["Currency"], raretext))
 			ItemDisplay:SetSize(60,60)
 			ItemDisplay.PaintOver = function()
 				return
@@ -371,8 +380,8 @@ function TraderMenu()
 			local ItemName = vgui.Create( "DLabel", ItemBackground )
 			ItemName:SetPos( 80, 10 )
 			ItemName:SetFont( "TargetIDSmall" )
-			ItemName:SetColor( Color(255,255,255,255) )
-			ItemName:SetText( translate.Get(v.Name).." ("..v.Weight.."kg)" )
+			ItemName:SetColor( rarecol )
+			ItemName:SetText( translate.Get(k.."_n").." ("..v.Weight.."kg)" )
 			ItemName:SizeToContents()
 
 			local ItemQty = vgui.Create( "DLabel", ItemBackground )
@@ -396,15 +405,16 @@ function TraderMenu()
 				net.Start("WithdrawVault")
 				net.WriteString(k)
 				net.SendToServer()
-				timer.Simple(0.4, function() MyWeight:SetText(translate.Get("CurrentlyCarrying").." "..CalculateWeightClient().."kg / "..CalculateMaxWeightClient().."kg") MyMoney:SetText("My Wallet: "..Mymoney) end)
-				timer.Simple(0.4, function() MyVaultWeight:SetText("Vault Capacity: "..CalculateVaultClient().."kg / "..Config["VaultSize"].."kg") end)
+				timer.Simple(0.4, function()
+					MyWeight:SetText(translate.Format("weight_1", CalculateWeightClient()).." / "..CalculateMaxWeightClient().."kg")
+					MyMoney:SetText("My Wallet: "..math.floor(Mymoney).."\nMy bounty: "..math.floor(Mybounty))
+				end)
+				timer.Simple(0.4, function()
+					MyVaultWeight:SetText("Vault Capacity: "..CalculateVaultClient().."kg / "..GAMEMODE.Config["VaultSize"].."kg")
+				end)
 				timer.Simple(0.4, function() 
-					if IsValid(VaultPanel) then
-						DoVaultPanel()
-					end
-					if IsValid(SellPanel) then
-						DoSellPanel()
-					end
+					if IsValid(VaultPanel) then DoVaultPanel() end
+					if IsValid(SellPanel) then DoSellPanel() end
 				end)
 			end
 			VaultPanel:AddItem(ItemBackground)

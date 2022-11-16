@@ -22,7 +22,7 @@ function ShowBossPanel()
     BossPanel:ShowCloseButton(false)
     BossPanel.Paint = function()
 		draw.RoundedBox(2, 0, 0, BossPanel:GetWide(), BossPanel:GetTall(), Color(0, 0, 0, 200))
-		surface.SetDrawColor(150, 0, 0 ,255)
+		surface.SetDrawColor(150, 150, 0 ,255)
 		surface.DrawOutlinedRect(0, 0, BossPanel:GetWide(), BossPanel:GetTall())
 	end
 
@@ -36,19 +36,20 @@ function ShowBossPanel()
 
 
 	local function DoListPanel()
+		local text = "Boss Defeated (Damage done)"
 		local IBG = vgui.Create("DLabel", BossPanel)
-		IBG:SetPos(70, 5)
 		IBG:SetFont("TargetID")
-		IBG:SetText("Boss Defeated (Damage done)")
+		IBG:SetText(text)
 		IBG:SetTextColor(Color(255,255,255,255))
 		IBG:SizeToContents()
+		IBG:SetPos((BossPanel:GetWide() / 2) - (IBG:GetWide() / 2), 10)
 
 		local DMGBG = vgui.Create("DPanel", ListPanel)
 		DMGBG:SetPos(5, 25)
 		DMGBG:SetSize(380, 180)
 		DMGBG.Paint = function() end
 
-		for k, v in pairs(BossDamagedByTable) do
+		for k, v in SortedPairsByValue(BossDamagedByTable, true) do
 			local DisplayDMG = vgui.Create("DLabel", DMGBG)
 			DisplayDMG:SetText(k:Nick() .." damaged: "..math.Round(v))
 			DisplayDMG:SetSize(390, 15)

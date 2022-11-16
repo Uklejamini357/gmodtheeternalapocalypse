@@ -41,19 +41,19 @@ util.AddNetworkString("Prestige") -- see player_data.lua
 util.AddNetworkString("BossKilled") -- called when boss is killed
 --util.AddNetworkString("Respawn")
 
-function TEANetUpdateStats(ply)
+function tea_NetUpdateStats(ply)
 	net.Start("UpdateStats")
-	net.WriteFloat(math.Round(ply.Stamina))
+	net.WriteFloat(ply.Stamina)
 	net.WriteFloat(math.Round(ply.Hunger))
 	net.WriteFloat(math.Round(ply.Thirst))
 	net.WriteFloat(math.Round(ply.Fatigue))
 	net.WriteFloat(math.Round(ply.Infection))
-	net.WriteFloat(math.Round(ply.SurvivalTime))
+	net.WriteFloat(ply.SurvivalTime)
 	net.WriteFloat(math.Round(ply.Battery))
 	net.Send(ply)
 end
 
-function TEANetUpdatePeriodicStats(ply)
+function tea_NetUpdatePeriodicStats(ply)
 	net.Start("UpdatePeriodicStats")
 	net.WriteFloat(ply.Level)
 	net.WriteFloat(ply.Prestige)
@@ -64,12 +64,12 @@ function TEANetUpdatePeriodicStats(ply)
 	net.Send(ply)
 end
 
-function TEANetUpdatePerks(ply)
+function tea_NetUpdatePerks(ply)
 	net.Start("UpdatePerks")
 	net.WriteFloat(ply.StatDefense)
 	net.WriteFloat(ply.StatDamage)
 	net.WriteFloat(ply.StatSpeed)
-	net.WriteFloat(ply.StatHealth)
+	net.WriteFloat(ply.StatVitality)
 	net.WriteFloat(ply.StatKnowledge)
 	net.WriteFloat(ply.StatMedSkill)
 	net.WriteFloat(ply.StatStrength)
@@ -84,7 +84,7 @@ function TEANetUpdatePerks(ply)
 end
 
 
-function TEANetUpdateStatistics(ply)
+function tea_NetUpdateStatistics(ply)
 	net.Start("UpdateStatistics")
 	net.WriteFloat(ply.BestSurvivalTime)
 	net.WriteFloat(ply.ZKills)
@@ -97,23 +97,44 @@ function TEANetUpdateStatistics(ply)
 	net.Send(ply)
 end
 
-function TEANetUpdatePlayerStatistics(ply, target)
+function tea_NetUpdatePlayerStatistics(ply, target)
 	net.Start("UpdateTargetStats")
+	net.WriteString(target:Nick())
 	net.WriteFloat(target.BestSurvivalTime)
 	net.WriteFloat(target.ZKills)
 	net.WriteFloat(target.playerskilled)
 	net.WriteFloat(target.playerdeaths)
 	net.WriteFloat(target.MasteryMeleeXP)
 	net.WriteFloat(target.MasteryMeleeLevel)
+	net.WriteFloat(GetReqMasteryMeleeXP(target))
 	net.WriteFloat(target.MasteryPvPXP)
 	net.WriteFloat(target.MasteryPvPLevel)
+	net.WriteFloat(GetReqMasteryPvPXP(target))
 	net.Send(ply)
 end
 
-function SystemBroadcast(msg, color, sys) -- same as system message, just broadcasts it to everybody instead of accepting a ply argument (Will probably be removed in the future in favor of translation support)
+function SystemMessage(ply, msg, color, sys)
+	net.Start("SystemMessage")
+	net.WriteString(msg)
+	net.WriteColor(color)
+	net.WriteBool(sys or false)
+	net.Send(ply)
+end
+
+function tea_SystemBroadcast(msg, color, sys) -- same as system message, just broadcasts it to everybody instead of accepting a ply argument
 	for k, v in pairs(player.GetAll()) do
 		net.Start("SystemMessage")
 		net.WriteString(msg)
+		net.WriteColor(color)
+		net.WriteBool(sys or false)
+		net.Send(v)
+	end
+end
+
+function tea_SystemTranslatedBroadcast(msg, color, sys, ...) -- same as system broadcast, except sends a translated string to everyone
+	for k, v in pairs(player.GetAll()) do
+		net.Start("SystemMessage")
+		net.WriteString(translate.ClientFormat(v, msg, ...))
 		net.WriteColor(color)
 		net.WriteBool(sys or false)
 		net.Send(v)
@@ -132,13 +153,6 @@ function RadioBroadcast(time, msg, sender, rad)
 	end)
 end
 
-function SystemMessage(ply, msg, color, sys)
-	net.Start("SystemMessage")
-	net.WriteString(msg)
-	net.WriteColor(color)
-	net.WriteBool(sys or false)
-	net.Send(ply)
-end
 
 function SendUseDelay(ply, delay)
 	if !ply:IsValid() or !ply:Alive() then return end
@@ -164,8 +178,7 @@ net.Receive("ChangeModel", function(length, client)
 
 	SendUseDelay(client, 1)
 	timer.Create("changemodelcooldown_"..client:UniqueID(), 120, 1, function() end) 
-timer.Simple(0.75, function() RecalcPlayerModel(client) end)
-
+	timer.Simple(0.75, function() tea_RecalcPlayerModel(client) end)
 end)
 
 
@@ -182,56 +195,42 @@ net.Receive("UpgradePerk", function(length, client)
 		return false
 	end
 
-		ply[perk2] = ply[perk2] + 1
-		ply.StatPoints = ply.StatPoints - 1
-		CalculateMaxHealth(ply)
-		CalculateMaxArmor(ply)
-		CalculateJumpPower(ply)
-		print(ply:Nick().." used 1 skill point on "..perk.." skill ("..tonumber(ply.StatPoints).." skill points remaining)")
-		SendChat(ply, translate.ClientFormat(ply, "PerkIncreased", perk))
- 		RecalcPlayerSpeed(ply)
-		FullyUpdatePlayer(ply)
+	ply[perk2] = ply[perk2] + 1
+	ply.StatPoints = ply.StatPoints - 1
+	ply:SetMaxHealth(GAMEMODE:CalcMaxHealth(ply))
+	ply:SetMaxArmor(GAMEMODE:CalcMaxArmor(ply))
+	ply:SetJumpPower(GAMEMODE:CalcJumpPower(ply))
+	if GetConVar("tea_server_debugging"):GetInt() >= 2 then print(ply:Nick().." used 1 skill point on "..perk.." skill ("..tonumber(ply.StatPoints).." skill points remaining)") end
+	SendChat(ply, translate.ClientFormat(ply, "perkincreased", perk))
+	tea_RecalcPlayerSpeed(ply)
+	tea_FullyUpdatePlayer(ply)
 end)
 
 
 net.Receive("CashBounty", function(length, client)
-if !client:IsValid() or !client:Alive() then return false end
+	if !client:IsValid() or !client:Alive() then return false end
 
-local trader = false
-local plycheck = ents.FindInSphere(client:GetPos(), 200)
-for k, v in pairs(plycheck) do
-if v:GetClass() == "trader" then trader = true end
-end
-if trader == false then SystemMessage(client, "Bruh, did you try to cash in your bounty when you're not in trader area?", Color(255,205,205,255), true) return false end
+	local trader = false
+	local plycheck = ents.FindInSphere(client:GetPos(), 200)
 
-if client.Bounty <= 0 then SystemMessage(client, "You don't have any bounty to cash in!", Color(255,205,205,255), true) return false end
+	for k, v in pairs(plycheck) do
+		if v:GetClass() == "trader" then trader = true end
+	end
+	if !trader then SystemMessage(client, "You are not in a trader area!", Color(255,205,205,255), true) return false end
+	if client.Bounty <= 0 then SystemMessage(client, "You don't have any bounty to cash in!", Color(255,205,205,255), true) return false end
 
-client.Money = math.floor(tonumber(client.Money)) + tonumber(client.Bounty)
-print(client:Nick().." has cashed in their bounty and received "..tonumber(client.Bounty).." "..Config["Currency"].."s!")
-SystemMessage(client, "You cashed in your bounty and received "..tonumber(client.Bounty).." "..Config["Currency"].."s!", Color(205,255,205,255), true)
-client.Bounty = 0
-client:SetNWInt("PlyBounty", client.Bounty)
+	client.Money = math.floor(tonumber(client.Money)) + tonumber(client.Bounty)
+	print(client:Nick().." has cashed in their bounty and received "..tonumber(math.floor(client.Bounty)).." "..GAMEMODE.Config["Currency"].."s!")
+	SystemMessage(client, "You cashed in your bounty and received "..tonumber(math.floor(client.Bounty)).." "..GAMEMODE.Config["Currency"].."s!", Color(205,255,205,255), true)
+	client.Bounty = 0
+	client:SetNWInt("PlyBounty", client.Bounty)
 
-FullyUpdatePlayer(client)
+	tea_FullyUpdatePlayer(client)
 end)
 
 net.Receive("UpdateTargetStats", function(length, client)
-	local ply = client
 	local target = net.ReadEntity()
-	if !ply:IsValid() or !target:IsValid() then return false end
-	local nick = target:Nick()
+	if !client:IsValid() or !target:IsValid() then return false end
 	
-	net.Start("UpdateTargetStats")
-	net.WriteString(nick)
-	net.WriteFloat(target.BestSurvivalTime)
-	net.WriteFloat(target.ZKills)
-	net.WriteFloat(target.playerskilled)
-	net.WriteFloat(target.playerdeaths)
-	net.WriteFloat(target.MasteryMeleeXP)
-	net.WriteFloat(target.MasteryMeleeLevel)
-	net.WriteFloat(GetReqMasteryMeleeXP(target))
-	net.WriteFloat(target.MasteryPvPXP)
-	net.WriteFloat(target.MasteryPvPLevel)
-	net.WriteFloat(GetReqMasteryPvPXP(target))
-	net.Send(ply)
+	tea_NetUpdatePlayerStatistics(client, target)
 end)

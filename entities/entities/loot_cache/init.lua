@@ -24,22 +24,22 @@ end
 function ENT:Use( activator, caller )
 	if !caller:IsValid() or !caller:IsPlayer() or !self.LootType or !caller:Alive() then self:Remove() return false end
 	local name = self.LootType
-	local item = ItemsList[name]
-	local itemweight = ItemsList[name]["Weight"]
-	local itemname = ItemsList[name]["Name"]
+	local item = GAMEMODE.ItemsList[name]
+	local itemweight = item["Weight"]
+	local itemname = translate.ClientGet(caller, name.."_n")
 
-	local qtycheck = LootTable1[name]["Qty"]
+	local qtycheck = GAMEMODE.LootTable1[name]["Qty"]
 
-	if !name or !item or !qtycheck then SendChat(caller, "Sorry, this loot cache was bugged and was auto removed to avoid breaking the game, please tell an admin or developer") self:Remove() return false end
+	if !name or !item or !qtycheck then SendChat(caller, translate.ClientGet(caller, "buggedcache")) self:Remove() return false end
 
 	if !item then return false end
-	if (CalculateWeight(caller) + (qtycheck * itemweight)) > CalculateMaxWeight(caller) then SendChat(caller, translate.ClientFormat(caller, "NotEnoughSpaceLoot", qtycheck * itemweight, translate.ClientGet(caller, "kg"), -CalculateMaxWeight(caller) + CalculateWeight(caller) + (qtycheck * itemweight), translate.ClientGet(caller, "kg"))) return false end
+	if (tea_CalculateWeight(caller) + (qtycheck * itemweight)) > tea_CalculateMaxWeight(caller) then SendChat(caller, translate.ClientFormat(caller, "notenoughspaceloot", qtycheck * itemweight, -tea_CalculateMaxWeight(caller) + tea_CalculateWeight(caller) + (qtycheck * itemweight))) return false end
 
-	SystemGiveItem(caller, name, qtycheck)
+	tea_SystemGiveItem(caller, name, qtycheck)
 
-	SendChat(caller, "You picked up a loot cache containing [ "..qtycheck.."x "..translate.ClientGet(caller, itemname).." ]")
-	SystemBroadcast( caller:Nick().." has found a loot cache!", Color(255,255,255,255), true)
-	SendInventory(caller)
+	SendChat(caller, "You picked up a loot cache containing [ "..qtycheck.."x "..itemname.." ]")
+	tea_SystemBroadcast(caller:Nick().." has found a loot cache!", Color(255,255,255,255), true)
+	tea_SendInventory(caller)
 	caller:EmitSound("items/ammopickup.wav", 100, 100)
 	self:Remove()
 end

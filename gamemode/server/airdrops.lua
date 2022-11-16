@@ -1,12 +1,12 @@
 local DropData = ""
 
-function LoadAD()
-	if not file.IsDir("theeternalapocalypse/spawns/"..string.lower(game.GetMap()), "DATA") then
-		file.CreateDir("theeternalapocalypse/spawns/"..string.lower(game.GetMap()))
+function GM:LoadAD()
+	if not file.IsDir(GAMEMODE.DataFolder.."/spawns/"..string.lower(game.GetMap()), "DATA") then
+		file.CreateDir(GAMEMODE.DataFolder.."/spawns/"..string.lower(game.GetMap()))
 	end
-	if file.Exists("theeternalapocalypse/spawns/" .. string.lower(game.GetMap()) .. "/airdrops.txt", "DATA") then
+	if file.Exists(GAMEMODE.DataFolder.."/spawns/" .. string.lower(game.GetMap()) .. "/airdrops.txt", "DATA") then
 		DropData = "" --reset it
-		DropData = file.Read("theeternalapocalypse/spawns/" .. string.lower(game.GetMap()) .. "/airdrops.txt", "DATA")
+		DropData = file.Read(GAMEMODE.DataFolder.."/spawns/" .. string.lower(game.GetMap()) .. "/airdrops.txt", "DATA")
 		print("Airdrop spawnpoints loaded")
 	else
 		DropData = "" --just in case
@@ -15,9 +15,9 @@ function LoadAD()
 end
 
 
-function AddAD(ply, cmd, args)
+function GM.AddAD(ply, cmd, args)
 	if !SuperAdminCheck(ply) then 
-		SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
+		SystemMessage(ply, translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205,255), true)
 		ply:ConCommand("playgamesound buttons/button8.wav")
 		return
 	end
@@ -36,39 +36,36 @@ function AddAD(ply, cmd, args)
 		NewData = DropData .."\n".. tostring(hitp) .. ";".. tostring(ply:GetAngles())
 	end
 	
-	file.Write("theeternalapocalypse/spawns/"..string.lower(game.GetMap()).."/airdrops.txt", NewData)
+	file.Write(GAMEMODE.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/airdrops.txt", NewData)
 
-	LoadAD() --reload them
+	GAMEMODE:LoadAD() --reload them
 
 	SendChat(ply, "Added an airdrop spawnpoint at position "..tostring(hitp).."!")
-	print("[SPAWNPOINTS MODIFIED] "..ply:Nick().." has added an airdrop spawnpoint at position "..tostring(hitp).."!")
-	ate_DebugLog("[SPAWNPOINTS MODIFIED] "..ply:Nick().." has added an airdrop spawnpoint at position "..tostring(hitp).."!")
+	tea_DebugLog("[SPAWNPOINTS MODIFIED] "..ply:Nick().." has added an airdrop spawnpoint at position "..tostring(hitp).."!")
 	ply:ConCommand("playgamesound buttons/button3.wav")
-
 end
-concommand.Add("tea_addairdropspawn", AddAD)
+concommand.Add("tea_addairdropspawn", GM.AddAD)
 
 
-function ClearAD(ply, cmd, args)
-if !SuperAdminCheck(ply) then 
-	SystemMessage(ply, translate.ClientGet(ply, "TEASuperAdminCheckFailed"), Color(255,205,205,255), true)
-	ply:ConCommand("playgamesound buttons/button8.wav")
-	return
+function GM.ClearAD(ply, cmd, args)
+	if !SuperAdminCheck(ply) then 
+		SystemMessage(ply, translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205,255), true)
+		ply:ConCommand("playgamesound buttons/button8.wav")
+		return
+	end
+
+	if file.Exists(	GAMEMODE.DataFolder.."/spawns/".. string.lower(game.GetMap()) .."/airdrops.txt", "DATA") then
+		file.Delete(GAMEMODE.DataFolder.."/spawns/".. string.lower(game.GetMap()) .."/airdrops.txt")
+	end
+	DropData = ""
+	SendChat(ply, "Deleted all airdrop spawnpoints")
+	tea_DebugLog("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all airdrop spawnpoints!")
+	ply:ConCommand("playgamesound buttons/button15.wav")
 end
-
-if file.Exists(	"theeternalapocalypse/spawns/".. string.lower(game.GetMap()) .."/airdrops.txt", "DATA") then
-	file.Delete("theeternalapocalypse/spawns/".. string.lower(game.GetMap()) .."/airdrops.txt")
-end
-DropData = ""
-SendChat(ply, "Deleted all airdrop spawnpoints")
-print("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all airdrop spawnpoints!")
-ate_DebugLog("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all airdrop spawnpoints!")
-ply:ConCommand("playgamesound buttons/button15.wav")
-end
-concommand.Add("tea_clearairdropspawns", ClearAD)
+concommand.Add("tea_clearairdropspawns", GM.ClearAD)
 
 
-function SpawnAirdrop()
+function GM.SpawnAirdrop()
 	if !GAMEMODE.CanSpawnAirdrop and table.Count(player.GetAll()) < 5 then return end
 
 	RadioBroadcast(0.5, "Christmas has come early ladies!", "Shamus", true)
@@ -92,24 +89,26 @@ function SpawnAirdrop()
 			dropent:SetPos(pos)
 			dropent:SetAngles(ang)
 			local testinv = {
-				["Junk"] = {math.random(0, 2), 1, 1},
+				["Junk"] = {math.random(0, 1), 1, 1},
 				["Ammo"] = {math.random(1, 2), 1, 3},
-				["Meds"] = {math.random(0, 1), 1, 3},
+				["Meds"] = {math.random(0, 2), 1, 3},
 				["Food"] = {math.random(0, 2), 1, 3},
 				["Sellables"] = {math.random(0, 1), 1, 2},
 			}
 
-			local dropchance = math.random(1, 150)
-			if dropchance > 100 then
-				testinv["TyrantWeapons"] = {1, 1, 1}
-			elseif dropchance > 40 then
+			local rng = math.random(0, 100)
+			if rng >= 95 then
+				testinv["SpecialWeapons"] = {1, 1, 1}
+			elseif rng >= 50 then
+				testinv["FactionWeapons"] = {1, 1, 1}
+			elseif rng >= 15 then
 				testinv["FactionWeapons"] = {1, 1, 1}
 			else
-				testinv["RookieWeapons"] = {1, 1, 1}
+				testinv["RookieWeapons"] = {math.random(1, 3), 1, 2}
 			end
 
-			local loot = RollLootTable(testinv)
-			MakeLootContainer(dropent, loot)
+			local loot = tea_RollLootTable(testinv)
+			tea_MakeLootContainer(dropent, loot)
 
 			dropent:Spawn()
 			dropent:Activate()
@@ -117,9 +116,7 @@ function SpawnAirdrop()
 		end
 
 	for k, v in pairs(player.GetAll()) do v:EmitSound("ambient/overhead/hel1.wav") end
-	SystemBroadcast("An air drop crate has appeared!", Color(255,255,255,255), false)
+	tea_SystemBroadcast("An air drop crate has appeared!", Color(255,255,255,255), false)
 	end)
 end
-timer.Create("AirdropSpawnTimer", tonumber(Config[ "AirdropSpawnRate" ]), 0, SpawnAirdrop)
-
-
+timer.Create("AirdropSpawnTimer", tonumber(GM.Config["AirdropSpawnRate"]), 0, GM.SpawnAirdrop)

@@ -1,10 +1,13 @@
 include("shared.lua")
-include("sh_translate.lua")
-include("sh_items.lua")
-include("sh_loot.lua")
-include("sh_spawnables.lua")
-include("sh_config.lua")
-include("sh_crafting.lua")
+include("sh_translate.lua") -- translation file
+include("sh_items.lua") -- items for inventory
+include("sh_loot.lua") -- for loots
+include("sh_spawnables.lua") -- spawnable props with build tool
+include("sh_config.lua") -- gamemode config
+include("sh_crafting.lua") -- list for craftable items
+include("sh_achievements.lua") -- achievements
+include("sh_deathsounds.lua")
+
 include("client/cl_scoreboard.lua")
 include("client/cl_hud.lua")
 include("client/cl_modelsmenu.lua")
@@ -20,9 +23,28 @@ include("client/cl_adminmenu.lua")
 include("client/cl_statsmenu.lua")
 include("client/cl_helpmenu.lua")
 include("client/cl_bosspanel.lua")
+include("client/cl_options.lua")
 
 
-SelectedProp = "models/props_debris/wood_board04a.mdl" -- need to set this to something here to avoid a massive error spew
+-- i had to move it ok
+CreateClientConVar("tea_cl_hud", 1, true, false, "Enable The Eternal Apocalypse HUD", 0, 1)
+CreateClientConVar("tea_cl_hudstyle", 0, true, false, "Switch between HUD styles", 0, 1)
+CreateClientConVar("tea_cl_soundboss", 1, true, true, "Should play HL2 Stinger sound when boss appears?", 0, 1)
+CreateClientConVar("tea_cl_deathsfx", 1, true, true, "Play Sound Effect on dying?", 0, 1)
+CreateClientConVar("tea_cl_deathsound", "theeternalapocalypse/gameover_music.wav", true, false, "Play sound effect on death. Use the valid sound or the sound effect will not play! Tip: Use string '*#' at start of convar string to play the sound as music")
+CreateClientConVar("tea_cl_hitsounds", 1, true, true, "Play sound on dealing damage to zombies and players", 0, 1)
+CreateClientConVar("tea_cl_hitsounds_vol", 0.3, true, true, "Volume ratio of playing hitsound when dealing damage to players", 0, 1)
+CreateClientConVar("tea_cl_hitsounds_volnpc", 0.225, true, true, "Volume ratio of playing hitsound when dealing damage to NPC's and nextbots", 0, 1)
+CreateClientConVar("tea_cl_huddec", 0, true, false, "Enables decimal values on HUD elements, mostly Stamina, Hunger, Thirst, etc.", 0, 1)
+CreateClientConVar("tea_cl_usereloadtopickup", 0, true, true, "Enables whether reload key needs to be held while picking up an item", 0, 1)
+CreateClientConVar("tea_cl_noearrings", 0, true, true, "Disables annoying sound when taking damage from explosions", 0, 1)
+
+CreateClientConVar("tea_cl_admin_fpdeath", 1, true, false, "Enables first person death. Will not be disabled if not admin!", 0, 1)
+CreateClientConVar("tea_cl_admin_noblur", 0, true, false, "Disables vision effects on low health. Requires admin perms to be enabled!!", 0, 1)
+
+
+
+SelectedProp = SelectedProp or "models/props_debris/wood_board04a.mdl" -- need to set this to something here to avoid a massive error spew
 
 function ChooseProp( mdl )
 	SelectedProp = mdl
@@ -38,84 +60,132 @@ function ChooseStructure( struc )
 	net.SendToServer()
 end
 
+function BetterScreenScale()
+	return math.max(ScrH() / 1080, 0.851)
+end
+
 function GM:Initialize()
 	self.BaseClass:Initialize()
-surface.CreateFont("AmmoText", {
-	font	= "arial",
-	size	= 30,
-	weight	= 700,
-	blursize	= 0,
-	scanlines	= 0,
-	antialias	= true,
-})
 
-surface.CreateFont("OtherText", {
-	font	= "arial",
-	size	= 15,
-	weight	= 700,
-	blursize	= 0,
-	scanlines	= 0,
-	antialias	= true,
-})
+	surface.CreateFont("DefaultFontSmall", {
+		font = "tahoma",
+		size = 11,
+		weight = 0,
+		antialias = false}
+	)
 
-surface.CreateFont("CounterShit", {
-    font	= "csd",
-    size	= 38,
-    weight	= 400,
-    antialias	= true,
-    shadow	= false
-})
+	surface.CreateFont("AmmoText", {
+		font	= "arial",
+		size	= 30,
+		weight	= 700,
+		blursize	= 0,
+		scanlines	= 0,
+		antialias	= true,
+	})
 
+	surface.CreateFont("OtherText", {
+		font	= "arial",
+		size	= 15,
+		weight	= 700,
+		blursize	= 0,
+		scanlines	= 0,
+		antialias	= true,
+	})
+
+	surface.CreateFont("CounterShit", {
+	    font	= "csd",
+	    size	= 38,
+	    weight	= 400,
+	    antialias	= true,
+	    shadow	= false
+	})
 end
 
 function GM:PostProcessPermitted( name )
 	return false
 end
 
+function EasyLabel(parent, text, font, textcolor)
+	local dpanel = vgui.Create("DLabel", parent)
+	if font then
+		dpanel:SetFont(font or "DefaultFont")
+	end
+	dpanel:SetText(text)
+	dpanel:SizeToContents()
+	if textcolor then
+		dpanel:SetTextColor(textcolor)
+	end
+	dpanel:SetKeyboardInputEnabled(false)
+	dpanel:SetMouseInputEnabled(false)
+
+	return dpanel
+end
+
+function EasyButton(parent, text, xpadding, ypadding)
+	local dpanel = vgui.Create("DButton", parent)
+	if textcolor then
+		dpanel:SetFGColor(textcolor or color_white)
+	end
+	if text then
+		dpanel:SetText(text)
+	end
+	dpanel:SizeToContents()
+
+	if xpadding then
+		dpanel:SetWide(dpanel:GetWide() + xpadding * 2)
+	end
+
+	if ypadding then
+		dpanel:SetTall(dpanel:GetTall() + ypadding * 2)
+	end
+
+	return dpanel
+end
+
 ChosenModel = ""
 
-function DeathView( player, origin, angles, fov )
-if( !player:Alive() ) then
-	local Ragdoll = player:GetRagdollEntity()
-	if ( Ragdoll ) then
-		local IsValid = Ragdoll:IsValid()
-		if ( IsValid ) then
-			local Eyes = Ragdoll:GetAttachment( Ragdoll:LookupAttachment( "Eyes" ) )
-			if ( Eyes ) then		
-				local View = { origin = Eyes.Pos, angles = Eyes.Ang, fov = 90 }
+function DeathView(player, origin, angles, fov)
+	local View
+
+	if !player:Alive() then
+		local Ragdoll = player:GetRagdollEntity()
+		if (Ragdoll:IsValid() and AdminCheck(player) and GetConVar("tea_cl_admin_fpdeath"):GetInt() >= 1) or (!AdminCheck(player) and Ragdoll:IsValid()) then
+			local Eyes = Ragdoll:GetAttachment(Ragdoll:LookupAttachment("Eyes"))
+			if Eyes then
+				View = {origin = Eyes.Pos, angles = Eyes.Ang, fov = 90}
 				return View
 			end
+		else
+			View = {origin = player:GetPos() + Vector(0, 0, 4)}
+			return View
 		end
 	end
-end 
 end
-hook.Add( "CalcView", "DeathView", DeathView )
+hook.Add("CalcView", "DeathView", DeathView, HOOK_LOW) --now more compatible with mappatcher
 
 function GM:OnReloaded()
 	timer.Simple(1, function()
 		RunConsoleCommand("refresh_inventory")
 	end)
-	print(GM.Name.." files reloaded")
+	print(self.Name.." gamemode files reloaded")
 end
 
 function GM:OnUndo( name, strCustomString )
-	
 -- this is still needed by the test zombies function
-	notification.AddLegacy( "Undo: "..name, 2, 3 )
-	surface.PlaySound( "buttons/button15.wav" )
-
+	notification.AddLegacy("Undo: "..name, 2, 3)
+	surface.PlaySound("buttons/button15.wav")
 end
 
 
-net.Receive( "SystemMessage", function( length, client )
+net.Receive("SystemMessage", function(length, client)
 	local msg = net.ReadString()
 	local col = net.ReadColor()
 	local sys = net.ReadBool()
 
 	if sys then
-		chat.AddText( Color(255,255,255,255), "[System] ", col, msg )
+		chat.AddText(Color(255,255,255,255), "[System] ", col, msg)
 	else
-		chat.AddText( col, msg )
+		chat.AddText(col, msg)
 	end
 end)
 
@@ -146,59 +216,76 @@ net.Receive("RadioMessage", function(length, client)
 	end
 end)
 
-CreateClientConVar("tea_cl_hud", 1, true, false, "Enable The Eternal Apocalypse HUD", 0, 1)
-CreateClientConVar("tea_cl_hudstyle", 0, true, false, "Switch between HUD styles", 0, 1)
-CreateClientConVar("tea_cl_soundboss", 1, true, true, "Should play HL2 Stinger sound when boss appears?", 0, 1)
-CreateClientConVar("tea_cl_deathsfx", 1, true, true, "Play Sound Effect on dying?", 0, 1)
-CreateClientConVar("tea_cl_deathsound", "theeternalapocalypse/gameover_music.wav", true, false, "Play sound effect on death. Use the valid sound or the sound effect will not play! Tip: Use string '*#' at start of convar string to play the sound as music")
-CreateClientConVar("tea_cl_hitsounds", 1, true, true, "Play sound on dealing damage to zombies and players", 0, 1)
-CreateClientConVar("tea_cl_hitsounds_vol", 0.3, true, true, "Volume ratio of playing hitsound when dealing damage to players", 0, 1)
-CreateClientConVar("tea_cl_hitsounds_volnpc", 0.225, true, true, "Volume ratio of playing hitsound when dealing damage to NPC's and nextbots", 0, 1)
 
+function GM:OnPlayerChat(ply, text, team, dead)
+	local tab = {}
+	if dead || (IsValid(ply) && ply:Team() == TEAM_DEAD) then
+		table.insert(tab, Color(191, 30, 40))
+		table.insert(tab, "*Dead* ")
+	end
 
-function ATEHelp()
-print("Help:\n")
-print("Welcome to The Eternal Apocalypse. This is known as a remake of After The End. But better, harder and improved...")
-print("A help panel may be added in future. For the sake of some inconvenience, some of commands were removed.")
-print("For more help, enter one of those command below:\n")
-print("ate_help_general - Prints General Help into console")
-print("ate_help_stats - Prints Stats Help into console")
-print("ate_help_zombies - Prints Zombies Help into console")
-print("ate_help_trader - Prints Trader Help into console")
-print("ate_help_loot - Prints Loot Help into console")
-print("ate_help_skills - Prints Skills Help into console\n")
-print("ate_admin_help_debugging - Some debug stuff for superadmins")
+	if team then
+		table.insert(tab, Color(30, 160, 40))
+		table.insert(tab, "(Team) ")
+	end
+
+	if IsValid(ply) then
+		if ply:SteamID64() == "76561198274314803" then
+			table.insert(tab, Color(160,160,160))
+			table.insert(tab, "[")
+			table.insert(tab, Color(224,224,160))
+			table.insert(tab, "Gamemode Author")
+			table.insert(tab, Color(160,160,160))
+			table.insert(tab, "] ")
+		elseif TEASVOwnerCheck(ply) then
+			table.insert(tab, Color(160,160,160))
+			table.insert(tab, "[")
+			table.insert(tab, Color(160,0,0))
+			table.insert(tab, "Server Owner")
+			table.insert(tab, Color(160,160,160))
+			table.insert(tab, "] ")	
+		elseif TEADevCheck(ply) then
+			table.insert(tab, Color(160,160,160))
+			table.insert(tab, "[")
+			table.insert(tab, Color(160,160,192))
+			table.insert(tab, "Dev")
+			table.insert(tab, Color(160,160,160))
+			table.insert(tab, "] ")
+		elseif SuperAdminCheck(ply) then
+			table.insert(tab, Color(160,160,160))
+			table.insert(tab, "[")
+			table.insert(tab, Color(96,96,160))
+			table.insert(tab, "Superadmin")
+			table.insert(tab, Color(160,160,160))
+			table.insert(tab, "] ")
+		elseif AdminCheck(ply) then
+			table.insert(tab, Color(160,160,160))
+			table.insert(tab, "[")
+			table.insert(tab, Color(160,128,160))
+			table.insert(tab, "Admin")
+			table.insert(tab, Color(160,160,160))
+			table.insert(tab, "] ")
+		end
+
+		table.insert(tab, ply)
+	else
+		table.insert(tab, "Console")
+	end
+
+	table.insert(tab, Color(255,255,255))
+	table.insert(tab, ": "..text)
+
+	chat.AddText(unpack(tab))
+	return true
 end
-concommand.Add("tea_help", ATEHelp)
 
-function ATEHelpGeneral()
-print("General Help:\n")
-print("When you spawn in, you get fists and build tool. You can never lose those items. However, you can lose weapons if you hold them in your hands and die.")
-print("This is survival gamemode. The goal is to survive, not getting killed by zombies, find loot and level up in order to gain more rewards.")
-print("By killing zombies, you gain xp and bounty, then cash in your bounty at trader. Then use your skill points to gain more advantage in survivalism.")
-end
-concommand.Add("tea_help_general", ATEHelpGeneral)
-
-function ATEHelpStats()
-print("Stats Help:\n")
-print("Statistics are the core of this gamemode. For Example, Health is very important. If you reach it to 0%, you die.")
-print("Armor Battery is half important as health. It protects 80% from some of the damage you take")
-print("Stamina is important when running. Running and swimming underwater will cause it to go down, depending on your Endurance level.")
-print("However, moving around will reduce stamina regeneration, even when not moving, but crouching.")
-print("Landing onto ground with velocity between 150 and 499 (in hammer units) will drain 10% of your stamina and above 500 will drain 20% of your stamina.")
-print("This will also depend on Endurance level.")
-print("Hunger is also important. If you do not eat, you will succumb to starvation and die. This can be countered by eating food.\n\n")
-print("Additional info:")
-print("If your stamina is depleted, you won't be able to sprint until you get your stamina to at least 30%.")
-end
-concommand.Add("tea_help_stats", ATEHelpStats)
 
 function ATEHelpZombies()
 print("Zombies Help:\n")
-print("There are 7 zombie types. Killing each of them gives different cash and XP.")
+print("There are currently 8 zombie types. Killing each of them gives different cash and XP.")
 print("Each zombie has unique abilities and stats. From leaping to calling zombies.")
 print("There is currently one boss, The Tyrant. It can throw rocks, that causes tremendous damage")
-print("and can cause a shockwave. It is also extremely tough, so having plenty of ammo is a must.")
+print("and can cause a shockwave. It is also extremely tough, so having plenty of ammo to kill it is a must.")
 end
 concommand.Add("tea_help_zombies", ATEHelpZombies)
 
@@ -210,17 +297,6 @@ print("to rare weapons, some weapons that can be found from bosses and airdrops.
 print("Traders can also buy items from you, but they pay you for less price.")
 end
 concommand.Add("tea_help_trader", ATEHelpTrader)
-
-function ATEHelpLoot()
-print("Loot Help:\n")
-print("In some positions and once every while, a loot cache may occasionally spawn.")
-print("However, it has a low chance of spawning as a loot cache that contains a weapon.")
-print("Bosses can also drop their loot cache, containing special and unique items.")
-print("Airdrop caches can also have same loot as boss caches, as well as additional items found.")
-print("This includes junk items that are completely useless.\n")
-print("Once you pick up ANY of the loot mentioned above, including the airdrop caches being opened, a message will be broadcasted in chat.")
-end
-concommand.Add("tea_help_loot", ATEHelpLoot)
 
 function ATEHelpSkills()
 print("Skills Help:\n")
@@ -239,10 +315,3 @@ print("Strength Skill: Increases max carry weight by 1.53kg per level.")
 print("Survivor Skill: Decreases hunger decreasing by 4% per level and decreases fatigue progressing by 3.5% per level.")
 end
 concommand.Add("tea_help_skills", ATEHelpSkills)
-
-function ATEHelpAdminDebugging()
-print("Admin Debugging Help:\n")
-print("You cannot.")
-
-end
-concommand.Add("tea_admin_help_debugging", ATEHelpAdminDebugging)

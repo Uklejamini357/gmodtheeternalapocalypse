@@ -40,7 +40,7 @@ function ENT:OnTakeDamage(dmginfo)
 end
 
 function ENT:Splode()
-local damagedents = ents.FindInSphere(self:GetPos(),200)
+	local damagedents = ents.FindInSphere(self:GetPos(),200)
 --	local effectdata = EffectData()
 --	effectdata:SetOrigin(self:GetPos())
 --	util.ParticleEffect("goregrenade_splash",self:GetPos(),self:GetAngles(),nil,nil,0.25)
@@ -52,20 +52,22 @@ local damagedents = ents.FindInSphere(self:GetPos(),200)
 	gas:SetScale(2)
 	util.Effect("rock_smash", gas)
 
-for _,v in pairs(damagedents) do
-	if v:IsPlayer() then
-	v:TakeDamage(50 * ( 1 - (v.StatDefense * 0.015)), self.Entity)
-	elseif v:GetClass() == "prop_flimsy" or v:GetClass() == "prop_strong" then
-	v:TakeDamage(500,self.Entity)
-	end
+	for _,v in pairs(damagedents) do
+		if v:IsPlayer() then
+			v:TakeDamage(GAMEMODE.tea_CalcDefenseDamage(v, 50), self.Owner)
+		elseif v:GetClass() == "prop_flimsy" or v:GetClass() == "prop_strong" then
+			v:TakeDamage(300,self.Owner)
+		elseif SpecialSpawns[v:GetClass()] then
+			v:TakeDamage(100, self.Owner)
+		end
 
-end
+	end
 	self:Remove()
 end
 
 function ENT:PhysicsCollide(data, physobj)
 	if data.HitEntity:IsPlayer() then
-	data.HitEntity:TakeDamage(10 * ( 1 - (data.HitEntity.StatDefense * 0.015)) ,self.Entity)
+		data.HitEntity:TakeDamage(GAMEMODE.tea_CalcDefenseDamage(data.HitEntity, 10), self.Owner)
 	end
 
 	local gas = EffectData()

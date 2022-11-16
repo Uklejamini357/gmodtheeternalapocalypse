@@ -1,6 +1,5 @@
 -- this is mostly c+p from sandbox and still needs to be finished (in a different way)
 
-
 local tea_cl_deathnoticetime = CreateClientConVar("tea_cl_deathnoticetime", "7", true, false, "Amount of time to show death notice", 4, 12)
 
 -- These are our kill icons
@@ -34,23 +33,28 @@ local RDtext = {
 
 local RDStext = {
 	"just died",
-	"did suicide thing"
+	"suicided",
+	"has put to end their misery"
 }
 
 local function CheckAttacker(attacker)
-	if attacker == "npc_ate_basic" then attacker = "Shambler Zombie"
-	elseif attacker == "npc_ate_leaper" then attacker = "Leaper Zombie"
-	elseif attacker == "npc_ate_tank" then attacker = "Tank Zombie"
-	elseif attacker == "npc_ate_wraith" then attacker = "Wraith Zombie"
-	elseif attacker == "npc_ate_lord" then attacker = "Zombie Lord"
-	elseif attacker == "npc_ate_tormented_wraith" then attacker = "Tormented Wraith"
-	elseif attacker == "npc_ate_superlord" then attacker = "Zombie Superlord"
-	elseif attacker == "npc_ate_fleshpile" or attacker == "obj_fleshbomb" then attacker = "Fleshpile Zombie"
-	elseif attacker == "npc_nextbot_boss_tyrant" or attacker == "obj_bigrock" then attacker = "The Tyrant"
+	if attacker == "npc_tea_basic" then attacker = "Shambler Zombie"
+	elseif attacker == "npc_tea_leaper" then attacker = "Leaper Zombie"
+	elseif attacker == "npc_tea_tank" then attacker = "Tank Zombie"
+	elseif attacker == "npc_tea_wraith" then attacker = "Wraith Zombie"
+	elseif attacker == "npc_tea_lord" then attacker = "Zombie Lord"
+	elseif attacker == "npc_tea_tormented_wraith" then attacker = "Tormented Wraith"
+	elseif attacker == "npc_tea_superlord" then attacker = "Zombie Superlord"
+	elseif attacker == "npc_tea_puker" then attacker = "Puker Zombie"
+	elseif attacker == "npc_tea_boss_tyrant" then attacker = "The Tyrant"
+	elseif attacker == "npc_tea_boss_lordking" then attacker = "Zombie Lord King"
 	elseif attacker == "npc_zombie" then attacker = "HL2 Zombie"
 	elseif attacker == "npc_fastzombie" then attacker = "HL2 Fast Zombie"
 	elseif attacker == "npc_poisonzombie" then attacker = "HL2 Poison Zombie"
-	elseif attacker == "trigger_hurt" then attacker = "Unknown"
+	elseif attacker == "npc_headcrab" then attacker = "HL2 Headcrab"
+	elseif attacker == "npc_headcrab_fast" then attacker = "HL2 Fast Headcrab"
+	elseif attacker == "npc_headcrab_poison" or attacker == "npc_headcrab_black" then attacker = "HL2 Poison Headcrab"
+	elseif attacker == "trigger_hurt" or attacker == "point_hurt" then attacker = "Unknown"
 	elseif attacker == "prop_physics" then attacker = "Physics Prop"
 	elseif attacker == "func_pushable" then attacker = "Object"
 	elseif attacker == "worldspawn" then attacker = "World"
@@ -59,7 +63,7 @@ local function CheckAttacker(attacker)
 	elseif attacker == "npc_handgrenade" then attacker = "Grenade"
 	elseif attacker == "airdrop_cache" then attacker = "Airdrop Cache"
 	elseif attacker == "gmod_gamerules" then attacker = "Gmod Gamerules"
-	elseif attacker == "stormfox_mapice" then attacker = "Ice"
+	elseif attacker == "stormfox_mapice" then attacker = "Ice" -- it's just there, for a reason
 	end
 	return attacker
 end
@@ -170,9 +174,10 @@ function GM:AddDeathNotice( Victim, team1, Inflictor, Attacker, team2 )
 	Death.victim	= Victim
 	Death.attacker	= Attacker
 	Death.time		= CurTime()
-	Death.Message = table.Random(RDtext)
-	Death.SMessage = table.Random(RDStext)
-	Death.Time = CurTime()
+	Death.dur		= GetConVar("tea_cl_deathnoticetime"):GetFloat()
+	Death.Message	= table.Random(RDtext)
+	Death.SMessage	= table.Random(RDStext)
+	Death.Time		= CurTime()
 
 	Death.left		= Victim
 	Death.right		= Attacker
@@ -196,12 +201,11 @@ function GM:AddDeathNotice( Victim, team1, Inflictor, Attacker, team2 )
 	end
 	
 	table.insert( Deaths, Death )
-
 end
 
 local function DrawDeath(x, y, death, tea_cl_deathnoticetime)
 	local w, h = 50, 50
-	if ( !w || !h ) then return end
+	if (!w || !h) then return end
 	
 	local fadeout = ( death.time + tea_cl_deathnoticetime ) - CurTime()
 	
@@ -221,9 +225,7 @@ end
 
 
 function GM:DrawDeathNotice(x, y)
-	if !tobool(GetConVarNumber("cl_drawhud")) then return end
-
-	local tea_cl_deathnoticetime = tea_cl_deathnoticetime:GetFloat()
+	if !tobool(GetConVar("cl_drawhud"):GetFloat()) then return end
 
 	x = x * ScrW()
 	y = y * ScrH()
@@ -231,7 +233,7 @@ function GM:DrawDeathNotice(x, y)
 	-- Draw
 	for k, Death in pairs(Deaths) do
 
-		if Death.time + tea_cl_deathnoticetime > CurTime() then
+		if Death.time + Death.dur > CurTime() then
 	
 			if Death.lerp then
 				x = x * 0.3 + Death.lerp.x * 0.7
@@ -242,14 +244,14 @@ function GM:DrawDeathNotice(x, y)
 			Death.lerp.x = x
 			Death.lerp.y = y
 		
-			y = DrawDeath( x, y, Death, tea_cl_deathnoticetime )
+			y = DrawDeath( x, y, Death, Death.dur )
 		
 		end
 		
 	end
 
 	for k, Death in pairs( Deaths ) do
-		if ( Death.time + tea_cl_deathnoticetime > CurTime() ) then
+		if ( Death.time + Death.dur > CurTime() ) then
 			return
 		end
 	end

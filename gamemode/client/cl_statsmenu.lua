@@ -1,4 +1,4 @@
-MsgC("Why?\n")
+-------- STATISTICS --------
 
 TNick = 0
 TBestSurvivalTime = 0
@@ -49,7 +49,7 @@ function StatsMenu()
     StatsFrame:MakePopup()
     StatsFrame.Paint = function()
         draw.RoundedBox(2, 0, 0, StatsFrame:GetWide(), StatsFrame:GetTall(), Color(0, 0, 0, 200))
-        surface.SetDrawColor(150, 0, 0 ,255)
+        surface.SetDrawColor(150, 150, 0 ,255)
         surface.DrawOutlinedRect(0, 0, StatsFrame:GetWide(), StatsFrame:GetTall())
     end
 

@@ -11,7 +11,7 @@ function meta:GainMasteryXP(amount, type)
         if self.MasteryPvPXP >= GetReqMasteryPvPXP(self) then self:GainMasteryLevel("PvP") end
     else return
     end
-    TEANetUpdateStatistics(self)
+    tea_NetUpdateStatistics(self)
     net.Start("GainMasteryProgress")
     net.WriteString(type)
     net.WriteFloat(amount)
@@ -34,6 +34,6 @@ function meta:GainMasteryLevel(type)
         self.Money = self.Money + cashreward
         SystemMessage(self, "[Mastery System] Your Mastery PvP Level is now "..newlevel.."! Gained "..cashreward.." cash.", Color(130, 255, 130, 255), false)
     else return end
-    TEANetUpdateStatistics(self)
-    TEANetUpdatePeriodicStats(self)
+    tea_NetUpdateStatistics(self)
+    tea_NetUpdatePeriodicStats(self)
 end

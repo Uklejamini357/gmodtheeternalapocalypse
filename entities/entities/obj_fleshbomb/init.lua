@@ -32,7 +32,7 @@ function ENT:OnTakeDamage(dmginfo)
 end
 
 function ENT:Splode()
-local damagedents = ents.FindInSphere(self:GetPos(),50)
+	local damagedents = ents.FindInSphere(self:GetPos(), 40)
 --	local effectdata = EffectData()
 --	effectdata:SetOrigin(self:GetPos())
 --	util.ParticleEffect("goregrenade_splash",self:GetPos(),self:GetAngles(),nil,nil,0.25)
@@ -44,11 +44,13 @@ local damagedents = ents.FindInSphere(self:GetPos(),50)
 	gas:SetScale(1)
 	util.Effect("poison_splat", gas)
 
-for _,v in pairs(damagedents) do
-	if v:IsPlayer() or v:GetClass() == "prop_flimsy" or v:GetClass() == "prop_strong" then
-	v:TakeDamage(4.2,self.Entity)
+	for _,v in pairs(damagedents) do
+		if v:IsPlayer() then
+			v:TakeDamage(GAMEMODE.tea_CalcDefenseDamage(v, 4.2), self.Owner)
+		elseif v:GetClass() == "prop_flimsy" or v:GetClass() == "prop_strong" then
+			v:TakeDamage(6, self.Owner)
+		end
 	end
-end
 	self:Remove()
 end
 

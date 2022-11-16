@@ -6,11 +6,12 @@ include("shared.lua")
 --Called when the SENT is spawned
 function ENT:Initialize()
 --	self.Entity:SetModel( "models/Items/HealthKit.mdl" )
- 	self.Entity:PhysicsInit( SOLID_VPHYSICS )
-	self.Entity:SetMoveType( MOVETYPE_VPHYSICS )
-	self.Entity:SetSolid( SOLID_VPHYSICS )
- 	self.Entity:SetColor( Color(255, 255, 255, 255) )
-	self.Entity:SetUseType( SIMPLE_USE )
+ 	self.Entity:PhysicsInit(SOLID_VPHYSICS)
+	self.Entity:SetMoveType(MOVETYPE_VPHYSICS)
+	self.Entity:SetCollisionGroup(COLLISION_GROUP_PASSABLE_DOOR) -- don't let the player collide with the dropped item
+	self.Entity:SetSolid(SOLID_VPHYSICS)
+ 	self.Entity:SetColor(Color(255, 255, 255, 255))
+	self.Entity:SetUseType(SIMPLE_USE)
 --	self:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
 
 	timer.Simple(3600, function() if self:IsValid() then self:Remove() end end )
@@ -25,14 +26,19 @@ function ENT:SpawnFunction( userid, tr )
 end
 
 function ENT:Use( activator, caller )
-if !activator:IsValid() or !activator:IsPlayer() or !self:GetNWString("ItemClass") or !activator:Alive() then return false end
-local name = self:GetNWString("ItemClass")
-local ref = ItemsList[name]
-if (CalculateWeight(activator) + ref.Weight) > CalculateMaxWeight(activator) then SendChat(activator, "You don't have enough space for this item! Need ".. -CalculateMaxWeight(activator) + CalculateWeight(activator) + ref.Weight .."kg more space!") return false end
-
-SystemGiveItem( activator, name )
-
-SendInventory(activator)
-activator:EmitSound("items/itempickup.wav", 100, 100)
-self:Remove()
+	if !activator:IsValid() or !activator:IsPlayer() or !self:GetNWString("ItemClass") or !activator:Alive() then return false end
+	if activator:KeyDown(IN_RELOAD) or activator:GetInfoNum("tea_cl_usereloadtopickup", 0) < 1 then
+		local name = self:GetNWString("ItemClass")
+		local ref = GAMEMODE.ItemsList[name]
+		if (tea_CalculateWeight(activator) + ref.Weight) > tea_CalculateMaxWeight(activator) then SendChat(activator, "You don't have enough space for this item! Need ".. -tea_CalculateMaxWeight(activator) + tea_CalculateWeight(activator) + ref.Weight .."kg more space!") return false end
+		
+		tea_SystemGiveItem(activator, name)
+		
+		tea_SendInventory(activator)
+		activator:EmitSound("items/itempickup.wav", 100, 100)
+		self:Remove()
+	else
+		activator:PrintMessage(HUD_PRINTCENTER, "R+E to pick up")
+		activator:PickupObject(self)
+	end
 end

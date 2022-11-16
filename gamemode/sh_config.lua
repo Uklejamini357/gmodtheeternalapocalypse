@@ -1,15 +1,34 @@
+-------- GAMEMODE CONFIG --------
+
+GM.DataFolder = "theeternalapocalypse"
+GM.MaxLevel = 50	-- self explanatory. to edit xp requirement for levels go to shared.lua and edit function GetReqXP
+GM.LevelsPerPrestige = 5	-- Additional number of levels needed per every prestige level 
+GM.MaxZombies = 45	-- i think i don't have to explain about this one
+GM.MaxZombieSpawnDistance = 6000	-- Max distance from players in hammer units zombies can spawn
+GM.MaxZombieWanderingDistance = 7000	-- Max distance from players that zombies can wander from nearest players. If zombies are too far away, they are removed.
+GM.GiveAmmoOnDropWeapon = true -- Should give ammo back that remain in clip?
+-- If enabled, dropping weapon from inventory will give ammo that remains in clip, if having weapon.
+-- Does not count for weapons that does not use any ammo
+
+
 -------- CONFIG --------
 
-Config = {
+GM.Config = {
 	["DebugLogging"] = true, -- Save debug logs once per every while?
 -- Logs will be found found in garrysmod/data/theeternalapocalypse/logs and can be sent to the developer to find and fix bugs in the gamemode
--- NOTE: Also Logs who uses admin commands, will add separate logging system in future
-
+-- NOTE: Also Logs, who uses admin commands.
+-- Will add separate logging system in future
 
 	["Currency"] = "Dollar",	-- the 's' is added onto strings where needed, for example if you put the currency as "Dollar" it will come out as "Dollars" as needed
 
+	["DoorHealth"] = 150,	-- how much damage should doors endure (can be destroyed from zombies only)
+	["DoorResetTime"] = 120,	-- time in seconds after doors being broken down, doors should reset
+
+	["AutoMaintenanceTime"] = 12,	-- amount of hours after server started will restart map, in order to prevent lag
+	["AutoMaintenanceDelay"] = 15,	-- amount of minutes after server started auto-maintenance sequence will restart map, probably to give players some time to get their base salvaged and such
+
 	["RookieLevel"] = 10,	-- people who are this level or below are considered Rookies
-	["RookieWeapon"] = "weapon_zw_noobcannon",	-- what gun to give to players if they are under the Rookie level and if they lost their previous one
+	["RookieWeapon"] = "weapon_tea_noobcannon",	-- what gun to give to players if they are under the Rookie level and if they lost their previous one
 	["StartMoney"] = 500,	-- How much money should new players have?
 
 	["ZombieSpawnRate"] = 14,	-- fresh zombies will be spawned in every x seconds
@@ -19,8 +38,8 @@ Config = {
 	["MaxCarryWeight"] = 36.72,	-- how much carry weight should we have by default (in kg)
 	["VaultSize"] = 175, --	vault size in kg
 
-	["WalkSpeed"] = 135,	--	remember that the speed skill increases your walk speed by 3.5 for each level, so at 200 walkspeed players can reach a possible maximum of 235 sprint speed
-	["RunSpeed"] = 260,	--	speed skill increases your running speed by 7 per skill level, so if default is 300, players can reach max of 370 run speed
+	["WalkSpeed"] = 135,	--	remember that the speed skill increases your walk speed by 3.5 for each level, so at 140 walkspeed players can reach a possible maximum of 175 walk speed
+	["RunSpeed"] = 260,	--	speed skill increases your running speed by 7 per skill level, so if default is 280, players can reach max of 350 run speed
 	["FileSystem"] = "Legacy" --	set to Legacy or PData
 -- legacy saves player data as text files under garrysmod/data/theeternalapocalypse/profiles/(players steamid)/
 -- Pdata saves their data to the servers sql file (garrysmod/sv.db)
@@ -28,62 +47,78 @@ Config = {
 -- No there isn't support for MySQL and there proably won't be unless you code it yourself.
 
 -- Excluded due to feature of convars
---Config["MaxCaches"] = 10 --	how many loot caches can exist in the map at any given time?
---Config["MaxProps"] = 60
---Config["FactionCost"] = 1000	-- do you want faction making to cost money?
---Config["VoluntaryPVP"] = true	-- Is PvP voluntary? Set to false to always force pvp, useful on gigantic maps like rp_stalker or if you just enjoy a more day-z ish experience
 }
 
-GM.MaxLevel = 50
-GM.LevelsPerPrestige = 5
-GM.MaxZombies = 45
+-------- STAT CONFIG --------
+
+-- THIS DOES NOT WORK YET!!
+-- Still working on it
+GM.StatConfig = {
+-- effectivenesses for skills (per point)
+
+	["Agility_eff1"] = 2,	-- jump power (in units) for Agility
+	["Agility_eff2"] = 0.1,	-- 
+	["Barter_eff1"] = 0.5,	-- Item Sell Price bonus (in %)
+	["Barter_eff2"] = 1.5,	-- Item Buying discount bonus (in %)
+	["Damage_eff1"] = 1,	-- Dammage multiplier (in %)
+	["Defense_eff1"] = 1.5,	-- Normal Damage Resistance (in %)
+	["Defense_eff2"] = 1,	-- Environmental Damage Resistance (in %)
+	["Endurance_eff1"] = 0.01,	-- idk
+	["Engineer_eff1"] = 3,	-- repaired hp with wrench (in units)
+	["Immunity_eff2"] = 4,	-- decreasing multiplier of increasing infection (in %)
+	["Knowledge_eff1"] = 1.5,	-- XP gain in %
+	["MedSkill_eff1"] = 1,	-- idk
+	["MedSkill_eff2"] = 1,	-- idk
+	["Salvage_eff1"] = 2,	-- Cash gain in %
+}
+
 
 -----------------------------ZOMBIE CLASSES-----------------------------
 
-Config["ZombieClasses"] = {
-	["npc_ate_basic"] = {		-- table name must be the entclass name of the zombie, see garrysmod/gamemodes/theeternalapocalypse/entities for entclasses (or you can add other zombie types by yourself)
+GM.Config["ZombieClasses"] = {
+	["npc_tea_basic"] = {		-- table name must be the entclass name of the zombie, see garrysmod/gamemodes/theeternalapocalypse/entities for entclasses (or you can add other zombie types by yourself)
 		["SpawnChance"] = 67,	-- spawn chance in %, be careful as the spawn chance of all your zombies totalled up must not exceed 100% (there is a helper function that will tell you if this has happened or how much the current total spawn chance for zombies is)
-		["XPReward"] = 48,		-- average xp reward for killing this zombie, varies with the VaryRewards setting above
-		["MoneyReward"] = 22,	-- average money reward for killing this zombie, varies with the VaryRewards setting above
+		["XPReward"] = 48,		-- xp reward for killing this zombie, varies with the convar tea_server_xpreward convar
+		["MoneyReward"] = 22,	-- money reward for killing this zombie, varies with the convar tea_server_moneyreward convar
 	},
 
-	["npc_ate_leaper"] = {
+	["npc_tea_leaper"] = {
 		["SpawnChance"] = 18.75,
 		["XPReward"] = 55,
 		["MoneyReward"] = 30,
 	},
 
-	["npc_ate_wraith"] = {
+	["npc_tea_wraith"] = {
 		["SpawnChance"] = 5,
 		["XPReward"] = 80,
 		["MoneyReward"] = 45,
 	},
 
-	["npc_ate_tank"] = {
+	["npc_tea_tank"] = {
 		["SpawnChance"] = 4,
 		["XPReward"] = 220,
 		["MoneyReward"] = 90,
 	},
 
-	["npc_ate_puker"] = {
+	["npc_tea_puker"] = {
 		["SpawnChance"] = 2.25,
 		["XPReward"] = 240,
 		["MoneyReward"] = 105,
 	},
 
-	["npc_ate_lord"] = {
+	["npc_tea_lord"] = {
 		["SpawnChance"] = 1.5,
 		["XPReward"] = 430,
 		["MoneyReward"] = 310,
 	},
 
-	["npc_ate_tormented_wraith"] = {
+	["npc_tea_tormented_wraith"] = {
 		["SpawnChance"] = 1.25,
 		["XPReward"] = 185,
 		["MoneyReward"] = 150,
 	},
 
-	["npc_ate_superlord"] = {
+	["npc_tea_superlord"] = {
 		["SpawnChance"] = 0.25,
 		["XPReward"] = 850,
 		["MoneyReward"] = 700,
@@ -93,19 +128,30 @@ Config["ZombieClasses"] = {
 
 -----------------------------BOSS CLASSES-----------------------------
 
--- Error with non-tyrant boss entity is fixed. Feel free to now add any new non-tyrant boss you like.
-Config["BossClasses"] = {
-	["npc_nextbot_boss_tyrant"] = {
-		["SpawnChance"] = 100,
+GM.Config["BossClasses"] = {
+	["npc_tea_boss_tyrant"] = {
+		["SpawnChance"] = 60,
 		["XPReward"] = 5000, -- remember that xp and money for bosses is distributed by who damaged them, if you did all of the damage you would get 5,000 xp in this case
 		["MoneyReward"] = 4500,
-		["SpawnDelay"] = 20, -- how long to wait before actually spawning it, gives the radio message time to play out
+		["SpawnDelay"] = 14, -- how long to wait before actually spawning it, gives the radio message time to play out
 		["AnnounceMessage"] = "[BOSS]: The Tyrant has appeared!",
 		["BroadCast"] = function()
 			RadioBroadcast(0.5, "This is an urgent broadcast on all bands!", "Watchdog", true)
 			RadioBroadcast(4, "Siesmic readings are showing a massive quadruped approaching the area, most likely a tyrant...", "Watchdog", false)
-			RadioBroadcast(8, "It is currently inbound for this sector, so...", "Watchdog", false)
-			RadioBroadcast(11, "...you better get inside something solid and make sure you have good amount of ammo if you decide to fight against it.", "Watchdog", false)
+			RadioBroadcast(8, "It is currently inbound for this sector, so you better get inside something solid and make sure you have good amount of ammo.", "Watchdog", false)
+		end,
+	},
+	
+	["npc_tea_boss_lordking"] = {
+		["SpawnChance"] = 40,
+		["XPReward"] = 8000,
+		["MoneyReward"] = 6250,
+		["SpawnDelay"] = 15,
+		["AnnounceMessage"] = "[BOSS]: The Zombie Lord King has appeared!",
+		["BroadCast"] = function()
+			RadioBroadcast(0.5, "This is a big, urgent broadcast, for all the survivors out there!", "Watchdog", true)
+			RadioBroadcast(4.5, "We have spotted a Mutated Lord Zombie, tougher than the other variants. It got an ability to teleport nearby zombies.", "Watchdog", false)
+			RadioBroadcast(9, "It will be coming into the area, so prepare a good barricade, multiple layers of barricades and plenty of ammo.", "Watchdog", false)
 		end,
 	},
 }
@@ -115,28 +161,27 @@ Config["BossClasses"] = {
 
 -- what to give to players when they join the server for the first time
 
-Config["RookieGear"] = {
+GM.Config["RookieGear"] = {
 	-- behold the beautiful new inventory format (yes)
 	["item_bandage"] = 3,
 	["item_antidote"] = 2,
 	["item_bed"] = 1,
 	["item_tinnedfood"] = 2,
-	["weapon_zw_noobcannon"] = 1,
+	["weapon_tea_noobcannon"] = 1,
 	["item_soda"] = 1,
 	["item_medkit"] = 1,
 	["item_pistolammo"] = 3,
 }
 
 -- What new players will have in their vault
-
-Config["RookieVault"] = {
-	["weapon_zw_grenade_pipe"] = 2,
+GM.Config["RookieVault"] = {
+	["weapon_tea_grenade_pipe"] = 2,
 	["item_soda"] = 1,
 }
 
 
 -- Vehicles don't exist, maybe they'll be added in next, future update or never
-Config["Vehicles"] = {
+GM.Config["Vehicles"] = {
 	["Basic Hatchback (Yellow)"] = {
 		["Health"] = 1000,
 		["Description"] = "A basic hatchback, not the fastest or the strongest but it'll get you there (eventually)",
@@ -200,8 +245,6 @@ Config["Vehicles"] = {
 			["item_scrap"] = 5,
 		},
 	},
-
-
 }
 
 
@@ -211,17 +254,24 @@ Config["Vehicles"] = {
 --  Superadmins can use any commands however, admins only have the ate_admin_clearzombies and spawn boss/airdrop command  --
 ----------------------------------------------------------------------------------------------------------------------------
 
+-- Add your steamid or your steamid64 here. This must be edited in order to use Dev Commands!
+function TEASVOwnerCheck(ply) -- use either your steamid64 or steamid. example: [[ply:SteamID64() == {your steam id here}]]
+	if !ply:IsValid() then return false end
+	if ply:SteamID64() == "76561198274314803" then return true end
+	return false
+end
+
 --Dev Check function will also impact other function checks so be sure you know what you are doing
 function TEADevCheck(ply)
 	if !ply:IsValid() then return false end
-	if ply:SteamID64() == "76561198274314803" or ply:SteamID64() == "76561198028288732" then return true end
-	return false --check will only work for dev, regardless of players' ranks
+	if ply:SteamID64() == "76561198274314803" or ply:SteamID64() == "76561198028288732" or TEASVOwnerCheck(ply) then return true end
+	return false --check will only work for dev, regardless of players' ranks (unless they're owner)
 end
 
 function SuperAdminCheck(ply)
 	if !ply:IsValid() then return false end
 	if ply:IsUserGroup("superadmin") or ply:IsSuperAdmin() or TEADevCheck(ply) then return true end
-	return false --above check failed so they must not be admin
+	return false -- above check failed so they are not superadmin
 end
 
 function AdminCheck(ply)

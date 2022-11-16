@@ -60,16 +60,15 @@ local MAT_PLASTIC = MAT_PLASTIC
 
 // Variables that are used on both client and server
 
-local RecoilMul = CreateConVar ("mad_recoilmul", "1", {FCVAR_REPLICATED, FCVAR_ARCHIVE})
-local DamageMul = CreateConVar ("mad_damagemul", "1", {FCVAR_REPLICATED, FCVAR_ARCHIVE})
+local RecoilMul = CreateConVar("mad_recoilmul", "1", {FCVAR_REPLICATED, FCVAR_ARCHIVE})
+local DamageMul = CreateConVar("mad_damagemul", "1", {FCVAR_REPLICATED, FCVAR_ARCHIVE})
 
-SWEP.Category			= "Mad Cows Weapons"
+SWEP.Category			= "Melee Weapons"
 SWEP.Author				= ""
 SWEP.Contact			= ""
 
-// I have nothing to say here because I'm a prick
-SWEP.Purpose			= "why does this even exist???"
-SWEP.Instructions			= "no"
+SWEP.Purpose			= ""
+SWEP.Instructions			= "none"
 SWEP.HoldType				= "pistol"
 SWEP.ViewModelFOV			= 60
 SWEP.ViewModelFlip		= false
@@ -170,7 +169,6 @@ function SWEP:Initialize()
 	self:SetHoldType(self.HoldType)
 	util.PrecacheSound( self.Primary.Sound )
 	if (SERVER) then
-		// Fucking NPCs
 		self:SetNPCMinBurst(30)
 		self:SetNPCMaxBurst(30)
 		self:SetNPCFireRate(self.Primary.Delay)
@@ -236,7 +234,7 @@ function SWEP:PrimaryAttack()
 	self.Weapon:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 	self.Weapon:SetNextSecondaryFire(CurTime() + self.Primary.Delay)
 
-	// If the burst mode is activated, it's going to shoot the three bullets (or more if you're dumb and put 4 or 5 bullets for your burst mode)
+	// If the burst mode is activated, it's going to shoot the three bullets (or more if you put 4 or 5 bullets for your burst mode)
 	if self.Weapon:GetDTBool(3) and self.Type == 3 then
 		self.BurstTimer 	= CurTime()
 		self.BurstCounter = self.BurstShots - 1

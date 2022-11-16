@@ -117,7 +117,7 @@ function ENT:OnTakeDamage( dmg )
 	local attacker = dmg:GetAttacker()
 	local owner = self:GetNWEntity("owner")
 
-	if attacker:IsPlayer() and attacker:IsValid() and attacker:Team() == 1 and attacker:GetNWBool("pvp") != true and self:GetNWEntity("owner") != attacker then -- this should stop little shitters from wrecking your base while not in pvp mode
+	if attacker:IsPlayer() and attacker:IsValid() and attacker:Team() == 1 and attacker:GetNWBool("pvp") != true and self:GetNWEntity("owner") != attacker then
 	SystemMessage(attacker, "You cannot damage other players props unless you have PvP mode enabled!", Color(255,205,205,255), true)
 	return false 
 	end
@@ -137,44 +137,46 @@ function ENT:OnTakeDamage( dmg )
 			timer.Destroy("basecoreattacked"..owner:Team()) 
 		end)
 	end
-	if attacker:IsPlayer() then
-		print(attacker:Nick().." is attacking base core of faction "..team.GetName(owner:Team()).."! (Team: "..owner:Team()..", Damage: "..damage..")")
-	else
-		print("An Unknown cause is attacking the base core of faction "..team.GetName(owner:Team()).."! (Team "..owner:Team()..", Damage: "..damage..")")
+	if GetConVar("tea_server_debugging"):GetInt() >= 1 then
+		if attacker:IsPlayer() then
+			print(attacker:Nick().." is attacking base core of faction "..team.GetName(owner:Team()).."! (Team: "..owner:Team()..", Damage: "..damage..")")
+		else
+			print("An Unknown cause is attacking the base core of faction "..team.GetName(owner:Team()).."! (Team "..owner:Team()..", Damage: "..damage..")")
+		end
 	end
 	local currenthealth = self.integrity
 	if dmg:IsBulletDamage() then 
-		self.integrity = (self.integrity - damage / 2)
+		self.integrity = (self.integrity - (damage / 2))
 	else
 		self.integrity = (self.integrity - damage)
 	end
 
-		local swag = math.Clamp(self.integrity / 8 , 0, 255)
+	local swag = math.Clamp(self.integrity / 8 , 0, 255)
 
-		self:SetColor(Color(swag +5,swag+5,swag+5,255))
+	self:SetColor(Color(swag +5,swag+5,swag+5,255))
 
-		if self.integrity - damage < 0 or !self.IsBuilt then
-			self:BreakPanel()
---			self.Entity:EmitSound("physics/wood/wood_plank_break"..math.random(1,2)..".wav", 100, 100)
-			self.Entity:EmitSound("npc/dog/car_impact1.wav", 120, 100)
-			SystemBroadcast("The "..team.GetName(owner:Team()).."'s base has been destroyed!", Color(205,205,255,255), true)
-			if self.IsBuilt then
+	if self.integrity - damage <= 0 or !self.IsBuilt then
+		self:BreakPanel()
+--		self.Entity:EmitSound("physics/wood/wood_plank_break"..math.random(1,2)..".wav", 100, 100)
+		self.Entity:EmitSound("npc/dog/car_impact1.wav", 120, 100)
+		tea_SystemBroadcast("The "..team.GetName(owner:Team()).."'s base has been destroyed!", Color(205,205,255,255), true)
+		if self.IsBuilt then
 			local EntDrop = ents.Create( "loot_cache_faction" )
 			EntDrop:SetPos( self:GetPos() + Vector(0, 0, 30) )
 			EntDrop:SetAngles( self:GetAngles() )
-			EntDrop.LootType = table.Random(LootTableFaction)["Class"]
+			EntDrop.LootType = table.Random(GAMEMODE.LootTableFaction)["Class"]
 			EntDrop:Spawn()
 			EntDrop:Activate()
 
 			if attacker:IsPlayer() then
-			Payout(attacker, 4500, 4500, 5000, 5000)
+				Payout(attacker, 4500, 4500, 5000, 5000)
 			end
 		else
-			SystemMessage(attacker, "Well... What did you expect?", Color(255,170,170,255))
-			Payout(attacker, 1500, 1500, 2000, 2000)
-
+			if attacker:IsPlayer() then
+				SystemMessage(attacker, "Well... What did you expect? Thought you would get more? No.", Color(255,170,170,255))
+				Payout(attacker, 1500, 1500, 2000, 2000)
 			end
-
-			self.Entity:Remove()
 		end
+		self.Entity:Remove()
+	end
 end

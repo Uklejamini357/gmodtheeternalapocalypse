@@ -73,18 +73,19 @@ end)
 end
 
 function ENT:Use(activator, caller)
-local owner = self:GetNWEntity("owner")
-if !self.IsBuilt then return false end
-if self.UseTimer > CurTime() then return false end
-if activator:Team() != owner:Team() then SystemMessage(activator, "This doesn't belong to your faction!", Color(255,205,205,255), true) return false end
+	local owner = self:GetNWEntity("owner")
+	if !self.IsBuilt then return false end
+	if !self.IsPowered then SystemMessage(activator, "This isn't powered by faction base core!", Color(255,205,205,255), true) return false end
+	if self.UseTimer > CurTime() then return false end
+	if activator:Team() != owner:Team() then SystemMessage(activator, "This doesn't belong to your faction!", Color(255,205,205,255), true) return false end
 
-activator.Hunger = 10000
-activator.Thirst = 10000
+	activator.Hunger = 10000
+	activator.Thirst = 10000
 
-activator:EmitSound("npc/barnacle/barnacle_gulp2.wav")
-SystemMessage(activator, "That was delicious!", Color(205,255,205,255), false)
-SendUseDelay(activator, 2)
-self.UseTimer = CurTime() + 5
+	activator:EmitSound("npc/barnacle/barnacle_gulp2.wav")
+	SystemMessage(activator, "That was delicious!", Color(205,255,205,255), false)
+	SendUseDelay(activator, 2)
+	self.UseTimer = CurTime() + 5
 
 end 
 
@@ -97,8 +98,14 @@ self:SetCollisionGroup( COLLISION_GROUP_NONE )
 end
 end
 
-function ENT:Think() 
-
+function ENT:Think()
+	local powered = false
+	for k,v in pairs(ents.FindInSphere(self:GetPos(), 900)) do
+		if v:GetClass() == "structure_base_core" and v.IsBuilt and v:GetNWEntity("owner") and v:GetNWEntity("owner"):Team() == self:GetNWEntity("owner"):Team() then
+			powered = true
+		end
+	end
+	self.IsPowered = powered
 end
 
 

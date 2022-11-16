@@ -14,11 +14,11 @@ ENT.AdminOnly			= false
 
 function ENT:SpawnFunction( ply, tr ) -- spawnfunction isnt actually used within zombified world but i left it here for debug purposes
 	if ( !tr.Hit ) then return end
-		local SpawnPos = tr.HitPos + Vector(0,0,50)
-		local ent = ents.Create( "prop_flimsy" )
-			ent:SetPos( SpawnPos )
-			ent:Spawn()
-			ent:Activate()
+	local SpawnPos = tr.HitPos + Vector(0,0,50)
+	local ent = ents.Create( "prop_flimsy" )
+	ent:SetPos( SpawnPos )
+	ent:Spawn()
+	ent:Activate()
 	return ent
 end
 
@@ -92,13 +92,13 @@ function ENT:Think() end
 
 function ENT:OnTakeDamage( dmg )
 /*
-self:SetHealth( self:Health() - dmg:GetDamage() )
-local ColorAmount =  ( ( self:Health() / self.maxhealth ) * 255 )
-self:SetColor( Color(ColorAmount, ColorAmount, ColorAmount, 255) )
-if self:Health() <= 0 then
-	self:GibBreakClient(Vector(math.random(-50, 50),math.random(-50, 50),math.random(-50, 50)))
-	self:Remove()
-end
+	self:SetHealth( self:Health() - dmg:GetDamage() )
+	local ColorAmount =  ( ( self:Health() / self.maxhealth ) * 255 )
+	self:SetColor( Color(ColorAmount, ColorAmount, ColorAmount, 255) )
+	if self:Health() <= 0 then
+		self:GibBreakClient(Vector(math.random(-50, 50),math.random(-50, 50),math.random(-50, 50)))
+		self:Remove()
+	end
 */
 	local damage = dmg:GetDamage()
 	local attacker = dmg:GetAttacker()
@@ -108,7 +108,7 @@ end
 			SystemMessage(attacker, "You cannot damage other players props unless you have PvP mode enabled!", Color(255,205,205,255), true)
 			timer.Create("NoPvPMsgAntiSpamTimer"..attacker:UniqueID(), 0.5, 1, function() end)
 		end
-	return false 
+		return false 
 	end
 
 
