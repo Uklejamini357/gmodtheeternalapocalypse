@@ -378,8 +378,6 @@ function GM:PostPlayerDeath(ply)
 		net.Send(ply)
 	end
 
-	ply:SendLua([[if GetConVar("tea_cl_deathsfx"):GetInt() >= 1 then RunConsoleCommand("play", GetConVar("tea_cl_deathsound"):GetString()) end]])
-
 	ply.IsAlive = false
 end
 

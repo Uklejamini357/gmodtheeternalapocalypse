@@ -24,6 +24,7 @@ AddCSLuaFile("client/cl_statsmenu.lua")
 AddCSLuaFile("client/cl_helpmenu.lua")
 AddCSLuaFile("client/cl_bosspanel.lua")
 AddCSLuaFile("client/cl_options.lua")
+AddCSLuaFile("client/cl_changelogs.lua")
 --AddCSLuaFile("client/cl_deathscreen.lua") -- if you want, but it's unfinished
 
 
@@ -480,6 +481,7 @@ function GM:PlayerInitialSpawn(ply, transition)
 	-------- Temporary --------
 	ply:PrintMessage(HUD_PRINTTALK, "[The Eternal Apocalypse]: Please note, this is a beta version. Some things may not work as intended.")
 	ply:PrintMessage(HUD_PRINTTALK, "If you do find those bugs, please report them to the developer.")
+	ply:PrintMessage(HUD_PRINTTALK, "- Uklejamini [The Eternal Apocalypse Dev]")
 	----------------
 
 
@@ -591,7 +593,6 @@ function GM:PlayerSpawn(ply)
 	ply:SetHealth(self:CalcMaxHealth(ply))
 	ply:SetMaxArmor(self:CalcMaxArmor(ply))
 	ply:SetJumpPower(self:CalcJumpPower(ply))
-	ply:ConCommand("play common/null.wav") ply:ConCommand("play *#common/null.wav")
 	tea_RecalcPlayerModel(ply)
 	tea_PrepareStats(ply)
 	tea_FullyUpdatePlayer(ply)

@@ -66,20 +66,21 @@ function CMenu()
 	end
 
 -- this needs to be replaced with something else
-	local SpecialButton = vgui.Create("DButton", ContextMenu)
-	SpecialButton:SetSize(120, 40)
-	SpecialButton:Center()
-	local x,y = SpecialButton:GetPos()
-	SpecialButton:SetPos(x + 175, y + 125)
-	SpecialButton:SetText("WORK IN PROGRESS")
-	SpecialButton:SetTextColor(Color(255, 255, 255, 255))
-	SpecialButton.Paint = function(panel)
+	local ChangeLogsButton = vgui.Create("DButton", ContextMenu)
+	ChangeLogsButton:SetSize(120, 40)
+	ChangeLogsButton:Center()
+	local x,y = ChangeLogsButton:GetPos()
+	ChangeLogsButton:SetPos(x + 175, y + 125)
+	ChangeLogsButton:SetText("Changelogs")
+	ChangeLogsButton:SetTextColor(Color(255, 255, 255, 255))
+	ChangeLogsButton.Paint = function(panel)
 		surface.SetDrawColor(150, 250, 0, 255)
-		surface.DrawOutlinedRect(0, 0, SpecialButton:GetWide(), SpecialButton:GetTall())
-		draw.RoundedBox(2, 0, 0, SpecialButton:GetWide(), SpecialButton:GetTall(), Color(0, 0, 0, 130))
+		surface.DrawOutlinedRect(0, 0, ChangeLogsButton:GetWide(), ChangeLogsButton:GetTall())
+		draw.RoundedBox(2, 0, 0, ChangeLogsButton:GetWide(), ChangeLogsButton:GetTall(), Color(0, 0, 0, 130))
 	end
-	SpecialButton.DoClick = function()
+	ChangeLogsButton.DoClick = function()
 		RunConsoleCommand("-menu_context")
+		gamemode.Call("MakeChangeLogs")
 	end
 
 	local RefreshInvButton = vgui.Create("DButton", ContextMenu)

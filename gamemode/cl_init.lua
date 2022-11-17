@@ -24,6 +24,7 @@ include("client/cl_statsmenu.lua")
 include("client/cl_helpmenu.lua")
 include("client/cl_bosspanel.lua")
 include("client/cl_options.lua")
+include("client/cl_changelogs.lua")
 
 
 -- i had to move it ok
@@ -31,6 +32,7 @@ CreateClientConVar("tea_cl_hud", 1, true, false, "Enable The Eternal Apocalypse 
 CreateClientConVar("tea_cl_hudstyle", 0, true, false, "Switch between HUD styles", 0, 1)
 CreateClientConVar("tea_cl_soundboss", 1, true, true, "Should play HL2 Stinger sound when boss appears?", 0, 1)
 CreateClientConVar("tea_cl_deathsfx", 1, true, true, "Play Sound Effect on dying?", 0, 1)
+CreateClientConVar("tea_cl_deathsfx_vol", 1, true, true, "How loud should be death sound effect?", 0, 1)
 CreateClientConVar("tea_cl_deathsound", "theeternalapocalypse/gameover_music.wav", true, false, "Play sound effect on death. Use the valid sound or the sound effect will not play! Tip: Use string '*#' at start of convar string to play the sound as music")
 CreateClientConVar("tea_cl_hitsounds", 1, true, true, "Play sound on dealing damage to zombies and players", 0, 1)
 CreateClientConVar("tea_cl_hitsounds_vol", 0.3, true, true, "Volume ratio of playing hitsound when dealing damage to players", 0, 1)
@@ -44,6 +46,9 @@ CreateClientConVar("tea_cl_admin_noblur", 0, true, false, "Disables vision effec
 
 
 
+local death_sound_volume = 0
+local death_sound_volume_s = 0
+local death_sound_current = GetConVar("tea_cl_deathsound"):GetString()
 SelectedProp = SelectedProp or "models/props_debris/wood_board04a.mdl" -- need to set this to something here to avoid a massive error spew
 
 function ChooseProp( mdl )
@@ -62,6 +67,37 @@ end
 
 function BetterScreenScale()
 	return math.max(ScrH() / 1080, 0.851)
+end
+
+function GM:LocalPlayerDeath(attacker)
+	death_sound_volume = GetConVar("tea_cl_deathsfx_vol"):GetFloat()
+	death_sound_volume_s = 0.01 * death_sound_volume
+	death_sound_current = GetConVar("tea_cl_deathsound"):GetString()
+	if GetConVar("tea_cl_deathsfx"):GetInt() >= 1 then
+		EmitSound(GetConVar("tea_cl_deathsound"):GetString(), LocalPlayer():GetPos(), -1, CHAN_AUTO, death_sound_volume, 0)
+	end
+	print("Why?")
+end
+
+function GM:Think()
+	if !LocalPlayer():IsValid() then return end
+
+	if GetConVar("tea_cl_deathsfx"):GetInt() >= 1 then
+		if LocalPlayer():Alive() then
+			if death_sound_volume > 0 then
+				EmitSound(death_sound_current, LocalPlayer():GetPos(), -1, CHAN_AUTO, death_sound_volume, 0, SND_CHANGE_VOL)
+			else
+				EmitSound(death_sound_current, LocalPlayer():GetPos(), -1, CHAN_AUTO, death_sound_volume, 0, SND_STOP)
+			end
+		end
+	else
+		death_sound_volume = 0
+		EmitSound(death_sound_current, LocalPlayer():GetPos(), -1, CHAN_AUTO, death_sound_volume, 0, SND_STOP)
+	end
+
+	if LocalPlayer():Alive() then
+		death_sound_volume = death_sound_volume - death_sound_volume_s
+	end
 end
 
 function GM:Initialize()
@@ -105,6 +141,7 @@ function GM:PostProcessPermitted( name )
 	return false
 end
 
+-- copied from zs yet again, used for most panels, much easier and size saving
 function EasyLabel(parent, text, font, textcolor)
 	local dpanel = vgui.Create("DLabel", parent)
 	if font then

@@ -37,6 +37,12 @@ local RDStext = {
 	"has put to end their misery"
 }
 
+local function CheckLocalPlayerDeath(victim, attacker)
+	if victim == LocalPlayer() then
+		gamemode.Call("LocalPlayerDeath", attacker)
+	end
+end
+
 local function CheckAttacker(attacker)
 	if attacker == "npc_tea_basic" then attacker = "Shambler Zombie"
 	elseif attacker == "npc_tea_leaper" then attacker = "Leaper Zombie"
@@ -89,6 +95,8 @@ local function RecvPlayerKilledByPlayer()
 
 	if ( !IsValid( attacker ) ) then return end
 	if ( !IsValid( victim ) ) then return end
+
+	CheckLocalPlayerDeath(victim, attacker)
 	
 	GAMEMODE:AddDeathNotice( attacker:Nick(), attacker:Team(), inflictor, victim:Nick(), victim:Team() )
 end
@@ -98,6 +106,7 @@ local function RecvPlayerKilledSelf()
 
 	local victim = net.ReadEntity()
 	if ( !IsValid( victim ) ) then return end
+	CheckLocalPlayerDeath(victim)
 	GAMEMODE:AddDeathNotice( nil, 0, "suicide", victim:Nick(), victim:Team() )
 
 end
@@ -110,6 +119,8 @@ local function RecvPlayerKilled()
 	local inflictor	= net.ReadString()
 	local attackertype	= net.ReadString()
 	local attacker = CheckAttacker(attackertype)
+
+	CheckLocalPlayerDeath(victim, attacker)
 
 	GAMEMODE:AddDeathNotice( attacker, -1, inflictor, victim:Nick(), victim:Team() )
 

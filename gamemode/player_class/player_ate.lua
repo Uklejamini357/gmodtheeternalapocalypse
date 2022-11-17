@@ -6,7 +6,7 @@ include( 'taunt_camera.lua' )
 
 local PLAYER = {}
 
-PLAYER.DisplayName			= "AtE Playerclass"
+PLAYER.DisplayName			= "Survivor"
 
 PLAYER.SlowWalkSpeed		= 100		-- There was a gmod update that breaks the gamemode again (everything's fine now)
 PLAYER.WalkSpeed			= 120		-- How fast to move when not running
@@ -62,10 +62,6 @@ end
 -- Ret1:
 --
 function PLAYER:Loadout()
-
-	self.Player:Give( "weapon_pistol" )
-	self.Player:GiveAmmo( 255, "Pistol", true )
-
 end
 
 function PLAYER:SetModel()
@@ -104,6 +100,7 @@ function PLAYER:CalcView( view )
 end
 
 function PLAYER:Death( inflictor, attacker )
+
 end
 
 -- Shared

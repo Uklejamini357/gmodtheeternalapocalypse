@@ -91,8 +91,20 @@ function MakeOptions()
 	check:SetConVar("tea_cl_noearrings")
 	check:SizeToContents()
 	list:AddItem(check)
- 
+	
 	local slider = vgui.Create("DNumSlider", Window)
+	slider:SetDecimals(2)
+	slider:SetMinMax(0, 1)
+	slider:SetConVar("tea_cl_deathsfx_vol")
+	slider:SetText("Death sound effect volume")
+	slider:SetToolTip("Death sound effect varies on game volume. Examples:\
+Music volume depends on 'snd_musicvolume' convar value\
+Sound volume depends on 'volume_sfx' convar value\
+Both depend on 'volume' convar value")
+	slider:SizeToContents()
+	list:AddItem(slider)
+ 
+	slider = vgui.Create("DNumSlider", Window)
 	slider:SetDecimals(2)
 	slider:SetMinMax(4, 12)
 	slider:SetConVar("tea_cl_deathnoticetime")
