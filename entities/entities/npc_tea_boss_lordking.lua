@@ -110,7 +110,7 @@ function ENT:Initialize()
 	self:SetHealth(22000)
 	self:SetMaxHealth(22000)
 	self:SetUpStats()
-	self:SetModelScale(1.5, 0)
+	self:SetModelScale(1.4, 0)
 	self:SetColor(Color(127,127,255))
 	self:SetCollisionBounds(Vector(-34,-34, 0), Vector(34, 34, 84))
 --	self:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
@@ -137,8 +137,33 @@ function ENT:TimedEvent(time, callback)
 end
 
 function ENT:Think()
-if !IsValid(self) then return end
+	if !IsValid(self) then return end
+	local target = self.target
 
+	if IsValid(target) and target:Alive() and !target.HasNoTarget and (self:GetRangeTo(target) <= 1750 && self.AbilityCD < CurTime() && self:HasLOS()) then
+		local effectdata = EffectData()
+		effectdata:SetOrigin(self:GetPos() + Vector(0, 0, 60))
+		util.Effect("zw_master_pulse", effectdata)
+		self:EmitSound("ambient/machines/thumper_hit.wav", 125, 55)
+
+		for k, v in pairs(ents.FindInSphere(self:GetPos(), 2000)) do
+--			v.Type == "nextbot"
+			if (self != v and (GAMEMODE.Config["ZombieClasses"][v:GetClass()] or GAMEMODE.Config["BossClasses"][v:GetClass()])) then
+				if (v.RageLevel or 0) < 4 then
+					v.RageLevel = 4
+				end
+				if (v.SpeedBuff or 0) < 1.4 then
+					v.SpeedBuff = 1.4
+				end
+				if math.random(1, 100) > 20 then self:Teleport_NPC(v) end
+				local effectdata = EffectData()
+				effectdata:SetOrigin(v:GetPos() + Vector(0, 0, 60))
+				util.Effect("zw_master_strike", effectdata)
+			end
+		end
+
+		self.AbilityCD = CurTime() + math.Rand(20,25) -- i would enjoy the chaos if you set this to 0 (HIGHLY UNRECOMMENDED)
+	end
 end
 
 function ENT:RunBehaviour()
@@ -181,32 +206,8 @@ function ENT:RunBehaviour()
 			else
 				self.NxtTick = self.NxtTick - 1
 			end
-			
-			if (self:GetRangeTo(target) <= 1500 && self.AbilityCD < CurTime() && self:HasLOS()) then
-				local effectdata = EffectData()
-				effectdata:SetOrigin(self:GetPos() + Vector(0, 0, 60))
-				util.Effect("zw_master_pulse", effectdata)
-				self:EmitSound("ambient/machines/thumper_hit.wav", 125, 55)
 
-				for k, v in pairs(ents.FindInSphere(self:GetPos(), 2000)) do
-					if (self != v and v.Type == "nextbot") then
-						if v.RageLevel < 4 then
-							v.RageLevel = 4
-						end
-						if v.SpeedBuff < 1.4 then
-							v.SpeedBuff = 1.4
-						end
-						if math.random(1, 100) > 20 then self:Teleport_NPC(v) end
-						local effectdata = EffectData()
-						effectdata:SetOrigin(v:GetPos() + Vector(0, 0, 60))
-						util.Effect("zw_master_strike", effectdata)
-					end
-				end
-
-
-				self.AbilityCD = CurTime() + 10
-
-			elseif (self:GetRangeTo(target) <= 80) and self:CanSeeTarget(target) then									-- hit the player
+			if (self:GetRangeTo(target) <= 80) and self:CanSeeTarget(target) then									-- hit the player
 				self:EmitSound(table.Random(self.AttackSounds), 125, math.random(85, 95))
 
 				self:TimedEvent(0.35, function()
@@ -500,8 +501,9 @@ function ENT:Teleport()
 end
 
 function ENT:Teleport_NPC(ent)
+	local Teleport_NPC_2 = self.Teleport_NPC --back it up for some reason not to cause any errors
 	local pos = ent:GetPos() + Vector(math.random(-250,250), math.random(-250,250), 100)
-	if !util.IsInWorld(pos) then timer.Simple(0.1, function() self:Teleport_NPC(ent) end) return false end
+	if !util.IsInWorld(pos) then timer.Simple(0.1, function() Teleport_NPC_2(ent) end) return false end
 
 	ent:SetPos(pos)
 	ent:DropToFloor()

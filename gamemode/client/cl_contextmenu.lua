@@ -262,8 +262,8 @@ Prestige 15 = Gain XP at 1.1x multiplier")
 	end
 	doprestige.DoClick = function()
 		WantToPrestigeFrame:Remove()
-		local levelrequiredforprestige = GAMEMODE.MaxLevel + (GAMEMODE.LevelsPerPrestige * Myprestige)
-		if Mylevel >= levelrequiredforprestige then
+		local levelrequiredforprestige = GAMEMODE.MaxLevel + (GAMEMODE.LevelsPerPrestige * MyPrestige)
+		if MyLvl >= levelrequiredforprestige then
 			ConfirmPrestige()
 		else
 			chat.AddText(Color(255,255,255,255), "[System] ", Color(255,155,155,255), "You must be at least level "..levelrequiredforprestige.." to prestige!")
@@ -341,7 +341,7 @@ function DropGoldMenu()
 	local derptext2 = vgui.Create("DLabel", AdarFrame)
 	derptext2:SetFont("TargetIDSmall")
 	derptext2:SetColor(Color(205,255,205,255))
-	derptext2:SetText("Current Cash: "..Mymoney)
+	derptext2:SetText("Current Cash: "..MyMoney)
 	derptext2:SizeToContents()
 	derptext2:SetPos(10, 50)
 

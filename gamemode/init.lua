@@ -133,7 +133,7 @@ function GM:Think()
 		if (ply.Thirst <= 0 or ply.Hunger <= 0 or ply.Fatigue >= 10000 or ply.Infection >= 10000) and ply:Alive() then
 			if !timer.Exists("DyingFromStats_"..ply:EntIndex()) then
 				timer.Create("DyingFromStats_"..ply:EntIndex(), 30, 1, function()
-					ply:Kill()
+					if ply:Alive() then ply:Kill() end
 				end)
 			end
 		else
@@ -334,6 +334,56 @@ function GM:Initialize()
 
 end
 
+function GM:DoAutoMaintenance()
+	if self.IsMaintenance then return end
+	tea_SystemBroadcast("[AUTO-MAINTENANCE SYSTEM]:", Color(255,255,255), false)
+	self.MinutesBeforeMaintenance = tonumber(self.Config["AutoMaintenanceDelay"])
+	tea_SystemBroadcast(Format("Attention! The server will automatically restart map in %d minutes! Please make sure you have salvaged all of your structures and cashed in your bounties before the server restarts.", self.MinutesBeforeMaintenance), Color(205,205,205), false)
+	print(Format("Starting map restart sequence. ETA: %d minutes.", self.MinutesBeforeMaintenance))
+	for _,v in pairs(player.GetAll()) do v:ConCommand("playgamesound common/warning.wav") end
+	self.IsMaintenance = true
+	timer.Create("tea_ChangingLevel", 60, 0, function()
+		if self.MinutesBeforeMaintenance > 1 then
+			self.MinutesBeforeMaintenance = self.MinutesBeforeMaintenance - 1
+			tea_SystemBroadcast(Format("Due to maintenances, the server will restart in %d minutes.", self.MinutesBeforeMaintenance), Color(205,205,205), true)
+		else
+			tea_SystemBroadcast("WARNING! Server is restarting in:", Color(205,205,205), true)
+			timer.Destroy("tea_ChangingLevel")
+			self.AutoMaintenancePhase = 10
+			timer.Create("tea_ChangingLevel_2", 1, 0, function()
+				if self.AutoMaintenancePhase >= 1 then
+					tea_SystemBroadcast(self.AutoMaintenancePhase.."...", Color(205,25.5*self.AutoMaintenancePhase,25.5*self.AutoMaintenancePhase), false)
+					for _,ply in pairs(player.GetAll()) do ply:ConCommand("playgamesound buttons/button17.wav") end
+					self.AutoMaintenancePhase = self.AutoMaintenancePhase - 1
+				else
+					if !self.RestartingLevel then
+						tea_SystemBroadcast("Restarting server...", Color(205,205,205), true)
+						self.RestartingLevel = true
+						for _,ply in pairs(player.GetAll()) do ply:ConCommand("playgamesound buttons/button15.wav") end
+					end
+					timer.Simple(1, function()
+						for k,o in pairs(GAMEMODE.Config["ZombieClasses"]) do
+							for _, ent in pairs(ents.FindByClass(k)) do
+								ent:Remove()
+							end
+						end
+					end)
+					timer.Simple(2, function()
+						for k,o in pairs(GAMEMODE.Config["BossClasses"]) do
+							for _, ent in pairs(ents.FindByClass(k)) do
+								ent:Remove()
+							end
+						end
+					end)
+					timer.Simple(5, function()
+						RunConsoleCommand('changelevel', game.GetMap())
+					end)
+				end
+			end)
+		end
+	end)
+end
+
 function GM:Tick() -- same as GM:Think but here it's used just for server and not used if convar sv_hibernate_think is disabled
 	if CurTime() > tonumber(self.NextZombieSpawn) then
 		self.NextZombieSpawn = CurTime() + tonumber(self.Config["ZombieSpawnRate"]) 
@@ -348,52 +398,7 @@ function GM:Tick() -- same as GM:Think but here it's used just for server and no
 
 	-- The Ultimate timer of Auto-Maintenance
 	if !self.IsMaintenance and CurTime() >= tonumber(self.Config["AutoMaintenanceTime"]) * 3600 then
-		tea_SystemBroadcast("[AUTO-MAINTENANCE SYSTEM]:", Color(255,255,255), false)
-		self.MinutesBeforeMaintenance = tonumber(self.Config["AutoMaintenanceDelay"])
-		tea_SystemBroadcast(Format("Attention! The server will automatically restart map in %d minutes! Please make sure you have salvaged all of your structures and cashed in your bounties before the server restarts.", self.MinutesBeforeMaintenance), Color(205,205,205), false)
-		print(Format("Starting map restart sequence. ETA: %d minutes.", self.MinutesBeforeMaintenance))
-		for _,v in pairs(player.GetAll()) do v:ConCommand("playgamesound common/warning.wav") end
-		self.IsMaintenance = true
-		timer.Create("tea_ChangingLevel", 60, 0, function()
-			if self.MinutesBeforeMaintenance > 1 then
-				self.MinutesBeforeMaintenance = self.MinutesBeforeMaintenance - 1
-				tea_SystemBroadcast(Format("Due to maintenances, the server will restart in %d minutes.", self.MinutesBeforeMaintenance), Color(205,205,205), true)
-			else
-				tea_SystemBroadcast("WARNING! Server is restarting in:", Color(205,205,205), true)
-				timer.Destroy("tea_ChangingLevel")
-				self.AutoMaintenancePhase = 10
-				timer.Create("tea_ChangingLevel_2", 1, 0, function()
-					if self.AutoMaintenancePhase >= 1 then
-						tea_SystemBroadcast(self.AutoMaintenancePhase.."...", Color(205,25.5*self.AutoMaintenancePhase,25.5*self.AutoMaintenancePhase), false)
-						for _,ply in pairs(player.GetAll()) do ply:ConCommand("playgamesound buttons/button17.wav") end
-						self.AutoMaintenancePhase = self.AutoMaintenancePhase - 1
-					else
-						if !self.RestartingLevel then
-							tea_SystemBroadcast("Restarting server...", Color(205,205,205), true)
-							self.RestartingLevel = true
-							for _,ply in pairs(player.GetAll()) do ply:ConCommand("playgamesound buttons/button15.wav") end
-						end
-						timer.Simple(1, function()
-							for k,o in pairs(GAMEMODE.Config["ZombieClasses"]) do
-								for _, ent in pairs(ents.FindByClass(k)) do
-									ent:Remove()
-								end
-							end
-						end)
-						timer.Simple(2, function()
-							for k,o in pairs(GAMEMODE.Config["BossClasses"]) do
-								for _, ent in pairs(ents.FindByClass(k)) do
-									ent:Remove()
-								end
-							end
-						end)
-						timer.Simple(5, function()
-							RunConsoleCommand('changelevel', game.GetMap())
-						end)
-					end
-				end)
-			end
-		end)
+		self:DoAutoMaintenance()
 	end
 end
 
@@ -422,7 +427,7 @@ function GM:PlayerInitialSpawn(ply, transition)
 	ply:AllowFlashlight(true)
 	
 	-------- Normal Stats --------
-	ply.SurvivalTime = math.floor(CurTime())
+	ply.SurvivalTime = CurTime()
 	ply.Stamina = 100
 	ply.Hunger = 10000
 	ply.Thirst = 10000
@@ -477,12 +482,6 @@ function GM:PlayerInitialSpawn(ply, transition)
 	-------- Other --------
 
 	ply:SendLua(self.ZombieSpawningEnabled and "GAMEMODE.ZombieSpawningEnabled = true" or "GAMEMODE.ZombieSpawningEnabled = false")
-
-	-------- Temporary --------
-	ply:PrintMessage(HUD_PRINTTALK, "[The Eternal Apocalypse]: Please note, this is a beta version. Some things may not work as intended.")
-	ply:PrintMessage(HUD_PRINTTALK, "If you do find those bugs, please report them to the developer.")
-	ply:PrintMessage(HUD_PRINTTALK, "- Uklejamini [The Eternal Apocalypse Dev]")
-	----------------
 
 
 	for k, v in pairs(GAMEMODE.StatsListServer) do

@@ -135,7 +135,7 @@ function SWEP:PrimaryAttack()
 		return
 	end
 	
-	if ((CLIENT and Mystamina < 5) or (SERVER and self.Owner.Stamina < 5)) then return end
+	if ((CLIENT and MyStamina < 3) or (SERVER and self.Owner.Stamina < 3)) then return end
 
 	self.Weapon:SendWeaponAnim(ACT_VM_IDLE)
 	local Animation = self.Owner:GetViewModel()
@@ -148,7 +148,7 @@ function SWEP:PrimaryAttack()
 	timer.Simple( 0.1, function()
 	if (!IsValid( self ) || !IsValid( self.Owner ) || !self.Owner:GetActiveWeapon() || self.Owner:GetActiveWeapon() != self || CLIENT) then return end
 		self:DealDamage( anim )
-		self.Owner.Stamina = math.Clamp(self.Owner.Stamina - math.Rand(2.25, 3), 0, 100)
+		self.Owner.Stamina = math.Clamp(self.Owner.Stamina - math.Rand(1.65, 2), 0, 100)
 		self.Owner:EmitSound( "weapons/slam/throw.wav" )
 	end )
 
@@ -182,7 +182,7 @@ end
    Desc: +attack2 has been pressed.
 ---------------------------------------------------------*/
 function SWEP:SecondaryAttack()
-	if self.Weapon:GetNetworkedBool("Holsted") or self.Owner:KeyDown(IN_SPEED) or ((CLIENT and Mystamina < 5) or (SERVER and self.Owner.Stamina < 5)) then return end
+	if self.Weapon:GetNetworkedBool("Holsted") or self.Owner:KeyDown(IN_SPEED) or ((CLIENT and MyStamina < 4.25) or (SERVER and self.Owner.Stamina < 4.25)) then return end
 
 	// Holst/Deploy your fucking weapon
 	if (not self.Owner:IsNPC() and self.Owner:KeyDown(IN_USE)) then
@@ -208,7 +208,7 @@ function SWEP:SecondaryAttack()
 	timer.Simple( 0.1, function()
 	if ( !IsValid( self ) || !IsValid( self.Owner ) || !self.Owner:GetActiveWeapon() || self.Owner:GetActiveWeapon() != self || CLIENT ) then return end
 		self:DealDamage( anim )
-		self.Owner.Stamina = math.Clamp(self.Owner.Stamina - math.Rand(3, 4.5), 0, 100)
+		self.Owner.Stamina = math.Clamp(self.Owner.Stamina - math.Rand(2.4, 3), 0, 100)
 		self.Owner:EmitSound( "weapons/slam/throw.wav" )
 	end )
 

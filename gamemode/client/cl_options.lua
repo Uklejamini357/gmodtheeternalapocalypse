@@ -158,8 +158,8 @@ Both depend on 'volume' convar value")
 
 		check = vgui.Create("DCheckBoxLabel", Window)
 		check:SetText("No Vision Effects")
-		check:SetToolTip("WORK IN PROGRESS!!")
-		check:SetConVar("tea_cl_admin_noblur")
+		check:SetToolTip("Disables anything that affects your vision, from having low health, blurred vision to black death screen.")
+		check:SetConVar("tea_cl_admin_noviseffects")
 		check:SizeToContents()
 		list:AddItem(check)
 

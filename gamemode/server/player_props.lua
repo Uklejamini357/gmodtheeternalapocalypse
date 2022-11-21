@@ -218,7 +218,7 @@ function MakeStructure(ply, struc, pos, ang)
 
 	if struc == "structure_base_core" and CheckFactionBases(pos) != true then SystemMessage(ply, "Unable to create base core: Too close to trader, spawn or another base core!", Color(255,205,205,255), true) return false end
 	local plyteam = team.GetName(ply:Team())
-	if struc == "structure_base_core" and Factions[ plyteam ]["leader"] != ply then SystemMessage(ply, "You must be the leader of your faction to create a base core!", Color(255,205,205,255), true) return false end
+	if struc == "structure_base_core" and Factions[plyteam]["leader"] != ply then SystemMessage(ply, "You must be the leader of your faction to create a base core!", Color(255,205,205,255), true) return false end
 
 	local prop = ents.Create( struc )
 	prop:SetModel(SpecialSpawns[struc]["Model"])

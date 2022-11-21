@@ -6,9 +6,9 @@ function CalculateMaxWeightClient()
 	local armorstr = LocalPlayer():GetNWString("ArmorType") or "none"
 	local armortype = GAMEMODE.ItemsList[armorstr]
 	if LocalPlayer():GetNWString("ArmorType") == "none" then
-		maxweight = defaultcarryweight + (tonumber(Myprestige) >= 6 and 5 or tonumber(Myprestige) >= 3 and 2 or 0) + ((Perks.Strength or 0) * 1.53)
+		maxweight = defaultcarryweight + (tonumber(MyPrestige) >= 6 and 5 or tonumber(MyPrestige) >= 3 and 2 or 0) + ((Perks.Strength or 0) * 1.53)
 	else
-		maxweight = defaultcarryweight + (tonumber(Myprestige) >= 6 and 5 or tonumber(Myprestige) >= 3 and 2 or 0) + ((Perks.Strength or 0) * 1.53) + armortype["ArmorStats"]["carryweight"]
+		maxweight = defaultcarryweight + (tonumber(MyPrestige) >= 6 and 5 or tonumber(MyPrestige) >= 3 and 2 or 0) + ((Perks.Strength or 0) * 1.53) + armortype["ArmorStats"]["carryweight"]
 	end
 	return maxweight
 end
@@ -30,14 +30,6 @@ surface.CreateFont("QtyFont", {
 	antialias = true,
 })
 
-LocalInventory = {}
-LocalVault = {}
-InventoryItems = {}
-InventoryWeapons = {}
-Perks = {}
-Perksdesc = {}
-
-
 
 LocalFactions = LocalFactions or {}
 
@@ -50,14 +42,6 @@ if !LocalFactions["Loner"] then LocalFactions["Loner"] =
 	}
 end
 
-Mybestsurvtim = 0
-Myzmbskilled = 0
-Myplyskilled = 0
-Myplydeaths = 0
-Mymmeleexp = 0
-Mymmeleelvl = 0
-Mympvpxp = 0
-Mympvplvl = 0
 
 net.Receive("UpdateStatistics", function(length)
 	local st1 = net.ReadFloat()
@@ -69,14 +53,14 @@ net.Receive("UpdateStatistics", function(length)
 	local st7 = net.ReadFloat()
 	local st8 = net.ReadFloat()
 
-	Mybestsurvtim = st1
-	Myzmbskilled = st2
-	Myplyskilled = st3
-	Myplydeaths = st4
-	Mymmeleexp = st5
-	Mymmeleelvl = st6
-	Mympvpxp = st7
-	Mympvplvl = st8
+	MyBestsurvtime = st1
+	MyZmbskilled = st2
+	MyPlyskilled = st3
+	MyPlydeaths = st4
+	MyMMeleexp = st5
+	MyMMeleelvl = st6
+	MyMPvpxp = st7
+	MyMPvplvl = st8
 end)
 
 net.Receive("UpdatePerks", function(length)
@@ -172,11 +156,11 @@ end)
 
 
 function CalculateWeightClient()
-local totalweight = 0 
+	local totalweight = 0 
 	for k, v in pairs(LocalInventory) do
-	totalweight = totalweight + (v.Weight * v.Qty)
+		totalweight = totalweight + (v.Weight * v.Qty)
 	end
-return totalweight
+	return totalweight
 end
 
 
@@ -215,7 +199,7 @@ function ScoreBoard:Create()
 			draw.SimpleText(translate.Get("armorspeed")..": None", "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 280, Color(205,205,255,255))
 			draw.SimpleText(translate.Format("armormaxweight", "+", "0"), "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 295, Color(255,235,205,255))
 		end
-		draw.SimpleText( translate.Format("pts", math.floor(Mypoints)), "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 310, Color(205, 205, 205, 255))
+		draw.SimpleText( translate.Format("pts", math.floor(MySP)), "TargetIDSmall", ScoreBoardFrame:GetWide() - 255, 310, Color(205, 205, 205, 255))
 	end
 	
 	
@@ -775,6 +759,20 @@ function ScoreBoard:Create()
 			ItemWeight:SetColor(Color(155,155,255,255))
 			ItemWeight:SetText("Weight: ".. GAMEMODE.ItemsList[k]["Weight"].."kg")
 
+			local XPCraft = vgui.Create("DLabel", ItemBG)
+			XPCraft:SetFont("TargetIDSmall")
+			XPCraft:SetPos(85, 42)
+			XPCraft:SetSize(170, 15)
+			XPCraft:SetColor(Color(155,255,255,255))
+			XPCraft:SetText("XP: "..v.XP)
+
+			local TimeCraft = vgui.Create("DLabel", ItemBG)
+			TimeCraft:SetFont("TargetIDSmall")
+			TimeCraft:SetPos(85, 58)
+			TimeCraft:SetSize(170, 15)
+			TimeCraft:SetColor(Color(255,255,155,255))
+			TimeCraft:SetText("Craft Time: "..v.CraftTime.."s")
+
 			local ReqButton = vgui.Create("DButton", ItemBG)
 			ReqButton:SetSize(100, 20)
 			ReqButton:SetPos(235, 20)
@@ -797,6 +795,7 @@ function ScoreBoard:Create()
 			CraftButton:SetSize(100, 20)
 			CraftButton:SetPos(235, 50)
 			CraftButton:SetText("Craft!")
+			CraftButton:SetToolTip("Begin crafting an item. Crafting takes time and may give XP if craft is successful.\nNote: Knowledge skill applies to gaining XP by crafting an item.")
 			CraftButton:SetTextColor(Color(255, 255, 255, 255))
 			CraftButton.Paint = function(panel)
 				surface.SetDrawColor(0, 150, 0 ,255)
@@ -823,18 +822,18 @@ function ScoreBoard:Create()
 		surface.SetDrawColor(150, 150, 0 ,255)
 		surface.DrawOutlinedRect(0, 0, w, h)
 
-		draw.SimpleText(translate.Format("timesurvived", math.floor(CurTime() - Mysurvivaltime)), "TargetID", 15, 10, Color(255,255,255,255))
-		draw.SimpleText("Best Survival Time: "..Mybestsurvtim.."s", "TargetID", 15, 35, Color(255,255,255,255))
-		draw.SimpleText("Zombies Killed in Total: "..Myzmbskilled, "TargetID", 15, 60, Color(255,255,255,255))
-		draw.SimpleText("Players killed in Total: "..Myplyskilled, "TargetID", 15, 85, Color(255,255,255,255))
-		draw.SimpleText("Your Deaths in Total: "..Myplydeaths, "TargetID", 15, 110, Color(255,255,255,255))
+		draw.SimpleText(translate.Format("timesurvived", math.floor(CurTime() - MySurvivaltime)), "TargetID", 15, 10, Color(255,255,255,255))
+		draw.SimpleText("Best Survival Time: "..MyBestsurvtime.."s", "TargetID", 15, 35, Color(255,255,255,255))
+		draw.SimpleText("Zombies Killed in Total: "..MyZmbskilled, "TargetID", 15, 60, Color(255,255,255,255))
+		draw.SimpleText("Players killed in Total: "..MyPlyskilled, "TargetID", 15, 85, Color(255,255,255,255))
+		draw.SimpleText("Your Deaths in Total: "..MyPlydeaths, "TargetID", 15, 110, Color(255,255,255,255))
 
 		surface.SetDrawColor(0, 0, 0 ,255)
 		surface.DrawOutlinedRect(15, 165, 200, 8)
 		surface.SetDrawColor(50,0,0,75)
 		surface.DrawRect(15, 165, 200, 8)
 	
-		local bar1 = math.Clamp( 200 * (Mymmeleexp / GetReqMasteryMeleeXP()), 0, 200)
+		local bar1 = math.Clamp( 200 * (MyMMeleexp / GetReqMasteryMeleeXP()), 0, 200)
 		surface.SetDrawColor(150,0,0,160)
 		surface.DrawRect(15, 165, bar1, 8)
 
@@ -843,7 +842,7 @@ function ScoreBoard:Create()
 		surface.SetDrawColor(50,0,0,75)
 		surface.DrawRect(15, 210, 200, 8)
 	
-		local bar2 = math.Clamp( 200 * (Mympvpxp / GetReqMasteryPvPXP()), 0, 200)
+		local bar2 = math.Clamp( 200 * (MyMPvpxp / GetReqMasteryPvPXP()), 0, 200)
 		surface.SetDrawColor(150,0,0,160)
 		surface.DrawRect(15, 210, bar2, 8 )
 	end
@@ -851,7 +850,7 @@ function ScoreBoard:Create()
 	local sttext1 = vgui.Create("DLabel", StatisticsForm)
 	sttext1:SetFont("TargetID")
 	sttext1:SetTextColor(Color(205,205,205,255))
-	sttext1:SetText("Mastery Melee XP: ".. math.floor(Mymmeleexp) .."/".. GetReqMasteryMeleeXP().." (Level "..math.floor(Mymmeleelvl)..")")
+	sttext1:SetText("Mastery Melee XP: ".. math.floor(MyMMeleexp) .."/".. GetReqMasteryMeleeXP().." (Level "..math.floor(MyMMeleelvl)..")")
 	sttext1:SetToolTip("Increases melee damage by 0.5% per level, increases when doing melee damage to zombies. \nGain rate is DECREASED when damaging players with melee weapons.")
 	sttext1:SetMouseInputEnabled(true)
 	sttext1:SizeToContents()
@@ -860,7 +859,7 @@ function ScoreBoard:Create()
 	local sttext2 = vgui.Create("DLabel", StatisticsForm)
 	sttext2:SetFont("TargetID")
 	sttext2:SetTextColor(Color(205,205,205,255))
-	sttext2:SetText("Mastery PvP XP: ".. math.floor(Mympvpxp) .."/".. GetReqMasteryPvPXP().." (Level "..math.floor(Mympvplvl)..")")
+	sttext2:SetText("Mastery PvP XP: ".. math.floor(MyMPvpxp) .."/".. GetReqMasteryPvPXP().." (Level "..math.floor(MyMPvplvl)..")")
 	sttext2:SetToolTip("Gained from killing players. (no other benefits other than money gain on level up)\nGain rate increased when they have higher level and prestige.")
 	sttext2:SetMouseInputEnabled(true)
 	sttext2:SizeToContents()
@@ -868,8 +867,8 @@ function ScoreBoard:Create()
 
 	timer.Create("UpdateStatisticsScoreBoard", 0, 0, function()
 		if IsValid(ScoreBoardFrame) then
-			sttext1:SetText("Mastery Melee XP: ".. math.floor(Mymmeleexp) .."/".. GetReqMasteryMeleeXP().." (Level "..math.floor(Mymmeleelvl)..")") sttext1:SizeToContents()
-			sttext2:SetText("Mastery PvP XP: ".. math.floor(Mympvpxp) .."/".. GetReqMasteryPvPXP().." (Level "..math.floor(Mympvplvl)..")") sttext2:SizeToContents()
+			sttext1:SetText("Mastery Melee XP: ".. math.floor(MyMMeleexp) .."/".. GetReqMasteryMeleeXP().." (Level "..math.floor(MyMMeleelvl)..")") sttext1:SizeToContents()
+			sttext2:SetText("Mastery PvP XP: ".. math.floor(MyMPvpxp) .."/".. GetReqMasteryPvPXP().." (Level "..math.floor(MyMPvplvl)..")") sttext2:SizeToContents()
 		else
 			timer.Destroy("UpdateStatisticsScoreBoard")
 		end

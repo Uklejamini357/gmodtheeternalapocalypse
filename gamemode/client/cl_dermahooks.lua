@@ -87,7 +87,7 @@ net.Receive("UseDelay", function()
 		surface.SetDrawColor(120, 120, 0, 200)
 		surface.DrawOutlinedRect(0, 0, w, h)
 		surface.DrawOutlinedRect(10, h / 2, w - 20, 20)
-		draw.DrawText(translate.Format("wait", math.ceil(remaining - CurTime())), "TargetID", 100, 5, Color(250, 250, 250), TEXT_ALIGN_CENTER)
+		draw.DrawText(translate.Format("wait", math.max(0, math.ceil((remaining - CurTime()) * 10) / 10)), "TargetID", 100, 5, Color(250, 250, 250), TEXT_ALIGN_CENTER)
 	end
 
 	timer.Simple(delay, function()

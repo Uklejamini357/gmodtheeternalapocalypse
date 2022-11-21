@@ -272,9 +272,9 @@ function tea_PrepareStats(ply)
 	ply.Thirst = 10000
 	ply.Fatigue = 0
 	ply.Infection = 0
-	if armorstr and armortype then ply.Battery = 100 + armortype["ArmorStats"]["battery"] else ply.Battery = 100 end
+	ply.Battery = 100 + (armorstr and armortype and armortype["ArmorStats"]["battery"] or 0)
 	ply.HPRegen = 0
-	ply.SurvivalTime = math.floor(CurTime())
+	ply.SurvivalTime = CurTime()
 	ply.SlowDown = 0
 	ply.IsAlive = true
 

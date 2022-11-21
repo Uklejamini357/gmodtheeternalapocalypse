@@ -77,48 +77,56 @@ GM.StatConfig = {
 
 GM.Config["ZombieClasses"] = {
 	["npc_tea_basic"] = {		-- table name must be the entclass name of the zombie, see garrysmod/gamemodes/theeternalapocalypse/entities for entclasses (or you can add other zombie types by yourself)
+		["Name"] = "Shambler Zombie",	-- Name for the zombie, used in death notice/killfeed
 		["SpawnChance"] = 67,	-- spawn chance in %, be careful as the spawn chance of all your zombies totalled up must not exceed 100% (there is a helper function that will tell you if this has happened or how much the current total spawn chance for zombies is)
 		["XPReward"] = 48,		-- xp reward for killing this zombie, varies with the convar tea_server_xpreward convar
 		["MoneyReward"] = 22,	-- money reward for killing this zombie, varies with the convar tea_server_moneyreward convar
 	},
 
 	["npc_tea_leaper"] = {
+		["Name"] = "Leaper Zombie",
 		["SpawnChance"] = 18.75,
 		["XPReward"] = 55,
 		["MoneyReward"] = 30,
 	},
 
 	["npc_tea_wraith"] = {
+		["Name"] = "Wraith Zombie",
 		["SpawnChance"] = 5,
 		["XPReward"] = 80,
 		["MoneyReward"] = 45,
 	},
 
 	["npc_tea_tank"] = {
+		["Name"] = "Tank Zombie",
 		["SpawnChance"] = 4,
 		["XPReward"] = 220,
 		["MoneyReward"] = 90,
 	},
 
 	["npc_tea_puker"] = {
+		["Name"] = "Puker Zombie",
 		["SpawnChance"] = 2.25,
 		["XPReward"] = 240,
 		["MoneyReward"] = 105,
 	},
 
 	["npc_tea_lord"] = {
+		["Name"] = "Zombie Lord",
 		["SpawnChance"] = 1.5,
 		["XPReward"] = 430,
 		["MoneyReward"] = 310,
 	},
 
 	["npc_tea_tormented_wraith"] = {
+		["Name"] = "Tormented Wraith",
 		["SpawnChance"] = 1.25,
 		["XPReward"] = 185,
 		["MoneyReward"] = 150,
 	},
 
 	["npc_tea_superlord"] = {
+		["Name"] = "Zombie Superlord",
 		["SpawnChance"] = 0.25,
 		["XPReward"] = 850,
 		["MoneyReward"] = 700,
@@ -130,6 +138,7 @@ GM.Config["ZombieClasses"] = {
 
 GM.Config["BossClasses"] = {
 	["npc_tea_boss_tyrant"] = {
+		["Name"] = "The Tyrant",	-- Name used in deathnotice for boss
 		["SpawnChance"] = 60,
 		["XPReward"] = 5000, -- remember that xp and money for bosses is distributed by who damaged them, if you did all of the damage you would get 5,000 xp in this case
 		["MoneyReward"] = 4500,
@@ -137,21 +146,22 @@ GM.Config["BossClasses"] = {
 		["AnnounceMessage"] = "[BOSS]: The Tyrant has appeared!",
 		["BroadCast"] = function()
 			RadioBroadcast(0.5, "This is an urgent broadcast on all bands!", "Watchdog", true)
-			RadioBroadcast(4, "Siesmic readings are showing a massive quadruped approaching the area, most likely a tyrant...", "Watchdog", false)
+			RadioBroadcast(4, "Siesmic readings are showing a massive quadruped approaching the area, most likely a tyrant.", "Watchdog", false)
 			RadioBroadcast(8, "It is currently inbound for this sector, so you better get inside something solid and make sure you have good amount of ammo.", "Watchdog", false)
 		end,
 	},
 	
 	["npc_tea_boss_lordking"] = {
+		["Name"] = "Zombie Lord King",
 		["SpawnChance"] = 40,
 		["XPReward"] = 8000,
 		["MoneyReward"] = 6250,
 		["SpawnDelay"] = 15,
 		["AnnounceMessage"] = "[BOSS]: The Zombie Lord King has appeared!",
 		["BroadCast"] = function()
-			RadioBroadcast(0.5, "This is a big, urgent broadcast, for all the survivors out there!", "Watchdog", true)
+			RadioBroadcast(0.5, "This is an urgent broadcast for all the survivors out there!", "Watchdog", true)
 			RadioBroadcast(4.5, "We have spotted a Mutated Lord Zombie, tougher than the other variants. It got an ability to teleport nearby zombies.", "Watchdog", false)
-			RadioBroadcast(9, "It will be coming into the area, so prepare a good barricade, multiple layers of barricades and plenty of ammo.", "Watchdog", false)
+			RadioBroadcast(9, "It will arrive into the area, so prepare a good barricade, multiple layers of barricades and plenty of ammo.", "Watchdog", false)
 		end,
 	},
 }

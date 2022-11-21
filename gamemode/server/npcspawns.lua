@@ -311,6 +311,7 @@ function Payout(ply, xp, cash)
 	end
 
 	tea_NetUpdatePeriodicStats(ply)
+	return TXPGain, TMoneyGain
 end
 
 -- doesn't work for some reason, so leave it

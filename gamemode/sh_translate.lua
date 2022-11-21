@@ -16,7 +16,7 @@ if CLIENT then
 	-- Need to make a new convar since gmod_language isn't sent to server.
 	CreateClientConVar("gmod_language_rep", "en", false, true)
 
-	timer.Create("checklanguagechange", 1, 0, function()
+	timer.Create("checklanguagechange", 0.4, 0, function()
 		CurrentLanguage = GetConVar("gmod_language"):GetString()
 		if CurrentLanguage ~= GetConVar("gmod_language_rep"):GetString() then
 			-- Let server know our language changed.

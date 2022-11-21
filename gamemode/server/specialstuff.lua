@@ -38,7 +38,7 @@ function GM.ZS.StartZombieApocalypse(preptime, wavedur)
 	local d = wavedur
 	local a = GAMEMODE.ZombieSpawningEnabled
 
-	tea_SystemBroadcast(Format("Attention! A massive horde of zombies is approaching! Estimated time: %s minutes.", preptime), Color(255,95,95), false)
+	tea_SystemBroadcast(Format("Attention! A massive horde of zombies is approaching! Estimated time before they arrive: %s minutes", preptime), Color(255,95,95), false)
 	GAMEMODE.ZombieSpawningEnabled = false
 	BroadcastLua("GAMEMODE.ZombieSpawningEnabled = false")
 	
@@ -47,7 +47,7 @@ function GM.ZS.StartZombieApocalypse(preptime, wavedur)
 		if i <= 0 then
 			GAMEMODE.ZombieSpawningEnabled = true
 			BroadcastLua("GAMEMODE.ZombieSpawningEnabled = true")
-			tea_SystemBroadcast(Format("WARNING! Zombies are on your way! Survive for: %s minutes.", wavedur), Color(255,95,95), false)
+			tea_SystemBroadcast(Format("WARNING! Zombies have inbound! Survive for: %s minutes.", wavedur), Color(255,95,95), false)
 			timer.Create("TEAZombieApocalypse_Begun", 60, d, function()
 				d = d - 1
 				if d <= 0 then
@@ -55,11 +55,11 @@ function GM.ZS.StartZombieApocalypse(preptime, wavedur)
 					GAMEMODE.ZombieSpawningEnabled = a
 					BroadcastLua(GAMEMODE.ZombieSpawningEnabled and "GAMEMODE.ZombieSpawningEnabled = true" or "GAMEMODE.ZombieSpawningEnabled = false")
 				else
-					tea_SystemBroadcast(Format("%s minutes remaining until wave ends", d), Color(255,95,95), false)
+					PrintMessage(HUD_PRINTCENTER, Format("%s minutes remaining until wave ends", d))
 				end
 			end)
 		else
-			tea_SystemBroadcast(Format("%s minutes remaining until zombies approach", i), Color(255,95,95), false)
+			PrintMessage(HUD_PRINTCENTER, Format("%s minutes remaining until zombies approach", i))
 		end
 	end)
 end

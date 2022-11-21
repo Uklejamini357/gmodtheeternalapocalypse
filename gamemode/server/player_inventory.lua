@@ -128,8 +128,8 @@ end
 timer.Create("SaveTimer", 180, 0, tea_SaveTimer)
 
 function tea_SystemGiveItem(ply, str, qty)
-	if !ply:IsValid() or !ply:IsPlayer() then return end
-	if !GAMEMODE.ItemsList[str] or !ply.Inventory then return end
+	if !ply:IsValid() or !ply:IsPlayer() then return false end
+	if !GAMEMODE.ItemsList[str] or !ply.Inventory then return false end
 	qty = tonumber(qty) or 1
 
 	local item = GAMEMODE.ItemsList[str]
@@ -141,6 +141,20 @@ function tea_SystemGiveItem(ply, str, qty)
 	else 
 		ply.Inventory[str] = qty
 	end
+	return true
+end
+
+function tea_SystemGiveItem_NoWeight(ply, str, qty) -- same as above except that it ignores player's remaining weight
+	if !ply:IsValid() or !ply:IsPlayer() then return false end
+	if !GAMEMODE.ItemsList[str] or !ply.Inventory then return false end
+	qty = tonumber(qty) or 1
+
+	if ply.Inventory[str] then
+		ply.Inventory[str] = ply.Inventory[str] + qty
+	else 
+		ply.Inventory[str] = qty
+	end
+	return true
 end
 
 function tea_SystemRemoveItem(ply, str, strip)

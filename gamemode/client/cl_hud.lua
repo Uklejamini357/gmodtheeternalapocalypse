@@ -8,19 +8,7 @@ local pralpha = 0 -- wraith blind effect (but white and when prestiged)
 Spawn = 0
 
 
-Mystamina = 0
-Myhunger = 0
-Mythirst = 0
-Myfatigue = 0
-Myinfection = 0
-Mysurvivaltime = 0
-Mybattery = 0
-Mylevel = 0
-Myprestige = 0
-Mymoney = 0
-Myxp = 0
-Mypoints = 0
-Mybounty = 0
+
 
 
 net.Receive( "UpdateStats", function( length ) -- this net message is received once per frame
@@ -32,13 +20,13 @@ net.Receive( "UpdateStats", function( length ) -- this net message is received o
 	local survtim = net.ReadFloat()
 	local bat = net.ReadFloat()
 
-	Mystamina = stam
-	Myhunger = hung
-	Mythirst = thir
-	Myfatigue = fat
-	Myinfection = infec
-	Mysurvivaltime = survtim
-	Mybattery = bat
+	MyStamina = stam
+	MyHunger = hung
+	MyThirst = thir
+	MyFatigue = fat
+	MyInfection = infec
+	MySurvivaltime = survtim
+	MyBattery = bat
 end)
 
 net.Receive( "UpdatePeriodicStats", function( length ) -- this net message is only received when one of these values need to be updated
@@ -49,12 +37,12 @@ net.Receive( "UpdatePeriodicStats", function( length ) -- this net message is on
 	local points = net.ReadFloat()
 	local bounty = net.ReadFloat()
 
-	Mylevel = level
-	Myprestige = prestige
-	Mymoney = money
-	Myxp = setxp
-	Mypoints = points
-	Mybounty = bounty
+	MyLvl = level
+	MyPrestige = prestige
+	MyMoney = money
+	MyXP = setxp
+	MySP = points
+	MyBounty = bounty
 end)
 
 
@@ -246,23 +234,22 @@ local function DrawVitals()
 --	local HealthTexture = surface.GetTextureID( "gui/silkicons/heart" )
 --	local ArmorTexture = surface.GetTextureID( "gui/silkicons/shield" )
 	local DGradientCenter = surface.GetTextureID( "gui/center_gradient" )
-	local timesurvived = CurTime() - Mysurvivaltime
 
 	local glow = math.abs(math.sin(CurTime() * 1.7) * 255)
 
-	if Myhunger < 1000 then
+	if MyHunger < 1000 then
 		draw.SimpleText(translate.Get("hunger_low"), "TargetID", 21, ScrH() - 360, Color( 255, glow, glow, 255 ), 0, 1)
 	end
 
-	if Mythirst < 1000 then
+	if MyThirst < 1000 then
 		draw.SimpleText(translate.Get("thirst_low"), "TargetID", 21, ScrH() - 340, Color( 255, glow, glow, 255 ), 0, 1)
 	end
 
-	if Myfatigue > 9000 then
+	if MyFatigue > 9000 then
 		draw.SimpleText(translate.Get("fatigue_high"), "TargetID", 21, ScrH() - 320, Color( 255, glow, glow, 255 ), 0, 1)
 	end
 
-	if Myinfection > 9000 then
+	if MyInfection > 9000 then
 		draw.SimpleText(translate.Get("infection_high"), "TargetID", 21, ScrH() - 300, Color( 255, glow, glow, 255 ), 0, 1)
 	end
 
@@ -347,55 +334,55 @@ local function DrawVitals()
 		surface.SetDrawColor(90, 90, 0 ,255)
 		surface.DrawOutlinedRect(ScrW() - 270, ScrH() - 60, 250, 50)
 
-		draw.SimpleText("XP: ".. math.floor(Myxp) .."/".. GetReqXP(), "TargetIDSmall", ScrW() - 259, ScrH() - 48, Color(255, 255, 255, 255), 0, 1)
+		draw.SimpleText("XP: ".. math.floor(MyXP) .."/".. GetReqXP(), "TargetIDSmall", ScrW() - 259, ScrH() - 48, Color(255, 255, 255, 255), 0, 1)
 		draw.RoundedBox(2, ScrW() - 250, ScrH() - 36, 210, 20, Color(50, 0, 0, 160))
-		draw.RoundedBox(4, ScrW() - 250, ScrH() - 36, math.Clamp(210 * ( Myxp / GetReqXP()), 0, 210), 20, Color(150, 0, 0, 160))
+		draw.RoundedBox(4, ScrW() - 250, ScrH() - 36, math.Clamp(210 * ( MyXP / GetReqXP()), 0, 210), 20, Color(150, 0, 0, 160))
 
 		draw.RoundedBox( 1, 200, ScrH() - 200, 180, 190, Color( 0, 0, 0, 175 ) )
 		surface.SetDrawColor(125, 125, 55 ,255)
 		surface.DrawOutlinedRect(200, ScrH() - 200, 180, 190)
 
 -------------- Stamina --------------
-		draw.SimpleText(GetConVar("tea_cl_huddec"):GetInt() < 1 and translate.Format("stamina", math.Round(Mystamina)) or translate.Format("stamina", math.Round(Mystamina * 100) / 100), "TargetIDTiny", 210, ScrH() - 186, Color( 205, 255, 205, 255 ), 0, 1 )
+		draw.SimpleText(GetConVar("tea_cl_huddec"):GetInt() < 1 and translate.Format("stamina", math.Round(MyStamina)) or translate.Format("stamina", math.Round(MyStamina * 100) / 100), "TargetIDTiny", 210, ScrH() - 186, Color( 205, 255, 205, 255 ), 0, 1 )
 		draw.RoundedBox(2, 210, ScrH() - 176, 160, 15, Color( 50, 50, 0, 100 ) )
-		if Mystamina > 0 then
-			local staminabarclamp = math.Clamp(Mystamina * 1.6, 0, 160)
+		if MyStamina > 0 then
+			local staminabarclamp = math.Clamp(MyStamina * 1.6, 0, 160)
 			draw.RoundedBox( 4, 210, ScrH() - 176, staminabarclamp, 15, Color( 100, 150, 0, 160 ) )
 			draw.RoundedBox( 4, 210, ScrH() - 176, staminabarclamp, 8, Color( 100, 150, 0, 160 ) )
 		end
 
 -------------- Hunger --------------
-		draw.SimpleText(GetConVar("tea_cl_huddec"):GetInt() < 1 and translate.Format("hunger", math.Round(Myhunger / 100)) or translate.Format("hunger", math.Clamp(Myhunger / 100, 0, 2^1024)), "TargetIDTiny", 210, ScrH() - 150, Color( 255, 205, 255, 255 ), 0, 1 )
+		draw.SimpleText(GetConVar("tea_cl_huddec"):GetInt() < 1 and translate.Format("hunger", math.Round(MyHunger / 100)) or translate.Format("hunger", math.Clamp(MyHunger / 100, 0, 2^1024)), "TargetIDTiny", 210, ScrH() - 150, Color( 255, 205, 255, 255 ), 0, 1 )
 		draw.RoundedBox(2, 210, ScrH() - 140, 160, 15, Color( 50, 0, 50, 100 ) )
-		if (Myhunger / 100) > 0 then
-			local hungerbarclamp = math.Clamp((Myhunger / 100) * 1.6, 0, 160)
+		if (MyHunger / 100) > 0 then
+			local hungerbarclamp = math.Clamp((MyHunger / 100) * 1.6, 0, 160)
 			draw.RoundedBox( 4, 210, ScrH() - 140, hungerbarclamp, 15, Color( 90, 0, 120, 160 ) )
 			draw.RoundedBox( 4, 210, ScrH() - 140, hungerbarclamp, 8, Color( 120, 0, 120, 80 ) )
 		end
 
 -------------- Thirst --------------
-		draw.SimpleText(GetConVar("tea_cl_huddec"):GetInt() < 1 and translate.Format("thirst", math.Round(Mythirst / 100)) or translate.Format("thirst", math.Clamp(Mythirst / 100, 0, 2^1024)), "TargetIDTiny", 210, ScrH() - 114, Color(155,155,255,255), 0, 1 )
+		draw.SimpleText(GetConVar("tea_cl_huddec"):GetInt() < 1 and translate.Format("thirst", math.Round(MyThirst / 100)) or translate.Format("thirst", math.Clamp(MyThirst / 100, 0, 2^1024)), "TargetIDTiny", 210, ScrH() - 114, Color(155,155,255,255), 0, 1 )
 		draw.RoundedBox( 2, 210, ScrH() - 104, 160, 15, Color( 45, 45, 75, 100 ) )
-		if (Mythirst / 100) > 0 then
-			local thirstbarclamp = math.Clamp((Mythirst / 100) * 1.6, 0, 160)
+		if (MyThirst / 100) > 0 then
+			local thirstbarclamp = math.Clamp((MyThirst / 100) * 1.6, 0, 160)
 			draw.RoundedBox( 4, 210, ScrH() - 104, thirstbarclamp, 15, Color(155,155,255,255) )
 			draw.RoundedBox( 4, 210, ScrH() - 104, thirstbarclamp, 8, Color(155,155,255,255) )
 		end
 
 -------------- Fatigue --------------
-		draw.SimpleText(GetConVar("tea_cl_huddec"):GetInt() < 1 and translate.Format("fatigue", math.Round(Myfatigue / 100)) or translate.Format("fatigue", math.Clamp(Myfatigue / 100, 0, 2^1024)), "TargetIDTiny", 210, ScrH() - 78, Color(205,205,255,255), 0, 1 )
+		draw.SimpleText(GetConVar("tea_cl_huddec"):GetInt() < 1 and translate.Format("fatigue", math.Round(MyFatigue / 100)) or translate.Format("fatigue", math.Clamp(MyFatigue / 100, 0, 2^1024)), "TargetIDTiny", 210, ScrH() - 78, Color(205,205,255,255), 0, 1 )
 		draw.RoundedBox( 2, 210, ScrH() - 68, 160, 15, Color( 0, 50, 50, 100 ) )
-		if (Myfatigue / 100) > 0 then
-			local fatiguebarclamp = math.Clamp((Myfatigue / 100) * 1.6, 0, 160)
+		if (MyFatigue / 100) > 0 then
+			local fatiguebarclamp = math.Clamp((MyFatigue / 100) * 1.6, 0, 160)
 			draw.RoundedBox(4, 210, ScrH() - 68, fatiguebarclamp, 15, Color(0, 80, 80, 160))
 			draw.RoundedBox(4, 210, ScrH() - 68, fatiguebarclamp, 8, Color(0, 100, 100, 80))
 		end
 
 -------------- Infection --------------
-		draw.SimpleText(GetConVar("tea_cl_huddec"):GetInt() < 1 and translate.Format("infection", math.Round(Myinfection / 100)) or translate.Format("infection", math.Clamp(Myinfection / 100, 0, 2^1024)), "TargetIDTiny", 210, ScrH() - 42, Color( 205, 105, 105, 255 ), 0, 1 )
+		draw.SimpleText(GetConVar("tea_cl_huddec"):GetInt() < 1 and translate.Format("infection", math.Round(MyInfection / 100)) or translate.Format("infection", math.Clamp(MyInfection / 100, 0, 2^1024)), "TargetIDTiny", 210, ScrH() - 42, Color( 205, 105, 105, 255 ), 0, 1 )
 		draw.RoundedBox( 2, 210, ScrH() - 32, 160, 15, Color( 80, 0, 0, 100 ) )
-		if (Myinfection / 100) > 0 then
-			local infectionbarclamp = math.Clamp((Myinfection / 100) * 1.6, 0, 160)
+		if (MyInfection / 100) > 0 then
+			local infectionbarclamp = math.Clamp((MyInfection / 100) * 1.6, 0, 160)
 			draw.RoundedBox( 4, 210, ScrH() - 32, infectionbarclamp, 15, Color( 250, 0, 0, 160 ) )
 			draw.RoundedBox( 4, 210, ScrH() - 32, infectionbarclamp, 8, Color( 50, 0, 0, 100 ) )
 		end
@@ -406,10 +393,10 @@ local function DrawVitals()
 		surface.DrawOutlinedRect(140, 30, 180, 45)
 		local armorstr = LocalPlayer():GetNWString("ArmorType") or "none"
 		local armortype = GAMEMODE.ItemsList[armorstr]
-		draw.SimpleText(translate.Format("battery", math.Clamp(Mybattery, 0, 2^1024), 100 + (armorstr and armortype and armortype["ArmorStats"]["battery"] or 0)), "TargetIDTiny", 150, 42, Color(5,5,255,255), 0, 1 )
+		draw.SimpleText(translate.Format("battery", math.Clamp(MyBattery, 0, 2^1024), 100 + (armorstr and armortype and armortype["ArmorStats"]["battery"] or 0)), "TargetIDTiny", 150, 42, Color(5,5,255,255), 0, 1 )
 		draw.RoundedBox(2, 150, 52, 160, 15, Color( 0, 0, 80, 100 ) )
-		if Mybattery > 0 then
-			local batterybarclamp = math.Clamp((Mybattery * 1.6) / (1 + (armorstr and armortype and armortype["ArmorStats"]["battery"] / 100 or 0)), 0, 160)
+		if MyBattery > 0 then
+			local batterybarclamp = math.Clamp((MyBattery * 1.6) / (1 + (armorstr and armortype and armortype["ArmorStats"]["battery"] / 100 or 0)), 0, 160)
 			draw.RoundedBox(4, 150, 52, batterybarclamp, 15, Color( 0, 0, 250, 160 ) )
 			draw.RoundedBox(4, 150, 52, batterybarclamp, 8, Color( 0, 0, 50, 100 ) )
 		end
@@ -419,10 +406,10 @@ local function DrawVitals()
 		draw.RoundedBox(1, 10, ScrH() - 200, 180, 85, Color(0, 0, 0, 175))
 		surface.SetDrawColor(55, 55, 155 ,255)
 		surface.DrawOutlinedRect(10, ScrH() - 200, 180, 85)
-		draw.SimpleText(translate.Format("bounty", math.floor(Mybounty)), "TargetIDSmall", 20, ScrH() - 187, Color(155, math.Clamp(127 - (Mybounty / 60), 0, 255), math.Clamp(255 - (Mybounty / 30), 0, 255), 255 ), 0, 1 )
-		draw.SimpleText(translate.Format("prestige", math.floor(Myprestige)), "TargetIDSmall", 20, ScrH() - 168, Color(205,155,255,255), 0, 1)
-		draw.SimpleText(translate.Format("level", math.floor(Mylevel)), "TargetIDSmall", 20, ScrH() - 149, Color(200,200,200,255), 0, 1)
-		draw.SimpleText(translate.Format("money", math.floor(Mymoney)), "TargetIDSmall", 20, ScrH() - 130, Color(0,255,255,255), 0, 1)
+		draw.SimpleText(translate.Format("bounty", math.floor(MyBounty)), "TargetIDSmall", 20, ScrH() - 187, Color(155, math.Clamp(127 - (MyBounty / 60), 0, 255), math.Clamp(255 - (MyBounty / 30), 0, 255), 255 ), 0, 1 )
+		draw.SimpleText(translate.Format("prestige", math.floor(MyPrestige)), "TargetIDSmall", 20, ScrH() - 168, Color(205,155,255,255), 0, 1)
+		draw.SimpleText(translate.Format("level", math.floor(MyLvl)), "TargetIDSmall", 20, ScrH() - 149, Color(200,200,200,255), 0, 1)
+		draw.SimpleText(translate.Format("money", math.floor(MyMoney)), "TargetIDSmall", 20, ScrH() - 130, Color(0,255,255,255), 0, 1)
 	else
 
 ---------------- HEALTH ----------------
@@ -472,24 +459,24 @@ local function DrawVitals()
 -------------- EXperience --------------
 		surface.SetDrawColor(0, 0, 0 ,255)
 		surface.DrawOutlinedRect(ScrW() - 250, ScrH() - 50, 200, 8)
-		draw.SimpleText("XP: ".. math.floor( Myxp ) .."/".. GetReqXP(), "TargetIDSmall", ScrW() - 250, ScrH() - 60, Color(205, 205, 205, 255), 0, 1)
+		draw.SimpleText("XP: ".. math.floor( MyXP ) .."/".. GetReqXP(), "TargetIDSmall", ScrW() - 250, ScrH() - 60, Color(205, 205, 205, 255), 0, 1)
 		surface.SetDrawColor(50,0,0,75)
 		surface.DrawRect(ScrW() - 250, ScrH() - 50, 200, 8)
 	
-		local xpbarclamp = math.Clamp(200 * ( Myxp / GetReqXP() ), 0, 200)
+		local xpbarclamp = math.Clamp(200 * ( MyXP / GetReqXP() ), 0, 200)
 		surface.SetDrawColor(150,0,0,160)
 		surface.DrawRect(ScrW() - 250, ScrH() - 50, xpbarclamp, 8)
 		--Bounty
-		draw.SimpleText(translate.Format("bounty", math.floor(Mybounty)), "TargetIDSmall", 270, ScrH() - 68, Color(205, 205, 205, 255), 0, 1)
+		draw.SimpleText(translate.Format("bounty", math.floor(MyBounty)), "TargetIDSmall", 270, ScrH() - 68, Color(205, 205, 205, 255), 0, 1)
 
 -------------- Stamina -------------- 
 		surface.SetDrawColor(0, 0, 0 ,255)
 		surface.DrawOutlinedRect(20, ScrH() - 140, 200, 8)
-		draw.SimpleText(GetConVar("tea_cl_huddec"):GetInt() < 1 and translate.Format("stamina", math.Round(Mystamina)) or translate.Format("stamina", math.Round(Mystamina * 100) / 100), "TargetIDSmall", 20, ScrH() - 150, Color(205,205,205,255), 0, 1 )
+		draw.SimpleText(GetConVar("tea_cl_huddec"):GetInt() < 1 and translate.Format("stamina", math.Round(MyStamina)) or translate.Format("stamina", math.Round(MyStamina * 100) / 100), "TargetIDSmall", 20, ScrH() - 150, Color(205,205,205,255), 0, 1 )
 		surface.SetDrawColor(50,50,0,75)
 		surface.DrawRect( 20, ScrH() - 140, 200, 8 )
-		if Mystamina > 0 then
-			local staminabarclamp = math.Clamp(Mystamina * 2, 0, 200)
+		if MyStamina > 0 then
+			local staminabarclamp = math.Clamp(MyStamina * 2, 0, 200)
 			surface.SetDrawColor(250, 200, 0, 160)
 			surface.DrawRect( 20, ScrH() - 140, staminabarclamp, 4 )
 			surface.SetDrawColor(220, 170, 0, 160)
@@ -498,11 +485,11 @@ local function DrawVitals()
 -------------- Thirst --------------
 		surface.SetDrawColor(0, 0, 0 ,255)
 		surface.DrawOutlinedRect(20, ScrH() - 110, 200, 8)
-		draw.SimpleText(GetConVar("tea_cl_huddec"):GetInt() < 1 and translate.Format("thirst", math.Round(Mythirst / 100)) or translate.Format("thirst", math.Clamp(Mythirst / 100, 0, 2^1024)), "TargetIDSmall", 20, ScrH() - 120, Color(205,205,205,255), 0, 1 )
+		draw.SimpleText(GetConVar("tea_cl_huddec"):GetInt() < 1 and translate.Format("thirst", math.Round(MyThirst / 100)) or translate.Format("thirst", math.Clamp(MyThirst / 100, 0, 2^1024)), "TargetIDSmall", 20, ScrH() - 120, Color(205,205,205,255), 0, 1 )
 		surface.SetDrawColor(50,75,100,75)
 		surface.DrawRect( 20, ScrH() - 110, 200, 8 )
-		if Mythirst > 0 then
-			local thirstbarclamp = math.Clamp(Mythirst / 50, 0, 200)
+		if MyThirst > 0 then
+			local thirstbarclamp = math.Clamp(MyThirst / 50, 0, 200)
 			surface.SetDrawColor(100,150,200,160)
 			surface.DrawRect( 20, ScrH() - 110, thirstbarclamp, 4 )
 			surface.SetDrawColor(90,135,180,160)
@@ -512,11 +499,11 @@ local function DrawVitals()
 -------------- Hunger --------------
 		surface.SetDrawColor(0, 0, 0 ,255)
 		surface.DrawOutlinedRect(20, ScrH() - 80, 200, 8)
-		draw.SimpleText(GetConVar("tea_cl_huddec"):GetInt() < 1 and translate.Format("hunger", math.Round(Myhunger / 100)) or translate.Format("hunger", math.Clamp(Myhunger / 100, 0, 2^1024)), "TargetIDSmall", 20, ScrH() - 90, Color(205,205,205,255), 0, 1 )
+		draw.SimpleText(GetConVar("tea_cl_huddec"):GetInt() < 1 and translate.Format("hunger", math.Round(MyHunger / 100)) or translate.Format("hunger", math.Clamp(MyHunger / 100, 0, 2^1024)), "TargetIDSmall", 20, ScrH() - 90, Color(205,205,205,255), 0, 1 )
 		surface.SetDrawColor(0,50,0,75)
 		surface.DrawRect( 20, ScrH() - 80, 200, 8 )
-		if Myhunger > 0 then
-			local hungerbarclamp = math.Clamp(Myhunger / 50, 0, 200)
+		if MyHunger > 0 then
+			local hungerbarclamp = math.Clamp(MyHunger / 50, 0, 200)
 			surface.SetDrawColor(0,100,0,160)
 			surface.DrawRect(20, ScrH() - 80, hungerbarclamp, 4)
 			surface.SetDrawColor(0,100,0,160)
@@ -526,11 +513,11 @@ local function DrawVitals()
 -------------- Fatigue --------------
 		surface.SetDrawColor(0, 0, 0 ,255)
 		surface.DrawOutlinedRect(20, ScrH() - 50, 200, 8)
-		draw.SimpleText(GetConVar("tea_cl_huddec"):GetInt() < 1 and translate.Format("fatigue", math.Round(Myfatigue / 100)) or translate.Format("fatigue", math.Clamp(Myfatigue / 100, 0, 2^1024)), "TargetIDSmall", 20, ScrH() - 60, Color(205,205,205,255), 0, 1 )
+		draw.SimpleText(GetConVar("tea_cl_huddec"):GetInt() < 1 and translate.Format("fatigue", math.Round(MyFatigue / 100)) or translate.Format("fatigue", math.Clamp(MyFatigue / 100, 0, 2^1024)), "TargetIDSmall", 20, ScrH() - 60, Color(205,205,205,255), 0, 1 )
 		surface.SetDrawColor(75,75,75,75)
 		surface.DrawRect(20, ScrH() - 50, 200, 8)
-		if Myfatigue > 0 then
-			local fatiguebarclamp = math.Clamp(Myfatigue / 50, 0, 200)
+		if MyFatigue > 0 then
+			local fatiguebarclamp = math.Clamp(MyFatigue / 50, 0, 200)
 			surface.SetDrawColor(250,250,250,160)
 			surface.DrawRect(20, ScrH() - 50, fatiguebarclamp, 4)
 			surface.SetDrawColor(200,200,250,160)
@@ -540,11 +527,11 @@ local function DrawVitals()
 -------------- Infection --------------
 		surface.SetDrawColor(0, 0, 0 ,255)
 		surface.DrawOutlinedRect(20, ScrH() - 20, 200, 8)
-		draw.SimpleText(GetConVar("tea_cl_huddec"):GetInt() < 1 and translate.Format("infection", math.Round(Myinfection / 100)) or translate.Format("infection", math.Clamp(Myinfection / 100, 0, 2^1024)), "TargetIDSmall", 20, ScrH() - 30, Color(205,205,205,255), 0, 1 )
+		draw.SimpleText(GetConVar("tea_cl_huddec"):GetInt() < 1 and translate.Format("infection", math.Round(MyInfection / 100)) or translate.Format("infection", math.Clamp(MyInfection / 100, 0, 2^1024)), "TargetIDSmall", 20, ScrH() - 30, Color(205,205,205,255), 0, 1 )
 		surface.SetDrawColor(75,0,0,75)
 		surface.DrawRect( 20, ScrH() - 20, 200, 8 )
-		if Myinfection > 0 then
-			local infectionbarclamp = math.Clamp(Myinfection / 50, 0, 200)
+		if MyInfection > 0 then
+			local infectionbarclamp = math.Clamp(MyInfection / 50, 0, 200)
 			surface.SetDrawColor(200,100,100,160)
 			surface.DrawRect(20, ScrH() - 20, infectionbarclamp, 4)
 			surface.SetDrawColor(160,80,80,160)
@@ -556,20 +543,20 @@ local function DrawVitals()
 		surface.DrawOutlinedRect(ScrW() - 250, ScrH() - 20, 200, 8)
 		local armorstr = LocalPlayer():GetNWString("ArmorType") or "none"
 		local armortype = GAMEMODE.ItemsList[armorstr]
-		draw.SimpleText(translate.Format("battery", math.max(Mybattery, 0), 100 + (armorstr and armortype and armortype["ArmorStats"]["battery"] or 0)), "TargetIDSmall", ScrW() - 250, ScrH() - 30, Color(205,205,205,255), 0, 1 )
+		draw.SimpleText(translate.Format("battery", math.max(MyBattery, 0), 100 + (armorstr and armortype and armortype["ArmorStats"]["battery"] or 0)), "TargetIDSmall", ScrW() - 250, ScrH() - 30, Color(205,205,205,255), 0, 1 )
 		surface.SetDrawColor(0,0,75,75)
 		surface.DrawRect(ScrW() - 250, ScrH() - 20, 200, 8)
-		if Mybattery > 0 then
-			local batterybarclamp = math.Clamp((Mybattery * 2) / (1 + (armorstr and armortype and armortype["ArmorStats"]["battery"] / 100 or 0)), 0, 200)
+		if MyBattery > 0 then
+			local batterybarclamp = math.Clamp((MyBattery * 2) / (1 + (armorstr and armortype and armortype["ArmorStats"]["battery"] / 100 or 0)), 0, 200)
 			surface.SetDrawColor(0,0,200,160)
 			surface.DrawRect(ScrW() - 250, ScrH() - 20, batterybarclamp, 4)
 			surface.SetDrawColor(0,0,150,160)
 			surface.DrawRect(ScrW() - 250, ScrH() - 16, batterybarclamp, 4)
 		end
 ----------------Levels, cash, prestige & time survived----------------
-		draw.SimpleText(translate.Format("prestige", math.floor(Myprestige)), "TargetIDSmall", 270, ScrH() - 140, Color(205,205,205,255), 0, 1)
-		draw.SimpleText(translate.Format("level", math.floor(Mylevel)), "TargetIDSmall", 270, ScrH() - 122, Color(205,205,205,255), 0, 1)
-		draw.SimpleText(translate.Format("money", math.floor(Mymoney)), "TargetIDSmall", 270, ScrH() - 104, Color(205,205,205,255), 0, 1)
+		draw.SimpleText(translate.Format("prestige", math.floor(MyPrestige)), "TargetIDSmall", 270, ScrH() - 140, Color(205,205,205,255), 0, 1)
+		draw.SimpleText(translate.Format("level", math.floor(MyLvl)), "TargetIDSmall", 270, ScrH() - 122, Color(205,205,205,255), 0, 1)
+		draw.SimpleText(translate.Format("money", math.floor(MyMoney)), "TargetIDSmall", 270, ScrH() - 104, Color(205,205,205,255), 0, 1)
 	end	
 
 	
@@ -734,30 +721,61 @@ end
 function GM:PostDrawHUD()
 	--XP, Money & Mastery gain texts
 	cam.Start2D()
-	local glow = 127 + math.abs(math.sin(CurTime() * 0.74) * 128)
-	draw.SimpleText(GetConVar("tea_server_debugging"):GetInt() >= 4 and translate.Format("ver_5", GAMEMODE.Version) or GetConVar("tea_server_debugging"):GetInt() >= 3 and translate.Format("ver_4", GAMEMODE.Version) or GetConVar("tea_server_debugging"):GetInt() >= 2 and translate.Format("ver_3", GAMEMODE.Version) or GetConVar("tea_server_debugging"):GetInt() >= 1 and translate.Format("ver_2", GAMEMODE.Version) or translate.Format("ver_1", GAMEMODE.Version), "TargetIDSmall", 10, 5, Color(191,191,glow,255), 0, 0 )
-
 	draw.SimpleText(translate.Format("xpgained", XPGained, TotalXPGained), "TargetID", ScrW() / 2 + 10, ScrH() / 2, XPColor, 0, 1 )
 	draw.SimpleText(translate.Format("cashgained", MoneyGained, TotalMoneyGained), "TargetID", ScrW() / 2 + 10, ScrH() / 2 + 18, MoneyColor, 0, 1)
 	draw.SimpleText(translate.Format("masteryxpgained", MasteryXPGained, MasteryType), "TargetIDSmall", 140, 120, MasteryColor, 0, 1)
+
+	surface.SetDrawColor(0, 0, 0, AdminCheck(LocalPlayer()) and GetConVar("tea_cl_admin_noviseffects"):GetInt() >= 1 and 0 or tonumber(GAMEMODE.tea_screenfadeout))
+	surface.DrawRect(0, 0, ScrW(), ScrH())
+	surface.SetDrawColor(255, 255, 0, math.Clamp(tonumber(self.tea_survivalstats_a), 0, 200))
+	surface.DrawOutlinedRect(ScrW() / 2 - 300, (ScrH() / 2) + 120, 600, 200)
+
+	surface.SetDrawColor(255, 255, 255, AdminCheck(LocalPlayer()) and GetConVar("tea_cl_admin_noviseffects"):GetInt() >= 1 and 0 or tonumber(GAMEMODE.tea_survivalstats_a))
+	surface.DrawRect(0, ScrH() / 2 - 130, ScrW(), 60)
+	surface.SetDrawColor(255, 255, 255, math.Clamp(tonumber(self.tea_survivalstats_a), 0, 200))
+	surface.DrawOutlinedRect(0, (ScrH() / 2) - 130, ScrW(), 60)
+
+	local message = "You are dead"
+	surface.SetFont("DeathScreenText")
+	local x,y = surface.GetTextSize(message)
+	draw.DrawText(message, "DeathScreenText", (ScrW() / 2) - (x / 2), (ScrH() / 2) - (y / 2), Color(255, 255, 255, tonumber(self.tea_deathtext_a)), 0)
+
+	message = self.DeathMessage
+	surface.SetFont("DeathScreenText_2")
+	x,y = surface.GetTextSize(message)
+	draw.DrawText(message, "DeathScreenText_2", (ScrW() / 2) - (x / 2), (ScrH() / 2) - (y / 2) - 100, Color(0, 0, 0, tonumber(self.tea_survivalstats_a)), 0)
+
+	message = "SURVIVAL STATS"
+	surface.SetFont("DeathScreenText_3")
+	x,y = surface.GetTextSize(message)
+	draw.DrawText(message, "DeathScreenText_3", (ScrW() / 2) - (x / 2), (ScrH() / 2) - (y / 2) + 100, Color(255, 255, 255, tonumber(self.tea_survivalstats_a)), 0)
+
+	local survtime,bsurvtime = math.floor(self.MyLastSurvivalStats.SurvivalTime), math.floor(self.MyLastSurvivalStats.BestSurvivalTime)
+	draw.DrawText(Format(bsurvtime < survtime and "Survival Time: %ss (Previous Best: %ss, +%ss)" or "Survival Time: %ss", survtime, bsurvtime, survtime - bsurvtime), "DeathScreenText_2", (ScrW() / 2) - 275, (ScrH() / 2) + 150, Color(255, 255, 255, tonumber(self.tea_survivalstats_a)), 0)
 
 	if !LocalPlayer():Alive() then
 		local message
 		local w,h
 		if GetConVar("tea_cl_hudstyle"):GetFloat() < 1 then
 			surface.SetDrawColor(255, 255, 0, 255)
-			surface.DrawOutlinedRect( ScrW( ) / 2 - 135, 90, 270, 40 )
+			surface.DrawOutlinedRect( ScrW() / 2 - 135, 90, 270, 40 )
 			surface.SetDrawColor(0, 0, 0, 200)
-			surface.DrawRect( ScrW( ) / 2 - 135, 90, 270, 40 )
+			surface.DrawRect( ScrW() / 2 - 135, 90, 270, 40 )
+			surface.SetFont("TargetIDSmall")
 			message = Spawn > CurTime() + 1 and translate.Format("respawn_1", math.Clamp(math.ceil(Spawn - CurTime()), 0, 2147483647), translate.Get("seconds")) or Spawn > CurTime() and translate.Format("respawn_1", math.Clamp(math.ceil(Spawn - CurTime()), 0, 2147483647), translate.Get("second")) or translate.Get("respawn_2")
 			w,h = surface.GetTextSize(message)
 			draw.DrawText(message, "TargetIDSmall", ScrW() / 2 - (w / 2), 102, Color( 255,255,255,255 ), 0)
 		else
 			message = Spawn > CurTime() + 1 and translate.Format("respawn_1", math.Clamp(math.ceil(Spawn - CurTime()), 0, 2147483647), translate.Get("seconds")) or Spawn > CurTime() and translate.Format("respawn_1", math.Clamp(math.ceil(Spawn - CurTime()), 0, 2147483647), translate.Get("second")) or translate.Get("respawn_2")
+			surface.SetFont("TargetID")
 			w,h = surface.GetTextSize(message)
 			draw.DrawText(message, "TargetID", ScrW() / 2 - (w / 2), ScrH() / 2 - 200, Color( 255,255,255,255 ), 0 )
 		end
 	end
+
+	local glow = 127 + math.abs(math.sin(CurTime() * 0.74) * 128)
+	local dbg_cvar = GetConVar("tea_server_debugging"):GetInt()
+	draw.SimpleText(dbg_cvar >= 4 and translate.Format("ver_5", GAMEMODE.Version) or dbg_cvar >= 3 and translate.Format("ver_4", GAMEMODE.Version) or dbg_cvar >= 2 and translate.Format("ver_3", GAMEMODE.Version) or dbg_cvar >= 1 and translate.Format("ver_2", GAMEMODE.Version) or translate.Format("ver_1", GAMEMODE.Version), "TargetIDSmall", 10, 5, Color(191,191,glow,255), 0, 0 )
 
 	cam.End2D()
 end
@@ -773,6 +791,8 @@ function GM:HUDShouldDraw(name)
 end
 
 function GM:RenderScreenspaceEffects()
+	if AdminCheck(LocalPlayer()) and GetConVar("tea_cl_admin_noviseffects"):GetInt() >= 1 then return end
+
 	local modify = {}
 	local color = 1
 	
@@ -782,7 +802,7 @@ function GM:RenderScreenspaceEffects()
 		else
 			color = 0
 		end
-		
+
 		DrawMotionBlur(math.Clamp(1 - (((LocalPlayer():GetMaxHealth() * 0.5) - LocalPlayer():Health()) * (1 / (LocalPlayer():GetMaxHealth() * 0.5))), 0.1, 1), 1, 0)
 	end
 
@@ -881,7 +901,7 @@ function DrawMiscThings()
 
 		surface.SetDrawColor(150, 0, 0, 200)
 		surface.DrawOutlinedRect( dix.x - 75, dix.y, 150, 25 )
-		draw.DrawText(math.Round(fraction * 100).."%", "TargetID", dix.x, dix.y + 4, Color(255, 255, 255, 155), 1)
+		draw.DrawText(math.Round(fraction * 10000) / 100 .."%", "TargetID", dix.x, dix.y + 4, Color(255, 255, 255, 155), 1)
 	end
 	
 
@@ -910,18 +930,18 @@ function DrawMiscThings()
 		local t = ScrW() / 2 - 75
 		local s = ScrH() / 2 + 100
 		surface.SetDrawColor(255, 255, 0, 255)
-		surface.DrawOutlinedRect( t, s, 150, 45 )
+		surface.DrawOutlinedRect(t, s, 150, 45)
 		surface.SetDrawColor(0, 0, 0, 200)
-		surface.DrawRect( t, s, 150, 45 )
-		draw.DrawText("Loot Cache", "TargetID", t + 5, s + 4, Color( 255, 255, 255, 255 ) )
-		draw.DrawText("Press E to pick up", "TargetID", t + 5, s + 22, Color( 255, 255, 255, 255 ) )
+		surface.DrawRect(t, s, 150, 45)
+		draw.DrawText("Loot Cache", "TargetID", t + 5, s + 4, Color(255, 255, 255, 255))
+		draw.DrawText("Press E to pick up", "TargetID", t + 5, s + 22, Color(255, 255, 255, 255))
 	end
 
 	if tr.Entity:GetClass() == "loot_cache_special" then 
 		local t = ScrW() / 2 - 75
 		local s = ScrH() / 2 + 100
 		surface.SetDrawColor(255, 255, 0, 255)
-		surface.DrawOutlinedRect( t, s, 150, 45 )
+		surface.DrawOutlinedRect(t, s, 150, 45)
 		surface.SetDrawColor(0, 0, 0, 200)
 		surface.DrawRect(t, s, 150, 45)
 		draw.DrawText("Rare Loot Cache", "TargetID", t + 5, s + 4, Color(255,255,255,255))
@@ -932,22 +952,22 @@ function DrawMiscThings()
 		local t = ScrW() / 2 - 75
 		local s = ScrH() / 2 + 100
 		surface.SetDrawColor(255, 255, 0, 255)
-		surface.DrawOutlinedRect( t, s, 150, 45 )
+		surface.DrawOutlinedRect(t, s, 150, 45)
 		surface.SetDrawColor(0, 0, 0, 200)
-		surface.DrawRect( t, s, 150, 45 )
-		draw.DrawText( "Boss Cache", "TargetID", t + 5, s + 4, Color( 255, 255, 255, 255 ) )
-		draw.DrawText( tr.Entity:GetNWEntity("pickup"):IsValid() and tr.Entity:GetNWEntity("pickup"):IsPlayer() and tr.Entity:GetNWEntity("pickup") != LocalPlayer() and "Can't pick up" or "Can pick up", "TargetID", t + 5, s + 22, Color( 255, 255, 255, 255 ) )
+		surface.DrawRect(t, s, 150, 45)
+		draw.DrawText("Boss Cache", "TargetID", t + 5, s + 4, Color(255, 255, 255, 255))
+		draw.DrawText(tr.Entity:GetNWEntity("pickup"):IsValid() and tr.Entity:GetNWEntity("pickup"):IsPlayer() and tr.Entity:GetNWEntity("pickup") != LocalPlayer() and "Can't pick up" or "Can pick up", "TargetID", t + 5, s + 22, Color(255, 255, 255, 255))
 	end
 
 	if tr.Entity:GetClass() == "loot_cache_faction" then 
 		local t = ScrW() / 2 - 75
 		local s = ScrH() / 2 + 100
 		surface.SetDrawColor(255, 255, 0, 255)
-		surface.DrawOutlinedRect( t, s, 150, 45 )
+		surface.DrawOutlinedRect(t, s, 150, 45)
 		surface.SetDrawColor(0, 0, 0, 200)
-		surface.DrawRect( t, s, 150, 45 )
-		draw.DrawText( "Faction Loot Cache", "TargetID", t + 5, s + 4, Color( 255, 255, 255, 255 ) )
-		draw.DrawText( "Press E to pick up", "TargetID", t + 5, s + 22, Color( 255, 255, 255, 255 ) )
+		surface.DrawRect(t, s, 150, 45)
+		draw.DrawText("Faction Loot Cache", "TargetID", t + 5, s + 4, Color(255, 255, 255, 255))
+		draw.DrawText("Press E to pick up", "TargetID", t + 5, s + 22, Color(255, 255, 255, 255))
 	end
 
 
@@ -956,11 +976,11 @@ function DrawMiscThings()
 		local t = ScrW() / 2 - 75
 		local s = ScrH() / 2 + 100
 		surface.SetDrawColor(255, 255, 0, 255)
-		surface.DrawOutlinedRect( t, s, 150, 45 )
+		surface.DrawOutlinedRect(t, s, 150, 45)
 		surface.SetDrawColor(0, 0, 0, 200)
-		surface.DrawRect( t, s, 150, 45 )
-		draw.DrawText( tr.Entity:GetNWInt("CashAmount").." "..GAMEMODE.Config["Currency"].."(s)", "TargetID", t + 5, s + 4, Color( 255, 255, 255, 255 ) )
-		draw.DrawText( "Press E to pick up", "TargetID", t + 5, s + 22, Color( 255, 255, 255, 255 ) )
+		surface.DrawRect(t, s, 150, 45)
+		draw.DrawText(tr.Entity:GetNWInt("CashAmount").." "..GAMEMODE.Config["Currency"].."(s)", "TargetID", t + 5, s + 4, Color(255, 255, 255, 255))
+		draw.DrawText("Press E to pick up", "TargetID", t + 5, s + 22, Color(255, 255, 255, 255))
 	end
 end
 
@@ -970,7 +990,8 @@ net.Receive("WraithBlind", function()
 end)
 
 
-function WraithBlind()
+function GM.ScreenEffects()
+	if AdminCheck(LocalPlayer()) and GetConVar("tea_cl_admin_noviseffects"):GetInt() >= 1 then return end
 	if LocalPlayer():Alive() then
 		if wralpha > 220 then wralpha = wralpha - 0.095
 		elseif wralpha > 0 then wralpha = wralpha - 0.6
@@ -982,20 +1003,21 @@ function WraithBlind()
 		wralpha = 0
 	end
 end
-hook.Add("RenderScreenspaceEffects", "WraithBlind", WraithBlind)
+hook.Add("RenderScreenspaceEffects", "tea_VariousEffects", GM.ScreenEffects)
 
 net.Receive("PrestigeEffect", function()
 	pralpha = 263
 end)
 
-function PrestigeEffect()
+function GM.PrestigeEffects()
+	if AdminCheck(LocalPlayer()) and GetConVar("tea_cl_admin_noviseffects"):GetInt() >= 1 then return end
 	if pralpha > 0 then pralpha = math.Clamp(pralpha - 3, 0, 263)
 	else return end
 	
 	surface.SetDrawColor(255, 255, 255, math.Round(math.Clamp(pralpha, 0, 255)))
 	surface.DrawRect(-1, -1, surface.ScreenWidth() + 1, surface.ScreenHeight() + 1)
 end
-hook.Add("RenderScreenspaceEffects", "PrestigeEffect", PrestigeEffect)
+hook.Add("RenderScreenspaceEffects", "PrestigeEffect", GM.PrestigeEffects)
 
 
 hook.Add("PostDrawOpaqueRenderables", "circle", function()

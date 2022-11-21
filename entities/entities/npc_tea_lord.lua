@@ -90,11 +90,11 @@ function ENT:SpecialSkill1()
 	self:EmitSound("ambient/machines/thumper_hit.wav", 120, 70)
 
 	for k, v in pairs(ents.FindInSphere(self:GetPos(), 2000)) do
-		if (self != v and v.Type == "nextbot") then
-			if v.RageLevel < 2.5 then
+		if (self != v and (GAMEMODE.Config["ZombieClasses"][v:GetClass()] or GAMEMODE.Config["BossClasses"][v:GetClass()])) then
+			if (v.RageLevel or 0) < 2.5 then
 				v.RageLevel = 2.5
 			end
-			if v.SpeedBuff < 1.15 then
+			if (v.SpeedBuff or 0) < 1.15 then
 				v.SpeedBuff = 1.15
 			end
 			local effectdata = EffectData()

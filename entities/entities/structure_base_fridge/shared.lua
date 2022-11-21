@@ -127,7 +127,6 @@ end
 	return false 
 	end
 
-
 	local currenthealth = self.integrity
 	if dmg:IsBulletDamage() then 
 		self.integrity = (self.integrity - damage / 2)
@@ -135,27 +134,27 @@ end
 		self.integrity = (self.integrity - damage)
 	end
 
-		local shit = math.floor(self.maxinteg / 500)
-		local swag
-		if shit == 1 then swag = math.Clamp(self.integrity / 2 , 0, 255)
-		elseif shit == 2 then swag = math.Clamp(self.integrity / 4 , 0, 255)
-		else
-		swag = math.Clamp(self.integrity / 6 , 0, 255)
-		end
+	local shit = math.floor(self.maxinteg / 500)
+	local swag
+	if shit == 1 then swag = math.Clamp(self.integrity / 2 , 0, 255)
+	elseif shit == 2 then swag = math.Clamp(self.integrity / 4 , 0, 255)
+	else
+	swag = math.Clamp(self.integrity / 6 , 0, 255)
+	end
 
-		self:SetColor(Color(swag +5,swag+5,swag+5,255))
+	self:SetColor(Color(swag +5,swag+5,swag+5,255))
 
-		if self.integrity - damage < 0 or !self.IsBuilt then
-			if attacker:IsPlayer() and self.IsBuilt then
-				Payout(attacker, 400, 400, 450, 450)
-			elseif attacker:IsPlayer() and !self.IsBuilt then
-				SystemMessage(attacker, "nice try", Color(255,230,230,255), false)
-			end
-			self:BreakPanel()
---			self.Entity:EmitSound("physics/wood/wood_plank_break"..math.random(1,2)..".wav", 100, 100)
-			self.Entity:EmitSound("physics/metal/metal_box_break2.wav", 80, 100)              
-			self.Entity:Remove()
+	if self.integrity - damage < 0 or !self.IsBuilt then
+		if attacker:IsPlayer() and self.IsBuilt then
+			Payout(attacker, 400, 400, 450, 450)
+		elseif attacker:IsPlayer() and !self.IsBuilt then
+			SystemMessage(attacker, "nice try", Color(255,230,230,255), false)
 		end
+		self:BreakPanel()
+--		self.Entity:EmitSound("physics/wood/wood_plank_break"..math.random(1,2)..".wav", 100, 100)
+		self.Entity:EmitSound("physics/metal/metal_box_break2.wav", 80, 100)              
+		self.Entity:Remove()
+	end
 end
 
 

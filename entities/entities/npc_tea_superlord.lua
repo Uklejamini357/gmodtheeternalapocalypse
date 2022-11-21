@@ -85,19 +85,19 @@ end
 
 
 function ENT:SpecialSkill1()
-if !self:IsValid() then return false end
+	if !self:IsValid() then return false end
 
-local effectdata = EffectData()
-effectdata:SetOrigin(self:GetPos() + Vector(0, 0, 60))
-util.Effect("zw_master_pulse", effectdata)
-self:EmitSound("ambient/machines/thumper_hit.wav", 120, 70)
+	local effectdata = EffectData()
+	effectdata:SetOrigin(self:GetPos() + Vector(0, 0, 60))
+	util.Effect("zw_master_pulse", effectdata)
+	self:EmitSound("ambient/machines/thumper_hit.wav", 120, 70)
 
 	for k, v in pairs(ents.FindInSphere(self:GetPos(), 2250)) do
-		if (self != v and v.Type == "nextbot") then
-			if v.RageLevel < 3.5 then
+		if (self != v and (GAMEMODE.Config["ZombieClasses"][v:GetClass()] or GAMEMODE.Config["BossClasses"][v:GetClass()])) then
+			if (v.RageLevel or 0) < 3.5 then
 				v.RageLevel = 3.5
 			end
-			if v.SpeedBuff < 1.3 then
+			if (v.SpeedBuff or 0) < 1.3 then
 				v.SpeedBuff = 1.3
 			end
 			local effectdata = EffectData()

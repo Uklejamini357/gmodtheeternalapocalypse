@@ -116,7 +116,7 @@ end
 function SystemMessage(ply, msg, color, sys)
 	net.Start("SystemMessage")
 	net.WriteString(msg)
-	net.WriteColor(color)
+	net.WriteColor(color or Color(255,255,255))
 	net.WriteBool(sys or false)
 	net.Send(ply)
 end
@@ -125,17 +125,17 @@ function tea_SystemBroadcast(msg, color, sys) -- same as system message, just br
 	for k, v in pairs(player.GetAll()) do
 		net.Start("SystemMessage")
 		net.WriteString(msg)
-		net.WriteColor(color)
+		net.WriteColor(color or Color(255,255,255))
 		net.WriteBool(sys or false)
 		net.Send(v)
 	end
 end
 
-function tea_SystemTranslatedBroadcast(msg, color, sys, ...) -- same as system broadcast, except sends a translated string to everyone
+function tea_SystemTranslatedBroadcast(sys, color, msg, ...) -- same as system broadcast, except sends a translated string to everyone
 	for k, v in pairs(player.GetAll()) do
 		net.Start("SystemMessage")
 		net.WriteString(translate.ClientFormat(v, msg, ...))
-		net.WriteColor(color)
+		net.WriteColor(color or Color(255,255,255))
 		net.WriteBool(sys or false)
 		net.Send(v)
 	end
@@ -147,6 +147,18 @@ function RadioBroadcast(time, msg, sender, rad)
 			net.Start("RadioMessage")
 			net.WriteString(sender)
 			net.WriteString(msg)
+			net.WriteBool(rad)
+			net.Send(v)
+		end
+	end)
+end
+
+function RadioTranslatedBroadcast(time, sender, rad, msg, ...)
+	timer.Simple(time, function(...)
+		for k, v in pairs(player.GetAll()) do
+			net.Start("RadioMessage")
+			net.WriteString(sender)
+			net.WriteString(translate.ClientFormat(v, msg, ...))
 			net.WriteBool(rad)
 			net.Send(v)
 		end
@@ -170,14 +182,14 @@ end)
 
 net.Receive("ChangeModel", function(length, client)
 	if !client:IsValid() or !client:Alive() then return false end
-	if timer.Exists("changemodelcooldown_"..client:UniqueID()) then SystemMessage(client, "You can't change your model since you already have changed your model in the last 120 seconds!", Color(255,155,155,255), true) return false end
+	if (client.NxtModelChange or 0) > CurTime() then SystemMessage(client, "You can't change your model now! Try again in "..math.floor(client.NxtModelChange - CurTime()).." seconds!", Color(255,155,155,255), true) return false end
 	local model = net.ReadString()
 	local col = net.ReadVector()
 	client.ChosenModel = model
 	client.ChosenModelColor = col
 
 	SendUseDelay(client, 1)
-	timer.Create("changemodelcooldown_"..client:UniqueID(), 120, 1, function() end) 
+	client.NxtModelChange = CurTime() + 120
 	timer.Simple(0.75, function() tea_RecalcPlayerModel(client) end)
 end)
 
@@ -187,7 +199,7 @@ net.Receive("UpgradePerk", function(length, client)
 	local perk = net.ReadString()
 	local perk2 = "Stat"..perk
 	if(tonumber(ply.StatPoints) < 1) then
-		SendChat(ply, "You need more stat points to upgrade a skill!")
+		SendChat(ply, "You need a skill point to upgrade a skill!")
 		return false
 	end
 	if (tonumber(ply[perk2]) >= 10) then
@@ -211,16 +223,16 @@ net.Receive("CashBounty", function(length, client)
 	if !client:IsValid() or !client:Alive() then return false end
 
 	local trader = false
-	local plycheck = ents.FindInSphere(client:GetPos(), 200)
+	local plycheck = ents.FindInSphere(client:GetPos(), 150)
 
 	for k, v in pairs(plycheck) do
-		if v:GetClass() == "trader" then trader = true end
+		if v:GetClass() == "trader" then trader = true break end
 	end
 	if !trader then SystemMessage(client, "You are not in a trader area!", Color(255,205,205,255), true) return false end
 	if client.Bounty <= 0 then SystemMessage(client, "You don't have any bounty to cash in!", Color(255,205,205,255), true) return false end
 
 	client.Money = math.floor(tonumber(client.Money)) + tonumber(client.Bounty)
-	print(client:Nick().." has cashed in their bounty and received "..tonumber(math.floor(client.Bounty)).." "..GAMEMODE.Config["Currency"].."s!")
+	if GetConVar("tea_server_debugging"):GetInt() >= 1 then print(client:Nick().." cashed in their bounty and received "..tonumber(math.floor(client.Bounty)).." "..GAMEMODE.Config["Currency"].."s") end
 	SystemMessage(client, "You cashed in your bounty and received "..tonumber(math.floor(client.Bounty)).." "..GAMEMODE.Config["Currency"].."s!", Color(205,255,205,255), true)
 	client.Bounty = 0
 	client:SetNWInt("PlyBounty", client.Bounty)

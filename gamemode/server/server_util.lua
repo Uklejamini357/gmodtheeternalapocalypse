@@ -252,8 +252,9 @@ function GM:PlayerDeath(ply, inflictor, attacker)
 	if attacker == ply then
 		net.Start("PlayerKilledSelf")
 		net.WriteEntity(ply)
+		net.WriteEntity(attacker)
 		net.Broadcast()
-		MsgAll(ply:Nick() .. " suicided!\n")
+		MsgAll(ply:Nick() .." suicided!\n")
 	return end
 
 	if attacker:IsPlayer() then
@@ -271,7 +272,7 @@ function GM:PlayerDeath(ply, inflictor, attacker)
 	net.WriteString(attacker:GetClass())
 	net.Broadcast()
 
-	MsgAll(ply:Nick().." was killed by "..attacker:GetClass().."\n")
+	MsgAll(attacker:IsValid() and ply:Nick().." was killed by "..attacker:GetClass().."\n" or ply:Nick().." was killed by the environment\n")
 end
 
 function GM:DoPlayerDeath(ply, attacker, dmginfo)
@@ -314,22 +315,15 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 	ply:CreateRagdoll()
 
 	--ply:SendLua("DeathSC()")
-	
-	if 15 < survived and ply.IsAlive then --to prevent player from spamming the same thing in chat when dying while already dead and survived for less than 15 seconds
-		if math.floor(ply.BestSurvivalTime) < survived then
-			SystemMessage(ply, "Survived for "..math.floor(survived).."s (Previous Best: "..math.floor(ply.BestSurvivalTime).."s)", Color(220,180,220,255), false)
-		else
-			SystemMessage(ply, "Survived for "..math.floor(survived).."s", Color(220,180,220,255), false)
-		end
-		ply.BestSurvivalTime = math.floor(math.max(ply.BestSurvivalTime, survived))
-	end
-	ply.SurvivalTime = CurTime()
-
-
 	timer.Destroy("IsSleeping_"..ply:UniqueID())
 	ply:AddDeaths(1)
 	ply.playerdeaths = ply.playerdeaths + 1
-	tea_NetUpdateStatistics(ply)
+
+	ply.BestSurvivalTime = math.floor(math.max(ply.BestSurvivalTime, survived))
+	ply.SurvivalTime = CurTime()
+	timer.Simple(0, function()
+		tea_NetUpdateStatistics(ply)
+	end)
 
 /*	if attacker:IsPlayer() and (ply:Team() == attacker:Team()) and attacker != ply and not (ply:Team() == 1 or attacker:Team() == 1) then
 		attacker:AddFrags(-1)

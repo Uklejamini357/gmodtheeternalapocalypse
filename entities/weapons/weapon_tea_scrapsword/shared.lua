@@ -137,14 +137,14 @@ function SWEP:PrimaryAttack()
 		return
 	end
 
-	if ((CLIENT and Mystamina < 12.5) or (SERVER and self.Owner.Stamina < 12.5)) then return end
+	if ((CLIENT and MyStamina < 8.5) or (SERVER and self.Owner.Stamina < 8.5)) then return end
 
 	self.Weapon:SendWeaponAnim(ACT_VM_MISSCENTER)
 
 	timer.Simple( 0.2, function()
 	if ( !IsValid( self ) || !IsValid( self.Owner ) || !self.Owner:GetActiveWeapon() || self.Owner:GetActiveWeapon() != self || CLIENT ) then return end
 		self:DealDamage( anim )
-		self.Owner.Stamina = math.Clamp(self.Owner.Stamina - math.Rand(10, 11.5), 0, 100)
+		self.Owner.Stamina = math.Clamp(self.Owner.Stamina - math.Rand(6, 7.75), 0, 100)
 		self.Owner:EmitSound( "weapons/slam/throw.wav", 70, 60 )
 	end )
 

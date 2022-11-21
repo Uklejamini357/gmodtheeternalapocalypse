@@ -1,11 +1,11 @@
 // Variables that are used on both client and server
 
 SWEP.Base				= "weapon_melee_base"
-SWEP.Category			= "AtE Weapons"
-SWEP.Purpose			= "Build unbuilt props and repair damaged props"
-SWEP.Instructions		= "Becomes more effective if you level your engineer skill. You can also use it as a bashing weapon but it isn't very effective."
+SWEP.Category			= "TEA Weapons"
+SWEP.Purpose			= "Repair faction structures. Not to be confused with Builder's Wrench"
+SWEP.Instructions		= "Becomes more effective if you level your engineer skill. Very ineffective as a melee weapon."
 SWEP.ViewModelFlip		= false
-SWEP.ViewModel			= "models/wrepons/v_crowbar.mdl"
+SWEP.ViewModel			= "models/weapons/v_crowbar.mdl"
 SWEP.WorldModel			= "models/weapons/w_crowbar.mdl"
 SWEP.ViewModelFOV		= 50
 SWEP.BobScale			= 2
@@ -111,13 +111,13 @@ end
    Desc: +attack1 has been pressed.
 ---------------------------------------------------------*/
 function SWEP:PrimaryAttack()
-	if (CLIENT and MyStamina < 4) or (SERVER and self.Owner.Stamina < 4) then return end
+	if (CLIENT and MyStamina < 5) or (SERVER and self.Owner.Stamina < 5) then return end
 	self.Weapon:SendWeaponAnim(ACT_VM_MISSCENTER)
 
 	timer.Simple( 0.2, function()
 	if ( !IsValid( self ) || !IsValid( self.Owner ) || !self.Owner:GetActiveWeapon() || self.Owner:GetActiveWeapon() != self || CLIENT ) then return end
 		self:DealDamage( anim )
-		self.Owner.Stamina = math.Clamp(self.Owner.Stamina - math.Rand(2.85, 3.3), 0, 100)
+		self.Owner.Stamina = math.Clamp(self.Owner.Stamina - math.Rand(3, 3.5), 0, 100)
 		self.Owner:EmitSound( "weapons/slam/throw.wav" )
 	end )
 
@@ -182,9 +182,9 @@ function SWEP:DealDamage( anim )
 	if ( IsValid( tr.Entity ) && ( tr.Entity:IsNPC() || tr.Entity:IsPlayer() || tr.Entity:GetClass() == "func_breakable" || tr.Entity.Type == "nextbot" || tr.Entity:Health() > 0 ) ) then
 		local dmginfo = DamageInfo()
 		if tr.Entity:IsPlayer() then
-		dmginfo:SetDamage( math.random( 12, 16 ) )
+			dmginfo:SetDamage( math.random( 10, 15 ) )
 		else
-		dmginfo:SetDamage( math.random( 20, 25 ) )
+			dmginfo:SetDamage( math.random( 17, 21 ) )
 		end
 		dmginfo:SetDamageForce( self.Owner:GetRight() * 425 + self.Owner:GetForward() * 94 ) -- Yes we need those specific numbers
 		dmginfo:SetInflictor( self )
@@ -195,45 +195,29 @@ function SWEP:DealDamage( anim )
 		tr.Entity:TakeDamageInfo( dmginfo )
 	end
 
-	if tr.Entity:IsValid() && (tr.Entity:GetClass() == "prop_flimsy" or tr.Entity:GetClass() == "prop_strong" or SpecialSpawns[tr.Entity:GetClass()]) then
-		if tr.Entity.IsBuilt == false then
+	if tr.Entity:IsValid() && SpecialSpawns[tr.Entity:GetClass()] then
+		if tr.Entity.IsBuilt then
+			local hp = tr.Entity.integrity
+			local maxhp = tr.Entity.maxinteg
 
-			local mins, maxs = tr.Entity:LocalToWorld(tr.Entity:OBBMins( )), tr.Entity:LocalToWorld(tr.Entity:OBBMaxs( ))
-			local cube = ents.FindInBox( mins, maxs )
+			if hp >= maxhp then return end
 
-			for _,v in pairs(cube) do
-				if v:IsPlayer() or v:IsNPC() or v.Type == "nextbot" then SystemMessage(self.Owner, "Unable to build: prop obstructed!", Color(255,205,205,255), true) return false end
-			end
+			hp = math.Clamp( hp + (20 + (self.Owner.StatEngineer * 3)), 0, maxhp )
 
-			if (tr.Entity:GetClass() == "prop_flimsy" and tr.Entity.BuildLevel >= (3 + (FLIMSYPROPS[tr.Entity:GetModel()]["TOUGHNESS"] or 0))) or (tr.Entity:GetClass() == "prop_strong" and tr.Entity.BuildLevel >= 5 + (TOUGHPROPS[tr.Entity:GetModel()]["TOUGHNESS"] or 0)) or (SpecialSpawns[tr.Entity:GetClass()] and tr.Entity.BuildLevel >= 7) then
-				tr.Entity:FinishBuild()
+			local shit = math.floor(maxhp / 500)
+			local swag
+			if shit == 1 then swag = math.Clamp(hp / 2 , 0, 255)
+			elseif shit == 2 then swag = math.Clamp(hp / 4 , 0, 255)
 			else
-				tr.Entity.BuildLevel = tr.Entity.BuildLevel + 1
+				swag = math.Clamp(hp / 6 , 0, 255)
 			end
 
-
+			tr.Entity:SetColor(Color(swag +5,swag+5,swag+5,255))
+			tr.Entity.integrity = hp
 			tr.Entity:EmitSound("weapons/crowbar/crowbar_impact"..math.random(1,2)..".wav")
+			self.Owner:PrintMessage(HUD_PRINTCENTER, "STRUCTURE HP: "..math.floor(hp).."/"..maxhp)
 		else
-		local hp = tr.Entity:GetStructureHealth()
-		local maxhp = tr.Entity:GetStructureMaxHealth()
-
-		if hp >= maxhp then return end
-
-		hp = math.Clamp( hp + (20 + (self.Owner.StatEngineer * 3)), 0, maxhp )
-
-		local shit = math.floor(maxhp / 500)
-		local swag
-		if shit == 1 then swag = math.Clamp(hp / 2 , 0, 255)
-		elseif shit == 2 then swag = math.Clamp(hp / 4 , 0, 255)
-		else
-		swag = math.Clamp(hp / 6 , 0, 255)
-		end
-
-		tr.Entity:SetColor(Color(swag +5,swag+5,swag+5,255))
-		tr.Entity:SetStructureHealth( hp )
-		tr.Entity:EmitSound("weapons/crowbar/crowbar_impact"..math.random(1,2)..".wav")
-		self.Owner:PrintMessage(HUD_PRINTCENTER, "STRUCTURE HP: "..math.floor(hp).."/"..maxhp)
-
+			SystemMessage(self.Owner, "You can't use repair wrench to build faction structures!", Color(255,205,205), true)
 		end
 	end
 end

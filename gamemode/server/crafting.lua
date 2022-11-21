@@ -11,6 +11,7 @@ end)
 
 function tea_CraftItem(ply, str)
 	if !GAMEMODE.CraftableList[str] then return false end
+	if timer.Exists("ItemCrafting_"..ply:EntIndex()) then return false end
 	local RequiredItems = {}
 	local HaveItems = {}
 	for k,v in pairs(GAMEMODE.CraftableList[str]["Requirements"]) do
@@ -28,33 +29,25 @@ function tea_CraftItem(ply, str)
 	HaveItems = table.ToString(HaveItems)
 
 	if HaveItems == RequiredItems then
-		for k,v in pairs(GAMEMODE.CraftableList[str]["Requirements"]) do
-			if ply.Inventory[k] == nil or ply.Inventory[k] < v then continue
-			elseif ply.Inventory[k] > v then
-				ply.Inventory[k] = ply.Inventory[k] - v
-			elseif ply.Inventory[k] == v then
-				ply.Inventory[k] = nil
+		local crafttime = tonumber(GAMEMODE.CraftableList[str]["CraftTime"])
+		SendUseDelay(ply, crafttime)
+		timer.Create("ItemCrafting_"..ply:EntIndex(), crafttime, 1, function()
+			for k,v in pairs(GAMEMODE.CraftableList[str]["Requirements"]) do
+				if ply.Inventory[k] == nil or ply.Inventory[k] < v then continue
+				elseif ply.Inventory[k] > v then
+					ply.Inventory[k] = ply.Inventory[k] - v
+				elseif ply.Inventory[k] == v then
+					ply.Inventory[k] = nil
+				end
 			end
-		end
 
-		local vStart = ply:GetShootPos()
-		local vForward = ply:GetAimVector()
-		local trace = {}
-		trace.start = vStart
-		trace.endpos = vStart + (vForward * 70)
-		trace.filter = ply
-		local tr = util.TraceLine(trace)
-		local EntDrop = ents.Create("ate_droppeditem")
-		EntDrop:SetPos(tr.HitPos)
-		EntDrop:SetAngles(Angle(0, 0, 0))
-		EntDrop:SetModel(GAMEMODE.ItemsList[str]["Category"] == 4 and "models/props/cs_office/cardboard_box01.mdl" or GAMEMODE.ItemsList[str]["Model"])
-		EntDrop:SetNWString("ItemClass", str)
-		EntDrop:Spawn()
-		EntDrop:Activate()
-		EntDrop:SetVelocity(ply:GetForward() * 80 + Vector(0,0,50))
+			local xp = Payout(ply, tonumber(GAMEMODE.CraftableList[str]["XP"]), 0)
+			tea_SystemGiveItem_NoWeight(ply, str, qty)
+			ply:EmitSound("items/itempickup.wav")
 
-		tea_SendInventory(ply)
-		SendChat(ply, "Successfully crafted an item!")
+			tea_SendInventory(ply)
+			SendChat(ply, "Successfully crafted an item! Gained "..xp.." XP")
+		end)
 	else
 		SystemMessage(ply, "You don't have the required items to craft this!", Color(255,205,205), true)
 		SystemMessage(ply, "You need:", Color(255,205,205), false)
@@ -74,6 +67,7 @@ end)
 
 function tea_CraftSpecialItem(ply, str)
 	if !GAMEMODE.CraftableSpecialList[str] then return false end
+	if timer.Exists("ItemCrafting_"..ply:EntIndex()) then return false end
 	local RequiredItems = {}
 	local HaveItems = {}
 	for k,v in pairs(GAMEMODE.CraftableSpecialList[str]["Requirements"]) do
@@ -93,37 +87,29 @@ function tea_CraftSpecialItem(ply, str)
 	HaveItems = table.ToString(HaveItems)
 
 	if HaveItems == RequiredItems then
-		for k,v in pairs(GAMEMODE.CraftableSpecialList[str]["Requirements"]) do
-			if ply.Inventory[k] == nil or ply.Inventory[k] < v then continue
-			elseif ply.Inventory[k] > v then
-				ply.Inventory[k] = ply.Inventory[k] - v
-			elseif ply.Inventory[k] == v then
-				ply.Inventory[k] = nil
+		local crafttime = tonumber(GAMEMODE.CraftableSpecialList[str]["CraftTime"])
+		SendUseDelay(ply, crafttime)
+		timer.Create("ItemCrafting_"..ply:EntIndex(), crafttime, 1, function()
+			for k,v in pairs(GAMEMODE.CraftableSpecialList[str]["Requirements"]) do
+				if ply.Inventory[k] == nil or ply.Inventory[k] < v then continue
+				elseif ply.Inventory[k] > v then
+					ply.Inventory[k] = ply.Inventory[k] - v
+				elseif ply.Inventory[k] == v then
+					ply.Inventory[k] = nil
+				end
 			end
-		end
 
-		local vStart = ply:GetShootPos()
-		local vForward = ply:GetAimVector()
-		local trace = {}
-		trace.start = vStart
-		trace.endpos = vStart + (vForward * 70)
-		trace.filter = ply
-		local tr = util.TraceLine(trace)
-		local EntDrop = ents.Create("ate_droppeditem")
-		EntDrop:SetPos(tr.HitPos)
-		EntDrop:SetAngles(Angle(0, 0, 0))
-		EntDrop:SetModel(GAMEMODE.ItemsList[str]["Category"] == 4 and "models/props/cs_office/cardboard_box01.mdl" or GAMEMODE.ItemsList[str]["Model"])
-		EntDrop:SetNWString("ItemClass", str)
-		EntDrop:Spawn()
-		EntDrop:Activate()
-		EntDrop:SetVelocity(ply:GetForward() * 80 + Vector(0,0,50))
-		
-		tea_SendInventory(ply)
-		SendChat(ply, "Successfully crafted an item!")
+			local xp = Payout(ply, tonumber(GAMEMODE.CraftableSpecialList[str]["XP"]), 0)
+			tea_SystemGiveItem_NoWeight(ply, str, qty)
+			ply:EmitSound("items/itempickup.wav")
+
+			tea_SendInventory(ply)
+			SendChat(ply, "Successfully crafted an item! Gained "..xp.." XP")
+		end)
 	else
 		SystemMessage(ply, "You don't have the required items to craft this!", Color(255,205,205), true)
 		SystemMessage(ply, "You need:", Color(255,205,205), false)
-		for k,v in pairs(GAMEMODE.CraftableList[str]["Requirements"]) do
+		for k,v in pairs(GAMEMODE.CraftableSpecialList[str]["Requirements"]) do
 			SystemMessage(ply, "	"..v.."x "..translate.Get(k.."_n"), Color(255,230,230), false)
 		end
 	end

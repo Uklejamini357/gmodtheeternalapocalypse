@@ -23,8 +23,6 @@ LANG.cashgained = "Zdobyto %d Kasy! (Total: %d)"
 LANG.masteryxpgained = "%d Mastery XP for %s gained"
 LANG.respawn_1 = "You can respawn in %d %s"
 LANG.respawn_2 = "You are now able to respawn!"
-LANG.seconds = "sekund"
-LANG.second = "sekunda"
 LANG.hunger_low = "WARNING! You are starving, you need to eat something!"
 LANG.thirst_low = "WARNING! You are dying from dehydration, drink something!"
 LANG.fatigue_high = "WARNING! You are about to die from fatigue, find somewhere to sleep!"
@@ -785,6 +783,12 @@ LANG.notenoughspaceloot = "You don't have enough space for this item! It weighs:
 LANG.notenoughspacevault = "Your vault doesn't have enough space for that! It can only hold %skg of items! (Need %skg more space)"
 LANG.hasnoitem = "You don't have one of those!"
 LANG.buggedcache = "Sorry, this loot cache was bugged and was auto removed to avoid breaking the game, please tell an admin or developer"
+LANG.pvp_on = "You have enabled PvP"
+LANG.pvp_off = "You have disabled PvP"
+LANG.pvp_proxy_warn = "PROXIMITY WARNING: %s is enabling PvP! Shoot him now before its fully activated!"
+LANG.pvp_unabletotoggle = "Unable to toggle PvP: you have damaged or taken damage from another player within the last 60 seconds!"
+LANG.pvp_nospam = "Don't spam the PvP command!"
+LANG.clearedmyprops = "You cleared all your props."
 
 --Admin and dev commands
 
@@ -797,6 +801,8 @@ LANG.admgivetoomany = "You can't give yourself that many items!"
 
 --Other
 
+LANG.seconds = "sekund"
+LANG.second = "sekunda"
 LANG.plspawnprot_on = "Spawn protection enabled for %s second(s)"
 LANG.plspawnprot_off = "Spawn protection has worn off!"
 LANG.description = "No Description"
@@ -813,9 +819,19 @@ LANG.upgradestatimmune_d = "Congratulations, you find this item! But no, this it
 
 -- New
 
-LANG.pvp_on = "You have enabled PvP"
-LANG.pvp_off = "You have disabled PvP"
-LANG.pvp_proxy_warn = "PROXIMITY WARNING: %s is enabling PvP! Shoot him now before its fully activated!"
-LANG.pvp_unabletotoggle = "Unable to toggle PvP: you have damaged or taken damage from another player within the last 60 seconds!"
-LANG.pvp_nospam = "Don't spam the PvP command!"
-LANG.clearedmyprops = "You cleared all your props."
+LANG.Tip1 = "Beware of the bosses, they are very strong with their unique abilities, but can drop good loot."
+LANG.Tip2 = "Wander around the map. You may find some loot cache, containing either common, or good items."
+LANG.Tip3 = "Remember, if you're high on bounty, cash it in at traders. Otherwise, you will drop 30-40% of it as bounty pool if you die."
+LANG.Tip4 = "Kill the zombies. They give good amount of XP and cash, especially for the stronger ones."
+LANG.Tip5 = "If you are getting bored and tired of killing zombies over, enable your PvP and kill other survivors!"
+LANG.Tip6 = "If you need something unique, consider creating faction. You can build faction structures, even Ammo Piles."
+LANG.Tip7 = "A tip to remember, if you die, you drop your weapon that you were holding it. This does not include fists or your build tool."
+LANG.Tip8 = "If you are near the airdrop, your PvP is forced. Beware of the other survivors when having PvP Forced, you can't kill them if they don't have it forced/enabled!"
+LANG.Tip9 = "Consider buying a good armor. Armor provides protection from zombies and environment, but you won't lose it, even if you have it equipped."
+LANG.Tip10 = "If the boss is defeated, the player who has done most damage to it, will be able to pick up the loot. Try to do as much damage to bosses as possible!"
+LANG.Tip11 = "If the zombies keep reaching you, consider making a barricade. Remember to have builder's wrench so you can build, and repair them!"
+LANG.Tip12 = "If you reach max level, prestige. Your levels, XP, skills will be reset, but you will gain a good perk that helps in survivalism, or some cash, depending on your prestige."
+LANG.Tip13 = "If you have enough cash for better weapon, be sure you also have the money for the ammo!"
+LANG.Tip14 = "Be sure to plan on what skill you are using a skill point. It's worth to max out Knowledge skill first."
+LANG.Tip15 = "Consider crafting some items, if you get some loot. You may save some money."
+LANG.Tip16 = "Try to master some skills, such as Melee. You may gain some advantage and money if Mastery skill is leveled up."

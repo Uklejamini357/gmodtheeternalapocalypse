@@ -23,7 +23,7 @@ function GM.AdminCmds.GiveItem(ply, cmd, args)
 		ply:ConCommand("playgamesound buttons/button8.wav")
 	return false end
 
-	if (tea_CalculateWeight(ply) + (item.Weight * addqty)) > (tea_CalculateMaxWeight(ply)) then SendChat(ply, "You are lacking inventory space! Drop some items first.") return false end
+	if (tea_CalculateWeight(ply) + (item.Weight * addqty)) > (tea_CalculateMaxWeight(ply)) then SendChat(ply, "You don't have any inventory space left for this item! (Need "..-tea_CalculateMaxWeight(ply) + tea_CalculateWeight(ply) + (addqty * item["Weight"]).."kg more space)") return false end
 
 	tea_SystemGiveItem(ply, name, addqty)
 

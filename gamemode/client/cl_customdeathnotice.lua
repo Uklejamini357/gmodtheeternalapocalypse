@@ -37,23 +37,9 @@ local RDStext = {
 	"has put to end their misery"
 }
 
-local function CheckLocalPlayerDeath(victim, attacker)
-	if victim == LocalPlayer() then
-		gamemode.Call("LocalPlayerDeath", attacker)
-	end
-end
-
 local function CheckAttacker(attacker)
-	if attacker == "npc_tea_basic" then attacker = "Shambler Zombie"
-	elseif attacker == "npc_tea_leaper" then attacker = "Leaper Zombie"
-	elseif attacker == "npc_tea_tank" then attacker = "Tank Zombie"
-	elseif attacker == "npc_tea_wraith" then attacker = "Wraith Zombie"
-	elseif attacker == "npc_tea_lord" then attacker = "Zombie Lord"
-	elseif attacker == "npc_tea_tormented_wraith" then attacker = "Tormented Wraith"
-	elseif attacker == "npc_tea_superlord" then attacker = "Zombie Superlord"
-	elseif attacker == "npc_tea_puker" then attacker = "Puker Zombie"
-	elseif attacker == "npc_tea_boss_tyrant" then attacker = "The Tyrant"
-	elseif attacker == "npc_tea_boss_lordking" then attacker = "Zombie Lord King"
+	if GAMEMODE.Config["ZombieClasses"][attacker] then attacker = GAMEMODE.Config["ZombieClasses"][attacker]["Name"]
+	elseif GAMEMODE.Config["BossClasses"][attacker] then attacker = GAMEMODE.Config["BossClasses"][attacker]["Name"]
 	elseif attacker == "npc_zombie" then attacker = "HL2 Zombie"
 	elseif attacker == "npc_fastzombie" then attacker = "HL2 Fast Zombie"
 	elseif attacker == "npc_poisonzombie" then attacker = "HL2 Poison Zombie"
@@ -73,6 +59,71 @@ local function CheckAttacker(attacker)
 	end
 	return attacker
 end
+
+local function CheckLocalPlayerDeath(victim, attacker)
+	local suicidetable = {
+		"You simply killed yourself. Why would you do that?",
+		"Just suicided. Why?!"
+	}
+
+	local killedbyplayer = {
+		"You were killed by %s.",
+		"%s has killed You."
+	}
+	
+	local killedbyboss = {
+		"You were killed by %s.",
+		"You were butchered by %s."
+	}
+	
+	local killedbyzombie = {
+		"You were violated by %s.",
+		"%s has ripped you apart into pieces.",
+		"You were sliced and diced by the %s"
+	}
+	
+	local killedbydoor = {
+		"WAIT WHAT A DOOR JUST KILLED ME",
+		"WHAT THE HECK WHY THE DOOR KILLED ME"
+	}
+	
+	local killedbyenv = {
+		"Better be careful next time.",
+		"Environment is harsh these days, be careful!"
+	}
+	
+	local killedbyworld = {
+		"THE WORLD!!",
+		"Survival is hard these days, isn't it?"
+	}
+	
+	local killedbyother = {
+		"Killed by an unknown cause.",
+		"Don't quit your hope, man!!"
+	}
+
+	if victim == LocalPlayer() then
+		gamemode.Call("LocalPlayerDeath", attacker)
+		if attacker == LocalPlayer() then
+			GAMEMODE.DeathMessage = table.Random(suicidetable)
+		elseif IsValid(attacker) and attacker:IsPlayer() then
+			GAMEMODE.DeathMessage = Format(table.Random(killedbyplayer), attacker:Name())
+		elseif GAMEMODE.Config["ZombieClasses"][attacker] then
+			GAMEMODE.DeathMessage = Format(table.Random(killedbyboss), CheckAttacker(attacker))
+		elseif GAMEMODE.Config["BossClasses"][attacker] then
+			GAMEMODE.DeathMessage = Format(table.Random(killedbyzombie), CheckAttacker(attacker))
+		elseif attacker == "func_door" or attacker == "func_door_rotating" then
+			GAMEMODE.DeathMessage = table.Random(killedbydoor)
+		elseif attacker == "trigger_hurt" or attacker == "point_hurt" or attacker == "entityflame" or attacker == "env_fire" then
+			GAMEMODE.DeathMessage = table.Random(killedbyenv)
+		elseif attacker == "worldspawn" then
+			GAMEMODE.DeathMessage = table.Random(killedbyworld)
+		else
+			GAMEMODE.DeathMessage = table.Random(killedbyother)
+		end
+	end
+end
+
 
 local function PlayerIDOrNameToString( var )
 	if type( var ) == "string" then
@@ -105,8 +156,9 @@ net.Receive( "PlayerKilledByPlayer", RecvPlayerKilledByPlayer )
 local function RecvPlayerKilledSelf()
 
 	local victim = net.ReadEntity()
+	local attacker = net.ReadEntity()
 	if ( !IsValid( victim ) ) then return end
-	CheckLocalPlayerDeath(victim)
+	CheckLocalPlayerDeath(victim, attacker)
 	GAMEMODE:AddDeathNotice( nil, 0, "suicide", victim:Nick(), victim:Team() )
 
 end
@@ -120,7 +172,7 @@ local function RecvPlayerKilled()
 	local attackertype	= net.ReadString()
 	local attacker = CheckAttacker(attackertype)
 
-	CheckLocalPlayerDeath(victim, attacker)
+	CheckLocalPlayerDeath(victim, attackertype)
 
 	GAMEMODE:AddDeathNotice( attacker, -1, inflictor, victim:Nick(), victim:Team() )
 
@@ -184,6 +236,7 @@ function GM:AddDeathNotice( Victim, team1, Inflictor, Attacker, team2 )
 	local Death = {}
 	Death.victim	= Victim
 	Death.attacker	= Attacker
+	Death.inflictor	= Inflictor
 	Death.time		= CurTime()
 	Death.dur		= GetConVar("tea_cl_deathnoticetime"):GetFloat()
 	Death.Message	= table.Random(RDtext)
@@ -228,7 +281,7 @@ local function DrawDeath(x, y, death, tea_cl_deathnoticetime)
 	if death.right and not death.left then
 		draw.SimpleText("Death: "..death.right.." ["..death.pteam2.."] "..death.SMessage, "ChatFont", x - (w / 2) + math.Clamp(1030 - (800 * ((CurTime()) - death.Time)), 230, 1030), y, Color(223,45,45,alpha), TEXT_ALIGN_RIGHT)
 	elseif (death.left) then
-		draw.SimpleText("Death: "..death.right.." ["..death.pteam2.."] was "..death.Message.." by "..death.left.." ["..death.pteam1.."]",	"ChatFont", x - (w / 2) + math.Clamp(1030 - (800 * ((CurTime()) - death.Time)), 230, 1030), y, Color(255,75,75,alpha), TEXT_ALIGN_RIGHT)
+		draw.SimpleText("Death: "..death.right.." ["..death.pteam2.."] was "..death.Message.." by "..death.left.." ["..death.pteam1.."]", "ChatFont", x - (w / 2) + math.Clamp(1030 - (800 * ((CurTime()) - death.Time)), 230, 1030), y, Color(255,75,75,alpha), TEXT_ALIGN_RIGHT)
 	end
 
 	return (y + h * 0.70)
@@ -261,8 +314,8 @@ function GM:DrawDeathNotice(x, y)
 		
 	end
 
-	for k, Death in pairs( Deaths ) do
-		if ( Death.time + Death.dur > CurTime() ) then
+	for k, Death in pairs(Deaths) do
+		if Death.time + Death.dur > CurTime() then
 			return
 		end
 	end

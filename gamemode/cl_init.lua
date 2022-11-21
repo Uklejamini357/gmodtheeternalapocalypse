@@ -27,7 +27,6 @@ include("client/cl_options.lua")
 include("client/cl_changelogs.lua")
 
 
--- i had to move it ok
 CreateClientConVar("tea_cl_hud", 1, true, false, "Enable The Eternal Apocalypse HUD", 0, 1)
 CreateClientConVar("tea_cl_hudstyle", 0, true, false, "Switch between HUD styles", 0, 1)
 CreateClientConVar("tea_cl_soundboss", 1, true, true, "Should play HL2 Stinger sound when boss appears?", 0, 1)
@@ -42,7 +41,7 @@ CreateClientConVar("tea_cl_usereloadtopickup", 0, true, true, "Enables whether r
 CreateClientConVar("tea_cl_noearrings", 0, true, true, "Disables annoying sound when taking damage from explosions", 0, 1)
 
 CreateClientConVar("tea_cl_admin_fpdeath", 1, true, false, "Enables first person death. Will not be disabled if not admin!", 0, 1)
-CreateClientConVar("tea_cl_admin_noblur", 0, true, false, "Disables vision effects on low health. Requires admin perms to be enabled!!", 0, 1)
+CreateClientConVar("tea_cl_admin_noviseffects", 0, true, false, "Disables vision effects on low health, or when dead. Requires admin perms to be enabled!!", 0, 1)
 
 
 
@@ -71,16 +70,28 @@ end
 
 function GM:LocalPlayerDeath(attacker)
 	death_sound_volume = GetConVar("tea_cl_deathsfx_vol"):GetFloat()
-	death_sound_volume_s = 0.01 * death_sound_volume
+	death_sound_volume_s = 0.015 * death_sound_volume
 	death_sound_current = GetConVar("tea_cl_deathsound"):GetString()
 	if GetConVar("tea_cl_deathsfx"):GetInt() >= 1 then
 		EmitSound(GetConVar("tea_cl_deathsound"):GetString(), LocalPlayer():GetPos(), -1, CHAN_AUTO, death_sound_volume, 0)
 	end
-	print("Why?")
+	self.tea_screenfadeout = 0
+	self.tea_deathtext_a = 0
+	self.tea_survivalstats_a = 0
+	self.MyLastSurvivalStats.SurvivalTime = CurTime() - MySurvivaltime
+	self.MyLastSurvivalStats.BestSurvivalTime = MyBestsurvtime
+
 end
 
 function GM:Think()
+end
+
+function GM:Tick()
 	if !LocalPlayer():IsValid() then return end
+	local function FrameCalc(number) -- there's a function because possibly when having low framerate, these value updates are less frequent...
+		local n = number * (math.max(1 / 66.6, FrameTime()) * 66.6)
+		return n
+	end
 
 	if GetConVar("tea_cl_deathsfx"):GetInt() >= 1 then
 		if LocalPlayer():Alive() then
@@ -96,13 +107,47 @@ function GM:Think()
 	end
 
 	if LocalPlayer():Alive() then
-		death_sound_volume = death_sound_volume - death_sound_volume_s
+		death_sound_volume = death_sound_volume - FrameCalc(death_sound_volume_s)
+		self.tea_screenfadeout = math.Clamp(self.tea_screenfadeout - FrameCalc(3 * 1.175), 0, 255)
+		self.tea_deathtext_a = math.Clamp(self.tea_deathtext_a - FrameCalc(5 * 1.175), 0, 255)
+		self.tea_survivalstats_a = math.Clamp(self.tea_survivalstats_a - FrameCalc(5 * 1.175), 0, 255)
+	else
+		self.tea_screenfadeout = self.tea_screenfadeout + FrameCalc(2.5 * 1.175)
+		if 0 < tonumber(self.tea_screenfadeout) - 270 then
+			self.tea_deathtext_a = self.tea_deathtext_a + FrameCalc(2 * 1.175)
+		end
+		if 0 < tonumber(self.tea_screenfadeout) - 600 then
+			self.tea_survivalstats_a = self.tea_survivalstats_a + FrameCalc(2 * 1.175)
+		end
+	end
+
+	if RealTime() > (self.NextTip or 0) then
+		local tea_Tips = {
+			{Color(255, 127, 143), translate.Get("Tip1")},
+			{Color(127, 127, 255), translate.Get("Tip2")},
+			{Color(159, 127, 223), translate.Get("Tip3")},
+			{Color(95, 223, 95), translate.Get("Tip4")},
+			{Color(159, 159, 159), translate.Get("Tip5")},
+			{Color(191, 95, 191), translate.Get("Tip6")},
+			{Color(127, 159, 127), translate.Get("Tip7")},
+			{Color(223, 127, 159), translate.Get("Tip8")},
+			{Color(143, 159, 223), translate.Get("Tip9")},
+			{Color(191, 127, 159), translate.Get("Tip10")},
+			{Color(63, 255, 223), translate.Get("Tip11")},
+			{Color(165, 223, 209), translate.Get("Tip12")},
+			{Color(239, 223, 223), translate.Get("Tip13")},
+			{Color(207, 191, 255), translate.Get("Tip14")},
+			{Color(0, 223, 255), translate.Get("Tip15")},
+			{Color(31, 223, 223), translate.Get("Tip16")}
+		}
+
+		local tip = table.Random(tea_Tips)
+		chat.AddText(Color(255,255,255), "[", Color(255,223,223), "The Etenal Apocalypse tip", Color(255,255,255), "]", Color(223,223,223), ": ", tip[1], tip[2])
+		self.NextTip = RealTime() + 360
 	end
 end
 
-function GM:Initialize()
-	self.BaseClass:Initialize()
-
+function GM:SetupFonts()
 	surface.CreateFont("DefaultFontSmall", {
 		font = "tahoma",
 		size = 11,
@@ -119,6 +164,33 @@ function GM:Initialize()
 		antialias	= true,
 	})
 
+	surface.CreateFont("DeathScreenText", {
+		font	= "arial",
+		size	= 42,
+		weight	= 650,
+		blursize	= 0,
+		scanlines	= 0,
+		antialias	= true,
+	})
+
+	surface.CreateFont("DeathScreenText_2", {
+		font	= "arial",
+		size	= 24,
+		weight	= 300,
+		blursize	= 0,
+		scanlines	= 0,
+		antialias	= true,
+	})
+
+	surface.CreateFont("DeathScreenText_3", {
+		font	= "arial",
+		size	= 32,
+		weight	= 450,
+		blursize	= 0,
+		scanlines	= 0,
+		antialias	= false,
+	})
+	
 	surface.CreateFont("OtherText", {
 		font	= "arial",
 		size	= 15,
@@ -135,6 +207,61 @@ function GM:Initialize()
 	    antialias	= true,
 	    shadow	= false
 	})
+end
+
+function GM:Initialize()
+	self.BaseClass:Initialize()
+
+	self:SetupFonts()
+
+	MyStamina = 0
+	MyHunger = 0
+	MyThirst = 0
+	MyFatigue = 0
+	MyInfection = 0
+	MySurvivaltime = 0
+	MyBattery = 0
+	MyLvl = 0
+	MyPrestige = 0
+	MyMoney = 0
+	MyXP = 0
+	MySP = 0
+	MyBounty = 0
+
+	MyBestsurvtime = 0
+	MyZmbskilled = 0
+	MyPlyskilled = 0
+	MyPlydeaths = 0
+	MyMMeleexp = 0
+	MyMMeleelvl = 0
+	MyMPvpxp = 0
+	MyMPvplvl = 0
+	
+	LocalInventory = {}
+	LocalVault = {}
+	InventoryItems = {}
+	InventoryWeapons = {}
+	Perks = {}
+	Perksdesc = {}
+
+	self.tea_screenfadeout = 0
+	self.tea_deathtext_a = 0
+	self.tea_survivalstats_a = 0
+	self.NextTip = RealTime() + 360
+	self.DeathMessage = ""
+
+	self.MyLastSurvivalStats = {}
+	self.MyLastSurvivalStats.SurvivalTime = 0
+	self.MyLastSurvivalStats.BestSurvivalTime = 0
+	self.MyLastSurvivalStats.PlayersKilled = 0
+	self.MyLastSurvivalStats.ZombiesKilled = 0
+	
+	RunConsoleCommand("refresh_inventory")
+end
+
+function GM:InitPostEntity()
+	chat.AddText(Color(255,192,255), "[The Eternal Apocalypse]: ", Color(255,255,192), "Please note, this is a beta version. Some things may not work as intended. ", Color(255,255,192), "If you do find those bugs, please report them to the developer.")
+	chat.AddText(Color(192,255,255), "- Uklejamini [The Eternal Apocalypse Dev]")
 end
 
 function GM:PostProcessPermitted( name )

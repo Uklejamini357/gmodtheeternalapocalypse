@@ -1,9 +1,18 @@
--------- Ver. 0.11.0 (Beta A) of 16 November 2022 --------
+-------- Ver. 0.11.0 [Beta B] of 17 November 2022 --------
+
++ Added new convar that allows to set death sound volume (NOTE: CONVARS 'volume', 'volume_sfx' AND 'snd_musicvolume' VALUES STILL APPLY!! [depending on the sound type])
++ Added Changelogs panel
+
+; Reworked death sound (sound now fades out on respawn, hope there are no bugs)
+
+/ Changed WIP button in context menu to changelogs
+
+-------- Ver. 0.11.0 [Beta A] of 16 November 2022 --------
 
 + Added After The End Sweps pack into gamemode files (will be used mostly for balance changes)
 + Added AR2 Combine Pistol and AR2 Combine Rifle weapons
-+ Added AWM the AWP weapon, with 112 damage and not 105
-+ Added Steyr AUG A1 from MAD Cows Weapon pack, with clip size of 35
++ Added AWM the AWP with 112 damage per shot and Steyr AUG A1 with 35 clipsize from MAD Cows Weapon pack
++ Added back some earlier cut ATE weapons
 + Added Achievements? (not really though, still work in progress)
 + Added new ConVars with options to:
 Client:
@@ -23,7 +32,7 @@ Server:
 + New rarity text & color format
 + Added Options Menu (F4 menu)
 + Added function with attacking zombies, the system forgets the target's last attacker if target did not take damage from attacker within 15 seconds
-+ Added function to add invalid items to invalid inventory while trying to add them to inventory
++ Added function to add invalid items to invalid inventory while trying to add them to inventory (this can prevent bugs)
 + Added Environmental Protection to Armor Stats (Environmental Protection protects from attacker classes "trigger_hurt", "point_hurt", "env_fire", "entityflame" and not anything else)
 + Added functional Crafting system (Functional, but not with bugs right?)
 + Added new admin command (no, they are only available to devs and the command just sets convar values created by lua)
@@ -44,8 +53,6 @@ Server:
 The panels that were closed will be opened with same things from the last time the panel was closed)
 ; New damage calculating functions (don't know if they work and won't bother testing them)
 
-/ Increased zombie prop damaging rate (Zombies now attack props and doors more often every tick)
-/ Added back MARS rifle and debuffed its' damage to 40 instead of 42
 / Tweaked TEA zombie stats
 / Zombies now damage props & doors more often
 / Renamed Health skill to Vitality
@@ -62,7 +69,7 @@ The panels that were closed will be opened with same things from the last time t
 = Rebalanced M9K guns cost
 = Removed The fuckinator from faction loot caches, airdrop faction LootTable and added to airdrop special LootTable ([not] sorry about that.)
 
-* Fixed PvP Guarded mode giving players pvp toggling cooldown if player with pvp enabled (and guarded) damaged them
+* Fixed PvP Guarded mode giving players pvp toggling cooldown if player with pvp enabled (and guarded) has damaged them
 
 ? And more... (i don't know what else did i add there)
 

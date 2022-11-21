@@ -9,7 +9,7 @@ GM.AltName	= "After The End Reborn"
 GM.Author	= "Uklejamini"
 GM.Email	= "N/A"
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.11.0 - Everything is changed [Beta B]"
+GM.Version	= "0.11.0 [Beta C]"
 
 team.SetUp(1, "Loner", Color(100, 50, 50, 255)) --loner basic team
 
@@ -20,7 +20,7 @@ Useful for making events or modifying difficulty.", 0.1, 10)
 CreateConVar("tea_server_xpreward", 1, {FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Modifies XP gain multiplier for killing zombies. This convar is dynamic (affects all zombies) and does not affect Money rewards for destroying faction structures.\
 Useful for making events or modifying difficulty.", 0.1, 10)
 CreateConVar("tea_server_spawnprotection", 1, {FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Should give players temporary damage invulnerability on spawn? Convar tea_server_spawnprotection_duration must be above 0 for it to work!", 0, 1)
-CreateConVar("tea_server_spawnprotection_duration", 3, {FCVAR_REPLICATED, FCVAR_ARCHIVE}, "How long should god mode after spawning last? (in seconds) Convar tea_server_spawnprotection is required for it to work!", 0, 10)
+CreateConVar("tea_server_spawnprotection_duration", 5, {FCVAR_REPLICATED, FCVAR_ARCHIVE}, "How long should god mode after spawning last? (in seconds) Convar tea_server_spawnprotection is required for it to work!", 0, 10)
 CreateConVar("tea_server_debugging", 0, {FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Enables debugging features. Use value '2' for advanced debug mode. WARNING: YOU CAN ENABLE THIS FOR DEDICATED SERVER AS LONG AS YOU USE IT ONLY FOR TESTING PURPOSES.", 0, 4)
 CreateConVar("tea_server_voluntarypvp", 1, {FCVAR_REPLICATED, FCVAR_ARCHIVE}, "Enables whether players are free to pvp voluntarily or have forced PvP. If disabled, players will have forced PvP at any time. (Note: Factions don't have friendly fire)", 0, 1)
 CreateConVar("tea_server_dbsaving", 1, {FCVAR_REPLICATED}, "Allow saving players' progress to database? It is recommended to keep this enabled, unless when testing something.", 0, 1)
@@ -137,7 +137,7 @@ function GetReqXP(ply)
 	if SERVER then
 		return math.floor(basexpreq + (ply.Prestige * prestigebonus) + (ply.Level  * addxpperlevel) ^ noideawhatthisis)
 	else
-		return math.floor(basexpreq + (Myprestige * prestigebonus) + (Mylevel  * addxpperlevel) ^ noideawhatthisis)
+		return math.floor(basexpreq + (MyPrestige * prestigebonus) + (MyLvl  * addxpperlevel) ^ noideawhatthisis)
 	end
 end
 
@@ -148,7 +148,7 @@ function GetReqMasteryMeleeXP(ply)
 	if SERVER then
 		return math.floor(xpreq + ((ply.MasteryMeleeLevel * addexpperlevel) ^ probnothing_idk))
 	else
-		return math.floor(xpreq + (Mymmeleelvl * addexpperlevel) ^ probnothing_idk)
+		return math.floor(xpreq + (MyMMeleelvl * addexpperlevel) ^ probnothing_idk)
 	end
 end
 
@@ -159,7 +159,7 @@ function GetReqMasteryPvPXP(ply)
 	if SERVER then
 		return math.floor(expreq + (ply.MasteryPvPLevel * addxpprlevel) ^ whatisthat)
 	else
-		return math.floor(expreq + (Mympvplvl  * addxpprlevel) ^ whatisthat)
+		return math.floor(expreq + (MyMPvplvl  * addxpprlevel) ^ whatisthat)
 	end
 end
 
