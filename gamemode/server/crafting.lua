@@ -10,6 +10,7 @@ net.Receive("CraftItem", function(length, client)
 end)
 
 function tea_CraftItem(ply, str)
+	if true then SendChat(ply, "Sorry, crafting has been disabled due to bugs") return false end
 	if !GAMEMODE.CraftableList[str] then return false end
 	if timer.Exists("ItemCrafting_"..ply:EntIndex()) then return false end
 	local RequiredItems = {}
@@ -66,6 +67,7 @@ net.Receive("CraftSpecialItem", function(length, client)
 end)
 
 function tea_CraftSpecialItem(ply, str)
+	if true then SendChat(ply, "Sorry, crafting has been disabled due to bugs") return false end
 	if !GAMEMODE.CraftableSpecialList[str] then return false end
 	if timer.Exists("ItemCrafting_"..ply:EntIndex()) then return false end
 	local RequiredItems = {}
