@@ -1,6 +1,10 @@
 AddCSLuaFile("cl_init.lua") -- clientside init file
 AddCSLuaFile("shared.lua")
+AddCSLuaFile("sh_globals.lua")
 AddCSLuaFile("sh_translate.lua")
+AddCSLuaFile("sh_convars.lua")
+
+AddCSLuaFile("sh_player.lua")
 AddCSLuaFile("sh_items.lua")
 AddCSLuaFile("sh_loot.lua")
 AddCSLuaFile("sh_spawnables.lua")
@@ -8,6 +12,7 @@ AddCSLuaFile("sh_config.lua")
 AddCSLuaFile("sh_crafting.lua")
 AddCSLuaFile("sh_achievements.lua")
 AddCSLuaFile("sh_deathsounds.lua")
+AddCSLuaFile("sh_taskslist.lua")
 
 AddCSLuaFile("client/cl_scoreboard.lua")
 AddCSLuaFile("client/cl_hud.lua")
@@ -17,6 +22,7 @@ AddCSLuaFile("client/cl_contextmenu.lua")
 AddCSLuaFile("client/cl_customdeathnotice.lua")
 AddCSLuaFile("client/cl_spawnmenu.lua")
 AddCSLuaFile("client/cl_tradermenu.lua")
+AddCSLuaFile("client/cl_tasksmenu.lua")
 AddCSLuaFile("client/cl_dermahooks.lua")
 AddCSLuaFile("client/cl_lootmenu.lua")
 AddCSLuaFile("client/cl_adminmenu.lua")
@@ -25,18 +31,18 @@ AddCSLuaFile("client/cl_helpmenu.lua")
 AddCSLuaFile("client/cl_bosspanel.lua")
 AddCSLuaFile("client/cl_options.lua")
 AddCSLuaFile("client/cl_changelogs.lua")
---AddCSLuaFile("client/cl_deathscreen.lua") -- if you want, but it's unfinished
+AddCSLuaFile("client/cl_deathscreen.lua")
+AddCSLuaFile("client/cl_mainmenu.lua")
+
+AddCSLuaFile("client/cl_net.lua")
+AddCSLuaFile("cl_killicons.lua")
+
+AddCSLuaFile("minigames/cl_init.lua")
+AddCSLuaFile("minigames/shared.lua")
 
 
 include("shared.lua")
-include("sh_translate.lua") -- translation file
-include("sh_items.lua") -- items for inventory
-include("sh_loot.lua") -- for loots
-include("sh_spawnables.lua") -- spawnable props with build tool
-include("sh_config.lua") -- gamemode config
-include("sh_crafting.lua") -- list for craftable items
-include("sh_achievements.lua") -- achievements
-include("sh_deathsounds.lua") -- death sounds used for various player models
+
 
 ---- Serverside only ----
 include("server/achievements.lua") -- just achievements
@@ -62,31 +68,39 @@ include("server/crafting.lua") -- crafting managing
 include("server/mastery.lua") -- Mastery for various types, including pvp and melee
 --include("server/weather_events.lua") -- excluded because file is empty
 --include("time_weather.lua") -- excluded due to file being non-existant
+include("server/player_quests.lua") -- Tasks and task dealers
+
+include("server_data/data_saving.lua")
+
+include("minigames/init.lua")
+include("minigames/shared.lua")
 
 
 Factions = Factions or {}
-DEBUG = false
 
 function GM:ShowHelp(ply)
-	ply:SendLua("HelpMenu()")
 end
 
 function GM:ShowTeam(ply)
-	if !SuperAdminCheck(ply) then return false end
-	ply:SendLua("AdminMenu()")
 end
 
 function GM:ShowSpare1(ply)
-	ply:SendLua("DropGoldMenu()")
 end
 
 function GM:ShowSpare2(ply)
-	ply:SendLua("MakeOptions()")
 end
 
-function GM:CalcMaxHealth(ply) return 100 + (5 * (ply.StatVitality or 0)) + (tonumber(ply.Prestige or 0) >= 2 and 5 or 0) end
-function GM:CalcMaxArmor(ply) return 100 + (2 * (ply.StatEngineer or 0)) + (tonumber(ply.Prestige or 0) >= 5 and 5 or 0) end
-function GM:CalcJumpPower(ply) return 160 + (2 * (ply.StatAgility or 0)) + (tonumber(ply.Prestige or 0) >= 4 and 10 or 0) end
+function GM:CalcMaxHealth(ply)
+	return 100 + (5 * (ply.StatVitality or 0)) + (tonumber(ply.Prestige or 0) >= 2 and 5 or 0)
+end
+
+function GM:CalcMaxArmor(ply)
+	return 100 + (2 * (ply.StatEngineer or 0)) + (tonumber(ply.Prestige or 0) >= 5 and 5 or 0)
+end
+
+function GM:CalcJumpPower(ply)
+	return 160 + (2 * (ply.StatAgility or 0)) + (tonumber(ply.Prestige or 0) >= 4 and 10 or 0)
+end
 
 function GM:OnPlayerHitGround(ply, inWater, onFloater, speed)
     if speed > (450 + (2 * ply.StatAgility)) then
@@ -107,29 +121,92 @@ function GM:OnPlayerHitGround(ply, inWater, onFloater, speed)
     end
 end
 
---You will no longer be able to regenerate your health when having either 40%< Hunger, 35%< Thirst, >65% Fatigue or >40% Infection (dependent on "Immunity" and "Survivor" skills' values)
-function GM.HealthRegen()
-	for k, ply in pairs(player.GetAll()) do
-		local hp = ply.HPRegen
-		if !hp or hp < 1 or !(ply.Thirst >= (3000 - (125 * ply.StatSurvivor)) and ply.Hunger >= (3000 - (150 * ply.StatSurvivor)) and ply.Fatigue <= (7000 + (150 * ply.StatSurvivor)) and ply.Infection <= (5000 - (100 * ply.StatImmunity))) then continue end
-		ply:SetHealth(math.Clamp(ply:Health() + math.floor(hp), 5, ply:GetMaxHealth()))
-		ply.HPRegen = ply.HPRegen - math.floor(ply.HPRegen)
-	end
-end
-timer.Create("tea_HealthRegen", 2, 0, GM.HealthRegen)
-
+local NextTick = 0
 
 function GM:Think()
-	for k, ply in pairs(player.GetAll()) do
-		if !ply:IsValid() or !ply:Alive() then continue end
-		if ply.StatsPaused then tea_NetUpdateStats(ply) continue end
+	local ct = CurTime()
 
-		local endurance = ((ply.StatEndurance - (0.15 * ply.StatSpeed)) / 500)
+	if NextTick < ct then
+		NextTick = ct + 1
+		local plycount = #player.GetAll()
 
+		if ct > tonumber(self.NextZombieSpawn) then
+			self.NextZombieSpawn = ct + tonumber(self.Config["ZombieSpawnRate"]) 
+			self:SpawnZombies()
+		end
+
+		if ct > tonumber(self.NextBossSpawn) then
+			self.NextBossSpawn = ct + tonumber(self.Config["BossSpawnRate"]) 
+			if self.CanSpawnBoss or plycount >= self.MinPlayersBossRequired then
+				gamemode.Call("SpawnBoss")
+			end
+		end
+
+		if ct > tonumber(self.NextAirdropSpawn) then
+			self.NextAirdropSpawn = ct + tonumber(self.Config["AirdropSpawnRate"]) 
+			if self.CanSpawnAirdrop or plycount >= self.MinPlayersAirdropRequired then
+				gamemode.Call("SpawnAirdrop")
+			end
+		end
+
+		if ct > tonumber(self.NextLootSpawn) then
+			self.NextLootSpawn = ct + 60
+			gamemode.Call("SpawnLoot")
+		end
+
+		-- The Ultimate timer of Auto-Maintenance (no.)
+		if !self.IsMaintenance and ct >= tonumber(self.Config["AutoMaintenanceTime"]) * 3600 then
+			self:DoAutoMaintenance(tonumber(self.Config["AutoMaintenanceDelay"]))
+		end
+
+		if self.InfectionLevelEnabled and plycount > 0 and self.NextInfectionDecrease < ct and self:GetInfectionLevel() > 0 and not self.InfectionLevelShouldNotDecrease then
+			self.NextInfectionDecrease = ct + 9
+			self.InfectionDecreasedTimes = math.Clamp(self.InfectionDecreasedTimes + 1, 0, 45)
+	
+			self:SetInfectionLevel(math.max(0, self:GetInfectionLevel() - (0.045 + (self.InfectionDecreasedTimes * 0.008))))
+		end
+
+		if self.NextSave + 240 < ct then
+			self.NextSave = ct
+			gamemode.Call("SaveTimer")
+		end
+	
+		for _,ply in pairs(player.GetAll()) do
+			local hp = ply.HPRegen
+			local noregen_thirst = (3000 - (125 * ply.StatSurvivor))
+			local noregen_hunger = (3000 - (150 * ply.StatSurvivor))
+			local noregen_fatigue = (7000 + (150 * ply.StatSurvivor))
+			local noregen_infection = (5000 - (100 * ply.StatImmunity))
+			if !hp or hp < 1 or !(ply.Thirst >= noregen_thirst and ply.Hunger >= noregen_hunger and ply.Fatigue <= noregen_fatigue and ply.Infection <= noregen_infection) then continue end
+			ply:SetHealth(math.Clamp(ply:Health() + math.floor(hp), 5, ply:GetMaxHealth()))
+			ply.HPRegen = ply.HPRegen - math.floor(ply.HPRegen)
+		end
+
+	end
+
+	for _,ply in pairs(player.GetAll()) do
+		if !ply:IsValid() then continue end
+		if !ply:Alive() or ply.StatsPaused or ply:GetObserverMode() ~= OBS_MODE_NONE then 
+			if (ply.NextTick or 0) < RealTime() then
+				self:NetUpdateStats(ply)
+				ply.NextTick = RealTime() + 0.06
+			end
+			continue
+		end
+
+		local hunger = ply.Hunger or 10000
+		local thirst = ply.Thirst or 10000
+		local fatig = ply.Fatigue or 0
+		local infection = ply.Infection or 0
+		local battery = ply.Battery or 0
+	
+		local endurance = (ply.StatEndurance or 0) / 500
+	
 		-- hunger, thirst, fatigue, infection
-		ply.Hunger = math.Clamp(ply.Hunger - (0.065 * (1 - (ply.StatSurvivor * 0.04))), 0, 10000)
-		ply.Thirst = math.Clamp(ply.Thirst - (0.0782 * (1 - (ply.StatSurvivor * 0.0425))), 0, 10000)
-
+		ply.Hunger = math.Clamp(hunger - (0.065 * (1 - (ply.StatSurvivor * 0.04))), 0, 10000)
+		ply.Thirst = math.Clamp(thirst - (0.0782 * (1 - (ply.StatSurvivor * 0.0425))), 0, 10000)
+		ply.Fatigue = math.Clamp(fatig + (0.045 * (1 - (ply.StatSurvivor * 0.035))), 0, 10000)
+	
 		if (ply.Thirst <= 0 or ply.Hunger <= 0 or ply.Fatigue >= 10000 or ply.Infection >= 10000) and ply:Alive() then
 			if !timer.Exists("DyingFromStats_"..ply:EntIndex()) then
 				timer.Create("DyingFromStats_"..ply:EntIndex(), 30, 1, function()
@@ -141,8 +218,7 @@ function GM:Think()
 				timer.Destroy("DyingFromStats_"..ply:EntIndex())
 			end
 		end
-
-		ply.Fatigue = math.Clamp(ply.Fatigue + (0.045 * (1 - (ply.StatSurvivor * 0.035))), 0, 10000)
+	
 		local armorstr = ply:GetNWString("ArmorType") or "none"
 		local armortype = self.ItemsList[armorstr]
 		if ply:FlashlightIsOn() then
@@ -160,50 +236,64 @@ function GM:Think()
 				ply.CanUseFlashlight = true
 			end
 		end
-
--- in case if player's HPRegen value is nil then it's set to 0
+	
+	-- in case if player's HPRegen value is nil then it's set to 0
 		if ply.HPRegen and ply:Health() < ply:GetMaxHealth() and ply.Thirst >= (3000 - (125 * ply.StatSurvivor)) and ply.Hunger >= (3000 - (150 * ply.StatSurvivor)) and ply.Fatigue <= (7000 + (150 * ply.StatSurvivor)) and ply.Infection <= (5000 - (100 * ply.StatImmunity)) then
 			ply.HPRegen = math.Clamp(ply.HPRegen + 0.00175 + (ply.StatMedSkill * 0.0001), 0, ply:GetMaxHealth())
 		elseif !ply.HPRegen or ply.HPRegen > 0 then
 			ply.HPRegen = 0
 		end
-
+	
 		--random chance of getting infected per tick is very rare, but has chance if survived for more than 10 minutes, can decrease chance of this happening by increasing immunity skill level
-		local infectionchance = math.random(1, 2000000 + (100000 * ply.StatImmunity) - (CurTime() - ply.SurvivalTime))
-		if (infectionchance <= 1 and math.floor(CurTime() - ply.SurvivalTime) >= 600) and ply.Infection <= 0 and ply:Alive() then
-			SendChat(ply, translate.ClientGet(ply, "plcaughtinfection"))
+/*		-- Disabled. If you want to, you can enable it back again.
+		local infectionchance = math.random(1, 2000000 + (100000 * ply.StatImmunity) - (ct - ply.SurvivalTime))
+		if (infectionchance <= 1 and math.floor(ct - ply.SurvivalTime) >= 600) and ply.Infection <= 0 and ply:Alive() then
+--			ply:SendChat(translate.ClientGet(ply, "plcaughtinfection"))
 		end
-		if (ply.Infection > 0 or (infectionchance <= 1 and math.floor(CurTime() - ply.SurvivalTime) >= 600)) and ply:Alive() then
+*/
+		if (ply.Infection > 0 or infectionchance and infectionchance <= 1 and math.floor(ct - ply.SurvivalTime) >= 900) and ply:Alive() then
 			ply.Infection = math.Clamp(ply.Infection + (0.1176 * (1 - (ply.StatImmunity * 0.04))), 0, 10000)
 		end
 
+		local PlayerIsMoving
 		if ply:GetMoveType() != MOVETYPE_NOCLIP or ply:InVehicle() then
 			if (ply:KeyDown(IN_FORWARD) or ply:KeyDown(IN_BACK) or ply:KeyDown(IN_MOVELEFT) or ply:KeyDown(IN_MOVERIGHT)) then
 				PlayerIsMoving = true
 			else
 				PlayerIsMoving = false
 			end
-
-/*		if ply:OnGround() and ply:KeyPressed(IN_JUMP) then
+	
+	/*		if ply:OnGround() and ply:KeyPressed(IN_JUMP) then
 			ply.Stamina = ply.Stamina - 5
 		end
-*/ -- Trying to find function that drains stamina on jumping, but this one doesn't really work
-
+	*/ -- Trying to find function that drains stamina on jumping, but this one doesn't really work
+	
 			if ply:WaterLevel() == 3 and ply:Alive() then
 				ply.Thirst = math.Clamp(ply.Thirst + 0.243 , 0, 10000)
-				if tonumber(ply.Stamina) <= 0 and !timer.Exists("DrownTimer"..ply:EntIndex()) then
-					timer.Create("DrownTimer"..ply:EntIndex(), 10, 1, function()
-						ply:Kill()
-					end)
+				if tonumber(ply.Stamina) <= 0 then
+					ply.DrownDamage = ply.DrownDamage + 0.1
+					if ply.DrownDamage >= 1 then
+						if ply:Health() > 1 then
+							ply:SetHealth(ply:Health() - math.floor(ply.DrownDamage))
+						else
+							local d = DamageInfo()
+							d:SetDamage(1)
+							d:SetDamageType(DMG_DROWN)
+							d:SetAttacker(ply)
+							d:SetInflictor(ply)
+							ply:TakeDamageInfo(d)
+						end
+						ply.DrownDamage = ply.DrownDamage - math.floor(ply.DrownDamage)
+					end
 				else
 					ply.Stamina = math.Clamp(ply.Stamina - (0.093 - endurance), 0, 100)
 				end
-			elseif !ply:InVehicle() and (ply:KeyDown(IN_SPEED) and PlayerIsMoving and not ply:Crouching()) then
+			elseif !ply:InVehicle() and (ply:IsSprinting() and PlayerIsMoving and not ply:Crouching()) then
 				ply.Stamina = math.Clamp(ply.Stamina - (0.0755 - endurance), 0, 100)
 			elseif !ply:InVehicle() and PlayerIsMoving and ply:Crouching() then
-				ply.Stamina = math.Clamp(ply.Stamina + 0.00897 + endurance, 0, 100)
+				ply.Stamina = math.Clamp(ply.Stamina + 0.01097 + endurance, 0, 100)
 			elseif !ply:InVehicle() and PlayerIsMoving then
-				ply.Stamina = math.Clamp(ply.Stamina + 0.00691 + endurance, 0, 100)
+				ply.Stamina = math.Clamp(ply.Stamina + 0.00824 + endurance, 0, 100)
 			elseif ply:InVehicle() or ply:Crouching() then
 				ply.Stamina = math.Clamp(ply.Stamina + 0.043 + endurance, 0, 100)
 			else
@@ -214,24 +304,117 @@ function GM:Think()
 				ply.sprintrecharge = false
 			end
 		
-			if(ply:KeyDown(IN_SPEED) and PlayerIsMoving and ply.Stamina <= 0) then
+			if (ply:IsSprinting() and PlayerIsMoving and ply.Stamina <= 0) then
 				ply:ConCommand("-speed")
 				ply.sprintrecharge = true
 			end
 		
-			if (ply:KeyDown(IN_SPEED) and PlayerIsMoving and ply.sprintrecharge == true and ply.Stamina <= 30) then
+			if (ply:IsSprinting() and PlayerIsMoving and ply.sprintrecharge and ply.Stamina <= 30) then
 				ply:ConCommand("-speed")
 			end
 		end
-
+	
 		if tonumber(ply.Stamina) > 0 or ply:WaterLevel() != 3 then
 			if timer.Exists("DrownTimer"..ply:EntIndex()) then
 				timer.Destroy("DrownTimer"..ply:EntIndex())
 			end
 		end
 
-		tea_NetUpdateStats(ply)
+		if (ply.NextTick or 0) < RealTime() then
+			self:NetUpdateStats(ply)
+			ply.NextTick = RealTime() + 0.06
+		end
 	end
+end
+
+function GM:Tick()
+end
+
+function GM:PlayerConnect(name, ip)
+	for _, ply in pairs(player.GetAll()) do
+		ply:SystemMessage(translate.ClientFormat(ply, "pljoined", name), Color(255,255,155,255), false)
+	end
+end
+
+function GM:PlayerDisconnected(ply)
+	self:SystemBroadcast(Format("%s has left the server", ply:Name()), Color(255,255,155,255), false)
+
+	if ply.Bounty >= 5 then
+		local cashloss = ply.Bounty * math.Rand(0.3, 0.4)
+		local bountyloss = ply.Bounty - cashloss
+		print(ply:Nick() .." has left the server with "..ply.Bounty.." bounty and dropped money worth of "..math.floor(cashloss).." "..self.Config["Currency"].."s!")
+
+		local ent = ents.Create("ate_cash")
+		ent:SetPos(ply:GetPos() + Vector(0, 0, 10))
+		ent:SetAngles(Angle(0, 0, 0))
+		ent:SetNWInt("CashAmount", math.floor(cashloss))
+		ent:Spawn()
+		ent:Activate()
+	end
+	
+	self:SavePlayer(ply)
+	self:SavePlayerInventory(ply)
+	self:SavePlayerVault(ply)
+	for k,v in pairs(ents.GetAll()) do
+		if v:GetNWEntity("owner") == ply then v:Remove() end
+		if v.BossMonster and v.DamagedBy[ply] then v.DamagedBy[ply] = nil end
+	end
+
+	if ply:Team() ~= TEAM_LONER then
+		local plyfaction = team.GetName(ply:Team())
+		if team.NumPlayers(ply:Team()) > 1 && Factions[plyfaction]["leader"] == ply then
+			timer.Simple(0.4, function() --this time it should work properly
+				gamemode.Call("SelectRandomLeader", plyfaction)
+			end)
+		elseif team.NumPlayers(ply:Team()) <= 1 then
+			gamemode.Call("AutoDisbandFaction", plyfaction)
+		end
+	end
+end
+
+function GM:PreGamemodeLoaded()
+end
+
+function GM:Initialize()
+	self.NextZombieSpawn = 0
+	self.NextBossSpawn = 0
+	self.NextAirdropSpawn = 0
+	self.NextLootSpawn = 0
+	self.NextInfectionDecrease = 0
+	self.InfectionDecreasedTimes = 0
+	self.NextSave = 0
+
+	self.CanSpawnBoss = false
+	self.CanSpawnAirdrop = false
+
+	SetGlobalBool("GM.ZombieSpawning", true)
+
+	self:LoadServerData()
+	self:SetUpSeasonalEvents()
+
+--	self:AddResources()
+	self:LoadLoot()
+	self:LoadAD()
+	self:LoadZombies()
+	self:LoadTraders()
+	self:LoadPlayerSpawns()
+	self:LoadTaskDealers()
+	self.DebugLogs = {}
+	self:CheckSpawnChanceErrors()
+end
+
+function GM:OnGamemodeLoaded()
+end
+
+function GM:PostGamemodeLoaded()
+	MsgC(Color(255,191,191), "\n==============================================\n\n")
+	MsgC(Color(255,191,191), Format("%s (%s) Gamemode Loaded Successfully\n\n", self.Name, self.AltName))
+	MsgC(Color(255,191,191), Format("Made by %s\n\n", self.Author))
+	MsgC(Color(255,191,191), "Original Creator: LegendofRobbo\n\n")
+	MsgC(Color(255,191,191), Format("Version: %s\n\n", self.Version))
+	MsgC(Color(255,191,191), "Github: https://github.com/Uklejamini357/gmodtheeternalapocalypse \n\n")
+	MsgC(Color(255,191,191), "Remember to check out github site for new updates\n\n")
+	MsgC(Color(255,191,191), "==============================================\n\n")
 end
 
 function GM:InitPostEntity()
@@ -251,161 +434,11 @@ function GM:InitPostEntity()
 	for k, v in pairs(ents.FindByClass("prop_door_rotating")) do
 		v.doorhealth = tonumber(self.Config["DoorHealth"])
 	end
-	
 end
-
-function GM:PlayerDisconnected(ply)
-	tea_SystemBroadcast(ply:Nick().." has left the server", Color(255,255,155,255), false)
-
-	if ply.Bounty >= 5 then
-		local cashloss = ply.Bounty * math.Rand(0.3, 0.4)
-		local bountyloss = ply.Bounty - cashloss
-		print(ply:Nick() .." has left the server with "..ply.Bounty.." bounty and dropped money worth of "..math.floor(cashloss).." "..self.Config["Currency"].."s!")
-
-		local EntDrop = ents.Create("ate_cash")
-		EntDrop:SetPos(ply:GetPos() + Vector(0, 0, 10))
-		EntDrop:SetAngles(Angle(0, 0, 0))
-		EntDrop:SetNWInt("CashAmount", math.floor(cashloss))
-		EntDrop:Spawn()
-		EntDrop:Activate()
-	end
-	
-	tea_SavePlayer(ply)
-	tea_SavePlayerInventory(ply)
-	tea_SavePlayerVault(ply)
-	for k,v in pairs(ents.GetAll()) do
-		if v:GetNWEntity("owner") == ply then v:Remove() end
-		if v.BossMonster and v.DamagedBy[ply] then v.DamagedBy[ply] = nil end
-	end
-
-	if ply:Team() != 1 then
-		local plyfaction = team.GetName(ply:Team())
-		if team.NumPlayers(ply:Team()) > 1 && Factions[plyfaction]["leader"] == ply then
-			timer.Simple(0.4, function() --this time it should work properly
-				SelectRandomLeader(plyfaction)
-			end)
-		elseif team.NumPlayers(ply:Team()) <= 1 then
-			AutoDisbandFaction(plyfaction)
-		end
-	end -- don't bother disbanding or switching faction leader if they are a loner
-end
-
-
-function GM:PlayerConnect(name, ip)
-	for k, ply in pairs(player.GetAll()) do
-		SystemMessage(ply, translate.ClientFormat(ply, "pljoined", name), Color(255,255,155,255), false)
-	end
-end
-
-local function CheckForDerp()
-	local chance = 0
-	for k, v in pairs(GAMEMODE.Config["ZombieClasses"]) do
-		chance = chance + v.SpawnChance
-	end
-	if chance > 100 then 
-		ErrorNoHalt("\n\n------=== CONFIGURATION ERROR ===------ \nThe total zombie spawn chance of this server has exceeded 100% (Currently "..chance.."%)!\nSome zombie types may not be able to spawn, see theeternalapocalypse/gamemode/sh_config.lua for more info\n\n")
-	elseif chance < 100 then MsgC(Color(255,127,127,255), "Check for zombie spawn chance... "..chance.."% (Not perfect)\n")
-	else MsgC(Color(191,191,255,255), "Check for zombie spawn chance... "..chance.."% (OK)\n") end
-end
-
-function GM:Initialize()
-	MsgC(Color(255,191,191,255), "\n==============================================\n\n")
-	MsgC(Color(255,191,191,255), self.Name.." ("..self.AltName..") Gamemode Loaded Successfully\n\n")
-	MsgC(Color(255,191,191,255), "Made by "..self.Author.."\n\n")
-	MsgC(Color(255,191,191,255), "Original Creator: LegendofRobbo\n\n")
-	MsgC(Color(255,191,191,255), "Version: "..self.Version.."\n\n")
-	MsgC(Color(255,191,191,255), "Github: https://github.com/Uklejamini357/gmodtheeternalapocalypse \n\n")
-	MsgC(Color(255,191,191,255), "Remember to check out github site for new updates\n\n")
-	MsgC(Color(255,191,191,255), "==============================================\n\n")
-
-	self.NextZombieSpawn = 0
-	self.NextBossSpawn = 0
-	self.ZombieSpawningEnabled = true
-	self.CanSpawnBoss = false
-	self.CanSpawnAirdrop = false
-
-	self:LoadLoot()
-	self:LoadAD()
-	self:LoadZombies()
-	self:LoadTraders()
-	self:LoadPlayerSpawns()
-	self.DebugLogs = {}
-	CheckForDerp()
-
-end
-
-function GM:DoAutoMaintenance()
-	if self.IsMaintenance then return end
-	tea_SystemBroadcast("[AUTO-MAINTENANCE SYSTEM]:", Color(255,255,255), false)
-	self.MinutesBeforeMaintenance = tonumber(self.Config["AutoMaintenanceDelay"])
-	tea_SystemBroadcast(Format("Attention! The server will automatically restart map in %d minutes! Please make sure you have salvaged all of your structures and cashed in your bounties before the server restarts.", self.MinutesBeforeMaintenance), Color(205,205,205), false)
-	print(Format("Starting map restart sequence. ETA: %d minutes.", self.MinutesBeforeMaintenance))
-	for _,v in pairs(player.GetAll()) do v:ConCommand("playgamesound common/warning.wav") end
-	self.IsMaintenance = true
-	timer.Create("tea_ChangingLevel", 60, 0, function()
-		if self.MinutesBeforeMaintenance > 1 then
-			self.MinutesBeforeMaintenance = self.MinutesBeforeMaintenance - 1
-			tea_SystemBroadcast(Format("Due to maintenances, the server will restart in %d minutes.", self.MinutesBeforeMaintenance), Color(205,205,205), true)
-		else
-			tea_SystemBroadcast("WARNING! Server is restarting in:", Color(205,205,205), true)
-			timer.Destroy("tea_ChangingLevel")
-			self.AutoMaintenancePhase = 10
-			timer.Create("tea_ChangingLevel_2", 1, 0, function()
-				if self.AutoMaintenancePhase >= 1 then
-					tea_SystemBroadcast(self.AutoMaintenancePhase.."...", Color(205,25.5*self.AutoMaintenancePhase,25.5*self.AutoMaintenancePhase), false)
-					for _,ply in pairs(player.GetAll()) do ply:ConCommand("playgamesound buttons/button17.wav") end
-					self.AutoMaintenancePhase = self.AutoMaintenancePhase - 1
-				else
-					if !self.RestartingLevel then
-						tea_SystemBroadcast("Restarting server...", Color(205,205,205), true)
-						self.RestartingLevel = true
-						for _,ply in pairs(player.GetAll()) do ply:ConCommand("playgamesound buttons/button15.wav") end
-					end
-					timer.Simple(1, function()
-						for k,o in pairs(GAMEMODE.Config["ZombieClasses"]) do
-							for _, ent in pairs(ents.FindByClass(k)) do
-								ent:Remove()
-							end
-						end
-					end)
-					timer.Simple(2, function()
-						for k,o in pairs(GAMEMODE.Config["BossClasses"]) do
-							for _, ent in pairs(ents.FindByClass(k)) do
-								ent:Remove()
-							end
-						end
-					end)
-					timer.Simple(5, function()
-						RunConsoleCommand('changelevel', game.GetMap())
-					end)
-				end
-			end)
-		end
-	end)
-end
-
-function GM:Tick() -- same as GM:Think but here it's used just for server and not used if convar sv_hibernate_think is disabled
-	if CurTime() > tonumber(self.NextZombieSpawn) then
-		self.NextZombieSpawn = CurTime() + tonumber(self.Config["ZombieSpawnRate"]) 
-		self.SpawnZombies()
-	end
-	if CurTime() > tonumber(self.NextBossSpawn) then
-		self.NextBossSpawn = CurTime() + tonumber(self.Config["BossSpawnRate"]) 
-		SpawnBoss()
-	end
-
-
-
-	-- The Ultimate timer of Auto-Maintenance
-	if !self.IsMaintenance and CurTime() >= tonumber(self.Config["AutoMaintenanceTime"]) * 3600 then
-		self:DoAutoMaintenance()
-	end
-end
-
 
 function GM:OnReloaded()
 	timer.Simple(0.3, function()
-		for k, v in pairs(player.GetAll()) do tea_FullyUpdatePlayer(v) end
+		for k, v in pairs(player.GetAll()) do self:FullyUpdatePlayer(v) end
 	end)
 	print("\n")
 
@@ -414,13 +447,208 @@ function GM:OnReloaded()
 	self:LoadZombies()
 	self:LoadTraders()
 	self:LoadPlayerSpawns()
-	CheckForDerp()
+	self:LoadTaskDealers()
+	self:CheckSpawnChanceErrors()
+end
+
+function GM:ShutDown()
+	for k, v in pairs(player.GetAll()) do
+		self:SavePlayer(v)
+		self:SavePlayerInventory(v)
+		self:SavePlayerVault(v)
+	end
+	print("WARNING! WARNING!! THE OBJECT IS GONE!!")
+	self:SaveServerData()
+	self:DebugLog("Server shutting down/changing map")
+	self:SaveLog()
+end
+
+function GM:DoAutoMaintenance(time)
+	if self.IsMaintenance then return end
+	self:SystemBroadcast(Format("Attention! The server will automatically restart map in %d minutes! Please make sure you have salvaged all of your structures and cashed in your bounties before the server restarts.", time / 60), Color(205,205,205), false)
+	print(Format("Starting map restart sequence. ETA: %d minutes.", time / 60))
+	for _,v in pairs(player.GetAll()) do v:ConCommand("playgamesound common/warning.wav") end
+	self.IsMaintenance = true
+	GM:SetServerRestartTime(CurTime() + time)
+
+	/* -- It will be now reworked
+	timer.Create("TEAChangingLevel", 60, 0, function()
+		if self.MinutesBeforeMaintenance > 1 then
+			self.MinutesBeforeMaintenance = self.MinutesBeforeMaintenance - 1
+			self:SystemBroadcast(Format("Due to maintenances, the server will restart in %d minutes.", self.MinutesBeforeMaintenance), Color(205,205,205), true)
+		else
+			self:SystemBroadcast("WARNING! Server is restarting in:", Color(205,205,205), true)
+			timer.Destroy("TEAChangingLevel")
+			self.AutoMaintenancePhase = 10
+			timer.Create("TEAChangingLevel_2", 1, 0, function()
+				if self.AutoMaintenancePhase >= 1 then
+					self:SystemBroadcast(self.AutoMaintenancePhase.."...", Color(205,25.5*self.AutoMaintenancePhase,25.5*self.AutoMaintenancePhase), false)
+					for _,ply in pairs(player.GetAll()) do ply:ConCommand("playgamesound buttons/button17.wav") end
+					self.AutoMaintenancePhase = self.AutoMaintenancePhase - 1
+				else
+					if !self.RestartingLevel then
+						self:SystemBroadcast("Restarting server...", Color(205,205,205), true)
+						self.RestartingLevel = true
+						for _,ply in pairs(player.GetAll()) do ply:ConCommand("playgamesound buttons/button15.wav") end
+					end
+					timer.Simple(1, function()
+						for k,o in pairs(self.Config["ZombieClasses"]) do
+							for _, ent in pairs(ents.FindByClass(k)) do
+								ent:Remove()
+							end
+						end
+					end)
+					timer.Simple(2, function()
+						for k,o in pairs(self.Config["BossClasses"]) do
+							for _, ent in pairs(ents.FindByClass(k)) do
+								ent:Remove()
+							end
+						end
+					end)
+					timer.Simple(5, function()
+						RunConsoleCommand("changelevel", game.GetMap())
+					end)
+				end
+			end)
+		end
+	end)
+	*/
 end
 
 function GM:PostCleanupMap()
 	timer.Simple(0.5, function() self:SpawnTraders() end)
 end
 
+function GM:OnNPCKilled(ent, attacker, inflictor, dmginfo)
+	local entclass = ent:GetClass()
+	local npcrewards = { -- override rewards for killing NPC
+/*
+		["npc_vj_l4d_com_male"] = {7, 4},
+		["npc_vj_l4d_com_female"] = {7, 4},
+		["npc_vj_l4d_com_f_nurse"] = {8, 5},
+		["npc_vj_l4d_com_m_hospital"] = {8, 5},
+		["npc_vj_l4d_com_m_airport"] = {9, 5},
+		["npc_vj_l4d_com_m_police"] = {11, 6},
+		["npc_vj_l4d_com_m_soldier"] = {14, 6},
+		["npc_vj_l4d_com_m_ceda"] = {21, 7},
+		["npc_vj_l4d_com_m_clown"] = {19, 7},
+		["npc_vj_l4d_com_m_mudmen"] = {11, 4},
+		["npc_vj_l4d_com_m_worker"] = {12, 5},
+		["npc_vj_l4d_com_m_riot"] = {43, 14},
+		["npc_vj_l4d_com_m_fallsur"] = {29, 11},
+		["npc_vj_l4d_com_m_jimmy"] = {16, 6},
+		["npc_zombie"] = {14, 7},
+		["npc_zombie_torso"] = {11, 5},
+		["npc_fastzombie"] = {12, 6},
+		["npc_poisonzombie"] = {27, 11},
+		["npc_combine_s"] = {34, 14},
+*/
+	}
+
+	if npcrewards[entclass] then
+		local xp = npcrewards[entclass][1]
+		local cash = npcrewards[entclass][2]
+		if !self.Config["ZombieClasses"][entclass] and !ent.XPReward and !ent.MoneyReward then
+			self:Payout(attacker, xp, cash)
+		end
+	elseif !ent.TEA_DeadNPC then
+		gamemode.Call("NPCReward", ent)
+	end
+end
+
+function GM:EntityRemoved(ent)
+	if !ent.TEA_DeadNPC then
+		gamemode.Call("NPCReward", ent)
+	end
+
+	if ent.BossMonster and ent.DamagedBy and table.Count(ent.DamagedBy) > 0 then
+		local loot = ents.Create("loot_cache_boss")
+		local killer = ent.TEA_KilledByPlayer
+		if killer and killer:IsValid() and killer:IsPlayer() then
+			loot:SetNWEntity("pickup", boss_killer)
+			self:SystemBroadcast(killer:Nick().." has dealt most damage to boss ("..math.Round(ent.TEA_MostDamageByPlayer, 2)..") and can pick up the boss cache!", Color(127,127,255), true)
+		end
+		timer.Simple(300, function()
+			if loot:IsValid() and loot:GetNWEntity("pickup"):IsValid() then
+				loot:SetNWEntity("pickup", ent.TEA_KilledByPlayer)
+			end
+		end)
+		loot:SetPos(ent:GetPos() + Vector(0, 0, 50))
+		loot:SetAngles(ent:GetAngles())
+		loot.LootType = table.Random(self.LootTableBoss)["Class"]
+		loot:Spawn()
+		loot:Activate()
+	end
+
+end
+
+function GM:DamageFloater(attacker, victim, dmgpos, dmg)
+	if attacker == victim then return end
+	if dmgpos == vector_origin then dmgpos = victim:NearestPoint(attacker:EyePos()) end
+
+	net.Start("tea_damagefloater")
+	net.WriteFloat(dmg)
+	net.WriteVector(dmgpos)
+	net.Send(attacker)
+end
+
+function GM:EntityTakeDamage(ent, dmginfo)
+	if ent.ProcessDamage and not ent:ProcessDamage(dmginfo) then return end
+	if ent.CheckPvPDamage and not ent:CheckPvPDamage(dmginfo) then return end
+	if ent.ProcessPlayerDamage and not ent:ProcessPlayerDamage(dmginfo) then return end
+	if (ent:IsNPC() or ent:IsNextBot()) and not ent:ProcessNPCDamage(dmginfo) then return end
+
+	local attacker = dmginfo:GetAttacker()
+
+/*
+	if ent:IsPlayer() then
+		ent.HealthDamage = ent.HealthDamage + dmginfo:GetDamage()
+		dmginfo:SetDamage(math.floor(ent.HealthDamage))
+		ent.HealthDamage = ent.HealthDamage - math.floor(ent.HealthDamage)
+	end
+*/
+	if (ent.Type == "nextbot" or ent:IsNPC()) and (!ent.LastAttacker or ent:Health() > 0) and attacker:IsPlayer() then
+		if !ent.BossMonster then
+			ent.LastAttacker = attacker
+			timer.Create("TEALastAttacker_"..ent:EntIndex(), 15, 1, function()
+				if !ent:IsValid() then return end
+				ent.LastAttacker = nil	-- if time after the target last received damage from the attacker, we claim that the last target's attacker is no more
+			end)
+		else
+			if !ent.DamagedBy[attacker] then 
+				ent.DamagedBy[attacker] = math.Clamp(dmginfo:GetDamage(), 0, ent:Health())
+			else
+				ent.DamagedBy[attacker] = math.max(ent.DamagedBy[attacker] + math.Clamp(dmginfo:GetDamage(), 0, ent:Health()), 0)
+			end
+			self.NextInfectionDecrease = math.max(self.NextInfectionDecrease, CurTime() + 6)
+		end
+	end
+
+	if ent:GetClass() == "prop_physics" and ent.maxhealth then
+		ent:SetHealth(ent:Health() - dmginfo:GetDamage())
+		local ColorAmount = ((ent:Health() / ent.maxhealth) * 255)
+		ent:SetColor(Color(ColorAmount, ColorAmount, ColorAmount, 255))
+		if ent:Health() <= 0 then
+			ent:GibBreakClient(Vector(math.random(-50, 50),math.random(-50, 50),math.random(-50, 50)))
+			ent:EmitSound("physics/metal/metal_box_break2.wav", 80, 100)
+			ent:Remove()
+		end
+	end
+
+	if self:GetDebug() >= DEBUGGING_ADVANCED then
+		if ent:IsPlayer() and ent:Alive() and (!ent.SpawnProtected and !ent:HasGodMode()) then
+			local dmg = dmginfo:GetDamage()
+			ent:SendLua("notification.AddLegacy(translate.Format(\"dmgtaken\", \""..math.Round(dmg, 1).."\"), 0, 4)")
+			print(ent:Nick().." has taken "..dmg.." damage!")
+		end
+	end
+
+	if attacker:IsPlayer() then
+		if ent:IsPlayer() or ent:IsNextBot() or (ent:IsNPC() and ent:GetClass() ~= "trader") and ent:Health() ~= 0 then
+			self:DamageFloater(attacker, ent, dmginfo:GetDamagePosition(), ent:IsPlayer() and math.floor(dmginfo:GetDamage()) or dmginfo:GetDamage())
+		end
+	end
+end
 
 function GM:PlayerInitialSpawn(ply, transition)
 	self.BaseClass:PlayerInitialSpawn(ply)
@@ -436,17 +664,20 @@ function GM:PlayerInitialSpawn(ply, transition)
 	ply.Battery = 100
 	ply.HPRegen = 0
 	ply.ChosenModel = "models/player/kleiner.mdl"
-	ply.Inventory = {} -- very important, the gamemode will not function properly without it!
+	ply.Inventory = {}
+	ply.Vault = {}
 	ply.XP = 0
 	ply.Money = 0
 	ply.Bounty = 0
 	ply.Level = 1
 	ply.Prestige = 0
 	ply.StatPoints = 0
+	ply.PerkPoints = 0
 	ply.PropCount = 0
+	ply.ArmorAttachments = {}
 	ply.InvitedTo = {} -- stores faction invites
 	ply.Achievements = {} -- stores gained achievements
-	ply.AchProgress = {} -- stores achievement progresses
+	ply.AchProgress = {}
 	ply.SelectedProp = "models/props_debris/wood_board04a.mdl"
 	ply:SetPvPGuarded(0)
 	ply.Territory = "none"
@@ -455,6 +686,9 @@ function GM:PlayerInitialSpawn(ply, transition)
 	ply.ZKills = 0
 	ply.playerskilled = 0
 	ply.playerdeaths = 0
+	ply.CurrentTask = ""
+	ply.CurrentTaskProgress = 0
+	ply.TaskComplete = false
 	----------------
 	
 	-------- Mastery Stats --------
@@ -467,7 +701,6 @@ function GM:PlayerInitialSpawn(ply, transition)
 	-------- Special Stats --------
 	ply.SlowDown = 0
 	ply.CanUseFlashlight = true
-	ply.IsAlive = true	-- identified if player is alive before death
 	ply.SpawnProtected = false
 	ply.DropCashCDcount = 0
 	ply.StatsPaused = false
@@ -477,40 +710,87 @@ function GM:PlayerInitialSpawn(ply, transition)
 	ply.StatsReset = 0
 	ply.InvalidInventory = {} -- saves invalid items here
 	ply.MaxLevelTime = 0
+	ply.ZombieKillStreak = 0
+	ply.LastStunTime = 0
+	ply.PoisonDamage = 0
+	ply.DrownDamage = 0
+
+	ply.PvPNoToggle = 0
+	ply.PvPAntiMsg = 0 -- prevents spamming messages if player attacks with pvp off or something else
+	ply.PvPAntiMsgProp = 0 -- same as above but for props
+	ply.HitSoundEffect = 0
 	----------------
 
 	-------- Other --------
 
-	ply:SendLua(self.ZombieSpawningEnabled and "GAMEMODE.ZombieSpawningEnabled = true" or "GAMEMODE.ZombieSpawningEnabled = false")
-
-
-	for k, v in pairs(GAMEMODE.StatsListServer) do
+	for statname, _ in pairs(self.StatConfigs) do
+		ply["Stat"..statname] = 0
+	end
+/*
+	for k, v in pairs(self.StatsListServer) do
 		local TheStatPieces = string.Explode(";", v)
 		local TheStatName = TheStatPieces[1]
 		ply[TheStatName] = 0
 	end
-	
-	for k,v in pairs(GAMEMODE.Achievements) do
+*/
+	for k,v in pairs(self.Achievements) do
 		ply.Achievements[k] = 0
 		ply.AchProgress[k] = 0
 	end
-	
-	print("Loading datafiles for "..ply:Nick().."...\n")
-	tea_LoadPlayer(ply)
-	tea_LoadPlayerInventory(ply)
-	tea_LoadPlayerVault(ply)
+
+	timer.Simple(0.1, function()
+		ply:KillSilent()
+		ply:SetPos(Vector(0,0,130000)) -- for main menu
+	end)
+
+	print(Format("Loading datafiles for %s...\n", ply:Nick()))
+	gamemode.Call("LoadPlayer", ply)
+	gamemode.Call("LoadPlayerInventory", ply)
+	gamemode.Call("LoadPlayerVault", ply)
 
 	ply:SetNWBool("pvp", false)
 	ply:SetNWString("ArmorType", "none")
-	ply:SetTeam(1)
+	ply:SetTeam(TEAM_LONER)
 
 	net.Start("RecvFactions")
 	net.WriteTable(Factions)
 	net.Send(ply)
-	tea_NetUpdateStatistics(ply)
+	self:NetUpdateStatistics(ply)
 
-	tea_SystemBroadcast(translate.Format("plspawned", ply:Nick()), Color(255,255,155,255), false)
+	self:SystemBroadcast(translate.Format("plspawned", ply:Nick()), Color(255,255,155,255), false)
 	ForceEquipArmor(ply, ply.EquippedArmor)
+end
+
+function GM:PlayerPostThink(ply)
+end
+
+function GM:StartCommand(ply)
+end
+
+function GM:PlayerReady(ply)
+	self:FullyUpdatePlayer(ply)
+end
+
+function GM:PlayerSay(ply, text, team)
+	if ply:IsValid() and string.Explode(" ", text)[1] == "!help" then
+		ply:SendLua("GAMEMODE:HelpMenu()")
+		return false
+	end
+
+	return text
+end
+
+-- ULX admin mod overrides this and screws up voice system... maybe it will be fixed or not... no idea, apparently.
+function GM:PlayerCanHearPlayersVoice(listener, talker)
+	if listener:GetPos():Distance(talker:GetPos()) <= 1250 then
+		return true, false
+	else
+		return false, false
+	end
+end
+
+function GM:PlayerShouldTaunt(ply, actid)
+	return true
 end
 
 local function IsPosBlocked(pos)
@@ -551,7 +831,7 @@ end
 function GM:PlayerSpawn(ply)
 	self.BaseClass:PlayerSpawn(ply)
 	player_manager.SetPlayerClass(ply, "player_ate")
-	tea_RecalcPlayerModel(ply)
+	gamemode.Call("RecalcPlayerModel", ply)
 
 	for k, v in pairs(ents.FindByClass("bed")) do
 		if v.Owner and v.Owner:IsValid() and v.Owner == ply then
@@ -560,31 +840,28 @@ function GM:PlayerSpawn(ply)
 		end
 	end
 
-	if timer.Exists("pvpnominge_"..ply:UniqueID()) then timer.Destroy("pvpnominge_"..ply:UniqueID()) end
+	if timer.Exists("pvpnominge_"..ply:EntIndex()) then timer.Destroy("pvpnominge_"..ply:EntIndex()) end
 
-	local tea_server_spawnprotection = GetConVar("tea_server_spawnprotection"):GetInt() >= 1
-	local tea_server_spawnprotection_duration = GetConVar("tea_server_spawnprotection_duration"):GetFloat()
-
-	if tea_server_spawnprotection_duration > 0 and tea_server_spawnprotection then
+	if self.SpawnProtectionDur > 0 and self.SpawnProtectionEnabled then
 		if !ply:Alive() then return end
 		ply.SpawnProtected = true
-		ply:PrintTranslatedMessage(HUD_PRINTCONSOLE, "plspawnprot_on", tea_server_spawnprotection_duration)
+		ply:PrintTranslatedMessage(HUD_PRINTCONSOLE, "plspawnprot_on", self.SpawnProtectionDur)
 	end
-	if tea_server_spawnprotection_duration > 0 and tea_server_spawnprotection then
-		timer.Create("IsSpawnProtectionTimerEnabled"..ply:UniqueID(), tea_server_spawnprotection_duration, 1, function()
+	if self.SpawnProtectionDur > 0 and self.SpawnProtectionEnabled then
+		timer.Create("IsSpawnProtectionTimerEnabled"..ply:EntIndex(), self.SpawnProtectionDur, 1, function()
 			if !ply:IsValid() or !ply:Alive() then return end
 			ply.SpawnProtected = false
 			ply:PrintTranslatedMessage(HUD_PRINTCONSOLE, "plspawnprot_off")
 		end)
 	end
 
-	timer.Simple(0.2, function()
-		tea_RecalcPlayerSpeed(ply)
-		timer.Simple(3, function()
-			tea_RecalcPlayerSpeed(ply) --shouldn't have that many timers but whatever
-		end)
+	gamemode.Call("RecalcPlayerSpeed", ply)
+	timer.Simple(3, function()
+		gamemode.Call("RecalcPlayerSpeed", ply)
 	end)
 
+	ply.CauseOfDeath = ""
+	ply.DeathMessage = ""
 	ply:SetNWBool("pvp", false)
 	ply:SetPvPGuarded(0)
 	ply:SetPlayerColor(Vector(cl_playercolor))
@@ -592,15 +869,15 @@ function GM:PlayerSpawn(ply)
 	ply:SetHealth(self:CalcMaxHealth(ply))
 	ply:SetMaxArmor(self:CalcMaxArmor(ply))
 	ply:SetJumpPower(self:CalcJumpPower(ply))
-	tea_RecalcPlayerModel(ply)
-	tea_PrepareStats(ply)
-	tea_FullyUpdatePlayer(ply)
+	gamemode.Call("RecalcPlayerModel", ply)
+	gamemode.Call("PrepareStats", ply)
+	gamemode.Call("FullyUpdatePlayer", ply)
 
-	-- give them a new gun if they are still levels under Rookie Level and are at prestige 0
-	local newgun = self.Config["RookieWeapon"]
-	if tonumber(ply.Level) <= tonumber(self.Config["RookieLevel"]) and tonumber(ply.Prestige) <= 0 and !ply.Inventory[newgun] then
-		tea_SystemGiveItem(ply, newgun)
-		tea_SendInventory(ply)
+	-- give them a new gun if they are still levels under Newbie Level and are at prestige 0
+	local newgun = self.Config["NewbieWeapon"]
+	if ply:IsNewbie() and !ply.Inventory[newgun] then
+		self:SystemGiveItem(ply, newgun)
+		self:SendInventory(ply)
 	end
 end
 
@@ -611,6 +888,12 @@ function GM:PlayerLoadout(ply)
 	ply:SelectWeapon("tea_fists")
 end
 
+function GM:PlayerUse(ply, ent) --why is that here??
+	if not ent then return end
+	if not ent:IsValid() then return end
+	return true
+end
+
 
 function GM:PlayerSpawnedProp(userid, model, prop)
 	prop.owner = userid
@@ -618,7 +901,7 @@ function GM:PlayerSpawnedProp(userid, model, prop)
 end
 
 function GM:PlayerNoClip(ply, on)
-	if AdminCheck(ply) or SuperAdminCheck(ply) or TEADevCheck(ply) or TEASVOwnerCheck(ply) then
+	if AdminCheck(ply) then
 		PrintMessage(HUD_PRINTCONSOLE, translate.Format(on and "x_turned_on_noclip" or "x_turned_off_noclip", ply:Name()))
 		return true
 	end
@@ -630,7 +913,7 @@ function GM:PlayerNoClip(ply, on)
 end
 
 -- not like setplayermodel, just reads their model and colour settings and sets them to it
-function tea_RecalcPlayerModel(ply)
+function GM:RecalcPlayerModel(ply)
 	if ply:IsBot() then ply:SetModel("models/player/soldier_stripped.mdl") return end -- this only works for bots
 	if !ply.ChosenModel then ply.ChosenModel = "models/player/kleiner.mdl" end
 	if !ply.ChosenModelColor then ply.ChosenModelColor = Vector(0.25, 0, 0) end
@@ -638,157 +921,198 @@ function tea_RecalcPlayerModel(ply)
 	if type(ply.ChosenModelColor) == "string" then ply.ChosenModelColor = Vector(ply.ChosenModelColor) end
 	ply:SetPlayerColor(ply.ChosenModelColor)
 
-	if !GAMEMODE.ItemsList[ply.EquippedArmor] or GAMEMODE.ItemsList[ply.EquippedArmor]["ArmorStats"]["allowmodels"] == nil then
-		if !table.HasValue(DefaultModels, ply.ChosenModel) then
-			ply.ChosenModel = table.Random(DefaultModels)
+	if !self.ItemsList[ply.EquippedArmor] or self.ItemsList[ply.EquippedArmor]["ArmorStats"]["allowmodels"] == nil then
+		if !table.HasValue(self.DefaultModels, ply.ChosenModel) then
+			ply.ChosenModel = table.Random(self.DefaultModels)
 		end
 		ply:SetModel(ply.ChosenModel)
 		return false
 	end
 
-	local models = GAMEMODE.ItemsList[ply.EquippedArmor]["ArmorStats"]["allowmodels"]
+	local models = self.ItemsList[ply.EquippedArmor]["ArmorStats"]["allowmodels"]
 	if !models[ply.ChosenModel] then ply.ChosenModel = table.Random(models) ply:SetModel(ply.ChosenModel) end
 end
 
-function tea_RecalcPlayerSpeed(ply)
+function GM:RecalcPlayerSpeed(ply)
 	if !ply:IsValid() then return false end
 	local armorspeed = 0
-	local walkspeed = GAMEMODE.Config["WalkSpeed"]
-	local runspeed = GAMEMODE.Config["RunSpeed"]
+	local walkspeed = self.Config["WalkSpeed"]
+	local runspeed = self.Config["RunSpeed"]
 	local walkspeedbonus = ply.StatSpeed * 3.5
 	local runspeedbonus = ply.StatSpeed * 7
 	local plyarmor = ply:GetNWString("ArmorType")
 	local slowdown = tonumber(ply.SlowDown or 0)
-	
-	if !ply:IsValid() then return end
+
 	if plyarmor and plyarmor != "none" then
-		local armortype = GAMEMODE.ItemsList[plyarmor]
+		local armortype = self.ItemsList[plyarmor]
 		armorspeed = tonumber(armortype["ArmorStats"]["speedloss"])
 	end
 	
-	GAMEMODE:SetPlayerSpeed(ply, math.max(1, ((walkspeed - (armorspeed / 2)) + walkspeedbonus) * (1 - slowdown)), math.max(1, ((runspeed - armorspeed) + runspeedbonus) * (1 - slowdown)))
+	self:SetPlayerSpeed(ply, math.max(1, ((walkspeed - (armorspeed / 2)) + walkspeedbonus) * (1 - slowdown)), math.max(1, ((runspeed - armorspeed) + runspeedbonus) * (1 - slowdown)))
 	ply:SetSlowWalkSpeed(math.Clamp(((walkspeed - (armorspeed / 2)) + walkspeedbonus) * (0.75 * (1 - slowdown)), 1, 100))
 end
 
--- ULX admin mod POSSIBLY overrides this and screws up our voice system... maybe it will be fixed or not
-function GM:PlayerCanHearPlayersVoice(listener, talker)
-	if listener:GetPos():Distance(talker:GetPos()) <= 1250 then
-		return true, false
+function GM:CheckSpawnChanceErrors()
+	local chance = 0
+	for k, v in pairs(self.Config["ZombieClasses"]) do
+		chance = chance + v.SpawnChance
+	end
+	MsgC(Color(191,191,255,255), "Total normal zombie spawn chance: "..chance.."%\n")
+
+	chance = 0
+	for k, v in pairs(self.Config["BossClasses"]) do
+		chance = chance + v.SpawnChance
+	end
+	MsgC(Color(191,191,255,255), "Total boss zombies spawn chance: "..chance.."%\n")
+end
+
+function GM:SetUpSeasonalEvents()
+	local function n_date(format, time)
+		return tonumber(os.date(format, time))
+	end
+
+	MsgC(Color(255,255,255), "\n------ Setting up any available seasonal events... ------\n")
+	if n_date("%d") >= 25 and n_date("%m") == 10 or n_date("%d") <= 3 and n_date("%m") == 11 then
+		self:SetSeasonalEvent(SEASONAL_EVENT_HALLOWEEN)
+		MsgC(Color(255,191,0), "\n------ Halloween event is active! ------\n\n")
+		MsgC(Color(255,191,0), "---[[[ All zombies give +25% XP during this event! ]]]---\n")
+		MsgC(Color(255,191,0), "---[[[ Probability of elite zombie variant spawning is increased! ]]]---\n")
+		MsgC(Color(255,191,0), "---[[[ Lasts for 10 days! 25th October - 3rd November ]]]---\n\n")
+		MsgC(Color(255,191,0), "------ Happy halloween ;) ------\n")
+	elseif n_date("%d") >= 19 and n_date("%m") == 12 or n_date("%d") <= 3 and n_date("%m") == 1 then
+		self:SetSeasonalEvent(SEASONAL_EVENT_CHRISTMAS)
+		MsgC(Color(0,191,255), "\n------ Christmas event is active! ------\n\n")
+		MsgC(Color(0,191,255), "---[[[ All zombies give +15% XP during this event! ]]]---\n")
+		MsgC(Color(0,191,255), "---[[[ Zombies have chance to spawn a gift after being killed! 1 in 50 chance, for normal zombies, 1 in 3 chance for bosses! ]]]---\n")
+		MsgC(Color(0,191,255), "---[[[ Elite zombies are more likely to drop gifts! ]]]---\n")
+		MsgC(Color(0,191,255), "---[[[ Lasts for 15 days! 19th December - 3rd January ]]]---\n\n")
+		MsgC(Color(0,191,255), "------ Merry Christmas and Happy New Year! ;) ------\n")
 	else
-		return false, false
+		self:SetSeasonalEvent(SEASONAL_EVENT_NONE)
+		MsgC(Color(255,255,255), "\n------ No seasonal event is currently active... ------\n\n")
 	end
 end
 
-function GM:PlayerShouldTaunt(ply, actid)
-	return true
-end
 
+
+
+-- NOT YET
 function GM:AddResources()
 -------- Gamemode Content Files --------
+	local folder = "materials/arleitiss/riotshield"
 
-	for _, filename in pairs(file.Find("materials/arleitiss/riotshield/*.vmt", "GAME")) do
-		resource.AddFile("materials/arleitiss/riotshield/*.vmt"..filename)
+	for _, filename in pairs(file.Find(folder.."/*.vmt", "GAME")) do
+		resource.AddFile(folder.."/"..filename)
 	end
-	for _, filename in pairs(file.Find("materials/arleitiss/riotshield/*.vtf", "GAME")) do
-		resource.AddFile("materials/arleitiss/riotshield/*.vtf"..filename)
+	for _, filename in pairs(file.Find(folder.."/*.vtf", "GAME")) do
+		resource.AddFile(folder.."/"..filename)
 	end
-	for _, filename in pairs(file.Find("materials/entities/*.vtf", "GAME")) do
-		resource.AddFile("materials/entities/*.vtf"..filename)
+
+	folder = "materials/entities"
+	for _, filename in pairs(file.Find(folder.."/*.vtf", "GAME")) do
+		resource.AddFile(folder.."/"..filename)
 	end
-	for _, filename in pairs(file.Find("materials/environment maps/*.vtf", "GAME")) do
-		resource.AddFile("materials/environment maps/*.vtf"..filename)
+
+	folder = "materials/environment maps"
+	for _, filename in pairs(file.Find(folder.."/*.vtf", "GAME")) do
+		resource.AddFile(folder.."/"..filename)
 	end
-	for _, filename in pairs(file.Find("materials/models/weapons/v_wrench/*.vmt", "GAME")) do
-		resource.AddFile("materials/models/weapons/v_wrench/*.vmt"..filename)
+
+	folder = "materials/models/weapons/v_wrench"
+	for _, filename in pairs(file.Find(folder.."/*.vmt", "GAME")) do
+		resource.AddFile(folder.."/"..filename)
 	end
-	for _, filename in pairs(file.Find("materials/models/weapons/v_wrench/*.vtf", "GAME")) do
-		resource.AddFile("materials/models/weapons/v_wrench/*.vtf"..filename)
+	for _, filename in pairs(file.Find(folder.."/*.vtf", "GAME")) do
+		resource.AddFile(folder.."/"..filename)
 	end
-	for _, filename in pairs(file.Find("materials/models/weapons/w_wrench/*.vmt", "GAME")) do
-		resource.AddFile("materials/models/weapons/w_wrench/*.vmt"..filename)
+
+	folder = "materials/models/weapons/w_wrench"
+	for _, filename in pairs(file.Find(folder.."/*.vmt", "GAME")) do
+		resource.AddFile(folder.."/"..filename)
 	end
 	for _, filename in pairs(file.Find("materials/rg/*.vmt", "GAME")) do
-		resource.AddFile("materials/rg/*.vmt"..filename)
+		resource.AddFile("materials/rg/"..filename)
 	end
 	for _, filename in pairs(file.Find("materials/rg/*.vtf", "GAME")) do
-		resource.AddFile("materials/rg/*.vtf"..filename)
+		resource.AddFile("materials/rg/"..filename)
 	end
 	for _, filename in pairs(file.Find("materials/scope/*.vmt", "GAME")) do
-		resource.AddFile("materials/scope/*.vmt"..filename)
+		resource.AddFile("materials/scope/"..filename)
 	end
 	for _, filename in pairs(file.Find("materials/scope/*.vtf", "GAME")) do
-		resource.AddFile("materials/scope/*.vtf"..filename)
+		resource.AddFile("materials/scope/"..filename)
 	end
 	for _, filename in pairs(file.Find("materials/vgui/entities/*.vmt", "GAME")) do
-		resource.AddFile("materials/vgui/entities/*.vmt"..filename)
+		resource.AddFile("materials/vgui/entities/"..filename)
 	end
 	for _, filename in pairs(file.Find("materials/weapons/*.vmt", "GAME")) do
-		resource.AddFile("materials/weapons/*.vmt"..filename)
+		resource.AddFile("materials/weapons/"..filename)
 	end
 	for _, filename in pairs(file.Find("materials/weapons/*.vtf", "GAME")) do
-		resource.AddFile("materials/weapons/*.vtf"..filename)
+		resource.AddFile("materials/weapons/"..filename)
 	end
 
 	for _, filename in pairs(file.Find("models/items/*.mdl", "GAME")) do
-		resource.AddFile("models/items/*.mdl"..filename)
+		resource.AddFile("models/items/"..filename)
 	end
 	for _, filename in pairs(file.Find("models/items/*.phy", "GAME")) do
-		resource.AddFile("models/items/*.phy"..filename)
+		resource.AddFile("models/items/"..filename)
 	end
 	for _, filename in pairs(file.Find("models/items/*.vtx", "GAME")) do
-		resource.AddFile("models/items/*.vtx"..filename)
+		resource.AddFile("models/items/"..filename)
 	end
 	for _, filename in pairs(file.Find("models/items/*.vvd", "GAME")) do
-		resource.AddFile("models/items/*.vvd"..filename)
+		resource.AddFile("models/items/"..filename)
 	end
 	for _, filename in pairs(file.Find("models/weapons/*.mdl", "GAME")) do
-		resource.AddFile("models/weapons/*.mdl"..filename)
+		resource.AddFile("models/weapons/"..filename)
 	end
 	for _, filename in pairs(file.Find("models/weapons/*.phy", "GAME")) do
-		resource.AddFile("models/weapons/*.phy"..filename)
+		resource.AddFile("models/weapons/"..filename)
 	end
 	for _, filename in pairs(file.Find("models/weapons/*.vtx", "GAME")) do
-		resource.AddFile("models/weapons/*.vtx"..filename)
+		resource.AddFile("models/weapons/"..filename)
 	end
 	for _, filename in pairs(file.Find("models/weapons/*.vvd", "GAME")) do
-		resource.AddFile("models/weapons/*.vvd"..filename)
+		resource.AddFile("models/weapons/"..filename)
 	end
 	for _, filename in pairs(file.Find("models/*.phy", "GAME")) do
-		resource.AddFile("models/*.phy"..filename)
+		resource.AddFile("models/"..filename)
 	end
 
+
 	for _, filename in pairs(file.Find("sound/theeternalapocalypse/*.wav", "GAME")) do
-		resource.AddFile("sound/theeternalapocalypse/*.wav"..filename)
+		resource.AddFile("sound/theeternalapocalypse/"..filename)
 	end
 	for _, filename in pairs(file.Find("sound/theeternalapocalypse/*.mp3", "GAME")) do
-		resource.AddFile("sound/theeternalapocalypse/*.mp3"..filename)
+		resource.AddFile("sound/theeternalapocalypse/"..filename)
 	end
 	for _, filename in pairs(file.Find("sound/theeternalapocalypse/*.ogg", "GAME")) do
-		resource.AddFile("sound/theeternalapocalypse/*.ogg"..filename)
+		resource.AddFile("sound/theeternalapocalypse/"..filename)
 	end
 	for _, filename in pairs(file.Find("sound/weapons/grenade/*.wav", "GAME")) do
-		resource.AddFile("sound/weapons/grenade/*.wav"..filename)
+		resource.AddFile("sound/weapons/grenade/"..filename)
 	end
 	for _, filename in pairs(file.Find("sound/weapons/oicw/*.wav", "GAME")) do
-		resource.AddFile("sound/weapons/oicw/*.wav"..filename)
+		resource.AddFile("sound/weapons/oicw/"..filename)
 	end
 	for _, filename in pairs(file.Find("sound/weapons/oicw/44k/*.wav", "GAME")) do
-		resource.AddFile("sound/weapons/oicw/44k/*.wav"..filename)
+		resource.AddFile("sound/weapons/oicw/44k/"..filename)
 	end
 	for _, filename in pairs(file.Find("sound/weapons/oicw/test/*.wav", "GAME")) do
-		resource.AddFile("sound/weapons/oicw/test/*.wav"..filename)
+		resource.AddFile("sound/weapons/oicw/test/"..filename)
 	end
 	for _, filename in pairs(file.Find("sound/weapons/shared/*.wav", "GAME")) do
-		resource.AddFile("sound/weapons/shared/*.wav"..filename)
+		resource.AddFile("sound/weapons/shared/"..filename)
 	end
-	for _, filename in pairs(file.Find("sound/weapons/universal/*.wav", "GAME")) do
-		resource.AddFile("sound/weapons/universal/*.wav"..filename)
+	for _, filename in pairs(file.Find("sound/weapons/universal/", "GAME")) do
+		resource.AddFile("sound/weapons/universal/"..filename)
 	end
-	for _, filename in pairs(file.Find("sound/weapons/*.mp3", "GAME")) do
-		resource.AddFile("sound/weapons/*.mp3"..filename)
+	for _, filename in pairs(file.Find("sound/weapons/", "GAME")) do
+		resource.AddFile("sound/weapons/"..filename)
 	end
-	for _, filename in pairs(file.Find("sound/weapons/*.ogg", "GAME")) do
-		resource.AddFile("sound/weapons/*.ogg"..filename)
+	for _, filename in pairs(file.Find("sound/weapons/", "GAME")) do
+		resource.AddFile("sound/weapons/"..filename)
 	end
 end
 
@@ -801,7 +1125,7 @@ end
 	resource.AddWorkshop("128093075") -- m9k small arms pack
 	resource.AddWorkshop("355101935") -- stalker playermodels
 	resource.AddWorkshop("411284648") -- gamemode content pack
---	resource.AddWorkshop("448170926") -- ate swep pack (excluded because i copied and remade my own (no, the textures are not fixed yet because i don't know which textures were used by some weapons))
+	--resource.AddWorkshop("448170926") -- ate swep pack (excluded because i copied and remade my own (no, the textures are not fixed yet because i don't know which textures were used by some weapons))
 	resource.AddWorkshop("1270991543") -- armor models
 	resource.AddWorkshop("1680884607") -- project stalker sounds 
 	resource.AddWorkshop("2438451886") -- stalker item models pack

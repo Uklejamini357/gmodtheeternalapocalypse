@@ -46,7 +46,7 @@ function ENT:Splode()
 
 	for _,v in pairs(damagedents) do
 		if v:IsPlayer() then
-			v:TakeDamage(GAMEMODE.tea_CalcDefenseDamage(v, 4.2), self.Owner)
+			v:TakeDamage(GAMEMODE:CalcDefenseDamage(v, 4.2), self.Owner)
 		elseif v:GetClass() == "prop_flimsy" or v:GetClass() == "prop_strong" then
 			v:TakeDamage(6, self.Owner)
 		end

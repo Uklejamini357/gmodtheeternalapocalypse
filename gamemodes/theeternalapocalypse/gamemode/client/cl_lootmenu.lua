@@ -96,7 +96,7 @@ local function DoLootPanel(canstore)
 	local function uwotm8(tab, parent)
 		for k, v in SortedPairsByMemberValue(tab, "Weight", true) do
 
-			local raretext,rarecol = tea_CheckItemRarity(v.Rarity)
+			local raretbl = gamemode.Call("CheckItemRarity", v.Rarity)
 			local ItemBackground = vgui.Create("DPanel")
 			ItemBackground:SetPos(5, 5)
 			ItemBackground:SetSize(550, 65)
@@ -105,15 +105,18 @@ local function DoLootPanel(canstore)
 				surface.DrawOutlinedRect(0, 0, w, h)
 				surface.SetDrawColor(0, 0, 0 ,200)
 				surface.DrawRect(0, 0, w, h)
+				local canpick = (CalculateWeightClient() + v.Weight) <= CalculateMaxWeightClient()
+				if !canpick then
+					draw.DrawText(Format("Not enough weight (need %skg space)", math.Round((CalculateWeightClient() + v.Weight) - CalculateMaxWeightClient(), 2)), "TargetIDSmall", ItemBackground:GetWide() - 20, 45, Color(255,205,205), TEXT_ALIGN_RIGHT)
+				end
 			end
 
 			local ItemDisplay = vgui.Create("SpawnIcon", ItemBackground)
 			ItemDisplay:SetPos(5, 5)
 			ItemDisplay:SetModel(v.Model)
-			ItemDisplay:SetToolTip(translate.Format("item_descr_2", translate.Get(k.."_d"), translate.Get("itemid"), k, raretext))
+			ItemDisplay:SetToolTip(translate.Get(k.."_d").."\n"..translate.Format("item_descr_2", k, raretbl.text))
 			ItemDisplay:SetSize(56,56)
 			ItemDisplay.PaintOver = function()
-				return
 			end
 			ItemDisplay.OnMousePressed = function()
 				return false
@@ -122,7 +125,13 @@ local function DoLootPanel(canstore)
 			local ItemName = vgui.Create( "DLabel", ItemBackground )
 			ItemName:SetPos(80, 10)
 			ItemName:SetFont("TargetIDSmall")
-			ItemName:SetColor(rarecol)
+			ItemName:SetTextColor(raretbl.col)
+			if raretbl.keeprefresh then
+				ItemName.Think = function()
+					local tbl_rarity = gamemode.Call("CheckItemRarity", v.Rarity)
+					ItemName:SetTextColor(tbl_rarity.col)
+				end
+			end
 			ItemName:SetText(translate.Get(k.."_n").." ("..v.Weight.."kg)")
 			ItemName:SizeToContents()
 
@@ -147,7 +156,7 @@ local function DoLootPanel(canstore)
 				if currentcrate:IsValid() then
 					-- this distance check exists on the server too so don't even try being a smartarse with net messages m8
 					if !LocalPlayer():Alive() or LocalPlayer():GetPos():Distance(currentcrate:GetPos()) > 120 then chat.AddText(Color(255,200,200), "You have moved too far away from this crate!") lootpanel:Remove() return end
-					if (CalculateWeightClient() + v.Weight) > CalculateMaxWeightClient() then chat.AddText(Color(255,200,200), "You don't have enough free space to carry that! (Need "..(CalculateWeightClient() + v.Weight) - CalculateMaxWeightClient().."kg more space)") return end
+					if (CalculateWeightClient() + v.Weight) > CalculateMaxWeightClient() then chat.AddText(Color(255,200,200), "You don't have enough free space to carry that! (Need "..math.Round((CalculateWeightClient() + v.Weight) - CalculateMaxWeightClient(), 2).."kg space)") return end
 					net.Start("UseCrate")
 					net.WriteEntity(currentcrate)
 					net.WriteString(k)

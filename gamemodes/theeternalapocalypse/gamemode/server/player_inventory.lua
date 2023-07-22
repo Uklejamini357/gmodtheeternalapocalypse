@@ -1,20 +1,21 @@
 local meta = FindMetaTable("Player")
 
-function tea_CalculateWeight(ply)
-local totalweight = 0
+function GM:CalculateWeight(ply)
+	local totalweight = 0
 	for k, v in pairs(ply.Inventory) do
-		if !GAMEMODE.ItemsList[k] then ErrorNoHalt( "CalculateWeight error on "..ply:Nick().."! They must have a corrupt inventory file or something\n" ) continue end	
-		local ref = GAMEMODE.ItemsList[k]
+		if !self.ItemsList[k] then ErrorNoHalt("CalculateWeight error on "..ply:Nick().."! They must have a corrupt inventory (file) or something\n") continue end
+		local ref = self.ItemsList[k]
 		totalweight = totalweight + (ref.Weight * v)
 	end
-return totalweight
+	return totalweight
 end
 
-function tea_CalculateMaxWeight(ply)
+-- make sure on client are the same!!
+function GM:CalculateMaxWeight(ply)
 	local armorstr = ply:GetNWString("ArmorType") or "none"
-	local armortype = GAMEMODE.ItemsList[armorstr]
+	local armortype = self.ItemsList[armorstr]
 	local maxweight = 0
-	local defaultcarryweight = GAMEMODE.Config["MaxCarryWeight"]
+	local defaultcarryweight = self.Config["MaxCarryWeight"]
 	if ply.StatsPaused then return 1e300 end
 	if ply:GetNWString("ArmorType") == "none" then
 		maxweight = defaultcarryweight + (tonumber(ply.Prestige) >= 6 and 5 or tonumber(ply.Prestige) >= 3 and 2 or 0) + ((ply.StatStrength or 0) * 1.53)
@@ -24,28 +25,37 @@ function tea_CalculateMaxWeight(ply)
 	return maxweight
 end
 
-function tea_SendInventory(ply)
-	if !ply:IsValid() then return end
-	tea_FullyUpdatePlayer(ply)
-	tea_SendVault(ply)
+function GM:CalculateRemainingInventoryWeight(ply, weight)
+	return math.Round((-self:CalculateMaxWeight(ply) + self:CalculateWeight(ply) + weight), 2)
 end
-concommand.Add("refresh_inventory", tea_SendInventory)
+
+function GM:SendInventory(ply)
+	if !ply:IsValid() then return end
+	timer.Create("tea_sendinventory_"..ply:EntIndex(), (ply.m_LastTimeInventorySent or 0) + 0.5 - CurTime(), 1, function()
+		self:FullyUpdatePlayer(ply)
+		self:SendVault(ply)
+	end)
+	ply.m_LastTimeInventorySent = CurTime()
+end
+concommand.Add("refresh_inventory", function(ply)
+	GAMEMODE:SendInventory(ply)
+end)
 
 
-function tea_LoadPlayerInventory(ply)
+function GM:LoadPlayerInventory(ply)
 	if !ply:IsValid() or !ply:IsPlayer() then Error("The Eternal Apocalypse: Tried to load a player inventory file that doesn't exist!") return end
 	ply.Inventory = {}
 
 	local LoadedData
 	local InvalidData
-	if GAMEMODE.Config["FileSystem"] == "Legacy" then
-		if (file.Exists(GAMEMODE.DataFolder.."/players/"..string.lower(string.gsub(ply:SteamID(), ":", "_")).."/inventory.txt", "DATA")) then
-			LoadedData = file.Read(GAMEMODE.DataFolder.."/players/"..string.lower(string.gsub( ply:SteamID(), ":", "_").."/inventory.txt"), "DATA")
+	if self.Config["FileSystem"] == "Legacy" then
+		if (file.Exists(self.DataFolder.."/players/"..string.lower(string.gsub(ply:SteamID(), ":", "_")).."/inventory.txt", "DATA")) then
+			LoadedData = file.Read(self.DataFolder.."/players/"..string.lower(string.gsub( ply:SteamID(), ":", "_").."/inventory.txt"), "DATA")
 		end
-		if (file.Exists(GAMEMODE.DataFolder.."/players/"..string.lower(string.gsub(ply:SteamID(), ":", "_")).."/invalid_inventory.txt", "DATA")) then
-			InvalidData = file.Read(GAMEMODE.DataFolder.."/players/"..string.lower(string.gsub( ply:SteamID(), ":", "_").."/invalid_inventory.txt"), "DATA")
+		if (file.Exists(self.DataFolder.."/players/"..string.lower(string.gsub(ply:SteamID(), ":", "_")).."/invalid_inventory.txt", "DATA")) then
+			InvalidData = file.Read(self.DataFolder.."/players/"..string.lower(string.gsub( ply:SteamID(), ":", "_").."/invalid_inventory.txt"), "DATA")
 		end
-	elseif GAMEMODE.Config[ "FileSystem" ] == "PData" then
+	elseif self.Config["FileSystem"] == "PData" then
 		LoadedData = ply:GetPData("ate_playerinventory")
 		InvalidData = ply:GetPData("ate_invalidinventory")
 	else
@@ -59,18 +69,18 @@ function tea_LoadPlayerInventory(ply)
 			invaliditems = util.JSONToTable(InvalidData) --save invalid items just in case
 		end
 		for k,v in pairs(formatted) do
-			if !GAMEMODE.ItemsList[k] then
+			if !self.ItemsList[k] then
 				invaliditems[k] = formatted[k]
 				formatted[k] = nil
 			end
 		end
 		for k,v in pairs(invaliditems) do
-			if GAMEMODE.ItemsList[k] then
+			if self.ItemsList[k] then
 				formatted[k] = invaliditems[k]
 				invaliditems[k] = nil
 			end
 		end
-		if GetConVar("tea_server_debugging"):GetInt() >= 1 then
+		if self:GetDebug() >= DEBUGGING_ADVANCED then
 			print("Loading Inventory\n\n")
 			PrintTable(formatted)
 			print("\nInvalid Items:")
@@ -79,25 +89,26 @@ function tea_LoadPlayerInventory(ply)
 		ply.Inventory = formatted
 		ply.InvalidInventory = invaliditems
 	else
-		ply.Inventory = table.Copy(GAMEMODE.Config["RookieGear"])
+		ply.Inventory = table.Copy(self.Config["NewbieGear"])
 	end
 
-	timer.Simple(1, function() tea_SendInventory(ply) end)
+	timer.Simple(1, function()
+		GAMEMODE:SendInventory(ply)
+	end)
 end
 
 
-function tea_SavePlayerInventory(ply)
-	local tea_server_dbsaving = GetConVar("tea_server_dbsaving"):GetInt() >= 1
+function GM:SavePlayerInventory(ply)
 	if !ply:IsValid() then return end
-	if !ply.AllowSave and !tea_server_dbsaving then return end
+	if !ply.AllowSave and not self.DatabaseSaving then return end
 
-	if GAMEMODE.Config["FileSystem"] == "Legacy" then
+	if self.Config["FileSystem"] == "Legacy" then
 		local data = util.TableToJSON(ply.Inventory)
 		local invaliddata = util.TableToJSON(ply.InvalidInventory)
-		file.Write(GAMEMODE.DataFolder.."/players/"..string.lower(string.gsub(ply:SteamID(), ":", "_")).."/inventory.txt", data)
-		file.Write(GAMEMODE.DataFolder.."/players/"..string.lower(string.gsub(ply:SteamID(), ":", "_")).."/invalid_inventory.txt", invaliddata)
-		print(Format("✓ %s inventory saved into inventory", ply:Nick()))
-	elseif GAMEMODE.Config["FileSystem"] == "PData" then
+		file.Write(self.DataFolder.."/players/"..string.lower(string.gsub(ply:SteamID(), ":", "_")).."/inventory.txt", data)
+		file.Write(self.DataFolder.."/players/"..string.lower(string.gsub(ply:SteamID(), ":", "_")).."/invalid_inventory.txt", invaliddata)
+		print(Format("✓ %s inventory saved into database", ply:Nick()))
+	elseif self.Config["FileSystem"] == "PData" then
 		local formatted = util.TableToJSON(ply.Inventory)
 		local invaliddata = util.TableToJSON(ply.InvalidInventory)
 		ply:SetPData("ate_playerinventory", formatted)
@@ -108,33 +119,37 @@ function tea_SavePlayerInventory(ply)
 	end
 end
 
-function tea_SaveTimer()
-	local tea_server_dbsaving = GetConVar("tea_server_dbsaving")
+function GM:SaveTimer()
 	local i = 0
-	if !tobool(tea_server_dbsaving:GetString()) then print("------=== WARNING ===------\n\nDatabase saving is disabled! Players will not have their progress saved during this time.\nSet ConVar 'tea_server_dbsaving' to 1 in order to enable database saving.\n\n------======------") return end
+	if not self.DatabaseSaving then
+		print([[------=== WARNING ===------
+
+Database saving is disabled! Players will not have their progress saved during this time.
+Set ConVar 'tea_server_dbsaving' to 1 in order to enable database saving.
+
+------=== ===------]]) return end
 	for k, ply in pairs(player.GetAll()) do
 		if ply:IsValid() then
-			i = i + 1
-			if !tobool(tea_server_dbsaving:GetString()) then return end
-			timer.Simple(i * 0.5, function()
+			timer.Simple(i, function()
+				if !self.DatabaseSaving then return end
 				if !ply:IsValid() then return end
-				tea_SavePlayer(ply)
-				tea_SavePlayerInventory(ply)
-				tea_SavePlayerVault(ply)
+				self:SavePlayer(ply)
+				self:SavePlayerInventory(ply)
+				self:SavePlayerVault(ply)
 			end)
+			i = i + 0.5
 		end
 	end
 end
-timer.Create("SaveTimer", 180, 0, tea_SaveTimer)
 
-function tea_SystemGiveItem(ply, str, qty)
+function GM:SystemGiveItem(ply, str, qty)
 	if !ply:IsValid() or !ply:IsPlayer() then return false end
-	if !GAMEMODE.ItemsList[str] or !ply.Inventory then return false end
+	if !self.ItemsList[str] or !ply.Inventory then return false end
 	qty = tonumber(qty) or 1
 
-	local item = GAMEMODE.ItemsList[str]
+	local item = self.ItemsList[str]
 	-- dont need to pester them with notifications from a system function, just return false
-	if ((tea_CalculateWeight(ply) + (qty * item["Weight"])) > (tea_CalculateMaxWeight(ply))) then SendChat(ply, "You don't have any inventory space left for this item! (Need "..-tea_CalculateMaxWeight(ply) + tea_CalculateWeight(ply) + (qty * item["Weight"]).."kg more space)") return false end
+	if ((self:CalculateWeight(ply) + (qty * item["Weight"])) > (self:CalculateMaxWeight(ply))) then ply:SendChat(Format("You don't have any inventory space left for this item! (Need %skg more space)", GAMEMODE:CalculateRemainingInventoryWeight(ply, qty * item["Weight"]))) return false end
 
 	if ply.Inventory[str] then
 		ply.Inventory[str] = ply.Inventory[str] + qty
@@ -144,9 +159,9 @@ function tea_SystemGiveItem(ply, str, qty)
 	return true
 end
 
-function tea_SystemGiveItem_NoWeight(ply, str, qty) -- same as above except that it ignores player's remaining weight
+function GM:SystemGiveItem_NoWeight(ply, str, qty) -- same as above except that it ignores player's remaining weight
 	if !ply:IsValid() or !ply:IsPlayer() then return false end
-	if !GAMEMODE.ItemsList[str] or !ply.Inventory then return false end
+	if !self.ItemsList[str] or !ply.Inventory then return false end
 	qty = tonumber(qty) or 1
 
 	if ply.Inventory[str] then
@@ -157,9 +172,9 @@ function tea_SystemGiveItem_NoWeight(ply, str, qty) -- same as above except that
 	return true
 end
 
-function tea_SystemRemoveItem(ply, str, strip)
+function GM:SystemRemoveItem(ply, str, strip)
 	if !ply:IsValid() or !ply:IsPlayer() then return end
-	local item = GAMEMODE.ItemsList[str]
+	local item = self.ItemsList[str]
 	if !item or !ply.Inventory then return end
 
 	strip = tobool(strip) or false
@@ -176,118 +191,124 @@ end
 
 
 
-net.Receive("UseItem", function(length, client) -- this function also handles item dropping
-	local item = net.ReadString()
-	local action = net.ReadBool()
-	local str = GAMEMODE.ItemsList[item]
-	local ftoggle
-	if !action then ftoggle = "DropFunc" else ftoggle = "UseFunc" end
-
-	if !client.CanUseItem then return false end -- cancel the function if they are spamming net messages
-	if !str then SendChat(client, translate.ClientGet(client, "itemnonexistant")) return false end -- if the item doenst exist
-
-	local ref = str
-
-	if client.Inventory[item] then
-		if client.Inventory[item] > 0 then
-			local func = ref[ftoggle](client)
-			if func == true then
-				tea_SystemRemoveItem(client, item, false) -- leave this as false otherwise grenades are unusable
-				client.CanUseItem = false
-				timer.Simple(0.6, function() if client:IsValid() then client.CanUseItem = true end end)
-			end
-			tea_SendInventory(client)
-		else
-			SendChat(client, translate.ClientGet(client, "hasnoitem"))
-		end
-	else
-		SendChat(client, translate.ClientGet(client, "hasnoitem"))
-	end
+net.Receive("UseItem", function(length, ply) -- this function also handles item dropping
+	GAMEMODE:UseItem(ply, net.ReadString(), net.ReadBool())
 end)
 
 
-----------------------------------------------------------buy shit----------------------------------------------------------------------------
+function GM:UseItem(ply, item, use)
+	local str = GAMEMODE.ItemsList[item]
+	local ftoggle
+	if use then ftoggle = "UseFunc" else ftoggle = "DropFunc" end
+
+	if !ply.CanUseItem then return false end -- cancel the function if they are spamming net messages
+	if !str then ply:SendChat(translate.ClientGet(ply, "itemnonexistant")) return false end -- if the item doenst exist
+	if timer.Exists("IsSleeping_"..ply:EntIndex()) then ply:SendChat(translate.ClientGet(ply, "itemnousesleeping")) return false end
+	if timer.Exists("Isplyusingitem"..ply:EntIndex()) then ply:SendChat(translate.ClientGet(ply, "itemnousecooldown")) return false end
+	if timer.Exists("Isplyequippingarmor"..ply:EntIndex()) then ply:SendChat(translate.ClientGet(ply, "itemnousearmor")) return false end
+	if timer.Exists("ItemCrafting_"..ply:EntIndex()) then ply:SystemMessage(translate.ClientGet(ply, "itemnousecrafting"), Color(255,205,205), false) return false end
+
+	local ref = str
+
+	if ply.Inventory[item] then
+		if ply.Inventory[item] > 0 then
+			local func = ref[ftoggle](ply)
+			if func == true then
+				GAMEMODE:SystemRemoveItem(ply, item, false) -- leave this as false otherwise grenades are unusable
+				timer.Simple(0.25, function() if ply:IsValid() then ply.CanUseItem = true end end)
+				ply.CanUseItem = false
+			end
+			self:SendInventory(ply)
+		else
+			ply:SendChat(translate.ClientGet(ply, "hasnoitem"))
+		end
+	else
+		ply:SendChat(translate.ClientGet(ply, "hasnoitem"))
+	end
+end
+
+-------------------------------- buy stuff --------------------------------
 
 
-net.Receive("BuyItem", function(length, client)
+net.Receive("BuyItem", function(length, ply)
 	local str = net.ReadString()
-	if client:IsValid() and client:Alive() and client:IsPvPGuarded() then -- if they aren't pvp guarded then they aren't near a trader and are therefore trying to hack
-		client:BuyItem(str)
-	elseif !client:IsPvPGuarded() then
-		SystemMessage(client, "no.", Color(255,205,205,255), true)
+	if ply:IsValid() and ply:Alive() and ply:IsPvPGuarded() then -- if they aren't pvp guarded then they aren't near a trader and are therefore trying to hack
+		ply:BuyItem(str)
+	elseif !ply:IsPvPGuarded() then
+		ply:SystemMessage("no.", Color(255,205,205,255), true)
 	end
 end)
 
 
 function meta:BuyItem(str)
-	--if !client.CanBuy then SendChat(client, "Hey calm down there bud, don't rush the system") return false end -- cancel the function if they are spamming net messages
-	if !GAMEMODE.ItemsList[str] then SendChat(self, translate.ClientGet(self, "itemnonexistant")) return end -- if the item doenst exist
+	--if !ply.CanBuy then self:SendChat("Hey calm down there bud, don't rush the system") return false end -- cancel the function if they are spamming net messages
+	if !GAMEMODE.ItemsList[str] then self:SendChat(translate.ClientGet(self, "itemnonexistant")) return end -- if the item doenst exist
 
 	local item = GAMEMODE.ItemsList[str]
 	local stockcheck = GAMEMODE.ItemsList[str]["Supply"]
 	local buyprice = item["Cost"] * (1 - (self.StatBarter * 0.015))
 
-	if stockcheck <= -1 then SendChat(self, "Bruh, did you just try to buy stuff that trader doesn't even sell? You should play the gamemode like it was meant to be played.") return end -- people may try to hack and send faked netmessages to buy stuff the trader isnt meant to sell
+	if stockcheck <= -1 then self:SendChat("Bruh, did you just try to buy stuff that trader doesn't even sell? You should play the gamemode like it was meant to be played.") return end -- people may try to hack and send faked netmessages to buy stuff the trader isnt meant to sell
 
 	local cash = tonumber(self.Money)
 
-	if (cash < buyprice) then SendChat(self, "You cannot afford that!") return false end
-	if ((tea_CalculateWeight(self) + item["Weight"]) > tea_CalculateMaxWeight(self)) then SendChat(self, translate.ClientFormat(self, "notenoughspace", -tea_CalculateMaxWeight(self) + tea_CalculateWeight(self) + item["Weight"])) return false end
+	if (cash < buyprice) then self:SendChat("You cannot afford that!") return false end
+	if ((GAMEMODE:CalculateWeight(self) + item["Weight"]) > GAMEMODE:CalculateMaxWeight(self)) then self:SendChat(translate.ClientFormat(self, "notenoughspace", GAMEMODE:CalculateRemainingInventoryWeight(self, item["Weight"]))) return false end
 
-	tea_SystemGiveItem(self, str)
+	GAMEMODE:SystemGiveItem(self, str)
 	self:PrintTranslatedMessage(HUD_PRINTCONSOLE, "tr_itembought", translate.ClientGet(self, str.."_n"), buyprice, GAMEMODE.Config["Currency"])
 	self.Money = math.floor(self.Money - (item["Cost"] * (1 - (self.StatBarter * 0.015)))) -- reduce buy cost by 1.5% per barter level
-	tea_SendInventory(self)
+	GAMEMODE:SendInventory(self)
 	self:EmitSound("items/ammopickup.wav", 100, 100)
-	tea_NetUpdatePeriodicStats(self)
+	GAMEMODE:NetUpdatePeriodicStats(self)
 end
 
 
 ----------------------------------------------------------sell stuff----------------------------------------------------------------------------
 
 
-net.Receive("SellItem", function(length, client)
+net.Receive("SellItem", function(len, ply)
 	local str = net.ReadString()
 
-	if !GAMEMODE.ItemsList[str] then SendChat(client, translate.ClientGet(client, "itemnonexistant")) return false end -- if the item doenst exist
-	if timer.Exists("Isplyequippingarmor"..client:UniqueID().."_"..str) then SystemMessage(client, "Bruh, did you try to sell armor that you were equipping it? You lil' bitch, there will be consequences. Play the gamemode like it was meant to be played.", Color(255,155,155,255), true) return false end
+	if !GAMEMODE.ItemsList[str] then ply:SendChat(translate.ClientGet(ply, "itemnonexistant")) return false end -- if the item doenst exist
+	if timer.Exists("Isplyequippingarmor"..ply:EntIndex().."_"..str) then ply:SystemMessage("Bruh, did you try to sell armor that you were equipping it? You lil' bitch, there will be consequences. Play the gamemode like it was meant to be played.", Color(255,155,155,255), true) return false end
 
 	local item = GAMEMODE.ItemsList[str]
-	local cash = tonumber(client.Money)
-	local sellprice = item["Cost"] * (0.2 + (client.StatBarter * 0.005))
+	local cash = tonumber(ply.Money)
+	local sellprice = item["Cost"] * (0.2 + (ply.StatBarter * 0.005))
 
-	if client.Inventory[str] then
+	if ply.Inventory[str] then
 		if item["IsGrenade"] then
-			tea_SystemRemoveItem(client, str, false)
+			GAMEMODE:SystemRemoveItem(ply, str, false)
 		else
-			tea_SystemRemoveItem(client, str, true)
+			GAMEMODE:SystemRemoveItem(ply, str, true)
 		end
 	else 
-		SendChat(client, translate.ClientGet(client, "hasnoitem"))
+		ply:SendChat(translate.ClientGet(ply, "hasnoitem"))
 	return false
 	end
 
-	if client.EquippedArmor == str then
-		UseFunc_RemoveArmor(client, str)
+	if ply.EquippedArmor == str then
+		UseFunc_RemoveArmor(ply, str)
 	end
 
-	client:PrintTranslatedMessage(HUD_PRINTCONSOLE, "tr_itemsold", translate.ClientGet(client, str.."_n"), sellprice, GAMEMODE.Config["Currency"])
-	client.Money = math.floor(client.Money + sellprice) -- base sell price 20% of the original buy price plus 0.5% per barter level to max of 25%
-	tea_SendInventory(client)
-	client:EmitSound("physics/cardboard/cardboard_box_break3.wav", 100, 100)
-	tea_NetUpdatePeriodicStats(client)
+	ply:PrintTranslatedMessage(HUD_PRINTCONSOLE, "tr_itemsold", translate.ClientGet(ply, str.."_n"), sellprice, GAMEMODE.Config["Currency"])
+	ply.Money = math.floor(ply.Money + sellprice) -- base sell price 20% of the original buy price plus 0.5% per barter level to max of 25%
+	GAMEMODE:SendInventory(ply)
+	ply:EmitSound("physics/cardboard/cardboard_box_break3.wav", 100, 100)
+	GAMEMODE:NetUpdatePeriodicStats(ply)
 end)
 
 
 ----------------------------------------------------------equip guns----------------------------------------------------------------------------
 
 
-net.Receive("UseGun", function( length, client )
+net.Receive("UseGun", function(length, ply)
 	local item = net.ReadString()
-	if client.Inventory[item] then
-		client:Give(item)
-		client:SelectWeapon(item)
+	if ply.Inventory[item] then
+		ply:Give(item)
+		ply:SelectWeapon(item)
 	else
-		SendChat(client, translate.ClientGet(client, "hasnoitem"))
+		ply:SendChat(translate.ClientGet(ply, "hasnoitem"))
 	end
 end)

@@ -1,5 +1,3 @@
-// Variables that are used on both client and server
-
 SWEP.Base 				= "weapon_mad_base"
 
 SWEP.ViewModel			= "models/weapons/v_cmbhgp.mdl"
@@ -19,17 +17,17 @@ SWEP.Primary.NumShots		= 1
 SWEP.Primary.Cone			= 0.02
 SWEP.Primary.Delay 		= 0.09
 
-SWEP.Primary.ClipSize		= 20					// Size of a clip
+SWEP.Primary.ClipSize		= 20
 SWEP.Primary.DefaultClip	= 0				// Default number of bullets in a clip
-SWEP.Primary.Automatic		= true				// Automatic/Semi Auto
+SWEP.Primary.Automatic		= true
 SWEP.Primary.Ammo			= "ammo_ar2_pulseammo"
 
-SWEP.Secondary.ClipSize		= -1					// Size of a clip
-SWEP.Secondary.DefaultClip	= -1					// Default number of bullets in a clip
-SWEP.Secondary.Automatic	= false				// Automatic/Semi Auto
+SWEP.Secondary.ClipSize		= -1
+SWEP.Secondary.DefaultClip	= -1
+SWEP.Secondary.Automatic	= false
 SWEP.Secondary.Ammo		= "none"
 
-SWEP.ShellEffect			= "effect_mad_shell_pistol"	// "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
+SWEP.ShellEffect			= "effect_mad_shell_pistol"	-- "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
 SWEP.ShellDelay			= 0
 
 SWEP.Pistol				= true
@@ -60,19 +58,11 @@ SWEP.data.Damage			= 1
 SWEP.data.Recoil			= 1
 SWEP.FiremodeToggleable		= true
 
-/*---------------------------------------------------------
-   Name: SWEP:Precache()
-   Desc: Use this function to precache stuff.
----------------------------------------------------------*/
 function SWEP:Precache()
 	util.PrecacheSound("weapons/pistol/pistol_fire2.wav")
 	util.PrecacheSound("weapons/pistol/pistol_reload1.wav")
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:Reload()
-   Desc: Reload is being pressed.
----------------------------------------------------------*/
 function SWEP:Reload()
 	if self.Owner:KeyDown(IN_USE) then
 		if !self.Primary.Automatic and self.FiremodeToggleable then

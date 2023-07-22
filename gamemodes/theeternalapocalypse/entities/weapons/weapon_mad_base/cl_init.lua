@@ -1,36 +1,34 @@
 include('shared.lua')
 
-SWEP.PrintName			= "Mad Cows Weapon Base"			// 'Nice' Weapon name (Shown on HUD)	
-SWEP.Slot				= 0							// Slot in the weapon selection menu
-SWEP.SlotPos			= 1							// Position in the slot
-SWEP.DrawAmmo			= false					// Should draw the default HL2 ammo counter?
-SWEP.DrawCrosshair		= false 						// Should draw the default crosshair?
-SWEP.DrawWeaponInfoBox		= true						// Should draw the weapon info box?
-SWEP.BounceWeaponIcon   	= false						// Should the weapon icon bounce?
-SWEP.SwayScale			= 2.0							// The scale of the viewmodel sway
-SWEP.BobScale			= 3.0							// The scale of the viewmodel bob
+SWEP.PrintName			= "Mad Cows Weapon Base"	
+SWEP.Slot				= 0
+SWEP.SlotPos			= 1
+SWEP.DrawAmmo			= false
+SWEP.DrawCrosshair		= false
+SWEP.DrawWeaponInfoBox		= true
+SWEP.BounceWeaponIcon   	= false
+SWEP.SwayScale			= 2.0
+SWEP.BobScale			= 3.0
 
 SWEP.RenderGroup 			= RENDERGROUP_OPAQUE
 
 ammoalpha = 230
 
-// Override this in your SWEP to set the icon in the weapon selection
 if (file.Exists("materials/weapons/swep.vmt","GAME")) then
 	SWEP.WepSelectIcon	= surface.GetTextureID("weapons/swep")
 end
 
-// This is the corner of the speech bubble
 if (file.Exists("materials/gui/speech_lid.vmt","GAME")) then
 	SWEP.SpeechBubbleLid	= surface.GetTextureID("gui/speech_lid")
 end
 
-language.Add("airboatgun_ammo", "5.56MM Ammo")					// AirboatGun			= 5.56MM Ammo (M249, FAMAS, SG-550, SG-552, Galil, M4A1)
-language.Add("gravity_ammo", "4.6MM Ammo")					// Gravity				= 4.6MM Ammo (MP7)
-language.Add("alyxgun_ammo", "5.7MM Ammo")					// AlyxGun 				= 5.7MM Ammo (Five-Seven, P90)
-language.Add("battery_ammo", "9MM Ammo")						// Battery 				= 9MM Ammo (Glock, MP5, P228, USP, TMP)
-language.Add("striderminigun_ammo", "7.62mm Ammo")				// StriderMinigun 		= 7.62MM Ammo (AK-47, SCOUT, G3, Aug, AWP, Scout)
-language.Add("sniperpenetratedround_ammo", ".45 Ammo")			// SniperPenetratedRound	= .45 Ammo (MAC10, UMP)
-language.Add("thumper_ammo", "Explosive Ammo")					// Thumper				= Explosive Ammo (C4)
+language.Add("airboatgun_ammo", "5.56MM Ammo")
+language.Add("gravity_ammo", "4.6MM Ammo")
+language.Add("alyxgun_ammo", "5.7MM Ammo")
+language.Add("battery_ammo", "9MM Ammo")
+language.Add("striderminigun_ammo", "7.62mm Ammo")
+language.Add("sniperpenetratedround_ammo", ".45 Ammo")
+language.Add("thumper_ammo", "Explosive Ammo")
 language.Add("combinecannon_ammo", ".50 Ammo")	
 language.Add("ammo_9mmcus_ammo", "testammoMILESTONE" )
 language.Add("ammo_knife_ammo", "Knifes" )
@@ -70,12 +68,12 @@ end
    Desc: You can draw to the HUD here. It will only draw when
 	   the client has the weapon deployed.
 ---------------------------------------------------------*/
-cl_crosshair_r 		= CreateClientConVar("mad_crosshair_r", 255, true, false)		// Red
-cl_crosshair_g 		= CreateClientConVar("mad_crosshair_g", 255, true, false)		// Green
-cl_crosshair_b 		= CreateClientConVar("mad_crosshair_b", 255, true, false)		// Blue
-cl_crosshair_a 		= CreateClientConVar("mad_crosshair_a", 200, true, false)		// Alpha
-cl_crosshair_l 		= CreateClientConVar("mad_crosshair_l", 30, true, false)		// Lenght
-cl_crosshair_t 		= CreateClientConVar("mad_crosshair_t", 1, true, false)		// Enable/Disable
+cl_crosshair_r 		= CreateClientConVar("mad_crosshair_r", 255, true, false)
+cl_crosshair_g 		= CreateClientConVar("mad_crosshair_g", 255, true, false)
+cl_crosshair_b 		= CreateClientConVar("mad_crosshair_b", 255, true, false)
+cl_crosshair_a 		= CreateClientConVar("mad_crosshair_a", 200, true, false)
+cl_crosshair_l 		= CreateClientConVar("mad_crosshair_l", 30, true, false)
+cl_crosshair_t 		= CreateClientConVar("mad_crosshair_t", 1, true, false)
 
 function SWEP:DrawHUD()
 
@@ -154,10 +152,10 @@ end
 	gap = math.Clamp(gap, 0, (ScrH() / 2) - 100)
 	local length = cl_crosshair_l:GetInt()
 
-	self:DrawCrosshairHUD(x - gap - length, y - 1, length, 3) 	// Left
-	self:DrawCrosshairHUD(x + gap + 1, y - 1, length, 3) 		// Right
- 	self:DrawCrosshairHUD(x - 1, y - gap - length, 3, length) 	// Top 
- 	self:DrawCrosshairHUD(x - 1, y + gap + 1, 3, length) 		// Bottom
+	self:DrawCrosshairHUD(x - gap - length, y - 1, length, 3)
+	self:DrawCrosshairHUD(x + gap + 1, y - 1, length, 3)
+ 	self:DrawCrosshairHUD(x - 1, y - gap - length, 3, length)
+ 	self:DrawCrosshairHUD(x - 1, y + gap + 1, 3, length)
 	
 */
 
@@ -176,7 +174,6 @@ end
 /*---------------------------------------------------------
    Name: SWEP:DrawFuelHUD()
 ---------------------------------------------------------*/
-// Based on the Condition SWEPs HUD made by SB Spy
 
 function SWEP:DrawFuelHUD()
 
@@ -271,26 +268,21 @@ end
 ---------------------------------------------------------*/
 function SWEP:DrawWeaponSelection(x, y, wide, tall, alpha)
 	
-	// Set us up the texture
 	surface.SetDrawColor(255, 255, 255, alpha)
 	surface.SetTexture(self.WepSelectIcon)
 	
-	// Lets get a sin wave to make it bounce
 	local fsin = 0
-	
+
 	if (self.BounceWeaponIcon == true) then
 		fsin = math.sin(CurTime() * 10) * 5
 	end
 	
-	// Borders
 	y = y + 10
 	x = x + 10
 	wide = wide - 20
 	
-	// Draw that mother
 	surface.DrawTexturedRect(x + (fsin), y - (fsin), wide - fsin * 2, (wide / 2) + (fsin))
 	
-	// Draw weapon info box
 	self:PrintWeaponInfo(x + wide + 20, y + tall * 0.95, alpha)
 end
 
@@ -299,10 +291,8 @@ end
    Desc: Draws the weapon info box.
 ---------------------------------------------------------*/
 function SWEP:PrintWeaponInfo(x, y, alpha)
-
-	if (self.DrawWeaponInfoBox == false) then return end
-
-	if (self.InfoMarkup == nil) then
+	if self.DrawWeaponInfoBox == false then return end
+	if self.InfoMarkup == nil then
 		local str
 		local title_color = "<color = 130, 0, 0, 255>"
 		local text_color = "<color = 255, 255, 255, 200>"
@@ -360,18 +350,18 @@ function SWEP:GetViewModelPosition(pos, ang)
 		self.DashStartTime = nil
 	end
 	
-	if (DashDelta) then
+	if DashDelta then
 		local Down = ang:Up() * -1
 		local Right = ang:Right()
 		local Forward = ang:Forward()
 	
 		local bUseVector = false
 		
-		if(!self.RunArmAngle.pitch) then
+		if !self.RunArmAngle.pitch then
 			bUseVector = true
 		end
 		
-		if (bUseVector == true) then
+		if bUseVector == true then
 			ang:RotateAroundAxis(ang:Right(), self.RunArmAngle.x * DashDelta)
 			ang:RotateAroundAxis(ang:Up(), self.RunArmAngle.y * DashDelta)
 			ang:RotateAroundAxis(ang:Forward(), self.RunArmAngle.z * DashDelta)
@@ -387,16 +377,16 @@ function SWEP:GetViewModelPosition(pos, ang)
 			pos = pos + (Down * self.RunArmOffset.x + Forward * self.RunArmOffset.y + Right * self.RunArmOffset.z) * DashDelta			
 		end
 		
-		if (self.DashEndTime) then
+		if self.DashEndTime then
 			return pos, ang
 		end
 	end
 
-	if (bIron != self.bLastIron) then
+	if bIron ~= self.bLastIron then
 		self.bLastIron = bIron 
 		self.fIronTime = CurTime()
 		
-		if (bIron) then 
+		if bIron then
 			self.SwayScale 	= 0.3
 			self.BobScale 	= 0.1
 		else 
@@ -408,13 +398,13 @@ function SWEP:GetViewModelPosition(pos, ang)
 	
 	local fIronTime = self.fIronTime or 0
 
-	if (!bIron && fIronTime < CurTime() - IRONSIGHT_TIME) then 
+	if !bIron && fIronTime < CurTime() - IRONSIGHT_TIME then 
 		return pos, ang
 	end
 	
 	local Mul = 1.0
 	
-	if (fIronTime > CurTime() - IRONSIGHT_TIME) then
+	if fIronTime > CurTime() - IRONSIGHT_TIME then
 		Mul = math.Clamp((CurTime() - fIronTime) / IRONSIGHT_TIME, 0, 1)
 
 		if (!bIron) then Mul = 1 - Mul end
@@ -438,20 +428,11 @@ function SWEP:GetViewModelPosition(pos, ang)
 	return pos, ang
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:AdjustMouseSensitivity()
-   Desc: Allows you to adjust the mouse sensitivity.
----------------------------------------------------------*/
 function SWEP:AdjustMouseSensitivity()
 
 	return nil
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:GetTracerOrigin()
-   Desc: Allows you to override where the tracer comes from (in first person view)
-	   returning anything but a vector indicates that you want the default action.
----------------------------------------------------------*/
 function SWEP:GetTracerOrigin()
 
 	if (self.Weapon:GetDTBool(1)) then

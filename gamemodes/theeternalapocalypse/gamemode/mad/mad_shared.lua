@@ -27,7 +27,6 @@ if SERVER then
 else
 	include("client/mad_client.lua")
 	include("client/mad_menu.lua")
-	include("client/mad_killicon.lua")
 end
 
 CreateClientConVar("zw_muzzleflash", 1, true, false)

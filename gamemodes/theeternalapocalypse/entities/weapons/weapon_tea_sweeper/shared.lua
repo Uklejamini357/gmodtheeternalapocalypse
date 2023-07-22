@@ -1,5 +1,3 @@
-// Variables that are used on both client and server
-
 SWEP.Base 				= "weapon_mad_base_shotgun"
 
 SWEP.ViewModelFlip		= false
@@ -26,14 +24,14 @@ SWEP.Primary.Delay 		= 0.3
 
 SWEP.IronFireAccel		= 1
 
-SWEP.Primary.ClipSize		= 6					// Size of a clip
-SWEP.Primary.DefaultClip	= 0					// Default number of bullets in a clip
-SWEP.Primary.Automatic		= false				// Automatic/Semi Auto
+SWEP.Primary.ClipSize		= 6
+SWEP.Primary.DefaultClip	= 0
+SWEP.Primary.Automatic		= false
 SWEP.Primary.Ammo			= "Buckshot"
 
-SWEP.Secondary.ClipSize		= -1					// Size of a clip
-SWEP.Secondary.DefaultClip	= -1					// Default number of bullets in a clip
-SWEP.Secondary.Automatic	= false				// Automatic/Semi Auto
+SWEP.Secondary.ClipSize		= -1
+SWEP.Secondary.DefaultClip	= -1
+SWEP.Secondary.Automatic	= false
 SWEP.Secondary.Ammo		= "none"
 
 SWEP.ShellDelay			= 0.1
@@ -50,10 +48,6 @@ SWEP.ShotgunBeginReload		= 0.5
 SWEP.ZWweight				= 90 -- in kilograms divided by 10 eg 20 = 2kg
 SWEP.ZWrarity				= "Rare" -- Junk, Common, Uncommon, Rare, Epic
 
-/*---------------------------------------------------------
-   Name: SWEP:Precache()
-   Desc: Use this function to precache stuff.
----------------------------------------------------------*/
 function SWEP:Precache()
 
     	util.PrecacheSound("weapons/xm1014/xm1014-1.wav")

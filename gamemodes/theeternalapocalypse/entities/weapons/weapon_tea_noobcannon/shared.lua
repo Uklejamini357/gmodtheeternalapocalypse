@@ -1,5 +1,3 @@
-// Variables that are used on both client and server
-
 SWEP.Base 				= "weapon_mad_base"
 
 SWEP.ViewModelFOV			= 55
@@ -26,17 +24,17 @@ SWEP.Primary.NumShots		= 1
 SWEP.Primary.Cone			= 0.02
 SWEP.Primary.Delay 		= 0.12
 
-SWEP.Primary.ClipSize		= 14					// Size of a clip
-SWEP.Primary.DefaultClip	= 0					// Default number of bullets in a clip
-SWEP.Primary.Automatic		= false				// Automatic/Semi Auto
+SWEP.Primary.ClipSize		= 14
+SWEP.Primary.DefaultClip	= 0
+SWEP.Primary.Automatic		= false
 SWEP.Primary.Ammo			= "Pistol"
 
-SWEP.Secondary.ClipSize		= -1					// Size of a clip
-SWEP.Secondary.DefaultClip	= -1					// Default number of bullets in a clip
-SWEP.Secondary.Automatic	= false				// Automatic/Semi Auto
+SWEP.Secondary.ClipSize		= -1
+SWEP.Secondary.DefaultClip	= -1
+SWEP.Secondary.Automatic	= false
 SWEP.Secondary.Ammo		= "none"
 
-SWEP.ShellEffect			= "effect_mad_shell_pistol"	// "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
+SWEP.ShellEffect			= "effect_mad_shell_pistol"	-- "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
 SWEP.ShellDelay			= 0
 
 SWEP.Pistol				= true
@@ -69,10 +67,6 @@ SWEP.data.Recoil			= 1
 SWEP.ZWweight				= 15 -- in kilograms divided by 10 eg 20 = 2kg
 SWEP.ZWrarity				= "Junk" -- Junk, Common, Uncommon, Rare, Epic
 
-/*---------------------------------------------------------
-   Name: SWEP:Precache()
-   Desc: Use this function to precache stuff.
----------------------------------------------------------*/
 function SWEP:Precache()
 
     	util.PrecacheSound("weapons/glock/glock18-1.wav")

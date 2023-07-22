@@ -44,15 +44,15 @@ end
 function ENT:Use(activator, caller)
 	local owner = self:GetNWEntity("owner")
 	if !self.IsBuilt then return false end
-	if !self.IsPowered then SystemMessage(activator, "This isn't powered by faction base core!", Color(255,205,205,255), true) return false end
-	if self.UseTimer > CurTime() then SystemMessage(activator, "The auto-medic needs "..math.ceil(self.UseTimer - CurTime()).." more seconds to fully recharge!", Color(255,205,205,255), true) return false end
-	if activator:Team() != owner:Team() then SystemMessage(activator, "This doesn't belong to your faction!", Color(255,205,205,255), true) return false end
+	if !self.IsPowered then activator:SystemMessage("This isn't powered by faction base core!", Color(255,205,205,255), true) return false end
+	if self.UseTimer > CurTime() then activator:SystemMessage("The auto-medic needs "..math.ceil(self.UseTimer - CurTime()).." more seconds to fully recharge!", Color(255,205,205,255), true) return false end
+	if activator:Team() != owner:Team() then activator:SystemMessage("This doesn't belong to your faction!", Color(255,205,205,255), true) return false end
 
 	activator:SetHealth(activator:GetMaxHealth())
 	activator.Infection = 0
 
 	activator:EmitSound("items/medshot4.wav")
-	SystemMessage(activator, "You healed yourself at the auto medic!", Color(205,255,205,255), false)
+	activator:SystemMessage("You healed yourself at the auto medic!", Color(205,255,205,255), false)
 	self.UseTimer = CurTime() + 20
 end
 
@@ -90,7 +90,7 @@ end
 	local attacker = dmg:GetAttacker()
 
 	if attacker:IsPlayer() and attacker:IsValid() and attacker:Team() == 1 and attacker:GetNWBool("pvp") != true and self:GetNWEntity("owner") != attacker then -- this should stop little shitters from wrecking your base while not in pvp mode
-	SystemMessage(attacker, "You cannot damage other players props unless you have PvP mode enabled!", Color(255,205,205,255), true)
+		attacker:SystemMessage("You cannot damage other players props unless you have PvP mode enabled!", Color(255,205,205,255), true)
 	return false 
 	end
 
@@ -116,7 +116,7 @@ end
 			if attacker:IsPlayer() and self.IsBuilt then
 				Payout(attacker, 350, 350, 550, 550)
 			elseif attacker:IsPlayer() and !self.IsBuilt then
-				SystemMessage(attacker, "nice try", Color(255,230,230,255), false)
+				activator:SystemMessage("nice try", Color(255,230,230,255), false)
 			end
 
 			self:BreakPanel()

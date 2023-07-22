@@ -1,5 +1,3 @@
-// Variables that are used on both client and server
-
 SWEP.Base 				= "weapon_mad_base"
 
 SWEP.ViewModelFlip		= true
@@ -27,17 +25,17 @@ SWEP.Primary.Delay 		= 0.075
 
 SWEP.IronFireAccel		= 3
 
-SWEP.Primary.ClipSize		= 64					// Size of a clip
-SWEP.Primary.DefaultClip	= 0					// Default number of bullets in a clip
-SWEP.Primary.Automatic		= true				// Automatic/Semi Auto
+SWEP.Primary.ClipSize		= 64
+SWEP.Primary.DefaultClip	= 0
+SWEP.Primary.Automatic		= true
 SWEP.Primary.Ammo			= "Pistol"
 
-SWEP.Secondary.ClipSize		= -1					// Size of a clip
-SWEP.Secondary.DefaultClip	= -1					// Default number of bullets in a clip
-SWEP.Secondary.Automatic	= false				// Automatic/Semi Auto
+SWEP.Secondary.ClipSize		= -1
+SWEP.Secondary.DefaultClip	= -1
+SWEP.Secondary.Automatic	= false
 SWEP.Secondary.Ammo		= "none"
 
-SWEP.ShellEffect			= "effect_mad_shell_pistol"	// "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
+SWEP.ShellEffect			= "effect_mad_shell_pistol"	-- "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
 
 SWEP.Pistol				= false
 SWEP.Rifle				= true
@@ -51,10 +49,6 @@ SWEP.RunArmOffset = Vector(-0.382, -0.247, 0.344)
 
 SWEP.RunArmAngle = Vector(-8.799, -9.952, 0)
 
-/*---------------------------------------------------------
-   Name: SWEP:Precache()
-   Desc: Use this function to precache stuff.
----------------------------------------------------------*/
 function SWEP:Precache()
 
     	util.PrecacheSound("weapons/mp5navy/mp5-1.wav")

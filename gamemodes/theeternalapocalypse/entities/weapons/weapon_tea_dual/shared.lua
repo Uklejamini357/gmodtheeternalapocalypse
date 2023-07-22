@@ -1,5 +1,3 @@
-// Variables that are used on both client and server
-
 SWEP.Base 				= "weapon_mad_base"
 
 SWEP.ViewModelFOV			= 59
@@ -27,17 +25,17 @@ SWEP.Primary.NumShots		= 1
 SWEP.Primary.Cone			= 0.016
 SWEP.Primary.Delay 		= 0.115
 
-SWEP.Primary.ClipSize		= 30					// Size of a clip
-SWEP.Primary.DefaultClip	= 0					// Default number of bullets in a clip
-SWEP.Primary.Automatic		= false				// Automatic/Semi Auto
+SWEP.Primary.ClipSize		= 30
+SWEP.Primary.DefaultClip	= 0
+SWEP.Primary.Automatic		= false
 SWEP.Primary.Ammo			= "Pistol"
 
-SWEP.Secondary.ClipSize		= -1					// Size of a clip
-SWEP.Secondary.DefaultClip	= -1					// Default number of bullets in a clip
-SWEP.Secondary.Automatic	= false				// Automatic/Semi Auto
+SWEP.Secondary.ClipSize		= -1
+SWEP.Secondary.DefaultClip	= -1
+SWEP.Secondary.Automatic	= false
 SWEP.Secondary.Ammo		= "none"
 
-SWEP.ShellEffect			= "effect_mad_shell_pistol"	// "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
+SWEP.ShellEffect			= "effect_mad_shell_pistol"	-- "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
 SWEP.ShellDelay			= 0
 
 SWEP.Pistol				= true
@@ -58,10 +56,6 @@ SWEP.RunArmAngle = Vector(-20.119, 0, 0)
 SWEP.ZWweight				= 30 -- in kilograms divided by 10 eg 20 = 2kg
 SWEP.ZWrarity				= "Rare" -- Junk, Common, Uncommon, Rare, Epic
 
-/*---------------------------------------------------------
-   Name: SWEP:Precache()
-   Desc: Use this function to precache stuff.
----------------------------------------------------------*/
 function SWEP:Precache()
 
     	util.PrecacheSound("weapons/elite/elite-1.wav")
@@ -179,11 +173,6 @@ function SWEP:ShootBullet(damage, recoil, num_bullets, aimcone)
 	end
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:GetTracerOrigin()
-   Desc: Allows you to override where the tracer comes from (in first person view)
-	   returning anything but a vector indicates that you want the default action.
----------------------------------------------------------*/
 local pos
 
 function SWEP:GetTracerOrigin()
@@ -199,9 +188,5 @@ function SWEP:GetTracerOrigin()
 	return pos
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:SecondaryAttack()
-   Desc: +attack2 has been pressed.
----------------------------------------------------------*/
 function SWEP:SecondaryAttack()
 end

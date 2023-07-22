@@ -1,5 +1,3 @@
-// Variables that are used on both client and server
-
 SWEP.Base 				= "weapon_mad_base"
 
 SWEP.ViewModelFOV			= 60
@@ -24,17 +22,17 @@ SWEP.Primary.Delay 		= 0.12
 
 SWEP.IronFireAccel = 5
 
-SWEP.Primary.ClipSize		= 12					// Size of a clip
-SWEP.Primary.DefaultClip	= 12					// Default number of bullets in a clip
-SWEP.Primary.Automatic		= false				// Automatic/Semi Auto
+SWEP.Primary.ClipSize		= 12
+SWEP.Primary.DefaultClip	= 12
+SWEP.Primary.Automatic		= false
 SWEP.Primary.Ammo			= "ammo_45"
 
-SWEP.Secondary.ClipSize		= -1					// Size of a clip
-SWEP.Secondary.DefaultClip	= -1					// Default number of bullets in a clip
-SWEP.Secondary.Automatic	= false				// Automatic/Semi Auto
+SWEP.Secondary.ClipSize		= -1
+SWEP.Secondary.DefaultClip	= -1
+SWEP.Secondary.Automatic	= false
 SWEP.Secondary.Ammo		= "none"
 
-SWEP.ShellEffect			= "effect_mad_shell_pistol"	// "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
+SWEP.ShellEffect			= "effect_mad_shell_pistol"	-- "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
 SWEP.ShellDelay			= 0.05
 
 SWEP.Pistol				= true
@@ -59,10 +57,6 @@ SWEP.data.Cone			= 1.5
 SWEP.data.Damage			= 0.75
 SWEP.data.Recoil			= 0.5
 
-/*---------------------------------------------------------
-   Name: SWEP:Precache()
-   Desc: Use this function to precache stuff.
----------------------------------------------------------*/
 function SWEP:Precache()
 
     	util.PrecacheSound("weapons/usp/usp1.wav")
@@ -75,9 +69,9 @@ function SWEP:ShootAnimation()
 
 	if (self.Weapon:Clip1() <= 0) then
 		if self.Weapon:GetDTBool(3) and self.Type == 2 then
-			self.Weapon:SendWeaponAnim(ACT_VM_DRYFIRE_SILENCED)	// View model animation
+			self.Weapon:SendWeaponAnim(ACT_VM_DRYFIRE_SILENCED)	
 		else
-			self.Weapon:SendWeaponAnim(ACT_VM_DRYFIRE) 		// View model animation
+			self.Weapon:SendWeaponAnim(ACT_VM_DRYFIRE)
 		end
 	else
 		if self.Weapon:GetDTBool(3) and self.Type == 2 then
@@ -85,7 +79,7 @@ function SWEP:ShootAnimation()
 			local Animation = self.Owner:GetViewModel()
 			Animation:SetSequence(Animation:LookupSequence("shoot1"))
 		else
-			self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK) 		// View model animation
+			self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
 		end
 	end
 end

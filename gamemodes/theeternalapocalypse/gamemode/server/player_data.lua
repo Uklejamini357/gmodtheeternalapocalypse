@@ -1,33 +1,44 @@
-function tea_LoadPlayer(ply)
-	if not file.IsDir(GAMEMODE.DataFolder.."/players/".. string.lower(string.gsub(ply:SteamID(), ":", "_")), "DATA") then
-	   file.CreateDir(GAMEMODE.DataFolder.."/players/".. string.lower(string.gsub(ply:SteamID(), ":", "_")))
+function GM:LoadPlayer(ply)
+	local filedir = self.DataFolder.."/players/".. string.lower(string.gsub(ply:SteamID(), ":", "_"))
+	local filedir_ply = self.DataFolder.."/players/".. string.lower(string.gsub(ply:SteamID(), ":", "_") .."/profile.txt")
+	if not file.IsDir(filedir, "DATA") then
+	   file.CreateDir(filedir)
 	end
-	if (file.Exists(GAMEMODE.DataFolder.."/players/".. string.lower(string.gsub(ply:SteamID(), ":", "_") .."/profile.txt"), "DATA")) then
-		local TheFile = file.Read(GAMEMODE.DataFolder.."/players/".. string.lower(string.gsub(ply:SteamID(), ":", "_") .."/profile.txt"), "DATA")
+	if (file.Exists(filedir_ply, "DATA")) then
+		local TheFile = file.Read(filedir_ply, "DATA")
 		local DataPieces = string.Explode("\n", TheFile)
 
 		local Output = {}
+		local perkpoints = false
 
 		for k, v in pairs(DataPieces) do
 			local TheLine = string.Explode(";", v) -- convert txt string to stats table
 			
 			ply[TheLine[1]] = TheLine[2]  -- dump all their stats into their player table
-			if GetConVar("tea_server_debugging"):GetInt() >= 1 then
+			if self:GetDebug() >= DEBUGGING_EXPERIMENTAL then
 				print(TheLine[1].." = "..TheLine[2])
 			end
+
+			if TheLine[1] == "PerkPoints" then
+				perkpoints = true
+			end
+		end
+
+		if !perkpoints then
+			ply.PerkPoints = ply.Prestige
 		end
 
 		ply:SetNWInt("PlyLevel", ply.Level)
 		ply:SetNWInt("PlyPrestige", ply.Prestige)
 		ply:SetNWString("ArmorType", ply.EquippedArmor)
 		
-		tea_DebugLog("Loading player data: "..ply:Nick().." ("..ply:SteamID()..") Level: "..tostring(ply.Level).." Cash: $"..tostring(ply.Money).." XP Total: "..tostring(ply.XP).." Armor Equipped: "..tostring(ply.EquippedArmor))
-		tea_DebugLog("Loaded player: ".. ply:Nick() .." ("..ply:SteamID()..") from file: "..GAMEMODE.DataFolder.."/players/".. string.lower(string.gsub(ply:SteamID(), ":", "_") .."/profile.txt"))
-		
-		tea_NetUpdatePeriodicStats(ply)
-		tea_NetUpdatePerks(ply)
-		tea_NetUpdateStatistics(ply)
+		self:DebugLog("Loading player data: "..ply:Nick().." ("..ply:SteamID()..") Level: "..tostring(ply.Level).." Cash: $"..tostring(ply.Money).." XP Total: "..tostring(ply.XP).." Armor Equipped: "..tostring(ply.EquippedArmor))
+		self:DebugLog("Loaded player: ".. ply:Nick() .." ("..ply:SteamID()..") from file: "..filedir_ply)
+
+		self:NetUpdatePerks(ply)
 	else
+		ply.Money = tonumber(self.Config["StartMoney"])
+/*
 		ply.ChosenModel = "models/player/kleiner.mdl"
 		ply.BestSurvivalTime = 0
 		ply.XP = 0 
@@ -37,7 +48,6 @@ function tea_LoadPlayer(ply)
 		ply.playerdeaths = 0
 		ply.ZKills = 0
 		ply.BestSurvivalTime = 0
-		ply.Money = tonumber(GAMEMODE.Config["StartMoney"])
 		ply.StatPoints = 0
 		ply.EquippedArmor = "none"
 		ply.StatsReset = 0
@@ -46,28 +56,28 @@ function tea_LoadPlayer(ply)
 		ply.MasteryMeleeLevel = 0
 		ply.MasteryPvPXP = 0
 		ply.MasteryPvPLevel = 0
-		
-		for k, v in pairs(GAMEMODE.StatsListServer) do
+
+		for k, v in pairs(self.StatsListServer) do
 			local TheStatPieces = string.Explode(";", v)
 			local TheStatName = TheStatPieces[1]
 			ply[TheStatName] = 0
 		end
-
+*/
 		print("Created a new profile for "..ply:Nick() .." ("..ply:SteamID()..")")
-		tea_DebugLog("Created new data file for: "..ply:Nick().." ("..ply:SteamID()..") located at: "..GAMEMODE.DataFolder.."/players/".. string.lower(string.gsub(ply:SteamID(), ":", "_") .."/profile.txt"))
+		self:DebugLog("Created new data file for: "..ply:Nick().." ("..ply:SteamID()..") located at: "..filedir_ply)
 
-		tea_SavePlayer(ply)
+		self:SavePlayer(ply)
 
-		tea_NetUpdatePeriodicStats(ply)
-		tea_NetUpdateStatistics(ply)
 	end
+	self:NetUpdatePeriodicStats(ply)
+	self:NetUpdateStatistics(ply)
 end
 
 
-function tea_SavePlayer(ply)
-	local tea_server_dbsaving = GetConVar("tea_server_dbsaving"):GetInt() >= 1
-	if !ply.AllowSave and !tea_server_dbsaving then print("------=== WARNING ===------\n\nDatabase saving is disabled! Players will not have their progress saved during this time.\nSet ConVar 'tea_server_dbsaving' to 1 in order to enable database saving.\n\n------======------") return end
-	
+function GM:SavePlayer(ply)
+	if !ply.AllowSave and not self.DatabaseSaving then return end
+	local filedir = self.DataFolder.."/players/"..string.lower(string.gsub(ply:SteamID(), ":", "_") .."/profile.txt")
+
 	local Data = {}
 	Data["BestSurvivalTime"] = ply.BestSurvivalTime
 	Data["ZKills"] = ply.ZKills
@@ -78,21 +88,30 @@ function tea_SavePlayer(ply)
 	Data["Prestige"] = ply.Prestige
 	Data["Money"] = ply.Money
 	Data["StatPoints"] = ply.StatPoints
+	Data["PerkPoints"] = ply.PerkPoints
 	Data["EquippedArmor"] = ply.EquippedArmor
 	Data["ChosenModel"] = ply.ChosenModel
 	Data["StatsReset"] = ply.StatsReset
 	Data["ChosenModelColor"] = tostring(ply.ChosenModelColor)
+	Data["CurrentTask"] = ply.CurrentTask
+	Data["CurrentTaskProgress"] = ply.CurrentTaskProgress
+	Data["TaskComplete"] = tostring(ply.TaskComplete)
 
 	Data["MasteryMeleeXP"] = ply.MasteryMeleeXP
 	Data["MasteryMeleeLevel"] = ply.MasteryMeleeLevel
 	Data["MasteryPvPXP"] = ply.MasteryPvPXP
 	Data["MasteryPvPLevel"] = ply.MasteryPvPLevel
 
-
-	for k, v in pairs(GAMEMODE.StatsListServer) do
+/*
+	for k, v in pairs(self.StatsListServer) do
 		local TheStatPieces = string.Explode(";", v)
 		local TheStatName = TheStatPieces[1]
 		Data[TheStatName] = ply[TheStatName]
+	end
+*/
+	for statname, v in pairs(self.StatConfigs) do
+		local name = "Stat"..statname
+		Data[name] = ply[name]
 	end
 
 
@@ -105,27 +124,27 @@ function tea_SavePlayer(ply)
 		end
 	end
 	
-	tea_DebugLog("Saving player data: "..ply:Nick().." ("..ply:SteamID().."), Level: "..tostring(ply.Level)..", Cash: $"..tostring(ply.Money)..", XP Total: "..tostring(ply.XP)..", Armor Equipped: "..tostring(ply.EquippedArmor))
+	self:DebugLog("Saving player data: "..ply:Nick().." ("..ply:SteamID().."), Level: "..tostring(ply.Level)..", Cash: $"..tostring(ply.Money)..", XP Total: "..tostring(ply.XP)..", Armor Equipped: "..tostring(ply.EquippedArmor))
 	
-	tea_NetUpdatePeriodicStats(ply) --see server/netstuff.lua
-	tea_NetUpdatePerks(ply)
-	tea_NetUpdateStatistics(ply)
+	self:NetUpdatePeriodicStats(ply) --see server/netstuff.lua
+	self:NetUpdatePerks(ply)
+	self:NetUpdateStatistics(ply)
 	
 	print("✓ ".. ply:Nick() .." profile saved into database")	
 
-	file.Write(GAMEMODE.DataFolder.."/players/"..string.lower(string.gsub(ply:SteamID(), ":", "_") .."/profile.txt"), StringToWrite)
-	tea_DebugLog("Saved player: "..ply:Nick().." ("..ply:SteamID()..") to file: "..GAMEMODE.DataFolder.."/players/"..string.lower(string.gsub(ply:SteamID(), ":", "_") .."/profile.txt"))
+	file.Write(filedir, StringToWrite)
+	self:DebugLog("Saved player: "..ply:Nick().." ("..ply:SteamID()..") to file: "..filedir)
 end
 
 --Bonus multipliers for various supporters (and the dev)
-function tea_XPBonus(ply)
+function GM:XPBonus(ply)
 	if !ply:IsValid() then return 0 end
 	local xpmul = 1
 	if tonumber(ply.Prestige or 0) >= 15 then --check if player has prestige 15 then it will give another 1.15x xp mul 
 		xpmul = xpmul * 1.15
 	end
 	
-	if GetConVar("tea_server_bonusperks"):GetInt() >= 1 then
+	if self.BonusPerksEnabled then
 		if ply:SteamID64() == "76561198274314803" then
 			xpmul = xpmul * 1.25 --the dev gains 1.25x XP multiplier, so if xpmul was xpmul * 2 then it would be 2x
 		elseif ply:SteamID64() == "76561198028288732" then
@@ -137,18 +156,18 @@ function tea_XPBonus(ply)
 	return xpmul
 end
 
-function tea_CashBonus(ply) --works the same as XPBonus with the exception of giving cash bonus
+function GM:CashBonus(ply) --works the same as XPBonus with the exception of giving cash bonus
 	if !ply:IsValid() then return 0 end
 	local cashmul = 1
 	if tonumber(ply.Prestige or 0) >= 1 then
 		cashmul = cashmul * 1.05
 	end
 	
-	if GetConVar("tea_server_bonusperks"):GetInt() >= 1 then
+	if self.BonusPerksEnabled then
 		if ply:SteamID64() == "76561198274314803" then
-			cashmul = cashmul * 1.25
+			cashmul = cashmul * 1
 		elseif ply:SteamID64() == "76561198028288732" then
-			cashmul = cashmul * 1.15
+			cashmul = cashmul * 1
 		elseif ply:SteamID64() == "76561198112950441" then
 			cashmul = cashmul * 0.95
 		end
@@ -157,47 +176,53 @@ function tea_CashBonus(ply) --works the same as XPBonus with the exception of gi
 end
 
 --level up
-function tea_GainLevel(ply)
-	if ply.XP >= GetReqXP(ply) then
-		if !ply.IsLevelingAllowed and tonumber(ply.Level) >= GAMEMODE.MaxLevel + (ply.Prestige * GAMEMODE.LevelsPerPrestige) then
-			SendChat(ply, "You have reached max level, consider prestiging.")
-			return
-		end
-		ply.XP = ply.XP - GetReqXP(ply)
-		local moneyreward = 56 + math.floor((ply.Level ^ 1.1217) * 16 + (ply.Level * 5) + (ply.Prestige * 2.4892))
-		ply.Money = ply.Money + moneyreward
-		ply.Level = ply.Level + 1
-		ply.StatPoints = ply.StatPoints + 1
-		if GetConVar("tea_server_debugging"):GetInt() >= 1 then
-			print(ply:Nick().." has leveled up to Level "..ply.Level.." with a reward of "..moneyreward.." "..GAMEMODE.Config["Currency"].."s and reduction of "..GetReqXP(ply).." XP! (XP now: "..ply.XP..")")
-		end
-		SendChat(ply, translate.ClientFormat(ply, "pllvlup", ply.Level, moneyreward, GAMEMODE.Config["Currency"]))
-		ply:SendLua('LocalPlayer():ConCommand([[playvol "theeternalapocalypse/levelup.wav" 0.55]])')
-		
-		ply:SetNWInt("PlyLevel", ply.Level)
-		
-		tea_NetUpdatePeriodicStats(ply)
-		
-		timer.Simple(0.05, function() -- Timer was created to prevent Buffer Overflow if user has too much XP if user levels up
-			if ply:IsValid() and ply.XP >= GetReqXP(ply) and tonumber(ply.Level) < GAMEMODE.MaxLevel + (ply.Prestige * GAMEMODE.LevelsPerPrestige) then
-				tea_GainLevel(ply) -- This is so the user will gain another level if user has required xp for next level and will repeat
-			end
-		end)
+function GM:GainLevel(ply)
+	local sp = tonumber(ply.Level) >= 55 and 3 or tonumber(ply.Level) >= 30 and 2 or 1
+	local moneyreward = 56 + math.floor((ply.Level ^ 1.1217) * 16 + (ply.Level * 5) + (ply.Prestige * 2.4892))
+	local reqxp = self:GetReqXP(ply)
+	
+	ply.XP = ply.XP - reqxp
+	ply.Level = ply.Level + 1
+	ply.Money = ply.Money + moneyreward
+	ply.StatPoints = ply.StatPoints + sp
 
-		if tonumber(ply.Level) >= GAMEMODE.MaxLevel + (ply.Prestige * GAMEMODE.LevelsPerPrestige) then
-			SendChat(ply, "You have reached max level, consider prestiging.")
+	if self:GetDebug() >= DEBUGGING_NORMAL then
+		print(
+			Format("%s has leveled up to Level %s with a reward of %s %ss and reduction of %s XP! (XP now: %s)",
+			ply:Nick(), ply.Level, moneyreward, self.Config["Currency"], reqxp, ply.XP)
+		)
+	end
+
+	ply:SendChat(translate.ClientFormat(ply, "pllvlup", ply.Level, sp, moneyreward, self.Config["Currency"]))
+	if ply:GetInfoNum("tea_cl_playlevelupsound", 1) >= 1 then
+		ply:SendLua('LocalPlayer():ConCommand([[playvol "theeternalapocalypse/levelup.wav" 0.55]])')
+	end
+
+	ply:SetNWInt("PlyLevel", ply.Level)
+
+	self:NetUpdatePeriodicStats(ply)
+
+	timer.Simple(0.04, function() -- Timer was created to prevent Buffer Overflow if user has too much XP if user levels up
+		if ply:IsValid() and ply.XP >= self:GetReqXP(ply) and tonumber(ply.Level) < self.MaxLevel + (ply.Prestige * self.LevelsPerPrestige) then
+			self:GainLevel(ply) -- This is so the user will gain another level if user has required xp for next level and will repeat
 		end
+	end)
+
+	if tonumber(ply.Level) >= self.MaxLevel + (ply.Prestige * self.LevelsPerPrestige) then
+		ply.MaxLevelTime = CurTime() + 120
+		ply:SendChat("You have reached max level, consider prestiging.")
 	end
 end
 
 net.Receive("Prestige", function(length, ply)
-	tea_GainPrestige(ply)
+	gamemode.Call("GainPrestige", ply)
 end)
 
-function tea_GainPrestige(ply)
-	if !ply:Alive() then SendChat(ply, "Must be alive in order to prestige!") return end
-	if tonumber(ply.Level) >= GAMEMODE.MaxLevel + (GAMEMODE.LevelsPerPrestige * ply.Prestige) then
-		ply.Prestige = ply.Prestige + 1
+function GM:GainPrestige(ply)
+	if !ply:Alive() then ply:SendChat("Must be alive in order to prestige!") return end
+	if tonumber(ply.Level) >= self.MaxLevel + (self.LevelsPerPrestige * ply.Prestige) then
+		local prestige = ply.Prestige + 1
+		ply.Prestige = prestige
 		ply.Level = 1
 		ply.XP = 0
 		if tonumber(ply.Prestige) >= 10 then
@@ -206,66 +231,64 @@ function tea_GainPrestige(ply)
 			ply.StatPoints = 0
 		end
 
-		for k, v in pairs(GAMEMODE.StatsListServer) do
-			local TheStatPieces = string.Explode(";", v)
-			local TheStatName = TheStatPieces[1]
-			ply[TheStatName] = 0
+		for statname, _ in pairs(self.StatConfigs) do
+			local name = "Stat"..statname
+			ply[name] = 0
 		end
 
 		util.ScreenShake(ply:GetPos(), 50, 0.5, 1.5, 800)
 		net.Start("PrestigeEffect")
 		net.Send(ply)
-		local prestige = ply.Prestige
 		if tonumber(prestige) == 1 then
-			SystemMessage(ply, translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientGet(ply, "plhasprestiged_4"), Color(155,255,255,255), true)
+			ply:SystemMessage(translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientGet(ply, "plhasprestiged_4"), Color(155,255,255,255), true)
 		elseif tonumber(prestige) == 2 then
-			SystemMessage(ply, translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientGet(ply, "plhasprestiged_5"), Color(155,255,255,255), true)
+			ply:SystemMessage(translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientGet(ply, "plhasprestiged_5"), Color(155,255,255,255), true)
 		elseif tonumber(prestige) == 3 then
-			SystemMessage(ply, translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientGet(ply, "plhasprestiged_6"), Color(155,255,255,255), true)
+			ply:SystemMessage(translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientGet(ply, "plhasprestiged_6"), Color(155,255,255,255), true)
 		elseif tonumber(prestige) == 4 then
-			SystemMessage(ply, translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientGet(ply, "plhasprestiged_7"), Color(155,255,255,255), true)
+			ply:SystemMessage(translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientGet(ply, "plhasprestiged_7"), Color(155,255,255,255), true)
 		elseif tonumber(prestige) == 5 then
-			SystemMessage(ply, translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientGet(ply, "plhasprestiged_8"), Color(155,255,255,255), true)
+			ply:SystemMessage(translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientGet(ply, "plhasprestiged_8"), Color(155,255,255,255), true)
 		elseif tonumber(prestige) == 6 then
-			SystemMessage(ply, translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientGet(ply, "plhasprestiged_9"), Color(155,255,255,255), true)
+			ply:SystemMessage(translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientGet(ply, "plhasprestiged_9"), Color(155,255,255,255), true)
 		elseif tonumber(prestige) == 8 then
-			SystemMessage(ply, translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientGet(ply, "plhasprestiged_10"), Color(155,255,255,255), true)
+			ply:SystemMessage(translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientGet(ply, "plhasprestiged_10"), Color(155,255,255,255), true)
 		elseif tonumber(prestige) == 10 then
-			SystemMessage(ply, translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientGet(ply, "plhasprestiged_11"), Color(155,255,255,255), true)
+			ply:SystemMessage(translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientGet(ply, "plhasprestiged_11"), Color(155,255,255,255), true)
 		elseif tonumber(prestige) == 15 then
-			SystemMessage(ply, translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientGet(ply, "plhasprestiged_12"), Color(155,255,255,255), true)
+			ply:SystemMessage(translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientGet(ply, "plhasprestiged_12"), Color(155,255,255,255), true)
 		else
 			local moneyprestigereward = math.floor(1603 + (1129 * prestige) + (((prestige * 1.592) * (3 * ply.Level)) ^ 1.392)) --gives players money if they prestige without gaining any other advantage except for more levels
 			ply.Money = ply.Money + moneyprestigereward
-			SystemMessage(ply, translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientFormat(ply, "plhasprestiged_2", moneyprestigereward, GAMEMODE.Config["Currency"]), Color(155,255,255,255), true)
+			ply:SystemMessage(translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientFormat(ply, "plhasprestiged_2", moneyprestigereward, self.Config["Currency"]), Color(155,255,255,255), true)
 		end
-		tea_SystemBroadcast(translate.Format("plhasprestiged_3", ply:Nick(), prestige), Color(155,205,255,255), true)
+		self:SystemBroadcast(translate.Format("plhasprestiged_3", ply:Nick(), prestige), Color(155,205,255,255), true)
 		ply:EmitSound("weapons/physcannon/energy_disintegrate"..math.random(4, 5)..".wav", 90, math.Rand(75,90))
 		ply:EmitSound("ambient/machines/thumper_hit.wav", 120, 50)
 		local effectdata = EffectData()
 		effectdata:SetOrigin(ply:GetPos() + Vector(0, 0, 60))
 		util.Effect("zw_master_strike", effectdata)
 
-		tea_NetUpdatePeriodicStats(ply)
-		tea_NetUpdatePerks(ply)
-		tea_NetUpdateStatistics(ply)
+		self:NetUpdatePeriodicStats(ply)
+		self:NetUpdatePerks(ply)
+		self:NetUpdateStatistics(ply)
 
 		ply:SetNWInt("PlyBounty", ply.Bounty)
 		ply:SetNWInt("PlyLevel", ply.Level)
 		ply:SetNWInt("PlyPrestige", prestige)
-		ply:SetMaxHealth(GAMEMODE:CalcMaxHealth(ply))
-		ply:SetMaxArmor(GAMEMODE:CalcMaxArmor(ply))
-		ply:SetJumpPower(GAMEMODE:CalcJumpPower(ply))
+		ply:SetMaxHealth(self:CalcMaxHealth(ply))
+		ply:SetMaxArmor(self:CalcMaxArmor(ply))
+		ply:SetJumpPower(self:CalcJumpPower(ply))
 	else
-		SystemMessage(ply, "You must be at least level ".. GAMEMODE.MaxLevel + (GAMEMODE.LevelsPerPrestige * ply.Prestige) .." to prestige!", Color(255,155,155,255), true)
-		ply:ConCommand("playgamesound buttons/button10.wav")
+		ply:SystemMessage("You must be at least level ".. self.MaxLevel + (self.LevelsPerPrestige * ply.Prestige) .." to prestige!", Color(255,155,155,255), true)
+		ply:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
 	end
 end
 
-function tea_PrepareStats(ply)
+function GM:PrepareStats(ply)
 	if !ply:IsValid() then return false end
 	local armorstr = ply:GetNWString("ArmorType") or "none"
-	local armortype = GAMEMODE.ItemsList[armorstr]
+	local armortype = self.ItemsList[armorstr]
 -- set the stats to default values for a fresh spawn
 	ply.Stamina = 100
 	ply.Hunger = 10000
@@ -278,12 +301,18 @@ function tea_PrepareStats(ply)
 	ply.SlowDown = 0
 	ply.IsAlive = true
 
+	-------- Survival Stats --------
+	ply.LifeZKills = 0
+	ply.LifePlayerKills = 0
+	----------------
+
 -- send their stats to them so their hud can display it (this function is called every tick, see server/netstuff.lua)
-	tea_NetUpdateStats(ply)
+	self:NetUpdateStats(ply)
+	self:SendPlayerSurvivalStats(ply)
 end
 
 
-function tea_FullyUpdatePlayer(ply)
+function GM:FullyUpdatePlayer(ply)
 	if !ply:IsValid() then return end
 	net.Start("UpdateInventory")
 	net.WriteTable(ply.Inventory)
@@ -293,11 +322,21 @@ function tea_FullyUpdatePlayer(ply)
 	ply:SetNWInt("PlyLevel", ply.Level)
 	ply:SetNWInt("PlyPrestige", ply.Prestige)
 
-	tea_NetUpdatePeriodicStats(ply)
-	tea_NetUpdatePerks(ply)
-	tea_NetUpdateStatistics(ply)
+	self:NetUpdatePeriodicStats(ply)
+	self:NetUpdatePerks(ply)
+	self:NetUpdateStatistics(ply)
+	ply:RefreshTasksStats()
 
 	net.Start("RecvFactions")
 	net.WriteTable(Factions)
 	net.Send(ply)
 end
+
+local meta = FindMetaTable("Player")
+/*
+function meta:AddTEAXP(xp)
+	self.XP = self.XP + xp
+
+	GAMEMODE:NetUpdatePeriodicStats(self)
+end
+*/

@@ -29,10 +29,10 @@ if !caller:IsValid() or !caller:IsPlayer() or !self.LootType or !caller:Alive() 
 	local weightcheck = LootTable1[name]["Weight"]
 	local qtycheck = LootTable1[name]["Qty"]
 
-	if !name or !item or !weightcheck or !qtycheck then SendChat(caller, "Sorry, this loot cache was bugged and was auto removed to avoid breaking the game, please tell an admin or developer") return false end
+	if !name or !item or !weightcheck or !qtycheck then caller:SendChat("Sorry, this loot cache was bugged and was auto removed to avoid breaking the game, please tell an admin or developer") return false end
 
 	if !item then return false end
-	if (CalculateWeight(caller) + weightcheck) > CalculateMaxWeight(caller) then SendChat(caller, "You don't have enough space for this item! It weighs: "..weightcheck.."kg") return false end
+	if (CalculateWeight(caller) + weightcheck) > CalculateMaxWeight(caller) then caller:SendChat("You don't have enough space for this item! It weighs: "..weightcheck.."kg") return false end
 
 if caller.Inventory[name] then
 	local used = caller.Inventory[name]
@@ -48,7 +48,7 @@ else
 }
 end
 
-	SendChat(caller, "You picked up a loot cache containing [ "..LootTable1[name]["Name"].." ]")
+	caller:SendChat("You picked up a loot cache containing [ "..LootTable1[name]["Name"].." ]")
 	SystemBroadcast( caller:Nick().." has found a loot cache!", Color(255,255,255,255), true)
 	SendInventory(caller)
 	caller:EmitSound("items/ammopickup.wav", 100, 100)

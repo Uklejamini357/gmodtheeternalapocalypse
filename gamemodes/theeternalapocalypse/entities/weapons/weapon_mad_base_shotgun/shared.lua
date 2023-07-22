@@ -1,8 +1,6 @@
-// Variables that are used on both client and server
-
 SWEP.Base 				= "weapon_mad_base"
 
-SWEP.ShellEffect			= "effect_mad_shell_shotgun"	// "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
+SWEP.ShellEffect			= "effect_mad_shell_shotgun"	-- "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
 SWEP.ShellDelay			= 0
 
 SWEP.Pistol				= false
@@ -13,10 +11,6 @@ SWEP.Sniper				= false
 SWEP.Penetration			= false
 SWEP.Ricochet			= false
 
-/*---------------------------------------------------------
-   Name: SWEP:Think()
-   Desc: Called every frame.
----------------------------------------------------------*/
 function SWEP:Think()
 
 	if self.Weapon:Clip1() > self.Primary.ClipSize then
@@ -113,7 +107,6 @@ function SWEP:Think()
 		self:SetHoldType(self.HoldType)
 	end
 
-	// Burst fire mode
 	if self.Weapon:GetDTBool(3) and self.Type == 3 then
 		if self.BurstTimer + self.BurstDelay < CurTime() then
 			if self.BurstCounter > 0 then
@@ -132,10 +125,6 @@ function SWEP:Think()
 	self:NextThink(CurTime())
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:Reload()
-   Desc: Reload is being pressed.
----------------------------------------------------------*/
 function SWEP:Reload()
 
 	if (self.ActionDelay > CurTime()) then return end 
@@ -163,10 +152,6 @@ function SWEP:Reload()
 	end
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:Deploy()
-   Desc: Whip it out.
----------------------------------------------------------*/
 function SWEP:Deploy()
 
 	self.ShotgunReloading = false

@@ -22,7 +22,7 @@ function ENT:Initialize()
 	end 
 end
 
-function ENT:SpawnFunction( userid, tr )
+function ENT:SpawnFunction(userid, tr)
 end
 
 function ENT:Use( activator, caller )
@@ -30,11 +30,14 @@ function ENT:Use( activator, caller )
 	if activator:KeyDown(IN_RELOAD) or activator:GetInfoNum("tea_cl_usereloadtopickup", 0) < 1 then
 		local name = self:GetNWString("ItemClass")
 		local ref = GAMEMODE.ItemsList[name]
-		if (tea_CalculateWeight(activator) + ref.Weight) > tea_CalculateMaxWeight(activator) then SendChat(activator, "You don't have enough space for this item! Need ".. -tea_CalculateMaxWeight(activator) + tea_CalculateWeight(activator) + ref.Weight .."kg more space!") return false end
+		if (GAMEMODE:CalculateWeight(activator) + ref.Weight) > GAMEMODE:CalculateMaxWeight(activator) then
+			caller:SendChat(Format("You don't have enough space for this item! Need %skg more space!", GAMEMODE:CalculateRemainingInventoryWeight(activator, ref.Weight)))
+			return false
+		end
 		
-		tea_SystemGiveItem(activator, name)
+		gamemode.Call("SystemGiveItem", activator, name)
 		
-		tea_SendInventory(activator)
+		GAMEMODE:SendInventory(activator)
 		activator:EmitSound("items/itempickup.wav", 100, 100)
 		self:Remove()
 	else

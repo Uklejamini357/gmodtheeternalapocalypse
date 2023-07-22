@@ -6,6 +6,7 @@ ENT.Base = "base_nextbot"
 ENT.PrintName = "The Tyrant"
 ENT.Category = "Boss Zombie"
 ENT.Author = "Uklejamini"
+ENT.Purpose = "Very tough zombie, can throw rocks and cause shockwave"
 ENT.Spawnable = true
 ENT.AdminOnly = true
 
@@ -99,6 +100,10 @@ function ENT:HasLOS()
 	end
 end
 
+function ENT:GetTEAZombieSpeedMul()
+	return math.min(self:GetEliteVariant() == VARIANT_ENRAGED and 1.6 or 1, 2 - (self:Health() / self:GetMaxHealth())) * GAMEMODE.ZombieSpeedMultiplier * self.SpeedBuff
+end
+
 function ENT:Initialize()
 	if CLIENT then return end
 	self:SetModel("models/sin/quadralex.mdl")
@@ -124,16 +129,10 @@ function ENT:Initialize()
 	timer.Simple(1200, function()
 		if self:IsValid() then
 			self:Remove()
-			tea_SystemBroadcast("[BOSS]: The Tyrant was not killed and has left the area!", Color(255,105,105,255), false)
+			GAMEMODE:SystemBroadcast("[BOSS]: The Tyrant was not killed and has left the area!", Color(255,105,105,255), false)
 		end
 	end)
 
-	hook.Add("EntityRemoved", self, function()
-		if self.breathing then
-			self.breathing:Stop()
-			self.breathing = nil
-		end
-	end)
 end
 
 function ENT:TimedEvent(time, callback)
@@ -173,13 +172,13 @@ function ENT:RunBehaviour()
 			end
 		end
 
-		if (IsValid(target) and target:Alive() and (self:GetRangeTo(target) <= (2500 * self.RageLevel) or GetConVar("tea_config_zombieapocalypse"):GetInt() >= 1) and !target.HasNoTarget) then
+		if (IsValid(target) and target:Alive() and (self:GetRangeTo(target) <= (2500 * self.RageLevel) or GAMEMODE.ZombieApocalypse) and !target.HasNoTarget) then
 			self.loco:FaceTowards(target:GetPos())
 
 			if self.NxtTick < 1 then
 
 -- check if we are obstructed by props and smash them if we are
-				local breakshit = ents.FindInSphere(self:GetPos() + self:GetAngles():Up() * 55, 35)
+				local breakshit = ents.FindInSphere(self:GetPos() + self:GetAngles():Up() * 55, 65)
 
 				self:AttackProp(breakshit)
 				for k,v in pairs(breakshit) do
@@ -220,7 +219,7 @@ function ENT:RunBehaviour()
 						if v:IsPlayer() and v:Alive() and v:IsOnGround() then 
 							local damageInfo = DamageInfo()
 							damageInfo:SetAttacker(self)
-							damageInfo:SetDamage(GAMEMODE.tea_CalcDefenseDamage(v, self.IsEnraged and 65 or 50))
+							damageInfo:SetDamage(GAMEMODE:CalcDefenseDamage(v, self.IsEnraged and 65 or 50))
 							damageInfo:SetDamageType(DMG_CLUB)
 
 							v:TakeDamageInfo(damageInfo)
@@ -275,7 +274,7 @@ function ENT:RunBehaviour()
 					if (IsValid(target) and self:GetRangeTo(target) <= 155) and target:Alive() then
 						local damageInfo = DamageInfo()
 						damageInfo:SetAttacker(self)
-						damageInfo:SetDamage(GAMEMODE.tea_CalcPlayerDamage(target, self.IsEnraged and math.random(45, 70) or math.random(40, 55)))
+						damageInfo:SetDamage(GAMEMODE:CalcPlayerDamage(target, self.IsEnraged and math.random(45, 70) or math.random(40, 55)))
 --						damageInfo:SetDamage(self.IsEnraged and math.random(50,75) or (math.random(40, 60)) * (1 - (target.StatDefense * 0.015)))
 						damageInfo:SetDamageType(DMG_CLUB)
 
@@ -289,9 +288,9 @@ function ENT:RunBehaviour()
 						target:SetVelocity(force)
 						local rng = math.random(0, 100)
 						if self.IsEnraged and rng > 50 then
-							target.Infection = target.Infection + math.Rand(200,650)
+							target:AddInfection(math.Rand(200,650))
 						elseif rng > 70 then
-							target.Infection = target.Infection + math.Rand(120,400)
+							target:AddInfection(math.Rand(120,400))
 						end
 					end
 				end)
@@ -318,7 +317,7 @@ function ENT:RunBehaviour()
 --					self.nextYell = CurTime() + math.random(4, 8)
 --				end
 				
-				self.loco:SetDesiredSpeed(self.IsEnraged and (340 * GetConVar("tea_config_zombiespeedmul"):GetFloat()) or (250 * GetConVar("tea_config_zombiespeedmul"):GetFloat()))
+				self.loco:SetDesiredSpeed((self.IsEnraged and 340 or 250) * self:GetTEAZombieSpeedMul())
 
 
 				self:MoveToPos(target:GetPos(), {
@@ -338,7 +337,7 @@ function ENT:RunBehaviour()
 
 			if (!self.target) then
 				for k, v in pairs(player.GetAll()) do
-					if (v:Alive() and (self:GetRangeTo(v) <= (2500 * self.RageLevel) or GetConVar("tea_config_zombieapocalypse"):GetInt() >= 1) and !v.HasNoTarget) then
+					if (v:Alive() and (self:GetRangeTo(v) <= (2500 * self.RageLevel) or GAMEMODE.ZombieApocalypse) and !v.HasNoTarget) then
 --						self:AlertNearby(v)
 						self.target = v
 --						self:PlaySequenceAndWait("wave_smg1", 0.9)
@@ -383,9 +382,9 @@ function ENT:OnKilled(damageInfo)
 	local attacker = damageInfo:GetAttacker()
 
 	if attacker:IsPlayer() then
-		tea_SystemBroadcast("[BOSS]: "..attacker:Nick().." has slain the Tyrant!", Color(255,105,105,255), false)
+		GAMEMODE:SystemBroadcast("[BOSS]: "..attacker:Nick().." has slain the Tyrant!", Color(255,105,105,255), false)
 	else
-		tea_SystemBroadcast("[BOSS]: The Tyrant has been slain by an unknown cause!", Color(255,105,105,255), false)
+		GAMEMODE:SystemBroadcast("[BOSS]: The Tyrant has been slain by an unknown cause!", Color(255,105,105,255), false)
 	end
 /*
 	if !attacker:IsWorld() then 
@@ -405,9 +404,17 @@ function ENT:OnKilled(damageInfo)
 	end
 */
 
-	self:SetColor(Color(255,255,255,255))
 	self:EmitSound(table.Random(deathSounds), 100, math.random(95, 105))
 	self:BecomeRagdoll(damageInfo)
+	gamemode.Call("OnNPCKilled", self, damageInfo)
+end
+
+function ENT:OnRemove()
+	if !IsValid(self) then return end
+	if self.breathing then
+		self.breathing:Stop()
+		self.breathing = nil
+	end
 end
 
 local painSounds = {
@@ -433,10 +440,9 @@ function ENT:OnInjured(damageInfo)
 	if (self:Health() - dmg) <= self:GetMaxHealth() * 0.3 then
 		self.RageLevel = 4
 		if !self.IsEnraged then
-			tea_SystemBroadcast("[BOSS]: The Tyrant is now Enraged!", Color(255,105,105,255), false)
-			self.loco:SetDesiredSpeed(340 * GetConVar("tea_config_zombiespeedmul"):GetFloat())
+			GAMEMODE:SystemBroadcast("[BOSS]: The Tyrant is now Enraged!", Color(255,105,105,255), false)
+			self.loco:SetDesiredSpeed(340 * self:GetTEAZombieSpeedMul())
 			self.nexttoss = CurTime()
-			self:SetColor(Color(255,128,128,255))
 		end
 		self.IsEnraged = true
 	else

@@ -1,5 +1,3 @@
-// Variables that are used on both client and server
-
 SWEP.Base 				= "weapon_mad_base"
 
 SWEP.ViewModelFlip		= true
@@ -25,17 +23,17 @@ SWEP.Primary.Delay 		= 0.2
 
 SWEP.IronFireAccel = 1.5
 
-SWEP.Primary.ClipSize		= 20					// Size of a clip
-SWEP.Primary.DefaultClip	= 0					// Default number of bullets in a clip
-SWEP.Primary.Automatic		= true				// Automatic/Semi Auto
+SWEP.Primary.ClipSize		= 20
+SWEP.Primary.DefaultClip	= 0
+SWEP.Primary.Automatic		= true
 SWEP.Primary.Ammo			= "Buckshot"
 
-SWEP.Secondary.ClipSize		= -1					// Size of a clip
-SWEP.Secondary.DefaultClip	= -1					// Default number of bullets in a clip
-SWEP.Secondary.Automatic	= false				// Automatic/Semi Auto
+SWEP.Secondary.ClipSize		= -1
+SWEP.Secondary.DefaultClip	= -1
+SWEP.Secondary.Automatic	= false
 SWEP.Secondary.Ammo		= "none"
 
-SWEP.ShellEffect			= "effect_mad_shell_shotgun"	// "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
+SWEP.ShellEffect			= "effect_mad_shell_shotgun"	-- "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
 
 SWEP.Pistol				= false
 SWEP.Rifle				= true
@@ -47,10 +45,6 @@ SWEP.IronSightsAng = Vector(1.603, -0.146, 0)
 SWEP.RunArmOffset = Vector(0.158, 1.269, -0.398)
 SWEP.RunArmAngle = Vector(-5.907, -9.433, 0)
 
-/*---------------------------------------------------------
-   Name: SWEP:Precache()
-   Desc: Use this function to precache stuff.
----------------------------------------------------------*/
 function SWEP:Precache()
 end
 

@@ -2,7 +2,8 @@ AddCSLuaFile()
 
 ENT.Base = "npc_tea_basic"
 ENT.PrintName = "Leaper Zombie"
-ENT.Category = ""
+ENT.Category = "TEA Zombies"
+ENT.Purpose = "A zombie variant that can jump and moves fast"
 ENT.Author = "Uklejamini"
 ENT.Spawnable = true
 ENT.AdminOnly = true

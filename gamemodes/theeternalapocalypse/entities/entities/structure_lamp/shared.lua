@@ -60,7 +60,7 @@ function ENT:Initialize()
 		for _,v in pairs(cube) do
 			if v:IsPlayer() or v:IsNPC() or v.Type == "nextbot" then self:Remove()
 			if v:IsPlayer() then
- 			SendChat( v, "Unable to build prop, biological obstruction detected" )
+ 			v:SendChat("Unable to build prop, biological obstruction detected" )
  			end
 		end
 	end
@@ -100,7 +100,7 @@ end
 	local attacker = dmg:GetAttacker()
 
 	if attacker:IsPlayer() and attacker:IsValid() and attacker:Team() == 1 and attacker:GetNWBool("pvp") != true and self:GetNWEntity("owner") != attacker then -- this should stop little shitters from wrecking your base while not in pvp mode
-	SystemMessage(attacker, "You cannot damage other players props unless you have PvP mode enabled!", Color(255,205,205,255), true)
+		attacker:SystemMessage("You cannot damage other players props unless you have PvP mode enabled!", Color(255,205,205,255), true)
 	return false 
 	end
 

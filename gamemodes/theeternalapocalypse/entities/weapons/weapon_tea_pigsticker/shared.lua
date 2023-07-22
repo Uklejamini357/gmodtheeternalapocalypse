@@ -1,7 +1,5 @@
-// Variables that are used on both client and server
-
 SWEP.Base 				= "weapon_melee_base"
-SWEP.Instructions   = "Ill fuken stick ya m8"
+SWEP.Instructions   =	 "LMB to attack, RMB to stab"
 SWEP.ViewModelFlip		= false
 SWEP.ViewModel			= "models/weapons/v_knife_t.mdl"
 SWEP.WorldModel			= "models/weapons/w_knife_ct.mdl"
@@ -18,24 +16,30 @@ SWEP.Contact			= ""
 SWEP.Purpose			= "A combat knife that can save your ass if you run out of ammo"
 SWEP.Instructions			= "Left click to slice, Right click to stab"
 
+SWEP.HitDistance = 48
+SWEP.StaminaNeeded = 2
+SWEP.StaminaNeeded2 = 3 -- for stab
+
 SWEP.Primary.Recoil		= 5
-SWEP.Primary.Damage		= 0
+SWEP.Primary.Damage		= 19
+SWEP.Primary.CritDamage = 30
 SWEP.Primary.NumShots		= 0
 SWEP.Primary.Cone			= 0.075
 SWEP.Primary.Delay 		= 0.6
 
-SWEP.Primary.ClipSize		= -1					// Size of a clip
-SWEP.Primary.DefaultClip	= 0					// Default number of bullets in a clip
-SWEP.Primary.Automatic		= true				// Automatic/Semi Auto
+SWEP.Primary.ClipSize		= -1
+SWEP.Primary.DefaultClip	= 0
+SWEP.Primary.Automatic		= true
 SWEP.Primary.Ammo			= ""
 
-SWEP.Secondary.ClipSize		= -1					// Size of a clip
-SWEP.Secondary.DefaultClip	= -1					// Default number of bullets in a clip
-SWEP.Secondary.Automatic	= true				// Automatic/Semi Auto
+SWEP.Secondary.ClipSize		= -1
+SWEP.Secondary.DefaultClip	= -1
+SWEP.Secondary.Automatic	= true
 SWEP.Secondary.Ammo		= "none"
 SWEP.Secondary.Delay 		= 0.9
 
-SWEP.ShellEffect			= "none"				// "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
+
+SWEP.ShellEffect			= "none"				-- "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
 SWEP.ShellDelay			= 0
 
 SWEP.Pistol				= true
@@ -51,7 +55,6 @@ SWEP.Sequence			= 0
 SWEP.ZWweight				= 10 -- in kilograms divided by 10 eg 20 = 2kg
 SWEP.ZWrarity				= "Common" -- Junk, Common, Uncommon, Rare, Epic
 
-SWEP.HitDistance = 48
 
 /*---------------------------------------------------------
    Name: SWEP:Precache()
@@ -114,15 +117,10 @@ function SWEP:EntityFaceBack(ent)
 	return false
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:PrimaryAttack()
-   Desc: +attack1 has been pressed.
----------------------------------------------------------*/
 function SWEP:PrimaryAttack()
 
 	if self.Weapon:GetNetworkedBool("Holsted") or self.Owner:KeyDown(IN_SPEED) then return end
 
-	// Holst/Deploy your fucking weapon
 	if (not self.Owner:IsNPC() and self.Owner:KeyDown(IN_USE)) then
 		bHolsted = !self.Weapon:GetDTBool(0)
 		self:SetHolsted(bHolsted)
@@ -135,7 +133,7 @@ function SWEP:PrimaryAttack()
 		return
 	end
 	
-	if ((CLIENT and MyStamina < 3) or (SERVER and self.Owner.Stamina < 3)) then return end
+	if ((CLIENT and MyStamina < self.StaminaNeeded) or (SERVER and self.Owner.Stamina < self.StaminaNeeded)) then return end
 
 	self.Weapon:SendWeaponAnim(ACT_VM_IDLE)
 	local Animation = self.Owner:GetViewModel()
@@ -148,7 +146,7 @@ function SWEP:PrimaryAttack()
 	timer.Simple( 0.1, function()
 	if (!IsValid( self ) || !IsValid( self.Owner ) || !self.Owner:GetActiveWeapon() || self.Owner:GetActiveWeapon() != self || CLIENT) then return end
 		self:DealDamage( anim )
-		self.Owner.Stamina = math.Clamp(self.Owner.Stamina - math.Rand(1.65, 2), 0, 100)
+		self.Owner.Stamina = math.Clamp(self.Owner.Stamina - self.StaminaNeeded, 0, 100)
 		self.Owner:EmitSound( "weapons/slam/throw.wav" )
 	end )
 
@@ -177,14 +175,9 @@ function SWEP:PrimaryAttack()
 	self:IdleAnimation(1)
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:SecondaryAttack()
-   Desc: +attack2 has been pressed.
----------------------------------------------------------*/
 function SWEP:SecondaryAttack()
-	if self.Weapon:GetNetworkedBool("Holsted") or self.Owner:KeyDown(IN_SPEED) or ((CLIENT and MyStamina < 4.25) or (SERVER and self.Owner.Stamina < 4.25)) then return end
+	if self.Weapon:GetNetworkedBool("Holsted") or self.Owner:KeyDown(IN_SPEED) or ((CLIENT and MyStamina < self.StaminaNeeded2) or (SERVER and self.Owner.Stamina < self.StaminaNeeded2)) then return end
 
-	// Holst/Deploy your fucking weapon
 	if (not self.Owner:IsNPC() and self.Owner:KeyDown(IN_USE)) then
 		bHolsted = !self.Weapon:GetDTBool(0)
 		self:SetHolsted(bHolsted)
@@ -208,7 +201,7 @@ function SWEP:SecondaryAttack()
 	timer.Simple( 0.1, function()
 	if ( !IsValid( self ) || !IsValid( self.Owner ) || !self.Owner:GetActiveWeapon() || self.Owner:GetActiveWeapon() != self || CLIENT ) then return end
 		self:DealDamage( anim )
-		self.Owner.Stamina = math.Clamp(self.Owner.Stamina - math.Rand(2.4, 3), 0, 100)
+		self.Owner.Stamina = math.Clamp(self.Owner.Stamina - self.StaminaNeeded2, 0, 100)
 		self.Owner:EmitSound( "weapons/slam/throw.wav" )
 	end )
 
@@ -279,10 +272,10 @@ function SWEP:DealDamage( anim )
 
 	if ( IsValid( tr.Entity ) && ( tr.Entity:IsNPC() || tr.Entity:IsPlayer() || tr.Entity.Type == "nextbot" ||tr.Entity:GetClass() == "prop_physics" || tr.Entity:GetClass() == "func_breakable" || tr.Entity:Health() > 0 ) ) then
 		local dmginfo = DamageInfo()
-		if ( anim == "stab" ) then
-		dmginfo:SetDamage( math.random( 28, 32 ) )
+		if anim == "stab" then
+			dmginfo:SetDamage(self.Primary.CritDamage)
 		else
-		dmginfo:SetDamage( math.random( 18, 22 ) )
+			dmginfo:SetDamage(self.Primary.Damage)
 		end
 		dmginfo:SetDamageForce( self.Owner:GetRight() * 300 + self.Owner:GetForward() * 200 ) -- Yes we need those specific numbers
 		dmginfo:SetInflictor( self )

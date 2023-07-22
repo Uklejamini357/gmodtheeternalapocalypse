@@ -18,7 +18,7 @@ function ENT:Initialize()
 	end 
 end
 
-function ENT:SpawnFunction( userid, tr )
+function ENT:SpawnFunction(userid, tr)
 end
 
 function ENT:Use( activator, caller )
@@ -30,16 +30,18 @@ function ENT:Use( activator, caller )
 
 	local qtycheck = GAMEMODE.LootTable1[name]["Qty"]
 
-	if !name or !item or !qtycheck then SendChat(caller, translate.ClientGet(caller, "buggedcache")) self:Remove() return false end
+	if !name or !item or !qtycheck then caller:SendChat(translate.ClientGet(caller, "buggedcache")) self:Remove() return false end
 
 	if !item then return false end
-	if (tea_CalculateWeight(caller) + (qtycheck * itemweight)) > tea_CalculateMaxWeight(caller) then SendChat(caller, translate.ClientFormat(caller, "notenoughspaceloot", qtycheck * itemweight, -tea_CalculateMaxWeight(caller) + tea_CalculateWeight(caller) + (qtycheck * itemweight))) return false end
+	if (GAMEMODE:CalculateWeight(caller) + (qtycheck * itemweight)) > GAMEMODE:CalculateMaxWeight(caller) then
+		caller:SendChat(translate.ClientFormat(caller, "notenoughspaceloot", qtycheck * itemweight, GAMEMODE:CalculateRemainingInventoryWeight(caller, qtycheck * itemweight)))
+		return false
+	end
 
-	tea_SystemGiveItem(caller, name, qtycheck)
+	gamemode.Call("SystemGiveItem", caller, name, qtycheck)
 
-	SendChat(caller, "You picked up a loot cache containing [ "..qtycheck.."x "..itemname.." ]")
-	tea_SystemBroadcast(caller:Nick().." has found a loot cache!", Color(255,255,255,255), true)
-	tea_SendInventory(caller)
+	caller:SendChat("You picked up a loot cache containing [ "..qtycheck.."x "..itemname.." ]")
+	gamemode.Call("SendInventory", caller)
 	caller:EmitSound("items/ammopickup.wav", 100, 100)
 	self:Remove()
 end

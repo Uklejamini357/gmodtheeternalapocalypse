@@ -1,5 +1,3 @@
-// Variables that are used on both client and server
-
 SWEP.Base 				= "weapon_mad_base"
 
 SWEP.ViewModel			= "models/weapons/c_rpg.mdl"
@@ -13,22 +11,22 @@ SWEP.Category			= "ZW Weapons"
 
 SWEP.Primary.Sound 		= Sound("NPC_Helicopter.FireRocket")
 SWEP.Primary.Recoil		= 0
-SWEP.Primary.Damage		= 0
+SWEP.Primary.Damage		= 120
 SWEP.Primary.NumShots		= 1
 SWEP.Primary.Cone			= 0.075
 SWEP.Primary.Delay 		= 2
 
-SWEP.Primary.ClipSize		= 1					// Size of a clip
-SWEP.Primary.DefaultClip	= 0					// Default number of bullets in a clip
-SWEP.Primary.Automatic		= false				// Automatic/Semi Auto
+SWEP.Primary.ClipSize		= 1
+SWEP.Primary.DefaultClip	= 0
+SWEP.Primary.Automatic		= false
 SWEP.Primary.Ammo			= "RPG_Round"
 
-SWEP.Secondary.ClipSize		= -1					// Size of a clip
-SWEP.Secondary.DefaultClip	= -1					// Default number of bullets in a clip
-SWEP.Secondary.Automatic	= false				// Automatic/Semi Auto
+SWEP.Secondary.ClipSize		= -1
+SWEP.Secondary.DefaultClip	= -1
+SWEP.Secondary.Automatic	= false
 SWEP.Secondary.Ammo		= "none"
 
-SWEP.ShellEffect			= "none"				// "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
+SWEP.ShellEffect			= "none"				-- "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
 SWEP.ShellDelay			= 0
 
 SWEP.Pistol				= false
@@ -41,23 +39,15 @@ SWEP.IronSightsAng	=	Vector (0, 0, 0)
 SWEP.RunArmOffset 		= Vector (7.6581, -13.4056, 1.4333)
 SWEP.RunArmAngle 			= Vector (-14.4149, 29.214, 0)
 
-/*---------------------------------------------------------
-   Name: SWEP:Precache()
-   Desc: Use this function to precache stuff.
----------------------------------------------------------*/
 function SWEP:Precache()
-
-    	util.PrecacheSound("weapons/stinger_fire1.wav")
+	util.PrecacheSound("weapons/stinger_fire1.wav")
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:Rocket()
----------------------------------------------------------*/
 function SWEP:Rocket()
 
 	if (CLIENT) then return end
 
-	local rocket = ents.Create("ent_zw_rocket")
+	local rocket = ents.Create("ent_tea_rocket")
 
 	rocket:SetOwner(self.Owner)
 		
@@ -67,20 +57,18 @@ function SWEP:Rocket()
 		pos = pos + self.Owner:GetUp() * 0
 	rocket:SetPos(pos)	
 		
-	rocket:SetAngles(self.Owner:GetAngles())
+	rocket:SetAngles(self.Owner:EyeAngles())
 	rocket.Number = 1
+	rocket.ExplosionDamageRadius = self.Primary.Damage
 	rocket:Spawn()
 	rocket:Activate()
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:DoubleRocket()
----------------------------------------------------------*/
 function SWEP:DoubleRocket()
 
 	if (CLIENT) then return end
 
-	local rocket = ents.Create("ent_mad_rocket")
+	local rocket = ents.Create("ent_tea_rocket")
 
 	rocket:SetOwner(self.Owner)
 		
@@ -90,19 +78,14 @@ function SWEP:DoubleRocket()
 		pos = pos + self.Owner:GetUp() * 0
 	rocket:SetPos(pos)	
 		
-	rocket:SetAngles(self.Owner:GetAngles())
+	rocket:SetAngles(self.Owner:EyeAngles())
 	rocket.Number = 2
 	rocket:Spawn()
 	rocket:Activate()
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:PrimaryAttack()
-   Desc: +attack1 has been pressed.
----------------------------------------------------------*/
 function SWEP:PrimaryAttack()
 
-	// Holst/Deploy your fucking weapon
 	if (not self.Owner:IsNPC() and self.Owner:KeyDown(IN_USE)) then
 		bHolsted = !self.Weapon:GetDTBool(0)
 		self:SetHolsted(bHolsted)
@@ -121,8 +104,8 @@ function SWEP:PrimaryAttack()
 	self.Weapon:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 	self.Weapon:SetNextSecondaryFire(CurTime() + self.Primary.Delay)
 
-	self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK) 		// View model animation
-	self.Owner:SetAnimation(PLAYER_ATTACK1)				// 3rd Person Animation
+	self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
+	self.Owner:SetAnimation(PLAYER_ATTACK1)
 
 	self:SetIronsights(false)
 
@@ -158,10 +141,6 @@ function SWEP:PrimaryAttack()
 	local WeaponModel = self.Weapon:GetOwner():GetActiveWeapon():GetClass()
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:SecondaryAttack()
-   Desc: +attack2 has been pressed.
----------------------------------------------------------*/
 function SWEP:SecondaryAttack()
 
 // Experimental test: two rockets at the same time.

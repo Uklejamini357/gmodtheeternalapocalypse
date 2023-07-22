@@ -1,5 +1,3 @@
-// Variables that are used on both client and server
-
 SWEP.Base 				= "weapon_mad_base_shotgun"
 
 SWEP.ViewModelFlip		= false
@@ -20,14 +18,14 @@ SWEP.Primary.Delay 		= 0.25
 
 SWEP.IronFireAccel		= 1
 
-SWEP.Primary.ClipSize		= 12					// Size of a clip
+SWEP.Primary.ClipSize		= 12
 SWEP.Primary.DefaultClip	= 12				// Default number of bullets in a clip
-SWEP.Primary.Automatic		= true				// Automatic/Semi Auto
+SWEP.Primary.Automatic		= true
 SWEP.Primary.Ammo			= "Buckshot"
 
-SWEP.Secondary.ClipSize		= -1					// Size of a clip
-SWEP.Secondary.DefaultClip	= -1					// Default number of bullets in a clip
-SWEP.Secondary.Automatic	= false				// Automatic/Semi Auto
+SWEP.Secondary.ClipSize		= -1
+SWEP.Secondary.DefaultClip	= -1
+SWEP.Secondary.Automatic	= false
 SWEP.Secondary.Ammo		= "none"
 
 SWEP.ShellDelay			= 0.1
@@ -41,10 +39,6 @@ SWEP.ShotgunReloading		= true
 SWEP.ShotgunFinish		= 0.3
 SWEP.ShotgunBeginReload		= 0.5
 
-/*---------------------------------------------------------
-   Name: SWEP:Precache()
-   Desc: Use this function to precache stuff.
----------------------------------------------------------*/
 function SWEP:Precache()
 
     	util.PrecacheSound("weapons/xm1014/xm1014-1.wav")

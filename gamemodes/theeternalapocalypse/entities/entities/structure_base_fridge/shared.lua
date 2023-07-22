@@ -62,7 +62,7 @@ function ENT:Initialize()
 		for _,v in pairs(cube) do
 			if v:IsPlayer() or v:IsNPC() or v.Type == "nextbot" then self:Remove()
 			if v:IsPlayer() then
- 			SendChat( v, "Unable to build prop, biological obstruction detected" )
+ 			v:SendChat("Unable to build prop, biological obstruction detected" )
  			end
 		end
 	end
@@ -75,16 +75,16 @@ end
 function ENT:Use(activator, caller)
 	local owner = self:GetNWEntity("owner")
 	if !self.IsBuilt then return false end
-	if !self.IsPowered then SystemMessage(activator, "This isn't powered by faction base core!", Color(255,205,205,255), true) return false end
+	if !self.IsPowered then activator:SystemMessage("This isn't powered by faction base core!", Color(255,205,205,255), true) return false end
 	if self.UseTimer > CurTime() then return false end
-	if activator:Team() != owner:Team() then SystemMessage(activator, "This doesn't belong to your faction!", Color(255,205,205,255), true) return false end
+	if activator:Team() != owner:Team() then activator:SystemMessage("This doesn't belong to your faction!", Color(255,205,205,255), true) return false end
 
 	activator.Hunger = 10000
 	activator.Thirst = 10000
 
 	activator:EmitSound("npc/barnacle/barnacle_gulp2.wav")
-	SystemMessage(activator, "That was delicious!", Color(205,255,205,255), false)
-	SendUseDelay(activator, 2)
+	activator:SystemMessage("That was delicious!", Color(205,255,205,255), false)
+	activator:SendUseDelay(2)
 	self.UseTimer = CurTime() + 5
 
 end 
@@ -123,7 +123,7 @@ end
 	local attacker = dmg:GetAttacker()
 
 	if attacker:IsPlayer() and attacker:IsValid() and attacker:Team() == 1 and attacker:GetNWBool("pvp") != true and self:GetNWEntity("owner") != attacker then -- this should stop little shitters from wrecking your base while not in pvp mode
-	SystemMessage(attacker, "You cannot damage other players props unless you have PvP mode enabled!", Color(255,205,205,255), true)
+		attacker:SystemMessage("You cannot damage other players props unless you have PvP mode enabled!", Color(255,205,205,255), true)
 	return false 
 	end
 
@@ -148,7 +148,7 @@ end
 		if attacker:IsPlayer() and self.IsBuilt then
 			Payout(attacker, 400, 400, 450, 450)
 		elseif attacker:IsPlayer() and !self.IsBuilt then
-			SystemMessage(attacker, "nice try", Color(255,230,230,255), false)
+			attacker:SystemMessage("nice try", Color(255,230,230,255), false)
 		end
 		self:BreakPanel()
 --		self.Entity:EmitSound("physics/wood/wood_plank_break"..math.random(1,2)..".wav", 100, 100)

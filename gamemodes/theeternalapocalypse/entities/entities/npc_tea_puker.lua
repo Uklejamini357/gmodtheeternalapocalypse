@@ -4,6 +4,7 @@ ENT.Base = "npc_tea_basic"
 ENT.PrintName = "Puker Zombie"
 ENT.Category = ""
 ENT.Author = "Uklejamini"
+ENT.Purpose = "Throws... i don't know."
 ENT.Spawnable = true
 ENT.AdminOnly = true
 
@@ -127,4 +128,5 @@ function ENT:OnKilled(damageInfo)
 	util.Effect("Explosion", effectdata)
 
 	self:Remove()
+	gamemode.Call("OnNPCKilled", self, damageInfo)
 end

@@ -1,9 +1,9 @@
--- i really need to redo this train wreck
+-- i really need to redo this train wreck (Comment: NOT ANYMORE!!)
 GM.StatsListServer =
 {
 	"StatAgility;Agility;+2 jumppower",
 	"StatBarter;Barter;+1.5% cheaper stuff, +0.5% money gain for selling stuff",
-	"StatDamage;Damage;1% Attack bonus",
+	"StatGunslinger;Gunslinger;1% bullet damage bonus",
 	"StatDefense;Defense;1.5% Damage Reduction from zombies",
 	"StatEndurance;Endurance;Reduces stamina loss by 3.33%, -4% stamina loss on landing",
 	"StatEngineer;Engineer;-3% prop cost/+3HP repaired per swing",

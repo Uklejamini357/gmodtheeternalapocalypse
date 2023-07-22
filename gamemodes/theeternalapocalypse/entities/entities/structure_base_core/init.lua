@@ -14,7 +14,7 @@ for k, v in pairs(people) do
 
 		v.Territory = team.GetName(owner:Team())
 
-		timer.Create("factimer"..v:UniqueID(), 1, 1, function() 
+		timer.Create("factimer"..v:EntIndex(), 1, 1, function() 
 		if !v:IsValid() then return false end
 			v.Territory = "none"
 		end)
@@ -58,7 +58,7 @@ function ENT:Initialize()
 		for _,v in pairs(cube) do
 			if v:IsPlayer() or v:IsNPC() or v.Type == "nextbot" then self:Remove()
 			if v:IsPlayer() then
- 			SendChat( v, "Unable to build prop, biological obstruction detected" )
+ 			v:SendChat("Unable to build prop, biological obstruction detected" )
  			end
 		end
 	end
@@ -118,15 +118,15 @@ function ENT:OnTakeDamage( dmg )
 	local owner = self:GetNWEntity("owner")
 
 	if attacker:IsPlayer() and attacker:IsValid() and attacker:Team() == 1 and attacker:GetNWBool("pvp") != true and self:GetNWEntity("owner") != attacker then
-	SystemMessage(attacker, "You cannot damage other players props unless you have PvP mode enabled!", Color(255,205,205,255), true)
+		attacker:SystemMessage("You cannot damage other players props unless you have PvP mode enabled!", Color(255,205,205,255), true)
 	return false 
 	end
 
-	if attacker:IsPlayer() and attacker:Team() == owner:Team() then SystemMessage(attacker, "You cannot damage your own factions base core!", Color(255,205,205,255), true) return false end --beware, even zombies can destroy your faction base cores
+	if attacker:IsPlayer() and attacker:Team() == owner:Team() then attacker:SystemMessage("You cannot damage your own factions base core!", Color(255,205,205,255), true) return false end --beware, even zombies can destroy your faction base cores
 	if attacker:IsPlayer() and attacker:Team() != owner:Team() then
 		for k,v in pairs(player.GetAll()) do
 			if v:Team() == owner:Team() and self.Attacked == 0 then
-				SystemMessage(v, "Your faction's base core is under attack!", Color(255,230,230,255), true)
+				v:SystemMessage("Your faction's base core is under attack!", Color(255,230,230,255), true)
 			end
 		end
 	end
@@ -173,7 +173,7 @@ function ENT:OnTakeDamage( dmg )
 			end
 		else
 			if attacker:IsPlayer() then
-				SystemMessage(attacker, "Well... What did you expect? Thought you would get more? No.", Color(255,170,170,255))
+				attacker:SystemMessage("Well... What did you expect? Thought you would get more? No.", Color(255,170,170,255))
 				Payout(attacker, 1500, 1500, 2000, 2000)
 			end
 		end

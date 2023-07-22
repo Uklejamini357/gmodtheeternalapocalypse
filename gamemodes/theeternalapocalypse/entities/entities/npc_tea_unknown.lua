@@ -4,6 +4,7 @@ ENT.Base = "npc_tea_basic"
 ENT.PrintName = "? ? ?" -- unknown zombie, not included (but also unfinished)
 ENT.Category = ""
 ENT.Author = "Uklejamini"
+ENT.Purpose = "???????"
 ENT.Spawnable = true
 ENT.AdminOnly = true
 

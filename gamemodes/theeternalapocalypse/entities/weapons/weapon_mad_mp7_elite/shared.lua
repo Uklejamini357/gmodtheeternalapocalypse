@@ -1,5 +1,3 @@
-// Variables that are used on both client and server
-
 SWEP.Base 				= "weapon_mad_base"
 
 SWEP.ViewModel			= "models/weapons/c_smg1.mdl"
@@ -18,17 +16,17 @@ SWEP.Primary.NumShots		= 1
 SWEP.Primary.Cone			= 0.009
 SWEP.Primary.Delay 		= 0.075
 
-SWEP.Primary.ClipSize		= 40					// Size of a clip
-SWEP.Primary.DefaultClip	= 40					// Default number of bullets in a clip
-SWEP.Primary.Automatic		= true				// Automatic/Semi Auto
+SWEP.Primary.ClipSize		= 40
+SWEP.Primary.DefaultClip	= 40
+SWEP.Primary.Automatic		= true
 SWEP.Primary.Ammo			= "Gravity"
 
-SWEP.Secondary.ClipSize		= -1					// Size of a clip
-SWEP.Secondary.DefaultClip	= -1					// Default number of bullets in a clip
-SWEP.Secondary.Automatic	= false				// Automatic/Semi Auto
+SWEP.Secondary.ClipSize		= -1
+SWEP.Secondary.DefaultClip	= -1
+SWEP.Secondary.Automatic	= false
 SWEP.Secondary.Ammo		= "none"
 
-SWEP.ShellEffect			= "none"	// "none" or "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
+SWEP.ShellEffect			= "none"	-- "none" or "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
 SWEP.ShellDelay			= 0
 
 SWEP.Pistol				= false
@@ -43,10 +41,6 @@ SWEP.IronSightsAng 		= Vector (0, 0, 0)
 SWEP.RunArmOffset 		= Vector (9.071, 0, 1.6418)
 SWEP.RunArmAngle 			= Vector (-12.9765, 26.8708, 0)
 
-/*---------------------------------------------------------
-   Name: SWEP:Precache()
-   Desc: Use this function to precache stuff.
----------------------------------------------------------*/
 function SWEP:Precache()
 
     	util.PrecacheSound("weapons/smg1/smg1_fire1.wav")
@@ -96,28 +90,22 @@ function SWEP:Initialize()
 
 	if CLIENT then
 	
-		// Create a new table for every weapon instance
 		self.VElements = table.FullCopy( self.VElements )
 		self.WElements = table.FullCopy( self.WElements )
 		self.ViewModelBoneMods = table.FullCopy( self.ViewModelBoneMods )
 
-		self:CreateModels(self.VElements) // create viewmodels
-		self:CreateModels(self.WElements) // create worldmodels
+		self:CreateModels(self.VElements)
+		self:CreateModels(self.WElements)
 		
-		// init view model bone build function
 		if IsValid(self.Owner) then
 			local vm = self.Owner:GetViewModel()
 			if IsValid(vm) then
 				self:ResetBonePositions(vm)
 				
-				// Init viewmodel visibility
 				if (self.ShowViewModel == nil or self.ShowViewModel) then
 					vm:SetColor(Color(255,255,255,255))
 				else
-					// we set the alpha to 1 instead of 0 because else ViewModelDrawn stops being called
 					vm:SetColor(Color(255,255,255,1))
-					// ^ stopped working in GMod 13 because you have to do Entity:SetRenderMode(1) for translucency to kick in
-					// however for some reason the view model resets to render mode 0 every frame so we just apply a debug material to prevent it from drawing
 					vm:SetMaterial("Debug/hsv")			
 				end
 			end
@@ -157,7 +145,6 @@ if CLIENT then
 
 		if (!self.vRenderOrder) then
 			
-			// we build a render order because sprites need to be drawn after models
 			self.vRenderOrder = {}
 
 			for k, v in pairs( self.VElements ) do
@@ -193,7 +180,7 @@ if CLIENT then
 				ang:RotateAroundAxis(ang:Forward(), v.angle.r)
 
 				model:SetAngles(ang)
-				//model:SetModelScale(v.size)
+				--model:SetModelScale(v.size)
 				local matrix = Matrix()
 				matrix:Scale(v.size)
 				model:EnableMatrix( "RenderMultiply", matrix )
@@ -279,7 +266,6 @@ if CLIENT then
 		if (IsValid(self.Owner)) then
 			bone_ent = self.Owner
 		else
-			// when the weapon is dropped
 			bone_ent = self
 		end
 		
@@ -310,7 +296,7 @@ if CLIENT then
 				ang:RotateAroundAxis(ang:Forward(), v.angle.r)
 
 				model:SetAngles(ang)
-				//model:SetModelScale(v.size)
+				--model:SetModelScale(v.size)
 				local matrix = Matrix()
 				matrix:Scale(v.size)
 				model:EnableMatrix( "RenderMultiply", matrix )
@@ -379,8 +365,6 @@ if CLIENT then
 			
 			if (!v) then return end
 			
-			// Technically, if there exists an element with the same name as a bone
-			// you can get in an infinite loop. Let's just hope nobody's that stupid.
 			pos, ang = self:GetBoneOrientation( basetab, v, ent )
 			
 			if (!pos) then return end
@@ -404,7 +388,7 @@ if CLIENT then
 			
 			if (IsValid(self.Owner) and self.Owner:IsPlayer() and 
 				ent == self.Owner:GetViewModel() and self.ViewModelFlip) then
-				ang.r = -ang.r // Fixes mirrored models
+				ang.r = -ang.r
 			end
 		
 		end
@@ -416,7 +400,6 @@ if CLIENT then
 
 		if (!tab) then return end
 
-		// Create the clientside models here because Garry says we can't do it in the render hook
 		for k, v in pairs( tab ) do
 			if (v.type == "Model" and v.model and v.model != "" and (!IsValid(v.modelEnt) or v.createdModel != v.model) and 
 					string.find(v.model, ".mdl") and file.Exists (v.model, "GAME") ) then
@@ -437,7 +420,6 @@ if CLIENT then
 				
 				local name = v.sprite.."-"
 				local params = { ["$basetexture"] = v.sprite }
-				// make sure we create a unique name based on the selected options
 				local tocheck = { "nocull", "additive", "vertexalpha", "vertexcolor", "ignorez" }
 				for i, j in pairs( tocheck ) do
 					if (v[j]) then
@@ -465,8 +447,6 @@ if CLIENT then
 			
 			if (!vm:GetBoneCount()) then return end
 			
-			// !! WORKAROUND !! //
-			// We need to check all model names :/
 			local loopthrough = self.ViewModelBoneMods
 			if (!hasGarryFixedBoneScalingYet) then
 				allbones = {}
@@ -485,13 +465,11 @@ if CLIENT then
 				
 				loopthrough = allbones
 			end
-			// !! ----------- !! //
 			
 			for k, v in pairs( loopthrough ) do
 				local bone = vm:LookupBone(k)
 				if (!bone) then continue end
 				
-				// !! WORKAROUND !! //
 				local s = Vector(v.scale.x,v.scale.y,v.scale.z)
 				local p = Vector(v.pos.x,v.pos.y,v.pos.z)
 				local ms = Vector(1,1,1)
@@ -505,7 +483,6 @@ if CLIENT then
 				end
 				
 				s = s * ms
-				// !! ----------- !! //
 				
 				if vm:GetManipulateBoneScale(bone) != s then
 					vm:ManipulateBoneScale( bone, s )
@@ -538,9 +515,6 @@ if CLIENT then
 		Global utility code
 	**************************/
 
-	// Fully copies the table, meaning all tables inside this table are copied too and so on (normal table.Copy copies only their reference).
-	// Does not copy entities of course, only copies their reference.
-	// WARNING: do not use on tables that contain themselves somewhere down the line or you'll get an infinite loop
 	function table.FullCopy( tab )
 
 		if (!tab) then return nil end
@@ -548,7 +522,7 @@ if CLIENT then
 		local res = {}
 		for k, v in pairs( tab ) do
 			if (type(v) == "table") then
-				res[k] = table.FullCopy(v) // recursion ho!
+				res[k] = table.FullCopy(v)
 			elseif (type(v) == "Vector") then
 				res[k] = Vector(v.x, v.y, v.z)
 			elseif (type(v) == "Angle") then

@@ -54,7 +54,7 @@ function ENT:Splode()
 
 	for _,v in pairs(damagedents) do
 		if v:IsPlayer() then
-			v:TakeDamage(GAMEMODE.tea_CalcDefenseDamage(v, 50), self.Owner)
+			v:TakeDamage(GAMEMODE:CalcDefenseDamage(v, 50), self.Owner)
 		elseif v:GetClass() == "prop_flimsy" or v:GetClass() == "prop_strong" then
 			v:TakeDamage(300,self.Owner)
 		elseif SpecialSpawns[v:GetClass()] then
@@ -67,7 +67,7 @@ end
 
 function ENT:PhysicsCollide(data, physobj)
 	if data.HitEntity:IsPlayer() then
-		data.HitEntity:TakeDamage(GAMEMODE.tea_CalcDefenseDamage(data.HitEntity, 10), self.Owner)
+		data.HitEntity:TakeDamage(GAMEMODE:CalcDefenseDamage(data.HitEntity, 10), self.Owner)
 	end
 
 	local gas = EffectData()

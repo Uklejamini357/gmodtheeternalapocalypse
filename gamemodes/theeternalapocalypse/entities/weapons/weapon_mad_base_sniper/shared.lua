@@ -1,9 +1,7 @@
-// Variables that are used on both client and server
-// The scope code is based on the Realistic Weapons Base made by Teta Bonita
 
 SWEP.Base				= "weapon_mad_base"
 
-SWEP.ShellEffect			= "effect_mad_shell_rifle"	// "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
+SWEP.ShellEffect			= "effect_mad_shell_rifle"	-- "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
 SWEP.ShellDelay			= 1
 
 SWEP.Pistol				= false
@@ -23,10 +21,6 @@ if SERVER then
   util.AddNetworkString( "HitMarkerSnip" )
  end
 
-/*---------------------------------------------------------
-   Name: SWEP:Precache()
-   Desc: Use this function to precache stuff.
----------------------------------------------------------*/
 function SWEP:Precache()
 
 	util.PrecacheSound("weapons/sniper/sniper_zoomin.wav")
@@ -34,10 +28,6 @@ function SWEP:Precache()
 	util.PrecacheSound("weapons/zoom.wav")
 end
 
-/*---------------------------------------------------------
-   Name: ENT:SetupDataTables()
-   Desc: Setup the data tables.
----------------------------------------------------------*/
 function SWEP:SetupDataTables()  
 
 	self:DTVar("Bool", 0, "Holsted")
@@ -47,10 +37,6 @@ function SWEP:SetupDataTables()
 end 
 
 
-/*---------------------------------------------------------
-   Name: SWEP:Initialize()
-   Desc: Called when the weapon is first loaded.
----------------------------------------------------------*/
 function SWEP:Initialize()
 
 	if (SERVER) then
@@ -143,16 +129,10 @@ function SWEP:ResetVariables()
 	end
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:Reload()
-   Desc: Reload is being pressed.
----------------------------------------------------------*/
 function SWEP:Reload()
 
-	// When the weapon is already doing an animation, just return end because we don't want to interrupt it
 	if (self.ActionDelay > CurTime()) then return end 
 
-	// Need to call the default reload before the real reload animation (don't try to understand my reason)
 	self.Weapon:DefaultReload(ACT_VM_RELOAD)
 
 	if (IsValid(self.Owner) and self.Owner:GetViewModel()) then
@@ -171,13 +151,8 @@ function SWEP:Reload()
 	end
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:PrimaryAttack()
-   Desc: +attack1 has been pressed.
----------------------------------------------------------*/
 function SWEP:PrimaryAttack()
 
-	// Holst/Deploy your fucking weapon
 	if (not self.Owner:IsNPC() and self.Owner:KeyDown(IN_USE)) then
 		bHolsted = !self.Weapon:GetDTBool(0)
 		self:SetHolsted(bHolsted)
@@ -315,10 +290,6 @@ function SWEP:SetScope(b, player)
 	self.Weapon:SetDTBool(2, b) 
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:Think()
-   Desc: Called every frame.
----------------------------------------------------------*/
 function SWEP:Think()
 	self:SetHoldType(self.HoldType)
 
@@ -360,7 +331,6 @@ function SWEP:Think()
 			self.ScopeAfterShoot = false
 		end
 
-		// If you're running or if your weapon is holsted, the third person animation is going to change
 	if self.Owner:KeyDown(IN_SPEED) or self.Weapon:GetDTBool(0) then
 		if self.Sniper then
 			if self.Owner:KeyDown(IN_DUCK) then
@@ -406,11 +376,6 @@ end
 	self:NextThink(CurTime())
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:Holster()
-   Desc: Weapon wants to holster.
-	   Return true to allow the weapon to holster.
----------------------------------------------------------*/
 function SWEP:Holster()
 
 	self:ResetVariables()

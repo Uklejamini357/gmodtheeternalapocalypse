@@ -1,8 +1,8 @@
 include('shared.lua')
 
-SWEP.PrintName			= "Repair Wrench"						// 'Nice' Weapon name (Shown on HUD)	
-SWEP.Slot				= 5							// Slot in the weapon selection menu
-SWEP.SlotPos			= 3							// Position in the slot
+SWEP.PrintName			= "Repair Wrench"	
+SWEP.Slot				= 5
+SWEP.SlotPos			= 3
 SWEP.DrawAmmo			= false
 
 function SWEP:DrawHUD()

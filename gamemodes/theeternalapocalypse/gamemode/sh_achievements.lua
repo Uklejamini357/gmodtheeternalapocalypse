@@ -1,5 +1,6 @@
 -------- Achievements --------
 -- please don't modify them unless you know well
+-- NOTE: This is still work in progress!
 
 
 GM.Achievements = {
@@ -105,7 +106,9 @@ function meta:GainAchievement(achtype)
 	if !achtype or !GAMEMODE.Achievements[achtype] then return end
 	if self.AchProgress[achtype] >= (GAMEMODE.Achievements[achtype]["Tiers"][self.Achievements[achtype]] or 0) then
 		GAMEMODE.Achievements[achtype]["Reward"](self)
-		print("YES!", self, achtype)
+		if GAMEMODE:GetDebug() >= DEBUGGING_ADVANCED then
+			print("Gave achievement for "..tostring(self), achtype)
+		end
 		self.Achievements["killzombies"] = self.Achievements["killzombies"] + 1
 		tea_FullyUpdatePlayer(self)
 	end

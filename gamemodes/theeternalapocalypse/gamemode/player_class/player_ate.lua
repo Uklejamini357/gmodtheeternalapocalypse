@@ -1,7 +1,7 @@
 
 AddCSLuaFile()
 
-include( 'taunt_camera.lua' )
+include('taunt_camera.lua')
 
 
 local PLAYER = {}
@@ -9,12 +9,12 @@ local PLAYER = {}
 PLAYER.DisplayName			= "Survivor"
 
 PLAYER.SlowWalkSpeed		= 100		-- There was a gmod update that breaks the gamemode again (everything's fine now)
-PLAYER.WalkSpeed			= 120		-- How fast to move when not running
-PLAYER.RunSpeed				= 250		-- How fast to move when running
+PLAYER.WalkSpeed			= 150		-- How fast to move when not running
+PLAYER.RunSpeed				= 300		-- How fast to move when running
 PLAYER.CrouchedWalkSpeed	= 0.3		-- Multiply move speed by this when crouching
 PLAYER.DuckSpeed			= 0.5		-- How fast to go from not ducking, to ducking
 PLAYER.UnDuckSpeed			= 0.5		-- How fast to go from ducking, to not ducking
-PLAYER.JumpPower			= 160		-- How powerful our jump should be
+PLAYER.JumpPower			= 200		-- How powerful our jump should be
 PLAYER.CanUseFlashlight		= true		-- Can we use the flashlight
 PLAYER.MaxHealth			= 100		-- Max health we can have
 PLAYER.MaxArmor 			= 100		-- Max armor we can have
@@ -46,112 +46,70 @@ end
 function PLAYER:Init()
 end
 
---
--- Name: PLAYER:Spawn
--- Desc: Called serverside only when the player spawns
--- Arg1:
--- Ret1:
---
 function PLAYER:Spawn()
 end
 
---
--- Name: PLAYER:Loadout
--- Desc: Called on spawn to give the player their default loadout
--- Arg1:
--- Ret1:
---
 function PLAYER:Loadout()
 end
 
 function PLAYER:SetModel()
 
-	local cl_playermodel = self.Player:GetInfo( "cl_playermodel" )
-	local modelname = player_manager.TranslatePlayerModel( cl_playermodel )
-	util.PrecacheModel( modelname )
-	self.Player:SetModel( modelname )
+	local cl_playermodel = self.Player:GetInfo("cl_playermodel")
+	local modelname = player_manager.TranslatePlayerModel(cl_playermodel)
+	util.PrecacheModel(modelname)
+	self.Player:SetModel(modelname)
 
 end
 
 function PLAYER:ShouldDrawLocal() 
 
-	if ( self.TauntCam:ShouldDrawLocalPlayer( self.Player, self.Player:IsPlayingTaunt() ) ) then return true end
+	if (self.TauntCam:ShouldDrawLocalPlayer(self.Player, self.Player:IsPlayingTaunt())) then return true end
 
 end
 
 --
 -- Allow player class to create move
 --
-function PLAYER:CreateMove( cmd )
+function PLAYER:CreateMove(cmd)
 
-	if ( self.TauntCam:CreateMove( cmd, self.Player, self.Player:IsPlayingTaunt() ) ) then return true end
+	if (self.TauntCam:CreateMove(cmd, self.Player, self.Player:IsPlayingTaunt())) then return true end
 
 end
 
 --
 -- Allow changing the player's view
 --
-function PLAYER:CalcView( view )
+function PLAYER:CalcView(view)
 
-	if ( self.TauntCam:CalcView( view, self.Player, self.Player:IsPlayingTaunt() ) ) then return true end
+	if (self.TauntCam:CalcView(view, self.Player, self.Player:IsPlayingTaunt())) then return true end
 
 	-- Your stuff here
 
 end
 
-function PLAYER:Death( inflictor, attacker )
-
-end
+function PLAYER:Death(inflictor, attacker) end
 
 -- Shared
-function PLAYER:StartMove( cmd, mv ) end	-- Copies from the user command to the move
-function PLAYER:Move( mv ) end				-- Runs the move (can run multiple times for the same client)
-function PLAYER:FinishMove( mv ) end		-- Copy the results of the move back to the Player
+function PLAYER:StartMove(cmd, mv) end	-- Copies from the user command to the move
+function PLAYER:Move(mv) end				-- Runs the move (can run multiple times for the same client)
+function PLAYER:FinishMove(mv) end		-- Copy the results of the move back to the Player
 
---
--- Name: PLAYER:ViewModelChanged
--- Desc: Called when the player changes their weapon to another one causing their viewmodel model to change
--- Arg1: Entity|viewmodel|The viewmodel that is changing
--- Arg2: string|old|The old model
--- Arg3: string|new|The new model
--- Ret1:
---
-function PLAYER:ViewModelChanged( vm, old, new )
+function PLAYER:ViewModelChanged(vm, old, new)
 end
 
---
--- Name: PLAYER:PreDrawViewmodel
--- Desc: Called before the viewmodel is being drawn (clientside)
--- Arg1: Entity|viewmodel|The viewmodel
--- Arg2: Entity|weapon|The weapon
--- Ret1:
---
-function PLAYER:PreDrawViewModel( vm, weapon )
+function PLAYER:PreDrawViewModel(vm, weapon)
 end
 
---
--- Name: PLAYER:PostDrawViewModel
--- Desc: Called after the viewmodel has been drawn (clientside)
--- Arg1: Entity|viewmodel|The viewmodel
--- Arg2: Entity|weapon|The weapon
--- Ret1:
---
-function PLAYER:PostDrawViewModel( vm, weapon )
+function PLAYER:PostDrawViewModel(vm, weapon)
 end
 
---
--- Name: PLAYER:GetHandsModel
--- Desc: Called on player spawn to determine which hand model to use
--- Arg1:
--- Ret1: table|info|A table containing model, skin and body
---
 function PLAYER:GetHandsModel()
 
 	-- return { model = "models/weapons/c_arms_cstrike.mdl", skin = 1, body = "0100000" }
 
-	local playermodel = player_manager.TranslateToPlayerModelName( self.Player:GetModel() )
-	return player_manager.TranslatePlayerHands( playermodel )
+	local playermodel = player_manager.TranslateToPlayerModelName(self.Player:GetModel())
+	return player_manager.TranslatePlayerHands(playermodel)
 
 end
 
-player_manager.RegisterClass( "player_ate", PLAYER, nil )
+player_manager.RegisterClass("player_ate", PLAYER, nil)

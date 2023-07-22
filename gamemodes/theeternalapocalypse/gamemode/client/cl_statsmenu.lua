@@ -1,14 +1,18 @@
 -------- STATISTICS --------
 
-TNick = 0
-TBestSurvivalTime = 0
-TZKills = 0
-TPlyKills = 0
-TPlyDeaths = 0
-TMMeleeXP = 0
-TMMeleeLvl = 0
-TMPvPXP = 0
-TMPvPLvl = 0
+local TargetStats = {}
+TargetStats.Nick = 0
+TargetStats.BestSurvivalTime = 0
+TargetStats.ZKills = 0
+TargetStats.PlyKills = 0
+TargetStats.PlyDeaths = 0
+TargetStats.MMeleeXP = 0
+TargetStats.MMeleeLvl = 0
+TargetStats.MPvPXP = 0
+TargetStats.MPvPLvl = 0
+
+local RefreshStats = function()
+end
 
 net.Receive("UpdateTargetStats", function(length)
     local t1 = net.ReadString()
@@ -23,24 +27,27 @@ net.Receive("UpdateTargetStats", function(length)
     local t10 = net.ReadFloat()
     local t11 = net.ReadFloat()
 
-    TNick = t1
-    TBestSurvivalTime = t2
-    TZKills = t3
-    TPlyKills = t4
-    TPlyDeaths = t5
-    TMMeleeXP = t6
-    TMMeleeLvl = t7
-    TMMeleeReqXP = t8
-    TMPvPXP = t9
-    TMPvPLvl = t10
-    TMPvPReqXP = t11
+    TargetStats.Nick = t1
+    TargetStats.BestSurvivalTime = t2
+    TargetStats.ZKills = t3
+    TargetStats.PlyKills = t4
+    TargetStats.PlyDeaths = t5
+    TargetStats.MMeleeXP = t6
+    TargetStats.MMeleeLvl = t7
+    TargetStats.MMeleeReqXP = t8
+    TargetStats.MPvPXP = t9
+    TargetStats.MPvPLvl = t10
+    TargetStats.MPvPReqXP = t11
+
+    RefreshStats()
 end)
 
-function StatsMenu()
+function StatsMenu(ent)
+    if not ent then return end
     local StatsFrame = vgui.Create("DFrame")
     StatsFrame:SetSize(700, 400)
     StatsFrame:Center()
-    StatsFrame:SetTitle("Stats Panel")
+    StatsFrame:SetTitle(ent:GetName())
     StatsFrame:SetDraggable(false)
     StatsFrame:SetVisible(true)
     StatsFrame:SetAlpha(0)
@@ -95,21 +102,20 @@ function StatsMenu()
 	stats6:SetText("")
 	stats6:SetPos(20, 175)
     
-	timer.Simple(math.Rand(0.5,1), function()
+	RefreshStats = function() -- I'm a "bit of coder"... no?
         if !StatsFrame:IsValid() then return end
         loadtext:SetText("")
-        StatsFrame:SetTitle(TNick.."'s Stats")
-        stats1:SetText("Best Survival Time: "..TBestSurvivalTime.."s")
+        stats1:SetText(translate.Format("besttimesurvived", util.ToMinutesSeconds(TargetStats.BestSurvivalTime)))
         stats1:SizeToContents()
-        stats2:SetText("Zombies killed in total: "..TZKills)
+        stats2:SetText(Format("Zombies killed in total: %s", TargetStats.ZKills))
         stats2:SizeToContents()
-        stats3:SetText("Total players killed on this server: "..TPlyKills)
+        stats3:SetText(Format("Total players killed on this server: %s", TargetStats.PlyKills))
 	    stats3:SizeToContents()
-        stats4:SetText("Total deaths on this server: "..TPlyDeaths)
+        stats4:SetText(Format("Total deaths on this server: %s", TargetStats.PlyDeaths))
 	    stats4:SizeToContents()
-        stats5:SetText("Mastery Melee XP: "..math.floor(TMMeleeXP).." / "..TMMeleeReqXP.." (Level "..TMMeleeLvl..")")
+        stats5:SetText(Format("Mastery Melee XP: %s / %s (Level %s)", math.floor(TargetStats.MMeleeXP), TargetStats.MMeleeReqXP, TargetStats.MMeleeLvl))
 	    stats5:SizeToContents()
-        stats6:SetText("Mastery PvP XP: "..math.floor(TMPvPXP).." / "..TMPvPReqXP.." (Level "..TMPvPLvl..")")
+        stats6:SetText(Format("Mastery PvP XP: %s / %s (Level %s)", math.floor(TargetStats.MPvPXP), TargetStats.MPvPReqXP, TargetStats.MPvPLvl))
 	    stats6:SizeToContents()
-    end)
+    end
 end

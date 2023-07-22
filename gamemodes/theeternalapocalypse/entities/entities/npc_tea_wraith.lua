@@ -4,6 +4,7 @@ ENT.Base = "npc_tea_basic"
 ENT.PrintName = "Wraith Zombie"
 ENT.Category = ""
 ENT.Author = "Uklejamini"
+ENT.Purpose = "Can temporarily blind survivors"
 ENT.Spawnable = true
 ENT.AdminOnly = true
 

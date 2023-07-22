@@ -1,5 +1,3 @@
-// Variables that are used on both client and server
-
 SWEP.Base				= "weapon_mad_base"
 
 SWEP.ViewModel			= "models/weapons/v_minigunvulcan.mdl"
@@ -10,6 +8,8 @@ SWEP.HoldType			= "crossbow"
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= false
 SWEP.Category			= "ZW Weapons"
+SWEP.Instructions		= ""
+SWEP.Purpose			= "An enormous minigun that spews a constant stream of hot lead. Uses Rifle ammo."
 
 SWEP.Primary.Sound		= Sound("Weapon_M249.Single")
 SWEP.Primary.Recoil		= 0.55
@@ -20,17 +20,17 @@ SWEP.Primary.Delay		= 0.055
 
 SWEP.IronFireAccel	= 5
 
-SWEP.Primary.ClipSize		= 250					// Size of a clip
-SWEP.Primary.DefaultClip	= 0				// Default number of bullets in a clip
-SWEP.Primary.Automatic		= true				// Automatic/Semi Auto
+SWEP.Primary.ClipSize		= 250
+SWEP.Primary.DefaultClip	= 0
+SWEP.Primary.Automatic		= true
 SWEP.Primary.Ammo			= "ammo_rifle"
 
-SWEP.Secondary.ClipSize		= -1					// Size of a clip
-SWEP.Secondary.DefaultClip	= -1					// Default number of bullets in a clip
-SWEP.Secondary.Automatic	= false				// Automatic/Semi Auto
+SWEP.Secondary.ClipSize		= -1
+SWEP.Secondary.DefaultClip	= -1
+SWEP.Secondary.Automatic	= false
 SWEP.Secondary.Ammo		= "none"
 
-SWEP.ShellEffect	= "effect_mad_shell_rifle"	// "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
+SWEP.ShellEffect	= "effect_mad_shell_rifle"	-- "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
 
 SWEP.Pistol			= false
 SWEP.Rifle			= true
@@ -43,10 +43,6 @@ SWEP.RunArmOffset 	= Vector(0, -6.356, -4.719)
 SWEP.RunArmAngle 	= Vector(15.284, 0, 0)
 
 
-/*---------------------------------------------------------
-   Name: SWEP:Precache()
-   Desc: Use this function to precache stuff.
----------------------------------------------------------*/
 function SWEP:Precache()
 
     	util.PrecacheSound("weapons/m249/m249-1.wav")
@@ -59,7 +55,6 @@ end
 
 function SWEP:PrimaryAttack()
 
-	// Holst/Deploy your fucking weapon
 	if (not self.Owner:IsNPC() and self.Owner:KeyDown(IN_USE)) then
 		bHolsted = !self.Weapon:GetDTBool(0)
 		self:SetHolsted(bHolsted)

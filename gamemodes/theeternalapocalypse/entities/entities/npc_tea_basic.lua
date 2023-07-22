@@ -2,7 +2,8 @@ AddCSLuaFile()
 
 ENT.Base = "base_nextbot"
 ENT.PrintName = "Shambler Zombie"
-ENT.Category = ""
+ENT.Category = "TEA Zombies"
+ENT.Purpose = "A zombie that attack you and can infect"
 ENT.Author = "Uklejamini"
 ENT.Spawnable = true
 ENT.AdminOnly = true
@@ -111,8 +112,13 @@ end
 function ENT:Precache()
 
 --Models--
-util.PrecacheModel(self.ZombieStats["Model"])
+	util.PrecacheModel(self.ZombieStats["Model"])
 
+end
+
+
+function ENT:GetTEAZombieSpeedMul()
+	return math.min(self:GetEliteVariant() == VARIANT_ENRAGED and 1.6 or 1, 2 - (self:Health() / self:GetMaxHealth())) * GAMEMODE.ZombieSpeedMultiplier * self.SpeedBuff
 end
 
 
@@ -125,6 +131,7 @@ function ENT:Initialize()
 	self:SetHealth(self.ZombieStats["Health"])
 	self:SetMaxHealth(self.ZombieStats["Health"])
 	self:SetCollisionBounds(Vector(-12,-12, 0), Vector(12, 12, 64))
+	self:SetCollisionGroup(COLLISION_GROUP_NONE)
 	self.NxtTick = 5
 	self.NextPainSound = CurTime()
 end
@@ -138,24 +145,24 @@ function ENT:DelayedCallback(delay, callback)
 	end)
 end
 
-function ENT:OnContact( ent )
+function ENT:OnContact(ent)
 	if self.NextVehicleCollide > CurTime() then return end
 	if ent:IsVehicle() and ent:GetVelocity():Length() > 300 then
-		ent:EmitSound("physics/flesh/flesh_bloody_break.wav", 100, math.random( 80, 90) )
+		ent:EmitSound("physics/flesh/flesh_bloody_break.wav", 100, math.random(80, 90))
 
 		local ded2 = DamageInfo()
 		ded2:SetDamage(0)
 		print("taken: "..math.min((self:Health() / 4), ent:GetVelocity():Length() / 28).." | dealt: "..ent:GetVelocity():Length() / 2.5)
-		ded2:SetDamageType( DMG_VEHICLE )
+		ded2:SetDamageType(DMG_VEHICLE)
 		local f = (ent:GetPos() - self:GetPos() * 200) * ent:GetVelocity():Length() / 3000
-		ded2:SetDamageForce( f )
-		ent:TakeDamageInfo( ded2 )
+		ded2:SetDamageForce(f)
+		ent:TakeDamageInfo(ded2)
 
 		local ded = DamageInfo()
 
-		ded:SetDamage( ent:GetVelocity():Length() )
-		ded:SetDamageType( DMG_VEHICLE )
-		if ent:GetDriver():IsValid() then ded:SetAttacker( ent:GetDriver() ) else ded:SetAttacker( game.GetWorld() ) end
+		ded:SetDamage(ent:GetVelocity():Length())
+		ded:SetDamageType(DMG_VEHICLE)
+		if ent:GetDriver():IsValid() then ded:SetAttacker(ent:GetDriver()) else ded:SetAttacker(game.GetWorld()) end
 		self:TakeDamageInfo(ded)
 
 		self.NextVehicleCollide = CurTime() + 0.5
@@ -163,17 +170,18 @@ function ENT:OnContact( ent )
 end
 
 function ENT:Think()
-	if !SERVER then return end --once again, clientside error here, so this was added to prevent further clientside errors
+	if !SERVER then return end
 	if !IsValid(self) then return end
 
--- need to slowly drown them in water otherwise the stupid fucks will just skip happily along the sea floor
-	if self:WaterLevel() >= 3 then
+-- need to slowly drown them in water or else they will just skip happily along the sea floor
+	if self:WaterLevel() >= 3 and self:Health() > 0 then
 		local drown = DamageInfo()
-		drown:SetDamage(math.max(1, self:GetMaxHealth() * 0.008))
-		drown:SetDamageType(DMG_DROWN)
+		drown:SetDamage(math.Clamp(self:GetMaxHealth() * 0.005, 1, 10))
+		drown:SetDamageType(DMG_DIRECT + DMG_DROWN)
 		drown:SetAttacker(game.GetWorld())
 		drown:SetDamageForce(Vector(0, 0, 0))
 		self:TakeDamageInfo(drown)
+		self.LastAttacker = nil -- if you try killing zombies by water, don't think about it.
 	end
 end
 
@@ -188,11 +196,11 @@ function ENT:RunBehaviour()
 		if CLIENT then return end
 		local target = self.target
 
-		if IsValid(target) and target:Alive() and (self:GetRangeTo(target) <= (1500 * self.RageLevel) or GetConVar("tea_config_zombieapocalypse"):GetInt() >= 1) and !target.HasNoTarget then
+		if IsValid(target) and target:Alive() and (self:GetRangeTo(target) <= (1500 * self.RageLevel) or GAMEMODE.ZombieApocalypse) and !target.HasNoTarget then
 			self.loco:FaceTowards(target:GetPos())
 
 -- check if we are obstructed by props and smash them if we are
-			local breakshit = ents.FindInSphere(self:GetPos() + self:GetAngles():Up() * 55, 35)
+			local breakshit = ents.FindInSphere(self:GetPos() + self:GetAngles():Up() * 55, 45)
 
 			for k,v in pairs(breakshit) do
 				if v:IsValid() then
@@ -206,7 +214,7 @@ function ENT:RunBehaviour()
 			
 			if self.NxtTick < 1 then
 				if math.random(1, 500) < 25 then
-					self:EmitSound( table.Random(self.IdleSounds) )
+					self:EmitSound(table.Random(self.IdleSounds))
 				end
 
 				self.NxtTick = 5
@@ -234,14 +242,14 @@ function ENT:RunBehaviour()
 
 				self:StartActivity(self.AttackAnim)
 				coroutine.wait(self.ZombieStats["AfterStrikeDelay"])
-				self:StartActivity( self.WalkAnim )	
+				self:StartActivity(self.WalkAnim)	
 
 
 -- we can see a player but we cant reach them so lets go fuck their shit up
 			else
 				self:StartActivity(self.RunAnim)
 
-				self.loco:SetDesiredSpeed(self.ZombieStats["MoveSpeedRun"] * self.SpeedBuff * GetConVar("tea_config_zombiespeedmul"):GetFloat())
+				self.loco:SetDesiredSpeed(self.ZombieStats["MoveSpeedRun"] * self:GetTEAZombieSpeedMul())
 				self:MoveToPos(target:GetPos(), {
 					tolerance = self.ZombieStats["Reach"],
 					maxage = 1,
@@ -263,7 +271,7 @@ function ENT:RunBehaviour()
 -- find ourselves a new target
 			if (!self.target) then
 				for k, v in pairs(player.GetAll()) do
-					if (v:Alive() and (self:GetRangeTo(v) <= (1200 * self.RageLevel) or GetConVar("tea_config_zombieapocalypse"):GetInt() >= 1) and !v.HasNoTarget) then
+					if (v:Alive() and (self:GetRangeTo(v) <= (1200 * self.RageLevel) or GAMEMODE.ZombieApocalypse) and !v.HasNoTarget) then
 						self.target = v
 						if self.CanScream == true then
 							self:EmitSound(table.Random(self.AlertSounds), 90, math.random(90, 110))
@@ -288,7 +296,7 @@ end
 function ENT:OnKilled(damageInfo)
 	local attacker = damageInfo:GetAttacker()
 /*
-	if( attacker:IsPlayer() ) then
+	if(attacker:IsPlayer()) then
 		Payout(attacker, self.XPMin, self.XPMax, self.MoneyMin, self.MoneyMax)
 	end
 */
@@ -297,12 +305,13 @@ function ENT:OnKilled(damageInfo)
 	timer.Simple(0.25, function()
 		self:Remove()
 	end)
+	gamemode.Call("OnNPCKilled", self, damageInfo)
 end
 
 function ENT:OnInjured(damageInfo)
 	local attacker = damageInfo:GetAttacker()
 	if self.NextPainSound < CurTime() and damageInfo:GetDamage() < self:Health() then
-		self.NextPainSound = CurTime() + 0.5
+		self.NextPainSound = CurTime() + 0.6
 		self:EmitSound(table.Random(self.PainSounds), 100, math.random(90, 110))
 	end
 	if !attacker:IsValid() then return end
@@ -313,8 +322,13 @@ function ENT:OnInjured(damageInfo)
 	if self.RageLevel <= 2 then
 		self.RageLevel = 2
 	end
+	
+	damageInfo = self:OnInjuredAlt(damageInfo)
 end
 
+function ENT:OnInjuredAlt(dmginfo)
+	return dmginfo
+end
 
 
 function ENT:AttackPlayer(ply)
@@ -366,7 +380,7 @@ function ENT:AttackProp(target)
 		util.ScreenShake(target:GetPos(), 5, 5, math.Rand(0.2, 0.4), 300)
 	end
 	coroutine.wait(self.ZombieStats["AfterStrikeDelay"])
-	self:StartActivity( self.WalkAnim )
+	self:StartActivity(self.WalkAnim)
 end
 
 
@@ -437,7 +451,7 @@ function ENT:AttackDoor(target)
 	ent:Spawn()
 	timer.Simple(tonumber(GAMEMODE.Config["DoorResetTime"]), function() ResetDoor(target, ent) end)
 	coroutine.wait(self.ZombieStats["AfterStrikeDelay"])
-	self:StartActivity( self.WalkAnim )
+	self:StartActivity(self.WalkAnim)
 end
 
 
@@ -448,7 +462,7 @@ function ENT:ApplyPlayerDamage(ply, damage, hitforce, infection)
 	local dmg1 = tonumber(damage)
 
 	damageInfo:SetAttacker(self)
-	damageInfo:SetDamage(GAMEMODE.tea_CalcPlayerDamage(ply, dmg1))
+	damageInfo:SetDamage(GAMEMODE:CalcPlayerDamage(ply, dmg1))
 	damageInfo:SetDamageType(DMG_CLUB)
 
 	local force = ply:GetAimVector() * hitforce
@@ -460,6 +474,6 @@ function ENT:ApplyPlayerDamage(ply, damage, hitforce, infection)
 	ply:ViewPunch(VectorRand():Angle() * 0.05)
 	ply:SetVelocity(force)
 	if math.random(0, 100) > (100 - infection * (1 - (0.04 * ply.StatImmunity))) then
-		ply.Infection = ply.Infection + math.random(60,300)
+		ply:AddInfection(math.random(60,300))
 	end
 end

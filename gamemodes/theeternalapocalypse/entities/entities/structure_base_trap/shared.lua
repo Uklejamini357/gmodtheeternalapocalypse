@@ -62,7 +62,7 @@ function ENT:Initialize()
 		for _,v in pairs(cube) do
 			if v:IsPlayer() or v:IsNPC() or v.Type == "nextbot" then self:Remove()
 			if v:IsPlayer() then
- 			SendChat( v, "Unable to build prop, biological obstruction detected" )
+ 			v:SendChat("Unable to build prop, biological obstruction detected" )
  			end
 		end
 	end
@@ -76,12 +76,12 @@ function ENT:Use(activator, caller)
 local owner = self:GetNWEntity("owner")
 if !self.IsBuilt then return false end
 if self.UseTimer > CurTime() then return false end
-if activator:Team() != owner:Team() then SystemMessage(activator, "This doesn't belong to your faction!", Color(255,205,205,255), true) return false end
+if activator:Team() != owner:Team() then activator:SystemMessage("This doesn't belong to your faction!", Color(255,205,205,255), true) return false end
 
 activator.Hunger = 10000
 
 activator:EmitSound("npc/barnacle/barnacle_gulp2.wav")
-SystemMessage(activator, "That was delicious!", Color(205,255,205,255), false)
+activator:SystemMessage("That was delicious!", Color(205,255,205,255), false)
 self.UseTimer = CurTime() + 1
 
 end 
@@ -114,7 +114,7 @@ end
 	local attacker = dmg:GetAttacker()
 
 	if attacker:IsPlayer() and attacker:IsValid() and attacker:Team() == 1 and attacker:GetNWBool("pvp") != true and self:GetNWEntity("owner") != attacker then -- this should stop little shitters from wrecking your base while not in pvp mode
-	SystemMessage(attacker, "You cannot damage other players props unless you have PvP mode enabled!", Color(255,205,205,255), true)
+		attacker:SystemMessage("You cannot damage other players props unless you have PvP mode enabled!", Color(255,205,205,255), true)
 	return false 
 	end
 

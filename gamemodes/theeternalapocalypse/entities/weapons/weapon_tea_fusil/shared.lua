@@ -1,5 +1,3 @@
-// Variables that are used on both client and server
-
 SWEP.Base 				= "weapon_mad_base"
 
 SWEP.ViewModel			= "models/weapons/cstrike/c_rif_famas.mdl"
@@ -22,17 +20,17 @@ SWEP.Contact			= ""
 SWEP.Purpose			= "A tough, accurate rifle that was used in large numbers by the european union as they tried to quell the zombie plague"
 SWEP.Instructions			= "Left click to fire, Right click to aim, uses rifle rounds"
 
-SWEP.Primary.ClipSize		= 30					// Size of a clip
-SWEP.Primary.DefaultClip	= 0					// Default number of bullets in a clip
-SWEP.Primary.Automatic		= true				// Automatic/Semi Auto
+SWEP.Primary.ClipSize		= 30
+SWEP.Primary.DefaultClip	= 0
+SWEP.Primary.Automatic		= true
 SWEP.Primary.Ammo			= "ammo_rifle"
 
-SWEP.Secondary.ClipSize		= -1					// Size of a clip
-SWEP.Secondary.DefaultClip	= -1					// Default number of bullets in a clip
-SWEP.Secondary.Automatic	= false				// Automatic/Semi Auto
+SWEP.Secondary.ClipSize		= -1
+SWEP.Secondary.DefaultClip	= -1
+SWEP.Secondary.Automatic	= false
 SWEP.Secondary.Ammo		= "none"
 
-SWEP.ShellEffect			= "effect_mad_shell_rifle"	// "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
+SWEP.ShellEffect			= "effect_mad_shell_rifle"	-- "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
 SWEP.ShellDelay			= 0
 
 SWEP.Pistol				= false
@@ -69,10 +67,6 @@ SWEP.data.Damage			= 1
 SWEP.data.Recoil			= 1
 */
 
-/*---------------------------------------------------------
-   Name: SWEP:Precache()
-   Desc: Use this function to precache stuff.
----------------------------------------------------------*/
 function SWEP:Precache()
 
     	util.PrecacheSound("weapons/famas/famas-1.wav")
@@ -80,7 +74,6 @@ end
 
 function SWEP:PrimaryAttack()
 
-	// Holst/Deploy your fucking weapon
 	if (not self.Owner:IsNPC() and self.Owner:KeyDown(IN_USE)) then
 		bHolsted = !self.Weapon:GetDTBool(0)
 		self:SetHolsted(bHolsted)
@@ -140,7 +133,6 @@ function SWEP:Think()
 		self:SetIronsights(false)
 	end
 
-		// If you're running or if your weapon is holsted, the third person animation is going to change
 	if self.Owner:KeyDown(IN_SPEED) or self.Weapon:GetDTBool(0) then
 		if self.Rifle or self.Sniper or self.Shotgun then
 			if self.Owner:KeyDown(IN_DUCK) then
@@ -157,7 +149,6 @@ function SWEP:Think()
 	end
 	
 
-	// Burst fire mode
 		if self.BurstTimer + self.BurstDelay < CurTime() then
 			if self.BurstCounter > 0 then
 				self.BurstCounter = self.BurstCounter - 1

@@ -1,4 +1,6 @@
 -- List of sounds that should be played when player dies, depending on their player model
+-- if value is nil then use default death sound
+
 
 GM.PlayerModel_DeathSounds = {
 	["FemaleSounds"] = {

@@ -4,6 +4,7 @@ ENT.Base = "npc_tea_basic"
 ENT.PrintName = "Nightmare" --This is unfinished, don't add it to zombie spawns in sh_config.lua yet
 ENT.Category = ""
 ENT.Author = "Uklejamini"
+ENT.Purpose = ""
 ENT.Spawnable = true
 ENT.AdminOnly = true
 
@@ -32,7 +33,7 @@ function ENT:SetUpStats()
 
         ["Health"] = 180,
         ["MoveSpeedWalk"] = 50,
-        ["MoveSpeedRun"] = 85,
+        ["MoveSpeedRun"] = 225,
         ["VisionRange"] = 1200,
         ["LoseTargetRange"] = 1500,
 

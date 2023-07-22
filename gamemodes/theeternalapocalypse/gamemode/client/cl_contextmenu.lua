@@ -3,9 +3,7 @@
 
 function GM:OnContextMenuOpen()
 	if IsValid(ContextMenu) then return end
-	gui.EnableScreenClicker(true)
-	timer.Create("EnableScreenClicker_CMenu", 0, 0, function() gui.EnableScreenClicker(true) end)
-	CMenu()
+	self:CMenu()
 	ContextMenu:SetVisible(true)
 end
 
@@ -13,166 +11,241 @@ function GM:OnContextMenuClose()
 	if !IsValid(ContextMenu) then return end
 	ContextMenu:SetVisible(false)
 	ContextMenu:Remove()
-	if timer.Exists("EnableScreenClicker_CMenu") then timer.Destroy("EnableScreenClicker_CMenu") end
-	gui.EnableScreenClicker(false)
 end
 
 
-function CMenu()
+function GM:CMenu()
+	local scw = ScrW()
+	local sch = ScrH()
+
 	ContextMenu = vgui.Create("DFrame")
-	ContextMenu:SetSize(600, 600)
+	ContextMenu:SetSize(scw, sch)
 	ContextMenu:Center()
 	ContextMenu:SetTitle("")
 	ContextMenu:SetDraggable(false)
 	ContextMenu:SetVisible(true)
 	ContextMenu:ShowCloseButton(false)
-	ContextMenu.Paint = function()
-		surface.DrawCircle(ContextMenu:GetWide() / 2, ContextMenu:GetTall() / 2, 150, Color(100, 100, 100, 205))
-		surface.DrawCircle(ContextMenu:GetWide() / 2, ContextMenu:GetTall() / 2, 140, Color(100, 100, 100, 205))
-	end
+	ContextMenu.Paint = function(panel)
+		local wep = LocalPlayer():GetActiveWeapon()
+		if !wep:IsValid() then return end
 
-	local NukeButton = vgui.Create("DButton", ContextMenu)
-	NukeButton:SetSize(120, 40)
-	NukeButton:Center()
-	local x,y = NukeButton:GetPos()
-	NukeButton:SetPos(x - 175, y - 125)
-	NukeButton:SetText(translate.Get("clearprops"))
-	NukeButton:SetTextColor(Color(255,155,155,255))
-	NukeButton.Paint = function(panel)
+		local raretbl = {}
+		if self.ItemsList[wep:GetClass()] then
+			raretbl = gamemode.Call("CheckItemRarity", self.ItemsList[wep:GetClass()].Rarity)
+		end
+		raretbl.col = raretbl.col or color_white
+
+		surface.SetDrawColor(0, 0, 0, 105)
+		surface.DrawRect(200, sch / 2 - 150, 400, 300)
+		surface.SetDrawColor(150, 150, 0, 105)
+		surface.DrawOutlinedRect(200, sch / 2 - 150, 400, 300)
+
+		local name = wep.PrintName or wep:GetClass()
+		local y = 145
+		draw.DrawText(translate.Format("wep_name", name), "TargetID", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+		
+		if name ~= wep:GetClass() then
+			y = y - 20
+			draw.DrawText(translate.Format("wep_class", wep:GetClass()), "TargetID", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+		end
+		y = y - 25
+
+		if wep.Primary then
+			local wep_prim = wep.Primary
+			local delay = math.Round(wep_prim.Delay or 1 / ((wep_prim.RPM or 0) / 60) or 1, 3)
+
+			local usemulshots = wep_prim.NumShots and wep_prim.NumShots ~= 0 and wep_prim.NumShots ~= 1
+			draw.DrawText(Format("Damage: %s (Max DPS: %s)",
+				usemulshots and wep_prim.Damage.." x ".. wep_prim.NumShots or wep_prim.Damage, math.Round((usemulshots and wep_prim.Damage * wep_prim.NumShots or wep_prim.Damage or 0) / (delay), 2)
+			), "TargetIDSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+			y = y - 15
+
+			draw.DrawText(Format("Attack Delay: %s", delay), "TargetIDSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+			y = y - 15
+			if wep_prim.ClipSize ~= -1 then
+				draw.DrawText(Format("Clip size: %s", wep_prim.ClipSize), "TargetIDSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+				y = y - 15
+			end
+			draw.DrawText(Format("Recoil: %s", wep_prim.Recoil), "TargetIDSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+			y = y - 15
+			if wep.HitDistance then
+				draw.DrawText(Format("Hit distance: %s", wep.HitDistance), "TargetIDSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+				y = y - 15
+			end
+			draw.DrawText(Format("Is automatic: %s", wep_prim.Automatic), "TargetIDSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+			y = y - 15
+		end
+
+
+		local y2 = 155
+
+		local tasktbl = self.Tasks[self.CurrentTask]
+		if tasktbl then
+			surface.SetDrawColor(0, 0, 0, 105)
+			surface.DrawRect(scw/2 - 160, 150, 320, 100)
+			surface.SetDrawColor(150, 150, 0, 105)
+			surface.DrawOutlinedRect(scw/2 - 160, 150, 320, 100)
+
+			draw.DrawText(Format("Current Task: %s", tasktbl.Name), "TargetIDSmall", scw/2 - 155, y2, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+			y2 = y2 + 15
+
+			draw.DrawText(Format("Progress: %s/%s", self.CurrentTaskProgress, tasktbl.ReqProgress), "TargetIDSmall", scw/2 - 155, y2, self.CurrentTaskCompleted and Color(155,255,155) or color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+			y2 = y2 + 15
+
+		end
+
+
+		surface.DrawCircle(panel:GetWide() / 2, panel:GetTall() / 2, 150, Color(100, 100, 100, 205))
+		surface.DrawCircle(panel:GetWide() / 2, panel:GetTall() / 2, 140, Color(100, 100, 100, 205))
+
+
+	end
+	ContextMenu.Think = function()
+	end
+	ContextMenu:MakePopup()
+	ContextMenu:SetKeyboardInputEnabled(false)
+
+
+	local buttonsize_x, buttonsize_y = 120, 40
+	local clearprops = vgui.Create("DButton", ContextMenu)
+	clearprops:SetSize(buttonsize_x, buttonsize_y)
+	clearprops:Center()
+	local x,y = clearprops:GetPos()
+	clearprops:SetPos(x - 175, y - 125)
+	clearprops:SetText(translate.Get("clearprops"))
+	clearprops:SetTextColor(Color(255,155,155,255))
+	clearprops.Paint = function(panel)
 		surface.SetDrawColor(250, 150, 0, 255)
-		surface.DrawOutlinedRect(0, 0, NukeButton:GetWide(), NukeButton:GetTall())
-		draw.RoundedBox(2, 0, 0, NukeButton:GetWide(), NukeButton:GetTall(), Color(0, 0, 0, 130))
+		surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
+		draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(0, 0, 0, 130))
 	end
-	NukeButton.DoClick = function()
+	clearprops.DoClick = function()
 		RunConsoleCommand("-menu_context")
-		ConfirmPropDestroy()
+		gamemode.Call("ConfirmPropDestroy")
 	end
 
-	local PrestigeButton = vgui.Create("DButton", ContextMenu)
-	PrestigeButton:SetSize(120, 40)
-	PrestigeButton:Center()
-	local x,y = PrestigeButton:GetPos()
-	PrestigeButton:SetPos(x + 175, y - 125)
-	PrestigeButton:SetText(translate.Get("doprestige1"))
-	PrestigeButton:SetTextColor(Color(255, 255, 0, 255))
-	PrestigeButton.Paint = function(panel)
+	local prestige = vgui.Create("DButton", ContextMenu)
+	prestige:SetSize(buttonsize_x, buttonsize_y)
+	prestige:Center()
+	x,y = prestige:GetPos()
+	prestige:SetPos(x + 175, y - 125)
+	prestige:SetText(translate.Get("doprestige1"))
+	prestige:SetTextColor(Color(255, 255, 0, 255))
+	prestige.Paint = function(panel)
 		surface.SetDrawColor(150, 150, 200, 255)
-		surface.DrawOutlinedRect(0, 0, PrestigeButton:GetWide(), PrestigeButton:GetTall())
-		draw.RoundedBox(2, 0, 0, PrestigeButton:GetWide(), PrestigeButton:GetTall(), Color(0, 0, 0, 130))
+		surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
+		draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(0, 0, 0, 130))
 	end
-	PrestigeButton.DoClick = function()
+	prestige.DoClick = function()
 		RunConsoleCommand("-menu_context")
-		WantToPrestige()
+		self:WantToPrestige()
 	end
 
--- this needs to be replaced with something else
-	local ChangeLogsButton = vgui.Create("DButton", ContextMenu)
-	ChangeLogsButton:SetSize(120, 40)
-	ChangeLogsButton:Center()
-	local x,y = ChangeLogsButton:GetPos()
-	ChangeLogsButton:SetPos(x + 175, y + 125)
-	ChangeLogsButton:SetText("Changelogs")
-	ChangeLogsButton:SetTextColor(Color(255, 255, 255, 255))
-	ChangeLogsButton.Paint = function(panel)
+	local changelog = vgui.Create("DButton", ContextMenu)
+	changelog:SetSize(buttonsize_x, buttonsize_y)
+	changelog:Center()
+	x,y = changelog:GetPos()
+	changelog:SetPos(x + 175, y + 125)
+	changelog:SetText("Changelogs")
+	changelog:SetTextColor(Color(255, 255, 255, 255))
+	changelog.Paint = function(panel)
 		surface.SetDrawColor(150, 250, 0, 255)
-		surface.DrawOutlinedRect(0, 0, ChangeLogsButton:GetWide(), ChangeLogsButton:GetTall())
-		draw.RoundedBox(2, 0, 0, ChangeLogsButton:GetWide(), ChangeLogsButton:GetTall(), Color(0, 0, 0, 130))
+		surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
+		draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(0, 0, 0, 130))
 	end
-	ChangeLogsButton.DoClick = function()
+	changelog.DoClick = function()
 		RunConsoleCommand("-menu_context")
 		gamemode.Call("MakeChangeLogs")
 	end
 
-	local RefreshInvButton = vgui.Create("DButton", ContextMenu)
-	RefreshInvButton:SetSize(120, 40)
-	RefreshInvButton:Center()
-	local x,y = RefreshInvButton:GetPos()
-	RefreshInvButton:SetPos(x - 175, y + 125)
-	RefreshInvButton:SetText(translate.Get("refreshinv"))
-	RefreshInvButton:SetTextColor(Color(75, 150, 225, 255))
-	RefreshInvButton.Paint = function(panel)
+	local refreshinv = vgui.Create("DButton", ContextMenu)
+	refreshinv:SetSize(buttonsize_x, buttonsize_y)
+	refreshinv:Center()
+	x,y = refreshinv:GetPos()
+	refreshinv:SetPos(x - 175, y + 125)
+	refreshinv:SetText(translate.Get("refreshinv"))
+	refreshinv:SetTextColor(Color(75, 150, 225, 255))
+	refreshinv.Paint = function(panel)
 		surface.SetDrawColor(0, 100, 150, 255)
-		surface.DrawOutlinedRect(0, 0, RefreshInvButton:GetWide(), RefreshInvButton:GetTall())
-		draw.RoundedBox(2, 0, 0, RefreshInvButton:GetWide(), RefreshInvButton:GetTall(), Color(0, 0, 0, 130))
+		surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
+		draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(0, 0, 0, 130))
 	end
-	RefreshInvButton.DoClick = function()
+	refreshinv.DoClick = function()
 		RunConsoleCommand("-menu_context")
 		RunConsoleCommand("refresh_inventory")
 	end
 
-	local VersionButton = vgui.Create("DButton", ContextMenu)
-	VersionButton:SetSize(120, 40)
-	VersionButton:Center()
-	local x,y = VersionButton:GetPos()
-	VersionButton:SetPos(x, y - 180)
-	VersionButton:SetText(translate.Get("gmver"))
-	VersionButton:SetTextColor(Color(255, 255, 255, 255))
-	VersionButton.Paint = function(panel)
+	local ver = vgui.Create("DButton", ContextMenu)
+	ver:SetSize(buttonsize_x, buttonsize_y)
+	ver:Center()
+	x,y = ver:GetPos()
+	ver:SetPos(x, y - 180)
+	ver:SetText("IN PROGRESS")
+	ver:SetToolTip("Will have: NO INFORMATION AVAILABLE")
+	ver:SetTextColor(Color(255, 255, 0, 255))
+	ver.Paint = function(panel)
 		surface.SetDrawColor(150, 150, 0, 255)
-		surface.DrawOutlinedRect(0, 0, VersionButton:GetWide(), VersionButton:GetTall())
-		draw.RoundedBox(2, 0, 0, VersionButton:GetWide(), VersionButton:GetTall(), Color(0, 0, 0, 130))
+		surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
+		draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(0, 0, 0, 130))
 	end
-	VersionButton.DoClick = function()
-		RunConsoleCommand("-menu_context")
-		chat.AddText(Color(255,255,155,255), "Gamemode '"..GAMEMODE.Name.."' ("..GAMEMODE.AltName..") made by "..GAMEMODE.Author.." \nOriginal Creator of After The End (LegendofRobbo) \nVersion "..GAMEMODE.Version.." / "..GAMEMODE.Website)
-	end
+	ver.DoClick = function() end
 
-	local CashButton = vgui.Create("DButton", ContextMenu)
-	CashButton:SetSize(120, 40)
-	CashButton:Center()
-	local x,y = CashButton:GetPos()
-	CashButton:SetPos(x + 220, y)
-	CashButton:SetText(translate.Get("dropcash"))
-	CashButton:SetTextColor(Color(255, 255, 255, 255))
-	CashButton.Paint = function(panel)
+	local cash = vgui.Create("DButton", ContextMenu)
+	cash:SetSize(buttonsize_x, buttonsize_y)
+	cash:Center()
+	x,y = cash:GetPos()
+	cash:SetPos(x + 220, y)
+	cash:SetText(translate.Get("dropcash"))
+	cash:SetTextColor(Color(255, 255, 255, 255))
+	cash.Paint = function(panel)
 		surface.SetDrawColor(150, 150, 0, 255)
-		surface.DrawOutlinedRect(0, 0, CashButton:GetWide(), CashButton:GetTall())
-		draw.RoundedBox(2, 0, 0, CashButton:GetWide(), CashButton:GetTall(), Color(0, 0, 0, 130))
+		surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
+		draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(0, 0, 0, 130))
 	end
-	CashButton.DoClick = function()
-		DropGoldMenu()
+	cash.DoClick = function()
+		gamemode.Call("DropGoldMenu")
 		RunConsoleCommand("-menu_context")
 	end
 
 
-	local PVPButton = vgui.Create("DButton", ContextMenu)
-	PVPButton:SetSize(120, 40)
-	PVPButton:Center()
-	local x,y = PVPButton:GetPos()
-	PVPButton:SetPos(x, y + 180)
-	PVPButton:SetText(translate.Get("togglepvp"))
-	PVPButton:SetTextColor(Color(255, 255, 255, 255))
-	PVPButton.Paint = function(panel)
+	local pvp = vgui.Create("DButton", ContextMenu)
+	pvp:SetSize(buttonsize_x, buttonsize_y)
+	pvp:Center()
+	x,y = pvp:GetPos()
+	pvp:SetPos(x, y + 180)
+	pvp:SetText(translate.Get("togglepvp"))
+	pvp:SetTextColor(Color(255, 255, 255, 255))
+	pvp.Paint = function(panel)
 		surface.SetDrawColor(150, 150, 0, 255)
-		surface.DrawOutlinedRect(0, 0, PVPButton:GetWide(), PVPButton:GetTall())
-		draw.RoundedBox(2, 0, 0, PVPButton:GetWide(), PVPButton:GetTall(), Color(0, 0, 0, 130))
+		surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
+		draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(0, 0, 0, 130))
 	end
-	PVPButton.DoClick = function()
+	pvp.DoClick = function()
 		RunConsoleCommand("tea_togglepvp")
 		RunConsoleCommand("-menu_context")
 	end
 
-	local EmoButton = vgui.Create("DButton", ContextMenu)
-	EmoButton:SetSize(120, 40)
-	EmoButton:Center()
-	local x,y = EmoButton:GetPos()
-	EmoButton:SetPos(x - 220, y)
-	EmoButton:SetText(translate.Get("emotes"))
-	EmoButton:SetTextColor(Color(255, 255, 255, 255))
-	EmoButton.Paint = function(panel)
+	local emotes = vgui.Create("DButton", ContextMenu)
+	emotes:SetSize(buttonsize_x, buttonsize_y)
+	emotes:Center()
+	x,y = emotes:GetPos()
+	emotes:SetPos(x - 220, y)
+	emotes:SetText(translate.Get("emotes"))
+	emotes:SetTextColor(Color(255, 255, 255, 255))
+	emotes.Paint = function(panel)
 		surface.SetDrawColor(150, 150, 0, 255)
-		surface.DrawOutlinedRect(0, 0, EmoButton:GetWide(), EmoButton:GetTall())
-		draw.RoundedBox(2, 0, 0, EmoButton:GetWide(), EmoButton:GetTall(), Color(0, 0, 0, 130))
+		surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
+		draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(0, 0, 0, 130))
 	end
-	EmoButton.DoClick = function()
+	emotes.DoClick = function()
 		RunConsoleCommand("-menu_context")
-		Emotes()
+		gamemode.Call("Emotes")
 	end
 
 end
 
 
-function ConfirmPropDestroy()
+function GM:ConfirmPropDestroy()
 	local ConfirmFrame = vgui.Create("DFrame")
 	ConfirmFrame:SetSize(300, 200)
 	ConfirmFrame:Center()
@@ -184,9 +257,9 @@ function ConfirmPropDestroy()
 	ConfirmFrame:ShowCloseButton(true)
 	ConfirmFrame:MakePopup()
 	ConfirmFrame.Paint = function()
-	draw.RoundedBox(2, 0, 0, ConfirmFrame:GetWide(), ConfirmFrame:GetTall(), Color(0, 0, 0, 200))
-	surface.SetDrawColor(150, 150, 0, 255)
-	surface.DrawOutlinedRect(0, 0, ConfirmFrame:GetWide(), ConfirmFrame:GetTall())
+		draw.RoundedBox(2, 0, 0, ConfirmFrame:GetWide(), ConfirmFrame:GetTall(), Color(0, 0, 0, 200))
+		surface.SetDrawColor(150, 150, 0, 255)
+		surface.DrawOutlinedRect(0, 0, ConfirmFrame:GetWide(), ConfirmFrame:GetTall())
 	end
 
 	local derptext = vgui.Create("DLabel", ConfirmFrame)
@@ -202,19 +275,19 @@ function ConfirmPropDestroy()
 	doclear:SetText(translate.Get("doit"))
 	doclear:SetTextColor(Color(255, 255, 255, 255))
 	doclear.Paint = function(panel)
-	surface.SetDrawColor(150,150,0,255)
-	surface.DrawOutlinedRect(0,0, doclear:GetWide(), doclear:GetTall())
-	draw.RoundedBox(2,0,0, doclear:GetWide(), doclear:GetTall(), Color(0,0,0,130))
+		surface.SetDrawColor(150,150,0,255)
+		surface.DrawOutlinedRect(0,0, doclear:GetWide(), doclear:GetTall())
+		draw.RoundedBox(2,0,0, doclear:GetWide(), doclear:GetTall(), Color(0,0,0,130))
 	end
 	doclear.DoClick = function()
-	RunConsoleCommand("tea_clearmyprops")
-	ConfirmFrame:Remove()
+		RunConsoleCommand("tea_clearmyprops")
+		ConfirmFrame:Remove()
 	end
 
 end
 
 
-function WantToPrestige()
+function GM:WantToPrestige()
 	local WantToPrestigeFrame = vgui.Create("DFrame")
 	WantToPrestigeFrame:SetSize(700,400)
 	WantToPrestigeFrame:Center()
@@ -234,10 +307,8 @@ function WantToPrestige()
 	local prestigetext = vgui.Create("DLabel", WantToPrestigeFrame)
 	prestigetext:SetFont("TargetIDSmall")
 	prestigetext:SetColor(Color(205,205,205,255))
-	prestigetext:SetText("Prestiging allows you to gain more levels depending on your Prestige level.\
-It will also give you some advantage, depending on your Prestige.\
-You need to be at least level "..GAMEMODE.MaxLevel.." (plus "..GAMEMODE.LevelsPerPrestige.." depending on prestige level) to prestige\
-Additionally, if you prestige to a level that doesn't grant any additional buffs, \nyou will gain cash instead.\n\
+	prestigetext:SetWrap(true)
+	prestigetext:SetText("Prestiging allows you to gain more levels depending on your Prestige level. It will also give you some advantage, depending on your Prestige. You need to be at least level "..self.MaxLevel + (MyPrestige * self.LevelsPerPrestige).." ("..self.MaxLevel.." plus "..self.LevelsPerPrestige.." depending on prestige) to prestige. Additionally, if you prestige to a level that doesn't grant any additional buffs, you will gain cash instead.\n\
 Prestige 1 = Gain 5% more overall cash from killing zombies\
 Prestige 2 = Spawn with 5 additional health\
 Prestige 3 = +2kg max carry weight\
@@ -246,10 +317,13 @@ Prestige 5 = Spawn with 5 additional armor\
 Prestige 6 = +3kg max carry weight\
 Prestige 8 = Take 5% less damage from all sources\
 Prestige 10 = Start with 5 skill points every prestige\
-Prestige 15 = Gain XP at 1.1x multiplier")
-	prestigetext:SizeToContents()
+Prestige 15 = Gain XP at 1.1x multiplier\
+\
+In progress: Add perk points gained from prestiging for various buffs")
+	prestigetext:SetSize(680, 240)
 	prestigetext:SetPos(10,30)
 
+	local shouldprestige
 	local doprestige = vgui.Create("DButton", WantToPrestigeFrame)
 	doprestige:SetSize(120, 40)
 	doprestige:SetPos(290, 340)
@@ -260,19 +334,26 @@ Prestige 15 = Gain XP at 1.1x multiplier")
 		surface.DrawOutlinedRect(0, 0, doprestige:GetWide(), doprestige:GetTall())
 		draw.RoundedBox(2, 0, 0, doprestige:GetWide(), doprestige:GetTall(), Color(0, 0, 0, 130))
 	end
-	doprestige.DoClick = function()
-		WantToPrestigeFrame:Remove()
-		local levelrequiredforprestige = GAMEMODE.MaxLevel + (GAMEMODE.LevelsPerPrestige * MyPrestige)
-		if MyLvl >= levelrequiredforprestige then
-			ConfirmPrestige()
+	doprestige.DoClick = function(panel)
+		local levelrequiredforprestige = self.MaxLevel + (self.LevelsPerPrestige * MyPrestige)
+		if shouldprestige and MyLvl >= levelrequiredforprestige then
+			WantToPrestigeFrame:Remove()
+--			gamemode.Call("ConfirmPrestige")
+			net.Start("Prestige")
+			net.SendToServer()
+		elseif MyLvl >= levelrequiredforprestige then
+			panel:SetText("ARE YOU SURE?")
+			prestigetext:SetText("WARNING: Once you prestige, there is no return! Your levels and skills will be reset and skill points will not be refunded! Are you really sure you want to prestige??")
+			shouldprestige = true
 		else
+			WantToPrestigeFrame:Remove()
 			chat.AddText(Color(255,255,255,255), "[System] ", Color(255,155,155,255), "You must be at least level "..levelrequiredforprestige.." to prestige!")
 			surface.PlaySound("buttons/button10.wav")
 		end
 	end
 end
-
-function ConfirmPrestige()
+/*
+function GM:ConfirmPrestige()
 	local PrestigeFrame = vgui.Create("DFrame")
 	PrestigeFrame:SetSize(300, 200)
 	PrestigeFrame:Center()
@@ -292,9 +373,10 @@ function ConfirmPrestige()
 	local confirmprestigetext = vgui.Create("DLabel", PrestigeFrame)
 	confirmprestigetext:SetFont("TargetIDSmall")
 	confirmprestigetext:SetColor(Color(205,205,205,255))
-	confirmprestigetext:SetText("ARE YOU SURE?\nThis will reset your level and your skills!\nYou will gain 1 prestige.\nYour skills points will not be refunded!\nThis cannot be undone!")
-	confirmprestigetext:SizeToContents()
-	confirmprestigetext:SetPos(10, 30)
+	confirmprestigetext:SetWrap(true)
+	confirmprestigetext:SetPos(10, 20)
+	confirmprestigetext:SetSize(280, 100)
+	confirmprestigetext:SetText("ARE YOU SURE?\nThis will reset your level and your skills!\nYou will gain 1 prestige, but skill points will not be refunded!\nThis cannot be undone!")
 
 	local confirmprestige = vgui.Create("DButton", PrestigeFrame)
 	confirmprestige:SetSize(120, 40)
@@ -312,8 +394,8 @@ function ConfirmPrestige()
 		net.SendToServer()
 	end
 end
-
-function DropGoldMenu()
+*/
+function GM:DropGoldMenu()
 	if IsValid(AdarFrame) then AdarFrame:Remove() end
 	AdarFrame = vgui.Create("DFrame")
 	AdarFrame:SetSize(300, 200)
@@ -341,7 +423,7 @@ function DropGoldMenu()
 	local derptext2 = vgui.Create("DLabel", AdarFrame)
 	derptext2:SetFont("TargetIDSmall")
 	derptext2:SetColor(Color(205,255,205,255))
-	derptext2:SetText("Current Cash: "..MyMoney)
+	derptext2:SetText("Cash: "..math.floor(MyMoney))
 	derptext2:SizeToContents()
 	derptext2:SetPos(10, 50)
 
@@ -369,7 +451,7 @@ function DropGoldMenu()
 end
 
 
-function Emotes()
+function GM:Emotes()
 	local EmoteFrame = vgui.Create("DFrame")
 	EmoteFrame:SetSize(300, 400)
 	EmoteFrame:Center()

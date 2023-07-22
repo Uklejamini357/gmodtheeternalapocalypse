@@ -23,11 +23,11 @@ end
 
 function ENT:Use( activator, caller )
 	caller:GiveAmmo(100, "Pistol")
-	SystemMessage(caller, "Why does this even exist?!?!?", Color(255,255,255), false)
+	caller:SystemMessage("Why does this even exist?!?!?", Color(255,255,255), false)
 	tea_SendInventory(caller)
-	timer.Simple(math.Rand(15,30), function()
-		SystemMessage(caller, "ok bye", Color(255,64,64), false)
-		timer.Simple(math.Rand(2,3), function()
+	timer.Simple(math.Rand(35,50), function()
+		caller:SystemMessage("ok bye", Color(255,64,64), false)
+		timer.Simple(math.Rand(20,300), function()
 			caller:Kill()
 		end)
 	end) --for fun

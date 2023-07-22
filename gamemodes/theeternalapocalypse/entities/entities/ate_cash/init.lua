@@ -91,8 +91,8 @@ function ENT:Use(activator, caller)
 
 		activator.Money = activator.Money + cash
 
-		SystemMessage(activator, "You picked up a box containing "..cash.." "..GAMEMODE.Config["Currency"].."(s)!", Color(205,255,205,255), true)
-		tea_NetUpdatePeriodicStats(activator)
+		activator:SystemMessage(Format("You picked up a box containing %s %s(s)!", cash, GAMEMODE.Config["Currency"]), Color(205,255,205,255), true)
+		GAMEMODE:NetUpdatePeriodicStats(activator)
 
 		activator:EmitSound("items/itempickup.wav", 100, 100)
 		self:Remove()

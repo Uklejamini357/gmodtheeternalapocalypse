@@ -1,9 +1,8 @@
 include('shared.lua')
 
-SWEP.PrintName			= "Fragmentation Grenade"			// 'Nice' Weapon name (Shown on HUD)	
-SWEP.Slot				= 4							// Slot in the weapon selection menu
-SWEP.SlotPos			= 1							// Position in the slot
-// Override this in your SWEP to set the icon in the weapon selection
+SWEP.PrintName			= "Fragmentation Grenade"	
+SWEP.Slot				= 4
+SWEP.SlotPos			= 1
 if (file.Exists("materials/weapons/weapon_mad_grenade.vmt","GAME")) then
 	SWEP.WepSelectIcon	= surface.GetTextureID("weapons/weapon_mad_grenade")
 end

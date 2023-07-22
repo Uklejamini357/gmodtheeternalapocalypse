@@ -4,6 +4,7 @@ ENT.Base = "base_nextbot"
 ENT.PrintName = "Zombie Lord King"
 ENT.Category = "Boss Zombie"
 ENT.Author = "Uklejamini"
+ENT.Purpose = "Can teleport nearby zombies"
 ENT.Spawnable = true
 ENT.AdminOnly = true
 
@@ -102,6 +103,10 @@ function ENT:HasLOS()
 	end
 end
 
+function ENT:GetTEAZombieSpeedMul()
+	return math.min(self:GetEliteVariant() == VARIANT_ENRAGED and 1.6 or 1, 2 - (self:Health() / self:GetMaxHealth())) * GAMEMODE.ZombieSpeedMultiplier * self.SpeedBuff
+end
+
 function ENT:Initialize()
 	if CLIENT then return end
 	self:SetModel("models/undead/undead.mdl")
@@ -123,7 +128,7 @@ function ENT:Initialize()
 	timer.Simple(1200, function()
 		if self:IsValid() then
 			self:Remove()
-			tea_SystemBroadcast("[BOSS]: The Zombie Lord King was not killed and has left the area!", Color(255,105,105,255), false)
+			GAMEMODE:SystemBroadcast("[BOSS]: The Zombie Lord King was not killed and has left the area!", Color(255,105,105,255), false)
 		end
 	end)
 end
@@ -186,13 +191,13 @@ function ENT:RunBehaviour()
 			end
 		end
 
-		if (IsValid(target) and target:Alive() and (self:GetRangeTo(target) <= (2500 * self.RageLevel) or GetConVar("tea_config_zombieapocalypse"):GetInt() >= 1) and !target.HasNoTarget) then
+		if (IsValid(target) and target:Alive() and (self:GetRangeTo(target) <= (2500 * self.RageLevel) or GAMEMODE.ZombieApocalypse) and !target.HasNoTarget) then
 			self.loco:FaceTowards(target:GetPos())
 
 			if self.NxtTick < 1 then
 
 -- check if we are obstructed by props and smash them if we are
-				local breakshit = ents.FindInSphere(self:GetPos() + self:GetAngles():Up() * 55, 35)
+				local breakshit = ents.FindInSphere(self:GetPos() + self:GetAngles():Up() * 55, 55)
 
 				self:AttackProp(breakshit)
 				for k,v in pairs(breakshit) do
@@ -220,7 +225,7 @@ function ENT:RunBehaviour()
 					if (IsValid(target) and self:GetRangeTo(target) <= 105) and target:Alive() then
 						local damageInfo = DamageInfo()
 						damageInfo:SetAttacker(self)
-						damageInfo:SetDamage(GAMEMODE.tea_CalcPlayerDamage(target, self.IsEnraged and math.random(65, 75) or math.random(50, 55)))
+						damageInfo:SetDamage(GAMEMODE:CalcPlayerDamage(target, self.IsEnraged and math.random(65, 75) or math.random(50, 55)))
 						damageInfo:SetDamageType(DMG_CLUB)
 
 						local force = target:GetAimVector() * -800
@@ -242,9 +247,9 @@ function ENT:RunBehaviour()
 						target:SetVelocity(force)
 						local rng = math.random(0, 100)
 						if self.IsEnraged and rng > 50 then
-							target.Infection = target.Infection + math.Rand(200,750)
+							target:AddInfection(math.Rand(200,750))
 						elseif rng > 70 then
-							target.Infection = target.Infection + math.Rand(120,500)
+							target:AddInfection(math.Rand(120,500))
 						end
 						target:SlowPlayerDown(self.IsEnraged and 0.25 or 0.2, self.IsEnraged and 6 or 4)
 						net.Start("WraithBlind")
@@ -276,7 +281,7 @@ function ENT:RunBehaviour()
 --					self.nextYell = CurTime() + math.random(4, 8)
 --				end
 				
-				self.loco:SetDesiredSpeed(self.IsEnraged and 270 * GetConVar("tea_config_zombiespeedmul"):GetFloat() or 200 * GetConVar("tea_config_zombiespeedmul"):GetFloat())
+				self.loco:SetDesiredSpeed((self.IsEnraged and 270 or 200) * self:GetTEAZombieSpeedMul())
 
 
 				self:MoveToPos(target:GetPos(), {
@@ -296,7 +301,7 @@ function ENT:RunBehaviour()
 
 			if (!self.target) then
 				for k, v in pairs(player.GetAll()) do
-					if (v:Alive() and (self:GetRangeTo(v) <= (2500 * self.RageLevel) or GetConVar("tea_config_zombieapocalypse"):GetInt() >= 1) and !v.HasNoTarget) then
+					if (v:Alive() and (self:GetRangeTo(v) <= (2500 * self.RageLevel) or GAMEMODE.ZombieApocalypse) and !v.HasNoTarget) then
 --						self:AlertNearby(v)
 						self.target = v
 --						self:PlaySequenceAndWait("wave_smg1", 0.9)
@@ -335,9 +340,9 @@ function ENT:OnKilled(damageInfo)
 	local attacker = damageInfo:GetAttacker()
 
 	if attacker:IsPlayer() then
-		tea_SystemBroadcast("[BOSS]: "..attacker:Nick().." has slain the Zombie Lord King!", Color(255,105,105,255), false)
+		GAMEMODE:SystemBroadcast("[BOSS]: "..attacker:Nick().." has slain the Zombie Lord King!", Color(255,105,105,255), false)
 	else
-		tea_SystemBroadcast("[BOSS]: The Zombie Lord King has been slain by an unknown cause!", Color(255,105,105,255), false)
+		GAMEMODE:SystemBroadcast("[BOSS]: The Zombie Lord King has been slain by an unknown cause!", Color(255,105,105,255), false)
 	end
 /*
 	if !attacker:IsWorld() then 
@@ -357,9 +362,9 @@ function ENT:OnKilled(damageInfo)
 	end
 */
 
-	self:SetColor(Color(127,127,255))
 	self:EmitSound(table.Random(self.DeathSounds), 130, math.random(95, 105))
 	self:BecomeRagdoll(damageInfo)
+	gamemode.Call("OnNPCKilled", self, damageInfo)
 end
 
 function ENT:OnInjured(damageInfo)
@@ -385,9 +390,8 @@ function ENT:OnInjured(damageInfo)
 	if (self:Health() - dmg) <= self:GetMaxHealth() * 0.3 then
 		self.RageLevel = 4
 		if !self.IsEnraged then
-			tea_SystemBroadcast("[BOSS]: The Zombie Lord King is now Enraged!", Color(255,105,105,255), false)
-			self.loco:SetDesiredSpeed(270 * GetConVar("tea_config_zombiespeedmul"):GetFloat())
-			self:SetColor(Color(255,127,255))
+			GAMEMODE:SystemBroadcast("[BOSS]: The Zombie Lord King is now Enraged!", Color(255,105,105,255), false)
+			self.loco:SetDesiredSpeed(270 * self:GetTEAZombieSpeedMul())
 		end
 		self.IsEnraged = true
 	else
@@ -412,7 +416,7 @@ function ENT:AttackProp(targetprops)
 			local phys = v:GetPhysicsObject()
 			if (phys != nil && phys != NULL && phys:IsValid()) then
 			phys:ApplyForceCenter(self:GetForward():GetNormalized() * 30000 + Vector(0, 0, 2))
-			v:EmitSound(self.DoorBreak, 100, 60)
+			v:EmitSound(self.DoorBreakSound, 100, 60)
 			v:TakeDamage(self.IsEnraged and math.random(195, 225) or math.random(150, 165), self)
 			util.ScreenShake(v:GetPos(), 8, 6, math.Rand(0.3, 0.5), 400)
 			end
@@ -502,6 +506,7 @@ end
 
 function ENT:Teleport_NPC(ent)
 	local Teleport_NPC_2 = self.Teleport_NPC --back it up for some reason not to cause any errors
+	if !ent or !IsValid(ent) then return end
 	local pos = ent:GetPos() + Vector(math.random(-250,250), math.random(-250,250), 100)
 	if !util.IsInWorld(pos) then timer.Simple(0.1, function() Teleport_NPC_2(ent) end) return false end
 

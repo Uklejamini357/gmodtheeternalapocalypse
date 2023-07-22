@@ -1,5 +1,4 @@
 
-// Uses the default values from Source
 function MPFallDamage(ply, vel)
 	if GetConVar("mp_falldamage"):GetInt() >= 1 then
 		vel = vel - 580

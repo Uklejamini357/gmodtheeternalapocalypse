@@ -1,10 +1,9 @@
 include('shared.lua')
 
-SWEP.PrintName			= "5.56X45 SIG SG-550 SNIPER"			// 'Nice' Weapon name (Shown on HUD)	
-SWEP.Slot				= 3							// Slot in the weapon selection menu
-SWEP.SlotPos			= 1							// Position in the slot
+SWEP.PrintName			= "5.56X45 SIG SG-550 SNIPER"	
+SWEP.Slot				= 3
+SWEP.SlotPos			= 1
 
-// Override this in your SWEP to set the icon in the weapon selection
 if (file.Exists("materials/weapons/weapon_mad_sg550.vmt","GAME")) then
 	SWEP.WepSelectIcon	= surface.GetTextureID("weapons/weapon_mad_sg550")
 end

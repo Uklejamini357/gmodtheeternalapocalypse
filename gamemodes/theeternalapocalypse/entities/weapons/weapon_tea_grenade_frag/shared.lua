@@ -1,5 +1,3 @@
-// Variables that are used on both client and server
-
 SWEP.Base 				= "weapon_mad_base"
 
 SWEP.ViewModelFlip		= false
@@ -17,17 +15,17 @@ SWEP.Primary.NumShots		= 0
 SWEP.Primary.Cone			= 0.075
 SWEP.Primary.Delay 		= 1.5
 
-SWEP.Primary.ClipSize		= -1					// Size of a clip
-SWEP.Primary.DefaultClip	= 0					// Default number of bullets in a clip
-SWEP.Primary.Automatic		= false				// Automatic/Semi Auto
+SWEP.Primary.ClipSize		= -1
+SWEP.Primary.DefaultClip	= 0
+SWEP.Primary.Automatic		= false
 SWEP.Primary.Ammo			= "Grenade"
 
-SWEP.Secondary.ClipSize		= -1					// Size of a clip
-SWEP.Secondary.DefaultClip	= -1					// Default number of bullets in a clip
-SWEP.Secondary.Automatic	= false				// Automatic/Semi Auto
+SWEP.Secondary.ClipSize		= -1
+SWEP.Secondary.DefaultClip	= -1
+SWEP.Secondary.Automatic	= false
 SWEP.Secondary.Ammo		= "none"
 
-SWEP.ShellEffect			= "none"				// "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
+SWEP.ShellEffect			= "none"				-- "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
 SWEP.ShellDelay			= 0
 
 SWEP.Pistol				= true
@@ -35,19 +33,14 @@ SWEP.Rifle				= false
 SWEP.Shotgun			= false
 SWEP.Sniper				= false
 
-SWEP.GrenadeType			= "ent_zw_grenade_frag"
+SWEP.GrenadeType			= "ent_tea_grenade_frag"
 SWEP.GrenadeName			= "weapon_zw_grenade_frag"
 SWEP.GrenadeTime			= "3"
 SWEP.CookGrenade			= true
 SWEP.ThrowForce				= 800
 
-/*---------------------------------------------------------
-   Name: SWEP:PrimaryAttack()
-   Desc: +attack1 has been pressed.
----------------------------------------------------------*/
 function SWEP:PrimaryAttack()
 
-	// Holst/Deploy your fucking weapon
 	if (not self.Owner:IsNPC() and self.Owner:KeyDown(IN_USE)) then
 		bHolsted = !self.Weapon:GetDTBool(0)
 		self:SetHolsted(bHolsted)
@@ -69,10 +62,6 @@ function SWEP:PrimaryAttack()
 	self.Owner:SetNetworkedBool("Cooked", false)
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:SecondaryAttack()
-   Desc: +attack2 has been pressed.
----------------------------------------------------------*/
 function SWEP:SecondaryAttack()
 
 	// I used the cooking script of Wizey as an example.
@@ -138,10 +127,6 @@ function SWEP:SecondaryAttack()
 	end)
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:Think()
-   Desc: Called every frame.
----------------------------------------------------------*/
 function SWEP:Think()
 	local owner = self.Owner
 
@@ -190,11 +175,6 @@ function SWEP:Think()
 	end
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:Holster()
-   Desc: Weapon wants to holster.
-	   Return true to allow the weapon to holster.
----------------------------------------------------------*/
 function SWEP:Holster()
 
 	self.Owner:SetNetworkedInt("Primed", 0)
@@ -203,10 +183,6 @@ function SWEP:Holster()
 	return true
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:Deploy()
-   Desc: Whip it out.
----------------------------------------------------------*/
 function SWEP:Deploy()
 
 	self.Weapon:SendWeaponAnim(ACT_VM_DRAW)

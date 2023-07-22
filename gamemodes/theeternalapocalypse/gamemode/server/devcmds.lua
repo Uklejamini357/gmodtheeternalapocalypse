@@ -1,12 +1,11 @@
 --Dev commands
 --Do not change, unless there are bugs or if adding more
-GM.DevCmds = {}
 
-function GM.DevCmds.SpawnLoot(ply) 
+function GM:DevCmds_SpawnLoot(ply) 
     if !ply:IsValid() then return false end
     
     if !TEADevCheck(ply) then 
-        SystemMessage(ply, translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
+        ply:SystemMessage(translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
         ply:ConCommand("playgamesound buttons/button8.wav")
         return
     end
@@ -18,21 +17,23 @@ function GM.DevCmds.SpawnLoot(ply)
     trace.endpos = vStart + (vForward * 70)
     trace.filter = ply
     local tr = util.TraceLine(trace)
-    local EntDrop = ents.Create("loot_cache")
-    EntDrop:SetPos(tr.HitPos)
-    EntDrop:SetAngles(Angle(0, 0, 0))
-    EntDrop.LootType = table.Random(GAMEMODE.LootTable1)["Class"]
-    EntDrop:Spawn()
-    EntDrop:Activate()
-    EntDrop:SetVelocity(ply:GetForward() * 80 + Vector(0,0,50))
+    local ent = ents.Create("loot_cache")
+    ent:SetPos(tr.HitPos)
+    ent:SetAngles(Angle(0, 0, 0))
+    ent.LootType = table.Random(GAMEMODE.LootTable1)["Class"]
+    ent:Spawn()
+    ent:Activate()
+    ent:SetVelocity(ply:GetForward() * 80 + Vector(0,0,50))
 end
-concommand.Add("tea_dev_spawnloot", GM.DevCmds.SpawnLoot, nil, "Spawns a loot cache in front of you")
+concommand.Add("tea_dev_spawnloot", function(ply, cmd, args)
+	gamemode.Call("DevCmds_SpawnLoot", ply, cmd, args)
+end, nil, "Spawns a loot cache in front of you")
 
-function GM.DevCmds.SpawnLootWeapon(ply) 
+function GM:DevCmds_SpawnLootWeapon(ply) 
     if !ply:IsValid() then return false end
     
     if !TEADevCheck(ply) then 
-        SystemMessage(ply, translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
+        ply:SystemMessage(translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
         ply:ConCommand("playgamesound buttons/button8.wav")
         return
     end
@@ -44,22 +45,24 @@ function GM.DevCmds.SpawnLootWeapon(ply)
     trace.endpos = vStart + (vForward * 70)
     trace.filter = ply
     local tr = util.TraceLine(trace)
-    local EntDrop = ents.Create("loot_cache_weapon")
-    EntDrop:SetPos(tr.HitPos)
-    EntDrop:SetAngles(Angle(0, 0, 0))
-    EntDrop.LootType = table.Random(GAMEMODE.LootTable2)["Class"]
-    EntDrop:Spawn()
-    EntDrop:Activate()
-    EntDrop:SetVelocity(ply:GetForward() * 80 + Vector(0,0,50))
+    local ent = ents.Create("loot_cache_weapon")
+    ent:SetPos(tr.HitPos)
+    ent:SetAngles(Angle(0, 0, 0))
+    ent.LootType = table.Random(GAMEMODE.LootTable2)["Class"]
+    ent:Spawn()
+    ent:Activate()
+    ent:SetVelocity(ply:GetForward() * 80 + Vector(0,0,50))
     
 end
-concommand.Add("tea_dev_spawnlootweapon", GM.DevCmds.SpawnLootWeapon, nil, "Spawns a weapon loot cache in front of you")
+concommand.Add("tea_dev_spawnlootweapon", function(ply, cmd, args)
+	gamemode.Call("DevCmds_SpawnLootWeapon", ply, cmd, args)
+end, nil, "Spawns a weapon loot cache in front of you")
 
-function GM.DevCmds.SpawnLootFaction(ply) 
+function GM:DevCmds_SpawnLootRare(ply)
     if !ply:IsValid() then return false end
     
     if !TEADevCheck(ply) then 
-        SystemMessage(ply, translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
+        ply:SystemMessage(translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
         ply:ConCommand("playgamesound buttons/button8.wav")
         return
     end
@@ -71,22 +74,25 @@ function GM.DevCmds.SpawnLootFaction(ply)
     trace.endpos = vStart + (vForward * 70)
     trace.filter = ply
     local tr = util.TraceLine(trace)
-    local EntDrop = ents.Create("loot_cache_faction")
-    EntDrop:SetPos(tr.HitPos)
-    EntDrop:SetAngles(Angle(0, 0, 0))
-    EntDrop.LootType = table.Random(GAMEMODE.LootTableFaction)["Class"]
-    EntDrop:Spawn()
-    EntDrop:Activate()
-    EntDrop:SetVelocity(ply:GetForward() * 80 + Vector(0,0,50))
+    local ent = ents.Create("loot_cache_special")
+    ent:SetPos(tr.HitPos)
+    ent:SetAngles(Angle(0, 0, 0))
+    ent.LootType = table.Random(self.LootTable3)["Class"]
+    ent:Spawn()
+    ent:Activate()
+    ent:SetVelocity(ply:GetForward() * 80 + Vector(0,0,50))
     
 end
-concommand.Add("tea_dev_spawnlootfaction", GM.DevCmds.SpawnLootFaction, nil, "Spawns a faction loot cache in front of you")
+concommand.Add("tea_dev_spawnlootrare", function(ply, cmd, args)
+	gamemode.Call("DevCmds_SpawnLootRare", ply, cmd, args)
+end, nil, "Spawns a rare cache in front of you")
 
-function GM.DevCmds.SpawnLootBoss(ply) 
+
+function GM:DevCmds_SpawnLootFaction(ply) 
     if !ply:IsValid() then return false end
     
     if !TEADevCheck(ply) then 
-        SystemMessage(ply, translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
+        ply:SystemMessage(translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
         ply:ConCommand("playgamesound buttons/button8.wav")
         return
     end
@@ -98,23 +104,54 @@ function GM.DevCmds.SpawnLootBoss(ply)
     trace.endpos = vStart + (vForward * 70)
     trace.filter = ply
     local tr = util.TraceLine(trace)
-    local EntDrop = ents.Create("loot_cache_boss")
-    EntDrop:SetPos(tr.HitPos)
-    EntDrop:SetAngles(Angle(0, 0, 0))
-    EntDrop.LootType = table.Random(GAMEMODE.LootTableBoss)["Class"]
-    EntDrop:Spawn()
-    EntDrop:Activate()
-    EntDrop:SetVelocity(ply:GetForward() * 80 + Vector(0,0,50))
+    local ent = ents.Create("loot_cache_faction")
+    ent:SetPos(tr.HitPos)
+    ent:SetAngles(Angle(0, 0, 0))
+    ent.LootType = table.Random(GAMEMODE.LootTableFaction)["Class"]
+    ent:Spawn()
+    ent:Activate()
+    ent:SetVelocity(ply:GetForward() * 80 + Vector(0,0,50))
     
 end
-concommand.Add("tea_dev_spawnlootboss", GM.DevCmds.SpawnLootBoss, nil, "Spawns a boss cache in front of you")
+concommand.Add("tea_dev_spawnlootfaction", function(ply, cmd, args)
+	gamemode.Call("DevCmds_SpawnLootFaction", ply, cmd, args)
+end, nil, "Spawns a faction loot cache in front of you")
+
+function GM:DevCmds_SpawnLootBoss(ply) 
+    if !ply:IsValid() then return false end
+    
+    if !TEADevCheck(ply) then 
+        ply:SystemMessage(translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
+        ply:ConCommand("playgamesound buttons/button8.wav")
+        return
+    end
+    
+    local vStart = ply:GetShootPos()
+    local vForward = ply:GetAimVector()
+    local trace = {}
+    trace.start = vStart
+    trace.endpos = vStart + (vForward * 70)
+    trace.filter = ply
+    local tr = util.TraceLine(trace)
+    local ent = ents.Create("loot_cache_boss")
+    ent:SetPos(tr.HitPos)
+    ent:SetAngles(Angle(0, 0, 0))
+    ent.LootType = table.Random(GAMEMODE.LootTableBoss)["Class"]
+    ent:Spawn()
+    ent:Activate()
+    ent:SetVelocity(ply:GetForward() * 80 + Vector(0,0,50))
+    
+end
+concommand.Add("tea_dev_spawnlootboss", function(ply, cmd, args)
+	gamemode.Call("DevCmds_SpawnLootBoss", ply, cmd, args)
+end, nil, "Spawns a boss cache in front of you")
 
 --literally just a copy + paste from airdrops.lua but now as a command
-function GM.DevCmds.SpawnAirdropCache(ply) 
+function GM:DevCmds_SpawnAirdropCache(ply) 
     if !ply:IsValid() then return false end
     
     if !TEADevCheck(ply) then 
-        SystemMessage(ply, translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
+        ply:SystemMessage(translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
         ply:ConCommand("playgamesound buttons/button8.wav")
         return
     end
@@ -148,25 +185,27 @@ function GM.DevCmds.SpawnAirdropCache(ply)
 		elseif rng >= 15 then
 			testinv["FactionWeapons"] = {1, 1, 1}
 		else
-			testinv["RookieWeapons"] = {math.random(1, 3), 1, 2}
+			testinv["NewbieWeapons"] = {math.random(1, 3), 1, 2}
 		end
 
 
-		local loot = tea_RollLootTable(testinv)
-		tea_MakeLootContainer(dropent, loot)
+		local loot = gamemode.Call("RollLootTable", testinv)
+		gamemode.Call("MakeLootContainer", dropent, loot)
 
 		dropent:Spawn()
 		dropent:Activate()
 
 	end
 end
-concommand.Add("tea_dev_spawnairdropcache", GM.DevCmds.SpawnAirdropCache, nil, "Spawns an airdrop cache in front of you")
+concommand.Add("tea_dev_spawnairdropcache", function(ply, cmd, args)
+	gamemode.Call("DevCmds_SpawnAirdropCache", ply, cmd, args)
+end, nil, "Spawns an airdrop cache in front of you")
 
-function GM.DevCmds.SpawnBoss(ply) 
+function GM:DevCmds_SpawnBoss(ply) 
     if !ply:IsValid() then return false end
     
     if !TEADevCheck(ply) then 
-        SystemMessage(ply, translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
+        ply:SystemMessage(translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
         ply:ConCommand("playgamesound buttons/button8.wav")
         return
     end
@@ -175,7 +214,7 @@ function GM.DevCmds.SpawnBoss(ply)
     local vForward = ply:GetAimVector()
     local trace = {}
     trace.start = vStart
-    trace.endpos = vStart + (vForward * 200)
+    trace.endpos = vStart + (vForward * 500)
     trace.filter = ply
     local tr = util.TraceLine(trace)
 	local dice = math.random(0, 100)
@@ -183,18 +222,20 @@ function GM.DevCmds.SpawnBoss(ply)
 	for k, v in pairs(GAMEMODE.Config["BossClasses"]) do
 		total = total + v["SpawnChance"]
 		if total >= dice then
-			CreateZombie(k, tr.HitPos, Angle(0,0,0), v["XPReward"], v["MoneyReward"], true)
+			gamemode.Call("CreateZombie", k, tr.HitPos, Angle(0,0,0), v.XPReward, v.MoneyReward, v.InfectionRate, true)
 			break
 		end
 	end
 end
-concommand.Add("tea_dev_spawnboss", GM.DevCmds.SpawnBoss, nil, "Spawns a random boss in your direction")
+concommand.Add("tea_dev_spawnboss", function(ply, cmd, args)
+	gamemode.Call("DevCmds_SpawnBoss", ply, cmd, args)
+end, nil, "Spawns a random boss in your direction")
 
-function GM.DevCmds.Payout(ply, cmd, args)
+function GM:DevCmds_Payout(ply, cmd, args)
 	if !ply:IsValid() then return false end
 	
 	if !TEADevCheck(ply) then 
-		SystemMessage(ply, translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
+		ply:SystemMessage(translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
 		ply:ConCommand("playgamesound buttons/button8.wav")
 		return
 	end
@@ -202,17 +243,19 @@ function GM.DevCmds.Payout(ply, cmd, args)
 	local xp = tonumber(args[1]) or nil
 	local cash = tonumber(args[2]) or 0
 
-	if !xp or !cash then SendChat(ply, "Use this for test! Modifiers such as skills do apply! (tea_dev_payout {xp} {bounty})") return end
+	if !xp or !cash then ply:SendChat("Use this for test! Modifiers such as skills do apply! (tea_dev_payout {xp} {bounty})") return end
 	Payout(ply, xp, cash)
 	
-	tea_FullyUpdatePlayer(ply)
+	gamemode.Call("FullyUpdatePlayer", ply)
 end
-concommand.Add("tea_dev_payout", GM.DevCmds.Payout, nil, "Gives XP and Cash (with Payout function)")
+concommand.Add("tea_dev_payout", function(ply, cmd, args)
+	gamemode.Call("DevCmds_Payout", ply, cmd, args)
+end, nil, "Gives XP and Cash (with Payout function)")
 
-function GM.DevCmds.RefillStats(ply, cmd)
+function GM:DevCmds_RefillStats(ply, cmd)
 	if !ply:IsValid() then return false end
 	if !TEADevCheck(ply) then 
-		SystemMessage(ply, translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
+		ply:SystemMessage(translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
 		ply:ConCommand("playgamesound buttons/button8.wav")
 		return
 	end
@@ -223,15 +266,17 @@ function GM.DevCmds.RefillStats(ply, cmd)
 	ply.Fatigue = 0
 	ply.Infection = 0
     
-	tea_FullyUpdatePlayer(ply)
+	gamemode.Call("FullyUpdatePlayer", ply)
 end
-concommand.Add("tea_dev_refillstats", GM.DevCmds.RefillStats, nil, "Refills your Stamina, Hungeer, Thirst, Fatigue and Infection.")
+concommand.Add("tea_dev_refillstats", function(ply, cmd, args)
+	gamemode.Call("DevCmds_RefillStats", ply, cmd, args)
+end, nil, "Refills your Stamina, Hungeer, Thirst, Fatigue and Infection.")
 
-function GM.DevCmds.GivePerk(ply, cmd, args)
+function GM:DevCmds_GivePerk(ply, cmd, args)
 	if !ply:IsValid() then return false end
 
 	if !TEADevCheck(ply) then 
-		SystemMessage(ply, translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
+		ply:SystemMessage(translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
 		ply:ConCommand("playgamesound buttons/button8.wav")
 		return
 	end
@@ -240,31 +285,33 @@ function GM.DevCmds.GivePerk(ply, cmd, args)
 	local addqty = tonumber(args[2])
 	if !statname then
 		ply:PrintMessage(2, "Usage:\nArgument #1: Perk Name\nInclude only stat name, do not include Stat before stat name! (Examples: Agility, Speed or Strength)\n \nList:")
-		for k,v in ipairs(GAMEMODE.StatsListServer) do ply:PrintMessage(2, v) end
+		for k,v in ipairs(self.StatsListServer) do ply:PrintMessage(2, v) end
 	return end
 	if !addqty then return end
 	local stat = "Stat"..statname
 	if statname == "Points" then --when they manage to increase their skill points with this command while it's supposed to increase their skill level
-		SystemMessage(ply, "You can't increase your Skill Points with this command! Use tea_dev_giveskillpoints instead!", Color(255,205,205,255), true)
+		ply:SystemMessage("You can't increase your Skill Points with this command! Use tea_dev_giveskillpoints instead!", Color(255,205,205,255), true)
 		ply:ConCommand("playgamesound buttons/button8.wav")
 		return
 	end
 
 	ply[stat] = ply[stat] + addqty
-	SystemMessage(ply, "You increased your "..statname.." Skill for "..addqty.." point(s)!", Color(155,255,155,255), true)
+	ply:SystemMessage("You increased your "..statname.." Skill for "..addqty.." point(s)!", Color(155,255,155,255), true)
 
 	ply:SetMaxHealth(GAMEMODE:CalcMaxHealth(ply))
 	ply:SetMaxArmor(GAMEMODE:CalcMaxArmor(ply))
 	ply:SetJumpPower(GAMEMODE:CalcJumpPower(ply))
-	tea_RecalcPlayerSpeed(ply)
-	tea_FullyUpdatePlayer(ply)
+	gamemode.Call("RecalcPlayerSpeed", ply)
+	gamemode.Call("FullyUpdatePlayer", ply)
 end
-concommand.Add("tea_dev_giveperk", GM.DevCmds.GivePerk)
+concommand.Add("tea_dev_giveperk", function(ply, cmd, args)
+	gamemode.Call("DevCmds_GivePerk", ply, cmd, args)
+end)
 
-function GM.DevCmds.GiveStat(ply, cmd, args)
+function GM:DevCmds_GiveStat(ply, cmd, args)
 	if !ply:IsValid() then return false end
 	if !TEADevCheck(ply) then 
-		SystemMessage(ply, translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
+		ply:SystemMessage(translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
 		ply:ConCommand("playgamesound buttons/button8.wav")
 		return
 	end
@@ -277,25 +324,28 @@ function GM.DevCmds.GiveStat(ply, cmd, args)
 	return end
 	if !addqty then return end
 /*	if string.lower(statname) == "StatAgility" then
-		SystemMessage(ply, "You can't set your Perk Values with this command! Use tea_dev_setperk instead!", Color(255,205,205,255), true)
+		ply:SystemMessage("You can't set your Perk Values with this command! Use tea_dev_setperk instead!", Color(255,205,205,255), true)
 		ply:ConCommand("playgamesound buttons/button8.wav")
 		return
-	end*/
+	end
+*/
 
-	SystemMessage(ply, "You gave yourself "..statname.." values for "..addqty.."!", Color(155,255,155,255), true)
+	ply:SystemMessage("You gave yourself "..statname.." values for "..addqty.."!", Color(155,255,155,255), true)
 
     ply[statname] = ply[statname] + addqty
 
-	tea_RecalcPlayerSpeed(ply)
-	tea_FullyUpdatePlayer(ply)
+	gamemode.Call("RecalcPlayerSpeed", ply)
+	gamemode.Call("FullyUpdatePlayer", ply)
 end
-concommand.Add("tea_dev_givestat", GM.DevCmds.GiveStat)
+concommand.Add("tea_dev_givestat", function(ply, cmd, args)
+	gamemode.Call("DevCmds_GiveStat", ply, cmd, args)
+end)
 
-function GM.DevCmds.SetPerk(ply, cmd, args)
+function GM:DevCmds_SetPerk(ply, cmd, args)
 	if !ply:IsValid() then return false end
 
 	if !TEADevCheck(ply) then 
-		SystemMessage(ply, translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
+		ply:SystemMessage(translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
 		ply:ConCommand("playgamesound buttons/button8.wav")
 		return
 	end
@@ -309,27 +359,29 @@ function GM.DevCmds.SetPerk(ply, cmd, args)
 	if !setqty then return end
 	local stat = "Stat"..statname
 	if statname == "Points" then
-		SystemMessage(ply, "You can't set your Skill Points with this command! Use tea_dev_setskillpoints instead!", Color(255,205,205,255), true)
+		ply:SystemMessage("You can't set your Skill Points with this command! Use tea_dev_setskillpoints instead!", Color(255,205,205,255), true)
 		ply:ConCommand("playgamesound buttons/button8.wav")
 		return
 	end
 
 	ply[stat] = setqty
-	SystemMessage(ply, "You set your "..statname.." Skill value to "..setqty.."!", Color(155,255,155,255), true)
+	ply:SystemMessage("You set your "..statname.." Skill value to "..setqty.."!", Color(155,255,155,255), true)
 
 	ply:SetMaxHealth(GAMEMODE:CalcMaxHealth(ply))
 	ply:SetMaxArmor(GAMEMODE:CalcMaxArmor(ply))
 	ply:SetJumpPower(GAMEMODE:CalcJumpPower(ply))
-	tea_RecalcPlayerSpeed(ply)
-	tea_FullyUpdatePlayer(ply)
+	gamemode.Call("RecalcPlayerSpeed", ply)
+	gamemode.Call("FullyUpdatePlayer", ply)
 end
-concommand.Add("tea_dev_setperk", GM.DevCmds.SetPerk)
+concommand.Add("tea_dev_setperk", function(ply, cmd, args)
+	gamemode.Call("DevCmds_SetPerk", ply, cmd, args)
+end)
 
 
-function GM.DevCmds.SetStat(ply, cmd, args)
+function GM:DevCmds_SetStat(ply, cmd, args)
 	if !ply:IsValid() then return false end
 	if !TEADevCheck(ply) then 
-		SystemMessage(ply, translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
+		ply:SystemMessage(translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
 		ply:ConCommand("playgamesound buttons/button8.wav")
 		return
 	end
@@ -338,28 +390,30 @@ function GM.DevCmds.SetStat(ply, cmd, args)
 	local setqty = tonumber(args[2])
 	if !statname then
 		ply:PrintMessage(2, "Usage:\nArgument #1: Stat Name\nInclude only (periodic) stats!\n \nList:")
-		for k,v in ipairs(GAMEMODE.StatsListServer2) do ply:PrintMessage(2, v) end
+		for k,v in ipairs(self.StatsListServer2) do ply:PrintMessage(2, v) end
 	return end
 	if !setqty then return end
 /*	if string.lower(statname) == "StatAgility" then
-		SystemMessage(ply, "You can't set your Perk Values with this command! Use tea_dev_setperk instead!", Color(255,205,205,255), true)
+		ply:SystemMessage("You can't set your Perk Values with this command! Use tea_dev_setperk instead!", Color(255,205,205,255), true)
 		ply:ConCommand("playgamesound buttons/button8.wav")
 		return
 	end*/
 
-	SystemMessage(ply, "You set your "..statname.." value to "..setqty.."!", Color(155,255,155,255), true)
+	ply:SystemMessage("You set your "..statname.." value to "..setqty.."!", Color(155,255,155,255), true)
 
     ply[statname] = setqty
 
-	tea_RecalcPlayerSpeed(ply)
-	tea_FullyUpdatePlayer(ply)
+	gamemode.Call("RecalcPlayerSpeed", ply)
+	gamemode.Call("FullyUpdatePlayer", ply)
 end
-concommand.Add("tea_dev_setstat", GM.DevCmds.SetStat)
+concommand.Add("tea_dev_setstat", function(ply, cmd, args)
+	gamemode.Call("DevCmds_SetStat", ply, cmd, args)
+end)
 
-function GM.DevCmds.PauseStats(ply, cmd)
+function GM:DevCmds_PauseStats(ply, cmd)
     if !ply:IsValid() then return false end
 	if !TEADevCheck(ply) then 
-		SystemMessage(ply, translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
+		ply:SystemMessage(translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
 		ply:ConCommand("playgamesound buttons/button8.wav")
 		return
 	end
@@ -370,11 +424,13 @@ function GM.DevCmds.PauseStats(ply, cmd)
         ply.StatsPaused = false
     end
 end
-concommand.Add("tea_dev_pausestats", GM.DevCmds.PauseStats)
+concommand.Add("tea_dev_pausestats", function(ply, cmd)
+	gamemode.Call("DevCmds_PauseStats", ply, cmd, args)
+end)
 
-function GM.DevCmds.ForceEquipArmor(ply, cmd, args)
+function GM:DevCmds_ForceEquipArmor(ply, cmd, args)
 	if !SuperAdminCheck(ply) then 
-		SystemMessage(ply, translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205,255), true)
+		ply:SystemMessage(translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205,255), true)
 		ply:ConCommand("playgamesound buttons/button8.wav")
 		return
 	end
@@ -383,64 +439,68 @@ function GM.DevCmds.ForceEquipArmor(ply, cmd, args)
 
 	if !item then
 		UseFunc_RemoveArmor(ply)
-		SystemMessage(ply, "You removed equipped armor for yourself!", Color(155,255,155,255), true)
+		ply:SystemMessage("You removed equipped armor for yourself!", Color(155,255,155,255), true)
 	else
 		ForceEquipArmor(ply, name)
-		SystemMessage(ply, "You equipped armor '"..translate.ClientGet(ply, name.."_n").."' for yourself!", Color(155,255,155,255), true)
+		ply:SystemMessage("You equipped armor '"..translate.ClientGet(ply, name.."_n").."' for yourself!", Color(155,255,155,255), true)
 	end
 end
-concommand.Add("tea_dev_forceequiparmor", GM.DevCmds.ForceEquipArmor)
+concommand.Add("tea_dev_forceequiparmor", function(ply, cmd, args)
+	gamemode.Call("DevCmds_ForceEquipArmor", ply, cmd, args)
+end)
 
-function GM.DevCmds.PlayerForceGainLevel(ply)
+function GM:DevCmds_PlayerForceGainLevel(ply)
 	if !TEADevCheck(ply) then 
-		SystemMessage(ply, translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
+		ply:SystemMessage(translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
 		ply:ConCommand("playgamesound buttons/button8.wav")
 		return
 	end
 
 	local CurrentXP = ply.XP
-	local RequiredXP = GetReqXP(ply)
-	ply.IsLevelingAllowed = true
+	local RequiredXP = self:GetReqXP(ply)
 	ply.XP = tonumber((RequiredXP + 1) or 2^1024)
-	tea_GainLevel(ply)
-	ply.IsLevelingAllowed = false
+	gamemode.Call("GainLevel", ply)
 	ply.XP = CurrentXP - RequiredXP
-	tea_FullyUpdatePlayer(ply)
+	gamemode.Call("FullyUpdatePlayer", ply)
 end
-concommand.Add("tea_dev_forcelevel", GM.DevCmds.PlayerForceGainLevel)
+concommand.Add("tea_dev_forcelevel", function(ply, cmd, args)
+	gamemode.Call("DevCmds_PlayerForceGainLevel", ply, cmd, args)
+end)
 
-function GM.DevCmds.PlayerForceGainLevelNoXP(ply)
+function GM:DevCmds_PlayerForceGainLevelNoXP(ply)
 	if !TEADevCheck(ply) then 
-		SystemMessage(ply, translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
+		ply:SystemMessage(translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
 		ply:ConCommand("playgamesound buttons/button8.wav")
 		return
 	end
 	
 	local CurrentXP = ply.XP
-	local RequiredXP = GetReqXP(ply)
-	ply.IsLevelingAllowed = true
+	local RequiredXP = self:GetReqXP(ply)
 	ply.XP = tonumber((RequiredXP + 1) or 2^1024)
-	tea_GainLevel(ply)
-	ply.IsLevelingAllowed = false
+	gamemode.Call("GainLevel", ply)
 	ply.XP = CurrentXP
-	tea_FullyUpdatePlayer(ply)
+	gamemode.Call("FullyUpdatePlayer", ply)
 end
-concommand.Add("tea_dev_forcelevel_noxp", GM.DevCmds.PlayerForceGainLevelNoXP, nil, "Same as tea_dev_forcelevel, but actually won't decrease their XP from user")
+concommand.Add("tea_dev_forcelevel_noxp", function(ply, cmd, args)
+	gamemode.Call("DevCmds_PlayerForceGainLevelNoXP", ply, cmd, args)
+end, nil, "Same as tea_dev_forcelevel, but actually won't decrease their XP from user")
 
-function GM.DevCmds.ForceSavePlayer(ply)
+function GM:DevCmds_ForceSavePlayer(ply)
 	if !TEADevCheck(ply) then 
-		SystemMessage(ply, translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
+		ply:SystemMessage(translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
 		ply:ConCommand("playgamesound buttons/button8.wav")
 		return
 	end
 
 	ply.AllowSave = true
-	tea_SavePlayer(ply)
-	tea_SavePlayerInventory(ply)
-	tea_SavePlayerVault(ply)
+	gamemode.Call("SavePlayer", ply)
+	gamemode.Call("SavePlayerInventory", ply)
+	gamemode.Call("SavePlayerVault", ply)
 	ply.AllowSave = false
 end
-concommand.Add("tea_dev_forcesaveplayer", GM.DevCmds.ForceSavePlayer, nil, "Forces a save function upon player, even with tea_server_dbsaving convar disabled")
+concommand.Add("tea_dev_forcesaveplayer", function(ply, cmd, args)
+	gamemode.Call("DevCmds_ForceSavePlayer", ply, cmd, args)
+end, nil, "Forces a save function upon player, even with tea_server_dbsaving convar disabled")
 
 
 /*

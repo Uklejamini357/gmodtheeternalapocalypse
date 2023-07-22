@@ -2,9 +2,9 @@
 
 local ZombieData = ""
 
-function GM.ZombieCount()
+function GM:ZombieCount()
 	local AliveZombies = 0
-	for k, v in pairs(GAMEMODE.Config["ZombieClasses"]) do
+	for k, v in pairs(self.Config["ZombieClasses"]) do
 		for _, ent in pairs(ents.FindByClass(k)) do AliveZombies = AliveZombies + 1 end
 	end
 
@@ -13,12 +13,12 @@ end
 
 
 function GM:LoadZombies()
-	if not file.IsDir(GAMEMODE.DataFolder.."/spawns/"..string.lower(game.GetMap()), "DATA") then
-	   file.CreateDir(GAMEMODE.DataFolder.."/spawns/"..string.lower(game.GetMap()))
+	if not file.IsDir(self.DataFolder.."/spawns/"..string.lower(game.GetMap()), "DATA") then
+	   file.CreateDir(self.DataFolder.."/spawns/"..string.lower(game.GetMap()))
 	end
-	if file.Exists(GAMEMODE.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/zombies.txt", "DATA") then
+	if file.Exists(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/zombies.txt", "DATA") then
 		ZombieData = "" --reset it
-		ZombieData = file.Read(GAMEMODE.DataFolder.."/spawns/" .. string.lower(game.GetMap()) .. "/zombies.txt", "DATA")
+		ZombieData = file.Read(self.DataFolder.."/spawns/" .. string.lower(game.GetMap()) .. "/zombies.txt", "DATA")
 		print("Zombie spawnpoints loaded")
 	else
 		ZombieData = "" --just in case
@@ -26,41 +26,60 @@ function GM:LoadZombies()
 	end
 end
 
+
+-- Not used currently.
+function GM:GetRandomZombieSpawn()
+	if ZombieData ~= "" then
+
+		local ZombiesList = string.Explode("\n", ZombieData)
+		local zombiespawn = table.Random(ZombiesList)
+		local Zed = string.Explode(";", zombiespawn)
+		local pos = util.StringToType(Zed[1], "Vector") + Vector(0, 0, 5)
+		local ang = util.StringToType(Zed[2], "Angle")
+
+		return pos
+	end
+
+	return nil
+end
+
 -- note: added the ability to create bosses with this function, setting isboss to true will make the monster distribute its xp reward to all attackers and announce its death
-function CreateZombie(class, pos, ang, xp, cash, isboss)
+function GM:CreateZombie(class, pos, ang, xp, cash, infectionrate, isboss)
 	local isboss = isboss or false
 	local class = tostring(class)
 
-	local SpawnZombie = ents.Create(class)
-	if !SpawnZombie:IsValid() then return NULL end
-	SpawnZombie:SetPos(pos)
-	SpawnZombie:SetAngles(ang)
-	SpawnZombie.XPReward = xp
-	SpawnZombie.MoneyReward = cash
-	SpawnZombie.BossMonster = isboss
+	local ent = ents.Create(class)
+	if !ent:IsValid() then return NULL end
+	ent:SetPos(pos)
+	ent:SetAngles(ang)
+	ent.XPReward = xp
+	ent.MoneyReward = cash
+	ent.InfectionRate = infectionrate
+	ent.IsZombie = true
+	ent.BossMonster = isboss
 	if isboss then
-		SpawnZombie.DamagedBy = {}
+		ent.DamagedBy = {}
 	end
-	SpawnZombie:Spawn()
-	SpawnZombie:SetHealth(SpawnZombie:Health() * GetConVar("tea_config_zombiehpmul"):GetFloat())
-	SpawnZombie:SetMaxHealth(SpawnZombie:GetMaxHealth() * GetConVar("tea_config_zombiehpmul"):GetFloat())
-	SpawnZombie:Activate()
-	if GetConVar("tea_server_debugging"):GetInt() >= 2 then print("Zombie spawned:", "\n"..class, pos, ang, "XPReward: "..xp, "MoneyReward: "..cash, isboss and "Isboss: true" or "Isboss: false") end
-	return SpawnZombie -- used for SpawnZombie command
+	ent:Spawn()
+	ent:SetHealth(ent:Health() * self.ZombieHealthMultiplier)
+	ent:SetMaxHealth(ent:GetMaxHealth() * self.ZombieHealthMultiplier)
+	ent:Activate()
+	if self:GetDebug() >= DEBUGGING_ADVANCED then print("Zombie spawned:", "\n"..class, pos, ang, "XPReward: "..xp, "MoneyReward: "..cash, isboss and "Isboss: true" or "Isboss: false") end
+	return ent -- used for SpawnZombie command
 end
 
-timer.Create("RemoveDesertedZombies", 30, 0, function()
+timer.Create("TEARemoveLonelyZombies", 30, 0, function()
 	for k, v in pairs(GAMEMODE.Config["ZombieClasses"]) do
-		for _, ent in pairs(ents.FindByClass(k)) do CheckIfDesertedArea(ent) end
+		for _, ent in pairs(ents.FindByClass(k)) do GAMEMODE:CheckIfDesertedArea(ent) end
 	end
 end)
 
 -- delete zombies every 30 seconds if there are no players nearby within radius of 5500 (in source units)
-function CheckIfDesertedArea(ent)
+function GM:CheckIfDesertedArea(ent)
 	if !ent:IsValid() then return end
 
 	local deserted = true
-	local plycheck = ents.FindInSphere(ent:GetPos(), tonumber(GAMEMODE.MaxZombieWanderingDistance))
+	local plycheck = ents.FindInSphere(ent:GetPos(), tonumber(self.MaxZombieWanderingDistance))
 	for k, v in pairs(plycheck) do
 		if v:IsPlayer() then deserted = false end
 	end
@@ -71,30 +90,120 @@ function CheckIfDesertedArea(ent)
 end
 
 
-function GM.SpawnRandomZombie(pos, ang)
-	local dice = math.Rand(0, 100)
+function GM:SpawnRandomZombie(pos, ang)
+	local maxchance = 0
+	for _,z in pairs(self.Config["ZombieClasses"]) do if !z.Disabled then maxchance = maxchance + z.SpawnChance end end
+
+	local dice = math.Rand(0, maxchance)
 	local total = 0
-	for k, v in pairs(GAMEMODE.Config["ZombieClasses"]) do
-		total = total + v["SpawnChance"]
+	for k, v in pairs(self.Config["ZombieClasses"]) do
+		if v.Disabled then continue end
+		total = total + v.SpawnChance
 		if total >= dice then
-			CreateZombie(k, pos, ang, v["XPReward"], v["MoneyReward"], false)
+			local elite = math.random(100) == 1 or self:GetCurrentSeasonalEvent() == SEASONAL_EVENT_HALLOWEEN and math.random(20) == 1
+			local ent = self:CreateZombie(k, pos, ang, v.XPReward, v.MoneyReward, v.InfectionRate, false)
+
+			if elite then
+				local elite_variant = math.random(8)
+				local mult,xp,cash,inf = 1,1,1,1
+				if elite_variant == VARIANT_POISONOUS then
+					ent:SetColor(Color(0,255,0))
+					mult,xp,cash,inf = 1.2, 1.15, 1.1, 1.1
+				elseif elite_variant == VARIANT_SHOCK then
+					ent:SetColor(Color(64,128,255))
+					mult,xp,cash,inf = 1.15, 1.2, 1.25, 1.2
+				elseif elite_variant == VARIANT_OVERPOWERED then
+					ent:SetColor(Color(64,128,255))
+					mult,xp,cash,inf = 1.4, 1.35, 1.3, 1.45
+				elseif elite_variant == VARIANT_REFLECTOR then
+					ent:SetColor(Color(255,128,0))
+					mult,xp,cash,inf = 1.25, 1.25, 1.3, 1.4
+				elseif elite_variant == VARIANT_INFECTIVE then
+					ent:SetColor(Color(255,128,128))
+					mult,xp,cash,inf = 1.25, 1.2, 1.15, 1.15
+				elseif elite_variant == VARIANT_SICKNESS then
+					ent:SetColor(Color(255,128,255))
+					mult,xp,cash,inf = 1.25, 1.25, 1.15, 1.1
+				elseif elite_variant == VARIANT_LEECH then
+					ent:SetColor(Color(127,255,127))
+					mult,xp,cash,inf = 1.3, 1.25, 1.15, 1.2
+				elseif elite_variant == VARIANT_ENRAGED then
+					ent:SetColor(Color(255,255,95))
+					mult,xp,cash,inf = 1.25, 1.25, 1.2, 1.25
+				end
+
+				ent:SetEliteVariant(elite_variant)
+				ent:SetHealth(ent:Health() * mult)
+				ent:SetMaxHealth(ent:GetMaxHealth() * mult)
+				ent.XPReward = (ent.XPReward or 0) * xp
+				ent.MoneyReward = (ent.MoneyReward or 0) * cash
+				ent.InfectionRate = (ent.InfectionRate or 0) * inf
+				--PrintMessage(3, tostring(ent).." has become elite variant "..elite_variant)
+			end
+
+
 			break
 		end
 	end
 end
 
-function GM.SpawnRandomBoss(pos, ang)
+function GM:SpawnRandomBoss(pos, ang)
+	local maxchance = 0
+	for _,z in pairs(self.Config["BossClasses"]) do if !z.Disabled then maxchance = maxchance + z.SpawnChance end end
+
 	local dice = math.Rand(0, 100)
 	local total = 0
-	for k, v in pairs(GAMEMODE.Config["BossClasses"]) do
-		total = total + v["SpawnChance"]
+	for k, v in pairs(self.Config["BossClasses"]) do
+		if v.Disabled then continue end
+		total = total + v.SpawnChance
 		if total >= dice then
-			v["BroadCast"]()
-			timer.Simple(tonumber(v["SpawnDelay"]), function()
-				tea_SystemBroadcast(v["AnnounceMessage"], Color(255,105,105,255), false)
+			v.BroadCast()
+			timer.Simple(tonumber(v.SpawnDelay), function()
+				self:SystemBroadcast(v.AnnounceMessage, Color(255,105,105), false)
 				for k, v in pairs(player.GetAll()) do BroadcastLua([[if GetConVar("tea_cl_soundboss"):GetInt() >= 1 then RunConsoleCommand("playgamesound", "music/stingers/hl1_stinger_song8.mp3") end]]) end
-				CreateZombie(k, pos, ang, v["XPReward"], v["MoneyReward"], true)
-				if GetConVar("tea_server_debugging"):GetInt() >= 2 then print("Zombie Boss spawned:", "\n"..k, pos, ang, "XPReward: "..v["XPReward"], "MoneyReward: "..v["MoneyReward"]) end
+
+				local elite = math.random(10) == 1 or self:GetCurrentSeasonalEvent() == SEASONAL_EVENT_HALLOWEEN and math.random(3) == 1
+				local ent = self:CreateZombie(k, pos, ang, v.XPReward, v.MoneyReward, v.InfectionRate, true)
+	
+				if elite then
+					local elite_variant = 8--math.random(8)
+					local mult,xp,cash,inf = 1,1,1,1
+					if elite_variant == VARIANT_POISONOUS then
+						ent:SetColor(Color(0,255,0))
+						mult,xp,cash,inf = 1.2,1.15,1.1,1
+					elseif elite_variant == VARIANT_SHOCK then
+						ent:SetColor(Color(64,128,255))
+						mult,xp,cash,inf = 1.15,1.2,1.25,1
+					elseif elite_variant == VARIANT_OVERPOWERED then
+						ent:SetColor(Color(64,128,255))
+						mult,xp,cash,inf = 1.4,1.35,1.3,1
+					elseif elite_variant == VARIANT_REFLECTOR then
+						ent:SetColor(Color(64,128,255))
+						mult,xp,cash,inf = 1.25,1.15,1.2,1
+					elseif elite_variant == VARIANT_INFECTIVE then
+						ent:SetColor(Color(255,128,128))
+						mult,xp,cash,inf = 1.25,1.2,1.15,1
+					elseif elite_variant == VARIANT_SICKNESS then
+						ent:SetColor(Color(255,128,255))
+						mult,xp,cash,inf = 1.25,1.25,1.15,1
+					elseif elite_variant == VARIANT_LEECH then
+						ent:SetColor(Color(127,255,127))
+						mult,xp,cash,inf = 1.3, 1.25, 1.15, 1.2
+					elseif elite_variant == VARIANT_ENRAGED then
+						ent:SetColor(Color(255,255,95))
+						mult,xp,cash,inf = 1.25, 1.25, 1.2, 1.25
+					end
+	
+					ent:SetEliteVariant(elite_variant)
+					ent:SetHealth(ent:Health() * mult)
+					ent:SetMaxHealth(ent:GetMaxHealth() * mult)
+					ent.XPReward = (ent.XPReward or 0) * xp
+					ent.MoneyReward = (ent.MoneyReward or 0) * cash
+					ent.InfectionRate = (ent.InfectionRate or 0) * inf
+					self:SystemBroadcast("ALERT! BOSS HAS SPAWNED AS AN ELITE VARIANT, GOOD LUCK...", Color(255,55,55), true)
+				end
+	
+				if self:GetDebug() >= DEBUGGING_ADVANCED then print("Zombie Boss spawned:", "\n"..k, pos, ang, "XPReward: "..v.XPReward, "MoneyReward: "..v.MoneyReward) end
 			end)
 			break
 		end
@@ -102,47 +211,47 @@ function GM.SpawnRandomBoss(pos, ang)
 end
 
 
-function GM.SpawnZombies()
-	local zombiespawnenabled = GAMEMODE.ZombieSpawningEnabled
-	if GAMEMODE.ZombieCount() >= GAMEMODE.MaxZombies or !zombiespawnenabled then return false end
-	if ZombieData != "" then
+function GM:SpawnZombies()
+	local zombiespawnenabled = GetGlobalBool("GM.ZombieSpawning")
+	if self:ZombieCount() >= self.MaxZombies or !zombiespawnenabled then return false end
+	if ZombieData ~= "" then
 		local ZombiesList = string.Explode("\n", ZombieData)
 		for k, v in RandomPairs(ZombiesList) do
-			Zed = string.Explode(";", v)
+			local Zed = string.Explode(";", v)
 			local pos = util.StringToType(Zed[1], "Vector") + Vector(0, 0, 5)
 			local ang = util.StringToType(Zed[2], "Angle")
 			local inzedrange = true
 			local zeds = ents.FindInSphere(pos, 250)
 			for k, v in pairs(zeds) do
-				if v.Type == "nextbot" or v:IsNPC() or v:IsPlayer() then inzedrange = false end -- ignore spawnpoints that are obstructed by zombies or players
+				if v:IsNextBot() or v:IsNPC() or v:IsPlayer() then inzedrange = false end -- ignore spawnpoints that are obstructed by zombies or players
 			end
 
 			local inplyrange = false
-			local plycheck = ents.FindInSphere(pos, tonumber(GAMEMODE.MaxZombieSpawnDistance))
+			local plycheck = ents.FindInSphere(pos, tonumber(self.MaxZombieSpawnDistance))
 			for k, v in pairs(plycheck) do
 				if v:IsPlayer() then inplyrange = true end
 			end
 
 			if inplyrange == false or inzedrange == false then continue end
-			if GAMEMODE.ZombieCount() >= GAMEMODE.MaxZombies or !zombiespawnenabled then break end
+			if self:ZombieCount() >= self.MaxZombies or !zombiespawnenabled then break end
 
-			GAMEMODE.SpawnRandomZombie(pos + Vector(0, 0, 10), ang)
+			self:SpawnRandomZombie(pos + Vector(0, 0, 10), ang)
 		end
 	end
 end
 concommand.Add("tea_dev_spawnzombies", function(ply, cmd)
 	if !TEADevCheck(ply) then 
-		SystemMessage(ply, translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
+		ply:SystemMessage(translate.ClientGet(ply, "devcheckfail"), Color(255,205,205), true)
 		ply:ConCommand("playgamesound buttons/button8.wav")
 		return
 	end
-	GAMEMODE.SpawnZombies()
+	GAMEMODE:SpawnZombies()
 end)
 
 
-function GM.AddZombie(ply, cmd, args)
+function GM:AddZombie(ply, cmd, args)
 	if !SuperAdminCheck(ply) then 
-		SystemMessage(ply, translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205,255), true)
+		ply:SystemMessage(translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205), true)
 		ply:ConCommand("playgamesound buttons/button8.wav")
 		return
 	end
@@ -153,141 +262,146 @@ function GM.AddZombie(ply, cmd, args)
 		NewData = ZombieData .. "\n" .. tostring(ply:GetPos()) .. ";" .. tostring(ply:GetAngles())
 	end
 	
-	file.Write(GAMEMODE.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/zombies.txt", NewData)
+	file.Write(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/zombies.txt", NewData)
 
-	GAMEMODE.LoadZombies() --reload them
+	self:LoadZombies() --reload them
 	
-	SendChat(ply, "Added a zombie spawnpoint at position "..tostring(ply:GetPos()).."!")
-	tea_DebugLog("[SPAWNPOINTS MODIFIED] "..ply:Nick().." has added a zombie spawnpoint at position "..tostring(ply:GetPos()).."!")
+	ply:SendChat("Added a zombie spawnpoint at position "..tostring(ply:GetPos()).."!")
+	self:DebugLog("[SPAWNPOINTS MODIFIED] "..ply:Nick().." has added a zombie spawnpoint at position "..tostring(ply:GetPos()).."!")
 	ply:ConCommand("playgamesound buttons/button3.wav")
 end
-concommand.Add("tea_addzombiespawn", GM.AddZombie)
+concommand.Add("tea_addzombiespawn", function(ply, cmd, args, str)
+	GAMEMODE:AddZombie(ply, cmd, args, str)
+end)
 
-function GM.ClearZombies(ply, cmd, args)
+function GM:ClearZombies(ply, cmd, args)
 	if !SuperAdminCheck(ply) then 
-			SystemMessage(ply, translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205,255), true)
+		ply:SystemMessage(translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205), true)
 			ply:ConCommand("playgamesound buttons/button8.wav")
 			return
 	end
-	if file.Exists(GAMEMODE.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/zombies.txt", "DATA") then
-		file.Delete(GAMEMODE.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/zombies.txt")
+	if file.Exists(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/zombies.txt", "DATA") then
+		file.Delete(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/zombies.txt")
 		ZombieData = ""
 	end
-	SendChat(ply, "Deleted all zombie spawnpoints")
-	tea_DebugLog("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all zombie spawnpoints!")
+	ply:SendChat("Deleted all zombie spawnpoints")
+	self:DebugLog("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all zombie spawnpoints!")
 	ply:ConCommand("playgamesound buttons/button15.wav")
 end
-concommand.Add("tea_clearzombiespawns", GM.ClearZombies)
+concommand.Add("tea_clearzombiespawns", function(ply, cmd, args, str)
+	GAMEMODE:ClearZombies(ply, cmd, args, str)
+end)
 
-function SpawnBoss()
-	if !GAMEMODE.CanSpawnBoss and table.Count(player.GetAll()) < 2 then return end
+function GM:SpawnBoss()
 	local bspawned = false
 
 	if ZombieData != "" then
 		local ZombiesList = string.Explode("\n", ZombieData)
 		for k, v in RandomPairs(ZombiesList) do
-			Zed = string.Explode(";", v)
+			local Zed = string.Explode(";", v)
 			local pos = util.StringToType(Zed[1], "Vector")
 			local ang = util.StringToType(Zed[2], "Angle")
 			local inzedrange = true
 			local zeds = ents.FindInSphere(pos, 250)
 			for k, v in pairs(zeds) do
-				if v.Type == "nextbot" or v:IsNPC() or v:IsPlayer() then inzedrange = false end -- ignore spawnpoints that are obstructed by zombies or players
+				if v:IsNextBot() or v:IsNPC() or v:IsPlayer() then inzedrange = false end -- ignore spawnpoints that are obstructed by zombies or players
 			end
 
-			if bspawned == true then continue end
-			if inzedrange == false then continue end
-			GAMEMODE.SpawnRandomBoss(pos + Vector(0, 0, 40), ang)
+			if bspawned then continue end
+			if !inzedrange then continue end
+			self:SpawnRandomBoss(pos + Vector(0, 0, 40), ang)
 			bspawned = true
 		end
 	end
 end
 
 
-function StoreAttacker(target, dmginfo)
-	local dmg = dmginfo:GetDamage()
-	local attacker = dmginfo:GetAttacker()
-	if (target.Type == "nextbot" or target:IsNPC()) and (!target.LastAttacker or target:Health() > 0) and attacker:IsPlayer() then
-		if !target.BossMonster then
-			target.LastAttacker = attacker
-			timer.Create("TEA_LastAttacker_"..target:EntIndex(), 15, 1, function()
-				if !target:IsValid() then return end
-				target.LastAttacker = nil	-- if time after the target last received damage from the attacker, we claim that the last target's attacker is no more
+function GM:NPCReward(ent)
+	local ct = CurTime()
+
+	local attacker = ent.LastAttacker
+	if !ent.TEA_DeadNPC and (ent:IsNextBot() or ent:IsNPC()) and (ent.XPReward and ent.MoneyReward) then
+		if !ent.BossMonster and attacker and attacker:IsValid() then
+			GAMEMODE:Payout(attacker,
+				ent.XPReward * self.XPGainMul * GAMEMODE:GetInfectionMul() * math.Round(1 + (attacker.StatKnowledge * 0.025), 3),
+				ent.MoneyReward * self.CashGainMul * (0.5 + (GAMEMODE:GetInfectionMul() * 0.5)) * (self:CashBonus(attacker) or 1) * math.Round(1 + (attacker.StatSalvage * 0.025), 3)
+			)
+			attacker.ZKills = attacker.ZKills + 1
+			attacker.LifeZKills = attacker.LifeZKills + 1
+			gamemode.Call("GiveTaskProgress", attacker, "zombie_killer", 1)
+
+			self:SendPlayerSurvivalStats(attacker)
+			self:NetUpdateStatistics(attacker)
+			local addinfection = ((ent.InfectionRate or 0) * math.min(3, 1 + (attacker.ZombieKillStreak * 0.04))) / (1 + ((player.GetCount() - 1) * (5 / 9))) * self.InfectionLevelGainMul
+			addinfection = addinfection * (self:GetInfectionLevel() > 100 and 0.25 or self:GetInfectionLevel() > 75 and 0.5 or self:GetInfectionLevel() > 50 and 0.75 or 1)
+
+			self:SetInfectionLevel(self:GetInfectionLevel() + addinfection)
+			self.NextInfectionDecrease = math.max(self.NextInfectionDecrease, ct + 25)
+			self.InfectionDecreasedTimes = 0
+			attacker.ZombieKillStreak = attacker.ZombieKillStreak + 1
+			timer.Create("TEA_InfectionStreak_1_"..attacker:EntIndex(), 7.5, 1, function()
+				if !attacker:IsValid() then return end
+				attacker.ZombieKillStreak = math.floor(attacker.ZombieKillStreak / 3)
 			end)
-		else
-			if !target.DamagedBy[attacker] then 
-				target.DamagedBy[attacker] = math.Clamp(dmg, 0, target:GetMaxHealth())
-			else
-				target.DamagedBy[attacker] = math.Clamp(target.DamagedBy[attacker] + math.Clamp(dmg, 0, target:Health()), 0, target:GetMaxHealth())
+			timer.Create("TEA_InfectionStreak_2_"..attacker:EntIndex(), 20, 1, function()
+				if !attacker:IsValid() then return end
+				attacker.ZombieKillStreak = 0
+			end)
+		elseif ent.BossMonster and ent.DamagedBy then
+			for pl, v in pairs(ent.DamagedBy) do
+				if !pl:IsValid() or !pl:IsPlayer() then continue end
+				local payxp = tonumber(math.min(v, ent:GetMaxHealth()) * ent.XPReward / ent:GetMaxHealth())
+				local paycash = tonumber(math.min(v, ent:GetMaxHealth()) * ent.MoneyReward / ent:GetMaxHealth())
+				self:Payout(pl,
+					math.Round(payxp * self.XPGainMul * self:GetInfectionMul()),
+					math.Round(paycash * self.CashGainMul * (0.5 + (GAMEMODE:GetInfectionMul() * 0.5)) * (self:CashBonus(pl) or 1))
+				)
+				pl:PrintMessage(HUD_PRINTTALK, Format("Damage dealt to boss: %s (%s%% damage)", math.Round(v), math.Round((v * 100) / ent:GetMaxHealth())))
 			end
-		end
-	end
-end
-hook.Add("EntityTakeDamage", "StoreAttacker", StoreAttacker, HOOK_LOW)
 
-function NPCReward(ent)
-	local tea_server_xpreward = GetConVar("tea_server_xpreward"):GetFloat()
-	local tea_server_moneyreward = GetConVar("tea_server_moneyreward"):GetFloat()
-
-	if (ent.Type == "nextbot" or ent:IsNPC()) and (ent.XPReward and ent.MoneyReward) then
-		if ent.LastAttacker and ent.LastAttacker:IsValid() then
-			Payout(ent.LastAttacker, ent.XPReward * tea_server_xpreward, ent.MoneyReward * tea_server_moneyreward * (tea_CashBonus(ent.LastAttacker) or 1))
-			ent.LastAttacker.ZKills = ent.LastAttacker.ZKills + 1
-			tea_NetUpdateStatistics(ent.LastAttacker)
-		elseif ent.DamagedBy then
-			for k, v in pairs(ent.DamagedBy) do
-				if !k:IsValid() or !k:IsPlayer() then continue end
-				local payxp = tonumber(v * ent.XPReward / ent:GetMaxHealth())
-				local paycash = tonumber(v * ent.MoneyReward / ent:GetMaxHealth())
-				Payout(k, math.Round(payxp * tea_server_xpreward), math.Round(paycash * tea_server_moneyreward * (tea_CashBonus(k) or 1)))
-				k:PrintMessage(HUD_PRINTTALK, Format("Damage dealt to boss: %s (%s%% damage)", math.Round(v), math.Round((v * 100) / ent:GetMaxHealth())))
+			if table.Count(ent.DamagedBy) > 0 then
+				self.NextInfectionDecrease = math.max(self.NextInfectionDecrease, ct + 70 + table.Count(ent.DamagedBy) * 5)
+				self:SetInfectionLevel(self:GetInfectionLevel() + ((ent.InfectionRate or 0) * self.InfectionLevelGainMul))
 			end
 
 			local boss_killer
-			local boss_damager = 0
-			for ply,dmg in pairs(ent.DamagedBy) do
-				if dmg > boss_damager then
+			local boss_damage = 0
+			for ply, dmg in pairs(ent.DamagedBy) do
+				if dmg > boss_damage then
 					boss_killer = ply
-					boss_damager = dmg
+					boss_damage = dmg
 				end
 			end
 
-			if GetConVar("tea_server_debugging"):GetInt() >= 1 then
-				print("BOSS DEFEATED:\n")
-				PrintTable(ent.DamagedBy)
-			end
-
 			if boss_killer and boss_killer:IsPlayer() then
-				tea_SystemBroadcast(boss_killer:Nick().." has dealt most damage to boss ("..boss_damager..") and can pick up the boss cache!", Color(127,127,255), true)
+				ent.TEA_KilledByPlayer = boss_killer
 			end
+			ent.TEA_MostDamageByPlayer = boss_damage
 			
-			net.Start("BossKilled")
-			net.WriteTable(ent.DamagedBy)
-			net.Broadcast()
+			if table.Count(ent.DamagedBy) > 0 then
+				if self:GetDebug() >= DEBUGGING_NORMAL then
+					print("BOSS DEFEATED:\n")
+					PrintTable(ent.DamagedBy)
+				end
 
-			local EntDrop = ents.Create("loot_cache_boss")
-			EntDrop:SetNWEntity("pickup", boss_killer)
-			local name = EntDrop:GetNWEntity("pickup"):IsPlayer() and EntDrop:GetNWEntity("pickup"):Nick()
-			timer.Simple(300, function() if EntDrop:IsValid() and EntDrop:GetNWEntity("pickup"):IsValid() then tea_SystemBroadcast(name.." didn't want to pick up the boss cache, and now everyone can pick it up!", Color(255,255,255), true) EntDrop:SetNWEntity("pickup", NULL) end end)
-			EntDrop:SetPos(ent:GetPos() + Vector(0, 0, 50))
-			EntDrop:SetAngles(ent:GetAngles())
-			EntDrop.LootType = table.Random(GAMEMODE.LootTableBoss)["Class"]
-			EntDrop:Spawn()
-			EntDrop:Activate()
+				net.Start("BossKilled")
+				net.WriteTable(ent.DamagedBy)
+				net.Broadcast()
+			end
 		end
+		ent.TEA_DeadNPC = true
 	end
 end
-hook.Add("EntityRemoved", "killpayouts", NPCReward)
 
 
-function Payout(ply, xp, cash)
-	if !ply:IsValid() or !ply:IsPlayer() then return end
+function GM:Payout(ply, xp, cash)
+	if !ply:IsValid() or !ply:IsPlayer() or ply == NULL then return end
 	local CurXP = ply.XP
 	local CurMoney = ply.Money
-	local XPGain = xp * (tea_XPBonus(ply) or 1)
+	local XPGain = xp * (self:XPBonus(ply) or 1)
 	local MoneyGain = cash
-	local XPBonus = math.floor(XPGain * (ply.StatKnowledge * 0.02))
-	local MoneyBonus = math.floor(MoneyGain * (ply.StatSalvage * 0.02))
+	local XPBonus = 0 --math.floor(XPGain * (ply.StatKnowledge * 0.02))
+	local MoneyBonus = 0 --math.floor(MoneyGain * (ply.StatSalvage * 0.02))
 
 	local TXPGain = XPGain + XPBonus
 	local TMoneyGain = MoneyGain + MoneyBonus
@@ -295,26 +409,32 @@ function Payout(ply, xp, cash)
 	ply.XP = CurXP + TXPGain
 	ply.Bounty = ply.Bounty + TMoneyGain
 	ply:SetNWInt("PlyBounty", ply.Bounty)
-	if GetConVar("tea_server_debugging"):GetInt() >= 1 then
-		print(ply:Nick().." gained "..TXPGain.." XP ("..XPGain..", +"..XPBonus.." with Knowledge Skill level "..ply.StatKnowledge..", Total "..ply.XP..") and "..TMoneyGain.." "..GAMEMODE.Config["Currency"].."s to their bounty ("..MoneyGain..", +"..MoneyBonus.." with Salvage Skill level "..ply.StatSalvage..", Total "..ply.Bounty..")")
+	if self:GetDebug() >= DEBUGGING_ADVANCED then
+		print(Format("%s gained %s XP and %s %ss to their bounty", ply:Nick(), TXPGain, TMoneyGain, self.Config["Currency"]))
 	end
 
-	if tonumber(ply.Level) < GAMEMODE.MaxLevel + (GAMEMODE.LevelsPerPrestige * ply.Prestige) then tea_GainLevel(ply) end
+	if tonumber(ply.Level) < self.MaxLevel + (self.LevelsPerPrestige * ply.Prestige) then
+		local reqxp = self:GetReqXP(ply)
+		if ply.XP >= reqxp then
+			self:GainLevel(ply)
+		end
+	end
 	net.Start("Payout")
 	net.WriteFloat(TXPGain)
 	net.WriteFloat(TMoneyGain)
 	net.Send(ply)
 
-	if ply.MaxLevelTime < CurTime() and tonumber(ply.Level) >= GAMEMODE.MaxLevel + (GAMEMODE.LevelsPerPrestige * ply.Prestige) then
-		SendChat(ply, "You have reached max level, consider prestiging.")
+	if ply.MaxLevelTime < CurTime() and tonumber(ply.Level) >= self.MaxLevel + (self.LevelsPerPrestige * ply.Prestige) then
 		ply.MaxLevelTime = CurTime() + 120
+		ply:SendChat("You have reached max level, consider prestiging.")
 	end
 
-	tea_NetUpdatePeriodicStats(ply)
+	self:NetUpdatePeriodicStats(ply)
 	return TXPGain, TMoneyGain
 end
 
 -- doesn't work for some reason, so leave it
+/*
 function ZombieDealDamage(ply, zed, dmgmin, dmgmax, force, infection)
 	local damageInfo = DamageInfo()
 	local dmg1 = math.random(dmgmin, dmgmax)
@@ -344,15 +464,15 @@ function ZombieDealDamage(ply, zed, dmgmin, dmgmax, force, infection)
 	ply:ViewPunch(VectorRand():Angle() * 0.05)
 	ply:SetVelocity(force)
 	if math.random(0, 100) > (100 - (infection * (1 - (0.04 * ply.StatImmunity)))) then
-		ply.Infection = ply.Infection + math.random(60,300)
+		ply:AddInfection(math.random(60,300))
 	end
 end
+*/
 
-
-function TestZombies(ply, cmd, args)
+function GM:TestZombies(ply, cmd, args)
 	if !ply:IsValid() then return end
 	if !SuperAdminCheck(ply) then 
-		SystemMessage(ply, translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205,255), true)
+		ply:SystemMessage(translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205), true)
 		ply:ConCommand("playgamesound buttons/button8.wav")
 		return
 	end
@@ -366,31 +486,33 @@ function TestZombies(ply, cmd, args)
 	trace.filter = ply
 	local tr = util.TraceLine(trace)
 
-	local SpawnZombie = ents.Create(class)
-	if !IsValid(SpawnZombie) then SystemMessage(ply, "WARNING! Tried to spawn an invalid entity!", Color(255,205,205), true) return end
-	SpawnZombie:SetPos(tr.HitPos)
-	SpawnZombie:SetAngles(Angle(0, 0, 0))
-	SpawnZombie.XPMin = 1
-	SpawnZombie.XPMax = 1
-	SpawnZombie.MoneyMin = 1
-	SpawnZombie.MoneyMax = 1
-	SpawnZombie:Spawn()
-	SpawnZombie:Activate()
+	local ent = ents.Create(class)
+	if !IsValid(ent) then ply:SystemMessage("WARNING! Tried to spawn an invalid entity!", Color(255,205,205), true) return end
+	ent:SetPos(tr.HitPos)
+	ent:SetAngles(Angle(0, 0, 0))
+	ent.XPMin = 1
+	ent.XPMax = 1
+	ent.MoneyMin = 1
+	ent.MoneyMax = 1
+	ent:Spawn()
+	ent:Activate()
 
 	undo.Create("Test Zombie")
-	undo.AddEntity(SpawnZombie)
+	undo.AddEntity(ent)
 	undo.SetPlayer(ply)
 	undo.Finish()
 
-	SystemMessage(ply, "Spawned zombie "..class, Color(205,255,205,255), true)
-	tea_DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has spawned a zombie "..class.."!")
+	ply:SystemMessage("Spawned zombie "..class, Color(205,255,205), true)
+	self:DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has spawned a zombie "..class.."!")
 end
-concommand.Add("tea_dev_createtestzombie", TestZombies)
+concommand.Add("tea_dev_createtestzombie", function(ply, cmd, args)
+	GAMEMODE:TestZombies(ply, cmd, args)
+end)
 
-function SpawnZombie(ply, cmd, args)
+function GM:SpawnZombie(ply, cmd, args)
 	if !ply:IsValid() then return end
 	if !TEADevCheck(ply) then 
-		SystemMessage(ply, translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
+		ply:SystemMessage(translate.ClientGet(ply, "devcheckfail"), Color(255,205,205), true)
 		ply:ConCommand("playgamesound buttons/button8.wav")
 		return
 	end
@@ -398,8 +520,9 @@ function SpawnZombie(ply, cmd, args)
 	local class = tostring(args[1]) or "npc_ate_basic"
 	local xp = tonumber(args[2]) or 100
 	local cash = tonumber(args[3]) or 50
-	local isboss = tobool(args[4]) or false
-	local shouldsendchat = tonumber(args[5]) or 1
+	local infectionrate = tonumber(args[4]) or 0.01
+	local isboss = tobool(args[5]) or false
+	local shouldsendchat = tonumber(args[6]) or 1
 	
 	local vStart = ply:GetShootPos()
 	local vForward = ply:GetAimVector()
@@ -409,14 +532,16 @@ function SpawnZombie(ply, cmd, args)
 	trace.filter = ply
 	local tr = util.TraceLine(trace)
 
-	local ent = CreateZombie(class, tr.HitPos, Angle(0,0,0), xp, cash, isboss)
-	if !ent:IsValid() then SystemMessage(ply, "ERROR! Tried to spawn in invalid entity!", Color(255,205,205,255), true) return end
+	local ent = self:CreateZombie(class, tr.HitPos, Angle(0,0,0), xp, cash, infectionrate, isboss)
+	if !ent:IsValid() then ply:SystemMessage("ERROR! Tried to spawn in invalid entity!", Color(255,205,205), true) return end
 
 	undo.Create("Zombie")
 	undo.AddEntity(ent)
 	undo.SetPlayer(ply)
 	undo.Finish()
 
-	if shouldsendchat >= 1 then SystemMessage(ply, "Spawned zombie "..class.." with reward of "..xp.." XP and "..cash.." cash! (Is boss zombie: "..tostring(isboss)..")", Color(205,255,205,255), true) end
+	if shouldsendchat >= 1 then ply:SystemMessage("Spawned zombie "..class.." with reward of "..xp.." XP and "..cash.." cash! (Is boss zombie: "..tostring(isboss)..")", Color(205,255,205), true) end
 end
-concommand.Add("tea_dev_spawnzombie", SpawnZombie)
+concommand.Add("tea_dev_spawnzombie", function(ply, cmd, args)
+	GAMEMODE:SpawnZombie(ply, cmd, args)
+end)

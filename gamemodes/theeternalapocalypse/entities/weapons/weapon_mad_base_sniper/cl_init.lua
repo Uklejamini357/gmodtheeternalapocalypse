@@ -1,8 +1,8 @@
 include('shared.lua')
 
-SWEP.PrintName			= "Mad Cows Weapon Sniper Base"		// 'Nice' Weapon name (Shown on HUD)	
-SWEP.Slot				= 3							// Slot in the weapon selection menu
-SWEP.SlotPos			= 1							// Position in the slot
+SWEP.PrintName			= "Mad Cows Weapon Sniper Base"
+SWEP.Slot				= 3
+SWEP.SlotPos			= 1
 
 /*---------------------------------------------------------
    Name: SWEP:DrawHUD()
@@ -190,11 +190,6 @@ function SWEP:TranslateFOV(current_fov)
 	return current_fov
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:GetTracerOrigin()
-   Desc: Allows you to override where the tracer comes from (in first person view)
-	   returning anything but a vector indicates that you want the default action.
----------------------------------------------------------*/
 function SWEP:GetTracerOrigin()
 
 	if (self.Weapon:GetDTBool(1)) then

@@ -134,10 +134,10 @@ function SWEP:Reload()
 	local trace = util.TraceLine(tr)
 
 	if trace.Entity and trace.Entity:IsValid() and (trace.Entity:GetClass() == "prop_flimsy" or trace.Entity:GetClass() == "prop_strong") and not (self.Weapon:GetNextPrimaryFire() > CurTime() ) then
-		DestroyProp(self.Owner, trace.Entity)
+		gamemode.Call("DestroyProp", self.Owner, trace.Entity)
 		self:SetNextPrimaryFire(CurTime() + 2.08)
 	elseif trace.Entity and trace.Entity:IsValid() and SpecialSpawns[trace.Entity:GetClass()] and not (self.Weapon:GetNextPrimaryFire() > CurTime() ) then
-		DestroyStructure(self.Owner, trace.Entity)
+		gamemode.Call("DestroyStructure", self.Owner, trace.Entity)
 		self:SetNextPrimaryFire(CurTime() + 2.08)
 	end
 
@@ -214,7 +214,7 @@ end
     local tr = util.TraceLine( trace )
 
     if not (self.Weapon:GetNextPrimaryFire() > CurTime() ) then
-    MakeProp(self.Owner, self.Owner.SelectedProp, tr.HitPos, ang, 1)
+    gamemode.Call("MakeProp", self.Owner, self.Owner.SelectedProp, tr.HitPos, ang, 1)
     self:SetNextPrimaryFire(CurTime() + 0.7)
 	end
 
@@ -325,7 +325,7 @@ function SWEP:Think()
 	end
 
 	if not IsValid(self.Ghost) then return end
-	//self.Ghost:SetModel(prop)
+	--self.Ghost:SetModel(prop)
 
 	local tr = {}
 	tr.start = self.Owner:GetShootPos()
@@ -367,8 +367,8 @@ function SWEP:Think()
 				gui.EnableScreenClicker( true )
 				self.Menu:SetVisible(true)
 				return
-			//else
-			//	self.Menu = nil
+			--else
+			--	self.Menu = nil
 			end
 		end
 		gui.EnableScreenClicker( true )

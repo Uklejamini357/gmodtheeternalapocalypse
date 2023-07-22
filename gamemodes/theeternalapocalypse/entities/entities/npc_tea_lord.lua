@@ -4,6 +4,7 @@ ENT.Base = "npc_tea_basic"
 ENT.PrintName = "Zombie Lord"
 ENT.Category = ""
 ENT.Author = "Uklejamini"
+ENT.Purpose = "Can teleport if taken too much damage"
 ENT.Spawnable = true
 ENT.AdminOnly = true
 
@@ -113,7 +114,7 @@ function ENT:ApplyPlayerDamage(ply, damage, hitforce, infection)
 	local dmg1 = tonumber(damage)
 
 	damageInfo:SetAttacker(self)
-	damageInfo:SetDamage(GAMEMODE.tea_CalcPlayerDamage(ply, dmg1))
+	damageInfo:SetDamage(GAMEMODE:CalcPlayerDamage(ply, dmg1))
 	damageInfo:SetDamageType(DMG_CLUB)
 
 	local force = ply:GetAimVector() * hitforce
@@ -130,7 +131,7 @@ function ENT:ApplyPlayerDamage(ply, damage, hitforce, infection)
 	ply:ViewPunch(VectorRand():Angle() * 0.05)
 	ply:SetVelocity(force)
 	if math.random(0, 100) > (100 - infection) then
-		ply.Infection = ply.Infection + 100
+		ply:AddInfection(100)
 	end
 end
 

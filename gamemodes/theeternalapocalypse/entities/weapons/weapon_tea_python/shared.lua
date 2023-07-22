@@ -1,5 +1,3 @@
-// Variables that are used on both client and server
-
 SWEP.Base 				= "weapon_mad_base"
 
 SWEP.ViewModel			= "models/weapons/c_357.mdl"
@@ -22,17 +20,17 @@ SWEP.Primary.NumShots		= 1
 SWEP.Primary.Cone			= 0.010
 SWEP.Primary.Delay 		= 0.6
 
-SWEP.Primary.ClipSize		= 6					// Size of a clip
-SWEP.Primary.DefaultClip	= 0					// Default number of bullets in a clip
-SWEP.Primary.Automatic		= false				// Automatic/Semi Auto
+SWEP.Primary.ClipSize		= 6
+SWEP.Primary.DefaultClip	= 0
+SWEP.Primary.Automatic		= false
 SWEP.Primary.Ammo			= "357"
 
-SWEP.Secondary.ClipSize		= -1					// Size of a clip
-SWEP.Secondary.DefaultClip	= -1					// Default number of bullets in a clip
-SWEP.Secondary.Automatic	= false				// Automatic/Semi Auto
+SWEP.Secondary.ClipSize		= -1
+SWEP.Secondary.DefaultClip	= -1
+SWEP.Secondary.Automatic	= false
 SWEP.Secondary.Ammo		= "none"
 
-SWEP.ShellEffect			= "none"				// "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
+SWEP.ShellEffect			= "none"				-- "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
 SWEP.ShellDelay			= 0
 
 SWEP.IronFireAccel		= 1.5
@@ -526,26 +524,16 @@ if CLIENT then
 end
 
 
-/*---------------------------------------------------------
-   Name: SWEP:Precache()
-   Desc: Use this function to precache stuff.
----------------------------------------------------------*/
 function SWEP:Precache()
 
     	util.PrecacheSound("weapons/357/357_fire2.wav")
     	util.PrecacheSound("weapons/357/357_fire3.wav")
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:Reload()
-   Desc: Reload is being pressed.
----------------------------------------------------------*/
 function SWEP:Reload()
 
-	// When the weapon is already doing an animation, just return end because we don't want to interrupt it
 	if (self.ActionDelay > CurTime()) then return end 
 
-	// Need to call the default reload before the real reload animation
 	self.Weapon:DefaultReload(ACT_VM_RELOAD)
 
 	if (self.Weapon:Clip1() < self.Primary.ClipSize) and (self.Owner:GetAmmoCount(self.Primary.Ammo) > 0) then

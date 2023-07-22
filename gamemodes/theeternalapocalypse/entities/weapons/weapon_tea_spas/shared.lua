@@ -1,5 +1,3 @@
-// Variables that are used on both client and server
-
 SWEP.Base 				= "weapon_mad_base_shotgun"
 
 SWEP.ViewModel			= "models/weapons/c_shotgun.mdl"
@@ -26,14 +24,14 @@ SWEP.Primary.NumShots		= 9
 SWEP.Primary.Cone			= 0.055
 SWEP.Primary.Delay 		= 0.8
 
-SWEP.Primary.ClipSize		= 6					// Size of a clip
-SWEP.Primary.DefaultClip	= 0					// Default number of bullets in a clip
-SWEP.Primary.Automatic		= false				// Automatic/Semi Auto
+SWEP.Primary.ClipSize		= 6
+SWEP.Primary.DefaultClip	= 0
+SWEP.Primary.Automatic		= false
 SWEP.Primary.Ammo			= "Buckshot"
 
-SWEP.Secondary.ClipSize		= -1					// Size of a clip
-SWEP.Secondary.DefaultClip	= -1					// Default number of bullets in a clip
-SWEP.Secondary.Automatic	= false				// Automatic/Semi Auto
+SWEP.Secondary.ClipSize		= -1
+SWEP.Secondary.DefaultClip	= -1
+SWEP.Secondary.Automatic	= false
 SWEP.Secondary.Ammo		= "none"
 
 SWEP.IronSightsPos = Vector(-8.961, -8.74, 4.199)
@@ -41,13 +39,13 @@ SWEP.IronSightsAng = Vector(0, 0, 0)
 SWEP.RunArmOffset 	= Vector (3, 0, 2.5)
 SWEP.RunArmAngle 	= Vector (-13, 27, 0)
 
-SWEP.ShellEffect			= "effect_mad_shell_shotgun"				// "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
+SWEP.ShellEffect			= "effect_mad_shell_shotgun"				-- "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
 
 SWEP.ShotgunReloading		= false
 SWEP.ShotgunFinish		= 0.3
 SWEP.ShotgunBeginReload		= 0.5
 
-SWEP.Type				= 3 					// 1 = Automatic/Semi-Automatic mode, 2 = Suppressor mode, 3 = Burst fire mode
+SWEP.Type				= 3
 SWEP.Mode				= true
 
 SWEP.data 				= {}
@@ -62,10 +60,6 @@ SWEP.data.Automatic		= false
 SWEP.ZWweight				= 80 -- in kilograms divided by 10 eg 20 = 2kg
 SWEP.ZWrarity				= "Uncommon" -- Junk, Common, Uncommon, Rare, Epic
 
-/*---------------------------------------------------------
-   Name: SWEP:Precache()
-   Desc: Use this function to precache stuff.
----------------------------------------------------------*/
 function SWEP:Precache()
 
     	util.PrecacheSound("weapons/shotgun/shotgun_reload1.wav")
@@ -78,10 +72,6 @@ function SWEP:Precache()
     	util.PrecacheSound("weapons/shotgun/shotgun_dbl_fire7.wav")
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:Think()
-   Desc: Called every frame.
----------------------------------------------------------*/
 function SWEP:Think()
 
 	if self.Weapon:Clip1() > self.Primary.ClipSize then
@@ -181,13 +171,8 @@ function SWEP:Think()
 	self:NextThink(CurTime())
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:PrimaryAttack()
-   Desc: +attack1 has been pressed.
----------------------------------------------------------*/
 function SWEP:PrimaryAttack()
 
-	// Holst/Deploy your fucking weapon
 	if (not self.Owner:IsNPC() and self.Owner:KeyDown(IN_USE)) then
 		bHolsted = !self.Weapon:GetDTBool(0)
 		self:SetHolsted(bHolsted)
@@ -261,10 +246,6 @@ function SWEP:ShootAnimation()
 	end
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:Reload()
-   Desc: Reload is being pressed.
----------------------------------------------------------*/
 function SWEP:Reload()
 
 	if (self.ActionDelay > CurTime()) then return end 

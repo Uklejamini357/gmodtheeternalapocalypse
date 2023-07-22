@@ -1,8 +1,6 @@
-// Variables that are used on both client and server
-
 SWEP.Base 				= "weapon_melee_base"
-SWEP.Category          = "ZW Weapons"
-SWEP.Instructions   = "Can i axe you a question?"
+SWEP.Category          	= "ZW Weapons"
+SWEP.Instructions 	  	= "Can i axe you a question?"
 SWEP.ViewModelFlip		= false
 SWEP.ViewModel 			= "models/weapons/v_crowbar.mdl"
 SWEP.WorldModel 		= "models/weapons/w_crowbar.mdl"
@@ -12,23 +10,27 @@ SWEP.HoldType 			= "melee2"
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= false
 
+SWEP.StaminaNeeded			= 4.5
+SWEP.HitDistance = 55
+
 SWEP.Primary.Recoil		= 5
-SWEP.Primary.Damage		= 0
+SWEP.Primary.Damage		= 46
+SWEP.Primary.PlayerDamage	= 38
 SWEP.Primary.NumShots		= 0
 SWEP.Primary.Cone			= 0.075
 SWEP.Primary.Delay 		= 0.7
 
-SWEP.Primary.ClipSize		= -1					// Size of a clip
-SWEP.Primary.DefaultClip	= 0					// Default number of bullets in a clip
-SWEP.Primary.Automatic		= true				// Automatic/Semi Auto
+SWEP.Primary.ClipSize		= -1
+SWEP.Primary.DefaultClip	= 0
+SWEP.Primary.Automatic		= true
 SWEP.Primary.Ammo			= ""
 
-SWEP.Secondary.ClipSize		= -1					// Size of a clip
-SWEP.Secondary.DefaultClip	= -1					// Default number of bullets in a clip
-SWEP.Secondary.Automatic	= false				// Automatic/Semi Auto
+SWEP.Secondary.ClipSize		= -1
+SWEP.Secondary.DefaultClip	= -1
+SWEP.Secondary.Automatic	= false
 SWEP.Secondary.Ammo		= "none"
 
-SWEP.ShellEffect			= "none"				// "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
+SWEP.ShellEffect			= "none"				-- "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
 SWEP.ShellDelay			= 0
 
 SWEP.Pistol				= true
@@ -41,7 +43,6 @@ SWEP.RunArmAngle	 		= Vector (0, 0, 0)
 
 SWEP.Sequence			= 0
 
-SWEP.HitDistance = 55
 SWEP.ShowViewModel = true
 SWEP.ShowWorldModel = false
 SWEP.ViewModelBoneMods = {
@@ -116,13 +117,8 @@ function SWEP:EntityFaceBack(ent)
 	return false
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:PrimaryAttack()
-   Desc: +attack1 has been pressed.
----------------------------------------------------------*/
 function SWEP:PrimaryAttack()
 
-	// Holst/Deploy your fucking weapon
 	if (not self.Owner:IsNPC() and self.Owner:KeyDown(IN_USE)) then
 		bHolsted = !self.Weapon:GetDTBool(0)
 		self:SetHolsted(bHolsted)
@@ -135,13 +131,13 @@ function SWEP:PrimaryAttack()
 		return
 	end
 
-	if ((CLIENT and MyStamina < 6) or (SERVER and self.Owner.Stamina < 6)) then return end
+	if ((CLIENT and MyStamina < self.StaminaNeeded) or (SERVER and self.Owner.Stamina < self.StaminaNeeded)) then return end
 	self.Weapon:SendWeaponAnim(ACT_VM_MISSCENTER)
 
 	timer.Simple( 0.2, function()
 	if ( !IsValid( self ) || !IsValid( self.Owner ) || !self.Owner:GetActiveWeapon() || self.Owner:GetActiveWeapon() != self || CLIENT ) then return end
 		self:DealDamage( anim )
-		self.Owner.Stamina = math.Clamp(self.Owner.Stamina - math.Rand(4.5, 5.75), 0, 100)
+		self.Owner.Stamina = math.Clamp(self.Owner.Stamina - self.StaminaNeeded, 0, 100)
 		self.Owner:EmitSound( "weapons/slam/throw.wav" )
 	end )
 
@@ -169,10 +165,6 @@ function SWEP:PrimaryAttack()
 	self:IdleAnimation(1)
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:SecondaryAttack()
-   Desc: +attack2 has been pressed.
----------------------------------------------------------*/
 function SWEP:SecondaryAttack()
 return nil
 end
@@ -206,9 +198,9 @@ function SWEP:DealDamage( anim )
 	if ( IsValid( tr.Entity ) && ( tr.Entity:IsNPC() || tr.Entity:IsPlayer() || tr.Entity:GetClass() == "prop_flimsy" || tr.Entity:GetClass() == "func_breakable" || tr.Entity.Type == "nextbot" || tr.Entity:Health() > 0 ) ) then
 		local dmginfo = DamageInfo()
 		if tr.Entity:IsPlayer() then
-		dmginfo:SetDamage( math.random( 32, 40 ) )
+			dmginfo:SetDamage(self.Primary.PlayerDamage)
 		else
-		dmginfo:SetDamage( math.random( 38, 50 ) )
+			dmginfo:SetDamage(self.Primary.Damage)
 		end
 		dmginfo:SetDamageForce( self.Owner:GetRight() * 425 + self.Owner:GetForward() * 94 ) -- Yes we need those specific numbers
 		dmginfo:SetInflictor( self )

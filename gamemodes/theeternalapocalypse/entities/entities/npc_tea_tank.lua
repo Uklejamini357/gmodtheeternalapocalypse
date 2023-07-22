@@ -4,6 +4,7 @@ ENT.Base = "npc_tea_basic"
 ENT.PrintName = "Tank Zombie"
 ENT.Category = ""
 ENT.Author = "Uklejamini"
+ENT.Purpose = "Tough zombie - has high health and deal high damage to props"
 ENT.Spawnable = true
 ENT.AdminOnly = true
 

@@ -1,5 +1,3 @@
-// Variables that are used on both client and server
-
 SWEP.Base				= "weapon_melee_base"
 SWEP.Category			= "TEA Weapons"
 SWEP.Purpose			= "Repair faction structures. Not to be confused with Builder's Wrench"
@@ -13,23 +11,27 @@ SWEP.HoldType			= "melee2"
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= false
 
+SWEP.StaminaNeeded = 3.35
+SWEP.HitDistance = 60
+
 SWEP.Primary.Recoil		= 5
-SWEP.Primary.Damage		= 0
+SWEP.Primary.Damage		= 18
+SWEP.Primary.PlayerDamage	= 13
 SWEP.Primary.NumShots	= 0
 SWEP.Primary.Cone		= 0.075
 SWEP.Primary.Delay		= 0.7
 
-SWEP.Primary.ClipSize	= -1					// Size of a clip
-SWEP.Primary.DefaultClip	= 0					// Default number of bullets in a clip
-SWEP.Primary.Automatic		= true				// Automatic/Semi Auto
+SWEP.Primary.ClipSize	= -1
+SWEP.Primary.DefaultClip	= 0
+SWEP.Primary.Automatic		= true
 SWEP.Primary.Ammo			= ""
 
-SWEP.Secondary.ClipSize		= -1					// Size of a clip
-SWEP.Secondary.DefaultClip	= -1					// Default number of bullets in a clip
-SWEP.Secondary.Automatic	= false				// Automatic/Semi Auto
+SWEP.Secondary.ClipSize		= -1
+SWEP.Secondary.DefaultClip	= -1
+SWEP.Secondary.Automatic	= false
 SWEP.Secondary.Ammo		= "none"
 
-SWEP.ShellEffect			= "none"				// "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
+SWEP.ShellEffect			= "none"				-- "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
 SWEP.ShellDelay			= 0
 
 SWEP.Pistol				= true
@@ -42,7 +44,6 @@ SWEP.RunArmAngle	 		= Vector (0, 0, 0)
 
 SWEP.Sequence			= 0
 
-SWEP.HitDistance = 60
 SWEP.ShowViewModel = true
 SWEP.ShowWorldModel = false
 /*---------------------------------------------------------
@@ -106,18 +107,14 @@ function SWEP:EntityFaceBack(ent)
 	return false
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:PrimaryAttack()
-   Desc: +attack1 has been pressed.
----------------------------------------------------------*/
 function SWEP:PrimaryAttack()
-	if (CLIENT and MyStamina < 5) or (SERVER and self.Owner.Stamina < 5) then return end
+	if (CLIENT and MyStamina < self.StaminaNeeded) or (SERVER and self.Owner.Stamina < self.StaminaNeeded) then return end
 	self.Weapon:SendWeaponAnim(ACT_VM_MISSCENTER)
 
 	timer.Simple( 0.2, function()
 	if ( !IsValid( self ) || !IsValid( self.Owner ) || !self.Owner:GetActiveWeapon() || self.Owner:GetActiveWeapon() != self || CLIENT ) then return end
 		self:DealDamage( anim )
-		self.Owner.Stamina = math.Clamp(self.Owner.Stamina - math.Rand(3, 3.5), 0, 100)
+		self.Owner.Stamina = math.Clamp(self.Owner.Stamina - self.StaminaNeeded, 0, 100)
 		self.Owner:EmitSound( "weapons/slam/throw.wav" )
 	end )
 
@@ -145,10 +142,6 @@ function SWEP:PrimaryAttack()
 	self:IdleAnimation(1)
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:SecondaryAttack()
-   Desc: +attack2 has been pressed.
----------------------------------------------------------*/
 function SWEP:SecondaryAttack()
 return nil
 end
@@ -182,9 +175,9 @@ function SWEP:DealDamage( anim )
 	if ( IsValid( tr.Entity ) && ( tr.Entity:IsNPC() || tr.Entity:IsPlayer() || tr.Entity:GetClass() == "func_breakable" || tr.Entity.Type == "nextbot" || tr.Entity:Health() > 0 ) ) then
 		local dmginfo = DamageInfo()
 		if tr.Entity:IsPlayer() then
-			dmginfo:SetDamage( math.random( 10, 15 ) )
+			dmginfo:SetDamage(self.Primary.PlayerDamage)
 		else
-			dmginfo:SetDamage( math.random( 17, 21 ) )
+			dmginfo:SetDamage(self.Primary.Damage)
 		end
 		dmginfo:SetDamageForce( self.Owner:GetRight() * 425 + self.Owner:GetForward() * 94 ) -- Yes we need those specific numbers
 		dmginfo:SetInflictor( self )
@@ -200,7 +193,11 @@ function SWEP:DealDamage( anim )
 			local hp = tr.Entity.integrity
 			local maxhp = tr.Entity.maxinteg
 
-			if hp >= maxhp then return end
+			local function StrucHealth()
+				self.Owner:PrintMessage(HUD_PRINTCENTER, "STRUCTURE HP: "..math.floor(hp).."/"..maxhp)
+			end
+
+			if hp >= maxhp then StrucHealth() return end
 
 			hp = math.Clamp( hp + (20 + (self.Owner.StatEngineer * 3)), 0, maxhp )
 
@@ -215,9 +212,9 @@ function SWEP:DealDamage( anim )
 			tr.Entity:SetColor(Color(swag +5,swag+5,swag+5,255))
 			tr.Entity.integrity = hp
 			tr.Entity:EmitSound("weapons/crowbar/crowbar_impact"..math.random(1,2)..".wav")
-			self.Owner:PrintMessage(HUD_PRINTCENTER, "STRUCTURE HP: "..math.floor(hp).."/"..maxhp)
+			StrucHealth()
 		else
-			SystemMessage(self.Owner, "You can't use repair wrench to build faction structures!", Color(255,205,205), true)
+			self.Owner:SystemMessage("You can't use repair wrench to build faction structures!", Color(255,205,205), true)
 		end
 	end
 end

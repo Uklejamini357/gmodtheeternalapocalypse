@@ -1,7 +1,8 @@
 -------------------------------- Dermahooks --------------------------------
 --this is just too messed up
+local sleeptime = 25
 
-function DrawSleepOverlay()
+function GM:DrawSleepOverlay()
 	local LDFrame = vgui.Create("DFrame")
 	LDFrame:SetPos(ScrW() / 2 - 350,ScrH() / 2 - 125)
 	LDFrame:SetSize(700, 250)
@@ -14,38 +15,33 @@ function DrawSleepOverlay()
 	LDFrame.Paint = function()
 		surface.SetDrawColor(0, 0, 0, 200)
 		surface.DrawRect(0, 0, LDFrame:GetWide(), LDFrame:GetTall())
-		Derma_DrawBackgroundBlur(LDFrame, CurTime())
+		Derma_DrawBackgroundBlur(LDFrame, LDFrame.Created)
+		Derma_DrawBackgroundBlur(LDFrame, LDFrame.Created)
 	end
-
-	timer.Simple(25, function()
-		if LDFrame:IsValid() then
+	LDFrame.Think = function()
+		if !LocalPlayer():Alive() and LDFrame and LDFrame:IsValid() then
 			LDFrame:Close()
 		end
-	end)
 
-	timer.Create("Sleeping", 1, 25, function()
-		if !LocalPlayer():Alive() and LDFrame:IsValid() then
+		if LDFrame and LDFrame:IsValid() and LDFrame.CreateTime + sleeptime < CurTime() then
 			LDFrame:Close()
-		elseif !LDFrame:IsValid() then
-			timer.Destroy("Sleeping")
 		end
-	end)
+	end
+	LDFrame.Created = SysTime()
+	LDFrame.CreateTime = CurTime()
 
 	local PaintPanel = vgui.Create("DPanel", LDFrame)
-	local LastSleep = CurTime() + 25
-  
 	PaintPanel:SetPos(15, 30)
 	PaintPanel:SetSize(670, 190)
 	PaintPanel.Paint = function()
 		surface.SetFont("TargetID")
-		local msg = translate.Format("sleep_1", math.max(math.floor((LastSleep - CurTime()) + 1), 0))
-		local w,h = surface.GetTextSize(msg)
+		local msg = translate.Format("sleep_1", math.max(math.floor((LDFrame.CreateTime + sleeptime - CurTime()) + 1), 0))
 		draw.RoundedBox(12, 0, 0, PaintPanel:GetWide(), PaintPanel:GetTall(), Color(30,30,30,150))
-		draw.DrawText(msg, "TargetID", (PaintPanel:GetWide() / 2) - (w / 2), 70, Color(255,255,255,255), 0, 1)
+		draw.DrawText(msg, "TargetID", PaintPanel:GetWide() / 2, 70, Color(255,255,255,255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 	end
 
 	local Dlabel = vgui.Create("DLabel", PaintPanel)
-	surface.SetFont("Arial_2")
+	surface.SetFont("Default")
 	local msg2 = translate.Get("sleep_2")
 	local w2,h2 = surface.GetTextSize(msg2)
 	Dlabel:SetText(msg2)
@@ -53,7 +49,9 @@ function DrawSleepOverlay()
 	Dlabel:SetPos((PaintPanel:GetWide() / 2) - (w2 / 2), 105)
 
 end 
-usermessage.Hook("DrawSleepOverlay", DrawSleepOverlay)
+usermessage.Hook("DrawSleepOverlay", function()
+	gamemode.Call("DrawSleepOverlay")
+end)
 
 
 
@@ -88,6 +86,11 @@ net.Receive("UseDelay", function()
 		surface.DrawOutlinedRect(0, 0, w, h)
 		surface.DrawOutlinedRect(10, h / 2, w - 20, 20)
 		draw.DrawText(translate.Format("wait", math.max(0, math.ceil((remaining - CurTime()) * 10) / 10)), "TargetID", 100, 5, Color(250, 250, 250), TEXT_ALIGN_CENTER)
+	end
+	DelayFrame.Think = function()
+		if DelayFrame and DelayFrame:IsValid() and remaining < CurTime() then
+			DelayFrame:Remove()
+		end
 	end
 
 	timer.Simple(delay, function()

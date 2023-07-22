@@ -1,5 +1,3 @@
-// Variables that are used on both client and server
-
 SWEP.Base 				= "weapon_mad_base_sniper"
 
 SWEP.ViewModelFlip		= false
@@ -20,17 +18,20 @@ SWEP.Primary.NumShots		= 1
 SWEP.Primary.Cone			= 0
 SWEP.Primary.Delay 		= 0.5
 
-SWEP.Primary.ClipSize		= 1					// Size of a clip
-SWEP.Primary.DefaultClip	= 0					// Default number of bullets in a clip
-SWEP.Primary.Automatic		= false				// Automatic/Semi Auto
+SWEP.Primary.ClipSize		= 1
+SWEP.Primary.DefaultClip	= 0
+SWEP.Primary.Automatic		= false
 SWEP.Primary.Ammo			= "XBowBolt"
 
-SWEP.Secondary.ClipSize		= -1					// Size of a clip
-SWEP.Secondary.DefaultClip	= -1					// Default number of bullets in a clip
-SWEP.Secondary.Automatic	= false				// Automatic/Semi Auto
+SWEP.Secondary.ClipSize		= -1
+SWEP.Secondary.DefaultClip	= -1
+SWEP.Secondary.Automatic	= false
 SWEP.Secondary.Ammo		= "none"
 
-SWEP.ShellEffect			= "none"	// "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
+SWEP.BoltExplosionDamage = 120 -- Explosion damage
+SWEP.BoltExplosionRadius = 120 -- Explosion radius
+
+SWEP.ShellEffect			= "none"	-- "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
 SWEP.ShellDelay			= 0
 
 SWEP.IronSightsPos	= Vector(-7.961, -11.658, 1.919)
@@ -42,10 +43,6 @@ SWEP.ScopeZooms			= {8}
 
 SWEP.BoltActionSniper		= true
 
-/*---------------------------------------------------------
-   Name: SWEP:Reload()
-   Desc: Reload is being pressed.
----------------------------------------------------------*/
 function SWEP:Reload()
 
 	if (self.ActionDelay > CurTime()) then return end 
@@ -77,7 +74,7 @@ function SWEP:Reload()
 			self.Owner:DrawViewModel(true)
 		end
 
-		//self:IdleAnimation(2)
+		--self:IdleAnimation(2)
 	end
 end
 
@@ -86,39 +83,39 @@ end
 ---------------------------------------------------------*/
 function SWEP:Bolt()
 
-	if (CLIENT) then return end
+	if CLIENT then return end
 
-	local bolt = ents.Create("ent_zw_bolt")
+	local owner = self:GetOwner()
+	local bolt = ents.Create("ent_tea_bolt")
 
 	if not self.Weapon:GetDTBool(1) then
-		local pos = self.Owner:GetShootPos()
-			pos = pos + self.Owner:GetForward() * -10
-			pos = pos + self.Owner:GetRight() * 9
-			pos = pos + self.Owner:GetUp() * -7
+		local pos = owner:GetShootPos()
+			pos = pos + owner:GetForward() * -10
+			pos = pos + owner:GetRight() * 9
+			pos = pos + owner:GetUp() * -7
 		bolt:SetPos(pos)	
 	else
-		bolt:SetPos(self.Owner:EyePos() + self.Owner:GetAimVector() + self.Owner:GetUp() + self.Owner:GetForward() * -10)
+		bolt:SetPos(owner:EyePos() + owner:GetAimVector() + owner:GetUp() + owner:GetForward() * -10)
 	end
 
-	bolt:SetAngles(self.Owner:GetAimVector():Angle())
-	bolt:SetOwner(self.Owner)
+	bolt:SetAngles(owner:GetAimVector():Angle())
+	bolt:SetOwner(owner)
 	bolt:Spawn()
 	bolt:Activate()
+	bolt.BoltDamage = self.Primary.Damage
+	bolt.ExplosionDamage = self.BoltExplosionDamage
+	bolt.ExplosionRadius = self.BoltExplosionRadius
+	bolt.ShotFrom = self
 
-	if (self.Owner:WaterLevel() == 3) then
-		bolt:SetVelocity(self.Owner:GetAimVector() * (BOLT_WATER_VELOCITY or 0.65))
+	if (owner:WaterLevel() == 3) then
+		bolt:SetVelocity(owner:GetAimVector() * (BOLT_WATER_VELOCITY or 0.65))
 	else
-		bolt:SetVelocity(self.Owner:GetAimVector() * (BOLT_AIR_VELOCITY or 1))
+		bolt:SetVelocity(owner:GetAimVector() * (BOLT_AIR_VELOCITY or 1))
 	end
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:PrimaryAttack()
-   Desc: +attack1 has been pressed.
----------------------------------------------------------*/
 function SWEP:PrimaryAttack()
 
-	// Holst/Deploy your fucking weapon
 	if (not self.Owner:IsNPC() and self.Owner:KeyDown(IN_USE)) then
 		bHolsted = !self.Weapon:GetDTBool(0)
 		self:SetHolsted(bHolsted)
@@ -137,8 +134,8 @@ function SWEP:PrimaryAttack()
 	self.Weapon:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 	self.Weapon:SetNextSecondaryFire(CurTime() + self.Primary.Delay)
 
-	self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK) 		// View model animation
-	self.Owner:SetAnimation(PLAYER_ATTACK1)				// 3rd Person Animation
+	self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
+	self.Owner:SetAnimation(PLAYER_ATTACK1)
 
 	self.Weapon:EmitSound(self.Primary.Sound)
 

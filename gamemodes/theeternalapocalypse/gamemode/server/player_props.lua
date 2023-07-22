@@ -1,13 +1,13 @@
-function CountProps(ply)
+function GM:CountProps(ply)
 	local PlyProps = 0
 
-	for k, v in pairs( ents.FindByClass( "prop_flimsy" ) ) do
+	for k, v in pairs(ents.FindByClass("prop_flimsy")) do
 		if v:GetNWEntity("owner") == ply then
 		PlyProps = PlyProps + 1
 		end
 	end
 
-	for k, v in pairs( ents.FindByClass( "prop_strong" ) ) do
+	for k, v in pairs(ents.FindByClass("prop_strong")) do
 		if v:GetNWEntity("owner") == ply then
 		PlyProps = PlyProps + 1
 		end
@@ -16,10 +16,10 @@ function CountProps(ply)
 	return PlyProps
 end
 
-function CountStructures(ply, struc)
+function GM:CountStructures(ply, struc)
 	local PlyStrucs = 0
 
-	for k, v in pairs( ents.FindByClass( struc ) ) do
+	for k, v in pairs(ents.FindByClass(struc)) do
 		if v:GetNWEntity("owner") == ply then
 		PlyStrucs = PlyStrucs + 1
 		end
@@ -28,7 +28,7 @@ function CountStructures(ply, struc)
 	return PlyStrucs
 end
 
-function CheckBases(ply, pos)
+function GM:CheckBases(ply, pos)
 	local bases = ents.FindInSphere(pos, 950)
 	for k, v in pairs(bases) do
 		if v:GetClass() == "structure_base_core" and v.IsBuilt == true and v:GetNWEntity("owner"):Team() != ply:Team() then return true end
@@ -37,7 +37,7 @@ function CheckBases(ply, pos)
 	return false
 end
 
-function DestroyProp(ply, ent)
+function GM:DestroyProp(ply, ent)
 	if !ply:IsValid() or !ply:Alive() then return false end
 	if !ent:IsValid() or !ent:GetClass() == "prop_flimsy" or !ent:GetClass() == "prop_strong" then return false end
 	local owner = ent:GetNWEntity("owner")
@@ -53,55 +53,57 @@ function DestroyProp(ply, ent)
 	elseif ptype == 2 then checktable = TOUGHPROPS
 	else return false end
 
-	if owner != ply then SystemMessage(ply, "You don't own this prop!", Color(255,205,205,255), true) return false end
+	if owner != ply then ply:SystemMessage("You don't own this prop!", Color(255,205,205,255), true) return false end
 
-	SendUseDelay( ply, 2 )
+	ply:SendUseDelay(2)
 
 	timer.Simple(2, function()
 		if !ply:IsValid() or !ply:Alive() or !ent:IsValid() then return false end
 
 		local refund = checktable[ent:GetModel()]["COST"]
 		if refund == nil then return false end
-		if GetConVar("tea_config_propcostenabled"):GetInt() >= 1 then
-			ply.Money = ply.Money + math.floor(refund * 0.45)
-			SystemMessage(ply, "You salvaged one of your props and gained "..math.floor(refund * 0.45).." Gold", Color(205,205,255,255), true)
+		refund = refund * 0.45
+		if self.PropCostEnabled then
+			ply.Money = ply.Money + math.floor(refund)
+			ply:SystemMessage("You salvaged one of your props and gained "..math.floor(refund).." Gold", Color(205,205,255,255), true)
 		end
 		ent:EmitSound("physics/wood/wood_furniture_break"..math.random(1,2)..".wav", 100, math.random(95,105))
 		ent:Remove()
 
-		tea_NetUpdatePeriodicStats(ply)
+		self:NetUpdatePeriodicStats(ply)
 	end)
 end
 
-function DestroyStructure(ply, ent)
+function GM:DestroyStructure(ply, ent)
 	if !ply:IsValid() or !ply:Alive() then return false end
 	if !ent:IsValid() or !SpecialSpawns[ent:GetClass()] then return false end
 	local owner = ent:GetNWEntity("owner")
 	if !owner:IsValid() or !owner:Alive() then return false end
 
-	if owner != ply then SystemMessage(ply, "You don't own this structure!", Color(255,205,205,255), true) return false end
+	if owner != ply then ply:SystemMessage("You don't own this structure!", Color(255,205,205,255), true) return false end
 
-	SendUseDelay( ply, 2 )
+	ply:SendUseDelay(2)
 	timer.Simple(2, function()
 		if !ply:IsValid() or !ply:Alive() or !ent:IsValid() then return false end
 
 		local refund = SpecialSpawns[ent:GetClass()]["Cost"]
 		if refund == nil then return false end
-		if GetConVar("tea_config_factionstructurecostenabled"):GetInt() >= 1 then
-			ply.Money = ply.Money + math.floor(refund * 0.5)
-			SystemMessage(ply, "You salvaged one of your buildings and gained "..math.floor(refund * 0.5).." Gold", Color(205,205,255,255), true)
+		refund = refund * 0.5
+		if self.FactionStructureCostEnabled then
+			ply.Money = ply.Money + math.floor(refund)
+			ply:SystemMessage("You salvaged one of your buildings and gained "..math.floor(refund).." Gold", Color(205,205,255,255), true)
 		end
 		ent:EmitSound("physics/wood/wood_furniture_break"..math.random(1,2)..".wav", 100, math.random(95,105))
 		ent:Remove()
 
-		tea_NetUpdatePeriodicStats(ply)
+		self:NetUpdatePeriodicStats(ply)
 	end)
 end
 
 
 
 
-function CheckFactionBases(pos)
+function GM:CheckFactionBases(pos)
 	local check = ents.FindInSphere(pos, 950)
 	for k, v in pairs(check) do
 		if v:GetClass() == "structure_base_core" or v:GetClass() == "trader" or v:GetClass() == "spawn_guard" then return false end
@@ -126,11 +128,14 @@ function entmeta:GetStructureMaxHealth()
 end
 
 
-function MakeProp(ply, model, pos, ang)
+function GM:MakeProp(ply, model, pos, ang)
 	if !ply:IsValid() or !ply:Alive() then return false end
-	if SpecialSpawns[model] then MakeStructure(ply, model, pos, ang) return false end -- if the model is a structure then break out of this function and run the create structure function instead
+	if SpecialSpawns[model] then GAMEMODE:MakeStructure(ply, model, pos, ang) return false end -- if the model is a structure then break out of this function and run the create structure function instead
 
-	if CheckBases(ply, pos) then SystemMessage(ply, "You cannot spawn props this close to an opposing faction base!", Color(255,205,205,255), true) return false end
+	if gamemode.Call("CheckBases", ply, pos) then
+		ply:SystemMessage("You cannot spawn props this close to an opposing faction base!", Color(255,205,205,255), true)
+		return false
+	end
 
 	local ptype
 	local checktable
@@ -142,104 +147,113 @@ function MakeProp(ply, model, pos, ang)
 	elseif ptype == 2 then checktable = TOUGHPROPS
 	else return false end
 
-	if ptype == 2 and ply:Team() == 1 then SystemMessage(ply, "You must be in a faction to spawn strong props!", Color(255,205,205,255), true) return false end
+	if ptype == 2 and ply:Team() == TEAM_LONER then ply:SystemMessage("You must be in a faction to spawn strong props!", Color(255,205,205,255), true) return false end
 
 	local cash = tonumber(ply.Money)
 	local pcost = checktable[model]["COST"]
 	local discount = 1 - (ply.StatEngineer * 0.02)
-	local tea_config_maxprops = GetConVar("tea_config_maxprops"):GetInt()
 
-	if cash < (pcost * discount) and GetConVar("tea_config_propcostenabled"):GetInt() >= 1 then SystemMessage(ply, "Unable to spawn prop due to insufficient Gold!", Color(255,205,205,255), true) return false end
+	if cash < (pcost * discount) and self.PropCostEnabled then ply:SystemMessage("Unable to spawn prop due to insufficient Gold!", Color(255,205,205,255), true) return false end
 
 	for k, v in pairs(ents.FindByClass("trader")) do
-		if pos:Distance(v:GetPos()) < GetConVar("tea_config_propspawndistance"):GetFloat() then SystemMessage(ply, "Unable to spawn prop! Too close to a trader!", Color(255,205,205,255), true) return false end
+		if pos:Distance(v:GetPos()) < self.PropSpawnTraderDistance then ply:SystemMessage("Unable to spawn prop! Too close to a trader!", Color(255,205,205,255), true) return false end
 	end
 
-	if CountProps(ply) >= tea_config_maxprops then 
-	SendChat( ply, "You cannot have more than "..tea_config_maxprops.." prop(s)!" )
+	if gamemode.Call("CountProps", ply) >= self.MaxProps then 
+		ply:SendChat("You cannot have more than "..self.MaxProps.." prop(s)!")
 		return false
 	end
 
 	if ptype == 1 then
-		local prop = ents.Create( "prop_flimsy" )
+		local prop = ents.Create("prop_flimsy")
 		prop:SetModel(model)
 		prop:SetPos(pos)
 		prop:SetAngles(ang)
 		prop:Spawn()
 		prop:Activate()
 		prop:EmitSound(Sound("physics/plastic/plastic_barrel_impact_bullet1.wav",100,math.random(95,105)))
+		prop.IsPropBarricade = true
 		local phys = prop:GetPhysicsObject()
 		phys:Wake()
 		phys:EnableMotion(false)
-		prop:SetNWInt("ate_maxintegrity", 500 * (checktable[model]["TOUGHNESS"] or 1) )
-		prop:SetNWInt("ate_integrity", 500 * (checktable[model]["TOUGHNESS"] or 1) )
+		prop:SetNWInt("ate_maxintegrity", 500 * (checktable[model]["TOUGHNESS"] or 1))
+		prop:SetNWInt("ate_integrity", 500 * (checktable[model]["TOUGHNESS"] or 1))
 		prop:SetNWEntity("owner", ply)
-		if GetConVar("tea_config_propcostenabled"):GetInt() >= 1 then
+		if self.PropCostEnabled then
 			ply.Money = tonumber(ply.Money) - (pcost * discount)
 		end
 	else
-		local prop = ents.Create( "prop_strong" )
+		local prop = ents.Create("prop_strong")
 		prop:SetModel(model)
 		prop:SetPos(pos)
 		prop:SetAngles(ang)
 		prop:Spawn()
 		prop:Activate()
 		prop:EmitSound(Sound("physics/plastic/plastic_barrel_impact_bullet1.wav",100,math.random(95,105)))
+		prop.IsPropBarricade = true
 		local phys = prop:GetPhysicsObject()
 		phys:Wake()
 		phys:EnableMotion(false)
-		prop:SetNWInt("ate_maxintegrity", 500 * (checktable[model]["TOUGHNESS"] or 1) )
-		prop:SetNWInt("ate_integrity", 500 * (checktable[model]["TOUGHNESS"] or 1) )
+		prop:SetNWInt("ate_maxintegrity", 500 * (checktable[model]["TOUGHNESS"] or 1))
+		prop:SetNWInt("ate_integrity", 500 * (checktable[model]["TOUGHNESS"] or 1))
 		prop:SetNWEntity("owner", ply)
-		if GetConVar("tea_config_propcostenabled"):GetInt() >= 1 then
+		if self.PropCostEnabled then
 			ply.Money = tonumber(ply.Money) - (pcost * discount)
 		end
 	end
-	tea_NetUpdatePeriodicStats(ply)
+	self:NetUpdatePeriodicStats(ply)
 end
 
 
 
-function MakeStructure(ply, struc, pos, ang)
+function GM:MakeStructure(ply, struc, pos, ang)
 	if !ply:IsValid() or !ply:Alive() then return false end
-	if !SpecialSpawns[struc] then SystemMessage(ply, "Invalid Structure! Tell a developer because something bugged", Color(255,205,205,255), true) return false end
-	if ply:Team() == 1 then SystemMessage(ply, "You must be in a faction to place structures!", Color(255,205,205,255), true) return false end
-	if CheckBases(ply, pos) then SystemMessage(ply, "You cannot spawn structures this close to an opposing faction base!", Color(255,205,205,255), true) return false end
+	if !SpecialSpawns[struc] then ply:SystemMessage("Invalid Structure! Tell a developer because something bugged", Color(255,205,205,255), true) return false end
+	if ply:Team() == 1 then ply:SystemMessage("You must be in a faction to place structures!", Color(255,205,205,255), true) return false end
+	if gamemode.Call("CheckBases", ply, pos) then ply:SystemMessage("You cannot spawn structures this close to an opposing faction base!", Color(255,205,205,255), true) return false end
 
 	local cash = tonumber(ply.Money)
 	local pcost = SpecialSpawns[struc]["Cost"]
 
-	if (cash < pcost) and GetConVar("tea_config_factionstructurecostenabled"):GetInt() >= 1 then SystemMessage(ply, "Unable to create structure: insufficient Gold!", Color(255,205,205,255), true) return false end
+	if (cash < pcost) and self.FactionStructureCostEnabled then ply:SystemMessage("Unable to create structure: insufficient Gold!", Color(255,205,205,255), true) return false end
 
-	if CountStructures(ply, struc) >= SpecialSpawns[struc]["Max"] then 
-		SystemMessage(ply, "You cannot have more than "..SpecialSpawns[struc]["Max"].." "..SpecialSpawns[struc]["Name"].."s", Color(255,205,205,255), true)
+	if gamemode.Call("CountStructures", ply, struc) >= SpecialSpawns[struc]["Max"] then 
+		ply:SystemMessage("You cannot have more than "..SpecialSpawns[struc]["Max"].." "..SpecialSpawns[struc]["Name"].."s", Color(255,205,205,255), true)
 		return false
 	end
 
-	if struc == "structure_base_core" and CheckFactionBases(pos) != true then SystemMessage(ply, "Unable to create base core: Too close to trader, spawn or another base core!", Color(255,205,205,255), true) return false end
-	local plyteam = team.GetName(ply:Team())
-	if struc == "structure_base_core" and Factions[plyteam]["leader"] != ply then SystemMessage(ply, "You must be the leader of your faction to create a base core!", Color(255,205,205,255), true) return false end
+	if struc == "structure_base_core" and gamemode.Call("CheckFactionBases", pos) != true then
+		ply:SystemMessage("Unable to create base core: Too close to trader, spawn or another base core!", Color(255,205,205,255), true)
+		return false
+	end
 
-	local prop = ents.Create( struc )
+	local plyteam = team.GetName(ply:Team())
+	if struc == "structure_base_core" and Factions[plyteam]["leader"] != ply then
+		ply:SystemMessage("You must be the leader of your faction to create a base core!", Color(255,205,205,255), true)
+		return false
+	end
+
+	local prop = ents.Create(struc)
 	prop:SetModel(SpecialSpawns[struc]["Model"])
-	prop:SetPos( pos )
-	prop:SetAngles( ang )
+	prop:SetPos(pos)
+	prop:SetAngles(ang)
 	prop:Spawn()
 	prop:Activate()
 	prop:EmitSound(Sound("physics/plastic/plastic_barrel_impact_bullet1.wav",100,math.random(95,105)))
+	prop.IsPropBarricade = true
 	local phys = prop:GetPhysicsObject()
 	phys:Wake()
 	phys:EnableMotion(false)
 	prop:SetNWEntity("owner", ply)
-	if GetConVar("tea_config_factionstructurecostenabled"):GetInt() >= 1 then
+	if self.FactionStructureCostEnabled then
 		ply.Money = tonumber(ply.Money) - pcost
 	end
 
-	tea_NetUpdatePeriodicStats(ply)
+	self:NetUpdatePeriodicStats(ply)
 
 end
 
-function ClearFactionStructures(ply)
+function GM:ClearFactionStructures(ply)
 	for k, v in pairs(SpecialSpawns) do
 		for k, v in pairs(ents.FindByClass(k)) do
 			if v:GetNWEntity("owner") == ply then v:Remove() end

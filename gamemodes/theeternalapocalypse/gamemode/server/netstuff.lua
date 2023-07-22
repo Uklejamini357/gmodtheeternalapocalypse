@@ -15,6 +15,9 @@ util.AddNetworkString("UpgradePerk")
 util.AddNetworkString("UpdateVault")
 util.AddNetworkString("UpdateRespawnTimer")
 
+util.AddNetworkString("PlayerIsReady") -- used when player has finished loading entities and has called a gamemode function InitPostEntity
+util.AddNetworkString("tea_damagefloater")
+
 util.AddNetworkString("UseItem") -- for the following 4 below, see player_inventory.lua
 util.AddNetworkString("UseGun")
 util.AddNetworkString("BuyItem")
@@ -39,9 +42,20 @@ util.AddNetworkString("Payout") -- see cl_hud and server/npcspawns.lua
 util.AddNetworkString("GainMasteryProgress") -- see server/mastery.lua
 util.AddNetworkString("Prestige") -- see player_data.lua
 util.AddNetworkString("BossKilled") -- called when boss is killed
+
+util.AddNetworkString("tea_opentasksmenu")
+util.AddNetworkString("tea_taskassign")
+util.AddNetworkString("tea_taskprogress")
+util.AddNetworkString("tea_taskcancel")
+util.AddNetworkString("tea_taskcomplete")
+util.AddNetworkString("tea_taskfinish")
+
+util.AddNetworkString("tea_survivalstatsupdate")
+util.AddNetworkString("tea_taskstatsupdate")
+util.AddNetworkString("tea_player_ready_spawn")
 --util.AddNetworkString("Respawn")
 
-function tea_NetUpdateStats(ply)
+function GM:NetUpdateStats(ply)
 	net.Start("UpdateStats")
 	net.WriteFloat(ply.Stamina)
 	net.WriteFloat(math.Round(ply.Hunger))
@@ -53,21 +67,22 @@ function tea_NetUpdateStats(ply)
 	net.Send(ply)
 end
 
-function tea_NetUpdatePeriodicStats(ply)
+function GM:NetUpdatePeriodicStats(ply)
 	net.Start("UpdatePeriodicStats")
 	net.WriteFloat(ply.Level)
 	net.WriteFloat(ply.Prestige)
 	net.WriteFloat(ply.Money)
 	net.WriteFloat(ply.XP)
 	net.WriteFloat(ply.StatPoints)
+	net.WriteFloat(ply.PerkPoints)
 	net.WriteFloat(ply.Bounty)
 	net.Send(ply)
 end
 
-function tea_NetUpdatePerks(ply)
+function GM:NetUpdatePerks(ply)
 	net.Start("UpdatePerks")
 	net.WriteFloat(ply.StatDefense)
-	net.WriteFloat(ply.StatDamage)
+	net.WriteFloat(ply.StatGunslinger)
 	net.WriteFloat(ply.StatSpeed)
 	net.WriteFloat(ply.StatVitality)
 	net.WriteFloat(ply.StatKnowledge)
@@ -80,11 +95,12 @@ function tea_NetUpdatePerks(ply)
 	net.WriteFloat(ply.StatImmunity)
 	net.WriteFloat(ply.StatSurvivor)
 	net.WriteFloat(ply.StatAgility)
+	net.WriteFloat(ply.StatScavenging)
 	net.Send(ply)
 end
 
 
-function tea_NetUpdateStatistics(ply)
+function GM:NetUpdateStatistics(ply)
 	net.Start("UpdateStatistics")
 	net.WriteFloat(ply.BestSurvivalTime)
 	net.WriteFloat(ply.ZKills)
@@ -97,7 +113,7 @@ function tea_NetUpdateStatistics(ply)
 	net.Send(ply)
 end
 
-function tea_NetUpdatePlayerStatistics(ply, target)
+function GM:NetUpdatePlayerStatistics(ply, target)
 	net.Start("UpdateTargetStats")
 	net.WriteString(target:Nick())
 	net.WriteFloat(target.BestSurvivalTime)
@@ -113,15 +129,15 @@ function tea_NetUpdatePlayerStatistics(ply, target)
 	net.Send(ply)
 end
 
-function SystemMessage(ply, msg, color, sys)
-	net.Start("SystemMessage")
-	net.WriteString(msg)
-	net.WriteColor(color or Color(255,255,255))
-	net.WriteBool(sys or false)
+function GM:SendPlayerSurvivalStats(ply)
+	net.Start("tea_survivalstatsupdate")
+	net.WriteFloat(ply.LifeZKills)
+	net.WriteFloat(ply.LifePlayerKills)
 	net.Send(ply)
 end
 
-function tea_SystemBroadcast(msg, color, sys) -- same as system message, just broadcasts it to everybody instead of accepting a ply argument
+
+function GM:SystemBroadcast(msg, color, sys) -- same as system message, just broadcasts it to everybody instead of accepting a ply argument
 	for k, v in pairs(player.GetAll()) do
 		net.Start("SystemMessage")
 		net.WriteString(msg)
@@ -131,7 +147,7 @@ function tea_SystemBroadcast(msg, color, sys) -- same as system message, just br
 	end
 end
 
-function tea_SystemTranslatedBroadcast(sys, color, msg, ...) -- same as system broadcast, except sends a translated string to everyone
+function GM:SystemTranslatedBroadcast(sys, color, msg, ...) -- same as system broadcast, except sends a translated string to everyone
 	for k, v in pairs(player.GetAll()) do
 		net.Start("SystemMessage")
 		net.WriteString(translate.ClientFormat(v, msg, ...))
@@ -141,7 +157,7 @@ function tea_SystemTranslatedBroadcast(sys, color, msg, ...) -- same as system b
 	end
 end
 
-function RadioBroadcast(time, msg, sender, rad)
+function GM:RadioBroadcast(time, msg, sender, rad)
 	timer.Simple(time, function()
 		for k, v in pairs(player.GetAll()) do
 			net.Start("RadioMessage")
@@ -153,7 +169,7 @@ function RadioBroadcast(time, msg, sender, rad)
 	end)
 end
 
-function RadioTranslatedBroadcast(time, sender, rad, msg, ...)
+function GM:RadioTranslatedBroadcast(time, sender, rad, msg, ...)
 	timer.Simple(time, function(...)
 		for k, v in pairs(player.GetAll()) do
 			net.Start("RadioMessage")
@@ -166,83 +182,112 @@ function RadioTranslatedBroadcast(time, sender, rad, msg, ...)
 end
 
 
-function SendUseDelay(ply, delay)
-	if !ply:IsValid() or !ply:Alive() then return end
-	net.Start("UseDelay")
-	net.WriteUInt(delay, 8)
-	net.Send(ply)
-end
-
-net.Receive("ChangeProp", function(length, client)
-	if !client:IsValid() or !client:Alive() then return false end
+net.Receive("ChangeProp", function(len, ply)
+	if !ply:IsValid() or !ply:Alive() then return false end
 	local model = net.ReadString()
-	client.SelectedProp = model
+	ply.SelectedProp = model
 end)
 
 
-net.Receive("ChangeModel", function(length, client)
-	if !client:IsValid() or !client:Alive() then return false end
-	if (client.NxtModelChange or 0) > CurTime() then SystemMessage(client, "You can't change your model now! Try again in "..math.floor(client.NxtModelChange - CurTime()).." seconds!", Color(255,155,155,255), true) return false end
+net.Receive("ChangeModel", function(len, ply)
+	if !ply:IsValid() or !ply:Alive() then return false end
+	if (ply.NxtModelChange or 0) > CurTime() then
+		ply:SystemMessage(Format("You can't change your playermodel now! Try again in %d seconds!", math.floor(ply.NxtModelChange - CurTime())), Color(255,155,155), true)
+		return false
+	end
 	local model = net.ReadString()
 	local col = net.ReadVector()
-	client.ChosenModel = model
-	client.ChosenModelColor = col
+	ply.ChosenModel = model
+	ply.ChosenModelColor = col
 
-	SendUseDelay(client, 1)
-	client.NxtModelChange = CurTime() + 120
-	timer.Simple(0.75, function() tea_RecalcPlayerModel(client) end)
+	ply:SendUseDelay(1)
+	ply.NxtModelChange = CurTime() + 120
+	timer.Simple(0.75, function()
+		gamemode.Call("RecalcPlayerModel", ply)
+	end)
 end)
 
 
-net.Receive("UpgradePerk", function(length, client)
-	local ply = client
+net.Receive("UpgradePerk", function(len, ply)
 	local perk = net.ReadString()
+	local amt = net.ReadUInt(16)
+
 	local perk2 = "Stat"..perk
-	if(tonumber(ply.StatPoints) < 1) then
-		SendChat(ply, "You need a skill point to upgrade a skill!")
+	local mul = GAMEMODE.StatConfigs[perk].Cost or 1
+	amt = math.min(amt, ply.StatPoints, 10 - ply[perk2])
+
+	if tonumber(ply.StatPoints) < amt * mul or tonumber(ply.StatPoints) < mul then
+		ply:SendChat("You need skill points to upgrade skill!")
 		return false
 	end
+	if amt < mul then return end
 	if (tonumber(ply[perk2]) >= 10) then
-		SendChat(ply, "You have reached the maximum number of points for this skill")
+		ply:SendChat("You have reached the maximum number of points for this skill")
 		return false
 	end
 
-	ply[perk2] = ply[perk2] + 1
-	ply.StatPoints = ply.StatPoints - 1
+	ply[perk2] = ply[perk2] + (amt * mul)
+	ply.StatPoints = ply.StatPoints - (amt * mul)
 	ply:SetMaxHealth(GAMEMODE:CalcMaxHealth(ply))
 	ply:SetMaxArmor(GAMEMODE:CalcMaxArmor(ply))
 	ply:SetJumpPower(GAMEMODE:CalcJumpPower(ply))
-	if GetConVar("tea_server_debugging"):GetInt() >= 2 then print(ply:Nick().." used 1 skill point on "..perk.." skill ("..tonumber(ply.StatPoints).." skill points remaining)") end
-	SendChat(ply, translate.ClientFormat(ply, "perkincreased", perk))
-	tea_RecalcPlayerSpeed(ply)
-	tea_FullyUpdatePlayer(ply)
+	if GAMEMODE:GetDebug() >= DEBUGGING_ADVANCED then print(ply:Nick().." used "..amt * mul.." skill point(s) on "..perk.." skill ("..tonumber(ply.StatPoints).." skill points remaining)") end
+	ply:SendChat(translate.ClientFormat(ply, "perkincreased", perk, amt * mul))
+	GAMEMODE:RecalcPlayerSpeed(ply)
+	GAMEMODE:FullyUpdatePlayer(ply)
 end)
 
 
-net.Receive("CashBounty", function(length, client)
-	if !client:IsValid() or !client:Alive() then return false end
+net.Receive("CashBounty", function(len, ply)
+	if !ply:IsValid() or !ply:Alive() then return false end
 
 	local trader = false
-	local plycheck = ents.FindInSphere(client:GetPos(), 150)
+	local plycheck = ents.FindInSphere(ply:GetPos(), 150)
 
 	for k, v in pairs(plycheck) do
 		if v:GetClass() == "trader" then trader = true break end
 	end
-	if !trader then SystemMessage(client, "You are not in a trader area!", Color(255,205,205,255), true) return false end
-	if client.Bounty <= 0 then SystemMessage(client, "You don't have any bounty to cash in!", Color(255,205,205,255), true) return false end
+	if !trader then ply:SystemMessage("You are not in a trader area!", Color(255,205,205), true) return false end
+	if ply.Bounty <= 0 then ply:SystemMessage("You don't have any bounty to cash in!", Color(255,205,205), true) return false end
 
-	client.Money = math.floor(tonumber(client.Money)) + tonumber(client.Bounty)
-	if GetConVar("tea_server_debugging"):GetInt() >= 1 then print(client:Nick().." cashed in their bounty and received "..tonumber(math.floor(client.Bounty)).." "..GAMEMODE.Config["Currency"].."s") end
-	SystemMessage(client, "You cashed in your bounty and received "..tonumber(math.floor(client.Bounty)).." "..GAMEMODE.Config["Currency"].."s!", Color(205,255,205,255), true)
-	client.Bounty = 0
-	client:SetNWInt("PlyBounty", client.Bounty)
+	ply.Money = tonumber(ply.Money) + tonumber(ply.Bounty)
+	if GAMEMODE:GetDebug() >= DEBUGGING_NORMAL then print(ply:Nick().." cashed in their bounty and received "..tonumber(math.floor(ply.Bounty)).." "..GAMEMODE.Config["Currency"].."s") end
+	ply:SystemMessage(Format("You cashed in your bounty and received %s %ss!", tonumber(math.floor(ply.Bounty)), GAMEMODE.Config["Currency"]), Color(205,255,205), true)
+	ply.Bounty = 0
+	ply:SetNWInt("PlyBounty", ply.Bounty)
 
-	tea_FullyUpdatePlayer(client)
+	gamemode.Call("FullyUpdatePlayer", ply)
 end)
 
-net.Receive("UpdateTargetStats", function(length, client)
+net.Receive("UpdateTargetStats", function(len, ply)
 	local target = net.ReadEntity()
-	if !client:IsValid() or !target:IsValid() then return false end
+	if !ply:IsValid() or !target:IsValid() then return false end
 	
-	tea_NetUpdatePlayerStatistics(client, target)
+	GAMEMODE:NetUpdatePlayerStatistics(ply, target)
 end)
+
+net.Receive("PlayerIsReady", function(len, ply)
+	if ply.IsReady then return end
+	ply.IsReady = true
+	gamemode.Call("PlayerReady", ply)
+end)
+
+net.Receive("tea_player_ready_spawn", function(len, ply)
+	net.Start("tea_player_ready_spawn")
+	net.WriteBool(tobool(ply.HasSpawnedReady))
+	net.Send(ply)
+
+	ply.HasSpawnedReady = true
+	ply:Spawn()
+end)
+
+local meta = FindMetaTable("Player")
+if not meta then return end
+
+function meta:SendUseDelay(delay)
+	if !self:IsValid() or !self:Alive() then return end
+	net.Start("UseDelay")
+	net.WriteUInt(delay, 8)
+	net.Send(self)
+end
+

@@ -58,8 +58,6 @@ local MAT_PLASTIC = MAT_PLASTIC
 ---mmm--------mmm-aaa-----aaa-ddddddddd---------------------------------------->
 ---------------------------------------------------------*/
 
-// Variables that are used on both client and server
-
 local RecoilMul = CreateConVar("mad_recoilmul", "1", {FCVAR_REPLICATED, FCVAR_ARCHIVE})
 local DamageMul = CreateConVar("mad_damagemul", "1", {FCVAR_REPLICATED, FCVAR_ARCHIVE})
 
@@ -86,25 +84,23 @@ SWEP.Primary.NumShots		= 1
 SWEP.Primary.Cone			= 0
 SWEP.Primary.Delay 		= 0
 
-SWEP.Primary.ClipSize		= 5					// Size of a clip
-SWEP.Primary.DefaultClip	= 5					// Default number of bullets in a clip
-SWEP.Primary.Automatic		= false				// Automatic/Semi Auto
+SWEP.Primary.ClipSize		= 5
+SWEP.Primary.DefaultClip	= 5
+SWEP.Primary.Automatic		= false
 SWEP.Primary.Ammo			= "none"
 
-SWEP.Secondary.ClipSize		= -1					// Size of a clip
-SWEP.Secondary.DefaultClip	= -1					// Default number of bullets in a clip
-SWEP.Secondary.Automatic	= false				// Automatic/Semi Auto
+SWEP.Secondary.ClipSize		= -1
+SWEP.Secondary.DefaultClip	= -1
+SWEP.Secondary.Automatic	= false
 SWEP.Secondary.Ammo		= "none"
 
 SWEP.ActionDelay			= CurTime()
 
-// I added this function because some weapons like the Day of Defeat weapons need 1.2 or 1.5 seconds to deploy
 SWEP.DeployDelay			= 1
 
-SWEP.ShellEffect			= "effect_mad_shell_pistol"	// "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
+SWEP.ShellEffect			= "effect_mad_shell_pistol"	-- "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
 SWEP.ShellDelay			= 0
 
-// Is it a pistol, a rifle, a shotgun or a sniper? Choose only one of them or you'll fucked up everything. BITCH!
 SWEP.Pistol				= false
 SWEP.Rifle				= false
 SWEP.Shotgun			= false
@@ -115,43 +111,39 @@ SWEP.IronSightsAng 		= Vector (0, 0, 0)
 SWEP.RunArmOffset 		= Vector (0, 0, 5.5)
 SWEP.RunArmAngle 			= Vector (-35, -3, 0)
 
-// Burst options
 SWEP.Burst				= false
 SWEP.BurstShots			= 3
 SWEP.BurstDelay			= 0.05
 SWEP.BurstCounter			= 0
 SWEP.BurstTimer			= 0
 
-// Custom mode options (Do not put a burst mode and a custom mode at the same time, it will not work)
-SWEP.Type				= 1 					// 1 = Automatic/Semi-Automatic mode, 2 = Suppressor mode, 3 = Burst fire mode
+SWEP.Type				= 1
 SWEP.Mode				= false
 
 SWEP.data 				= {}
 SWEP.data.NormalMsg		= "Switched to semi-automatic."
 SWEP.data.ModeMsg			= "Switched to automatic."
-SWEP.data.Delay			= 0.5 				// You need to wait 0.5 second after you change the fire mode
+SWEP.data.Delay			= 0.5
 SWEP.data.Cone			= 1
 SWEP.data.Damage			= 1
 SWEP.data.Recoil			= 1
 SWEP.data.Automatic		= false
 
-// Constant accuracy means that your crosshair will not change if you're running, shooting or walking
 SWEP.ConstantAccuracy		= false
 
-// I don't think it's hard to understand this
 SWEP.Penetration			= true
 SWEP.Ricochet			= true
 SWEP.MaxRicochet			= 1
 
-SWEP.Tracer				= 0					// 0 = Normal Tracer, 1 = Ar2 Tracer, 2 = Airboat Gun Tracer, 3 = Normal Tracer + Sparks Impact
+SWEP.Tracer				= 0
 
 SWEP.IdleDelay			= 0
 SWEP.IdleApply			= false
 SWEP.AllowIdleAnimation		= true
 SWEP.AllowPlaybackRate		= true
 
-SWEP.BoltActionSniper		= false				// Use this value if you want to remove the scope view after you shoot
-SWEP.ScopeAfterShoot		= false				// Do not try to change this value
+SWEP.BoltActionSniper		= false
+SWEP.ScopeAfterShoot		= false	
 
 SWEP.IronSightZoom 		= 1.5
 SWEP.ScopeZooms			= {10}
@@ -161,10 +153,6 @@ SWEP.ShotgunReloading		= false
 SWEP.ShotgunFinish		= 0.5
 SWEP.ShotgunBeginReload		= 0.3
 
-/*---------------------------------------------------------
-   Name: SWEP:Initialize()
-   Desc: Called when the weapon is first loaded.
----------------------------------------------------------*/
 function SWEP:Initialize()
 	self:SetHoldType(self.HoldType)
 	util.PrecacheSound( self.Primary.Sound )
@@ -175,19 +163,11 @@ function SWEP:Initialize()
 	end
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:Precache()
-   Desc: Use this function to precache stuff.
----------------------------------------------------------*/
 function SWEP:Precache()
 
 	util.PrecacheSound("weapons/clipempty_pistol.wav")
 end
 
-/*---------------------------------------------------------
-   Name: ENT:SetupDataTables()
-   Desc: Setup the data tables.
----------------------------------------------------------*/
 function SWEP:SetupDataTables()  
 
 	self:DTVar("Bool", 0, "Holsted")
@@ -196,10 +176,6 @@ function SWEP:SetupDataTables()
 	self:DTVar("Bool", 3, "Mode")
 end 
 
-/*---------------------------------------------------------
-   Name: SWEP:IdleAnimation()
-   Desc: Are you seriously too stupid to understand the function by yourself?
----------------------------------------------------------*/
 function SWEP:IdleAnimation(time)
 
 	if not self.AllowIdleAnimation then return false end
@@ -209,13 +185,8 @@ function SWEP:IdleAnimation(time)
 	self.IdleDelay = CurTime() + time
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:PrimaryAttack()
-   Desc: +attack1 has been pressed.
----------------------------------------------------------*/
 function SWEP:PrimaryAttack()
 
-	// Holst/Deploy your fucking weapon
 	if (not self.Owner:IsNPC() and self.Owner:KeyDown(IN_USE)) then
 		bHolsted = !self.Weapon:GetDTBool(0)
 		self:SetHolsted(bHolsted)
@@ -234,7 +205,6 @@ function SWEP:PrimaryAttack()
 	self.Weapon:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 	self.Weapon:SetNextSecondaryFire(CurTime() + self.Primary.Delay)
 
-	// If the burst mode is activated, it's going to shoot the three bullets (or more if you put 4 or 5 bullets for your burst mode)
 	if self.Weapon:GetDTBool(3) and self.Type == 3 then
 		self.BurstTimer 	= CurTime()
 		self.BurstCounter = self.BurstShots - 1
@@ -248,16 +218,12 @@ function SWEP:PrimaryAttack()
 	self:ShootBulletInformation()
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:SecondaryAttack()
-   Desc: +attack2 has been pressed.
----------------------------------------------------------*/
 function SWEP:SecondaryAttack()
 
 	if self.Owner:IsNPC() then return end
 	if not IsFirstTimePredicted() then return end
 
-	if (self.Owner:KeyDown(IN_USE) and (self.Mode)) then // Mode
+	if (self.Owner:KeyDown(IN_USE) and (self.Mode)) then
 		bMode = !self.Weapon:GetDTBool(3)
 		self:SetMode(bMode)
 		self:SetIronsights(false)
@@ -270,7 +236,6 @@ function SWEP:SecondaryAttack()
 
 	if (!self.IronSightsPos) or (self.Owner:KeyDown(IN_SPEED) or self.Weapon:GetDTBool(0)) then return end
 	
-	// Not pressing Use + Right click? Ironsights
 	bIronsights = !self.Weapon:GetDTBool(1)
 	self:SetIronsights(bIronsights)
 
@@ -336,9 +301,6 @@ function SWEP:SetIronsights(b)
 	end
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:SetMode()
----------------------------------------------------------*/
 function SWEP:SetMode(b)
 
 	if (self.Owner) then
@@ -372,7 +334,6 @@ function SWEP:SetMode(b)
 					self:IdleAnimation(self.Owner:GetViewModel():SequenceDuration())
 				end
 			elseif self.Type == 3 then
-				// Nothing here for the burst fire mode
 				self.Weapon:EmitSound("weapons/smg1/switch_single.wav")
 			end
 
@@ -387,23 +348,13 @@ function SWEP:SetMode(b)
 	end
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:CheckReload()
-   Desc: CheckReload.
----------------------------------------------------------*/
 function SWEP:CheckReload()
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:Reload()
-   Desc: Reload is being pressed.
----------------------------------------------------------*/
 function SWEP:Reload()
 
-	// When the weapon is already doing an animation, just return end because we don't want to interrupt it
 	if (self.ActionDelay > CurTime()) then return end 
 
-	// Need to call the default reload before the real reload animation
 	self.Weapon:DefaultReload(ACT_VM_RELOAD)
 
 	if (self.Weapon:Clip1() < self.Primary.ClipSize) and (self.Owner:GetAmmoCount(self.Primary.Ammo) > 0) then
@@ -412,12 +363,8 @@ function SWEP:Reload()
 	end
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:ReloadAnimation()
----------------------------------------------------------*/
 function SWEP:ReloadAnimation()
 
-	// Reload with the suppressor animation if you're suppressor is on the FUCKING gun
 	if self.Weapon:GetDTBool(3) and self.Type == 2 then
 		self.Weapon:DefaultReload(ACT_VM_RELOAD_SILENCED)
 	else
@@ -429,19 +376,9 @@ function SWEP:ReloadAnimation()
 	end
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:SecondThink()
-   Desc: Called every frame. Use this function if you don't 
-	   want to copy/past the think function everytime you 
-	   create a new weapon with this base...
----------------------------------------------------------*/
 function SWEP:SecondThink()
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:Think()
-   Desc: Called every frame.
----------------------------------------------------------*/
 function SWEP:Think()
 
 	self:SecondThink()
@@ -472,7 +409,6 @@ function SWEP:Think()
 		self:SetIronsights(false)
 	end
 
-		// If you're running or if your weapon is holsted, the third person animation is going to change
 	if self.Owner:KeyDown(IN_SPEED) or self.Weapon:GetDTBool(0) then
 		if self.Rifle or self.Sniper or self.Shotgun then
 			if self.Owner:KeyDown(IN_DUCK) then
@@ -489,7 +425,6 @@ function SWEP:Think()
 	end
 	
 
-	// Burst fire mode
 	if self.Weapon:GetDTBool(3) and self.Type == 3 then
 		if self.BurstTimer + self.BurstDelay < CurTime() then
 			if self.BurstCounter > 0 then
@@ -508,20 +443,11 @@ function SWEP:Think()
 	self:NextThink(CurTime())
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:Holster()
-   Desc: Weapon wants to holster.
-	   Return true to allow the weapon to holster.
----------------------------------------------------------*/
 function SWEP:Holster()
 
 	return true
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:Deploy()
-   Desc: Whip it out.
----------------------------------------------------------*/
 function SWEP:Deploy()
 
 	self:DeployAnimation()
@@ -621,7 +547,6 @@ function SWEP:ShootBulletInformation()
 		return
 	end
 
-	// When we have collected some fuel, we do a lot of damage! >:D
 	if self.Owner:GetNetworkedInt("Fuel") > 0 then
 		CurrentDamage = CurrentDamage * 1.25
 	end
@@ -845,20 +770,20 @@ function SWEP:ShootAnimation()
 	if (self.Weapon:Clip1() <= 0) then
 		if (AllowDryFire) then
 			if self.Weapon:GetDTBool(3) and self.Type == 2 then
-				self.Weapon:SendWeaponAnim(ACT_VM_DRYFIRE_SILENCED)	// View model animation
+				self.Weapon:SendWeaponAnim(ACT_VM_DRYFIRE_SILENCED)	
 			else
-				self.Weapon:SendWeaponAnim(ACT_VM_DRYFIRE) 		// View model animation
+				self.Weapon:SendWeaponAnim(ACT_VM_DRYFIRE)
 			end
 		elseif self.Weapon:GetDTBool(3) and self.Type == 2 then
-			self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK_SILENCED) 	// View model animation
+			self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK_SILENCED)
 		else
-			self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK) 		// View model animation
+			self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
 		end
 	else
 		if self.Weapon:GetDTBool(3) and self.Type == 2 then
-			self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK_SILENCED) 	// View model animation
+			self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK_SILENCED)
 		else
-			self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK) 		// View model animation
+			self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
 		end
 	end
 end

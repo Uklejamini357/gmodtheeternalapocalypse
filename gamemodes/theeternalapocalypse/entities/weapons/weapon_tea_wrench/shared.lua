@@ -1,5 +1,3 @@
-// Variables that are used on both client and server
-
 SWEP.Base				= "weapon_melee_base"
 SWEP.Category			= "AtE Weapons"
 SWEP.Purpose			= "Build unbuilt props and repair damaged props"
@@ -13,23 +11,26 @@ SWEP.HoldType			= "melee2"
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= false
 
+SWEP.HitDistance = 60
+SWEP.StaminaNeeded = 3.15
+
 SWEP.Primary.Recoil		= 5
-SWEP.Primary.Damage		= 0
+SWEP.Primary.Damage		= 17
 SWEP.Primary.NumShots	= 0
 SWEP.Primary.Cone		= 0.075
 SWEP.Primary.Delay		= 0.7
 
-SWEP.Primary.ClipSize	= -1					// Size of a clip
-SWEP.Primary.DefaultClip	= 0					// Default number of bullets in a clip
-SWEP.Primary.Automatic		= true				// Automatic/Semi Auto
+SWEP.Primary.ClipSize	= -1
+SWEP.Primary.DefaultClip	= 0
+SWEP.Primary.Automatic		= true
 SWEP.Primary.Ammo			= ""
 
-SWEP.Secondary.ClipSize		= -1					// Size of a clip
-SWEP.Secondary.DefaultClip	= -1					// Default number of bullets in a clip
-SWEP.Secondary.Automatic	= false				// Automatic/Semi Auto
+SWEP.Secondary.ClipSize		= -1
+SWEP.Secondary.DefaultClip	= -1
+SWEP.Secondary.Automatic	= false
 SWEP.Secondary.Ammo		= "none"
 
-SWEP.ShellEffect			= "none"				// "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
+SWEP.ShellEffect			= "none"				-- "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
 SWEP.ShellDelay			= 0
 
 SWEP.Pistol				= true
@@ -42,22 +43,20 @@ SWEP.RunArmAngle	 		= Vector (0, 0, 0)
 
 SWEP.Sequence			= 0
 
-SWEP.HitDistance = 60
 SWEP.ShowViewModel = true
 SWEP.ShowWorldModel = false
 /*---------------------------------------------------------
    Name: SWEP:Precache()
 ---------------------------------------------------------*/
 function SWEP:Precache()
-
-    	util.PrecacheSound("weapons/knife/knife_slash1.wav")
-    	util.PrecacheSound("weapons/knife/knife_hitwall1.wav")
-    	util.PrecacheSound("weapons/knife/knife_deploy1.wav")
-    	util.PrecacheSound("weapons/knife/knife_hit1.wav")
-    	util.PrecacheSound("weapons/knife/knife_hit2.wav")
-    	util.PrecacheSound("weapons/knife/knife_hit3.wav")
-    	util.PrecacheSound("weapons/knife/knife_hit4.wav")
-    	util.PrecacheSound("weapons/iceaxe/iceaxe_swing1.wav")
+	util.PrecacheSound("weapons/knife/knife_slash1.wav")
+	util.PrecacheSound("weapons/knife/knife_hitwall1.wav")
+	util.PrecacheSound("weapons/knife/knife_deploy1.wav")
+	util.PrecacheSound("weapons/knife/knife_hit1.wav")
+	util.PrecacheSound("weapons/knife/knife_hit2.wav")
+	util.PrecacheSound("weapons/knife/knife_hit3.wav")
+	util.PrecacheSound("weapons/knife/knife_hit4.wav")
+	util.PrecacheSound("weapons/iceaxe/iceaxe_swing1.wav")
 end
 
 /*---------------------------------------------------------
@@ -106,18 +105,14 @@ function SWEP:EntityFaceBack(ent)
 	return false
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:PrimaryAttack()
-   Desc: +attack1 has been pressed.
----------------------------------------------------------*/
 function SWEP:PrimaryAttack()
-	if (CLIENT and MyStamina < 4) or (SERVER and self.Owner.Stamina < 4) then return end
+	if (CLIENT and MyStamina < self.StaminaNeeded) or (SERVER and self.Owner.Stamina < self.StaminaNeeded) then return end
 	self.Weapon:SendWeaponAnim(ACT_VM_MISSCENTER)
 
 	timer.Simple( 0.2, function()
 	if ( !IsValid( self ) || !IsValid( self.Owner ) || !self.Owner:GetActiveWeapon() || self.Owner:GetActiveWeapon() != self || CLIENT ) then return end
 		self:DealDamage( anim )
-		self.Owner.Stamina = math.Clamp(self.Owner.Stamina - math.Rand(2.85, 3.3), 0, 100)
+		self.Owner.Stamina = math.Clamp(self.Owner.Stamina - self.StaminaNeeded, 0, 100)
 		self.Owner:EmitSound( "weapons/slam/throw.wav" )
 	end )
 
@@ -145,10 +140,6 @@ function SWEP:PrimaryAttack()
 	self:IdleAnimation(1)
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:SecondaryAttack()
-   Desc: +attack2 has been pressed.
----------------------------------------------------------*/
 function SWEP:SecondaryAttack()
 return nil
 end
@@ -179,18 +170,18 @@ function SWEP:DealDamage( anim )
 	end
 
 
-	if ( IsValid( tr.Entity ) && ( tr.Entity:IsNPC() || tr.Entity:IsPlayer() || tr.Entity:GetClass() == "func_breakable" || tr.Entity.Type == "nextbot" || tr.Entity:Health() > 0 ) ) then
+	if IsValid(tr.Entity) && ( tr.Entity:IsNPC() || tr.Entity:IsPlayer() || tr.Entity:GetClass() == "func_breakable" || tr.Entity.Type == "nextbot" || tr.Entity:Health() > 0 ) then
 		local dmginfo = DamageInfo()
-		if tr.Entity:IsPlayer() then
-		dmginfo:SetDamage( math.random( 12, 16 ) )
-		else
-		dmginfo:SetDamage( math.random( 20, 25 ) )
-		end
-		dmginfo:SetDamageForce( self.Owner:GetRight() * 425 + self.Owner:GetForward() * 94 ) -- Yes we need those specific numbers
+--		if tr.Entity:IsPlayer() then
+			dmginfo:SetDamage(self.Primary.Damage)
+--		else
+--			dmginfo:SetDamage(self.Primary.Damage)
+--		end
+		dmginfo:SetDamageForce(self.Owner:GetRight() * 425 + self.Owner:GetForward() * 94) -- Yes we need those specific numbers
 		dmginfo:SetInflictor( self )
 		local attacker = self.Owner
-		if ( !IsValid( attacker ) ) then attacker = self end
-		dmginfo:SetAttacker( attacker )
+		if !IsValid(attacker) then attacker = self end
+		dmginfo:SetAttacker(attacker)
 
 		tr.Entity:TakeDamageInfo( dmginfo )
 	end
@@ -202,7 +193,7 @@ function SWEP:DealDamage( anim )
 			local cube = ents.FindInBox( mins, maxs )
 
 			for _,v in pairs(cube) do
-				if v:IsPlayer() or v:IsNPC() or v.Type == "nextbot" then SystemMessage(self.Owner, "Unable to build: prop obstructed!", Color(255,205,205,255), true) return false end
+				if v:IsPlayer() or v:IsNPC() or v.Type == "nextbot" then self.Owner:SystemMessage("Unable to build: prop obstructed!", Color(255,205,205,255), true) return false end
 			end
 
 			if (tr.Entity:GetClass() == "prop_flimsy" and tr.Entity.BuildLevel >= (3 + (FLIMSYPROPS[tr.Entity:GetModel()]["TOUGHNESS"] or 0))) or (tr.Entity:GetClass() == "prop_strong" and tr.Entity.BuildLevel >= 5 + (TOUGHPROPS[tr.Entity:GetModel()]["TOUGHNESS"] or 0)) or (SpecialSpawns[tr.Entity:GetClass()] and tr.Entity.BuildLevel >= 7) then
@@ -211,28 +202,28 @@ function SWEP:DealDamage( anim )
 				tr.Entity.BuildLevel = tr.Entity.BuildLevel + 1
 			end
 
-
 			tr.Entity:EmitSound("weapons/crowbar/crowbar_impact"..math.random(1,2)..".wav")
 		else
-		local hp = tr.Entity:GetStructureHealth()
-		local maxhp = tr.Entity:GetStructureMaxHealth()
+			if SpecialSpawns[tr.Entity:GetClass()] then return end
 
-		if hp >= maxhp then return end
+			local hp = tr.Entity:GetStructureHealth()
+			local maxhp = tr.Entity:GetStructureMaxHealth()
 
-		hp = math.Clamp( hp + (20 + (self.Owner.StatEngineer * 3)), 0, maxhp )
+			local function StrucHealth()
+				self.Owner:PrintMessage(HUD_PRINTCENTER, "STRUCTURE HP: "..math.floor(hp).."/"..maxhp)
+			end
 
-		local shit = math.floor(maxhp / 500)
-		local swag
-		if shit == 1 then swag = math.Clamp(hp / 2 , 0, 255)
-		elseif shit == 2 then swag = math.Clamp(hp / 4 , 0, 255)
-		else
-		swag = math.Clamp(hp / 6 , 0, 255)
-		end
+			if hp >= maxhp then StrucHealth() return end
 
-		tr.Entity:SetColor(Color(swag +5,swag+5,swag+5,255))
-		tr.Entity:SetStructureHealth( hp )
-		tr.Entity:EmitSound("weapons/crowbar/crowbar_impact"..math.random(1,2)..".wav")
-		self.Owner:PrintMessage(HUD_PRINTCENTER, "STRUCTURE HP: "..math.floor(hp).."/"..maxhp)
+			hp = math.Clamp( hp + (20 + (self.Owner.StatEngineer * 3)), 0, maxhp )
+
+			local health = maxhp / 500
+			local swag = math.Clamp(hp / (2 * health) , 0, 255)
+
+			tr.Entity:SetColor(Color(swag +5,swag+5,swag+5,255))
+			tr.Entity:SetStructureHealth(hp)
+			tr.Entity:EmitSound("weapons/crowbar/crowbar_impact"..math.random(1,2)..".wav")
+			StrucHealth()
 
 		end
 	end

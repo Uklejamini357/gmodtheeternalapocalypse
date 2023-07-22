@@ -1,5 +1,3 @@
-// Variables that are used on both client and server
-
 SWEP.Base 				= "weapon_mad_base"
 
 SWEP.ViewModel			= "models/weapons/c_smg1.mdl"
@@ -24,14 +22,14 @@ SWEP.Contact			= ""
 SWEP.Purpose			= "A burst fire machine pistol designed to be accurate enough to go toe to toe with longer range attackers"
 SWEP.Instructions			= "Left click to fire, Right click to aim, uses smg rounds"
 
-SWEP.Primary.ClipSize		= 40					// Size of a clip
-SWEP.Primary.DefaultClip	= 0					// Default number of bullets in a clip
-SWEP.Primary.Automatic		= false				// Automatic/Semi Auto
+SWEP.Primary.ClipSize		= 40
+SWEP.Primary.DefaultClip	= 0
+SWEP.Primary.Automatic		= false
 SWEP.Primary.Ammo			= "Pistol"
 
-SWEP.Secondary.ClipSize		= -1					// Size of a clip
-SWEP.Secondary.DefaultClip	= -1					// Default number of bullets in a clip
-SWEP.Secondary.Automatic	= false				// Automatic/Semi Auto
+SWEP.Secondary.ClipSize		= -1
+SWEP.Secondary.DefaultClip	= -1
+SWEP.Secondary.Automatic	= false
 SWEP.Secondary.Ammo		= "none"
 
 SWEP.ShellEffect			= "none"	// "none" or "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
@@ -56,10 +54,6 @@ SWEP.IronSightsAng 		= Vector (0, 0, 0)
 SWEP.RunArmOffset 		= Vector (9.071, 0, 1.6418)
 SWEP.RunArmAngle 			= Vector (-12.9765, 26.8708, 0)
 
-/*---------------------------------------------------------
-   Name: SWEP:Precache()
-   Desc: Use this function to precache stuff.
----------------------------------------------------------*/
 function SWEP:Precache()
 
     	util.PrecacheSound("weapons/smg1/smg1_fire1.wav")
@@ -86,7 +80,6 @@ end
 
 function SWEP:PrimaryAttack()
 
-	// Holst/Deploy your fucking weapon
 	if (not self.Owner:IsNPC() and self.Owner:KeyDown(IN_USE)) then
 		bHolsted = !self.Weapon:GetDTBool(0)
 		self:SetHolsted(bHolsted)

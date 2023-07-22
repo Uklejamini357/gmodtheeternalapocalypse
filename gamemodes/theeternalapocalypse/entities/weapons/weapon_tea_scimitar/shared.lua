@@ -1,5 +1,3 @@
-// Variables that are used on both client and server
-
 SWEP.Base 				= "weapon_mad_base_sniper"
 
 SWEP.ViewModelFlip		= false
@@ -21,17 +19,17 @@ SWEP.Primary.NumShots		= 1
 SWEP.Primary.Cone			= 0.0005
 SWEP.Primary.Delay 		= 0.15
 
-SWEP.Primary.ClipSize		= 20					// Size of a clip
-SWEP.Primary.DefaultClip	= 0					// Default number of bullets in a clip
-SWEP.Primary.Automatic		= false				// Automatic/Semi Auto
+SWEP.Primary.ClipSize		= 20
+SWEP.Primary.DefaultClip	= 0
+SWEP.Primary.Automatic		= false
 SWEP.Primary.Ammo			= "ammo_sniper"
 
-SWEP.Secondary.ClipSize		= -1					// Size of a clip
-SWEP.Secondary.DefaultClip	= -1					// Default number of bullets in a clip
-SWEP.Secondary.Automatic	= false				// Automatic/Semi Auto
+SWEP.Secondary.ClipSize		= -1
+SWEP.Secondary.DefaultClip	= -1
+SWEP.Secondary.Automatic	= false
 SWEP.Secondary.Ammo		= "none"
 
-SWEP.ShellEffect			= "effect_mad_shell_rifle"	// "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
+SWEP.ShellEffect			= "effect_mad_shell_rifle"	-- "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
 SWEP.ShellDelay			= 0
 
 SWEP.IronSightsPos = Vector(-7.16, -11.261, 1.919)
@@ -49,10 +47,6 @@ SWEP.BurstDelay			= 0.06
 SWEP.BurstCounter			= 0
 SWEP.BurstTimer			= 0
 
-/*---------------------------------------------------------
-   Name: SWEP:Precache()
-   Desc: Use this function to precache stuff.
----------------------------------------------------------*/
 function SWEP:Precache()
 
     	util.PrecacheSound("weapons/g3sg1/g3sg1-1.wav")
@@ -60,7 +54,6 @@ end
 
 function SWEP:PrimaryAttack()
 
-	// Holst/Deploy your fucking weapon
 	if (not self.Owner:IsNPC() and self.Owner:KeyDown(IN_USE)) then
 		bHolsted = !self.Weapon:GetDTBool(0)
 		self:SetHolsted(bHolsted)
@@ -131,7 +124,6 @@ function SWEP:Think()
 			self.ScopeAfterShoot = false
 		end
 
-		// If you're running or if your weapon is holsted, the third person animation is going to change
 	if self.Owner:KeyDown(IN_SPEED) or self.Weapon:GetDTBool(0) then
 		if self.Sniper then
 			if self.Owner:KeyDown(IN_DUCK) then

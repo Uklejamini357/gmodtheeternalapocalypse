@@ -1,14 +1,14 @@
 	-------------------------------- Faction Menu --------------------------------
 
-function FactionMenu()
+function GM:FactionMenu()
 	if IsValid(FactionFrame) then FactionFrame:Remove() end
 
 	local FactionColor = Color(255,255,255,255)
 	FactionFrame = vgui.Create( "DFrame" )
 	FactionFrame:SetSize( 600, 440 )
 	FactionFrame:Center()
-	FactionFrame:SetTitle ( "" )
-	FactionFrame:SetDraggable( false )
+	FactionFrame:SetTitle("")
+	FactionFrame:SetDraggable(false)
 	FactionFrame:SetVisible( true )
 	FactionFrame:SetAlpha(0)
 	FactionFrame:AlphaTo(255, 0.25, 0)
@@ -42,7 +42,7 @@ function FactionMenu()
 	local tname = vgui.Create("DTextEntry", FactionFrame)
 	tname:SetSize(FactionFrame:GetWide()-50, 30)
 	tname:SetPos(25, 120)
-	tname:SetEnterAllowed( false )
+	tname:RequestFocus()
 
 	local tnamelabel = vgui.Create("DLabel", FactionFrame)
 	tnamelabel:SetPos(25,160)
@@ -84,10 +84,12 @@ function FactionMenu()
 		FactionFrame:Remove()
 	end
 end
-concommand.Add("tea_createfaction", FactionMenu)
+concommand.Add("tea_createfaction", function()
+	gamemode.Call("FactionMenu")
+end)
 
 
-function ManageMenu()
+function GM:ManageMenu()
 	if IsValid(ManageFrame) then ManageFrame:Remove() end
 	if LocalPlayer():Team() == 1 then chat.AddText(Color(255,255,255,255), "[System] ", Color(255,205,205,255), "You are not in a faction!") return false end
 
@@ -121,7 +123,7 @@ function ManageMenu()
 	txt2:SetPos( 380, 28 )
 	txt2:SetFont( "TargetIDSmall" )
 	txt2:SetColor( Color(255,255,255,255) )
-	txt2:SetText( "Invite to faction:" )
+	txt2:SetText("Invite to faction:")
 	txt2:SizeToContents()
 
 	local Plist = vgui.Create("DPanelList", ManageFrame)
@@ -255,4 +257,6 @@ function ManageMenu()
 		Plist2:AddItem(clicker)
 	end
 end
-concommand.Add("tea_managefaction", ManageMenu)
+concommand.Add("tea_managefaction", function()
+	gamemode.Call("ManageMenu")
+end)

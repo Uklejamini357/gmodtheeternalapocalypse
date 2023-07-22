@@ -24,7 +24,7 @@ for k, v in pairs(people) do
 
 		v:SetPvPGuarded( 1 )
 
-		timer.Create("pvpguardtimer"..v:UniqueID(), 3, 1, function() 
+		timer.Create("pvpguardtimer"..v:EntIndex(), 3, 1, function() 
 		if !v:IsValid() then return false end
 			v:SetPvPGuarded( 0 )
 		end)

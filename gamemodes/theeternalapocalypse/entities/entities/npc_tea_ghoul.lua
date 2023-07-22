@@ -4,6 +4,7 @@ AddCSLuaFile()
 ENT.Base = "npc_tea_basic"
 ENT.PrintName = "Ghoul Zombie"
 ENT.Category = ""
+ENT.Purpose = ""
 ENT.Author = "Uklejamini"
 ENT.Spawnable = true
 ENT.AdminOnly = true
@@ -126,4 +127,5 @@ function ENT:OnKilled(damageInfo)
 	util.Effect("Explosion", effectdata)
 
 	self:Remove()
+	gamemode.Call("OnNPCKilled", self, damageInfo)
 end

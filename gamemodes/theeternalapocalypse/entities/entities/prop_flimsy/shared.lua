@@ -64,7 +64,7 @@ function ENT:Initialize()
 		for _,v in pairs(cube) do
 			if v:IsPlayer() or v:IsNPC() or v.Type == "nextbot" then self:Remove()
 			if v:IsPlayer() then
- 			SendChat( v, "Unable to build prop, biological obstruction detected" )
+ 			v:SendChat("Unable to build prop, biological obstruction detected" )
  			end
 		end
 	end
@@ -75,19 +75,20 @@ end)
 end
 
 function ENT:Use(activator, caller)
-return false
+	return false
 end 
 
 function ENT:FinishBuild()
-if self:IsValid() then
-self:SetMaterial("")
-self:SetColor(Color(255, 255, 255, 255))
-self.IsBuilt = true
-self:SetCollisionGroup( COLLISION_GROUP_NONE )
-end
+	if self:IsValid() then
+		self:SetMaterial("")
+		self:SetColor(Color(255, 255, 255, 255))
+		self.IsBuilt = true
+		self:SetCollisionGroup(COLLISION_GROUP_NONE)
+	end
 end
 
-function ENT:Think() end
+function ENT:Think()
+end
 
 
 function ENT:OnTakeDamage( dmg )
@@ -103,10 +104,10 @@ function ENT:OnTakeDamage( dmg )
 	local damage = dmg:GetDamage()
 	local attacker = dmg:GetAttacker()
 
-	if attacker:IsPlayer() and attacker:IsValid() and attacker:Team() == 1 and attacker:GetNWBool("pvp") != true and self:GetNWEntity("owner") != attacker then -- this should stop little shitters from wrecking your base while not in pvp mode
-		if !timer.Exists("NoPvPMsgAntiSpamTimer"..attacker:UniqueID()) then
-			SystemMessage(attacker, "You cannot damage other players props unless you have PvP mode enabled!", Color(255,205,205,255), true)
-			timer.Create("NoPvPMsgAntiSpamTimer"..attacker:UniqueID(), 0.5, 1, function() end)
+	if attacker:IsPlayer() and attacker:IsValid() and attacker:Team() == 1 and attacker:GetNWBool("pvp") != true and self:GetNWEntity("owner") != attacker then
+		if !timer.Exists("NoPvPMsgAntiSpamTimer"..attacker:EntIndex()) then
+			attacker:SystemMessage("You cannot damage other players props unless you have PvP mode enabled!", Color(255,205,205,255), true)
+			timer.Create("NoPvPMsgAntiSpamTimer"..attacker:EntIndex(), 0.5, 1, function() end)
 		end
 		return false 
 	end
@@ -121,12 +122,8 @@ function ENT:OnTakeDamage( dmg )
 	end
 	self:SetStructureHealth( currenthealth )
 
-	local shit = math.floor(maxhealth / 500)
-	local swag
-	if shit == 1 then swag = math.Clamp(currenthealth / 2 , 0, 255)
-	elseif shit == 2 then swag = math.Clamp(currenthealth / 4 , 0, 255)
-	else swag = math.Clamp(currenthealth / 6 , 0, 255)
-	end
+	local hp = maxhealth / 500
+	local swag = math.Clamp(currenthealth / (2 * hp), 0, 255)
 
 	self:SetColor(Color(swag +5,swag+5,swag+5,255))
 

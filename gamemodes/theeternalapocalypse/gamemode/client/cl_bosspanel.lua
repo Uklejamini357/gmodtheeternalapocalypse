@@ -6,15 +6,15 @@ net.Receive("BossKilled", function(length)
     local bosstable = net.ReadTable()
 
     BossDamagedByTable = bosstable
-    ShowBossPanel()
+    gamemode.Call("ShowBossPanel")
 end)
 
-function ShowBossPanel()
+function GM:ShowBossPanel()
     if IsValid(BossPanel) then BossPanel:Remove() end
     BossPanel = vgui.Create("DFrame")
     BossPanel:SetSize(400, 200)
     BossPanel:SetPos((ScrW() - BossPanel:GetWide()) / 2, 50)
-    BossPanel:SetTitle ("")
+    BossPanel:SetTitle("")
     BossPanel:SetDraggable(false)
     BossPanel:SetAlpha(0)
 	BossPanel:AlphaTo(255, 1, 0)
@@ -36,7 +36,7 @@ function ShowBossPanel()
 
 
 	local function DoListPanel()
-		local text = "Boss Defeated (Damage done)"
+		local text = translate.Get("boss_defeated")
 		local IBG = vgui.Create("DLabel", BossPanel)
 		IBG:SetFont("TargetID")
 		IBG:SetText(text)
@@ -49,9 +49,17 @@ function ShowBossPanel()
 		DMGBG:SetSize(380, 180)
 		DMGBG.Paint = function() end
 
-		for k, v in SortedPairsByValue(BossDamagedByTable, true) do
+		if BossDamagedByTable and table.Count(BossDamagedByTable) > 0 then
+			for k, v in SortedPairsByValue(BossDamagedByTable, true) do
+				local DisplayDMG = vgui.Create("DLabel", DMGBG)
+				DisplayDMG:SetText(Format("%s - %d", k:Nick(), math.Round(v)))
+				DisplayDMG:SetSize(390, 15)
+				DisplayDMG:SetFont("TargetIDSmall")
+				ListPanel:AddItem(DisplayDMG)
+			end
+		else
 			local DisplayDMG = vgui.Create("DLabel", DMGBG)
-			DisplayDMG:SetText(k:Nick() .." damaged: "..math.Round(v))
+			DisplayDMG:SetText(translate.Get("no_one_damaged_boss"))
 			DisplayDMG:SetSize(390, 15)
 			DisplayDMG:SetFont("TargetIDSmall")
 			ListPanel:AddItem(DisplayDMG)

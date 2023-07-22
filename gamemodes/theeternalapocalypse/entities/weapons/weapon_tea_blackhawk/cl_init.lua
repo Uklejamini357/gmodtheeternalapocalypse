@@ -1,10 +1,9 @@
 include('shared.lua')
 
-SWEP.PrintName			= "Black Hawk"			// 'Nice' Weapon name (Shown on HUD)	
-SWEP.Slot				= 3							// Slot in the weapon selection menu
-SWEP.SlotPos			= 1							// Position in the slot
+SWEP.PrintName			= "Black Hawk"	
+SWEP.Slot				= 3
+SWEP.SlotPos			= 1
 
-// Override this in your SWEP to set the icon in the weapon selection
 if (file.Exists("materials/weapons/weapon_mad_sg550.vmt","GAME")) then
 	SWEP.WepSelectIcon	= surface.GetTextureID("weapons/weapon_mad_sg550")
 end
@@ -323,11 +322,6 @@ function SWEP:TranslateFOV(current_fov)
 	return current_fov
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:GetTracerOrigin()
-   Desc: Allows you to override where the tracer comes from (in first person view)
-	   returning anything but a vector indicates that you want the default action.
----------------------------------------------------------*/
 function SWEP:GetTracerOrigin()
 
 	if (self.Weapon:GetDTBool(1)) then

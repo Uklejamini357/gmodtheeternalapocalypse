@@ -4,6 +4,7 @@ ENT.Base = "npc_tea_basic"
 ENT.PrintName = "Zombie Superlord" --Superlord as a miniboss
 ENT.Category = ""
 ENT.Author = "Uklejamini"
+ENT.Purpose = "Miniboss: Can enrage if drop below ~40% health and teleport"
 ENT.Spawnable = true
 ENT.AdminOnly = true
 
@@ -115,7 +116,7 @@ function ENT:ApplyPlayerDamage(ply, damage, hitforce, infection)
 	local dmg1 = tonumber(damage)
 
 	damageInfo:SetAttacker(self)
-	damageInfo:SetDamage(GAMEMODE.tea_CalcPlayerDamage(ply, dmg1))
+	damageInfo:SetDamage(GAMEMODE:CalcPlayerDamage(ply, dmg1))
 	damageInfo:SetDamageType(DMG_CLUB)
 
 	local force = ply:GetAimVector() * hitforce
@@ -131,7 +132,7 @@ function ENT:ApplyPlayerDamage(ply, damage, hitforce, infection)
 --ply:EmitSound(self.Hit, 100, math.random(80, 110))
 	ply:ViewPunch(VectorRand():Angle() * 0.05)
 	ply:SetVelocity(force)
-	ply.Infection = ply.Infection + math.random(60,1000)
+	ply:AddInfection(math.random(60,1000))
 end
 
 
@@ -155,7 +156,7 @@ function ENT:OnInjured(damageInfo)
 	if self:Health() - dmg <= 1500 and self.IsEnraged == 0 then
 		for k,v in pairs(ents.FindInSphere(self:GetPos(), 1500)) do
 			if v:IsPlayer() then
-				SystemMessage(v, "Superlord has enraged!", Color(255,230,230,255), false)
+				v:SystemMessage("Superlord has enraged!", Color(255,230,230,255), false)
 			end
 		end
 		self.RageLevel = 4

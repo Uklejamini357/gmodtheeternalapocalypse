@@ -53,7 +53,7 @@ function ModelMenu()
 		ModelList:SetPos(25,350)
 --ModelForm:AddItem( ModelList )
 
-		local tab = DefaultModels
+		local tab = GAMEMODE.DefaultModels
 		if LocalPlayer():GetNWString("ArmorType") != "none" then
 			local armor = LocalPlayer():GetNWString("ArmorType")
 			if GAMEMODE.ItemsList[armor]["ArmorStats"]["allowmodels"] != nil then
@@ -61,7 +61,7 @@ function ModelMenu()
 			end
 		end
 
-		for n = 1, table.getn(tab) do		
+		for n = 1, table.getn(tab) do
 			local SpawnIcon = vgui.Create("SpawnIcon")
 			SpawnIcon:SetPos(x,y)
 			SpawnIcon:SetSize(64,64)

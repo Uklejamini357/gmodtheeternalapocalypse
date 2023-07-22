@@ -1,5 +1,3 @@
-// Variables that are used on both client and server
-
 SWEP.Base 				= "weapon_mad_base"
 SWEP.Category			= "Mad Cows Weapons"
 
@@ -20,17 +18,17 @@ SWEP.Primary.Cone			= 0.075
 SWEP.Primary.Delay 		= 1.25
 
 
-SWEP.Primary.ClipSize		= 4					// Size of a clip
-SWEP.Primary.DefaultClip	= 4					// Default number of bullets in a clip
-SWEP.Primary.Automatic		= false				// Automatic/Semi Auto
+SWEP.Primary.ClipSize		= 4
+SWEP.Primary.DefaultClip	= 4
+SWEP.Primary.Automatic		= false
 SWEP.Primary.Ammo			= "ammo_plasmabomb"
 
-SWEP.Secondary.ClipSize		= -1					// Size of a clip
-SWEP.Secondary.DefaultClip	= -1					// Default number of bullets in a clip
-SWEP.Secondary.Automatic	= false				// Automatic/Semi Auto
+SWEP.Secondary.ClipSize		= -1
+SWEP.Secondary.DefaultClip	= -1
+SWEP.Secondary.Automatic	= false
 SWEP.Secondary.Ammo		= "none"
 
-SWEP.ShellEffect			= "effect_mad_shell_shotgun"	// "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
+SWEP.ShellEffect			= "effect_mad_shell_shotgun"	-- "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"
 SWEP.ShellDelay			= 0
 
 SWEP.Pistol				= false
@@ -46,10 +44,6 @@ SWEP.IronSightsAng	=	Vector (0, 0, 0)
 SWEP.RunArmOffset 		= Vector (7.6581, -13.4056, 1.4333)
 SWEP.RunArmAngle 			= Vector (-14.4149, 29.214, 0)
 
-/*---------------------------------------------------------
-   Name: SWEP:Precache()
-   Desc: Use this function to precache stuff.
----------------------------------------------------------*/
 function SWEP:Precache()
 
     	util.PrecacheSound("ambient/energy/ion_cannon_shot1.wav")
@@ -85,14 +79,9 @@ function SWEP:Grenade()
 	phys:ApplyForceCenter(self.Owner:GetAimVector() * self.Force + Vector(0, 0, 200))
 end
 
-/*---------------------------------------------------------
-   Name: SWEP:PrimaryAttack()
-   Desc: +attack1 has been pressed.
----------------------------------------------------------*/
 function SWEP:PrimaryAttack()
 	local owner = self.Owner
 
-	// Holst/Deploy your fucking weapon
 	if (not self.Owner:IsNPC() and self.Owner:KeyDown(IN_USE)) then
 		bHolsted = !self.Weapon:GetDTBool(0)
 		self:SetHolsted(bHolsted)
@@ -111,7 +100,7 @@ function SWEP:PrimaryAttack()
 	self.Weapon:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 	self.Weapon:SetNextSecondaryFire(CurTime() + self.Primary.Delay)
 
-	self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK) 		// View model animation
+	self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
 	self.Owner:SetAnimation(PLAYER_ATTACK1)				// 3rd Person Animation
 
 	self.Weapon:EmitSound("ambient/energy/ion_cannon_shot1.wav", 80, 70)

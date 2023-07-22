@@ -4,6 +4,7 @@ ENT.Base = "npc_tea_basic"
 ENT.PrintName = "Tormented Wraith"
 ENT.Category = ""
 ENT.Author = "Uklejamini"
+ENT.Purpose = "Variant of Wraith - Blind and slow down"
 ENT.Spawnable = true
 ENT.AdminOnly = true
 
@@ -144,4 +145,5 @@ function ENT:OnKilled(damageInfo)
 	timer.Simple(0.25, function()
 		self:Remove()
 	end)
+	gamemode.Call("OnNPCKilled", self, damageInfo)
 end

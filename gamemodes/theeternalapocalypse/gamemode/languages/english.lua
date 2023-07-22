@@ -26,7 +26,8 @@ LANG.armor = "Armor: %s / %s"
 LANG.money = "Money: %s"
 LANG.level = "Level: %s"
 LANG.prestige = "Prestige: %s"
-LANG.timesurvived = "Time Survived: %ss"
+LANG.timesurvived = "Time Survived: %s"
+LANG.besttimesurvived = "Best Survival Time: %s"
 LANG.stamina = "Stamina: %s%%"
 LANG.hunger = "Hunger: %s%%"
 LANG.thirst = "Thirst: %s%%"
@@ -55,11 +56,12 @@ LANG.ver_2 = "Ver. %s (Debug Mode)"
 LANG.ver_3 = "Ver. %s (Debug Mode (Advanced))"
 LANG.ver_4 = "Ver. %s (Debug Mode (Experimental))"
 LANG.ver_5 = "Ver. %s (Debug Mode (True Debug Mode))"
+LANG.level_prestige = "Level: %d / Prestige: %d"
 
 --Context Menu
 
 LANG.clearprops = "Clear my Props"
-LANG.selfkill = "End your suffering"
+LANG.changelogs = "Changelogs"
 LANG.refreshinv = "Refresh Inventory"
 LANG.gmver = "Gamemode Version"
 LANG.dropcash = "Drop Money"
@@ -69,6 +71,9 @@ LANG.clearingprops = "Clearing Props..."
 LANG.doit = "Do it!"
 LANG.doprestige1 = "Prestige"
 LANG.doprestige2 = "Prestige!"
+
+LANG.wep_name = "Held weapon: %s"
+LANG.wep_class = "Weapon class: %s"
 
 --Prop Menu
 
@@ -101,9 +106,14 @@ LANG.sb_sheet1_1 = "My Skills"
 LANG.sb_sheet1_1_d = "Upgrade your stats"
 LANG.weight_1 = "Currently Carrying: %skg"
 LANG.weight_2 = "Max Carry Weight: %skg"
-LANG.item_descr_1 = "%s\n(Item ID: %s, Base Cost: %d %ss, Rarity: %s)"
-LANG.item_descr_2 = "%s\n(Item ID: %s, Rarity: %s)"
-LANG.item_descr_3 = "%s\n(Item ID: %s, Rarity: %s)"
+LANG.item_descr_1 = "(Item ID: %s, Base Cost: %d, Rarity: %s)"
+LANG.item_descr_2 = "(Item ID: %s, Rarity: %s)"
+LANG.item_armor_descr = "Protection: %s%%\
+Environmental Protection: %s%%\
+Speed: %s\
+Attachment Slots: %s\
+Battery: %s\
+Max Carry Weight: +%skg"
 LANG.cur_armor = "Armor: %s"
 LANG.noarmor = "No Armor"
 LANG.armorprot = "Protection: %s%% (%s%% Total)"
@@ -116,31 +126,32 @@ LANG.Agility = "Agility"
 LANG.Agility_d = "Increases Jump power by 2 units and decreases stamina reduction when landing onto ground by 1% per point."
 LANG.Barter = "Barter"
 LANG.Barter_d = "Decreases Cost of items that you buy at traders by 1.5% per point.\nIncreases cost of items that you sell at traders by 0.5% per point."
-LANG.Damage = "Damage"
-LANG.Damage_d = "Increases damage output by 1% pet point."
 LANG.Defense = "Defense"
 LANG.Defense_d = "Increases total protection by 1.5%.\nIncreases total environmental protection by 1%. Per point."
 LANG.Engineer = "Engineer"
 LANG.Engineer_d = "Increases repairing HP by 3HP, max of 50. Also decreases prop cost by 2% per point.\nIncreases max armor by 2 and increases effectiveness of armor-reinforcing items by 2% per point."
 LANG.Endurance = "Endurance"
 LANG.Endurance_d = "Decreases stamina reduction when running by ~3% and decreases stamina reduction when underwater by ~1.67%.\nDecreases stamina reduction when landing onto ground by 4.5% per point."
+LANG.Gunslinger = "Gunslinger"
+LANG.Gunslinger_d = "Increases bullet damage by 1% pet point."
 LANG.Immunity = "Immunity"
-LANG.Immunity_d = "Decreases chance of catching infection and decreases infection increasing by 4% per point."
+LANG.Immunity_d = "Decreases chance of catching infection and decreases infection increasing by 4% per point.\nAlso decreases infection gained by 3% per point."
 LANG.Knowledge = "Knowledge"
-LANG.Knowledge_d = "Increases XP gaining by 2%."
+LANG.Knowledge_d = "Increases XP gaining from killing zombies by 2.5%."
 LANG.MedSkill = "MedSkill"
 LANG.MedSkill_d = "Increases HP regen by ~6.67% and improves effectiveness of health points restoring for medicine by 2.5%."
 LANG.Salvage = "Salvage"
-LANG.Salvage_d = "Increases cash gaining by 2%."
+LANG.Salvage_d = "Increases cash gaining from killing zombies by 2.5%."
+LANG.Scavenging = "Scavenging"
+LANG.Scavenging_d = "Increases chance of obtaining bonus loot from loot caches by +2%"
 LANG.Speed = "Speed"
-LANG.Speed_d = "Increases walking speed by 3.5 hammer units and increases running speed by 7 hammer units per point.\nHowever, increases stamina reducing by 0.45% when running and by 0.3% when underwater."
+LANG.Speed_d = "Increases walking speed by 3.5 hammer units and increases running speed by 7 hammer units per point."
 LANG.Strength = "Strength"
-LANG.Strength_d = "Increases maximum weight capacity by 1.53kg per point."
+LANG.Strength_d = "Increases maximum weight capacity by 1.53kg and increases melee damage by 1% per point."
 LANG.Survivor = "Survivor"
 LANG.Survivor_d = "Decreases Hunger reducing by 4%.\nDecreases Thirst reducing by 4.25%.\nDecreases Fatigue increasing by 3.5%. Per point."
 LANG.Vitality = "Vitality"
 LANG.Vitality_d = "Increases Max Health by 5 per point."
-LANG.itemid = "Item ID"
 LANG.createfaction = "Create a new faction"
 LANG.managefaction = "Manage your faction"
 LANG.leavefaction = "Leave your faction"
@@ -261,7 +272,7 @@ LANG.item_junk_twig_d = "Get some wood."
 LANG.item_craft_fueltank_n = "Fuel Tank"
 LANG.item_craft_fueltank_d = "An empty fuel tank, used to craft vehicles."
 LANG.item_craft_wheel_n = "Car Wheel"
-LANG.item_craft_wheel_d = "A car wheel fitted with a tyre that still holds air."
+LANG.item_craft_wheel_d = "A car wheel fitted with a tire that still holds air."
 LANG.item_craft_oil_n = "Engine Oil (1L)"
 LANG.item_craft_oil_d = "A bottle of engine lubricant, required to make an engine run without exploding."
 LANG.item_craft_battery_n = "Battery Cell"
@@ -272,6 +283,10 @@ LANG.item_craft_engine_small_n = "Small engine"
 LANG.item_craft_engine_small_d = "A small petrol engine, it looks to be in decent condition."
 LANG.item_craft_engine_large_n = "Large engine"
 LANG.item_craft_engine_large_d = "A big block engine, this looks like a bit of love and care would restore it to working order."
+LANG.item_boss_shard_n = "Boss shard"
+LANG.item_boss_shard_d = "Use this to summon a boss!"
+LANG.item_money_n = "Money"
+LANG.item_money_d = "Use the item to add the amount of money you have in your inventory to your account"
 LANG.item_pistolammo_n = "Pistol Ammo Box"
 LANG.item_pistolammo_d = "An ammo box that contains 100 pistol rounds."
 LANG.item_m9k_smgammo_n = "[M9k] SMG Ammo Box"
@@ -305,6 +320,8 @@ LANG.weapon_tea_axe_n = "Axe"
 LANG.weapon_tea_axe_d = "Can i axe you a question?"
 LANG.weapon_tea_wrench_n = "Builder's Wrench"
 LANG.weapon_tea_wrench_d = "A wrench that is required to build and repair props and base components. Can also be used as a bashing weapon though it isn't very effective."
+LANG.weapon_tea_repair_n = "Repair Wrench"
+LANG.weapon_tea_repair_d = "Used to repair faction structures."
 LANG.weapon_tea_scrapsword_n = "Scrap Sword"
 LANG.weapon_tea_scrapsword_d = "A massive, heavy blade made of rusty scrap metal welded together. I hope you have taken your tetanus vaccine in case you cut yourself."
 LANG.weapon_tea_g20_n = "G20 Gov Issue"
@@ -403,6 +420,12 @@ LANG.weapon_tea_grenade_frag_n = "Frag Grenade"
 LANG.weapon_tea_grenade_frag_d = "A high powered military fragmentation grenade, these are a relatively rare find in this post apocalyptic world."
 LANG.weapon_tea_grenade_molotov_n = "Molotov Cocktail"
 LANG.weapon_tea_grenade_molotov_d = "A bottle full of petrol with a burning rag stuffed into the top. Perfect for hosting a zombie BBQ."
+LANG.weapon_tea_deadly_axe_n = "Deadly Axe"
+LANG.weapon_tea_deadly_axe_d = "Chop off zombies with the deadly axe. Less damage dealt to players."
+LANG.weapon_tea_deadly_minigun_n = "Deadly GAU-8C Chaingun"
+LANG.weapon_tea_deadly_minigun_d = "Deadly minigun that uses 2 ammo per shot and has extreme damage, even against zombies. High recoil and less accurate."
+LANG.weapon_tea_deadly_scrapcrossbow_n = "Deadly Crossbow"
+LANG.weapon_tea_deadly_scrapcrossbow_d = "A crossbow cobbled together from an old battery and a bunch of scrap metal. Unlike regular crossbow, this makes bolts explode on impact."
 
 --M9k Guns (yes, i will get to editing descriptions to be more accurate later)
 
@@ -553,221 +576,65 @@ LANG.weapon_tea_aug_d = ""
 -- Armor
 
 LANG.item_armor_jacket_leather_n = "Leather Jacket"
-LANG.item_armor_jacket_leather_d = "A number of stiff leather pads stitched into your suit, will protect you against cuts and bites but it won't stop a bullet\
-Protection: 5%\
-Environmental Protection: 2.5%\
-Speed: No impact\
-Attachment Slots: 1\
-Battery: 0\
-Max Carry Weight: +0kg"
+LANG.item_armor_jacket_leather_d = "A number of stiff leather pads stitched into your suit, will protect you against cuts and bites but it won't stop a bullet"
 LANG.item_armor_chainmail_n = "Chainmail Suit"
-LANG.item_armor_chainmail_d = "A chainmail vest and leather pad combo that is worn underneath your oversuit\
-Protection: 7.5%\
-Environmental Protection: 2.5%\
-Speed: Decreased (-1)\
-Attachment Slots: 1\
-Battery: 0\
-Max Carry Weight: +0kg"
+LANG.item_armor_chainmail_d = "A chainmail vest and leather pad combo that is worn underneath your oversuit"
 LANG.item_armor_jacket_bandit_n = "Bandit Jacket"
-LANG.item_armor_jacket_bandit_d = "A chainmail vest and leather pad combo that is worn underneath your oversuit\
-Protection: 8%\
-Environmental Protection: 3.5%\
-Speed: Decreased (-1)\
-Attachment Slots: 1\
-Battery: 0\
-Max Carry Weight: +0kg"
+LANG.item_armor_jacket_bandit_d = "A chainmail vest and leather pad combo that is worn underneath your oversuit"
 LANG.item_armor_scrap_n = "Scrap Armor"
-LANG.item_armor_scrap_d = "A set of scrap metal attached to your suit via straps and clips, offers good protection for the price range but it's rather bulky and heavy\
-Protection: 12.5%\
-Environmental Protection: 2.5%\
-Speed: Decreased (-3.5)\
-Attachment Slots: 2\
-Battery: 20\
-Max Carry Weight: +0kg"
+LANG.item_armor_scrap_d = "A set of scrap metal attached to your suit via straps and clips, offers good protection for the price range but it's rather bulky and heavy"
 LANG.item_armor_trenchcoat_brown_n = "Brown Trenchcoat Armor"
-LANG.item_armor_trenchcoat_brown_d = "CHEEKI BREEKI! it may look like an old overcoat but there's actually a light flak jacket and leather padding under there that offers ok-ish protection\
-Protection: 10%\
-Environmental Protection: 5%\
-Speed: Decreased (-1)\
-Attachment Slots: 2\
-Battery: 0\
-Max Carry Weight: +0kg"
+LANG.item_armor_trenchcoat_brown_d = "CHEEKI BREEKI! it may look like an old overcoat but there's actually a light flak jacket and leather padding under there that offers ok-ish protection"
 LANG.item_armor_trenchcoat_black_n = "Black Trenchcoat Armor"
-LANG.item_armor_trenchcoat_black_d = "It may look like a black, old overcoat, but there's actually a medium-weight flak jacket and leather padding under there that offers a good-ish protection\
-Protection: 15%\
-Environmental Protection: 6.25%\
-Speed: Decreased (-1.75)\
-Attachment Slots: 2\
-Battery: 0\
-Max Carry Weight: +0kg"
+LANG.item_armor_trenchcoat_black_d = "It may look like a black, old overcoat, but there's actually a medium-weight flak jacket and leather padding under there that offers a good-ish protection"
 LANG.item_armor_mercenary_guerilla_n = "Guerilla Mercenary Armor"
-LANG.item_armor_mercenary_guerilla_d = "A flak jacket worn with various other garments. It provides a good mix of protection and mobility for an affordable price.\
-Protection: 16.25%\
-Environmental Protection: 7.5%\
-Speed: Decreased (-2)\
-Attachment Slots: 2\
-Battery: 50\
-Max Carry Weight: +0kg"
+LANG.item_armor_mercenary_guerilla_d = "A flak jacket worn with various other garments. It provides a good mix of protection and mobility for an affordable price."
 LANG.item_armor_mercenary_arctic_n = "Arctic Mercenary Armor"
-LANG.item_armor_mercenary_arctic_d = "A flak jacket worn with various other garments, protecting user from cold. It provides a good protection and mobility.\
-Protection: 16.25%\
-Environmental Protection: 8.75%\
-Speed: Decreased (-1.75)\
-Attachment Slots: 2\
-Battery: 50\
-Max Carry Weight: +0kg"
+LANG.item_armor_mercenary_arctic_d = "A flak jacket worn with various other garments, protecting user from cold. It provides a good protection and mobility."
 LANG.item_armor_mercenary_leet_n = "Leet Mercenary Armor"
-LANG.item_armor_mercenary_leet_d = "A flak jacket worn with various other garments. It provides a good mix of protection and mobility for an affordable price.\
-Protection: 15%\
-Environmental Protection: 5%\
-Speed: Decreased (-2)\
-Attachment Slots: 2\
-Battery: 50\
-Max Carry Weight: +0kg"
+LANG.item_armor_mercenary_leet_d = "A flak jacket worn with various other garments. It provides a good mix of protection and mobility for an affordable price."
 LANG.item_armor_mercenary_phoenix_n = "Phoenix Mercenary Armor"
 LANG.item_armor_mercenary_phoenix_d = "A flak jacket worn with various other garments. It provides a good mix of protection and mobility for an affordable price.\
-In addition, this armor set includes additional kevlar plates and provides mask to hide face from others.\
-Protection: 20%\
-Environmental Protection: 10%\
-Speed: Decreased (-2)\
-Attachment Slots: 2\
-Battery: 50\
-Max Carry Weight: +0kg"
+In addition, this armor set includes additional kevlar plates and provides mask to hide face from others."
 LANG.item_armor_police_gasmask_n = "Police Gasmask Armor"
-LANG.item_armor_police_gasmask_d = "Heavy gear used by swat teams and other special operations personnel. Gas mask is included in this set, protecting user from various gases.\
-Protection: 17.5%\
-Environmental Protection: 15%\
-Speed: Decreased (-5)\
-Attachment Slots: 2\
-Battery: 50\
-Max Carry Weight: +0kg"
+LANG.item_armor_police_gasmask_d = "Heavy gear used by swat teams and other special operations personnel. Gas mask is included in this set, protecting user from various gases."
 LANG.item_armor_police_riot_n = "Police Riot Armor"
-LANG.item_armor_police_riot_d = "Heavy riot gear used by swat teams and other special operations personnel.\
-Protection: 25%\
-Environmental Protection: 10%\
-Speed: Decreased (-5.5)\
-Attachment Slots: 2\
-Battery: 50\
-Max Carry Weight: +0kg"
+LANG.item_armor_police_riot_d = "Heavy riot gear used by swat teams and other special operations personnel."
 LANG.item_armor_police_swat_n = "Police SWAT Armor"
-LANG.item_armor_police_swat_d = "Heavy gear used by swat teams and other special operations personnel. A set of kevlar plates is included, protecting user from various dangers.\
-Protection: 23.75%\
-Environmental Protection: 12.5%\
-Speed: Decreased (-5.375)\
-Attachment Slots: 2\
-Battery: 50\
-Max Carry Weight: +0kg"
+LANG.item_armor_police_swat_d = "Heavy gear used by swat teams and other special operations personnel. A set of kevlar plates is included, protecting user from various dangers."
 LANG.item_armor_police_urban_n = "Police Urban Armor"
-LANG.item_armor_police_urban_d = "Heavy riot gear used by swat teams and other special operations personnel, including medium-weight kevlar plates to provide better protection..\
-Protection: 27.5%\
-Environmental Protection: 12.5%\
-Speed: Decreased (-5)\
-Attachment Slots: 2\
-Battery: 50\
-Max Carry Weight: +0kg"
+LANG.item_armor_police_urban_d = "Heavy riot gear used by swat teams and other special operations personnel, including medium-weight kevlar plates to provide better protection.."
 LANG.item_armor_sunrise_n = "Sunrise-5 Armor"
-LANG.item_armor_sunrise_d = "A set of custom armor built by a veteran survivor.\
-Protection: 30%\
-Environmental Protection: 20%\
-Speed: Decreased (-3)\
-Attachment Slots: 3\
-Battery: 100\
-Max Carry Weight: +0kg"
+LANG.item_armor_sunrise_d = "A set of custom armor built by a veteran survivor."
 LANG.item_armor_sunrise_dolg_n = "PSZ-9d Duty Armor"
-LANG.item_armor_sunrise_dolg_d = "A set of custom armor built by duty soldiers to increase their protection.\
-Protection: 37.5%\
-Environmental Protection: 20%\
-Speed: Decreased (-4.25)\
-Attachment Slots: 3\
-Battery: 100\
-Max Carry Weight: +0kg"
+LANG.item_armor_sunrise_dolg_d = "A set of custom armor built by duty soldiers to increase their protection."
 LANG.item_armor_sunrise_svoboda_n = "Wind of Freedom Suit"
-LANG.item_armor_sunrise_svoboda_d = "A set of light armor armor built by a veteran survivor.\
-Protection: 30%\
-Environmental Protection: 20%\
-Speed: Decreased (-2.75)\
-Attachment Slots: 3\
-Battery: 100\
-Max Carry Weight: +0kg"
+LANG.item_armor_sunrise_svoboda_d = "A set of light armor armor built by a veteran survivor."
 LANG.item_armor_sunrise_monolith_n = "Monolith Armor"
-LANG.item_armor_sunrise_monolith_d = "A set of sunrise armor that is used by Monolithians.\
-Protection: 35%\
-Environmental Protection: 20%\
-Speed: Decreased (-3.5)\
-Attachment Slots: 3\
-Battery: 100\
-Max Carry Weight: +0kg"
+LANG.item_armor_sunrise_monolith_d = "A set of sunrise armor that is used by Monolithians."
 LANG.item_armor_military_green_n = "SKAT-9 Military Armor"
-LANG.item_armor_military_green_d = "A set of high end military armor used by military stalkers for operations.\
-Protection: 42.5%\
-Environmental Protection: 25%\
-Speed: Decreased (-5)\
-Attachment Slots: 2\
-Battery: 100\
-Max Carry Weight: +0kg"
+LANG.item_armor_military_green_d = "A set of high end military armor used by military stalkers for operations."
 LANG.item_armor_military_black_n = "SKAT-10 Military Armor"
-LANG.item_armor_military_black_d = "A set of very high end military armor used by master military stalkers for special operations.\
-Protection: 47.5%\
-Environmental Protection: 27.5%\
-Speed: Decreased (-7)\
-Attachment Slots: 2\
-Battery: 125\
-Max Carry Weight: +5kg"
+LANG.item_armor_military_black_d = "A set of very high end military armor used by master military stalkers for special operations."
 LANG.item_armor_exo_n = "Exoskeleton"
-LANG.item_armor_exo_d = "A set of armor consisting of heavy flak plating supported by a network of struts and servomotors.\
-Protection: 60%\
-Environmental Protection: 25%\
-Speed: Decreased (-12.5)\
-Attachment Slots: 3\
-Battery: 100\
-Max Carry Weight: +30kg"
+LANG.item_armor_exo_d = "A set of armor consisting of heavy flak plating supported by a network of struts and servomotors."
 LANG.item_armor_exo_merc_n = "Mercenary Exoskeleton"
 LANG.item_armor_exo_merc_d = "A set of armor consisting of heavy flak plating supported by a network of struts and servomotors.\
-Unlike regular exoskeleton, contains lighter parts, giving a slight impact on protection, and making it easier to move around with it.\
-Protection: 57.5%\
-Environmental Protection: 25%\
-Speed: Decreased (-10.5)\
-Attachment Slots: 3\
-Battery: 100\
-Max Carry Weight: +30kg"
+Unlike regular exoskeleton, contains lighter parts, giving a slight impact on protection, and making it easier to move around with it."
 LANG.item_armor_exo_dolg_n = "Duty Exoskeleton"
 LANG.item_armor_exo_dolg_d = "A set of armor consisting of quite heavy flak plating, giving superior protection and supported by a network of struts and servomotors.\
-It is designed for operations provided by 'Duty', and is not suitable for wandering around.\
-Protection: 65%\
-Environmental Protection: 25%\
-Speed: Decreased (-13)\
-Attachment Slots: 3\
-Battery: 100\
-Max Carry Weight: +30kg"
+It is designed for operations provided by 'Duty', and is not suitable for wandering around."
 LANG.item_armor_exo_svoboda_n = "Freedom Exoskeleton"
-LANG.item_armor_exo_svoboda_d = "A set of armor consisting of heavy flak plating supported by a network of struts and servomotors.\
-Protection: 55%\
-Environmental Protection: 25%\
-Speed: Decreased (-11)\
-Attachment Slots: 3\
-Battery: 100\
-Max Carry Weight: +25kg"
+LANG.item_armor_exo_svoboda_d = "A set of armor consisting of heavy flak plating supported by a network of struts and servomotors."
 LANG.item_armor_exo_monolith_n = "Monolith Exoskeleton"
-LANG.item_armor_exo_monolith_d = "A set of armor consisting of heavy flak plating supported by a network of struts and servomotors.\
-Protection: 62.5%\
-Environmental Protection: 25%\
-Speed: Decreased (-12.5)\
-Attachment Slots: 3\
-Battery: 100\
-Max Carry Weight: +30kg"
+LANG.item_armor_exo_monolith_d = "A set of armor consisting of heavy flak plating supported by a network of struts and servomotors."
 LANG.item_armor_cs2_goggles_n = "CS2 Goggles Armor"
-LANG.item_armor_cs2_goggles_d = "An experimental armor that provides wearer suitable protection, great battery capacity and increases movement speed of user wearing it.\
-Protection: 40%\
-Environmental Protection: 35%\
-Speed: Increased (1.25)\
-Attachment Slots: 3\
-Battery: 200\
-Max Carry Weight: +10kg"
+LANG.item_armor_cs2_goggles_d = "An experimental armor that provides wearer suitable protection, great battery capacity and increases movement speed of user wearing it."
 
 --Item Chat send
 
-LANG.perkincreased = "You increased your %s skill by 1 point!"
-LANG.pllvlup = "Congratulations! You are now level %d, you have gained 1 skill point and %d %ss!"
+LANG.perkincreased = "You increased your %s skill by %d point(s)!"
+LANG.pllvlup = "Congratulations! You are now level %d, you have gained %d skill point(s) and %d %ss!"
 LANG.plhasprestiged_1 = "You have prestiged to Prestige %d!"
 LANG.plhasprestiged_2 = "You have gained %d %ss!"
 LANG.plhasprestiged_3 = "%s has prestiged to Prestige level %d!"
@@ -784,16 +651,16 @@ LANG.plcaughtinfection = "You have caught infection!"
 LANG.pljoined = "%s has joined the server"
 LANG.plspawned = "%s has spawned into the game"
 LANG.factionnewleader = "%s has been randomly selected to be the new leader of %s!"
+
 LANG.itemnouse = "This is just useless trash"
 LANG.itemnouseweapon = "I should probably take this to the trader, He might be able to build this thing"
 LANG.itemnousevehicle = "I should find a vehicle dealer so i can build a vehicle with this"
 LANG.itemnousecraftable = "I can't do anything with this just now, i should go find a crafting station or vehicle dealer"
 LANG.itemnousesellable = "I should probably take this to the trader, I don't think I have any other use for it"
-LANG.itemnousecooldown = "Can't use multiple items at the time"
-LANG.itemnousecooldownammo = "Can't resupply ammo while using an item"
-LANG.itemnousecooldownfrag = "Can't use frags while using an item"
-LANG.itemnousecooldownweapon = "Can't equip weapon while using an item"
-LANG.itemnosleepcooldownsleeping = "Can't sleep while sleeping already!"
+LANG.itemnousecooldown = "Can't use/drop an item while using one"
+LANG.itemnousesleeping = "Can't use/drop an item while sleeping!"
+LANG.itemnousearmor = "Can't use/drop item while equipping armor!"
+LANG.itemnousecrafting = "STOP, YOU CAN'T USE OR DROP ITEM IF YOU'RE CRAFTING!!"
 LANG.itemusedskillsreset = "You consumed an amnesia pill and forgot everything you have learned. All skills are now set to 0 and stat points are refunded"
 LANG.itemnonexistant = "ERROR: This item does not exist on the server!"
 LANG.notenoughspace = "You do not have enough space for that! (Need %skg more space)"
@@ -806,6 +673,11 @@ LANG.pvp_off = "You have disabled PvP"
 LANG.pvp_proxy_warn = "PROXIMITY WARNING: %s is enabling PvP! Shoot him now before its fully activated!"
 LANG.pvp_unabletotoggle = "Unable to toggle PvP: you have damaged or taken damage from another player within the last 60 seconds!"
 LANG.pvp_nospam = "Don't spam the PvP command!"
+LANG.pvp_state1 = "Disabled"
+LANG.pvp_state2 = "Guarded"
+LANG.pvp_state3 = "Enabled"
+LANG.pvp_state4 = "Forced"
+LANG.pvp_state5 = "Force-Enabled"
 LANG.clearedmyprops = "You cleared all your props."
 
 --Admin and dev commands
@@ -830,12 +702,11 @@ LANG.acceptmodelchange = "Accept Changes"
 LANG.cost = "Cost"
 LANG.x_turned_on_noclip = "%s turned on noclip."
 LANG.x_turned_off_noclip = "%s turned off noclip."
-LANG.dmgtaken = "Damage taken: %d"
-LANG.dmgdealt = "Damage: %d"
 LANG.upgradestatimmune_n = "Secret item"
 LANG.upgradestatimmune_d = "Congratulations, you find this item! But no, this item does not do anything.\nYou can drop it, but what's the point of spreading this?!?!?"
+LANG.no_one_damaged_boss = "No one damaged boss."
 
--- New
+-- Tips
 
 LANG.Tip1 = "Beware of the bosses, they are very strong with their unique abilities, but can drop good loot."
 LANG.Tip2 = "Wander around the map. You may find some loot cache, containing either common, or good items."
@@ -853,3 +724,42 @@ LANG.Tip13 = "If you have enough cash for better weapon, be sure you also have t
 LANG.Tip14 = "Be sure to plan on what skill you are using a skill point. It's worth to max out Knowledge skill first."
 LANG.Tip15 = "Consider crafting some items, if you get some loot. You may save some money."
 LANG.Tip16 = "Try to master some skills, such as Melee. You may gain some advantage and money if Mastery skill is leveled up."
+
+-- New ?????
+
+LANG.the_eternal_apocalypse = "The Eternal Apocalypse" -- ?????
+LANG.the_eternal_apocalypse_desc = "An apocalyptic survival-based gamemode."
+LANG.play = "Play"
+LANG.disconnect = "Disconnect"
+LANG.loading = "Loading..."
+LANG.admin_panel = "Administration Panel"
+LANG.refresh_player_list = "Refresh player list"
+LANG.spawn = "Spawn"
+LANG.give = "Give"
+LANG.equip = "Equip"
+LANG.unequip_armor = "Unequip Armor"
+
+LANG.items_category_1 = "Ammunition"
+LANG.items_category_1_d = "Ammunition needed for your guns to shoot"
+LANG.items_category_2 = "Supplies"
+LANG.items_category_2_d = "Food, Medical Supplies, Misc items, for survival"
+LANG.items_category_3 = "Weapons"
+LANG.items_category_3_d = "Good guns that cost a lot and uses ammo, but also melee that cost less."
+LANG.items_category_4 = "Armor"
+LANG.items_category_4_d = "Protective Armor to protect yourself from any sort of danger\n(also includes option to equip armors which works only for devs)"
+
+LANG.admin_panel_tab_1 = "Player List"
+LANG.admin_panel_tab_1_d = "Player list on admin panel\n\nUse admin commands for certain purposes (Remember not to abuse them without any control!!)"
+LANG.admin_panel_tab_2 = "Admin Commands"
+LANG.admin_panel_tab_2_d = "Get a list of admin commands"
+LANG.admin_panel_tab_3 = "Superadmin Commands"
+LANG.admin_panel_tab_3_d = "Use superadmin commands"
+LANG.admin_panel_tab_4 = "Spawn Menu"
+LANG.admin_panel_tab_4_d = "Spawn or give yourself some stuff\n(SUPERADMIN ONLY)"
+
+LANG.boss_defeated = "Boss Defeated"
+
+-- Edited
+
+LANG.dmgtaken = "Damage taken: %s"
+
