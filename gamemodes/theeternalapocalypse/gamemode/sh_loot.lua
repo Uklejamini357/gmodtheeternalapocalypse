@@ -3,7 +3,7 @@
 GM.LootTable1 = {
 	["item_bandage"] = {
 		["Qty"] = 2, -- amount of items need to be in loot cache
-		["Chance"] = 100, -- Chance for the loot cache with these items inside to spawn
+		["Chance"] = 100, -- Chance for the loot cache with these items inside to spawn (Not finished yet!!)
 		["Class"] = "item_bandage", -- which item should be used
 	},
 

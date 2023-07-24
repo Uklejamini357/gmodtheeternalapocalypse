@@ -1,3 +1,5 @@
+-- There is ABSOLUTELY NO NEED FOR THIS?!?!?!?!
+
 killicon.Add( "weapon_mad_57", "weapons/weapon_mad_57", Color( 150, 150, 255, 255 ) )
 killicon.Add( "weapon_mad_357", "weapons/weapon_mad_357", Color( 150, 150, 255, 255 ) )
 killicon.Add( "weapon_mad_ak47", "weapons/weapon_mad_ak47", Color( 150, 150, 255, 255 ) )

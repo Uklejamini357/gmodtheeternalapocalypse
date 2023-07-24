@@ -31,6 +31,9 @@ GM.CraftableList = {
 	},
 }
 
+
+-- Still not working!!
+
 GM.CraftableSpecialList = {
 	["weapon_tea_plasmalauncher"] = {
 		["Model"] = "models/wick/wrbstalker/anomaly/items/wick_dev_aptechka_low.mdl",

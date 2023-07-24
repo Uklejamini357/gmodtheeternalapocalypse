@@ -59,7 +59,7 @@ include("server/player_vault.lua") -- And vault
 include("server/npcspawns.lua") -- Zombie spawns
 include("server/traders.lua") -- Traders
 include("server/airdrops.lua") -- Airdrops
-include("server/factions.lua") -- Anything here included for faction
+include("server/factions.lua") -- Anything here included for factions
 include("server/loot_system.lua") -- loots
 include("server/debug.lua") -- Debug stuff, highly advised not to edit
 include("server/specialstuff.lua") -- anything uncategorized, hard to name or for server can be added here
@@ -91,7 +91,7 @@ function GM:ShowSpare2(ply)
 end
 
 function GM:CalcMaxHealth(ply)
-	return 100 + (5 * (ply.StatVitality or 0)) + (tonumber(ply.Prestige or 0) >= 2 and 5 or 0)
+	return 100 + (5 * (ply.StatVitality or 0)) + (tonumber(ply.Prestige or 0) >= 2 --[[tonumber(ply.UnlockedPerks["healthboost"])]] and 5 or 0)
 end
 
 function GM:CalcMaxArmor(ply)
@@ -104,12 +104,13 @@ end
 
 function GM:OnPlayerHitGround(ply, inWater, onFloater, speed)
     if speed > (450 + (2 * ply.StatAgility)) then
-        ply:ViewPunch(Angle(5, 0, 0))
+		ply:ViewPunch(Angle(math.random(5, 6), 0, math.random(-0.3, 0.3)))
+--        ply:ViewPunch(Angle(5, 0, 0))
 		if !ply.StatsPaused then
 			ply.Stamina = math.Clamp(ply.Stamina - (10 * (1 - (ply.StatAgility * 0.01) - (ply.StatEndurance * 0.045))), 0, 100)
 		end
     elseif speed > (300 + (2 * ply.StatAgility)) then
-		ply:ViewPunch(Angle(5, 0, 0))
+		ply:ViewPunch(Angle(math.random(2, 2.4), 0, math.random(-0.25, 0.25)))
 		if !ply.StatsPaused then
 			ply.Stamina = math.Clamp(ply.Stamina - (7 * (1 - (ply.StatAgility * 0.01) - (ply.StatEndurance * 0.045))), 0, 100)
 		end
@@ -666,6 +667,7 @@ function GM:PlayerInitialSpawn(ply, transition)
 	ply.ChosenModel = "models/player/kleiner.mdl"
 	ply.Inventory = {}
 	ply.Vault = {}
+	ply.UnlockedPerks = {}
 	ply.XP = 0
 	ply.Money = 0
 	ply.Bounty = 0

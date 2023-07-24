@@ -1,5 +1,4 @@
 
---feel free to edit these or add new cvars at any time, FCVAR_NOTIFY - notifies when convar is changed (there's new messaging function now, when convar is changed), FCVAR_REPLICATED - can only be changed by server operator to prevent some issues, FCVAR_ARCHIVE - saves convar values to server.vdf, see gmod wiki for more info
 function GM:OnConVarChanged(cvar, old, new)
 	if SERVER then
 		if tonumber(old) ~= tonumber(new) then

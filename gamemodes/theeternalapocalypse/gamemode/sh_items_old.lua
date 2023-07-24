@@ -1,8 +1,5 @@
 
--- IMPORTANT NOTE: Use and drop functions must always return true or false here.  Returning true will subtract one of that item type from the player, returning false will make it so nothing is subtracted.
--- see server/player_inventory.lua for more info
-
--- This file is only to get old items table.
+-- This file is only to get old items table. Only in case if something happened.
 
 local trans_get = translate.Get
 local trans_format = translate.Format

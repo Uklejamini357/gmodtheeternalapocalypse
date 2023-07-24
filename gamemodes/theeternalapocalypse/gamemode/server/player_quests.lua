@@ -13,9 +13,9 @@ function GM:GiveTask(pl, task)
 end
 
 function GM:GiveTaskProgress(pl, task, amt)
-    if pl.CurrentTask ~= task then return end
+    local taskl = self.Tasks[task]
+    if pl.CurrentTask ~= task or pl.TaskComplete or !taskl then return end
 
-    local taskl = self.Tasks[pl.CurrentTask]
     pl.CurrentTaskProgress = math.Clamp(pl.CurrentTaskProgress + amt, 0, taskl.ReqProgress)
     if pl.CurrentTaskProgress >= taskl.ReqProgress and not pl.TaskComplete then
         gamemode.Call("CompleteTask", pl, task)
@@ -33,7 +33,8 @@ function GM:GiveTaskProgress(pl, task, amt)
 end
 
 function GM:CompleteTask(pl, task)
-    if pl.CurrentTask ~= task or pl.TaskComplete or pl.CurrentTaskProgress < self.Tasks[task].ReqProgress then return end
+    local taskl = self.Tasks[task]
+    if pl.CurrentTask ~= task or pl.TaskComplete or !taskl or pl.CurrentTaskProgress < taskl.ReqProgress then return end
 
     pl.TaskComplete = true
 
@@ -45,9 +46,9 @@ function GM:CompleteTask(pl, task)
 end
 
 function GM:FinishTask(pl, task)
-    if pl.CurrentTask ~= task or pl.CurrentTaskProgress < self.Tasks[pl.CurrentTask].ReqProgress then return end
+    local taskl = self.Tasks[task]
+    if pl.CurrentTask ~= task or !taskl or !pl.TaskComplete or pl.CurrentTaskProgress < taskl.ReqProgress then return end
 
-    local taskl = self.Tasks[pl.CurrentTask]
     pl.CurrentTask = ""
     pl.CurrentTaskProgress = 0
     pl.TaskComplete = true
@@ -64,7 +65,8 @@ function GM:FinishTask(pl, task)
 end
 
 function GM:CancelTask(pl, task)
-    if pl.CurrentTask ~= task then return end
+    local taskl = self.Tasks[task]
+    if pl.CurrentTask ~= task or !taskl then return end
 
     pl.TaskCooldown = os.time() + TIME_HOUR -- 1 hour before they can assign new task
     pl.CurrentTask = ""

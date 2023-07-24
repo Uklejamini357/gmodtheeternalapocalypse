@@ -34,7 +34,7 @@ local death_sound_volume_s = 0
 local death_sound_current
 SelectedProp = SelectedProp or "models/props_debris/wood_board04a.mdl" -- need to set this to something here to avoid a massive error spew
 
-function ChooseProp( mdl )
+function ChooseProp(mdl)
 	SelectedProp = mdl
 	net.Start("ChangeProp")
 	net.WriteString(mdl)
@@ -292,14 +292,6 @@ function GM:InitPostEntity()
 
 	self.HasInitialized = true
 	self:LoadMainMenu()
-
-	if self.ShowHelpOnStart then
-		self:HelpMenu()
-	end
-
-	timer.Simple(5, function()
-		chat.AddText(Color(127,255,255), "Please note, this is a beta version. Some things may not work as expected.")
-	end)
 end
 
 

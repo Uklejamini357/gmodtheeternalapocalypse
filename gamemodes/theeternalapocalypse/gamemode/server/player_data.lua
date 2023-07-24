@@ -140,13 +140,13 @@ end
 function GM:XPBonus(ply)
 	if !ply:IsValid() then return 0 end
 	local xpmul = 1
-	if tonumber(ply.Prestige or 0) >= 15 then --check if player has prestige 15 then it will give another 1.15x xp mul 
+	if tonumber(ply.Prestige or 0) >= 15 then
 		xpmul = xpmul * 1.15
 	end
 	
 	if self.BonusPerksEnabled then
 		if ply:SteamID64() == "76561198274314803" then
-			xpmul = xpmul * 1.25 --the dev gains 1.25x XP multiplier, so if xpmul was xpmul * 2 then it would be 2x
+			xpmul = xpmul * 1.25
 		elseif ply:SteamID64() == "76561198028288732" then
 			xpmul = xpmul * 1.15
 		elseif ply:SteamID64() == "76561198112950441" then
@@ -156,7 +156,7 @@ function GM:XPBonus(ply)
 	return xpmul
 end
 
-function GM:CashBonus(ply) --works the same as XPBonus with the exception of giving cash bonus
+function GM:CashBonus(ply)
 	if !ply:IsValid() then return 0 end
 	local cashmul = 1
 	if tonumber(ply.Prestige or 0) >= 1 then
@@ -164,11 +164,7 @@ function GM:CashBonus(ply) --works the same as XPBonus with the exception of giv
 	end
 	
 	if self.BonusPerksEnabled then
-		if ply:SteamID64() == "76561198274314803" then
-			cashmul = cashmul * 1
-		elseif ply:SteamID64() == "76561198028288732" then
-			cashmul = cashmul * 1
-		elseif ply:SteamID64() == "76561198112950441" then
+		if ply:SteamID64() == "76561198112950441" then
 			cashmul = cashmul * 0.95
 		end
 	end
@@ -225,6 +221,7 @@ function GM:GainPrestige(ply)
 		ply.Prestige = prestige
 		ply.Level = 1
 		ply.XP = 0
+		ply.PerkPoints = ply.PerkPoints + 1
 		if tonumber(ply.Prestige) >= 10 then
 			ply.StatPoints = 5
 		else
@@ -240,29 +237,30 @@ function GM:GainPrestige(ply)
 		net.Start("PrestigeEffect")
 		net.Send(ply)
 		if tonumber(prestige) == 1 then
-			ply:SystemMessage(translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientGet(ply, "plhasprestiged_4"), Color(155,255,255,255), true)
+			ply:SystemMessage(translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientGet(ply, "plhasprestiged_4"), Color(155,255,255), true)
 		elseif tonumber(prestige) == 2 then
-			ply:SystemMessage(translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientGet(ply, "plhasprestiged_5"), Color(155,255,255,255), true)
+			ply:SystemMessage(translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientGet(ply, "plhasprestiged_5"), Color(155,255,255), true)
 		elseif tonumber(prestige) == 3 then
-			ply:SystemMessage(translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientGet(ply, "plhasprestiged_6"), Color(155,255,255,255), true)
+			ply:SystemMessage(translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientGet(ply, "plhasprestiged_6"), Color(155,255,255), true)
 		elseif tonumber(prestige) == 4 then
-			ply:SystemMessage(translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientGet(ply, "plhasprestiged_7"), Color(155,255,255,255), true)
+			ply:SystemMessage(translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientGet(ply, "plhasprestiged_7"), Color(155,255,255), true)
 		elseif tonumber(prestige) == 5 then
-			ply:SystemMessage(translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientGet(ply, "plhasprestiged_8"), Color(155,255,255,255), true)
+			ply:SystemMessage(translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientGet(ply, "plhasprestiged_8"), Color(155,255,255), true)
 		elseif tonumber(prestige) == 6 then
-			ply:SystemMessage(translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientGet(ply, "plhasprestiged_9"), Color(155,255,255,255), true)
+			ply:SystemMessage(translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientGet(ply, "plhasprestiged_9"), Color(155,255,255), true)
 		elseif tonumber(prestige) == 8 then
-			ply:SystemMessage(translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientGet(ply, "plhasprestiged_10"), Color(155,255,255,255), true)
+			ply:SystemMessage(translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientGet(ply, "plhasprestiged_10"), Color(155,255,255), true)
 		elseif tonumber(prestige) == 10 then
-			ply:SystemMessage(translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientGet(ply, "plhasprestiged_11"), Color(155,255,255,255), true)
+			ply:SystemMessage(translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientGet(ply, "plhasprestiged_11"), Color(155,255,255), true)
 		elseif tonumber(prestige) == 15 then
-			ply:SystemMessage(translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientGet(ply, "plhasprestiged_12"), Color(155,255,255,255), true)
+			ply:SystemMessage(translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientGet(ply, "plhasprestiged_12"), Color(155,255,255), true)
 		else
 			local moneyprestigereward = math.floor(1603 + (1129 * prestige) + (((prestige * 1.592) * (3 * ply.Level)) ^ 1.392)) --gives players money if they prestige without gaining any other advantage except for more levels
 			ply.Money = ply.Money + moneyprestigereward
-			ply:SystemMessage(translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientFormat(ply, "plhasprestiged_2", moneyprestigereward, self.Config["Currency"]), Color(155,255,255,255), true)
+			ply:SystemMessage(translate.ClientFormat(ply, "plhasprestiged_1", prestige).." "..translate.ClientFormat(ply, "plhasprestiged_2", moneyprestigereward, self.Config["Currency"]), Color(155,255,255), true)
 		end
-		self:SystemBroadcast(translate.Format("plhasprestiged_3", ply:Nick(), prestige), Color(155,205,255,255), true)
+
+		self:SystemBroadcast(translate.Format("plhasprestiged_3", ply:Nick(), prestige), Color(155,205,255), true)
 		ply:EmitSound("weapons/physcannon/energy_disintegrate"..math.random(4, 5)..".wav", 90, math.Rand(75,90))
 		ply:EmitSound("ambient/machines/thumper_hit.wav", 120, 50)
 		local effectdata = EffectData()
@@ -273,14 +271,13 @@ function GM:GainPrestige(ply)
 		self:NetUpdatePerks(ply)
 		self:NetUpdateStatistics(ply)
 
-		ply:SetNWInt("PlyBounty", ply.Bounty)
 		ply:SetNWInt("PlyLevel", ply.Level)
 		ply:SetNWInt("PlyPrestige", prestige)
 		ply:SetMaxHealth(self:CalcMaxHealth(ply))
 		ply:SetMaxArmor(self:CalcMaxArmor(ply))
 		ply:SetJumpPower(self:CalcJumpPower(ply))
 	else
-		ply:SystemMessage("You must be at least level ".. self.MaxLevel + (self.LevelsPerPrestige * ply.Prestige) .." to prestige!", Color(255,155,155,255), true)
+		ply:SystemMessage("You must be at least level ".. self.MaxLevel + (self.LevelsPerPrestige * ply.Prestige) .." to prestige!", Color(255,155,155), true)
 		ply:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
 	end
 end
