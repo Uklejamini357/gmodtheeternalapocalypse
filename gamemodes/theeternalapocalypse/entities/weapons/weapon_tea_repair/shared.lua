@@ -1,4 +1,4 @@
-SWEP.Base				= "weapon_melee_base"
+SWEP.Base				= "weapon_tea_base_melee"
 SWEP.Category			= "TEA Weapons"
 SWEP.Purpose			= "Repair faction structures. Not to be confused with Builder's Wrench"
 SWEP.Instructions		= "Becomes more effective if you level your engineer skill. Very ineffective as a melee weapon."

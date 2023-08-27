@@ -53,6 +53,9 @@ util.AddNetworkString("tea_taskfinish")
 util.AddNetworkString("tea_survivalstatsupdate")
 util.AddNetworkString("tea_taskstatsupdate")
 util.AddNetworkString("tea_player_ready_spawn")
+util.AddNetworkString("tea_perksupdate")
+util.AddNetworkString("tea_perksunlock")
+
 --util.AddNetworkString("Respawn")
 
 function GM:NetUpdateStats(ply)
@@ -133,6 +136,12 @@ function GM:SendPlayerSurvivalStats(ply)
 	net.Start("tea_survivalstatsupdate")
 	net.WriteFloat(ply.LifeZKills)
 	net.WriteFloat(ply.LifePlayerKills)
+	net.Send(ply)
+end
+
+function GM:SendPlayerPerksUnlocked(ply)
+	net.Start("tea_perksupdate")
+	net.WriteTable(ply.UnlockedPerks)
 	net.Send(ply)
 end
 
@@ -277,8 +286,45 @@ net.Receive("tea_player_ready_spawn", function(len, ply)
 	net.WriteBool(tobool(ply.HasSpawnedReady))
 	net.Send(ply)
 
+	if !ply.HasSpawnedReady then
+		GAMEMODE:SystemBroadcast(translate.Format("plspawned", ply:Nick()), Color(255,255,155,255), false)
+	end
 	ply.HasSpawnedReady = true
 	ply:Spawn()
+end)
+
+net.Receive("tea_perksunlock", function(len, pl)
+	local perk = net.ReadString()
+
+	local perkl = GAMEMODE.PerksList[perk]
+	if !perkl then return end
+	local cost = GAMEMODE.PerksList[perk].Cost
+
+	if pl.UnlockedPerks[perk] then
+		pl:SendChat("You have already unlocked this perk!")
+		return false
+	end
+
+	if tonumber(pl.PerkPoints) < cost then
+		pl:SendChat("You need "..cost.." to unlock this perk!")
+		return false
+	end
+
+	if tonumber(pl.Prestige) < perkl.PrestigeReq then
+		pl:SendChat("You need to have prestige "..perkl.PrestigeReq.." to unlock this perk!")
+		return false
+	end
+
+	pl.UnlockedPerks[perk] = true
+	pl.PerkPoints = pl.PerkPoints - cost
+
+	pl:SetMaxHealth(GAMEMODE:CalcMaxHealth(pl))
+	pl:SetMaxArmor(GAMEMODE:CalcMaxArmor(pl))
+	pl:SetJumpPower(GAMEMODE:CalcJumpPower(pl))
+--	if GAMEMODE:GetDebug() >= DEBUGGING_ADVANCED then print(pl:Nick().." used "..amt * mul.." skill point(s) on "..perk.." skill ("..tonumber(pl.StatPoints).." skill points remaining)") end
+	pl:SendChat("You unlocked perk: "..perkl.Name)
+	GAMEMODE:RecalcPlayerSpeed(pl)
+	GAMEMODE:FullyUpdatePlayer(pl)
 end)
 
 local meta = FindMetaTable("Player")

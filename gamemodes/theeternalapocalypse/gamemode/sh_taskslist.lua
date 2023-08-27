@@ -3,7 +3,7 @@
 -- NOTE: This is still work in progress!
 
 GM.Tasks = {
-/*
+
 	["zombie_killer"] = {
 		Name = "Kill zombies", -- Name of a task
 		Description = "Kill 65 zombies", -- Description of a task and what should we do to complete it
@@ -17,6 +17,6 @@ GM.Tasks = {
 			ply:SystemMessage("You gained 950 XP and 600 cash for completing a task!", Color(180,255,255))
 		end
 	},
-*/
+
 
 }

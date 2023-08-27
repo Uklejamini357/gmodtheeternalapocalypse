@@ -1,4 +1,4 @@
-SWEP.Base 				= "weapon_mad_base"
+SWEP.Base 				= "weapon_tea_base"
 
 SWEP.ViewModelFOV			= 55
 SWEP.ViewModelFlip		= false

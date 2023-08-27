@@ -1,6 +1,6 @@
 // Variables that are used on both client and server
 
-SWEP.Base 				= "weapon_mad_base"
+SWEP.Base 				= "weapon_tea_base"
 
 SWEP.ViewModelFlip		= false
 SWEP.ViewModel			= "models/weapons/cstrike/c_rif_m4a1.mdl"

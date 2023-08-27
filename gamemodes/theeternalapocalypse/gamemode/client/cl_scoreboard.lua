@@ -133,15 +133,12 @@ net.Receive("RecvFactions", function(length, client)
 end)
 
 function CalculateMaxWeightClient()
-	local maxweight = 0
-	local defaultcarryweight = GAMEMODE.Config["MaxCarryWeight"]
 	local armorstr = LocalPlayer():GetNWString("ArmorType") or "none"
 	local armortype = GAMEMODE.ItemsList[armorstr]
 
-	maxweight = defaultcarryweight + (tonumber(MyPrestige) >= 6 and 5 or tonumber(MyPrestige) >= 3 and 2 or 0)
+	return GAMEMODE.Config["MaxCarryWeight"] + (GAMEMODE.LocalPerks["weightboost"] and 1.5 or 0) + (GAMEMODE.LocalPerks["weightboost2"] and 2.5 or 0) + (GAMEMODE.LocalPerks["weightboost3"] and 3.5 or 0)
 	+ ((Perks.Strength or 0) * 1.53) + (LocalPlayer():GetNWString("ArmorType") ~= "none" and armortype["ArmorStats"]["carryweight"] or 0)
 
-	return maxweight
 end
 
 function CalculateVaultClient()

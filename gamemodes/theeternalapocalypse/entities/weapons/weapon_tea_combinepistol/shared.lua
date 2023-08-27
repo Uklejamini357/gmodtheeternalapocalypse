@@ -1,4 +1,4 @@
-SWEP.Base 				= "weapon_mad_base"
+SWEP.Base 				= "weapon_tea_base"
 
 SWEP.ViewModel			= "models/weapons/v_cmbhgp.mdl"
 SWEP.WorldModel			= "models/weapons/w_cmbhgp.mdl"
@@ -12,7 +12,7 @@ SWEP.Category			= "Mad Cows Weapons"
 SWEP.Primary.Sound 		= Sound("weapons/CombinePistol/CombinePistol_Fire3.wav")
 SWEP.Primary.Reload 		= Sound("weapons/CombinePistol/CP_Reload.wav")
 SWEP.Primary.Recoil		= 0.75
-SWEP.Primary.Damage		= 17
+SWEP.Primary.Damage		= 23
 SWEP.Primary.NumShots		= 1
 SWEP.Primary.Cone			= 0.02
 SWEP.Primary.Delay 		= 0.09
@@ -90,3 +90,18 @@ function SWEP:Reload()
 		end
 	end
 end
+
+
+local pulseeffect = EffectData()
+pulseeffect:SetRadius(8)
+pulseeffect:SetMagnitude(1)
+pulseeffect:SetScale(1)
+
+function SWEP.BulletCallback(attacker, tr, dmginfo)
+	if IsFirstTimePredicted() then
+		pulseeffect:SetOrigin(tr.HitPos)
+		pulseeffect:SetNormal(tr.HitNormal)
+		util.Effect("AR2Impact", pulseeffect)
+	end
+end
+

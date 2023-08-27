@@ -64,6 +64,8 @@ end
 
 function MT_PLAYER:ProcessPlayerDamage(dmginfo)
 	local attacker = dmginfo:GetAttacker()
+	local directdmg = bit.band(DMG_DIRECT, dmginfo:GetDamageType()) ~= 0
+
 	if self.SpawnProtected then
 		dmginfo:SetDamage(0)
 		return false
@@ -115,8 +117,8 @@ function MT_PLAYER:ProcessPlayerDamage(dmginfo)
 		dmginfo:ScaleDamage(0.5)
 	end
 
-	if tonumber(self.Prestige) >= 8 then
-		dmginfo:ScaleDamage(0.95)
+	if !directdmg and self.UnlockedPerks["damageresistance"] then
+		dmginfo:ScaleDamage(0.925)
 	end
 
 
@@ -141,7 +143,7 @@ function MT_PLAYER:ProcessPlayerDamage(dmginfo)
 	end
 
 	if attacker.IsZombie then
-		dmginfo:ScaleDamage(0.5 + (GAMEMODE:GetInfectionMul() * 0.5)) -- +0.5% damage per 1% infection
+		dmginfo:ScaleDamage(GAMEMODE:GetInfectionMul(0.5)) -- +0.5% damage per 1% infection
 
 		if self:IsNewbie() then
 			dmginfo:ScaleDamage(0.9)
@@ -180,6 +182,7 @@ end
 
 function MT_ENTITY:ProcessDamage(dmginfo)
 	local attacker = dmginfo:GetAttacker()
+	local directdmg = bit.band(DMG_DIRECT, dmginfo:GetDamageType()) ~= 0
 	if attacker:IsPlayer() then
 		if IsMeleeDamage(dmginfo:GetDamageType()) then
 			dmginfo:ScaleDamage(1 + (0.01 * attacker.StatStrength) + (0.005 * math.Clamp(attacker.MasteryMeleeLevel, 0, 10)))
@@ -200,8 +203,13 @@ function MT_ENTITY:ProcessDamage(dmginfo)
 		dmginfo:ScaleDamage(1 + (attacker.StatGunslinger * 0.01))
 	end
 
+	-- This is so RNG...
+	if attacker:IsPlayer() and attacker.UnlockedPerks["criticaldamage"] and !directdmg and math.random(15) == 1 then
+		dmginfo:ScaleDamage(1.2)
+	end
+
 	if attacker.IsZombie and self.IsPropBarricade then
-		dmginfo:ScaleDamage(0.5 + (GAMEMODE:GetInfectionMul() * 0.5)) -- +0.5% damage to barricade per 1% infection
+		dmginfo:ScaleDamage(GAMEMODE:GetInfectionMul(0.5)) -- +0.5% damage to barricade per 1% infection
 	end
 
 	return true
@@ -219,6 +227,14 @@ function MT_ENTITY:ProcessNPCDamage(dmginfo)
 
 	if !directdmg and self.IsZombie then
 		dmginfo:ScaleDamage(1 / GAMEMODE:GetInfectionMul())
+
+		if !self.BossMonster and attacker:IsPlayer() and attacker.UnlockedPerks["celestiality"] then
+			if self:GetEliteVariant() ~= 0 then
+				dmginfo:ScaleDamage(1.1)
+			else
+				dmginfo:ScaleDamage(1.03)
+			end
+		end
 
 		if self:GetEliteVariant() == VARIANT_REFLECTOR and IsMeleeDamage(dmginfo:GetDamageType()) and attacker:IsPlayer() and attacker:Alive() then
 			local damageinfo = DamageInfo()
@@ -325,10 +341,21 @@ end
 function GM:DoPlayerDeath(ply, attacker, dmginfo)
 	local survived = CurTime() - ply.SurvivalTime
 
+	local stolenbounty
 	if tonumber(ply.Bounty) >= 5 then
+		if attacker:IsPlayer() and attacker:IsValid() and attacker.UnlockedPerks["bountyhunter"] then
+			stolenbounty = math.ceil(ply.Bounty * 0.5)
+			attacker:SystemMessage("You stole "..stolenbounty.." bounty from "..ply:Nick().."!")
+			attacker.Bounty = attacker.Bounty + stolenbounty
+
+			ply.Bounty = ply.Bounty - stolenbounty
+		end
+
 		local cashloss = ply.Bounty * math.Rand(0.3, 0.4)
 		local bountyloss = ply.Bounty - cashloss
-		print(ply:Nick().." has died with "..ply.Bounty.." bounty, dropped money worth of "..math.floor(cashloss).." "..GAMEMODE.Config["Currency"].."s and survived for "..math.floor(survived).."s")
+		if self:GetDebug() >= DEBUGGING_NORMAL then
+			print(ply:Nick().." has died with "..ply.Bounty.." bounty, dropped money worth of "..math.floor(cashloss).." "..GAMEMODE.Config["Currency"].."s and survived for "..math.floor(survived).."s")
+		end
 
 		local ent = ents.Create("ate_cash")
 		ent:SetPos(ply:GetPos() + Vector(0, 0, 10))
@@ -336,8 +363,11 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 		ent:SetNWInt("CashAmount", math.floor(cashloss))
 		ent:Spawn()
 		ent:Activate()
-		
-		ply:SystemMessage("You died and dropped your bounty cash worth of "..math.floor(cashloss).." "..GAMEMODE.Config["Currency"].."s! The remaining "..math.ceil(bountyloss).." "..GAMEMODE.Config["Currency"].."s is lost forever! Always remember to cash in your bounty at traders, especially when having high bounty.", Color(255,205,205), true)
+
+		ply:SystemMessage("You died and dropped your bounty cash worth of "..math.floor(cashloss).." "..GAMEMODE.Config["Currency"].."s! The remaining "..math.ceil(bountyloss).." "..GAMEMODE.Config["Currency"].."s is lost forever!"..(stolenbounty and " Your bounty of "..stolenbounty.." was stolen by the killer." or ""), Color(255,205,205), true)
+		if ply:GetInfoNum("tea_cl_nobountytipmessage", 0) < 1 then
+			ply:SystemMessage("Remember to cash in your bounties regularly, this specifically means if you have high bounty!", Color(255,205,205), true)
+		end
 	else
 		print(ply:Nick().." has died with "..ply.Bounty.." bounty and survived for "..math.floor(survived).."s")
 	end

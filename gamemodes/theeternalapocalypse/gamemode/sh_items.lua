@@ -290,18 +290,7 @@ GM.ItemsList = {
 		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_twig") return drop end
 	},
 
-	--secret item?????
-	["upgradestatimmune"] = {
-		Cost = 0,
-		Model = "models/items/healthkit.mdl",
-		Weight = 0,
-		Supply = -1,
-		Rarity = 11,
-		Category = 1,
-		UseFunc = function(ply) ply:SendChat("NO!") return true end,
-		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "upgradestatimmune") return drop end,
-		IsSecret = true
-	},
+-- GOODBYE UPGRADE IMMUNITY SKILL ITEM!!
 
 
 -- crafting related
@@ -985,6 +974,17 @@ GM.ItemsList = {
 		Category = 2,
 		UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 50, "ammo_sniper") return bool end,
 		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_sniperammo") return drop end
+	},
+
+	["item_ar2pulseammo"] = {
+		Cost = 150,
+		Model = "models/Items/combine_rifle_cartridge01.mdl",
+		Weight = 1,
+		Supply = 10,
+		Rarity = 2,
+		Category = 2,
+		UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 100, "ammo_ar2_pulseammo") return bool end,
+		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_ar2pulseammo") return drop end
 	},
 
 	["item_crossbowbolt"] = {

@@ -1,4 +1,4 @@
-SWEP.Base 				= "weapon_melee_base"
+SWEP.Base 				= "weapon_tea_base_melee"
 SWEP.Category          	= "ZW Weapons"
 SWEP.Instructions 	  	= "Can i axe you a question?"
 SWEP.ViewModelFlip		= false

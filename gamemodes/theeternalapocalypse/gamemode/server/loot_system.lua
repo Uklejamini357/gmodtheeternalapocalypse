@@ -134,7 +134,7 @@ end)
 function GM:MakeLootContainer(ent, items, size, env) -- env is a bool for environment caches such as airdrops and random loot
 	if !ent:IsValid() or !istable(items) then return end
 	local size = size or 1000 -- doesnt matter what size is if env is true
-	local env = env or true
+	env = env == nil and true or env
 
 	ent.ContainerItems = items
 	ent.ContainerSize = size

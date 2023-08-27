@@ -169,27 +169,8 @@ function GM:DevCmds_SpawnAirdropCache(ply)
 		local dropent = ents.Create("airdrop_cache")
 		dropent:SetPos(tr.HitPos)
 		dropent:SetAngles(Angle(0,0,0))
-		local testinv = {
-			["Junk"] = {math.random(0, 1), 1, 1},
-			["Ammo"] = {math.random(1, 2), 1, 3},
-			["Meds"] = {math.random(0, 2), 1, 3},
-			["Food"] = {math.random(0, 2), 1, 3},
-			["Sellables"] = {math.random(0, 1), 1, 2},
-		}
 
-		local rng = math.random(0, 100)
-		if rng >= 95 then
-			testinv["SpecialWeapons"] = {1, 1, 1}
-		elseif rng >= 50 then
-			testinv["FactionWeapons"] = {1, 1, 1}
-		elseif rng >= 15 then
-			testinv["FactionWeapons"] = {1, 1, 1}
-		else
-			testinv["NewbieWeapons"] = {math.random(1, 3), 1, 2}
-		end
-
-
-		local loot = gamemode.Call("RollLootTable", testinv)
+		local loot = gamemode.Call("RollLootTable", self:GetRandomAirdropLoot())
 		gamemode.Call("MakeLootContainer", dropent, loot)
 
 		dropent:Spawn()
@@ -496,6 +477,7 @@ function GM:DevCmds_ForceSavePlayer(ply)
 	gamemode.Call("SavePlayer", ply)
 	gamemode.Call("SavePlayerInventory", ply)
 	gamemode.Call("SavePlayerVault", ply)
+	gamemode.Call("SavePlayerPerks", ply)
 	ply.AllowSave = false
 end
 concommand.Add("tea_dev_forcesaveplayer", function(ply, cmd, args)

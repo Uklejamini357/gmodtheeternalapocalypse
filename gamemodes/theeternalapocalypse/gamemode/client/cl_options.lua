@@ -73,9 +73,9 @@ function GM:MakeOptions()
 	check = CreateCheckLabel(pan, list, "Display HUD", "tea_cl_hud")
 	check = CreateCheckLabel(pan, list, "Play boss stinger music", "tea_cl_soundboss")
 	check = CreateCheckLabel(pan, list, "Play hitsounds on dealing damage", "tea_cl_hitsounds")
-	check = CreateCheckLabel(pan, list, "Use decimal values on hud", "tea_cl_huddec")
+	check = CreateCheckLabel(pan, list, "Use decimal values on HUD", "tea_cl_huddec")
 	check:SetToolTip("Example:\
-	If Enabled: Hunger is displayed as 93.52%\
+	If Enabled: Hunger is displayed as 93.6%\
 	If Disabled: Hunger is displayed as 94%")
 	
 	check = CreateCheckLabel(pan, list, "Use reload key to pick up items", "tea_cl_usereloadtopickup")
@@ -89,6 +89,9 @@ function GM:MakeOptions()
 
 	check = CreateCheckLabel(pan, list, "Draw zombie info", "tea_cl_drawzinfo")
 	check:SetToolTip("Draws zombie information (Name, health and its' purpose (or what it is meant to do))")
+
+	check = CreateCheckLabel(pan, list, "Do not display bounty tip message", "tea_cl_nobountytipmessage")
+	check:SetToolTip("If disabled, the tip about to cash in bounties regularly is shown upon dying.")
 
 	local slider = CreateSlider(pan, list, "Death sound effect volume", "tea_cl_deathsfx_vol")
 	slider:SetDecimals(2)

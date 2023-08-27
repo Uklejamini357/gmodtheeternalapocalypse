@@ -55,7 +55,7 @@ function ENT:Initialize( )
 	self:SetSolid( SOLID_BBOX )
 	self:CapabilitiesAdd( CAP_ANIMATEDFACE || CAP_USE_SHOT_REGULATOR || CAP_TURN_HEAD || CAP_AIM_GUN )
 	self:SetMaxYawSpeed( 5000 )
-	self.IsUsed = 0
+	self.LastTimeUsed = 0
 	local PhysAwake = self.Entity:GetPhysicsObject( )
 	if PhysAwake:IsValid( ) then
 		PhysAwake:Wake( )
@@ -71,10 +71,9 @@ function ENT:AcceptInput( input, ply, caller )
 	if input == "Use" && ply:IsPlayer() && ply:KeyPressed( 32 ) then
 		net.Start( "OpenTraderMenu" )
 		net.Send(ply)
-		if self.IsUsed != 1 then
-		self:EmitSound("vo/npc/male01/hi0"..math.random(1,2)..".wav")
-		self.IsUsed = 1
-		timer.Simple(10, function() self.IsUsed = 0 end)
+		if self.LastTimeUsed + 10 < CurTime() then
+			self:EmitSound("vo/npc/male01/hi0"..math.random(1,2)..".wav")
+			self.LastTimeUsed = CurTime()
 		end
 --ply:ConCommand( "play vo/coast/odessa/nlo_cub_hello.wav" )
 	end

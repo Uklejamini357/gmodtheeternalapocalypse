@@ -1,6 +1,6 @@
 -- OLD TYPE (may need redoing) (absolutely no)
 
-SWEP.Base 				= "weapon_mad_base"
+SWEP.Base 				= "weapon_tea_base"
 SWEP.Category           = "Mad Cows Weapons"
 SWEP.UseHands			= true
 
@@ -14,10 +14,10 @@ SWEP.HoldType				= "melee2"
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= false
 
-SWEP.HitDistance		= 80
+SWEP.HitDistance		= 100
 
 SWEP.Primary.Recoil		= 5
-SWEP.Primary.Damage		= 69
+SWEP.Primary.Damage		= 69 -- nice
 SWEP.Primary.PlayerDamage	= 48
 SWEP.Primary.NumShots		= 0
 SWEP.Primary.Cone			= 0.0420
@@ -78,7 +78,7 @@ function SWEP:PrimaryAttack()
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 	local trace = self.Owner:GetEyeTrace()
 
-	if trace.HitPos:Distance(self.Owner:GetShootPos()) <= 100 then
+	if trace.HitPos:Distance(self.Owner:GetShootPos()) <= self.HitDistance then
 		self:SendWeaponAnim(ACT_VM_HITCENTER)
 		self.Owner:SetAnimation(PLAYER_ATTACK1)
 		bullet = {}

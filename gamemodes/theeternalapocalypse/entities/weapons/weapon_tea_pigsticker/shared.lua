@@ -1,4 +1,4 @@
-SWEP.Base 				= "weapon_melee_base"
+SWEP.Base 				= "weapon_tea_base_melee"
 SWEP.Instructions   =	 "LMB to attack, RMB to stab"
 SWEP.ViewModelFlip		= false
 SWEP.ViewModel			= "models/weapons/v_knife_t.mdl"

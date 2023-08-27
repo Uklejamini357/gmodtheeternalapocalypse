@@ -1,4 +1,4 @@
-SWEP.Base 				= "weapon_mad_base"
+SWEP.Base 				= "weapon_tea_base"
 SWEP.Category			= "Mad Cows Weapons"
 
 SWEP.ViewModel = "models/weapons/v_rpg.mdl"

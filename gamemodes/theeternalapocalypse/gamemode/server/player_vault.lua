@@ -59,7 +59,7 @@ function GM:SavePlayerVault(ply)
 	else
 		print("Bruh, did you try to setup incorrectly? Set your damned filesystem option to a proper setting in sh_config.lua")
 	end
-	print("✓ ".. ply:Nick() .." vault saved into database")
+	print("✓ ".. ply:Nick() .." vault saved")
 end
 
 

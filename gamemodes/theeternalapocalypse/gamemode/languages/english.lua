@@ -309,6 +309,8 @@ LANG.item_crossbowbolt_crate_n = "Steel Bolts Crate"
 LANG.item_crossbowbolt_crate_d = "A crate that contains 25 steel bolts."
 LANG.item_rocketammo_n = "RPG Rocket"
 LANG.item_rocketammo_d = "A missile designed for use with the RPG launcher."
+LANG.item_ar2pulseammo_n = "AR2 Pulse Ammo"
+LANG.item_ar2pulseammo_d = "Description about this item is currently unavailable. - Reason: [DATA EXPUNGED]"
 
 -- Weapons
 
@@ -636,17 +638,7 @@ LANG.item_armor_cs2_goggles_d = "An experimental armor that provides wearer suit
 LANG.perkincreased = "You increased your %s skill by %d point(s)!"
 LANG.pllvlup = "Congratulations! You are now level %d, you have gained %d skill point(s) and %d %ss!"
 LANG.plhasprestiged_1 = "You have prestiged to Prestige %d!"
-LANG.plhasprestiged_2 = "You have gained %d %ss!"
-LANG.plhasprestiged_3 = "%s has prestiged to Prestige level %d!"
-LANG.plhasprestiged_4 = "You now gain 5% more overall cash gain!"
-LANG.plhasprestiged_5 = "You now spawn with +5 more health points!"
-LANG.plhasprestiged_6 = "You now can carry +2kg more!"
-LANG.plhasprestiged_7 = "You now have +10 jumppower!"
-LANG.plhasprestiged_8 = "You now spawn with +5 more armor!"
-LANG.plhasprestiged_9 = "You now can carry +3kg more!"
-LANG.plhasprestiged_10 = "You now take 5% less damage from all sources!"
-LANG.plhasprestiged_11 = "Everytime you prestige, you start with 5 skill points instead of 0!"
-LANG.plhasprestiged_12 = "You now gain 15% more overall XP gain!"
+
 LANG.plcaughtinfection = "You have caught infection!"
 LANG.pljoined = "%s has joined the server"
 LANG.plspawned = "%s has spawned into the game"
@@ -728,7 +720,7 @@ LANG.Tip16 = "Try to master some skills, such as Melee. You may gain some advant
 -- New ?????
 
 LANG.the_eternal_apocalypse = "The Eternal Apocalypse" -- ?????
-LANG.the_eternal_apocalypse_desc = "An apocalyptic survival-based gamemode."
+LANG.the_eternal_apocalypse_desc = "An apocalyptic survival-based gamemode.\nThe zombies await you."
 LANG.play = "Play"
 LANG.disconnect = "Disconnect"
 LANG.loading = "Loading..."
@@ -762,4 +754,7 @@ LANG.boss_defeated = "Boss Defeated"
 -- Edited
 
 LANG.dmgtaken = "Damage taken: %s"
+
+LANG.plhasprestiged_2 = "You have gained %d %ss and %d perk point(s)!"
+LANG.plhasprestiged_3 = "%s has now Prestige %d!"
 

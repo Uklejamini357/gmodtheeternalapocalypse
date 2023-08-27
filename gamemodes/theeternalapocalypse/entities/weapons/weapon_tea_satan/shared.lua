@@ -1,4 +1,4 @@
-SWEP.Base 				= "weapon_mad_base"
+SWEP.Base 				= "weapon_tea_base"
 
 SWEP.ViewModel			= "models/weapons/v_pist_satan2.mdl"
 SWEP.WorldModel			= "models/weapons/w_m29_satan.mdl"

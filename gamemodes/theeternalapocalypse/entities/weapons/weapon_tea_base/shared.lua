@@ -58,21 +58,27 @@ local MAT_PLASTIC = MAT_PLASTIC
 ---mmm--------mmm-aaa-----aaa-ddddddddd---------------------------------------->
 ---------------------------------------------------------*/
 
-local RecoilMul = CreateConVar("mad_recoilmul", "1", {FCVAR_REPLICATED, FCVAR_ARCHIVE})
-local DamageMul = CreateConVar("mad_damagemul", "1", {FCVAR_REPLICATED, FCVAR_ARCHIVE})
+local RecoilMul = CreateConVar ("mad_recoilmul", "1", {FCVAR_REPLICATED, FCVAR_ARCHIVE})
+local DamageMul = CreateConVar ("mad_damagemul", "1", {FCVAR_REPLICATED, FCVAR_ARCHIVE})
+local AccuracyMul = CreateConVar ("mad_accuracymul", "1", {FCVAR_REPLICATED, FCVAR_ARCHIVE})
 
-SWEP.Category			= "Melee Weapons"
+if SERVER then
+	util.AddNetworkString( "HitMarker" )
+end
+
+SWEP.Category			= "Mad Cows Weapons"
 SWEP.Author				= ""
 SWEP.Contact			= ""
 
 SWEP.Purpose			= ""
-SWEP.Instructions			= "none"
+SWEP.Instructions			= ""
 SWEP.HoldType				= "pistol"
 SWEP.ViewModelFOV			= 60
 SWEP.ViewModelFlip		= false
 SWEP.ViewModel			= "models/weapons/c_pistol.mdl"
 SWEP.WorldModel			= "models/weapons/w_pistol.mdl"
 SWEP.AnimPrefix			= "python"
+SWEP.UseHands			= true
 
 SWEP.Spawnable			= false
 SWEP.AdminSpawnable		= false
@@ -87,7 +93,7 @@ SWEP.Primary.Delay 		= 0
 SWEP.Primary.ClipSize		= 5
 SWEP.Primary.DefaultClip	= 5
 SWEP.Primary.Automatic		= false
-SWEP.Primary.Ammo			= "none"
+SWEP.Primary.Ammo			= "pistol"
 
 SWEP.Secondary.ClipSize		= -1
 SWEP.Secondary.DefaultClip	= -1
@@ -95,6 +101,8 @@ SWEP.Secondary.Automatic	= false
 SWEP.Secondary.Ammo		= "none"
 
 SWEP.ActionDelay			= CurTime()
+
+SWEP.AlwaysSilenced			= false
 
 SWEP.DeployDelay			= 1
 
@@ -105,6 +113,10 @@ SWEP.Pistol				= false
 SWEP.Rifle				= false
 SWEP.Shotgun			= false
 SWEP.Sniper				= false
+
+SWEP.IronFireAccel		= 3
+SWEP.HipFireLoss		= 1
+SWEP.IronCrosshair = false
 
 SWEP.IronSightsPos 		= Vector (0, 0, 0)
 SWEP.IronSightsAng 		= Vector (0, 0, 0)
@@ -143,7 +155,7 @@ SWEP.AllowIdleAnimation		= true
 SWEP.AllowPlaybackRate		= true
 
 SWEP.BoltActionSniper		= false
-SWEP.ScopeAfterShoot		= false	
+SWEP.ScopeAfterShoot		= false
 
 SWEP.IronSightZoom 		= 1.5
 SWEP.ScopeZooms			= {10}
@@ -153,10 +165,11 @@ SWEP.ShotgunReloading		= false
 SWEP.ShotgunFinish		= 0.5
 SWEP.ShotgunBeginReload		= 0.3
 
+
+
 function SWEP:Initialize()
 	self:SetHoldType(self.HoldType)
-	util.PrecacheSound( self.Primary.Sound )
-	if (SERVER) then
+	if SERVER then
 		self:SetNPCMinBurst(30)
 		self:SetNPCMaxBurst(30)
 		self:SetNPCFireRate(self.Primary.Delay)
@@ -164,12 +177,10 @@ function SWEP:Initialize()
 end
 
 function SWEP:Precache()
-
 	util.PrecacheSound("weapons/clipempty_pistol.wav")
 end
 
-function SWEP:SetupDataTables()  
-
+function SWEP:SetupDataTables()
 	self:DTVar("Bool", 0, "Holsted")
 	self:DTVar("Bool", 1, "Ironsights")
 	self:DTVar("Bool", 2, "Scope")
@@ -177,7 +188,6 @@ function SWEP:SetupDataTables()
 end 
 
 function SWEP:IdleAnimation(time)
-
 	if not self.AllowIdleAnimation then return false end
 
 	self.IdleApply = true
@@ -186,7 +196,6 @@ function SWEP:IdleAnimation(time)
 end
 
 function SWEP:PrimaryAttack()
-
 	if (not self.Owner:IsNPC() and self.Owner:KeyDown(IN_USE)) then
 		bHolsted = !self.Weapon:GetDTBool(0)
 		self:SetHolsted(bHolsted)
@@ -199,19 +208,20 @@ function SWEP:PrimaryAttack()
 		return
 	end
 
-	if (not self:CanPrimaryAttack()) then return end
+	if not self:CanPrimaryAttack() then return end
 
 	self.ActionDelay = (CurTime() + self.Primary.Delay + 0.05)
 	self.Weapon:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 	self.Weapon:SetNextSecondaryFire(CurTime() + self.Primary.Delay)
 
+	-- If the burst mode is activated, it's going to shoot the three bullets (or more if you're dumb and put 4 or 5 bullets for your burst mode)
 	if self.Weapon:GetDTBool(3) and self.Type == 3 then
 		self.BurstTimer 	= CurTime()
 		self.BurstCounter = self.BurstShots - 1
 		self.Weapon:SetNextPrimaryFire(CurTime() + 0.5)
 	end
 
-	self.Weapon:EmitSound(self.Primary.Sound)
+	self.Weapon:EmitSound(self.Primary.Sound, 130)
 
 	self:TakePrimaryAmmo(1)
 
@@ -221,7 +231,6 @@ end
 function SWEP:SecondaryAttack()
 
 	if self.Owner:IsNPC() then return end
-	if not IsFirstTimePredicted() then return end
 
 	if (self.Owner:KeyDown(IN_USE) and (self.Mode)) then
 		bMode = !self.Weapon:GetDTBool(3)
@@ -412,18 +421,18 @@ function SWEP:Think()
 	if self.Owner:KeyDown(IN_SPEED) or self.Weapon:GetDTBool(0) then
 		if self.Rifle or self.Sniper or self.Shotgun then
 			if self.Owner:KeyDown(IN_DUCK) then
-				self:SetHoldType(self.HoldType)
+				self:SetHoldType("normal")
 			else
 				self:SetHoldType("passive")
 			end
 
 		elseif self.Pistol then
-			self:SetHoldType(self.HoldType)
+			self:SetHoldType("normal")
 		end
 	else
 		self:SetHoldType(self.HoldType)
 	end
-	
+
 
 	if self.Weapon:GetDTBool(3) and self.Type == 3 then
 		if self.BurstTimer + self.BurstDelay < CurTime() then
@@ -522,6 +531,78 @@ function SWEP:CrosshairAccuracy()
 	return math.Clamp(Accuracy, 0.2, 1)
 end
 
+
+function SWEP:ShootBullet(damage, recoil, num_bullets, aimcone)
+
+	num_bullets 		= num_bullets or 1
+	aimcone 			= aimcone or 0
+
+	self:ShootEffects()
+
+	if self.Tracer == 1 then
+		TracerName = "Ar2Tracer"
+	elseif self.Tracer == 2 then
+		TracerName = "AirboatGunHeavyTracer"
+	else
+		TracerName = "Tracer"
+	end
+	
+	local bullet = {}
+	bullet.Num 		= num_bullets
+	bullet.Src 		= self.Owner:GetShootPos()			// Source
+	bullet.Dir 		= self.Owner:GetAimVector()			// Dir of bullet
+	bullet.Spread 	= Vector(aimcone, aimcone, 0)			// Aim Cone
+	bullet.Tracer	= 1							// Show a tracer on every x bullets
+	bullet.TracerName = TracerName
+	bullet.Force	= damage * 0.5					// Amount of force to give to phys objects
+	bullet.Damage	= damage
+	bullet.Callback	= function(attacker, tr, dmginfo) 
+		if not self.Owner:IsNPC() and self.Owner:GetNetworkedInt("Fuel") > 0 then
+			self:ShootFire(attacker, tr, dmginfo) 
+		end
+
+		if tr.Entity:GetClass() == "prop_vehicle_prisoner_pod" then
+			if SERVER then
+				tr.Entity:TakeDamage(damage, self:GetOwner())
+			end
+		end
+
+		if tr.Entity:IsPlayer() == true or tr.Entity:IsNPC() == true or tr.Entity.Type == "nextbot" then
+			if SERVER then
+				if self.Sniper == true then
+					net.Start( "HitMarkerSnip" )
+   					net.Send( self.Owner )
+   				else
+   					net.Start( "HitMarker" )
+   					net.Send( self.Owner )
+   				end
+   			end
+		end
+
+		if self.BulletCallback then
+			self.BulletCallback(attacker, tr, dmginfo)
+		end
+
+--						return self:RicochetCallback_Redirect(attacker, tr, dmginfo) 
+	end
+
+	self.Owner:FireBullets(bullet)
+
+	-- Realistic recoil. Only on snipers and shotguns. Disable for the admin gun because if you put the max damage, you'll fly like you never fly!
+	if SERVER and (self.Sniper or self.Shotgun) then
+		self.Owner:SetVelocity(self.Owner:GetAimVector() * -(damage * num_bullets * 0.4))
+	end
+
+	-- Recoil
+	if (not self.Owner:IsNPC()) and ((game.SinglePlayer() and SERVER) or (not game.SinglePlayer() and CLIENT)) then
+		if ( IsFirstTimePredicted() ) then
+		local eyeangle 	= self.Owner:EyeAngles()
+		eyeangle.pitch 	= eyeangle.pitch - recoil
+		self.Owner:SetEyeAngles(eyeangle)
+		end
+	end
+end
+
 /*---------------------------------------------------------
    Name: SWEP:ShootBulletInformation()
    Desc: This function add the damage, the recoil, the number of shots and the cone on the bullet.
@@ -531,70 +612,86 @@ function SWEP:ShootBulletInformation()
 	local CurrentDamage
 	local CurrentRecoil
 	local CurrentCone
+	local owner = self.Owner
 
 	if self.Weapon:GetDTBool(3) then
-		CurrentDamage = self.Primary.Damage * self.data.Damage * DamageMul:GetFloat()
-		CurrentRecoil = self.Primary.Recoil * self.data.Recoil * RecoilMul:GetFloat()
+		CurrentDamage = self.Primary.Damage * self.data.Damage
+		CurrentRecoil = self.Primary.Recoil * self.data.Recoil * math.max(0.4, 1 - (owner.StatGunslinger or Perks and Perks.Gunslinger or 0) * 0.03)
 		CurrentCone = self.Primary.Cone * self.data.Cone
 	else
-		CurrentDamage = self.Primary.Damage * DamageMul:GetFloat()
-		CurrentRecoil = self.Primary.Recoil * RecoilMul:GetFloat()
+		CurrentDamage = self.Primary.Damage
+		CurrentRecoil = self.Primary.Recoil * math.max(0.4, 1 - (owner.StatGunslinger or Perks and Perks.Gunslinger or 0) * 0.03)
 		CurrentCone = self.Primary.Cone
 	end
 
-	if self.Owner:IsNPC() then
+	if owner:IsNPC() then
 		self:ShootBullet(CurrentDamage, CurrentRecoil, self.Primary.NumShots, self.Primary.Cone)
 		return
 	end
 
-	if self.Owner:GetNetworkedInt("Fuel") > 0 then
+	if owner:GetNetworkedInt("Fuel") > 0 then
 		CurrentDamage = CurrentDamage * 1.25
 	end
 
 
-	// Player is not on the ground
-	if not self.Owner:IsOnGround() then
-		// Player is aiming
+	if not owner:IsOnGround() then
+		-- Player is aiming
 		if (self.Weapon:GetDTBool(1)) then
-			self:ShootBullet(CurrentDamage, CurrentRecoil, self.Primary.NumShots, CurrentCone)
-			self.Owner:ViewPunch(Angle(math.Rand(-0.75, -1.0) * (CurrentRecoil), math.Rand(-1, 1) * (CurrentRecoil), 0))
-		// Player is not aiming
+			self:ShootBullet(CurrentDamage, CurrentRecoil, self.Primary.NumShots, CurrentCone * self.HipFireLoss)
+			if ( IsFirstTimePredicted() ) then
+				owner:ViewPunch(Angle(math.Rand(-0.75, -1.0) * (CurrentRecoil), math.Rand(-1, 1) * (CurrentRecoil), 0))
+			end
+		-- Player is not aiming
 		else
-			self:ShootBullet(CurrentDamage, CurrentRecoil * 2.5, self.Primary.NumShots, CurrentCone)
-			self.Owner:ViewPunch(Angle(math.Rand(-0.75, -1.0) * (CurrentRecoil * 2.5), math.Rand(-1, 1) * (CurrentRecoil * 2.5), 0))
+			self:ShootBullet(CurrentDamage, CurrentRecoil * 2.5, self.Primary.NumShots, CurrentCone )
+			if ( IsFirstTimePredicted() ) then
+				owner:ViewPunch(Angle(math.Rand(-0.75, -1.0) * (CurrentRecoil * 2), math.Rand(-1, 1) * (CurrentRecoil * 2.5), 0))
+			end
 		end
-	// Player is moving
-	elseif self.Owner:KeyDown (bit.bor( IN_FORWARD, IN_BACK, IN_MOVELEFT, IN_MOVERIGHT )) then
-		// Player is aiming
+	-- Player is moving
+	elseif owner:KeyDown (bit.bor( IN_FORWARD, IN_BACK, IN_MOVELEFT, IN_MOVERIGHT )) then
+		-- Player is aiming
 		if (self.Weapon:GetDTBool(1)) then
+			self:ShootBullet(CurrentDamage, CurrentRecoil / 2, self.Primary.NumShots, CurrentCone * self.HipFireLoss)
+			if ( IsFirstTimePredicted() ) then
+				owner:ViewPunch(Angle(math.Rand(-0.75, -1.0) * (CurrentRecoil), math.Rand(-1, 1) * (CurrentRecoil / 1.5), 0))
+			end
+		-- Player is not aiming
+		else
+			self:ShootBullet(CurrentDamage, CurrentRecoil * 1.5, self.Primary.NumShots, CurrentCone )
+			if ( IsFirstTimePredicted() ) then
+				owner:ViewPunch(Angle(math.Rand(-0.75, -1.0) * (CurrentRecoil * 1.5), math.Rand(-1, 1) * (CurrentRecoil * 1.5), 0))
+			end
+		end
+	-- Player is crouching
+	elseif owner:Crouching() then
+		-- Player is aiming
+		if (self.Weapon:GetDTBool(1)) then
+			self:ShootBullet(CurrentDamage, 0, self.Primary.NumShots, CurrentCone * self.HipFireLoss)
+			if ( IsFirstTimePredicted() ) then
+				owner:ViewPunch(Angle(math.Rand(-0.75, -1.0) * (CurrentRecoil / 2), math.Rand(-1, 1) * (CurrentRecoil / 3), 0))
+			end
+		-- Player is not aiming
+		else
 			self:ShootBullet(CurrentDamage, CurrentRecoil / 2, self.Primary.NumShots, CurrentCone)
-			self.Owner:ViewPunch(Angle(math.Rand(-0.75, -1.0) * (CurrentRecoil / 1.5), math.Rand(-1, 1) * (CurrentRecoil / 1.5), 0))
-		// Player is not aiming
-		else
-			self:ShootBullet(CurrentDamage, CurrentRecoil * 1.5, self.Primary.NumShots, CurrentCone)
-			self.Owner:ViewPunch(Angle(math.Rand(-0.75, -1.0) * (CurrentRecoil * 1.5), math.Rand(-1, 1) * (CurrentRecoil * 1.5), 0))
+			if ( IsFirstTimePredicted() ) then
+				owner:ViewPunch(Angle(math.Rand(-0.75, -1.0) * CurrentRecoil, math.Rand(-1, 1) * (CurrentRecoil / 2), 0))
+			end
 		end
-	// Player is crouching
-	elseif self.Owner:Crouching() then
-		// Player is aiming
-		if (self.Weapon:GetDTBool(1)) then
-			self:ShootBullet(CurrentDamage, 0, self.Primary.NumShots, CurrentCone)
-			self.Owner:ViewPunch(Angle(math.Rand(-0.75, -1.0) * (CurrentRecoil / 3), math.Rand(-1, 1) * (CurrentRecoil / 3), 0))
-		// Player is not aiming
-		else
-			self:ShootBullet(CurrentDamage, CurrentRecoil / 2, self.Primary.NumShots, CurrentCone)
-			self.Owner:ViewPunch(Angle(math.Rand(-0.75, -1.0) * (CurrentRecoil / 2), math.Rand(-1, 1) * (CurrentRecoil / 2), 0))
-		end
-	// Player is doing nothing
+	-- Player is doing nothing
 	else
-		// Player is aiming
+		-- Player is aiming
 		if (self.Weapon:GetDTBool(1)) then
-			self:ShootBullet(CurrentDamage, CurrentRecoil / 6, self.Primary.NumShots, CurrentCone)
-			self.Owner:ViewPunch(Angle(math.Rand(-0.75, -1.0) * (CurrentRecoil / 2), math.Rand(-1, 1) * (CurrentRecoil / 2), 0))
-		// Player is not aiming
+			self:ShootBullet(CurrentDamage, CurrentRecoil / 6, self.Primary.NumShots, CurrentCone * self.HipFireLoss)
+			if ( IsFirstTimePredicted() ) then
+				owner:ViewPunch(Angle(math.Rand(-0.75, -1.0) * (CurrentRecoil / 1.5), math.Rand(-1, 1) * (CurrentRecoil / 2), 0))
+			end
+		-- Player is not aiming
 		else
 			self:ShootBullet(CurrentDamage, CurrentRecoil, self.Primary.NumShots, CurrentCone)
-			self.Owner:ViewPunch(Angle(math.Rand(-0.75, -1.0) * CurrentRecoil, math.Rand(-1, 1) * CurrentRecoil, 0))
+			if ( IsFirstTimePredicted() ) then
+				owner:ViewPunch(Angle(math.Rand(-0.75, -1.0) * CurrentRecoil, math.Rand(-1, 1) * CurrentRecoil, 0))
+			end
 		end
 	end
 end
@@ -604,41 +701,52 @@ end
    Desc: A convenience function to shoot effects.
 ---------------------------------------------------------*/
 function SWEP:ShootEffects()
+	local owner = self:GetOwner()
 
-	if not self.Owner:IsNPC() then
+	if not owner:IsNPC() then
 		self:ShootAnimation()
 	end
 
-	if (IsValid(self.Owner) and self.Owner:GetViewModel()) then
-		self:IdleAnimation(self.Owner:GetViewModel():SequenceDuration())
+	if (IsValid(owner) and owner:GetViewModel()) then
+		self:IdleAnimation(owner:GetViewModel():SequenceDuration())
 	end
 
 	local WeaponModel = self.Weapon:GetOwner():GetActiveWeapon():GetClass()
 
-	if (not self.Owner:IsNPC() and self.Weapon:Clip1() < 1) then
-		timer.Simple(self.Owner:GetViewModel():SequenceDuration(), function() 
-			if self.Owner and self.Owner:Alive() and self.Weapon:GetOwner():GetActiveWeapon():GetClass() == WeaponModel then
+	if (not owner:IsNPC() and self.Weapon:Clip1() < 1) then
+		timer.Simple(owner:GetViewModel():SequenceDuration(), function() 
+			if owner and owner:Alive() and self.Weapon:GetOwner():GetActiveWeapon():GetClass() == WeaponModel then
 				self.ActionDelay = CurTime()
-				self:Reload() 
+				self:Reload()
 			end
 		end)
 	end
 
-	self.Owner:MuzzleFlash()						// Crappy muzzle light
-	self.Owner:SetAnimation(PLAYER_ATTACK1)				// 3rd Person Animation
+	owner:MuzzleFlash()
+	owner:SetAnimation(PLAYER_ATTACK1)
 
 	local effectdata = EffectData()
-		effectdata:SetOrigin(self.Owner:GetShootPos())
+		effectdata:SetOrigin(owner:GetShootPos())
 		effectdata:SetEntity(self.Weapon)
-		effectdata:SetStart(self.Owner:GetShootPos())
-		effectdata:SetNormal(self.Owner:GetAimVector())
+		effectdata:SetStart(owner:GetShootPos())
+		effectdata:SetNormal(owner:GetAimVector())
 		effectdata:SetAttachment(1)
+		if (self.Shotgun) then
+			util.Effect("effect_mad_shotgunsmoke", effectdata)
+		elseif self.Weapon:GetDTBool(3) and self.Type == 2 then
+			util.Effect("effect_mad_gunsmoke_sil", effectdata)
+		elseif self.AlwaysSilenced == true then
+			util.Effect("effect_mad_gunsmoke_sil", effectdata)
+			else
+			util.Effect("effect_mad_gunsmoke", effectdata)
+		end
 
 	// Add a timer to solve this problem : in multiplayer, when you aim with the ironsights, tracers, effects, etc. still come from where the barrel is when you don't aim with ironsights
+	/*
 	if ((game.SinglePlayer() and SERVER) or CLIENT) then
 	timer.Simple(0, function()
-		if not IsValid(self.Owner) then return end
-		if (not IsFirstTimePredicted() or not self.Owner:Alive())then return end
+		if not IsValid(owner) then return end
+		if (not IsFirstTimePredicted() or not owner:Alive())then return end
 
 		if (self.Shotgun) then
 			util.Effect("effect_mad_shotgunsmoke", effectdata)
@@ -647,62 +755,62 @@ function SWEP:ShootEffects()
 		end
 	end)
 	end
+	*/
 	// Shell eject
-	//timer.Simple(self.ShellDelay, function()
-	//	if not self.Owner then return end
-	//	if not IsFirstTimePredicted() then return end
-	//	if not self.Owner:IsNPC() and not self.Owner:Alive() then return end
+/*
+	timer.Simple(self.ShellDelay, function()
+		if not owner then return end
+		if not IsFirstTimePredicted() then return end
+		if not owner:IsNPC() and not owner:Alive() then return end
 
-	//	local effectdata = EffectData()
-	//		effectdata:SetEntity(self.Weapon)
-	//		effectdata:SetNormal(self.Owner:GetAimVector())
-	//		effectdata:SetAttachment(2)
-	//	util.Effect(self.ShellEffect, effectdata)
-	//end)
+		local effectdata = EffectData()
+			effectdata:SetEntity(self.Weapon)
+			effectdata:SetNormal(owner:GetAimVector())
+			effectdata:SetAttachment(2)
+		util.Effect(self.ShellEffect, effectdata)
+	end)
+*/
+	if owner:IsNPC() then return end
 
-	if self.Owner:IsNPC() then return end
+local trace = owner:GetEyeTrace()
 
-	//local trace = self.Owner:GetEyeTrace()
+/*
+	if trace.HitPos:Distance(owner:GetShootPos()) < 250 and self.Shotgun then
+		if trace.Entity:GetClass() == "prop_door_rotating" and (SERVER) then
+            trace.Entity:Fire("open", "", 0.1)
+			trace.Entity:Fire("unlock", "", 0.1)
 
-	//if trace.HitPos:Distance(self.Owner:GetShootPos()) < 250 and self.Shotgun then
-	//	if trace.Entity:GetClass() == "prop_door_rotating" and (SERVER) then
+			local pos = trace.Entity:GetPos()
+			local ang = trace.Entity:GetAngles()
+			local model = trace.Entity:GetModel()
+			local skin = trace.Entity:GetSkin()
 
-			//trace.Entity:Fire("open", "", 0.1)
-			//trace.Entity:Fire("unlock", "", 0.1)
+			trace.Entity:SetNotSolid(true)
+			trace.Entity:SetNoDraw(true)
 
-			//local pos = trace.Entity:GetPos()
-			//local ang = trace.Entity:GetAngles()
-			//local model = trace.Entity:GetModel()
-			//local skin = trace.Entity:GetSkin()
+			local function ResetDoor(door, fakedoor)
+				door:SetNotSolid(false)
+				door:SetNoDraw(false)
+				fakedoor:Remove()
+			end
 
-			//trace.Entity:SetNotSolid(true)
-			//trace.Entity:SetNoDraw(true)
+			local push =(owner:GetPos()):Normalize()
+			local ent = ents.Create("prop_physics")
 
-			//local function ResetDoor(door, fakedoor)
-			//	door:SetNotSolid(false)
-			//	door:SetNoDraw(false)
-			//	fakedoor:Remove()
-			//end
-
-			//local push = 10000 * (1 - self.Owner:GetPos()):Normalize()
-			//local ent = ents.Create("prop_physics")
-
-			//ent:SetPos(pos)
-			//ent:SetAngles(ang)
-			//ent:SetModel(model)
-
-			//if(skin) then
-			//	ent:SetSkin(skin)
-			//end
-
-			//ent:Spawn()
-			//ent:Activate()
+			ent:SetPos(pos)
+			ent:SetAngles(ang)
+			ent:SetModel(model)
 			
-			//timer.Simple(0.01, ent.SetVelocity, ent, push)               
-			//timer.Simple(0.01, ent:GetPhysicsObject().ApplyForceCenter, ent:GetPhysicsObject(), push)
-			//timer.Simple(25, ResetDoor, trace.Entity, ent)
-		//end
-	//end
+			if(skin) then
+				ent:SetSkin(skin)
+			end
+
+			ent:Spawn()
+			timer.Simple( 25 , function() ResetDoor(trace.Entity, ent) end)
+
+		end
+	end
+*/
 
 	// Crosshair effect
 	if ((game.SinglePlayer() and SERVER) or CLIENT) then
@@ -762,7 +870,6 @@ end
 ---------------------------------------------------------*/
 function SWEP:ShootAnimation()
 
-	// Too lazy to create a table :)
 	local AllowDryFire = self.Owner:GetActiveWeapon():GetClass() == ("weapon_mad_deagle") 
 				   or self.Owner:GetActiveWeapon():GetClass() == ("weapon_mad_usp") 
 				   or self.Owner:GetActiveWeapon():GetClass() == ("weapon_mad_usp_match")
@@ -778,12 +885,22 @@ function SWEP:ShootAnimation()
 			self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK_SILENCED)
 		else
 			self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
+			if self.Weapon:GetDTBool(1) then
+			self.Owner:GetViewModel():SetPlaybackRate(self.IronFireAccel)
+			else
+			self.Owner:GetViewModel():SetPlaybackRate(1)
+			end 
 		end
 	else
 		if self.Weapon:GetDTBool(3) and self.Type == 2 then
 			self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK_SILENCED)
 		else
 			self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
+			if self.Weapon:GetDTBool(1) then
+			self.Owner:GetViewModel():SetPlaybackRate(self.IronFireAccel)
+			else
+			self.Owner:GetViewModel():SetPlaybackRate(1)
+			end 
 		end
 	end
 end
@@ -793,53 +910,6 @@ end
    Desc: A convenience function to shoot bullets.
 ---------------------------------------------------------*/
 local TracerName = "Tracer"
-
-function SWEP:ShootBullet(damage, recoil, num_bullets, aimcone)
-
-	num_bullets 		= num_bullets or 1
-	aimcone 			= aimcone or 0
-
-	self:ShootEffects()
-
-	if self.Tracer == 1 then
-		TracerName = "Ar2Tracer"
-	elseif self.Tracer == 2 then
-		TracerName = "AirboatGunHeavyTracer"
-	else
-		TracerName = "Tracer"
-	end
-	
-	local bullet = {}
-		bullet.Num 		= num_bullets
-		bullet.Src 		= self.Owner:GetShootPos()			// Source
-		bullet.Dir 		= self.Owner:GetAimVector()			// Dir of bullet
-		bullet.Spread 	= Vector(aimcone, aimcone, 0)			// Aim Cone
-		bullet.Tracer	= 1							// Show a tracer on every x bullets
-		bullet.TracerName = TracerName
-		bullet.Force	= damage * 0.5					// Amount of force to give to phys objects
-		bullet.Damage	= damage
-		bullet.Callback	= function(attacker, tr, dmginfo) 
-						if not self.Owner:IsNPC() and self.Owner:GetNetworkedInt("Fuel") > 0 then
-							self:ShootFire(attacker, tr, dmginfo) 
-						end
-
-						return self:RicochetCallback_Redirect(attacker, tr, dmginfo) 
-					  end
-
-	self.Owner:FireBullets(bullet)
-
-	// Realistic recoil. Only on snipers and shotguns. Disable for the admin gun because if you put the max damage, you'll fly like you never fly!
-	if (SERVER and (self.Sniper or self.Shotgun) and not self.Owner:GetActiveWeapon():GetClass() == ("weapon_mad_admin")) then
-		self.Owner:SetVelocity(self.Owner:GetAimVector() * -(damage * num_bullets))
-	end
-
-	// Recoil
-	if (not self.Owner:IsNPC()) and ((game.SinglePlayer() and SERVER) or (not game.SinglePlayer() and CLIENT)) then
-		local eyeangle 	= self.Owner:EyeAngles()
-		eyeangle.pitch 	= eyeangle.pitch - recoil
-		self.Owner:SetEyeAngles(eyeangle)
-	end
-end
 
 /*---------------------------------------------------------
    Name: SWEP:BulletPenetrate()
@@ -857,20 +927,40 @@ function SWEP:BulletPenetrate(bouncenum, attacker, tr, dmginfo, isplayer)
 	elseif self.Primary.Ammo == "AlyxGun" then // 5.7MM Ammo
 		MaxPenetration = 12
 	elseif self.Primary.Ammo == "Battery" then // 9MM Ammo
-		MaxPenetration = 14
+		MaxPenetration = 18
 	elseif self.Primary.Ammo == "StriderMinigun" then // 7.62MM Ammo
 		MaxPenetration = 20
 	elseif self.Primary.Ammo == "SniperPenetratedRound" then // .45 Ammo
 		MaxPenetration = 16
-	elseif self.Primary.Ammo == "CombineCannon" then // .50 Ammo
+    elseif self.Primary.Ammo == "ammo_50" then // .50 Ammo
 		MaxPenetration = 20
+	elseif self.Primary.Ammo == "ammo_556X45" then // 5.56
+		MaxPenetration = 21
+	elseif self.Primary.Ammo == "ammo_338" then // .338 ammo
+		MaxPenetration = 45
+	elseif self.Primary.Ammo == "ammo_556X39" then // 
+		MaxPenetration = 17
+	elseif self.Primary.Ammo == "ammo_300" then // 
+		MaxPenetration = 42
+	elseif self.Primary.Ammo == "ammo_127" then // 
+		MaxPenetration = 18
+	elseif self.Primary.Ammo == "ammo_slug" then // 
+		MaxPenetration = 12
+	elseif self.Primary.Ammo == "Buckshot" then // 
+		MaxPenetration = 10
+	elseif self.Primary.Ammo == "ammo_45" then // .45 Ammo
+		MaxPenetration = 15
+	elseif self.Primary.Ammo == "ammo_762" then // 7.62MM Ammo
+		MaxPenetration = 24
 	else
 		MaxPenetration = 16
 	end
 
 	local DoDefaultEffect = true
 	// Don't go through metal, sand or player
-	if ((tr.MatType == MAT_METAL and self.Ricochet) or (tr.MatType == MAT_SAND) or (tr.Entity:IsPlayer())) then return false end
+	if ((tr.MatType == MAT_METAL and self.Ricochet) or (tr.MatType == MAT_SAND) or (tr.Entity:IsPlayer() or tr.Entity:IsNPC() == true or tr.Entity.Type == "nextbot")  ) then return false end
+
+	if tr.Entity:IsValid() and tr.Entity:GetModel() == "models/arleitiss/riotshield/shield.mdl" then return false end
 
 	// Don't go through more than 3 times
 	if (bouncenum > 3) then return false end
@@ -918,7 +1008,7 @@ function SWEP:BulletPenetrate(bouncenum, attacker, tr, dmginfo, isplayer)
 		HullSize	= 2
 	}
 	
-	bullet.Callback   = function(a, b, c) if (self.Ricochet) then return self:RicochetCallback(bouncenum + 1, a, b, c) end end
+--	bullet.Callback   = function(a, b, c) if (self.Ricochet) then return self:RicochetCallback(bouncenum + 1, a, b, c) end end
 	
 	timer.Simple(0.05, function()
 		if not IsFirstTimePredicted() then return end
@@ -932,6 +1022,10 @@ end
    Name: SWEP:RicochetCallback()
 ---------------------------------------------------------*/
 function SWEP:RicochetCallback(bouncenum, attacker, tr, dmginfo)
+
+return false -- ricochet is disabled in ZW cos its an unnecessary waste of processor power
+
+/*
 
 	if (CLIENT) then return end
 
@@ -1004,14 +1098,15 @@ function SWEP:RicochetCallback(bouncenum, attacker, tr, dmginfo)
 	end)
 	
 	return {damage = true, effects = DoDefaultEffect}
+	*/
 end
 
 /*---------------------------------------------------------
    Name: SWEP:RicochetCallback_Redirect()
 ---------------------------------------------------------*/
 function SWEP:RicochetCallback_Redirect(a, b, c)
- 
-	return self:RicochetCallback(0, a, b, c) 
+ return false
+--	return self:RicochetCallback(0, a, b, c) 
 end
 
 /*---------------------------------------------------------

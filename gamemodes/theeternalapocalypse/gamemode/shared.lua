@@ -5,8 +5,8 @@ GM.AltName	= "After The End Reborn"
 GM.Author	= "Uklejamini"
 GM.Email	= "N/A"
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.11.1 (Beta A)"
-GM.DateVer	= "24.07.2023"
+GM.Version	= "0.11.1"
+GM.DateVer	= "27.07.2023"
 
 
 include("sh_globals.lua") -- globals
@@ -45,7 +45,7 @@ function GM:IsSpecialPerson(ply, image)
 		tooltip = "LegendofRobbo\nCreator of After The End"
 	elseif ply:IsBot() then
 		img = "icon16/plugin.png"
-		tooltip = "BOT\nidk who he is anyway"
+		tooltip = "Bot\n\nJust a bot"
 	elseif SuperAdminCheck(ply) then
 		img = "icon16/shield_add.png"
 		tooltip = "Super Admin"
@@ -88,35 +88,32 @@ end
 function GM:GetReqXP(ply)
 	local basexpreq = 712
 	local addxpperlevel = 103
-	local noideawhatthisis = 1.1236
-	local prestigebonus = 8
-	if SERVER then
-		return math.floor(basexpreq + (ply.Prestige * prestigebonus) + (ply.Level  * addxpperlevel) ^ noideawhatthisis)
-	else
-		return math.floor(basexpreq + (MyPrestige * prestigebonus) + (MyLvl  * addxpperlevel) ^ noideawhatthisis)
-	end
+	local addxpperlevel2 = 1.1236
+
+	local plyprestige = SERVER and ply.Prestige or MyPrestige
+	local plylevel = SERVER and ply.Level or MyLvl
+
+	return math.floor((basexpreq + (plylevel  * addxpperlevel) * (1 + (plyprestige * (0.0072 + math.min(20, plyprestige) * 0.0003)))) ^ addxpperlevel2)
 end
 
 function GetReqMasteryMeleeXP(ply)
 	local xpreq = 984
 	local addexpperlevel = 165
-	local probnothing_idk = 1.161
-	if SERVER then
-		return math.floor(xpreq + ((ply.MasteryMeleeLevel * addexpperlevel) ^ probnothing_idk))
-	else
-		return math.floor(xpreq + (MyMMeleelvl * addexpperlevel) ^ probnothing_idk)
-	end
+	local addexpperlevel2 = 1.161
+
+	local mlvl = SERVER and ply.MasteryMeleeLevel or MyMMeleelvl
+
+	return math.floor(xpreq + (mlvl * addexpperlevel) ^ addexpperlevel2)
 end
 
 function GetReqMasteryPvPXP(ply)
 	local expreq = 593
 	local addxpprlevel = 85
-	local whatisthat = 1.153
-	if SERVER then
-		return math.floor(expreq + (ply.MasteryPvPLevel * addxpprlevel) ^ whatisthat)
-	else
-		return math.floor(expreq + (MyMPvplvl  * addxpprlevel) ^ whatisthat)
-	end
+	local addexpperlevel2 = 1.153
+
+	local mlvl = SERVER and ply.MasteryPvPLevel or MyMPvplvl
+
+	return math.floor(expreq + (mlvl * addxpprlevel) ^ addexpperlevel2)
 end
 
 function GetPerk(perk)
@@ -174,8 +171,8 @@ end
 
 function GM:StartCommand(ply, cmd)
 
-	if cmd == "+jump" then
-	end
+--	if cmd == "+jump" then
+--	end
 --	cmd:ClearMovement()
 --	cmd:ClearButtons()
 end
@@ -215,16 +212,6 @@ function util.ToMinutesSecondsMilliseconds(seconds)
 end
 
 
-/*
-function GM:ProcessToTime_HHMMSS(value) -- abandoned
-	local hours = math.floor(value / 3600)
-	local minutes = math.floor((value / 60) - (hours * 60))
-	local seconds = value - ((hours * 3600) + (minutes * 60))
-
-	return hours, minutes, seconds
-end
-*/
-
 function GM:GetInfectionLevel(bypass)
 	if not bypass and !self.InfectionLevelEnabled then return 0 end
 	return tonumber(GetGlobalFloat("tea_infectionlevel", 0))
@@ -239,7 +226,7 @@ end
 function GM:GetInfectionMul(value, bypass)
 	if not bypass and !self.InfectionLevelEnabled then return 0 end
 	value = value or 1
-	return tonumber(1 + (self:GetInfectionLevel() * 0.01))
+	return tonumber(1-value + (1 + (self:GetInfectionLevel() * 0.01)) * value)
 --	return tonumber((1 * value) + (self:GetInfectionLevel() * (0.01 / value)))
 end
 
@@ -247,6 +234,7 @@ function GM:GetDebug()
 	return SERVER and self.DebuggingMode or CLIENT and self.DebuggingModeClient or 0
 end
 
+-- Work in progress
 function GM:GetMinigame()
 	return GetGlobalString("tea_current_gamemode_minigame", "none")
 end

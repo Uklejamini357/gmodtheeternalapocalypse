@@ -2,44 +2,46 @@
 
 GM.DataFolder = "theeternalapocalypse"
 
--- self explanatory. to edit xp requirement for levels go to shared.lua and edit function GetReqXP
+-- self explanatory. to edit xp requirement for levels go to shared.lua and edit function GetReqXP. Default: 40
 GM.MaxLevel = 40
 
--- Additional number of levels needed per every prestige level 
+-- Additional number of levels needed per every prestige level. Default: 3
 GM.LevelsPerPrestige = 3
 
--- i don't feel like i have to explain about this one
+-- i don't feel like i have to explain about this one. Default: 45
 GM.MaxZombies = 45
 
--- Max distance from players in hammer units zombies can spawn
+-- Max distance from players in hammer units zombies can spawn. Default: 6000
 GM.MaxZombieSpawnDistance = 6000
 
--- Max distance from players that zombies can wander from nearest players. If zombies are too far away, they are removed.
+-- Max distance from players that zombies can wander from nearest players. If zombies are too far away, they are removed. Default: 7000
 GM.MaxZombieWanderingDistance = 7000
 
 -- Should give ammo back that remain in clip?
 -- If enabled, dropping weapon from inventory will give ammo that remains in clip, if having weapon.
 -- Does not count for weapons that does not use any ammo
+-- Default: true
 GM.GiveAmmoOnDropWeapon = true
 
--- Minimal required player count for boss to spawn
+-- Minimal required player count for boss to spawn. Default: 2
 GM.MinPlayersBossRequired = 2
 
--- Minimal required player count for airdrop event to be called
+-- Minimal required player count for airdrop event to be called. Default: 5
 GM.MinPlayersAirdropRequired = 5
 
+-- Play death sound if player dies. Default: true
 GM.DeathSounds = true
 
--- Infection Level. Manipulates between many things if players are continously killing zombies.
+-- Infection Level. Manipulates between many things if players are continously killing zombies. Default: true
 GM.InfectionLevelEnabled = true
 
--- Infection Level gaining mul.
+-- Infection Level gaining mul. Default: 1
 GM.InfectionLevelGainMul = 1
 
--- Should infection level NOT decrease? Suggesting for setting to true if doing events.
+-- Should infection level NOT decrease? Suggesting for setting to true if doing events. Default: false
 GM.InfectionLevelShouldNotDecrease = false
 
--- Should players lose XP if they die to zombie? Only 1% of their XP is lost.
+-- Should players lose XP if they die to zombie? Only 1% of their XP is lost. Default: true
 GM.PlayerLoseXPOnDeath = true
 
 -------- CONFIG --------
@@ -72,7 +74,7 @@ GM.Config = {
 	["StartMoney"] = 500,
 
 	-- fresh zombies will be spawned in every x seconds
-	["ZombieSpawnRate"] = 8, -- increased due to new infection level system
+	["ZombieSpawnRate"] = 11,
 	-- how fast the boss spawn timer will be run in seconds. Keep in mind that if there is less than 2 players online then the boss will not spawn
 	["BossSpawnRate"] = 3150,
 	-- same as boss spawn rate but for airdrops except required amount of players for an airdrop to spawn is 5 or more
@@ -268,7 +270,7 @@ GM.Config["BossClasses"] = {
 		SpawnDelay = 14, -- how long to wait before actually spawning it, gives the radio message time to play out
 		AnnounceMessage = "[BOSS]: The Tyrant has appeared!",
 		BroadCast = function()
-			GAMEMODE:RadioBroadcast(0.5, "This is an urgent broadcast on all bands!", "Watchdog", true)
+			GAMEMODE:RadioBroadcast(0, "This is an urgent broadcast on all bands!", "Watchdog", true)
 			GAMEMODE:RadioBroadcast(4, "Siesmic readings are showing a massive quadruped approaching the area, most likely a tyrant.", "Watchdog", false)
 			GAMEMODE:RadioBroadcast(8, "It is currently inbound for this sector, so you better get inside something solid and make sure you have good amount of ammo.", "Watchdog", false)
 		end,
@@ -278,12 +280,12 @@ GM.Config["BossClasses"] = {
 	["npc_tea_boss_lordking"] = {
 		Name = "Zombie Lord King",
 		SpawnChance = 40,
-		XPReward = 8000,
+		XPReward = 7500,
 		MoneyReward = 6250,
 		SpawnDelay = 15,
 		AnnounceMessage = "[BOSS]: The Zombie Lord King has appeared!",
 		BroadCast = function()
-			GAMEMODE:RadioBroadcast(0.5, "This is an urgent broadcast for all the survivors out there!", "Watchdog", true)
+			GAMEMODE:RadioBroadcast(0, "This is an urgent broadcast for all the survivors out there!", "Watchdog", true)
 			GAMEMODE:RadioBroadcast(4.5, "We have spotted a Mutated Lord Zombie, tougher than the other variants. It got an ability to teleport nearby zombies.", "Watchdog", false)
 			GAMEMODE:RadioBroadcast(9, "It will arrive into the area, so prepare a good barricade, multiple layers of barricades and plenty of ammo.", "Watchdog", false)
 		end,
@@ -383,18 +385,133 @@ GM.Config["Vehicles"] = {
 }
 
 
--- IN PROGRESS, DO NOT EDIT. IT'S STILL NOT WORKING.
--- MORE WILL BE ADDED SOON. MOSTLY FROM PRESTIGE PERKS.
-/*
+-- Perks list.
+
 GM.PerksList = {
-	["healthbonus"] = {
-		Name = "Health bonus",
-		Decription = "Increase your max health by +5",
+	["healthboost"] = {
+		Name = "Health boost I",
+		Description = "Increase your max health by +5 points",
 		Cost = 1,
 		PrestigeReq = 1,
 	},
+
+	["healthboost2"] = {
+		Name = "Health boost II",
+		Description = "Increase your max health by +8 points",
+		Cost = 2,
+		PrestigeReq = 4,
+	},
+
+	["weightboost"] = {
+		Name = "Weight boost I",
+		Description = "Increase your max carrying capacity by +1.5kg",
+		Cost = 1,
+		PrestigeReq = 1,
+	},
+
+	["weightboost2"] = {
+		Name = "Weight boost II",
+		Description = "Increase your max carrying capacity by +2.5kg",
+		Cost = 1,
+		PrestigeReq = 4,
+	},
+
+	["weightboost3"] = {
+		Name = "Weight boost III",
+		Description = "Increase your max carrying capacity by +3.5kg",
+		Cost = 2,
+		PrestigeReq = 7,
+	},
+
+	["xpboost"] = {
+		Name = "XP gain boost I",
+		Description = "Increase your XP gain rate by +10%",
+		Cost = 3,
+			PrestigeReq = 6,
+	},
+
+	["xpboost2"] = {
+		Name = "XP gain boost II",
+		Description = "Increase your XP gain rate by +15%",
+		Cost = 5,
+		PrestigeReq = 16,
+	},
+
+	["jumpboost"] = {
+		Name = "Jump boost I",
+		Description = "Increase your jump power by 10 units.",
+		Cost = 1,
+		PrestigeReq = 2,
+	},
+
+	["cashboost"] = {
+		Name = "Cash gain boost I",
+		Description = "Increase your cash gain rate by +5% from zombies.",
+		Cost = 1,
+		PrestigeReq = 2,
+	},
+
+	["cashboost2"] = {
+		Name = "Cash gain boost II",
+		Description = "Increase your cash gain rate by +8% from zombies.",
+		Cost = 2,
+		PrestigeReq = 5,
+	},
+
+	["skillpointsbonus"] = {
+		Name = "Bonus skill points I",
+		Description = "On prestige, you gain additional 3 skill points.",
+		AddDescription = "WARNING: UNLOCKING THIS NOW DOES NOT AFFECT THE CURRENT PRESTIGE!!",
+		Cost = 1,
+		PrestigeReq = 4,
+	},
+
+	["criticaldamage"] = {
+		Name = "Critical Damage",
+		Description = "Increased damage by 1.2x damage with 1 in 15 chance on inflicting damage.",
+		Cost = 1,
+		PrestigeReq = 5,
+	},
+
+	["skillpointsbonus2"] = {
+		Name = "Bonus skill points II",
+		Description = "On prestige, you gain additional 7 skill points.",
+		AddDescription = "WARNING: UNLOCKING THIS NOW DOES NOT AFFECT THE CURRENT PRESTIGE!!",
+		Cost = 3,
+		PrestigeReq = 11,
+	},
+
+	["damageresistance"] = {
+		Name = "Damage Resistance",
+		Description = "-7.5% damage taken from all sources",
+		Cost = 2,
+		PrestigeReq = 7,
+	},
+
+	["celestiality"] = {
+		Name = "Celestiality",
+		Description = "+10% damage dealt to elite variant zombies. Otherwise, +3% damage to zombies. Does not affect bosses.",
+		GetTextColor = function()
+			return Color(255,255,175)
+		end,
+		KeepUpdatingColor = false,
+		Cost = 2,
+		PrestigeReq = 7,
+	},
+
+	["bountyhunter"] = {
+		Name = "Bounty Hunter",
+		Description = "You steal 50% of killed player's bounty. Hover for more info",
+		AddDescription = "You steal 50% of killed player's bounty. This also makes killed player drop 50% less bounty as cash.\nKilling elite variants or bosses also give +15% cash bonus and +10% XP bonus.\nIf the boss zombie has elite variant, the bonus works twice as efficient.",
+		Cost = 2,
+		PrestigeReq = 7,
+	},
+
+
+
+
 }
-*/
+
 
 -- Default player models, in other words, what new players look like before they buy armor
 GM.DefaultModels = {

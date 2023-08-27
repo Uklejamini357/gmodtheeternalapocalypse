@@ -320,11 +320,16 @@ function GM:NPCReward(ent)
 	local ct = CurTime()
 
 	local attacker = ent.LastAttacker
+	local isvariant = ent:GetEliteVariant() ~= 0
+	local isboss = ent.BossMonster and ent.DamagedBy
 	if !ent.TEA_DeadNPC and (ent:IsNextBot() or ent:IsNPC()) and (ent.XPReward and ent.MoneyReward) then
-		if !ent.BossMonster and attacker and attacker:IsValid() then
+		if !isboss and attacker and attacker:IsValid() then
+			local plyhasperk = attacker.UnlockedPerks["bountyhunter"]
+			local xp = ent.XPReward * self.XPGainMul * GAMEMODE:GetInfectionMul() * math.Round(1 + (attacker.StatKnowledge * 0.025), 3)
+			local cash = ent.MoneyReward * self.CashGainMul * (0.5 + (GAMEMODE:GetInfectionMul() * 0.5)) * (self:CashBonus(attacker) or 1) * math.Round(1 + (attacker.StatSalvage * 0.025), 3)
 			GAMEMODE:Payout(attacker,
-				ent.XPReward * self.XPGainMul * GAMEMODE:GetInfectionMul() * math.Round(1 + (attacker.StatKnowledge * 0.025), 3),
-				ent.MoneyReward * self.CashGainMul * (0.5 + (GAMEMODE:GetInfectionMul() * 0.5)) * (self:CashBonus(attacker) or 1) * math.Round(1 + (attacker.StatSalvage * 0.025), 3)
+				xp * (plyhasperk and (isvariant and 1.1 or 1) or 1),
+				cash * (plyhasperk and (isvariant and 1.15 or 1) or 1)
 			)
 			attacker.ZKills = attacker.ZKills + 1
 			attacker.LifeZKills = attacker.LifeZKills + 1
@@ -347,14 +352,15 @@ function GM:NPCReward(ent)
 				if !attacker:IsValid() then return end
 				attacker.ZombieKillStreak = 0
 			end)
-		elseif ent.BossMonster and ent.DamagedBy then
+		elseif isboss then
 			for pl, v in pairs(ent.DamagedBy) do
 				if !pl:IsValid() or !pl:IsPlayer() then continue end
+				local plyhasperk = pl.UnlockedPerks["bountyhunter"]
 				local payxp = tonumber(math.min(v, ent:GetMaxHealth()) * ent.XPReward / ent:GetMaxHealth())
 				local paycash = tonumber(math.min(v, ent:GetMaxHealth()) * ent.MoneyReward / ent:GetMaxHealth())
 				self:Payout(pl,
-					math.Round(payxp * self.XPGainMul * self:GetInfectionMul()),
-					math.Round(paycash * self.CashGainMul * (0.5 + (GAMEMODE:GetInfectionMul() * 0.5)) * (self:CashBonus(pl) or 1))
+					math.Round(payxp * self.XPGainMul * self:GetInfectionMul() * (plyhasperk and (isvariant and 1.2 or 1.1) or 1)),
+					math.Round(paycash * self.CashGainMul * (0.5 + (GAMEMODE:GetInfectionMul() * 0.5)) * (self:CashBonus(pl) or 1) * (plyhasperk and (isvariant and 1.3 or 1.15) or 1))
 				)
 				pl:PrintMessage(HUD_PRINTTALK, Format("Damage dealt to boss: %s (%s%% damage)", math.Round(v), math.Round((v * 100) / ent:GetMaxHealth())))
 			end

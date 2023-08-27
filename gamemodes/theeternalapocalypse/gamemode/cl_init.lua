@@ -21,6 +21,7 @@ include("client/cl_bosspanel.lua")
 include("client/cl_options.lua")
 include("client/cl_changelogs.lua")
 include("client/cl_mainmenu.lua")
+include("client/cl_perksmenu.lua")
 
 include("client/cl_net.lua")
 include("cl_killicons.lua")

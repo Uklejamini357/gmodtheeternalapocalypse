@@ -1,4 +1,4 @@
-SWEP.Base 				= "weapon_mad_base"
+SWEP.Base 				= "weapon_tea_base"
 
 SWEP.ViewModel			= "models/weapons/cstrike/c_rif_famas.mdl"
 SWEP.WorldModel			= "models/weapons/w_rif_famas.mdl"

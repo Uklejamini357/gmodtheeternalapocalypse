@@ -13,7 +13,7 @@ function GM:OnContextMenuClose()
 	ContextMenu:Remove()
 end
 
-
+local dynprogress = 0
 function GM:CMenu()
 	local scw = ScrW()
 	local sch = ScrH()
@@ -94,16 +94,85 @@ function GM:CMenu()
 
 		end
 
+		if self.InfectionLevelEnabled then
+			surface.SetDrawColor(0, 0, 0, 105)
+			surface.DrawRect(scw - 600, sch / 2 - 150, 400, 300)
+			surface.SetDrawColor(150, 150, 0, 105)
+			surface.DrawOutlinedRect(scw - 600, sch / 2 - 150, 400, 300)
+/*
+			surface.SetDrawColor(0, 0, 0, 200)
+			surface.DrawRect(140, 115, 180, 25)
+			surface.SetDrawColor(90, 90, 0, 255)
+			surface.DrawOutlinedRect(140, 115, 180, 25)
+*/
+			local infection = math.Round(self:GetInfectionLevel(), 2)
+			local text,color
+
+			if infection > 200 then
+				text,color = "Chaotic", Color(91,31,31)
+			elseif infection > 150 then
+				text,color = "Nightmare", Color(127,31,31)
+			elseif infection > 125 then
+				text,color = "Horror", Color(191,31,31)
+			elseif infection >= 100 then
+				text,color = "Maximal", Color(255,0,0)
+			elseif infection > 90 then
+				text,color = "Infected", Color(255,63,63)
+			elseif infection > 75 then
+				text,color = "Very hard", Color(255,127,127)
+			elseif infection > 55 then
+				text,color = "Hard", Color(191,127,127)
+			elseif infection > 25 then
+				text,color = "Normal", Color(191,191,127)
+			elseif infection > 10 then
+				text,color = "Average", Color(127,255,127)
+			else
+				text,color = "Easy", Color(127,255,255)
+			end
+
+
+			draw.SimpleText(Format("Infection level: %s%%", infection), "TargetID", scw - 590, sch / 2 - 145, color, 0, 0)
+
+			draw.SimpleText(Format("Difficulty level: %s", text), "TargetIDSmall", scw - 590, sch / 2 - 120, color, 0, 0)
+			draw.SimpleText(Format("Zombies take: %s%% damage", math.Round(1 / GAMEMODE:GetInfectionMul()*100, 2)), "TargetIDSmall", scw - 590, sch / 2 - 105, color, 0, 0)
+			draw.SimpleText(Format("Zombies deal: %s%% damage", math.Round(GAMEMODE:GetInfectionMul(0.5)*100, 2)), "TargetIDSmall", scw - 590, sch / 2 - 90, color, 0, 0)
+			draw.SimpleText(Format("Zombie cash reward: %s%%", math.Round(GAMEMODE:GetInfectionMul(0.5)*100, 2)), "TargetIDSmall", scw - 590, sch / 2 - 75, color, 0, 0)
+			draw.SimpleText(Format("Zombie xp reward: %s%%", math.Round(GAMEMODE:GetInfectionMul()*100, 2)), "TargetIDSmall", scw - 590, sch / 2 - 60, color, 0, 0)
+		end
 
 		surface.DrawCircle(panel:GetWide() / 2, panel:GetTall() / 2, 150, Color(100, 100, 100, 205))
 		surface.DrawCircle(panel:GetWide() / 2, panel:GetTall() / 2, 140, Color(100, 100, 100, 205))
 
-
+	
 	end
 	ContextMenu.Think = function()
 	end
 	ContextMenu:MakePopup()
 	ContextMenu:SetKeyboardInputEnabled(false)
+
+
+	local ContextMenu2 = vgui.Create("DFrame", ContextMenu)
+	ContextMenu2:SetSize(scw * 0.6, 30)
+	ContextMenu2:SetPos(scw * 0.2, 70)
+	ContextMenu2:SetTitle("")
+	ContextMenu2:SetToolTip("Progress to Prestige")
+	ContextMenu2:SetDraggable(false)
+	ContextMenu2:ShowCloseButton(false)
+	ContextMenu2.Paint = function(panel)
+		surface.SetDrawColor(0, 0, 0, 105)
+		surface.DrawRect(0, 0, panel:GetWide(), panel:GetTall())
+		surface.SetDrawColor(150, 150, 0, 105)
+		surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
+
+		local progress = math.min(1, (MyLvl - 1 + (MyXP / self:GetReqXP())) / (self.MaxLevel + (MyPrestige * self.LevelsPerPrestige) - 1))
+		dynprogress = math.Approach(dynprogress, progress, math.Round((progress - dynprogress) * 0.04, 6))
+
+		surface.SetDrawColor(50, 150, 150, 205)
+		surface.DrawRect(0, 0, dynprogress * panel:GetWide(), panel:GetTall())
+
+		draw.SimpleText(string.format("%s%%", math.Round(dynprogress * 100, 2)), "TargetID", dynprogress * panel:GetWide() * 0.5, panel:GetTall() * 0.5, Color(80, 255, 255, 205), dynprogress > 0.5 and TEXT_ALIGN_CENTER or TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+	end
+
 
 
 	local buttonsize_x, buttonsize_y = 120, 40
@@ -141,22 +210,21 @@ function GM:CMenu()
 		self:WantToPrestige()
 	end
 
-	local changelog = vgui.Create("DButton", ContextMenu)
-	changelog:SetSize(buttonsize_x, buttonsize_y)
-	changelog:Center()
-	x,y = changelog:GetPos()
-	changelog:SetPos(x + 175, y + 125)
-	changelog:SetText("Changelogs")
-	changelog:SetToolTip("Will be replaced with \"Perks\" button")
-	changelog:SetTextColor(Color(255, 255, 255, 255))
-	changelog.Paint = function(panel)
+	local perks = vgui.Create("DButton", ContextMenu)
+	perks:SetSize(buttonsize_x, buttonsize_y)
+	perks:Center()
+	x,y = perks:GetPos()
+	perks:SetPos(x + 175, y + 125)
+	perks:SetText("Perks")
+	perks:SetTextColor(Color(255, 255, 255, 255))
+	perks.Paint = function(panel)
 		surface.SetDrawColor(150, 250, 0, 255)
 		surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
 		draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(0, 0, 0, 130))
 	end
-	changelog.DoClick = function()
+	perks.DoClick = function()
 		RunConsoleCommand("-menu_context")
-		gamemode.Call("MakeChangeLogs")
+		gamemode.Call("CallPerksMenu")
 	end
 
 	local refreshinv = vgui.Create("DButton", ContextMenu)
@@ -289,45 +357,44 @@ end
 
 
 function GM:WantToPrestige()
-	local WantToPrestigeFrame = vgui.Create("DFrame")
-	WantToPrestigeFrame:SetSize(700,400)
-	WantToPrestigeFrame:Center()
-	WantToPrestigeFrame:SetTitle("Prestiging information panel")
-	WantToPrestigeFrame:SetDraggable(false)
-	WantToPrestigeFrame:SetVisible(true)
-	WantToPrestigeFrame:SetAlpha(0)
-	WantToPrestigeFrame:AlphaTo(255, 0.5, 0)
-	WantToPrestigeFrame:ShowCloseButton(true)
-	WantToPrestigeFrame:MakePopup()
-	WantToPrestigeFrame.Paint = function()
-		draw.RoundedBox(2, 0, 0, WantToPrestigeFrame:GetWide(), WantToPrestigeFrame:GetTall(), Color(0, 0, 0, 200))
+	local pframe = vgui.Create("DFrame")
+	pframe:SetSize(560,340)
+	pframe:Center()
+	pframe:SetTitle("Prestiging information panel")
+	pframe:SetDraggable(false)
+	pframe:SetVisible(true)
+	pframe:SetAlpha(0)
+	pframe:AlphaTo(255, 0.5, 0)
+	pframe:ShowCloseButton(true)
+	pframe:MakePopup()
+	pframe.Paint = function(panel)
+		draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(0, 0, 0, 200))
 		surface.SetDrawColor(150,150,0,255)
-		surface.DrawOutlinedRect(0, 0, WantToPrestigeFrame:GetWide(), WantToPrestigeFrame:GetTall())
+		surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
 	end
 
-	local prestigetext = vgui.Create("DLabel", WantToPrestigeFrame)
+	local prestigetext = vgui.Create("DLabel", pframe)
 	prestigetext:SetFont("TargetIDSmall")
 	prestigetext:SetColor(Color(205,205,205,255))
 	prestigetext:SetWrap(true)
-	prestigetext:SetText("Prestiging allows you to gain more levels depending on your Prestige level. It will also give you some advantage, depending on your Prestige. You need to be at least level "..self.MaxLevel + (MyPrestige * self.LevelsPerPrestige).." ("..self.MaxLevel.." plus "..self.LevelsPerPrestige.." depending on prestige) to prestige. Additionally, if you prestige to a level that doesn't grant any additional buffs, you will gain cash instead.\n\
-Prestige 1 = Gain 5% more overall cash from killing zombies\
-Prestige 2 = Spawn with 5 additional health\
-Prestige 3 = +2kg max carry weight\
-Prestige 4 = Jump +10 units higher\
-Prestige 5 = Spawn with 5 additional armor\
-Prestige 6 = +3kg max carry weight\
-Prestige 8 = Take 5% less damage from all sources\
-Prestige 10 = Start with 5 skill points every prestige\
-Prestige 15 = Gain XP at 1.1x multiplier\
-\
-In progress: Add perk points gained from prestiging for various buffs")
-	prestigetext:SetSize(680, 240)
+	prestigetext:SetText("Prestiging allows you to gain more levels depending on your Prestige level. You will also be given some cash and a perk point if you prestige. You need to be at least level "..self.MaxLevel + (MyPrestige * self.LevelsPerPrestige).." ("..self.MaxLevel.." plus "..self.LevelsPerPrestige.." depending on prestige) in order to prestige.\n\
+Prestige 5 = Spawn with 5 additional armor")
+	prestigetext:SetSize(540, 140)
 	prestigetext:SetPos(10,30)
 
+	local prestigetext2 = vgui.Create("DLabel", pframe)
+	prestigetext2:SetFont("TargetIDSmall")
+	prestigetext2:SetColor(Color(205,205,205,255))
+	prestigetext2:SetWrap(true)
+	prestigetext2:SetText(Format("You may %sprestige.", MyLvl >= (self.MaxLevel + (self.LevelsPerPrestige * MyPrestige)) and "" or "not "))
+	prestigetext2:SetSize(540, 240)
+	prestigetext2:SetPos(10,30)
+
+
 	local shouldprestige
-	local doprestige = vgui.Create("DButton", WantToPrestigeFrame)
+	local doprestige = vgui.Create("DButton", pframe)
 	doprestige:SetSize(120, 40)
-	doprestige:SetPos(290, 340)
+	doprestige:SetPos(220, 280)
 	doprestige:SetText(translate.Get("doprestige2"))
 	doprestige:SetTextColor(Color(255, 255, 255, 255))
 	doprestige.Paint = function(panel)
@@ -337,65 +404,25 @@ In progress: Add perk points gained from prestiging for various buffs")
 	end
 	doprestige.DoClick = function(panel)
 		local levelrequiredforprestige = self.MaxLevel + (self.LevelsPerPrestige * MyPrestige)
-		if shouldprestige and MyLvl >= levelrequiredforprestige then
-			WantToPrestigeFrame:Remove()
+		if shouldprestige then
+			pframe:Remove()
 --			gamemode.Call("ConfirmPrestige")
 			net.Start("Prestige")
 			net.SendToServer()
 		elseif MyLvl >= levelrequiredforprestige then
 			panel:SetText("ARE YOU SURE?")
 			prestigetext:SetText("WARNING: Once you prestige, there is no return! Your levels and skills will be reset and skill points will not be refunded! Are you really sure you want to prestige??")
+			prestigetext2:SetVisible(false)
 			shouldprestige = true
 		else
-			WantToPrestigeFrame:Remove()
+			pframe:Remove()
 			chat.AddText(Color(255,255,255,255), "[System] ", Color(255,155,155,255), "You must be at least level "..levelrequiredforprestige.." to prestige!")
 			surface.PlaySound("buttons/button10.wav")
 		end
 	end
 end
-/*
-function GM:ConfirmPrestige()
-	local PrestigeFrame = vgui.Create("DFrame")
-	PrestigeFrame:SetSize(300, 200)
-	PrestigeFrame:Center()
-	PrestigeFrame:SetTitle("Prestige?")
-	PrestigeFrame:SetDraggable(false)
-	PrestigeFrame:SetVisible(true)
-	PrestigeFrame:SetAlpha(0)
-	PrestigeFrame:AlphaTo(255, 0.5, 0)
-	PrestigeFrame:ShowCloseButton(true)
-	PrestigeFrame:MakePopup()
-	PrestigeFrame.Paint = function()
-		draw.RoundedBox(2, 0, 0, PrestigeFrame:GetWide(), PrestigeFrame:GetTall(), Color(0, 0, 0, 200))
-		surface.SetDrawColor(150, 150, 0, 255)
-		surface.DrawOutlinedRect(0, 0, PrestigeFrame:GetWide(), PrestigeFrame:GetTall())
-	end
 
-	local confirmprestigetext = vgui.Create("DLabel", PrestigeFrame)
-	confirmprestigetext:SetFont("TargetIDSmall")
-	confirmprestigetext:SetColor(Color(205,205,205,255))
-	confirmprestigetext:SetWrap(true)
-	confirmprestigetext:SetPos(10, 20)
-	confirmprestigetext:SetSize(280, 100)
-	confirmprestigetext:SetText("ARE YOU SURE?\nThis will reset your level and your skills!\nYou will gain 1 prestige, but skill points will not be refunded!\nThis cannot be undone!")
 
-	local confirmprestige = vgui.Create("DButton", PrestigeFrame)
-	confirmprestige:SetSize(120, 40)
-	confirmprestige:SetPos(90, 140)
-	confirmprestige:SetText("Do it!")
-	confirmprestige:SetTextColor(Color(255, 255, 255, 255))
-	confirmprestige.Paint = function(panel)
-		surface.SetDrawColor(150, 150, 0, 255)
-		surface.DrawOutlinedRect(0, 0, confirmprestige:GetWide(), confirmprestige:GetTall())
-		draw.RoundedBox(2, 0, 0, confirmprestige:GetWide(), confirmprestige:GetTall(), Color(0, 0, 0, 130))
-	end
-	confirmprestige.DoClick = function()
-		PrestigeFrame:Remove()
-		net.Start("Prestige")
-		net.SendToServer()
-	end
-end
-*/
 function GM:DropGoldMenu()
 	if IsValid(AdarFrame) then AdarFrame:Remove() end
 	AdarFrame = vgui.Create("DFrame")

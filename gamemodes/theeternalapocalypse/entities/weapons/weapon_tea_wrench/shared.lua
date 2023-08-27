@@ -1,4 +1,4 @@
-SWEP.Base				= "weapon_melee_base"
+SWEP.Base				= "weapon_tea_base_melee"
 SWEP.Category			= "AtE Weapons"
 SWEP.Purpose			= "Build unbuilt props and repair damaged props"
 SWEP.Instructions		= "Becomes more effective if you level your engineer skill. You can also use it as a bashing weapon but it isn't very effective."

@@ -339,10 +339,10 @@ GM.LootTableFaction = {
 		["Class"] = "weapon_tea_dammerung",
 	},
 
-	["m9k_ak47"] = {
-		["Qty"] = 1,
+	["item_money"] = {
+		["Qty"] = 3000,
 		["Chance"] = 0,
-		["Class"] = "m9k_ak47",
+		["Class"] = "item_money",
 	},
 
 }
@@ -418,7 +418,10 @@ GM.LootTable.Food = {
 	"item_melon",
 	"item_donut",
 	"item_energydrink",
-	"item_energydrink_nonstop"
+	"item_energydrink_nonstop",
+
+-- before, this was in tyrant weapons loot table, but this was too less to be worth it, so it was moved here.
+	"item_hotdog",
 }
 
 GM.LootTable.Meds = {
@@ -454,6 +457,7 @@ GM.LootTable.Ammo = {
 	"weapon_tea_grenade_frag",
 }
 
+-- 100% to get one of the following weapons.
 GM.LootTable.NewbieWeapons = {
 	"weapon_tea_pigsticker",
 	"weapon_tea_axe",
@@ -473,10 +477,9 @@ GM.LootTable.TyrantWeapons = {
 	"weapon_tea_scrapcrossbow",
 	"weapon_tea_punisher",
 	"weapon_tea_blackhawk",
-	"item_hotdog",
-	"item_burger",
 	"weapon_tea_k8c",
 	"weapon_tea_germanator",
+	"item_burger",
 }
 
 -- faction weapons are acquired from destroying enemy faction bases
@@ -491,4 +494,13 @@ GM.LootTable.FactionWeapons = {
 GM.LootTable.SpecialWeapons = {
 	"weapon_tea_crowbar", -- to get this thing you need to get lucky
 	"weapon_tea_fuckinator",
+}
+
+-- Rare weapons, only 10% chance to get one of those
+GM.LootTable.RareWeapons = {
+	"weapon_tea_ar2",
+	"m9k_vector",
+	"m9k_mp9",
+	"m9k_m3",
+	"m9k_jackhammer",
 }

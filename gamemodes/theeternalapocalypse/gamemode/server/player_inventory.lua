@@ -14,15 +14,10 @@ end
 function GM:CalculateMaxWeight(ply)
 	local armorstr = ply:GetNWString("ArmorType") or "none"
 	local armortype = self.ItemsList[armorstr]
-	local maxweight = 0
-	local defaultcarryweight = self.Config["MaxCarryWeight"]
 	if ply.StatsPaused then return 1e300 end
-	if ply:GetNWString("ArmorType") == "none" then
-		maxweight = defaultcarryweight + (tonumber(ply.Prestige) >= 6 and 5 or tonumber(ply.Prestige) >= 3 and 2 or 0) + ((ply.StatStrength or 0) * 1.53)
-	else
-		maxweight = defaultcarryweight + (tonumber(ply.Prestige) >= 6 and 5 or tonumber(ply.Prestige) >= 3 and 2 or 0) + ((ply.StatStrength or 0) * 1.53) + armortype["ArmorStats"]["carryweight"]
-	end
-	return maxweight
+
+	return self.Config["MaxCarryWeight"] + (ply.UnlockedPerks["weightboost"] and 1.5 or 0) + (ply.UnlockedPerks["weightboost2"] and 2.5 or 0) + (ply.UnlockedPerks["weightboost3"] and 3.5 or 0)
+		+ ((ply.StatStrength or 0) * 1.53) + (ply:GetNWString("ArmorType") ~= "none" and armortype["ArmorStats"]["carryweight"] or 0)
 end
 
 function GM:CalculateRemainingInventoryWeight(ply, weight)
@@ -56,8 +51,8 @@ function GM:LoadPlayerInventory(ply)
 			InvalidData = file.Read(self.DataFolder.."/players/"..string.lower(string.gsub( ply:SteamID(), ":", "_").."/invalid_inventory.txt"), "DATA")
 		end
 	elseif self.Config["FileSystem"] == "PData" then
-		LoadedData = ply:GetPData("ate_playerinventory")
-		InvalidData = ply:GetPData("ate_invalidinventory")
+		LoadedData = ply:GetPData("tea_playerinventory")
+		InvalidData = ply:GetPData("tea_invalidinventory")
 	else
 		print("Bruh, did you try to setup incorrectly? Set your damned filesystem option to a proper setting in sh_config.lua")
 	end
@@ -107,13 +102,17 @@ function GM:SavePlayerInventory(ply)
 		local invaliddata = util.TableToJSON(ply.InvalidInventory)
 		file.Write(self.DataFolder.."/players/"..string.lower(string.gsub(ply:SteamID(), ":", "_")).."/inventory.txt", data)
 		file.Write(self.DataFolder.."/players/"..string.lower(string.gsub(ply:SteamID(), ":", "_")).."/invalid_inventory.txt", invaliddata)
-		print(Format("✓ %s inventory saved into database", ply:Nick()))
+		if self:GetDebug() >= DEBUGGING_NORMAL then
+			print(Format("✓ %s inventory saved", ply:Nick()))
+		end
 	elseif self.Config["FileSystem"] == "PData" then
 		local formatted = util.TableToJSON(ply.Inventory)
 		local invaliddata = util.TableToJSON(ply.InvalidInventory)
-		ply:SetPData("ate_playerinventory", formatted)
-		ply:SetPData("ate_invalidinventory", invaliddata)
-		print(Format("✓ %s inventory saved to PData", ply:Nick()))
+		ply:SetPData("tea_playerinventory", formatted)
+		ply:SetPData("tea_invalidinventory", invaliddata)
+		if self:GetDebug() >= DEBUGGING_NORMAL then
+			print(Format("✓ %s inventory saved", ply:Nick()))
+		end
 	else
 		print("Bruh, did you try to setup incorrectly? Set your damned filesystem option to a proper setting in sh_config.lua")
 	end
@@ -136,6 +135,7 @@ Set ConVar 'tea_server_dbsaving' to 1 in order to enable database saving.
 				self:SavePlayer(ply)
 				self:SavePlayerInventory(ply)
 				self:SavePlayerVault(ply)
+				self:SavePlayerPerks(ply)
 			end)
 			i = i + 0.5
 		end

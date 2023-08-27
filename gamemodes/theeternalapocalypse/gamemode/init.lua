@@ -33,6 +33,7 @@ AddCSLuaFile("client/cl_options.lua")
 AddCSLuaFile("client/cl_changelogs.lua")
 AddCSLuaFile("client/cl_deathscreen.lua")
 AddCSLuaFile("client/cl_mainmenu.lua")
+AddCSLuaFile("client/cl_perksmenu.lua")
 
 AddCSLuaFile("client/cl_net.lua")
 AddCSLuaFile("cl_killicons.lua")
@@ -54,6 +55,7 @@ include("server/config.lua")
 include("server/commands.lua") -- Drop cash, toggle pvp and such other commands
 include("server/player_data.lua") -- Data management for players
 include("server/player_inventory.lua") -- Player Inventory management for players
+include("server/player_perks.lua") -- Data manage with Perks system
 include("server/player_props.lua") -- Managing with props
 include("server/player_vault.lua") -- And vault
 include("server/npcspawns.lua") -- Zombie spawns
@@ -91,15 +93,15 @@ function GM:ShowSpare2(ply)
 end
 
 function GM:CalcMaxHealth(ply)
-	return 100 + (5 * (ply.StatVitality or 0)) + (tonumber(ply.Prestige or 0) >= 2 --[[tonumber(ply.UnlockedPerks["healthboost"])]] and 5 or 0)
+	return 100 + (5 * (ply.StatVitality or 0)) + (ply.UnlockedPerks["healthboost"] and 5 or 0) + (ply.UnlockedPerks["healthboost2"] and 8 or 0)
 end
 
 function GM:CalcMaxArmor(ply)
-	return 100 + (2 * (ply.StatEngineer or 0)) + (tonumber(ply.Prestige or 0) >= 5 and 5 or 0)
+	return 100 + (2 * (ply.StatEngineer or 0)) + (ply.UnlockedPerks["armorboost"] and 5 or 0) --(tonumber(ply.Prestige or 0) >= 5 and 5 or 0)
 end
 
 function GM:CalcJumpPower(ply)
-	return 160 + (2 * (ply.StatAgility or 0)) + (tonumber(ply.Prestige or 0) >= 4 and 10 or 0)
+	return 160 + (2 * (ply.StatAgility or 0)) + (ply.UnlockedPerks["jumppowerboost"] and 10 or 0) --(tonumber(ply.Prestige or 0) >= 4 and 10 or 0)
 end
 
 function GM:OnPlayerHitGround(ply, inWater, onFloater, speed)
@@ -356,6 +358,7 @@ function GM:PlayerDisconnected(ply)
 	self:SavePlayer(ply)
 	self:SavePlayerInventory(ply)
 	self:SavePlayerVault(ply)
+	self:SavePlayerPerks(ply)
 	for k,v in pairs(ents.GetAll()) do
 		if v:GetNWEntity("owner") == ply then v:Remove() end
 		if v.BossMonster and v.DamagedBy[ply] then v.DamagedBy[ply] = nil end
@@ -457,6 +460,7 @@ function GM:ShutDown()
 		self:SavePlayer(v)
 		self:SavePlayerInventory(v)
 		self:SavePlayerVault(v)
+		self:SavePlayerPerks(v)
 	end
 	print("WARNING! WARNING!! THE OBJECT IS GONE!!")
 	self:SaveServerData()
@@ -740,7 +744,7 @@ function GM:PlayerInitialSpawn(ply, transition)
 		ply.AchProgress[k] = 0
 	end
 
-	timer.Simple(0.1, function()
+	timer.Simple(0.01, function()
 		ply:KillSilent()
 		ply:SetPos(Vector(0,0,130000)) -- for main menu
 	end)
@@ -749,6 +753,7 @@ function GM:PlayerInitialSpawn(ply, transition)
 	gamemode.Call("LoadPlayer", ply)
 	gamemode.Call("LoadPlayerInventory", ply)
 	gamemode.Call("LoadPlayerVault", ply)
+	gamemode.Call("LoadPlayerPerks", ply)
 
 	ply:SetNWBool("pvp", false)
 	ply:SetNWString("ArmorType", "none")
@@ -759,7 +764,6 @@ function GM:PlayerInitialSpawn(ply, transition)
 	net.Send(ply)
 	self:NetUpdateStatistics(ply)
 
-	self:SystemBroadcast(translate.Format("plspawned", ply:Nick()), Color(255,255,155,255), false)
 	ForceEquipArmor(ply, ply.EquippedArmor)
 end
 

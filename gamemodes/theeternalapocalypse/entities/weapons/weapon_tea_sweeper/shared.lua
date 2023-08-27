@@ -1,4 +1,4 @@
-SWEP.Base 				= "weapon_mad_base_shotgun"
+SWEP.Base 				= "weapon_tea_base_shotgun"
 
 SWEP.ViewModelFlip		= false
 SWEP.ViewModel			= "models/weapons/cstrike/c_shot_xm1014.mdl"

@@ -1,4 +1,4 @@
-SWEP.Base 				= "weapon_mad_base"
+SWEP.Base 				= "weapon_tea_base"
 
 SWEP.ViewModelFOV		= "45"
 SWEP.ViewModel			= "models/weapons/cstrike/c_rif_galil.mdl"

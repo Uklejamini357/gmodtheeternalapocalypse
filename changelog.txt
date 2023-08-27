@@ -1,3 +1,26 @@
+-------- Ver. 0.11.1 of 22 August 2023 (There was no update for a looong time...) --------
+
++ Added start main menu
++ Added tasks system (They still don't work!)
++ Added perks system (If you joined the server from older version, you should get perk points depending on your prestige)
++ Added progress to pretige bar in C menu
+
+- Removed perks gained from prestige, they are now re-added as perks as mentioned above
+
+; Reworked aidrops: There now will be multiple airdrops, with increasing amount of items depending on player count!
+
+/ You can now reach only a maximum of level 100. No, the max level with 0 prestige will remain the same, only on high prestige it is changed.
+This makes it slightly easier to level up on higher prestige.
+
+= Increased damage for AR2 Pulse Rifle 26 -> 31 and added its' bullet hit effects.
+= Increased damage for AR2 Combine Pistol 17 -> 23 and added its' bullet hit effects.
+
+? News: New currency will be added soon, being "Gold".
+This is not a P2W element, as it will be obtainable within in-game mechanics!
+Servers may make events that will obtain you gold.
+? There are also other changes that 
+
+
 -------- Ver. 0.11.0 [Beta B] of 17 November 2022 --------
 
 + Added new convar that allows to set death sound volume (NOTE: CONVARS 'volume', 'volume_sfx' AND 'snd_musicvolume' VALUES STILL APPLY!! [depending on the sound type])

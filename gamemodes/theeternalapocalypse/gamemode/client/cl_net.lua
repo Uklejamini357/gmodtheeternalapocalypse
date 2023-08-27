@@ -123,5 +123,8 @@ net.Receive("tea_taskstatsupdate", function(len)
 	GAMEMODE.CurrentTask = task
 	GAMEMODE.CurrentTaskProgress = value
 	GAMEMODE.CurrentTaskCompleted = complete
+end)
 
+net.Receive("tea_perksupdate", function(len)
+	GAMEMODE.LocalPerks = net.ReadTable()
 end)

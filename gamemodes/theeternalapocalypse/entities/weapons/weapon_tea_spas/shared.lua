@@ -1,4 +1,4 @@
-SWEP.Base 				= "weapon_mad_base_shotgun"
+SWEP.Base 				= "weapon_tea_base_shotgun"
 
 SWEP.ViewModel			= "models/weapons/c_shotgun.mdl"
 SWEP.WorldModel			= "models/weapons/w_shotgun.mdl"

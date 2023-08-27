@@ -47,7 +47,7 @@ end
 
 function ENT:Use(ply, caller)
 	if self.Flying or self.nxtuse > CurTime() then return end
-	if !self:GetADOpenedStatus() and !self.Decoder then
+	if !self:GetADOpenedStatus() and !self:GetADOpeningStatus() and !self.Decoder then
 		self:EmitSound("buttons/blip2.wav", 100, 100)
 --		ply:SendUseDelay(12)
 		self.nxtuse = CurTime() + 0.5

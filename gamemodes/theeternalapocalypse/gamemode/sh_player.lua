@@ -41,11 +41,8 @@ function meta:SystemMessage(msg, color, sys)
 	net.WriteBool(sys or false)
 	net.Send(self)
 end
-/*
-function meta:ApplySkills()
-end
-*/
--- don't work for client yet!!
+
+-- not working for client yet!!
 function meta:IsNewbie()
 	return SERVER and tonumber(self.Level or 0) < 10 and tonumber(self.Prestige or 0) < 1
 end

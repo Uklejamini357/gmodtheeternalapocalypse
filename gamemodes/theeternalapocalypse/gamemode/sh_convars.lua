@@ -223,11 +223,17 @@ if CLIENT then
 		GAMEMODE:OnConVarChanged(cvar, old, new)
 	end, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_cl_notips")
 
-	GM.DrawZombiesInfo = CreateClientConVar("tea_cl_drawzinfo", 0, true, false, "Draw zombie info? (Name, Health and its' purpose (or what does it do))", 0, 1):GetBool()
+	GM.DrawZombiesInfo = CreateClientConVar("tea_cl_drawzinfo", 0, true, false, "Draw zombie info? (Name, Health and its' purpose (or what does it do)) Currently not working", 0, 1):GetBool()
 	cvars.AddChangeCallback("tea_cl_drawzinfo", function(cvar,old,new)
 		GAMEMODE.DrawZombiesInfo = tobool(new)
 		GAMEMODE:OnConVarChanged(cvar, old, new)
 	end, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_cl_drawzinfo")
+
+	GM.NoDisplayBountyTipMessage = CreateClientConVar("tea_cl_nobountytipmessage", 0, true, false, "Displays bounty tip message when you die with bounty.", 0, 1):GetBool()
+	cvars.AddChangeCallback("tea_cl_nobountytipmessage", function(cvar,old,new)
+		GAMEMODE.NoDisplayBountyTipMessage = tobool(new)
+		GAMEMODE:OnConVarChanged(cvar, old, new)
+	end, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_cl_nobountytipmessage")
 
 	GM.EnableDamageNumbers = CreateClientConVar("tea_cl_damagenumber_enable", 1, true, false, "Enable damage numbers when damaging entity.", 0, 1):GetBool()
 	cvars.AddChangeCallback("tea_cl_damagenumber_enable", function(cvar,old,new)
