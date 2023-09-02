@@ -1,5 +1,6 @@
 local Close
 local ambsound
+local playmmsound = false
 local sound_choice = 1
 local sound_choices = {
 	{"main_menu_sound/menu.ogg", 158},
@@ -8,10 +9,6 @@ local sound_choices = {
 
 net.Receive("tea_player_ready_spawn", function()
 	local wasready = net.ReadBool()
-
-	if !wasready then
-		
-	end 
 
 	if GAMEMODE.MainMenuPanel and GAMEMODE.MainMenuPanel:IsValid() then
 		GAMEMODE.MainMenuPanel:Remove()
@@ -30,12 +27,14 @@ function GM:LoadMainMenu()
 	function Close()
 		local snd = ambsound
 		-- snd:ChangeVolume(0.01, 3)
-		snd:FadeOut(3)
-		timer.Create("TheEternalApocalypse.StartMenu.StopSound", 3, 1, function()
-			if snd then
-				snd:Stop()
-			end
-		end)
+		if playmmsound then
+			snd:FadeOut(3)
+			timer.Create("TheEternalApocalypse.StartMenu.StopSound", 3, 1, function()
+				if snd then
+					snd:Stop()
+				end
+			end)
+		end
 
 		gui.EnableScreenClicker(false)
 	end
@@ -51,7 +50,7 @@ function GM:LoadMainMenu()
 	self.MainMenuPanel.Think = function(self)
 		local time = RealTime()
 
-		if ambsound and time >= self.CreationTime + 5 then
+		if playmmsound and ambsound and time >= self.CreationTime + 5 then
 			if self.LastPlayedSound + self.SoundDur < RealTime() or !ambsound:IsPlaying() then
 				self.LastPlayedSound = RealTime()
 				self.SoundDur = SoundDur(sound)
@@ -65,6 +64,7 @@ function GM:LoadMainMenu()
 		surface.SetDrawColor(0, 0, 0, 255)
 		surface.DrawRect(0, 0, ScrW(), ScrH())
 
+/*
 		local time = RealTime()
 		draw.DrawText(
 			time >= self.CreationTime + 600 and "guess i'll stay silent then" or
@@ -77,7 +77,7 @@ function GM:LoadMainMenu()
 			time >= self.CreationTime + 100 and "you there?" or
 			time >= self.CreationTime + 60 and "uh" or "", "TargetIDSmall", ScrW() / 2, ScrH()-60, Color(255,255,255,255), TEXT_ALIGN_CENTER
 		)
-		
+*/		
 	end
 	self.MainMenuPanel.CreationTime = RealTime()
 	self.MainMenuPanel.LastPlayedSound = RealTime()
@@ -88,7 +88,7 @@ function GM:LoadMainMenu()
 	
 	if timer.Exists("TheEternalApocalypse.StartMenu.StopSound") then
 		timer.Destroy("TheEternalApocalypse.StartMenu.StopSound")
-		if ambsound then
+		if playmmsound and ambsound then
 			-- ambsound:ChangeVolume(0.01, 0)
 			ambsound:Stop()
 		end
@@ -97,16 +97,17 @@ function GM:LoadMainMenu()
 	-- LocalPlayer():EmitSound("buttons/button14.wav", 0, 200)
 
 
-	ambsound = CreateSound(LocalPlayer(), sound)
-	-- ambsound = CreateSound(LocalPlayer(), "boss_themes/clone_cop.wav")
-	ambsound:SetSoundLevel(0)
-	timer.Simple(_timer, function()
-		if !self.MainMenuPanel or !self.MainMenuPanel:IsValid() then return end
-		ambsound:PlayEx(0, 100)
-		ambsound:ChangeVolume(0.01, 0)
-		ambsound:ChangeVolume(soundvol, 5)
-		self.MainMenuPanel.LastPlayedSound = RealTime()
-	end)
+	if playmmsound then
+		ambsound = CreateSound(LocalPlayer(), sound)
+		ambsound:SetSoundLevel(0)
+		timer.Simple(_timer, function()
+			if !self.MainMenuPanel or !self.MainMenuPanel:IsValid() then return end
+			ambsound:PlayEx(0, 100)
+			ambsound:ChangeVolume(0.01, 0)
+			ambsound:ChangeVolume(soundvol, 5)
+			self.MainMenuPanel.LastPlayedSound = RealTime()
+		end)
+	end
 	self.MainMenuPanel.SoundDur = SoundDur(sound)
 
 
@@ -128,7 +129,7 @@ function GM:LoadMainMenu()
 	note:SetPos(0, 200)
 	note:MoveTo(50, 200, 3.5)
 	note:SetTextColor(Color(127,255,255))
-	note:SetText("Please note, this is a beta version. Some things may not work as expected.")
+	note:SetText("Please note, this is a beta version. Some things may not work as expected.\nAdding new options to main menu soon!")
 	note:SetFont("Trebuchet18")
 	note:SizeToContents()
 
@@ -142,7 +143,6 @@ function GM:LoadMainMenu()
 	button.DoClick = function(self)
 		net.Start("tea_player_ready_spawn")
 		net.SendToServer()
---		GAMEMODE.MainMenuPanel:Remove()
 	end
 
 	local button = vgui.Create("DButton", self.MainMenuPanel)
@@ -166,7 +166,6 @@ local randomtips = {
 }
 
 local randomtips2 = {
-	"Keep on trying... you'll get it!",
 	"There are seasonal events... they occur when Halloween or Christmas event is ongoing!",
 }
 
@@ -179,7 +178,7 @@ hook.Add("DrawOverlay", "TEA_DrawOverlay", function()
 	surface.SetDrawColor(0, 0, 0, 255)
 	surface.DrawRect(0, 0, ScrW(), ScrH())
 	draw.DrawText(translate.Get("loading"), "TargetID", ScrW()/2, ScrH()/3, Color(255,255,255), TEXT_ALIGN_CENTER)
-	draw.DrawText(randomtip, "TargetIDSmall", ScrW()/2, ScrH()/1.5, Color(255,255,255), TEXT_ALIGN_CENTER)
-	draw.DrawText(randomtip2, "TargetIDSmall", ScrW()/2, ScrH()/1.5 + 60, Color(255,255,255), TEXT_ALIGN_CENTER)
+--	draw.DrawText(randomtip, "TargetIDSmall", ScrW()/2, ScrH()/1.5, Color(255,255,255), TEXT_ALIGN_CENTER)
+--	draw.DrawText(randomtip2, "TargetIDSmall", ScrW()/2, ScrH()/1.5 + 60, Color(255,255,255), TEXT_ALIGN_CENTER)
 	cam.End2D()
 end)

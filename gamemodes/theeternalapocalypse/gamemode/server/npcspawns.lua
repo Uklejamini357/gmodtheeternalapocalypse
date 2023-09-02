@@ -103,7 +103,7 @@ function GM:SpawnRandomZombie(pos, ang)
 			local elite = math.random(100) == 1 or self:GetCurrentSeasonalEvent() == SEASONAL_EVENT_HALLOWEEN and math.random(20) == 1
 			local ent = self:CreateZombie(k, pos, ang, v.XPReward, v.MoneyReward, v.InfectionRate, false)
 
-			if elite then
+			if elite and v.AllowEliteVariants then
 				local elite_variant = math.random(8)
 				local mult,xp,cash,inf = 1,1,1,1
 				if elite_variant == VARIANT_POISONOUS then
@@ -165,7 +165,7 @@ function GM:SpawnRandomBoss(pos, ang)
 				local elite = math.random(10) == 1 or self:GetCurrentSeasonalEvent() == SEASONAL_EVENT_HALLOWEEN and math.random(3) == 1
 				local ent = self:CreateZombie(k, pos, ang, v.XPReward, v.MoneyReward, v.InfectionRate, true)
 	
-				if elite then
+				if elite and v.AllowEliteVariants then
 					local elite_variant = 8--math.random(8)
 					local mult,xp,cash,inf = 1,1,1,1
 					if elite_variant == VARIANT_POISONOUS then

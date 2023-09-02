@@ -1,5 +1,8 @@
 function GM:GiveTask(pl, task)
+    local taskl = self.Tasks[task]
     if pl.CurrentTask ~= "" then return end
+	if pl.TaskCooldowns[task] and pl.TaskCooldowns[task] > os.time() then pl:SystemMessage("This task is still on cooldown! Becomes available in: ".. pl.TaskCooldowns[task] - os.time().." seconds", Color(255,155,155), true) return end
+	if taskl.LevelReq < tonumber(pl.Level) then pl:SystemMessage("You need to be level "..taskl.LevelReq.." to take this task!", Color(255,155,155), true) return end
 
     pl.CurrentTask = task
     pl.CurrentTaskProgress = 0
@@ -34,7 +37,7 @@ end
 
 function GM:CompleteTask(pl, task)
     local taskl = self.Tasks[task]
-    if pl.CurrentTask ~= task or pl.TaskComplete or !taskl or pl.CurrentTaskProgress < taskl.ReqProgress then return end
+    if pl.CurrentTask ~= task or pl.TaskComplete or !taskl or tonumber(pl.CurrentTaskProgress) < taskl.ReqProgress then return end
 
     pl.TaskComplete = true
 
@@ -47,11 +50,12 @@ end
 
 function GM:FinishTask(pl, task)
     local taskl = self.Tasks[task]
-    if pl.CurrentTask ~= task or !taskl or !pl.TaskComplete or pl.CurrentTaskProgress < taskl.ReqProgress then return end
+    if pl.CurrentTask ~= task or !taskl or !pl.TaskComplete or tonumber(pl.CurrentTaskProgress) < taskl.ReqProgress then return end
 
+	pl.TaskCooldowns[task] = os.time() + taskl.Cooldown
     pl.CurrentTask = ""
     pl.CurrentTaskProgress = 0
-    pl.TaskComplete = true
+    pl.TaskComplete = false
 
     if taskl.Callback then
         taskl.Callback(pl)
@@ -68,7 +72,10 @@ function GM:CancelTask(pl, task)
     local taskl = self.Tasks[task]
     if pl.CurrentTask ~= task or !taskl then return end
 
-    pl.TaskCooldown = os.time() + TIME_HOUR -- 1 hour before they can assign new task
+	for tasks,_ in pairs(self.Tasks) do
+		pl.TaskCooldowns[tasks] = os.time() + TIME_HOUR -- 1 hour before they can assign new task
+	end
+	pl.TaskCooldowns[task] = os.time() + taskl.CancelCooldown
     pl.CurrentTask = ""
     pl.CurrentTaskProgress = 0
     pl.TaskComplete = false
@@ -80,7 +87,7 @@ function GM:CancelTask(pl, task)
 	pl:RefreshTasksStats()
 end
 
-TaskDealersData = ""
+TaskDealersData = TaskDealersData or ""
 
 function GM:LoadTaskDealers()
 	if not file.IsDir(self.DataFolder.."/spawns/"..string.lower(game.GetMap()), "DATA") then
@@ -190,6 +197,18 @@ net.Receive("tea_taskassign", function(len, pl)
 	gamemode.Call("GiveTask", pl, task)
 end)
 
+net.Receive("tea_taskcancel", function(len, pl)
+	local task = net.ReadString()
+
+	gamemode.Call("CancelTask", pl, task)
+end)
+
+net.Receive("tea_taskfinish", function(len, pl)
+	local task = net.ReadString()
+
+	gamemode.Call("FinishTask", pl, task)
+end)
+
 local meta = FindMetaTable("Player")
 if not meta then return end
 
@@ -197,6 +216,6 @@ function meta:RefreshTasksStats()
 	net.Start("tea_taskstatsupdate")
 	net.WriteString(self.CurrentTask)
 	net.WriteFloat(self.CurrentTaskProgress)
-	net.WriteBool(self.CurrentTaskCompleted)
+	net.WriteBool(self.TaskComplete)
 	net.Send(self)
 end

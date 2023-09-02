@@ -211,6 +211,31 @@ function util.ToMinutesSecondsMilliseconds(seconds)
 	return string.format("%02d:%02d.%02d", minutes, math.floor(seconds), milliseconds)
 end
 
+function util.ReturnTimeLeft(seconds)
+	local years = math.floor(seconds / TIME_YEAR)
+	if years > 0 then
+		seconds = seconds - (years * TIME_YEAR)
+	end
+	local weeks = math.floor(seconds / TIME_WEEK)
+	if weeks > 0 then
+		seconds = seconds - (weeks * TIME_WEEK)
+	end
+	local days = math.floor(seconds / TIME_DAY)
+	if days > 0 then
+		seconds = seconds - (days * TIME_DAY)
+	end
+	local hours = math.floor(seconds / TIME_HOUR)
+	if hours > 0 then
+		seconds = seconds - (hours * TIME_HOUR)
+	end
+	local minutes = math.floor(seconds / TIME_MINUTE)
+	if minutes > 0 then
+		seconds = seconds - (minutes * TIME_MINUTE)
+	end
+
+	return "not yet"
+end
+
 
 function GM:GetInfectionLevel(bypass)
 	if not bypass and !self.InfectionLevelEnabled then return 0 end

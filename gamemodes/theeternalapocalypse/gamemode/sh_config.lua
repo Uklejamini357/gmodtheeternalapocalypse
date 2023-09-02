@@ -191,6 +191,7 @@ GM.Config["ZombieClasses"] = {
 		XPReward = 48,		-- xp reward for killing this zombie, varies with the convar tea_server_xpreward convar
 		MoneyReward = 22,	-- money reward for killing this zombie, varies with the convar tea_server_moneyreward convar
 		InfectionRate = 0.03,	-- Infection Level increase if the zombie is killed by player (Affected by player count!)
+		AllowEliteVariants = true,	-- Some zombies may not like being as elite variant as it confuses between colors - Only allow some! (By default, it's true)
 	},
 
 	["npc_tea_leaper"] = {
@@ -199,6 +200,7 @@ GM.Config["ZombieClasses"] = {
 		XPReward = 55,
 		MoneyReward = 30,
 		InfectionRate = 0.035,
+		AllowEliteVariants = true,
 	},
 
 	["npc_tea_wraith"] = {
@@ -207,6 +209,7 @@ GM.Config["ZombieClasses"] = {
 		XPReward = 80,
 		MoneyReward = 45,
 		InfectionRate = 0.048,
+		AllowEliteVariants = true,
 	},
 
 	["npc_tea_tank"] = {
@@ -215,6 +218,7 @@ GM.Config["ZombieClasses"] = {
 		XPReward = 220,
 		MoneyReward = 90,
 		InfectionRate = 0.07,
+		AllowEliteVariants = true,
 	},
 
 	["npc_tea_puker"] = {
@@ -223,6 +227,7 @@ GM.Config["ZombieClasses"] = {
 		XPReward = 240,
 		MoneyReward = 105,
 		InfectionRate = 0.062,
+		AllowEliteVariants = true,
 	},
 
 	["npc_tea_lord"] = {
@@ -231,6 +236,7 @@ GM.Config["ZombieClasses"] = {
 		XPReward = 450,
 		MoneyReward = 320,
 		InfectionRate = 0.135,
+		AllowEliteVariants = true,
 	},
 
 	["npc_tea_tormented_wraith"] = {
@@ -239,6 +245,7 @@ GM.Config["ZombieClasses"] = {
 		XPReward = 185,
 		MoneyReward = 150,
 		InfectionRate = 0.1,
+		AllowEliteVariants = true,
 	},
 
 	["npc_tea_superlord"] = {
@@ -247,6 +254,7 @@ GM.Config["ZombieClasses"] = {
 		XPReward = 850,
 		MoneyReward = 700,
 		InfectionRate = 0.35,
+		AllowEliteVariants = true,
 	},
 
 	["npc_tea_heavy_tank"] = {
@@ -255,6 +263,7 @@ GM.Config["ZombieClasses"] = {
 		XPReward = 750,
 		MoneyReward = 650,
 		InfectionRate = 0.4,
+		AllowEliteVariants = true,
 	},
 
 }
@@ -275,6 +284,7 @@ GM.Config["BossClasses"] = {
 			GAMEMODE:RadioBroadcast(8, "It is currently inbound for this sector, so you better get inside something solid and make sure you have good amount of ammo.", "Watchdog", false)
 		end,
 		InfectionRate = 1.85,
+		AllowEliteVariants = true,	-- Some bosses don't like being elite variants, so we only enable for some of them!
 	},
 	
 	["npc_tea_boss_lordking"] = {
@@ -290,6 +300,7 @@ GM.Config["BossClasses"] = {
 			GAMEMODE:RadioBroadcast(9, "It will arrive into the area, so prepare a good barricade, multiple layers of barricades and plenty of ammo.", "Watchdog", false)
 		end,
 		InfectionRate = 2.125,
+		AllowEliteVariants = true,
 	},
 }
 

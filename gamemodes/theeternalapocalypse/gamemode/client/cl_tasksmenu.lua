@@ -2,7 +2,6 @@
 -- THIS IS STILL UNFINISHED
 
 net.Receive("tea_opentasksmenu", function()
-	chat.AddText("This still don't work - IT'S IN BETA PROGRESS!!")
 	GAMEMODE:OpenTasksMenu()
 end)
 
@@ -59,6 +58,9 @@ function GM:OpenTasksMenu()
 
 	DoTasksList = function(parent)
 		for k, v in pairs(GAMEMODE.Tasks) do
+			local selected = GAMEMODE.CurrentTask == k
+			local completed = selected and self.CurrentTaskCompleted
+
 			local taskpanel = vgui.Create("DPanel")
 			parent:AddItem(taskpanel)
 			taskpanel:SetPos(5, 5)
@@ -93,7 +95,7 @@ function GM:OpenTasksMenu()
 			local ItemSupply = vgui.Create("DLabel", taskpanel)
 			ItemSupply:SetFont("TargetIDSmall")
 			ItemSupply:SetPos(10, 64)
-			ItemSupply:SetText("Cooldown: ".. v.Cooldown / 3600 .." hours")
+			ItemSupply:SetText("Cooldown: ".. v.Cooldown / 3600 .." hours ; Level requirement: "..v.LevelReq)
 			ItemSupply:SetColor(Color(255,155,155,255))
 			ItemSupply:SizeToContents()
 
@@ -101,7 +103,7 @@ function GM:OpenTasksMenu()
 			local viewb = vgui.Create("DButton", taskpanel)
 			viewb:SetSize(80, 40)
 			viewb:SetPos(450, 30)
-			viewb:SetText("Accept")
+			viewb:SetText(completed and "Finish" or selected and "Cancel" or "Accept")
 			viewb:SetTextColor(Color(255, 255, 255, 255))
 			viewb.Paint = function(panel)
 				surface.SetDrawColor(0, 150, 0,255)
@@ -109,9 +111,20 @@ function GM:OpenTasksMenu()
 				draw.RoundedBox(2, 0, 0, viewb:GetWide(), viewb:GetTall(), Color(0, 50, 0, 130))
 			end
 			viewb.DoClick = function()
-				net.Start("tea_taskassign")
-				net.WriteString(taskpanel.Task)
-				net.SendToServer()
+				if completed then
+					net.Start("tea_taskfinish")
+					net.WriteString(taskpanel.Task)
+					net.SendToServer()
+				elseif selected then
+					net.Start("tea_taskcancel")
+					net.WriteString(taskpanel.Task)
+					net.SendToServer()
+				else
+					net.Start("tea_taskassign")
+					net.WriteString(taskpanel.Task)
+					net.SendToServer()
+				end
+
 			end
 		end
 	end

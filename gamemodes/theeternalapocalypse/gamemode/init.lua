@@ -684,6 +684,7 @@ function GM:PlayerInitialSpawn(ply, transition)
 	ply.InvitedTo = {} -- stores faction invites
 	ply.Achievements = {} -- stores gained achievements
 	ply.AchProgress = {}
+	ply.TaskCooldowns = {}
 	ply.SelectedProp = "models/props_debris/wood_board04a.mdl"
 	ply:SetPvPGuarded(0)
 	ply.Territory = "none"
