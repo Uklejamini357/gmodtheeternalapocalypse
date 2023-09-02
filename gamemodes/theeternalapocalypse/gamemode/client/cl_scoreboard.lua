@@ -612,6 +612,8 @@ function GM:CreateScoreboardInv()
 			surface.DrawOutlinedRect(4, 4, 32, 32)
 		end
 
+		local factionicon = vgui.Create("DButton", FactionList)
+
 		local plyname = vgui.Create("DLabel", plypanel)
 		plyname:SetPos(45, 12)
 		plyname:SetFont("TargetIDSmall")

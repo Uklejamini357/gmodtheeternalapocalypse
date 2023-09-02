@@ -360,12 +360,12 @@ function GM:AdminCmds_NoTarget(ply, cmd) --useful for events (but not for abusin
 		return
 	end
     
-    if !ply.HasNoTarget then
-        ply.HasNoTarget = true
+    if !ply.TEANoTarget then
+        ply.TEANoTarget = true
 		self:DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has enabled notarget for themselves!")
 		ply:SystemMessage("Enabled notarget!", Color(155,255,155,255), true)
     else
-        ply.HasNoTarget = false
+        ply.TEANoTarget = false
 		self:DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has disabled notarget for themselves!")
 		ply:SystemMessage("Disabled notarget!", Color(155,255,155,255), true)
     end

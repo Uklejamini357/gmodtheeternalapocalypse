@@ -343,7 +343,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 
 	local stolenbounty
 	if tonumber(ply.Bounty) >= 5 then
-		if attacker:IsPlayer() and attacker:IsValid() and attacker.UnlockedPerks["bountyhunter"] then
+		if ply ~= attacker and attacker:IsPlayer() and attacker:IsValid() and attacker.UnlockedPerks["bountyhunter"] then
 			stolenbounty = math.ceil(ply.Bounty * 0.5)
 			attacker:SystemMessage("You stole "..stolenbounty.." bounty from "..ply:Nick().."!")
 			attacker.Bounty = attacker.Bounty + stolenbounty

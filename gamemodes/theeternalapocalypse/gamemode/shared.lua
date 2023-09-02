@@ -3,10 +3,10 @@
 GM.Name		= "The Eternal Apocalypse"
 GM.AltName	= "After The End Reborn"
 GM.Author	= "Uklejamini"
-GM.Email	= "N/A"
+GM.Email	= "[You may not view this information.]"
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.11.1"
-GM.DateVer	= "27.07.2023"
+GM.Version	= "0.11.1a"
+GM.DateVer	= "02.09.2023"
 
 
 include("sh_globals.lua") -- globals

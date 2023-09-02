@@ -196,7 +196,7 @@ function ENT:RunBehaviour()
 		if CLIENT then return end
 		local target = self.target
 
-		if IsValid(target) and target:Alive() and (self:GetRangeTo(target) <= (1500 * self.RageLevel) or GAMEMODE.ZombieApocalypse) and !target.HasNoTarget then
+		if IsValid(target) and target:Alive() and (self:GetRangeTo(target) <= (1500 * self.RageLevel) or GAMEMODE.ZombieApocalypse) and !target.TEANoTarget then
 			self.loco:FaceTowards(target:GetPos())
 
 -- check if we are obstructed by props and smash them if we are
@@ -271,7 +271,7 @@ function ENT:RunBehaviour()
 -- find ourselves a new target
 			if (!self.target) then
 				for k, v in pairs(player.GetAll()) do
-					if (v:Alive() and (self:GetRangeTo(v) <= (1200 * self.RageLevel) or GAMEMODE.ZombieApocalypse) and !v.HasNoTarget) then
+					if (v:Alive() and (self:GetRangeTo(v) <= (1200 * self.RageLevel) or GAMEMODE.ZombieApocalypse) and !v.TEANoTarget) then
 						self.target = v
 						if self.CanScream == true then
 							self:EmitSound(table.Random(self.AlertSounds), 90, math.random(90, 110))

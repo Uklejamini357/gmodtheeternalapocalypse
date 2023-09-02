@@ -570,7 +570,7 @@ function GM:EntityRemoved(ent)
 		local loot = ents.Create("loot_cache_boss")
 		local killer = ent.TEA_KilledByPlayer
 		if killer and killer:IsValid() and killer:IsPlayer() then
-			loot:SetNWEntity("pickup", boss_killer)
+			loot:SetNWEntity("pickup", killer)
 			self:SystemBroadcast(killer:Nick().." has dealt most damage to boss ("..math.Round(ent.TEA_MostDamageByPlayer, 2)..") and can pick up the boss cache!", Color(127,127,255), true)
 		end
 		timer.Simple(300, function()
@@ -711,7 +711,7 @@ function GM:PlayerInitialSpawn(ply, transition)
 	ply.SpawnProtected = false
 	ply.DropCashCDcount = 0
 	ply.StatsPaused = false
-	ply.HasNoTarget = false
+	ply.TEANoTarget = false
 	ply.CanUseItem = true
 	ply.MeleeDamageDealt = 0
 	ply.StatsReset = 0

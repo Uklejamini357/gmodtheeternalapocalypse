@@ -289,6 +289,14 @@ function GM:PrepareStats(ply)
 	ply.LifePlayerKills = 0
 	----------------
 
+	if ply.TEANoTarget then
+		ply.TEANoTarget = false
+		if SuperAdminCheck(ply) then
+			ply:SystemMessage("You died, so your notarget has worn off.", Color(255,255,255), true)
+		end
+	end
+
+
 -- send their stats to them so their hud can display it (this function is called every tick, see server/netstuff.lua)
 	self:NetUpdateStats(ply)
 	self:SendPlayerSurvivalStats(ply)

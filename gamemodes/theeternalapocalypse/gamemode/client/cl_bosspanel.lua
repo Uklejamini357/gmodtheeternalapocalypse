@@ -1,5 +1,6 @@
 -- This is used when boss is defeated to display who dealed damage to bosses
 
+local BossPanel
 BossDamagedByTable = {}
 
 net.Receive("BossKilled", function(length)
@@ -11,6 +12,16 @@ end)
 
 function GM:ShowBossPanel()
     if IsValid(BossPanel) then BossPanel:Remove() end
+
+	if timer.Exists("BossPanelClose") then timer.Remove("BossPanelClose") end
+    timer.Create("BossPanelClosing", 9, 1, function()
+        if !IsValid(BossPanel) then return end
+        BossPanel:AlphaTo(0, 1, 0)
+        timer.Create("BossPanelClose", 1, 1, function()
+            BossPanel:Remove()
+        end)
+    end)
+
     BossPanel = vgui.Create("DFrame")
     BossPanel:SetSize(400, 200)
     BossPanel:SetPos((ScrW() - BossPanel:GetWide()) / 2, 50)
@@ -52,7 +63,7 @@ function GM:ShowBossPanel()
 		if BossDamagedByTable and table.Count(BossDamagedByTable) > 0 then
 			for k, v in SortedPairsByValue(BossDamagedByTable, true) do
 				local DisplayDMG = vgui.Create("DLabel", DMGBG)
-				DisplayDMG:SetText(Format("%s - %d", k:Nick(), math.Round(v)))
+				DisplayDMG:SetText(Format("%s - %d", k.Nick and k:Nick() or "Non-Valid player", math.Round(v)))
 				DisplayDMG:SetSize(390, 15)
 				DisplayDMG:SetFont("TargetIDSmall")
 				ListPanel:AddItem(DisplayDMG)
@@ -66,13 +77,4 @@ function GM:ShowBossPanel()
 		end
 	end
 	DoListPanel()
-
-	if timer.Exists("BossPanelClose") then timer.Destroy("BossPanelClose") end
-    timer.Create("BossPanelClosing", 9, 1, function()
-        if !IsValid(BossPanel) then return end
-        BossPanel:AlphaTo(0, 1, 0)
-        timer.Create("BossPanelClose", 1, 1, function()
-            BossPanel:Remove()
-        end)
-    end)
 end

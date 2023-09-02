@@ -146,8 +146,7 @@ concommand.Add("tea_dev_spawnlootboss", function(ply, cmd, args)
 	gamemode.Call("DevCmds_SpawnLootBoss", ply, cmd, args)
 end, nil, "Spawns a boss cache in front of you")
 
---literally just a copy + paste from airdrops.lua but now as a command
-function GM:DevCmds_SpawnAirdropCache(ply) 
+function GM:DevCmds_SpawnAirdropCache(ply, cmd, args)
     if !ply:IsValid() then return false end
     
     if !TEADevCheck(ply) then 

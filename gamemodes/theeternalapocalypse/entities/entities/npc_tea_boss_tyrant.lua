@@ -153,7 +153,7 @@ function ENT:RunBehaviour()
 		if CLIENT then return end
 		local target = self.target
 
-		if (IsValid(target) and target:Alive() and !target.HasNoTarget) then
+		if (IsValid(target) and target:Alive() and !target.TEANoTarget) then
 			local data = {}
 			data.start = self:GetPos()
 			data.endpos = self:GetPos() + self:GetForward()*128
@@ -172,7 +172,7 @@ function ENT:RunBehaviour()
 			end
 		end
 
-		if (IsValid(target) and target:Alive() and (self:GetRangeTo(target) <= (2500 * self.RageLevel) or GAMEMODE.ZombieApocalypse) and !target.HasNoTarget) then
+		if (IsValid(target) and target:Alive() and (self:GetRangeTo(target) <= (2500 * self.RageLevel) or GAMEMODE.ZombieApocalypse) and !target.TEANoTarget) then
 			self.loco:FaceTowards(target:GetPos())
 
 			if self.NxtTick < 1 then
@@ -337,7 +337,7 @@ function ENT:RunBehaviour()
 
 			if (!self.target) then
 				for k, v in pairs(player.GetAll()) do
-					if (v:Alive() and (self:GetRangeTo(v) <= (2500 * self.RageLevel) or GAMEMODE.ZombieApocalypse) and !v.HasNoTarget) then
+					if (v:Alive() and (self:GetRangeTo(v) <= (2500 * self.RageLevel) or GAMEMODE.ZombieApocalypse) and !v.TEANoTarget) then
 --						self:AlertNearby(v)
 						self.target = v
 --						self:PlaySequenceAndWait("wave_smg1", 0.9)

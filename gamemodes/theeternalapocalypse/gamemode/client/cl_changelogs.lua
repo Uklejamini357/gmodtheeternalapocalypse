@@ -51,11 +51,26 @@ function GM:MakeChangeLogs()
 	list:AddItem(MakeText(self.ChangeLogsFrame, "* fixed", "TargetIDSmall"))
 	list:AddItem(MakeText(self.ChangeLogsFrame, "? other unknown changes/fixes\n\n", "TargetIDSmall"))
 
-	list:AddItem(MakeText(self.ChangeLogsFrame, "v0.11.1, 07 April 2023\n", "TargetID", Color(255,255,255)))
-	list:AddItem(MakeText(self.ChangeLogsFrame, "+ New weapons and items", "TargetIDSmall"))
-	list:AddItem(MakeText(self.ChangeLogsFrame, "+ Tasks", "TargetIDSmall"))
-	list:AddItem(MakeText(self.ChangeLogsFrame, "; Strength skill (added melee damage)", "TargetIDSmall"))
-	list:AddItem(MakeText(self.ChangeLogsFrame, "; Renamed Damage skill to Gunslinger and reworked", "TargetIDSmall"))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "v0.11.1a, 02 September 2023\n", "TargetID", Color(255,255,255)))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "+ Tasks system should be now functional (partly)", "TargetIDSmall"))
+	list:AddItem(MakeText(self.ChangeLogsFrame, [[? News: New currency will be added soon, being "Gold".
+This is not a P2W element, as it will be obtainable within in-game mechanics!
+Servers may make events that will obtain you gold.
+]], "TargetIDSmall"))
+
+	list:AddItem(MakeText(self.ChangeLogsFrame, "v0.11.1, 27 August 2023\n", "TargetID", Color(255,255,255)))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "+ Added start main menu", "TargetIDSmall"))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "+ Added tasks system (They still don't work!)", "TargetIDSmall"))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "+ Added perks system (If you joined the server from older version, you should get perk points depending on your prestige)", "TargetIDSmall"))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "+ Added progress to pretige bar in C menu\n", "TargetIDSmall"))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "- Removed perks gained from prestige, they are now re-added as perks as mentioned above", "TargetIDSmall"))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "; Reworked aidrops: There now will be multiple airdrops, with increasing amount of items depending on player count!", "TargetIDSmall"))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "/ You can now reach only a maximum of level 100. No, the max level with 0 prestige will remain the same, only on high prestige it is changed.", "TargetIDSmall"))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "This makes it slightly easier to level up on higher prestige.", "TargetIDSmall"))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "= Increased damage for AR2 Pulse Rifle 26 -> 31 and added its' bullet hit effects.", "TargetIDSmall"))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "= Increased damage for AR2 Combine Pistol 17 -> 23 and added its' bullet hit effects.", "TargetIDSmall"))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "? Other changes and optimization", "TargetIDSmall"))
+
 
 /*
 	list:AddItem(MakeText(self.ChangeLogsFrame, "v0.11.0 [BETA C], ?? November 2022\n", "TargetID", Color(255,255,255)))
