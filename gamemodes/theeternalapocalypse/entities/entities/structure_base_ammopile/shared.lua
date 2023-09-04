@@ -119,7 +119,7 @@ function ENT:OnTakeDamage( dmg )
 
 		if self.integrity - damage < 0 or !self.IsBuilt then
 			if attacker:IsPlayer() and self.IsBuilt then
-				Payout(attacker, 850, 850, 1000, 1000)
+				GAMEMODE:Payout(attacker, 850, 1000)
 			elseif attacker:IsPlayer() and !self.IsBuilt then
 				attacker:SystemMessage("nice try", Color(255,230,230,255), false)
 			end

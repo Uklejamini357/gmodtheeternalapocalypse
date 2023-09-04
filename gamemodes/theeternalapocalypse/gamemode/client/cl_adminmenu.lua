@@ -241,7 +241,9 @@ function GM:AdminMenu()
 	draw.RoundedBox(2, 0, 0, sbutton2:GetWide(), sbutton2:GetTall(), Color(0, 0, 0, 130))
 	end
 	sbutton2.DoClick = function()
-	RunConsoleCommand("tea_clearairdropspawns")
+		Derma_Query("Are you sure?", "Confirmation", "Yes", function()
+			RunConsoleCommand("tea_clearairdropspawns")
+		end, "No")
 	end
 	
 	local stext2 = vgui.Create("DLabel", SAdminCmds)
@@ -262,7 +264,7 @@ function GM:AdminMenu()
 	draw.RoundedBox(2, 0, 0, sbutton3:GetWide(), sbutton3:GetTall(), Color(0, 0, 0, 130))
 	end
 	sbutton3.DoClick = function()
-	RunConsoleCommand("tea_addlootspawn")
+		RunConsoleCommand("tea_addlootspawn")
 	end
 
 	local sbutton4 = vgui.Create("DButton", SAdminCmds)
@@ -276,7 +278,9 @@ function GM:AdminMenu()
 	draw.RoundedBox(2, 0, 0, sbutton4:GetWide(), sbutton4:GetTall(), Color(0, 0, 0, 130))
 	end
 	sbutton4.DoClick = function()
-	RunConsoleCommand("tea_clearlootspawns")
+		Derma_Query("Are you sure?", "Confirmation", "Yes", function()
+			RunConsoleCommand("tea_clearlootspawns")
+		end, "No")
 	end
 
 	local stext3 = vgui.Create("DLabel", SAdminCmds)
@@ -311,7 +315,9 @@ function GM:AdminMenu()
 		draw.RoundedBox(2, 0, 0, sbutton6:GetWide(), sbutton6:GetTall(), Color(0, 0, 0, 130))
 	end
 	sbutton6.DoClick = function()
-		RunConsoleCommand("tea_clearplayerspawnpoints", "No name")
+		Derma_Query("Are you sure?", "Confirmation", "Yes", function()
+			RunConsoleCommand("tea_clearplayerspawnpoints", "No name")
+		end, "No")
 	end
 
 	local stext4 = vgui.Create("DLabel", SAdminCmds)
@@ -346,7 +352,9 @@ function GM:AdminMenu()
 		draw.RoundedBox(2, 0, 0, sbutton8:GetWide(), sbutton8:GetTall(), Color(0, 0, 0, 130))
 	end
 	sbutton8.DoClick = function()
-		RunConsoleCommand("tea_cleartraderspawns")
+		Derma_Query("Are you sure?", "Confirmation", "Yes", function()
+			RunConsoleCommand("tea_cleartraderspawns")
+		end, "No")
 	end
 
 	local stext5 = vgui.Create("DLabel", SAdminCmds)
@@ -381,7 +389,9 @@ function GM:AdminMenu()
 		draw.RoundedBox(2, 0, 0, sbutton10:GetWide(), sbutton10:GetTall(), Color(0, 0, 0, 130))
 	end
 	sbutton10.DoClick = function()
-		RunConsoleCommand("tea_clearzombiespawns")
+		Derma_Query("Are you sure?", "Confirmation", "Yes", function()
+			RunConsoleCommand("tea_clearzombiespawns")
+		end, "No")
 	end
 	
 	local stext6 = vgui.Create("DLabel", SAdminCmds)

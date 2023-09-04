@@ -22,6 +22,10 @@ function GM:LoadPlayer(ply)
 			if TheLine[1] == "PerkPoints" then
 				perkpoints = true
 			end
+
+			if TheLine[1] == "TaskComplete" then
+				ply.TaskComplete = tobool(TheLine[2])
+			end
 		end
 
 		if !perkpoints then

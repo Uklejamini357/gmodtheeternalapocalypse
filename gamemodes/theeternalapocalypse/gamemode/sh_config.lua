@@ -26,8 +26,8 @@ GM.GiveAmmoOnDropWeapon = true
 -- Minimal required player count for boss to spawn. Default: 2
 GM.MinPlayersBossRequired = 2
 
--- Minimal required player count for airdrop event to be called. Default: 5
-GM.MinPlayersAirdropRequired = 5
+-- Minimal required player count for airdrop event to be called. Default: 4
+GM.MinPlayersAirdropRequired = 4
 
 -- Play death sound if player dies. Default: true
 GM.DeathSounds = true
@@ -43,6 +43,18 @@ GM.InfectionLevelShouldNotDecrease = false
 
 -- Should players lose XP if they die to zombie? Only 1% of their XP is lost. Default: true
 GM.PlayerLoseXPOnDeath = true
+
+-- Should players drop their weapons when they die? Set false if making deathmatch for fun, doing an event or anything else in which you don't want anyone to lose their weapons. Default: true
+GM.DropActiveWeaponOnDeath = true
+
+--
+GM.EnableMapCycleSystem = false
+
+--
+GM.MapCycles = {
+	"rp_pripyat_fixed",
+	"gm_construct",
+}
 
 -------- CONFIG --------
 
@@ -278,10 +290,12 @@ GM.Config["BossClasses"] = {
 		MoneyReward = 4500,
 		SpawnDelay = 14, -- how long to wait before actually spawning it, gives the radio message time to play out
 		AnnounceMessage = "[BOSS]: The Tyrant has appeared!",
-		BroadCast = function()
-			GAMEMODE:RadioBroadcast(0, "This is an urgent broadcast on all bands!", "Watchdog", true)
-			GAMEMODE:RadioBroadcast(4, "Siesmic readings are showing a massive quadruped approaching the area, most likely a tyrant.", "Watchdog", false)
-			GAMEMODE:RadioBroadcast(8, "It is currently inbound for this sector, so you better get inside something solid and make sure you have good amount of ammo.", "Watchdog", false)
+		BroadCast = function(nonotify)
+			if !nonotify then
+				GAMEMODE:RadioBroadcast(0, "This is an urgent broadcast on all bands!", "Watchdog", true)
+				GAMEMODE:RadioBroadcast(4, "Siesmic readings are showing a massive quadruped approaching the area, most likely a tyrant.", "Watchdog", false)
+				GAMEMODE:RadioBroadcast(8, "It is currently inbound for this sector, so you better get inside something solid and make sure you have good amount of ammo.", "Watchdog", false)
+			end
 		end,
 		InfectionRate = 1.85,
 		AllowEliteVariants = true,	-- Some bosses don't like being elite variants, so we only enable for some of them!
@@ -294,10 +308,12 @@ GM.Config["BossClasses"] = {
 		MoneyReward = 6250,
 		SpawnDelay = 15,
 		AnnounceMessage = "[BOSS]: The Zombie Lord King has appeared!",
-		BroadCast = function()
-			GAMEMODE:RadioBroadcast(0, "This is an urgent broadcast for all the survivors out there!", "Watchdog", true)
-			GAMEMODE:RadioBroadcast(4.5, "We have spotted a Mutated Lord Zombie, tougher than the other variants. It got an ability to teleport nearby zombies.", "Watchdog", false)
-			GAMEMODE:RadioBroadcast(9, "It will arrive into the area, so prepare a good barricade, multiple layers of barricades and plenty of ammo.", "Watchdog", false)
+		BroadCast = function(nonotify)
+			if !nonotify then
+				GAMEMODE:RadioBroadcast(0, "This is an urgent broadcast for all the survivors out there!", "Watchdog", true)
+				GAMEMODE:RadioBroadcast(4.5, "We have spotted a Mutated Lord Zombie, tougher than the other variants. It got an ability to teleport nearby zombies.", "Watchdog", false)
+				GAMEMODE:RadioBroadcast(9, "It will arrive into the area, so prepare a good barricade, multiple layers of barricades and plenty of ammo.", "Watchdog", false)
+			end
 		end,
 		InfectionRate = 2.125,
 		AllowEliteVariants = true,

@@ -51,6 +51,18 @@ function GM:MakeChangeLogs()
 	list:AddItem(MakeText(self.ChangeLogsFrame, "* fixed", "TargetIDSmall"))
 	list:AddItem(MakeText(self.ChangeLogsFrame, "? other unknown changes/fixes\n\n", "TargetIDSmall"))
 
+	
+	list:AddItem(MakeText(self.ChangeLogsFrame, "v0.11.1b, 04 September 2023\n", "TargetID", Color(255,255,255)))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "+ Added confirmation for clearing spawns data", "TargetIDSmall"))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "+ New main menu option", "TargetIDSmall"))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "/ Auto-Maintenance system should now work properly", "TargetIDSmall"))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "= Increased 'Antelope 7.62' damage 70 -> 74", "TargetIDSmall"))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "= 'Antelope 7.62' now does 2.5x increased headshot damage instead of 2x", "TargetIDSmall"))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "* Tasks system should no longer be bugging now", "TargetIDSmall"))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "* Bug fixes for faction structures when they're being destroyed", "TargetIDSmall"))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "? Also other changes which i couldn't log here, since it was a quick update", "TargetIDSmall"))
+
+
 	list:AddItem(MakeText(self.ChangeLogsFrame, "v0.11.1a, 02 September 2023\n", "TargetID", Color(255,255,255)))
 	list:AddItem(MakeText(self.ChangeLogsFrame, "+ Tasks system should be now functional (partly)", "TargetIDSmall"))
 	list:AddItem(MakeText(self.ChangeLogsFrame, [[? News: New currency will be added soon, being "Gold".

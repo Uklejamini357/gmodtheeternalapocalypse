@@ -2,6 +2,10 @@ ENT.Type 			= "anim"
 ENT.Base 			= "base_gmodentity"
 ENT.PrintName			= "Blade Trap"
 ENT.Author			= "LegendofRobbo"
+
+-- later i make this actually work
+
+
 /*
  function ENT:SetupDataTables()
  	self:NetworkVar( "Float", 0, "Integrity" )
@@ -138,7 +142,7 @@ end
 
 		if self.integrity - damage < 0 or self.IsBuilt == false then
 			if attacker:IsPlayer() then
-			Payout(attacker, 250, 250, 250, 250)
+				GAMEMODE:Payout(attacker, 250, 250) -- later i tweak this
 			end
 			self:BreakPanel()
 --			self.Entity:EmitSound("physics/wood/wood_plank_break"..math.random(1,2)..".wav", 100, 100)

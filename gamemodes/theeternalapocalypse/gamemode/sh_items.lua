@@ -378,14 +378,25 @@ GM.ItemsList = {
 
 
 	["item_boss_shard"] = {
-		Cost = 75000,
+		Cost = 45000,
 		Model = "models/props_junk/rock001a.mdl",
 		Weight = 1,
 		Supply = -1,
 		Rarity = RARITY_EVENT,
 		Category = 1,
-		UseFunc = function(ply) ply:SendChat("Not usable yet!") return false end,
+		UseFunc = function(ply) GAMEMODE:SystemBroadcast("Boss is being summoned by an used boss shard", Color(155,255,255), false) GAMEMODE:SpawnBoss(#player.GetAll() + 8, true) return true end,
 		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_boss_shard") return drop end
+	},
+
+	["item_difficulty_shard"] = {
+		Cost = 35000,
+		Model = "models/props_junk/rock001a.mdl",
+		Weight = 1,
+		Supply = -1,
+		Rarity = RARITY_EVENT,
+		Category = 1,
+		UseFunc = function(ply) GAMEMODE:SystemBroadcast("Infection Level has been increased by 50%, difficulty greatly increases!", Color(155,255,255), false) GAMEMODE:SetInfectionLevel(math.max(0, self:GetInfectionLevel() + 50)) return true end,
+		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_difficulty_shard") return drop end
 	},
 
 	["item_money"] = {
@@ -1400,7 +1411,7 @@ GM.ItemsList = {
 	},
 	
 	["m9k_acr"] = {
-		Cost = 26500,
+		Cost = 29500,
 		Model = "models/weapons/w_masada_acr.mdl",
 		Weight = 4.2,
 		Supply = 0,

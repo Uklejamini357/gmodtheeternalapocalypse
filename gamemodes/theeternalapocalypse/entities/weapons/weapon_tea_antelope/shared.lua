@@ -13,7 +13,7 @@ SWEP.Category			= "ZW Weapons"
 
 SWEP.Primary.Sound 		= Sound("Weapon_SCOUT.Single")
 SWEP.Primary.Recoil		= 3
-SWEP.Primary.Damage		= 70
+SWEP.Primary.Damage		= 74
 SWEP.Primary.NumShots		= 1
 SWEP.Primary.Cone			= 0.001
 SWEP.Primary.Delay 		= 1.2
@@ -34,6 +34,7 @@ SWEP.ShellEffect			= "effect_mad_shell_rifle"	-- "effect_mad_shell_pistol" or "e
 SWEP.ShellDelay			= 0.53
 
 SWEP.HipFireLoss = 1
+SWEP.HeadshotDamageMulti = 2.5
 
 SWEP.IronSightsPos = Vector(-6.68, -14.094, 2.369)
 SWEP.IronSightsAng = Vector(0, 0, 0)

@@ -211,27 +211,6 @@ concommand.Add("tea_dev_spawnboss", function(ply, cmd, args)
 	gamemode.Call("DevCmds_SpawnBoss", ply, cmd, args)
 end, nil, "Spawns a random boss in your direction")
 
-function GM:DevCmds_Payout(ply, cmd, args)
-	if !ply:IsValid() then return false end
-	
-	if !TEADevCheck(ply) then 
-		ply:SystemMessage(translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
-		ply:ConCommand("playgamesound buttons/button8.wav")
-		return
-	end
-	
-	local xp = tonumber(args[1]) or nil
-	local cash = tonumber(args[2]) or 0
-
-	if !xp or !cash then ply:SendChat("Use this for test! Modifiers such as skills do apply! (tea_dev_payout {xp} {bounty})") return end
-	Payout(ply, xp, cash)
-	
-	gamemode.Call("FullyUpdatePlayer", ply)
-end
-concommand.Add("tea_dev_payout", function(ply, cmd, args)
-	gamemode.Call("DevCmds_Payout", ply, cmd, args)
-end, nil, "Gives XP and Cash (with Payout function)")
-
 function GM:DevCmds_RefillStats(ply, cmd)
 	if !ply:IsValid() then return false end
 	if !TEADevCheck(ply) then 

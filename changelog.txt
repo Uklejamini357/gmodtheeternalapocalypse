@@ -1,3 +1,23 @@
+-------- Ver. 0.11.1b of 04 September 2023 --------
+
++ Added confirmation for clearing spawns data
++ New main menu option
+
+/ Auto-Maintenance system should now work properly
+
+= Increased 'Antelope 7.62' damage 70 -> 74
+= 'Antelope 7.62' now does 2.5x increased headshot damage instead of 2x
+
+* Tasks system should no longer be bugging now
+* Bug fixes for faction structures when they're being destroyed
+
+? Also other changes which i couldn't log here, since it's a quick update
+
+-------- Ver. 0.11.1a of 02 September 2023 --------
+
++ Tasks system should be now functional
+
+
 -------- Ver. 0.11.1 of 27 August 2023 (There was no update for a looong time...) --------
 
 + Added start main menu

@@ -5,8 +5,8 @@ GM.AltName	= "After The End Reborn"
 GM.Author	= "Uklejamini"
 GM.Email	= "[You may not view this information.]"
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.11.1a"
-GM.DateVer	= "02.09.2023"
+GM.Version	= "0.11.1b"
+GM.DateVer	= "04.09.2023"
 
 
 include("sh_globals.lua") -- globals
@@ -277,6 +277,6 @@ function GM:SetServerRestartTime(time)
 end
 
 function GM:GetServerRestartTime()
-	GetGlobalFloat("TEA_Server_Restart_Time")
+	return GetGlobalFloat("TEA_Server_Restart_Time")
 end
 

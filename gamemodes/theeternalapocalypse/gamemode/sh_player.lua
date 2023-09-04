@@ -44,7 +44,7 @@ end
 
 -- not working for client yet!!
 function meta:IsNewbie()
-	return SERVER and tonumber(self.Level or 0) < 10 and tonumber(self.Prestige or 0) < 1
+	return SERVER and tonumber(self:GetTEALevel()) < 10 and tonumber(self:GetTEAPrestige()) < 1
 end
 
 function meta:AddInfection(inf)
@@ -57,6 +57,11 @@ end
 
 function meta:GetTEAPrestige()
 	return self.Prestige or self:GetNWInt("PlyPrestige", 0)
+end
+
+-- Not yet.
+function meta:GetMaxLevel()
+	return GAMEMODE.MaxLevel + (self:GetTEAPrestige() * GAMEMODE.LevelsPerPrestige)
 end
 
 -- maybe i should also do it for entity meta table

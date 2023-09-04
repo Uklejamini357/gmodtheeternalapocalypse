@@ -1,6 +1,5 @@
 ---------------- Scoreboard ----------------
 
-local ButtonCD
 LocalFactions = LocalFactions or {}
 
 if !LocalFactions["Loner"] then LocalFactions["Loner"] = 
@@ -418,13 +417,10 @@ function GM:CreateScoreboardInv()
 				local menu = DermaMenu()
 				menu:AddOption("Check Player's Stats", function()
 					if v:IsValid() then
-						if ButtonCD then return end
 						net.Start("UpdateTargetStats")
 						net.WriteEntity(v)
 						net.SendToServer()
 						StatsMenu(v)
-						ButtonCD = true
-						timer.Simple(1, function() ButtonCD = false end) 
 					else
 						chat.AddText(Color(255,205,205,255), "This player doesn't exist!")
 					end
@@ -606,13 +602,32 @@ function GM:CreateScoreboardInv()
 			draw.RoundedBoxEx(8,1,1,plypanel:GetWide(),plypanel:GetTall(),Color(0, 0, 0, 150), false, false, false, false)
 			surface.SetDrawColor(150, 150, 0 ,255)
 			surface.DrawOutlinedRect(1, 1, plypanel:GetWide() - 1 , plypanel:GetTall() - 1)
-			surface.SetDrawColor(team.GetColor(v.index))
-			surface.DrawRect(5, 5,30,30)
 			surface.SetDrawColor(0,0,0,255)
 			surface.DrawOutlinedRect(4, 4, 32, 32)
 		end
 
-		local factionicon = vgui.Create("DButton", FactionList)
+		local factionicon = vgui.Create("DButton", plypanel)
+		factionicon:SetSize(30, 30)
+		factionicon:SetPos(5, 5)
+		factionicon:SetText("")
+		factionicon.Paint = function(this)
+			surface.SetDrawColor(team.GetColor(v.index))
+			surface.DrawRect(0, 0, 30, 30)
+		end
+		factionicon.DoClick = function(this)
+/*
+			local menu = DermaMenu()
+			menu:AddOption("Check Player's Stats", function()
+				if v:IsValid() then
+
+				else
+					chat.AddText(Color(255,205,205,255), "This player doesn't exist!")
+				end
+				surface.PlaySound("buttons/button9.wav")
+			end)
+			menu:Open()
+*/
+		end
 
 		local plyname = vgui.Create("DLabel", plypanel)
 		plyname:SetPos(45, 12)

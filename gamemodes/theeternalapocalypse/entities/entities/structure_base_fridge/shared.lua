@@ -146,7 +146,7 @@ end
 
 	if self.integrity - damage < 0 or !self.IsBuilt then
 		if attacker:IsPlayer() and self.IsBuilt then
-			Payout(attacker, 400, 400, 450, 450)
+			GAMEMODE:Payout(attacker, 400, 450)
 		elseif attacker:IsPlayer() and !self.IsBuilt then
 			attacker:SystemMessage("nice try", Color(255,230,230,255), false)
 		end

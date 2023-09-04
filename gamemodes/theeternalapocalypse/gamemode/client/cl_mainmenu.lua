@@ -145,9 +145,20 @@ function GM:LoadMainMenu()
 		net.SendToServer()
 	end
 
-	local button = vgui.Create("DButton", self.MainMenuPanel)
+	button = vgui.Create("DButton", self.MainMenuPanel)
 	button:SetPos(0, 290)
 	button:MoveTo(50, 290, 3.5)
+	button:SetSize(120, 25)
+	button:SetText("Help")
+	button:SetTextColor(Color(255,255,205))
+	button:SetFont("TargetIDSmall")
+	button.DoClick = function(self)
+		gamemode.Call("HelpMenu")
+	end
+
+	button = vgui.Create("DButton", self.MainMenuPanel)
+	button:SetPos(0, 320)
+	button:MoveTo(50, 320, 3.5)
 	button:SetSize(120, 25)
 	button:SetText(translate.Get("disconnect"))
 	button:SetTextColor(Color(255,205,205))

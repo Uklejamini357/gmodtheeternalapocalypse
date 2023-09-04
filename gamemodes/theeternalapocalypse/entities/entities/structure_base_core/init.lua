@@ -169,12 +169,12 @@ function ENT:OnTakeDamage( dmg )
 			EntDrop:Activate()
 
 			if attacker:IsPlayer() then
-				Payout(attacker, 4500, 4500, 5000, 5000)
+				GAMEMODE:Payout(attacker, 4500, 5000)
 			end
 		else
 			if attacker:IsPlayer() then
 				attacker:SystemMessage("Well... What did you expect? Thought you would get more? No.", Color(255,170,170,255))
-				Payout(attacker, 1500, 1500, 2000, 2000)
+				GAMEMODE:Payout(attacker, 1500, 2000)
 			end
 		end
 		self.Entity:Remove()

@@ -595,6 +595,10 @@ function GM:DrawVitals()
 		draw.SimpleText("Trace Entity: "..tostring(tr.Entity), "TargetIDSmall", 20, y, Color(205,205,255,255), 0, 0)
 	end
 
+	if self:GetServerRestartTime() ~= 0 then
+		draw.DrawText("Server restarts in: "..util.ToMinutesSeconds(math.max(0, self:GetServerRestartTime() - CurTime())), "TargetID", ScrW()/2, 180, Color(255,255,255,255), TEXT_ALIGN_CENTER)
+	end
+
 -- Compass
 
 	local angles = tostring(math.Round(-me:GetAngles().y + 180))

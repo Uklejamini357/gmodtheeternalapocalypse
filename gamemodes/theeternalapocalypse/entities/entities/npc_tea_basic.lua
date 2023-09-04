@@ -295,11 +295,7 @@ end
 
 function ENT:OnKilled(damageInfo)
 	local attacker = damageInfo:GetAttacker()
-/*
-	if(attacker:IsPlayer()) then
-		Payout(attacker, self.XPMin, self.XPMax, self.MoneyMin, self.MoneyMax)
-	end
-*/
+
 	self:EmitSound(table.Random(self.DieSounds), 100, math.random(75, 130))
 	self:BecomeRagdoll(damageInfo)
 	timer.Simple(0.25, function()

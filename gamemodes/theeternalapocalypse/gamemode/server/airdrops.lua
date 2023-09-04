@@ -94,15 +94,15 @@ function GM:GetRandomAirdropLoot(plycountoverride)
 	return testinv
 end
 
-function GM:SpawnAirdrop()
-	local plycount = #player.GetAll()
+function GM:SpawnAirdrop(plycountoverride)
+	plycountoverride = plycountoverride or #player.GetAll()
 
 	self:RadioBroadcast(0, "Christmas has come early ladies!", "Shamus", true)
 	self:RadioBroadcast(3, "I've got a little present for y'all to entertain yourselves with!", "Shamus", false)
 	self:RadioBroadcast(11, "Attention survivors! That airdrop crate is fitted with an IFF jammer.", "Watchdog", false)
 	self:RadioBroadcast(16.5, "In addition, if you go near it you'll need to watch your back or risk being shot by other loot hunters!", "Watchdog", false)
 
-	local count = plycount >= 20 and 3 or plycount >= 12 and 2 or 1
+	local count = plycountoverride >= 15 and 3 or plycountoverride >= 8 and 2 or 1
 	timer.Simple(20, function()
 		if count > 1 then
 			self:SystemBroadcast(count.." airdrops have been spotted // First airdrop appears in 10 seconds", Color(191,255,255), false)
@@ -125,7 +125,7 @@ function GM:SpawnAirdrop()
 					dropent:SetPos(pos)
 					dropent:SetAngles(ang)
 
-					local loot = self:RollLootTable(self:GetRandomAirdropLoot())
+					local loot = self:RollLootTable(self:GetRandomAirdropLoot(plycountoverride))
 					gamemode.Call("MakeLootContainer", dropent, loot)
 
 					dropent:Spawn()

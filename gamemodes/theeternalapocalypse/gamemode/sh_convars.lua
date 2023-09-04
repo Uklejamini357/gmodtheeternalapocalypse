@@ -229,7 +229,7 @@ if CLIENT then
 		GAMEMODE:OnConVarChanged(cvar, old, new)
 	end, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_cl_drawzinfo")
 
-	GM.NoDisplayBountyTipMessage = CreateClientConVar("tea_cl_nobountytipmessage", 0, true, false, "Displays bounty tip message when you die with bounty.", 0, 1):GetBool()
+	GM.NoDisplayBountyTipMessage = CreateClientConVar("tea_cl_nobountytipmessage", 0, true, true, "Displays bounty tip message when you die with bounty.", 0, 1):GetBool()
 	cvars.AddChangeCallback("tea_cl_nobountytipmessage", function(cvar,old,new)
 		GAMEMODE.NoDisplayBountyTipMessage = tobool(new)
 		GAMEMODE:OnConVarChanged(cvar, old, new)

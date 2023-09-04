@@ -377,9 +377,8 @@ function GM:WantToPrestige()
 	prestigetext:SetFont("TargetIDSmall")
 	prestigetext:SetColor(Color(205,205,205,255))
 	prestigetext:SetWrap(true)
-	prestigetext:SetText("Prestiging allows you to gain more levels depending on your Prestige level. You will also be given some cash and a perk point if you prestige. You need to be at least level "..self.MaxLevel + (MyPrestige * self.LevelsPerPrestige).." ("..self.MaxLevel.." plus "..self.LevelsPerPrestige.." depending on prestige) in order to prestige.\n\
-Prestige 5 = Spawn with 5 additional armor")
-	prestigetext:SetSize(540, 140)
+	prestigetext:SetText("Prestiging allows you to gain more levels depending on your Prestige level. You will also be given some cash and a perk point if you prestige. You need to be at least level "..self.MaxLevel + (MyPrestige * self.LevelsPerPrestige).." ("..self.MaxLevel.." plus "..self.LevelsPerPrestige.." depending on prestige) in order to prestige.")
+	prestigetext:SetSize(540, 60)
 	prestigetext:SetPos(10,30)
 
 	local prestigetext2 = vgui.Create("DLabel", pframe)

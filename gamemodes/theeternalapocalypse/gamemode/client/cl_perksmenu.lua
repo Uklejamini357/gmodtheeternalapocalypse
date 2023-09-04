@@ -157,5 +157,5 @@ function GM:CallPerksMenu()
 
 
 
-	sheet:AddSheet("Perks", perklist, "icon16/star.png", false, false, "Perks are additional buffs provided in survival\nChoose which perk you should unlock first!")
+	sheet:AddSheet("Perks", perklist, "icon16/star.png", false, false, "Perks are additional buffs provided in survival\nChoose which perk you should unlock first!\n\nNote: Perk choices are permanent and can't be reset!")
 end

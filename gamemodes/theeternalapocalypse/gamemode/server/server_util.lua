@@ -257,8 +257,15 @@ end
 
 function GM:ScalePlayerDamage(ent, hitgroup, dmginfo)
 	local attacker = dmginfo:GetAttacker()
+	local inflictor = dmginfo:GetInflictor()
 
-	if hitgroup == HITGROUP_HEAD then dmginfo:ScaleDamage(2)
+	local headdmg = 2
+
+	if inflictor:IsValid() and inflictor.HeadshotDamageMulti then
+		headdmg = inflictor.HeadshotDamageMulti
+	end
+
+	if hitgroup == HITGROUP_HEAD then dmginfo:ScaleDamage(headdmg)
 	elseif hitgroup == HITGROUP_CHEST then dmginfo:ScaleDamage(1)
 	elseif hitgroup == HITGROUP_STOMACH then dmginfo:ScaleDamage(0.8)
 	elseif hitgroup == HITGROUP_LEFTARM then dmginfo:ScaleDamage(0.35)
@@ -286,8 +293,20 @@ end
 
 function GM:ScaleNPCDamage(ent, hitgroup, dmginfo)
 	local attacker = dmginfo:GetAttacker()
+	local inflictor = dmginfo:GetInflictor()
 
-	if hitgroup == HITGROUP_HEAD then dmginfo:ScaleDamage(2)
+	local headdmg = 2
+
+	if inflictor == attacker and (attacker:IsPlayer() or attacker:IsNPC()) then
+		inflictor = attacker:GetActiveWeapon()
+		if !inflictor:IsValid() then inflictor = attacker end
+	end
+
+	if inflictor:IsValid() and inflictor.HeadshotDamageMulti then
+		headdmg = inflictor.HeadshotDamageMulti
+	end
+
+	if hitgroup == HITGROUP_HEAD then dmginfo:ScaleDamage(headdmg)
 	elseif hitgroup == HITGROUP_CHEST then dmginfo:ScaleDamage(1)
 	elseif hitgroup == HITGROUP_STOMACH then dmginfo:ScaleDamage(0.8)
 	elseif hitgroup == HITGROUP_LEFTARM then dmginfo:ScaleDamage(0.5)
@@ -444,7 +463,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 			if weapon_name == v then nodrop = true break end
 		end
 
-		if !nodrop and self.ItemsList[weapon_name] and ply.Inventory[weapon_name] then
+		if !nodrop and self.ItemsList[weapon_name] and ply.Inventory[weapon_name] and !self.DropActiveWeaponOnDeath then
 			self:SystemRemoveItem(ply, weapon_name)
 
 			local ent = ents.Create("ate_droppeditem")

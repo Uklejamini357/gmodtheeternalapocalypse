@@ -147,8 +147,10 @@ function GM:SpawnRandomZombie(pos, ang)
 	end
 end
 
-function GM:SpawnRandomBoss(pos, ang)
+function GM:SpawnRandomBoss(pos, ang, plycountoverride, nonotify)
 	local maxchance = 0
+	plycountoverride = plycountoverride or #player.GetAll()
+
 	for _,z in pairs(self.Config["BossClasses"]) do if !z.Disabled then maxchance = maxchance + z.SpawnChance end end
 
 	local dice = math.Rand(0, 100)
@@ -157,7 +159,7 @@ function GM:SpawnRandomBoss(pos, ang)
 		if v.Disabled then continue end
 		total = total + v.SpawnChance
 		if total >= dice then
-			v.BroadCast()
+			v.BroadCast(nonotify)
 			timer.Simple(tonumber(v.SpawnDelay), function()
 				self:SystemBroadcast(v.AnnounceMessage, Color(255,105,105), false)
 				for k, v in pairs(player.GetAll()) do BroadcastLua([[if GetConVar("tea_cl_soundboss"):GetInt() >= 1 then RunConsoleCommand("playgamesound", "music/stingers/hl1_stinger_song8.mp3") end]]) end
@@ -193,7 +195,7 @@ function GM:SpawnRandomBoss(pos, ang)
 						ent:SetColor(Color(255,255,95))
 						mult,xp,cash,inf = 1.25, 1.25, 1.2, 1.25
 					end
-	
+
 					ent:SetEliteVariant(elite_variant)
 					ent:SetHealth(ent:Health() * mult)
 					ent:SetMaxHealth(ent:GetMaxHealth() * mult)
@@ -201,6 +203,18 @@ function GM:SpawnRandomBoss(pos, ang)
 					ent.MoneyReward = (ent.MoneyReward or 0) * cash
 					ent.InfectionRate = (ent.InfectionRate or 0) * inf
 					self:SystemBroadcast("ALERT! BOSS HAS SPAWNED AS AN ELITE VARIANT, GOOD LUCK...", Color(255,55,55), true)
+				end
+
+				if plycountoverride > 4 then
+					local mul = math.max(1, 0.80 + plycountoverride*0.05)
+					ent:SetHealth(ent:Health() * mul)
+					ent:SetMaxHealth(ent:GetMaxHealth() * mul)
+					ent.XPReward = (ent.XPReward or 0) * mul
+					ent.MoneyReward = (ent.MoneyReward or 0) * mul
+					ent.InfectionRate = (ent.InfectionRate or 0) * mul
+
+					if self:GetDebug() >= DEBUGGING_NORMAL then print("Boss is stronger by "..mul.."x") end
+--					self:SystemBroadcast("Boss is stronger by "..mul.."x", Color(155,155,255), true)
 				end
 	
 				if self:GetDebug() >= DEBUGGING_ADVANCED then print("Zombie Boss spawned:", "\n"..k, pos, ang, "XPReward: "..v.XPReward, "MoneyReward: "..v.MoneyReward) end
@@ -292,8 +306,9 @@ concommand.Add("tea_clearzombiespawns", function(ply, cmd, args, str)
 	GAMEMODE:ClearZombies(ply, cmd, args, str)
 end)
 
-function GM:SpawnBoss()
+function GM:SpawnBoss(plycountoverride, nonotify)
 	local bspawned = false
+	plycountoverride = plycountoverride or #player.GetAll()
 
 	if ZombieData != "" then
 		local ZombiesList = string.Explode("\n", ZombieData)
@@ -309,7 +324,7 @@ function GM:SpawnBoss()
 
 			if bspawned then continue end
 			if !inzedrange then continue end
-			self:SpawnRandomBoss(pos + Vector(0, 0, 40), ang)
+			self:SpawnRandomBoss(pos + Vector(0, 0, 40), ang, plycountoverride, nonotify)
 			bspawned = true
 		end
 	end
@@ -367,7 +382,7 @@ function GM:NPCReward(ent)
 
 			if table.Count(ent.DamagedBy) > 0 then
 				self.NextInfectionDecrease = math.max(self.NextInfectionDecrease, ct + 70 + table.Count(ent.DamagedBy) * 5)
-				self:SetInfectionLevel(self:GetInfectionLevel() + ((ent.InfectionRate or 0) * self.InfectionLevelGainMul))
+				self:SetInfectionLevel(self:GetInfectionLevel() + ((ent.InfectionRate or 0) * self.InfectionLevelGainMul * math.max(1, 0.5 + #player.GetAll()*0.2)))
 			end
 
 			local boss_killer

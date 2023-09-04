@@ -159,7 +159,30 @@ function GM:Think()
 
 		-- The Ultimate timer of Auto-Maintenance (no.)
 		if !self.IsMaintenance and ct >= tonumber(self.Config["AutoMaintenanceTime"]) * 3600 then
-			self:DoAutoMaintenance(tonumber(self.Config["AutoMaintenanceDelay"]))
+			self:DoAutoMaintenance(tonumber(self.Config["AutoMaintenanceDelay"]) * 60)
+		elseif self.IsMaintenance and ct > self:GetServerRestartTime() then
+			if !self.RestartingLevel then
+				self:SystemBroadcast("Restarting map...", Color(205,205,205), true)
+				self.RestartingLevel = true
+				for _,ply in pairs(player.GetAll()) do ply:SendLua("surface.PlaySound(\"buttons/button15.wav\")") end
+			end
+			timer.Simple(1, function()
+				for k,o in pairs(self.Config["ZombieClasses"]) do
+					for _, ent in pairs(ents.FindByClass(k)) do
+						ent:Remove()
+					end
+				end
+			end)
+			timer.Simple(2, function()
+				for k,o in pairs(self.Config["BossClasses"]) do
+					for _, ent in pairs(ents.FindByClass(k)) do
+						ent:Remove()
+					end
+				end
+			end)
+			timer.Simple(5, function()
+				RunConsoleCommand("changelevel", game.GetMap())
+			end)
 		end
 
 		if self.InfectionLevelEnabled and plycount > 0 and self.NextInfectionDecrease < ct and self:GetInfectionLevel() > 0 and not self.InfectionLevelShouldNotDecrease then
@@ -474,7 +497,7 @@ function GM:DoAutoMaintenance(time)
 	print(Format("Starting map restart sequence. ETA: %d minutes.", time / 60))
 	for _,v in pairs(player.GetAll()) do v:ConCommand("playgamesound common/warning.wav") end
 	self.IsMaintenance = true
-	GM:SetServerRestartTime(CurTime() + time)
+	self:SetServerRestartTime(CurTime() + time)
 
 	/* -- It will be now reworked
 	timer.Create("TEAChangingLevel", 60, 0, function()
