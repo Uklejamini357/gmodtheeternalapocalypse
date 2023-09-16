@@ -38,7 +38,7 @@ hook.Add("PostDrawTranslucentRenderables", "TEADrawDamage", function()
 	end
 
 --	if GAMEMODE.DamageNumberThroughWalls then
---		cam.IgnoreZ(false)
+		cam.IgnoreZ(false)
 --	end
 
 	if done then
