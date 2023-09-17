@@ -156,6 +156,7 @@ function GM:SystemGiveItem(ply, str, qty)
 	else 
 		ply.Inventory[str] = qty
 	end
+	self:SendInventory(ply)
 	return true
 end
 
@@ -187,6 +188,7 @@ function GM:SystemRemoveItem(ply, str, strip)
 	end
 	ply.Inventory[str] = ply.Inventory[str] - 1
 	if ply.Inventory[str] < 1 then ply.Inventory[str] = nil end
+	self:SendInventory(ply)
 end
 
 
