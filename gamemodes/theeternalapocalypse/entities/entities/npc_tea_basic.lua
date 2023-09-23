@@ -429,8 +429,8 @@ function ENT:AttackDoor(target)
 			local tr = {
 				start = pos,
 				endpos = pos,
-				mins = door:OBBMaxs(),
-				maxs = door:OBBMins(),filter={door,fakedoor},ignoreworld=true
+				mins = door:OBBMins(),
+				maxs = door:OBBMaxs(),filter={door,fakedoor},ignoreworld=true
 			}
 			if(tr.Hit)then timer.Simple(tonumber(GAMEMODE.Config["DoorResetTime"]),function() ResetDoor(door,fakedoor) end) return end
 			door.doorhealth = tonumber(GAMEMODE.Config["DoorHealth"])
