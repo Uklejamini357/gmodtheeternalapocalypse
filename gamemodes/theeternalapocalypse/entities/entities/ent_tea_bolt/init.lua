@@ -39,7 +39,6 @@ end
    Name: ENT:Think()
 ---------------------------------------------------------*/
 function ENT:Think()
-/*
 local zed = ents.FindInSphere(self:GetPos(), 40)
 if self.Moving then
 	for k, v in pairs(zed) do
@@ -50,16 +49,16 @@ if self.Moving then
 		info:SetAttacker(self.Owner)
 		info:SetInflictor(self)
 		info:SetDamageType (DMG_GENERIC)
-		info:SetDamage(130)
-		info:SetMaxDamage(130)
+		info:SetDamage(200)
+		info:SetMaxDamage(200)
 		info:SetDamageForce(Vector(0,0,0))
 
 		v:TakeDamageInfo(info)
 		self:Remove()
+		break
 		end	
 	end
 end
-*/
 	local phys 		= self:GetPhysicsObject()
 	local ang 		= self:GetForward() * 100000
 	local up		= self:GetUp() * -800

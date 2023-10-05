@@ -418,20 +418,28 @@ function ENT:AttackDoor(target)
 	local ang = target:GetAngles()
 	local model = target:GetModel()
 	local skin = target:GetSkin()
-
-	target:Fire("open", "", 0.1)
+	--I dont think you need to fire open..
+	--target:Fire("open", "", 0.1)
 	target:SetNotSolid(true)
 	target:SetNoDraw(true)
-
+	
 	local function ResetDoor(door, fakedoor)
 		if door:IsValid() and fakedoor:IsValid() then
+			local pos = door:GetPos()
+			local tr = {
+				start = pos,
+				endpos = pos,
+				mins = door:OBBMins(),
+				maxs = door:OBBMaxs(),filter={door,fakedoor},ignoreworld=true
+			}
+			if(tr.Hit)then timer.Simple(tonumber(GAMEMODE.Config["DoorResetTime"]),function() ResetDoor(door,fakedoor) end) return end
 			door.doorhealth = tonumber(GAMEMODE.Config["DoorHealth"])
 			door:SetNotSolid(false)
 			door:SetNoDraw(false)
 			fakedoor:Remove()
+			return true 
 		end
 	end
-
 	local push = self:GetPos():Normalize()
 	local ent = ents.Create("prop_physics")
 
@@ -445,7 +453,8 @@ function ENT:AttackDoor(target)
 	end
 
 	ent:Spawn()
-	timer.Simple(tonumber(GAMEMODE.Config["DoorResetTime"]), function() ResetDoor(target, ent) end)
+	local func= function() ResetDoor(target, ent) end
+	timer.Simple(tonumber(GAMEMODE.Config["DoorResetTime"]),func)
 	coroutine.wait(self.ZombieStats["AfterStrikeDelay"])
 	self:StartActivity(self.WalkAnim)
 end
