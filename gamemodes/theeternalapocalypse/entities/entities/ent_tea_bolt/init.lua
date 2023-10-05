@@ -55,6 +55,7 @@ if self.Moving then
 
 		v:TakeDamageInfo(info)
 		self:Remove()
+		break
 		end	
 	end
 end
