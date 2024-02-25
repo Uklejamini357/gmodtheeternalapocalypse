@@ -101,7 +101,7 @@ GM.PlayerModel_DeathSounds = {
 GM.Deathsounds = {
 
 -- default models
-	["models/player/kleiner.mdl"] = nil,
+--	["models/player/kleiner.mdl"] = GM.PlayerModel_DeathSounds["MaleSounds"],
 	["models/player/group03/male_01.mdl"] = GM.PlayerModel_DeathSounds["MaleSounds"],
 	["models/player/group03/male_02.mdl"] = GM.PlayerModel_DeathSounds["MaleSounds"],
 	["models/player/group03/male_03.mdl"] = GM.PlayerModel_DeathSounds["MaleSounds"],
@@ -131,7 +131,7 @@ GM.Deathsounds = {
 	["models/player/group01/female_04.mdl"] = GM.PlayerModel_DeathSounds["FemaleSounds"],
 	["models/player/group01/female_06.mdl"] = GM.PlayerModel_DeathSounds["FemaleSounds"],
 	["models/player/breen.mdl"] = GM.PlayerModel_DeathSounds["MaleSounds"],
-	["models/player/Eli.mdl"] = nil,
+--	["models/player/Eli.mdl"] = GM.PlayerModel_DeathSounds["MaleSounds"],
 	["models/player/mossman.mdl"] = GM.PlayerModel_DeathSounds["FemaleSounds"],
 
 -- armor models

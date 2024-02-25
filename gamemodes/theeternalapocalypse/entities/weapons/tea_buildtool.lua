@@ -134,10 +134,10 @@ function SWEP:Reload()
 	local trace = util.TraceLine(tr)
 
 	if trace.Entity and trace.Entity:IsValid() and (trace.Entity:GetClass() == "prop_flimsy" or trace.Entity:GetClass() == "prop_strong") and not (self.Weapon:GetNextPrimaryFire() > CurTime() ) then
-		gamemode.Call("DestroyProp", self.Owner, trace.Entity)
+		GAMEMODE:DestroyProp(self.Owner, trace.Entity)
 		self:SetNextPrimaryFire(CurTime() + 2.08)
 	elseif trace.Entity and trace.Entity:IsValid() and SpecialSpawns[trace.Entity:GetClass()] and not (self.Weapon:GetNextPrimaryFire() > CurTime() ) then
-		gamemode.Call("DestroyStructure", self.Owner, trace.Entity)
+		GAMEMODE:DestroyStructure(self.Owner, trace.Entity)
 		self:SetNextPrimaryFire(CurTime() + 2.08)
 	end
 
@@ -214,7 +214,7 @@ end
     local tr = util.TraceLine( trace )
 
     if not (self.Weapon:GetNextPrimaryFire() > CurTime() ) then
-    gamemode.Call("MakeProp", self.Owner, self.Owner.SelectedProp, tr.HitPos, ang, 1)
+    GAMEMODE:MakeProp(self.Owner, self.Owner.SelectedProp, tr.HitPos, ang, 1)
     self:SetNextPrimaryFire(CurTime() + 0.7)
 	end
 

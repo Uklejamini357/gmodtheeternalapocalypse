@@ -17,8 +17,8 @@ SWEP.Purpose			= "A combat knife that can save your ass if you run out of ammo"
 SWEP.Instructions			= "Left click to slice, Right click to stab"
 
 SWEP.HitDistance = 48
-SWEP.StaminaNeeded = 2
-SWEP.StaminaNeeded2 = 3 -- for stab
+SWEP.StaminaNeeded = 1.65
+SWEP.StaminaNeeded2 = 2.55 -- for stab
 
 SWEP.Primary.Recoil		= 5
 SWEP.Primary.Damage		= 19

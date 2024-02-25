@@ -135,19 +135,21 @@ function GM:Think()
 
 		if ct > tonumber(self.NextZombieSpawn) then
 			self.NextZombieSpawn = ct + tonumber(self.Config["ZombieSpawnRate"]) 
-			self:SpawnZombies()
+			if GetGlobalBool("GM.ZombieSpawning") then
+				self:SpawnZombies()
+			end
 		end
 
 		if ct > tonumber(self.NextBossSpawn) then
-			self.NextBossSpawn = ct + tonumber(self.Config["BossSpawnRate"]) 
-			if self.CanSpawnBoss or plycount >= self.MinPlayersBossRequired then
+			self.NextBossSpawn = ct + tonumber(self.Config["BossSpawnRate"])
+			if GetGlobalBool("GM.ZombieSpawning") and plycount >= self.MinPlayersBossRequired then
 				gamemode.Call("SpawnBoss")
 			end
 		end
 
 		if ct > tonumber(self.NextAirdropSpawn) then
 			self.NextAirdropSpawn = ct + tonumber(self.Config["AirdropSpawnRate"]) 
-			if self.CanSpawnAirdrop or plycount >= self.MinPlayersAirdropRequired then
+			if plycount >= self.MinPlayersAirdropRequired then
 				gamemode.Call("SpawnAirdrop")
 			end
 		end
@@ -189,7 +191,7 @@ function GM:Think()
 			self.NextInfectionDecrease = ct + 9
 			self.InfectionDecreasedTimes = math.Clamp(self.InfectionDecreasedTimes + 1, 0, 45)
 	
-			self:SetInfectionLevel(math.max(0, self:GetInfectionLevel() - (0.045 + (self.InfectionDecreasedTimes * 0.008))))
+			self:SetInfectionLevel(math.max(0, self:GetInfectionLevel() - (0.045 + (self.InfectionDecreasedTimes * 0.0072))))
 		end
 
 		if self.NextSave + 240 < ct then
@@ -411,9 +413,6 @@ function GM:Initialize()
 	self.InfectionDecreasedTimes = 0
 	self.NextSave = 0
 
-	self.CanSpawnBoss = false
-	self.CanSpawnAirdrop = false
-
 	SetGlobalBool("GM.ZombieSpawning", true)
 
 	self:LoadServerData()
@@ -628,19 +627,12 @@ function GM:EntityTakeDamage(ent, dmginfo)
 
 	local attacker = dmginfo:GetAttacker()
 
-/*
-	if ent:IsPlayer() then
-		ent.HealthDamage = ent.HealthDamage + dmginfo:GetDamage()
-		dmginfo:SetDamage(math.floor(ent.HealthDamage))
-		ent.HealthDamage = ent.HealthDamage - math.floor(ent.HealthDamage)
-	end
-*/
 	if (ent.Type == "nextbot" or ent:IsNPC()) and (!ent.LastAttacker or ent:Health() > 0) and attacker:IsPlayer() then
 		if !ent.BossMonster then
 			ent.LastAttacker = attacker
-			timer.Create("TEALastAttacker_"..ent:EntIndex(), 15, 1, function()
+			timer.Create("TEAZombieLastAttacker_"..ent:EntIndex(), 15, 1, function()
 				if !ent:IsValid() then return end
-				ent.LastAttacker = nil	-- if time after the target last received damage from the attacker, we claim that the last target's attacker is no more
+				ent.LastAttacker = nil	-- after some time when the target last received damage from the attacker, we claim that the last target's attacker is no more
 			end)
 		else
 			if !ent.DamagedBy[attacker] then 
@@ -672,7 +664,7 @@ function GM:EntityTakeDamage(ent, dmginfo)
 	end
 
 	if attacker:IsPlayer() then
-		if ent:IsPlayer() or ent:IsNextBot() or (ent:IsNPC() and ent:GetClass() ~= "trader") and ent:Health() ~= 0 then
+		if ent:IsPlayer() or ent:IsNextBot() or (ent:IsNPC() and ent:GetClass() ~= "tea_trader") and ent:Health() ~= 0 then
 			self:DamageFloater(attacker, ent, dmginfo:GetDamagePosition(), ent:IsPlayer() and math.floor(dmginfo:GetDamage()) or dmginfo:GetDamage())
 		end
 	end
@@ -768,10 +760,12 @@ function GM:PlayerInitialSpawn(ply, transition)
 		ply.AchProgress[k] = 0
 	end
 
-	timer.Simple(0.01, function()
-		ply:KillSilent()
-		ply:SetPos(Vector(0,0,130000)) -- for main menu
-	end)
+	if !ply:IsBot() then
+		timer.Simple(0.01, function()
+			ply:KillSilent()
+			ply:SetPos(Vector(0,0,130000)) -- for main menu
+		end)
+	end
 
 	print(Format("Loading datafiles for %s...\n", ply:Nick()))
 	gamemode.Call("LoadPlayer", ply)
@@ -810,7 +804,6 @@ function GM:PlayerSay(ply, text, team)
 	return text
 end
 
--- ULX admin mod overrides this and screws up voice system... maybe it will be fixed or not... no idea, apparently.
 function GM:PlayerCanHearPlayersVoice(listener, talker)
 	if listener:GetPos():Distance(talker:GetPos()) <= 1250 then
 		return true, false
@@ -822,6 +815,7 @@ end
 function GM:PlayerShouldTaunt(ply, actid)
 	return true
 end
+
 
 local function IsPosBlocked(pos)
 	local tr = {
@@ -857,6 +851,7 @@ local function FindGoodSpawnPoint(e)
 	end
 	return goodspawn
 end
+
 
 function GM:PlayerSpawn(ply)
 	self.BaseClass:PlayerSpawn(ply)

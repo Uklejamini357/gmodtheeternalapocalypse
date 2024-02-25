@@ -332,6 +332,7 @@ function GM:TraderMenu()
 					DoSellPanel()
 				end)
 			end
+			BuyButton.DoDoubleClick = BuyButton.DoClick
 --		end
 			parent:AddItem(ItemBackground)
 		end
@@ -419,21 +420,41 @@ function GM:TraderMenu()
 					surface.DrawOutlinedRect(0, 0, EquipButton:GetWide(), EquipButton:GetTall())
 					draw.RoundedBox(2, 0, 0, EquipButton:GetWide(), EquipButton:GetTall(), Color(0, 50, 0, 130))
 				end
-				EquipButton.DoClick = function()
+				local function SellItems(amt)
+--					surface.PlaySound("buttons/button15.wav")
+
 					net.Start("SellItem")
 					net.WriteString(k)
+					net.WriteUInt(amt, 32)
 					net.SendToServer()
+
 					timer.Simple(0.3, function()
 						LWeight:SetText(translate.Format("weight_1", CalculateWeightClient()).." / "..CalculateMaxWeightClient().."kg")
 --						LMoney:SetText("My Wallet: "..math.floor(MyMoney))
 					end)
-						timer.Simple(0.25, function() 
-							if IsValid(SellPanel) then
-								DoSellPanel()
-							end
-						end)
-					end
+					timer.Simple(0.25, function() 
+						if IsValid(SellPanel) then
+							DoSellPanel()
+						end
+					end)
 				end
+
+				EquipButton.DoClick = function()
+					local menu = DermaMenu()
+					menu:AddOption("Sell 1x", function() SellItems(1) end)
+					if v.Qty >= 2 then menu:AddOption("Sell 2x", function() SellItems(2) end) end
+					if v.Qty >= 3 then menu:AddOption("Sell 3x", function() SellItems(3) end) end
+					if v.Qty >= 5 then menu:AddOption("Sell 5x", function() SellItems(5) end) end
+					if v.Qty >= 7 then menu:AddOption("Sell 7x", function() SellItems(7) end) end
+					if v.Qty >= 10 then menu:AddOption("Sell 10x", function() SellItems(10) end) end
+					if v.Qty >= 15 then menu:AddOption("Sell 15x", function() SellItems(15) end) end
+					menu:AddOption("Sell All", function() SellItems(v.Qty) end)
+					menu:Open()
+				end
+				EquipButton.DoRightClick = function()
+					SellItems(input.IsShiftDown() and v.Qty or 1)
+				end
+			end
 
 				local VaultButton = vgui.Create("DButton", ItemBackground)
 				VaultButton:SetSize(80, 20)
@@ -445,10 +466,14 @@ function GM:TraderMenu()
 					surface.DrawOutlinedRect(0, 0, VaultButton:GetWide(), VaultButton:GetTall())
 					draw.RoundedBox(2, 0, 0, VaultButton:GetWide(), VaultButton:GetTall(), Color(50, 50, 0, 130))
 				end
-				VaultButton.DoClick = function()
+				local function PlaceItemsInVault(amt)
+--					surface.PlaySound("buttons/button15.wav")
+
 					net.Start("AddVault")
 					net.WriteString(k)
+					net.WriteUInt(amt, 32)
 					net.SendToServer()
+
 					timer.Simple(0.4, function()
 						LWeight:SetText(translate.Format("weight_1", CalculateWeightClient()).." / "..CalculateMaxWeightClient().."kg")
 --						LMoney:SetText("My Wallet: "..math.floor(MyMoney))
@@ -461,6 +486,22 @@ function GM:TraderMenu()
 							DoVaultPanel()
 						end
 					end)
+				end
+
+				VaultButton.DoClick = function()
+					local menu = DermaMenu()
+					menu:AddOption("Place 1x in vault", function() PlaceItemsInVault(1) end)
+					if v.Qty >= 2 then menu:AddOption("Place 2x in vault", function() PlaceItemsInVault(2) end) end
+					if v.Qty >= 3 then menu:AddOption("Place 3x in vault", function() PlaceItemsInVault(3) end) end
+					if v.Qty >= 5 then menu:AddOption("Place 5x in vault", function() PlaceItemsInVault(5) end) end
+					if v.Qty >= 7 then menu:AddOption("Place 7x in vault", function() PlaceItemsInVault(7) end) end
+					if v.Qty >= 10 then menu:AddOption("Place 10x in vault", function() PlaceItemsInVault(10) end) end
+					if v.Qty >= 15 then menu:AddOption("Place 15x in vault", function() PlaceItemsInVault(15) end) end
+					menu:AddOption("Place All in vault", function() PlaceItemsInVault(v.Qty) end)
+					menu:Open()
+				end
+				VaultButton.DoRightClick = function()
+					PlaceItemsInVault(input.IsShiftDown() and v.Qty or 1)
 				end
 				SellPanel:AddItem(ItemBackground)
 			end
@@ -526,6 +567,23 @@ function GM:TraderMenu()
 			ItemQty:SetText(v.Qty.."x")
 			ItemQty:SizeToContents()
 
+
+			local function WithdrawItemsFromVault(amt)
+--				surface.PlaySound("buttons/button15.wav")
+
+				net.Start("WithdrawVault")
+				net.WriteString(k)
+				net.WriteUInt(amt, 32)
+				net.SendToServer()
+				timer.Simple(0.4, function()
+					LWeight:SetText(translate.Format("weight_1", CalculateWeightClient()).." / "..CalculateMaxWeightClient().."kg")
+				end)
+				timer.Simple(0.4, function() 
+					if IsValid(VaultPanel) then DoVaultPanel() end
+					if IsValid(SellPanel) then DoSellPanel() end
+				end)
+			end
+
 			local EquipButton = vgui.Create("DButton", ItemBackground)
 			EquipButton:SetSize(80, 20)
 			EquipButton:SetPos(80, 35)
@@ -537,18 +595,21 @@ function GM:TraderMenu()
 				draw.RoundedBox(2, 0, 0, EquipButton:GetWide(), EquipButton:GetTall(), Color(0, 50, 0, 130))
 			end
 			EquipButton.DoClick = function()
-				net.Start("WithdrawVault")
-				net.WriteString(k)
-				net.SendToServer()
-				timer.Simple(0.4, function()
-					LWeight:SetText(translate.Format("weight_1", CalculateWeightClient()).." / "..CalculateMaxWeightClient().."kg")
---					LMoney:SetText("My Wallet: "..math.floor(MyMoney))
-				end)
-				timer.Simple(0.4, function() 
-					if IsValid(VaultPanel) then DoVaultPanel() end
-					if IsValid(SellPanel) then DoSellPanel() end
-				end)
+				local menu = DermaMenu()
+				menu:AddOption("Withdraw 1x in vault", function() WithdrawItemsFromVault(1) end)
+				if v.Qty >= 2 then menu:AddOption("Withdraw 2x in vault", function() WithdrawItemsFromVault(2) end) end
+				if v.Qty >= 3 then menu:AddOption("Withdraw 3x in vault", function() WithdrawItemsFromVault(3) end) end
+				if v.Qty >= 5 then menu:AddOption("Withdraw 5x in vault", function() WithdrawItemsFromVault(5) end) end
+				if v.Qty >= 7 then menu:AddOption("Withdraw 7x in vault", function() WithdrawItemsFromVault(7) end) end
+				if v.Qty >= 10 then menu:AddOption("Withdraw 10x in vault", function() WithdrawItemsFromVault(10) end) end
+				if v.Qty >= 15 then menu:AddOption("Withdraw 15x in vault", function() WithdrawItemsFromVault(15) end) end
+				menu:AddOption("Withdraw All in vault", function() WithdrawItemsFromVault(v.Qty) end)
+				menu:Open()
 			end
+			EquipButton.DoRightClick = function()
+				WithdrawItemsFromVault(input.IsShiftDown() and v.Qty or 1)
+			end
+
 			VaultPanel:AddItem(ItemBackground)
 		end
 	end

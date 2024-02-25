@@ -41,7 +41,7 @@ function ENT:Use( activator, caller )
 	gamemode.Call("SystemGiveItem", caller, name, qtycheck )
 
 	caller:SendChat("You picked up a loot cache containing [ "..qtycheck.."x "..itemname.." ]")
-	gamemode.Call("SendInventory", caller)
+	GAMEMODE:SendInventory(caller)
 	caller:EmitSound("items/ammopickup.wav", 100, 100)
 	self:Remove()
 end

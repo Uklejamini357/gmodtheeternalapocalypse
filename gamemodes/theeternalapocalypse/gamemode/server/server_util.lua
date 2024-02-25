@@ -71,7 +71,7 @@ function MT_PLAYER:ProcessPlayerDamage(dmginfo)
 		return false
 	end
 	
-	for _, ent in pairs(ents.FindByClass("trader")) do
+	for _, ent in pairs(ents.FindByClass("tea_trader")) do
 		if ent:GetPos():DistToSqr(self:GetPos()) < 14400 then -- 120^2
 			dmginfo:ScaleDamage(0.9)
 			break
@@ -217,9 +217,10 @@ end
 
 function MT_ENTITY:ProcessNPCDamage(dmginfo)
 	local attacker = dmginfo:GetAttacker()
+	local inflictor = dmginfo:GetInflictor()
 	local directdmg = bit.band(DMG_DIRECT, dmginfo:GetDamageType()) ~= 0
 	if attacker == NULL then return true end
-	if attacker:GetClass() == "trader" then return false end
+	if attacker:GetClass() == "tea_trader" or attacker:GetClass() == "tea_taskdealer" then return false end
 
 	if attacker:GetClass() != "trigger_hurt" and dmginfo:GetDamageType() == DMG_BLAST and (self:IsNextBot() or self:IsNPC()) then --AI NPCs and nextbots need to take more damage if they take explosive damage so it will be much better and explosives will be more useful (What about explosive crossbow?!?!?)
 		dmginfo:ScaleDamage(1.85)
@@ -234,6 +235,11 @@ function MT_ENTITY:ProcessNPCDamage(dmginfo)
 			else
 				dmginfo:ScaleDamage(1.03)
 			end
+		end
+
+		if inflictor == attacker and (attacker:IsPlayer() or attacker:IsNPC()) then
+			inflictor = attacker:GetActiveWeapon()
+			if !inflictor:IsValid() then inflictor = attacker end
 		end
 
 		if self:GetEliteVariant() == VARIANT_REFLECTOR and IsMeleeDamage(dmginfo:GetDamageType()) and attacker:IsPlayer() and attacker:Alive() then
@@ -261,6 +267,11 @@ function GM:ScalePlayerDamage(ent, hitgroup, dmginfo)
 
 	local headdmg = 2
 
+	if inflictor == attacker and (attacker:IsPlayer() or attacker:IsNPC()) then
+		inflictor = attacker:GetActiveWeapon()
+		if !inflictor:IsValid() then inflictor = attacker end
+	end
+
 	if inflictor:IsValid() and inflictor.HeadshotDamageMulti then
 		headdmg = inflictor.HeadshotDamageMulti
 	end
@@ -281,7 +292,7 @@ function GM:ScalePlayerDamage(ent, hitgroup, dmginfo)
 	end
 
 /*
-	for _, entity in pairs (ents.FindByClass("trader")) do
+	for _, entity in pairs (ents.FindByClass("tea_trader")) do
 		if attacker:IsPlayer() and (entity:GetPos():Distance(ply:GetPos()) < 120 or entity:GetPos():Distance(attacker:GetPos()) < 120) then
 			dmginfo:SetDamage(0)
 		end
@@ -543,7 +554,7 @@ function GM:OnDamagedByExplosion(ply, dmginfo)
 		ply:SetDSP(35)
 	end
 end
-	
+
 function GM:PlayerTraceAttack(ply, dmginfo, dir, trace)
 	local attacker = dmginfo:GetAttacker()
 	
@@ -555,8 +566,9 @@ function GM:PlayerTraceAttack(ply, dmginfo, dir, trace)
 end
 
 function FormatSteamID(SteamID)
-	local SteamID = SteamID, "STEAM_0:0:0"
+	SteamID = SteamID or "STEAM_0:0:0"
 
+	local str
 	str = string.gsub(SteamID,"STEAM","")
 	str = string.gsub(str,":","")
 	str = string.gsub(str,"_","")

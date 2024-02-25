@@ -5,8 +5,8 @@ GM.AltName	= "After The End Reborn"
 GM.Author	= "Uklejamini"
 GM.Email	= "[You may not view this information.]"
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.11.1b"
-GM.DateVer	= "04.09.2023"
+GM.Version	= "0.11.1c"
+GM.DateVer	= "25.02.2024" -- oh my gosh there was no update for so long
 
 
 include("sh_globals.lua") -- globals
@@ -66,7 +66,7 @@ end
 
 function GM:PlayerShouldTakeDamage(ply, attacker)
 	if attacker:IsPlayer() then
-		for _, ent in pairs (ents.FindByClass("trader")) do
+		for _, ent in pairs (ents.FindByClass("tea_trader")) do
 			if attacker:IsPlayer() and (ent:GetPos():Distance(ply:GetPos()) < 120 or ent:GetPos():Distance(attacker:GetPos()) < 120) then
 				return false
 			end
@@ -86,9 +86,9 @@ function GM:PlayerShouldTakeDamage(ply, attacker)
 end
 
 function GM:GetReqXP(ply)
-	local basexpreq = 712
-	local addxpperlevel = 103
-	local addxpperlevel2 = 1.1236
+	local basexpreq = 709
+	local addxpperlevel = 102
+	local addxpperlevel2 = 1.1229
 
 	local plyprestige = SERVER and ply.Prestige or MyPrestige
 	local plylevel = SERVER and ply.Level or MyLvl
@@ -278,5 +278,21 @@ end
 
 function GM:GetServerRestartTime()
 	return GetGlobalFloat("TEA_Server_Restart_Time")
+end
+
+function GM:SetEvent(event)
+	SetGlobalInt("TEA_CURRENTEVENT", event)
+end
+
+function GM:GetEvent()
+	return GetGlobalInt("TEA_CURRENTEVENT", EVENT_NONE)
+end
+
+function GM:SetEventTimer(time)
+	SetGlobalFloat("TEA_Event_Timer", time)
+end
+
+function GM:GetEventTimer()
+	return GetGlobalFloat("TEA_Event_Timer", -1)
 end
 

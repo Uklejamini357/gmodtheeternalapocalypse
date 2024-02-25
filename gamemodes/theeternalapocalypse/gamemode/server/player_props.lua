@@ -106,7 +106,7 @@ end
 function GM:CheckFactionBases(pos)
 	local check = ents.FindInSphere(pos, 950)
 	for k, v in pairs(check) do
-		if v:GetClass() == "structure_base_core" or v:GetClass() == "trader" or v:GetClass() == "spawn_guard" then return false end
+		if v:GetClass() == "structure_base_core" or v:GetClass() == "tea_trader" or v:GetClass() == "tea_taskdealer" or v:GetClass() == "spawn_guard" then return false end
 	end
 
 	return true
@@ -155,8 +155,12 @@ function GM:MakeProp(ply, model, pos, ang)
 
 	if cash < (pcost * discount) and self.PropCostEnabled then ply:SystemMessage("Unable to spawn prop due to insufficient Gold!", Color(255,205,205,255), true) return false end
 
-	for k, v in pairs(ents.FindByClass("trader")) do
+	for k, v in pairs(ents.FindByClass("tea_trader")) do
 		if pos:Distance(v:GetPos()) < self.PropSpawnTraderDistance then ply:SystemMessage("Unable to spawn prop! Too close to a trader!", Color(255,205,205,255), true) return false end
+	end
+
+	for k, v in pairs(ents.FindByClass("tea_taskdealer")) do
+		if pos:Distance(v:GetPos()) < self.PropSpawnTraderDistance then ply:SystemMessage("Unable to spawn prop! Too close to a task dealer!", Color(255,205,205,255), true) return false end
 	end
 
 	if gamemode.Call("CountProps", ply) >= self.MaxProps then 

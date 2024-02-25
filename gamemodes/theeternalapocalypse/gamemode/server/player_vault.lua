@@ -63,72 +63,80 @@ function GM:SavePlayerVault(ply)
 end
 
 
-function GM:AddToVault(ply, str)
+function GM:AddToVault(ply, str, amt)
 	if !ply:IsValid() then return end
 	if !self.ItemsList[str] then return end
 	if timer.Exists("Isplyequippingarmor"..ply:EntIndex().."_"..str) then print(ply:Nick().." tried to place item into vault while equipping armor!") ply:SystemMessage("Just NO", Color(255,155,155,255), true) return false end
+	amt = math.floor(amt or 1)
 
 	local item = self.ItemsList[str]
-	if (self:CalculateVaultWeight(ply) + item["Weight"]) > self.Config["VaultSize"] then
-		ply:SystemMessage(translate.ClientFormat(ply, "notenoughspacevault", self.Config["VaultSize"], gamemode.Call("CalculateRemainingVaultWeight", ply, item["Weight"])), Color(255,205,205,255), true)
+	local weight = item["Weight"] * amt
+	if (self:CalculateVaultWeight(ply) + weight) > self.Config["VaultSize"] then
+		ply:SystemMessage(translate.ClientFormat(ply, "notenoughspacevault", self.Config["VaultSize"], gamemode.Call("CalculateRemainingVaultWeight", ply, weight)), Color(255,205,205,255), true)
 		return false
 	end
 
 	if ply.Vault[str] then
-		ply.Vault[str] = ply.Vault[str] + 1
+		ply.Vault[str] = ply.Vault[str] + amt
 	else 
-		ply.Vault[str] = 1
+		ply.Vault[str] = amt
 	end
 
 	if item["IsGrenade"] then
-		self:SystemRemoveItem(ply, str, false)
+		self:SystemRemoveItem(ply, str, false, amt)
 	else
-		self:SystemRemoveItem(ply, str, true)
+		self:SystemRemoveItem(ply, str, true, amt)
 	end
 end
 
-function GM:WithdrawFromVault(ply, str)
+function GM:WithdrawFromVault(ply, str, amt)
 	if !ply:IsValid() then return end
 	if !self.ItemsList[str] then return end
 	if !ply.Vault[str] then return end
+	amt = math.floor(amt or 1)
+	
 	local item = self.ItemsList[str]
-
-	if ((self:CalculateWeight(ply) + item["Weight"]) > (self:CalculateMaxWeight(ply))) then
-		ply:SystemMessage(Format("You don't have enough space for that! Need %skg more space!", gamemode.Call("CalculateRemainingInventoryWeight", ply, item["Weight"])), Color(255,205,205,255), true)
+	local weight = item["Weight"] * amt
+	if ((self:CalculateWeight(ply) + weight) > (self:CalculateMaxWeight(ply))) then
+		ply:SystemMessage(Format("You don't have enough space for that! Need %skg more space!", gamemode.Call("CalculateRemainingInventoryWeight", ply, weight)), Color(255,205,205,255), true)
 		return false
 	end
 
-	ply.Vault[str] = ply.Vault[str] - 1
-	if ply.Vault[str] < 1 then ply.Vault[str] = nil end
+	ply.Vault[str] = ply.Vault[str] - amt
+	if ply.Vault[str] < amt then ply.Vault[str] = nil end
 
-	gamemode.Call("SystemGiveItem", ply, str)
+	gamemode.Call("SystemGiveItem", ply, str, amt)
 end
 
 
-net.Receive("AddVault", function(length, client)
+net.Receive("AddVault", function(length, ply)
 	local str = net.ReadString()
-	if !client:IsValid() or !client:Alive() then return false end
-	if !client.Inventory[str] then client:SystemMessage("You don't have one of those!", Color(255,205,205,255), true) return false end
-	if !GAMEMODE.ItemsList[str] then return false end -- if the item doesnt exist
-	GAMEMODE:AddToVault(client, str)
+	local amt = net.ReadUInt(32)
 
-	if client.EquippedArmor == str then
-		UseFunc_RemoveArmor(client, str)
+	if !ply:IsValid() or !ply:Alive() then return false end
+	if !ply.Inventory[str] then ply:SystemMessage("You don't have one of those!", Color(255,205,205,255), true) return false end
+	if !GAMEMODE.ItemsList[str] then return false end -- if the item doesnt exist
+	GAMEMODE:AddToVault(ply, str, amt)
+
+	if ply.EquippedArmor == str then
+		UseFunc_RemoveArmor(ply, str)
 	end
-	gamemode.Call("SendInventory", client)
-	client:EmitSound("items/ammocrate_open.wav", 100, 100)
+	gamemode.Call("SendInventory", ply)
+	ply:EmitSound("items/ammocrate_open.wav", 100, 100)
 end)
 
 
-net.Receive("WithdrawVault", function(length, client)
+net.Receive("WithdrawVault", function(length, ply)
 	local str = net.ReadString()
-	if !client:IsValid() or !client:Alive() then return false end
-	if !client.Vault[str] then client:SystemMessage("You don't have one of those!", Color(255,205,205,255), true) return false end
+	local amt = net.ReadUInt(32)
+
+	if !ply:IsValid() or !ply:Alive() then return false end
+	if !ply.Vault[str] then ply:SystemMessage("You don't have one of those!", Color(255,205,205,255), true) return false end
 	if !GAMEMODE.ItemsList[str] then return false end -- if the item doesnt exist
 
 	local item = GAMEMODE.ItemsList[str]
-	GAMEMODE:WithdrawFromVault(client, str)
-	GAMEMODE:SendInventory(client)
-	client:EmitSound("items/ammocrate_open.wav", 100, 100)
+	GAMEMODE:WithdrawFromVault(ply, str, amt)
+	GAMEMODE:SendInventory(ply)
+	ply:EmitSound("items/ammocrate_open.wav", 100, 100)
 end)
 

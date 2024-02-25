@@ -53,15 +53,20 @@ function GM:CallPerksMenu()
 	local LWeight = vgui.Create("DLabel", perksvgui)
 	LWeight:SetFont("TargetIDSmall")
 	LWeight:SetPos(10, 3)
-	LWeight:SetSize(350, 25)
-	LWeight:SetColor(Color(255,255,255,255))
 	LWeight:SetText("Perk points: "..MyPerkPoints)
+	LWeight:SizeToContents()
+	local x,y = LWeight:GetSize()
+	LWeight:SetSize(math.min(x, 350), 25)
+	LWeight:SetColor(Color(255,255,255,255))
 	LWeight:SetMouseInputEnabled(true)
 	LWeight:SetToolTip("Perk points are required to unlock perk!\nThey can be gained by prestiging")
 	LWeight.Think = function(panel)
 		local txt = "Perk points: "..MyPerkPoints
 		if panel:GetText() == txt then return end
 		panel:SetText(txt)
+		LWeight:SizeToContents()
+		local x,y = LWeight:GetSize()
+		LWeight:SetSize(math.min(x, 350), 25)
 	end
 
 
@@ -69,7 +74,15 @@ function GM:CallPerksMenu()
 
 	--------------------------------------------supplies-------------------------------------------------------------
 	
-	
+
+	local hoverdesc = vgui.Create("DLabel", perksvgui)
+	hoverdesc:SetFont("TargetIDSmall")
+	hoverdesc:SetPos(150, 0)
+	hoverdesc:SetText("Note: Hover your cursor over perks' description with white color for more info")
+	hoverdesc:SizeToContents()
+	local x,y = hoverdesc:GetSize()
+	hoverdesc:SetSize(810, 30)
+
 	for k, v in SortedPairsByMemberValue(GAMEMODE.PerksList, "PrestigeReq") do
 		local perkpanel = vgui.Create("DPanel")
 		perkpanel:SetPos(5, 5)

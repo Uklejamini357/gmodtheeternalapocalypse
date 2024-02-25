@@ -175,7 +175,7 @@ LANG.takeitems = "Take Items"
 LANG.take = "Take"
 LANG.storeitems = "Store Items"
 LANG.loottaken = "Loot Taken: %s"
-LANG.tr_itemsold = "Sold item '%s' for %d %ss!"
+LANG.tr_itemsold = "Sold item %dx '%s' for %d %ss!"
 LANG.tr_itembought = "Purchased item '%s' for %d %ss!"
 
 
@@ -286,7 +286,7 @@ LANG.item_craft_engine_large_d = "A big block engine, this looks like a bit of l
 LANG.item_boss_shard_n = "Boss shard"
 LANG.item_boss_shard_d = "Use this to summon a boss! Summoned boss with the Boss Shard is slightly stronger (by +40%), but also have increased rewards"
 LANG.item_difficulty_shard_n = "Infected shard"
-LANG.item_difficulty_shard_d = "Boosts Infection Level by +50% when used."
+LANG.item_difficulty_shard_d = "Boosts Infection Level by +50% when used. Unaffected by Infection Level gain multipliers."
 LANG.item_money_n = "Money"
 LANG.item_money_d = "Use the item to add the amount of money you have in your inventory to your account"
 LANG.item_pistolammo_n = "Pistol Ammo Box"
@@ -718,6 +718,8 @@ LANG.Tip13 = "If you have enough cash for better weapon, be sure you also have t
 LANG.Tip14 = "Be sure to plan on what skill you are using a skill point. It's worth to max out Knowledge skill first."
 LANG.Tip15 = "Consider crafting some items, if you get some loot. You may save some money."
 LANG.Tip16 = "Try to master some skills, such as Melee. You may gain some advantage and money if Mastery skill is leveled up."
+LANG.Tip17 = "Factions are automatically disbanded when the faction member count hits 0!"
+
 
 -- New ?????
 

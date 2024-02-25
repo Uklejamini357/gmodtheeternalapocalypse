@@ -27,7 +27,10 @@ end
 function GM:SendInventory(ply)
 	if !ply:IsValid() then return end
 	timer.Create("tea_sendinventory_"..ply:EntIndex(), (ply.m_LastTimeInventorySent or 0) + 0.5 - CurTime(), 1, function()
-		self:FullyUpdatePlayer(ply)
+		net.Start("UpdateInventory")
+		net.WriteTable(ply.Inventory)
+		net.Send(ply)
+--		self:FullyUpdatePlayer(ply)
 		self:SendVault(ply)
 	end)
 	ply.m_LastTimeInventorySent = CurTime()
@@ -172,9 +175,10 @@ function GM:SystemGiveItem_NoWeight(ply, str, qty) -- same as above except that 
 	return true
 end
 
-function GM:SystemRemoveItem(ply, str, strip)
+function GM:SystemRemoveItem(ply, str, strip, amt)
 	if !ply:IsValid() or !ply:IsPlayer() then return end
 	local item = self.ItemsList[str]
+	amt = math.floor(amt or 1)
 	if !item or !ply.Inventory then return end
 
 	strip = tobool(strip) or false
@@ -185,7 +189,7 @@ function GM:SystemRemoveItem(ply, str, strip)
 	if strip then
 		UseFunc_StripWeapon(ply, str, strip)
 	end
-	ply.Inventory[str] = ply.Inventory[str] - 1
+	ply.Inventory[str] = ply.Inventory[str] - amt
 	if ply.Inventory[str] < 1 then ply.Inventory[str] = nil end
 end
 
@@ -269,31 +273,33 @@ end
 
 net.Receive("SellItem", function(len, ply)
 	local str = net.ReadString()
+	local amt = net.ReadUInt(32)
 
 	if !GAMEMODE.ItemsList[str] then ply:SendChat(translate.ClientGet(ply, "itemnonexistant")) return false end -- if the item doenst exist
 	if timer.Exists("Isplyequippingarmor"..ply:EntIndex().."_"..str) then ply:SystemMessage("Bruh, did you try to sell armor that you were equipping it? You lil' bitch, there will be consequences. Play the gamemode like it was meant to be played.", Color(255,155,155,255), true) return false end
+	if amt < 1 or !ply.Inventory[str] or ply.Inventory[str] < amt then return end
 
 	local item = GAMEMODE.ItemsList[str]
 	local cash = tonumber(ply.Money)
-	local sellprice = item["Cost"] * (0.2 + (ply.StatBarter * 0.005))
+	local sellprice = item["Cost"] * (0.2 + (ply.StatBarter * 0.005)) * amt
 
 	if ply.Inventory[str] then
 		if item["IsGrenade"] then
-			GAMEMODE:SystemRemoveItem(ply, str, false)
+			GAMEMODE:SystemRemoveItem(ply, str, false, amt)
 		else
-			GAMEMODE:SystemRemoveItem(ply, str, true)
+			GAMEMODE:SystemRemoveItem(ply, str, true, amt)
 		end
 	else 
 		ply:SendChat(translate.ClientGet(ply, "hasnoitem"))
-	return false
+		return false
 	end
 
-	if ply.EquippedArmor == str then
+	if ply.EquippedArmor == str and !ply.Inventory[str] then
 		UseFunc_RemoveArmor(ply, str)
 	end
 
-	ply:PrintTranslatedMessage(HUD_PRINTCONSOLE, "tr_itemsold", translate.ClientGet(ply, str.."_n"), sellprice, GAMEMODE.Config["Currency"])
-	ply.Money = math.floor(ply.Money + sellprice) -- base sell price 20% of the original buy price plus 0.5% per barter level to max of 25%
+	ply:PrintTranslatedMessage(HUD_PRINTCONSOLE, "tr_itemsold", amt, translate.ClientGet(ply, str.."_n"), sellprice, GAMEMODE.Config["Currency"])
+	ply.Money = math.floor(cash + sellprice) -- base sell price 20% of the original buy price plus 0.5% per barter level to max of 25%
 	GAMEMODE:SendInventory(ply)
 	ply:EmitSound("physics/cardboard/cardboard_box_break3.wav", 100, 100)
 	GAMEMODE:NetUpdatePeriodicStats(ply)

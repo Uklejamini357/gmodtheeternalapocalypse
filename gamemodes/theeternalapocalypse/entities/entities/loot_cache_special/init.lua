@@ -41,10 +41,7 @@ function ENT:Use( activator, caller )
 	gamemode.Call("SystemGiveItem", caller, name, qtycheck)
 
 	caller:SendChat("You picked up a rare cache containing [ "..qtycheck.."x "..itemname.." ]")
-	for _,plys in pairs(player.GetAll()) do
-		if caller == plys then continue end
-		plys:SystemMessage(caller:Nick().." has found a rare cache containing "..qtycheck.."x "..itemname.."!", Color(255,255,255,255), true)
-	end
+	GAMEMODE:SystemBroadcast(caller:Nick().." has found a rare cache containing "..qtycheck.."x "..itemname.."!", Color(255,255,255,255), true)
 	GAMEMODE:SendInventory(caller)
 	caller:EmitSound("items/ammopickup.wav", 100, 100)
 	self:Remove()

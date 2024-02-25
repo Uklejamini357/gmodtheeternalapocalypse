@@ -48,3 +48,17 @@ function SWEP:Precache()
 
     	util.PrecacheSound("weapons/fiveseven/fiveseven-1.wav")
 end
+/*
+local explosioneffect = EffectData()
+explosioneffect:SetRadius(8)
+explosioneffect:SetMagnitude(1)
+explosioneffect:SetScale(1)
+
+function SWEP.BulletCallback(attacker, tr, dmginfo)
+	if IsFirstTimePredicted() then
+		explosioneffect:SetOrigin(tr.HitPos)
+		explosioneffect:SetNormal(tr.HitNormal)
+		util.Effect("Explosion", explosioneffect)
+	end
+end
+*/

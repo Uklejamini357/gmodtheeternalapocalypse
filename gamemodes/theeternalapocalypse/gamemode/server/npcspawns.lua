@@ -226,8 +226,7 @@ end
 
 
 function GM:SpawnZombies()
-	local zombiespawnenabled = GetGlobalBool("GM.ZombieSpawning")
-	if self:ZombieCount() >= self.MaxZombies or !zombiespawnenabled then return false end
+	if self:ZombieCount() >= self.MaxZombies then return false end
 	if ZombieData ~= "" then
 		local ZombiesList = string.Explode("\n", ZombieData)
 		for k, v in RandomPairs(ZombiesList) do
@@ -247,7 +246,7 @@ function GM:SpawnZombies()
 			end
 
 			if inplyrange == false or inzedrange == false then continue end
-			if self:ZombieCount() >= self.MaxZombies or !zombiespawnenabled then break end
+			if self:ZombieCount() >= self.MaxZombies then break end
 
 			self:SpawnRandomZombie(pos + Vector(0, 0, 10), ang)
 		end
@@ -434,7 +433,7 @@ function GM:Payout(ply, xp, cash)
 		print(Format("%s gained %s XP and %s %ss to their bounty", ply:Nick(), TXPGain, TMoneyGain, self.Config["Currency"]))
 	end
 
-	if tonumber(ply.Level) < self.MaxLevel + (self.LevelsPerPrestige * ply.Prestige) then
+	if tonumber(ply.Level) < ply:GetMaxLevel() then
 		local reqxp = self:GetReqXP(ply)
 		if ply.XP >= reqxp then
 			self:GainLevel(ply)
@@ -445,7 +444,7 @@ function GM:Payout(ply, xp, cash)
 	net.WriteFloat(TMoneyGain)
 	net.Send(ply)
 
-	if ply.MaxLevelTime < CurTime() and tonumber(ply.Level) >= self.MaxLevel + (self.LevelsPerPrestige * ply.Prestige) then
+	if ply.MaxLevelTime < CurTime() and tonumber(ply.Level) >= ply:GetMaxLevel() then
 		ply.MaxLevelTime = CurTime() + 120
 		ply:SendChat("You have reached max level, consider prestiging.")
 	end

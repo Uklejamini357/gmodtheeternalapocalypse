@@ -19,7 +19,7 @@ hook.Add("PostDrawTranslucentRenderables", "TEADrawDamage", function()
 	ang:RotateAroundAxis(ang:Forward(), 90)
 
 --	if GAMEMODE.DamageNumberThroughWalls then
-		cam.IgnoreZ(true)
+--		cam.IgnoreZ(true)
 --	end
 
 	for _, particle in pairs(Particles) do

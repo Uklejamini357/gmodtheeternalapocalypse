@@ -27,53 +27,56 @@ function GM:CMenu()
 	ContextMenu:ShowCloseButton(false)
 	ContextMenu.Paint = function(panel)
 		local wep = LocalPlayer():GetActiveWeapon()
-		if !wep:IsValid() then return end
+		if wep:IsValid() then
 
-		local raretbl = {}
-		if self.ItemsList[wep:GetClass()] then
-			raretbl = gamemode.Call("CheckItemRarity", self.ItemsList[wep:GetClass()].Rarity)
-		end
-		raretbl.col = raretbl.col or color_white
+			local raretbl = {}
+			if self.ItemsList[wep:GetClass()] then
+				raretbl = gamemode.Call("CheckItemRarity", self.ItemsList[wep:GetClass()].Rarity)
+			end
+			raretbl.col = raretbl.col or color_white
 
-		surface.SetDrawColor(0, 0, 0, 105)
-		surface.DrawRect(200, sch / 2 - 150, 400, 300)
-		surface.SetDrawColor(150, 150, 0, 105)
-		surface.DrawOutlinedRect(200, sch / 2 - 150, 400, 300)
+			surface.SetDrawColor(0, 0, 0, 105)
+			surface.DrawRect(200, sch / 2 - 150, 400, 300)
+			surface.SetDrawColor(150, 150, 0, 105)
+			surface.DrawOutlinedRect(200, sch / 2 - 150, 400, 300)
 
-		local name = wep.PrintName or wep:GetClass()
-		local y = 145
-		draw.DrawText(translate.Format("wep_name", name), "TargetID", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+			local name = wep.PrintName or wep:GetClass()
+			local y = 145
+			draw.DrawText(translate.Format("wep_name", name), "TargetID", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 		
-		if name ~= wep:GetClass() then
-			y = y - 20
-			draw.DrawText(translate.Format("wep_class", wep:GetClass()), "TargetID", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-		end
-		y = y - 25
-
-		if wep.Primary then
-			local wep_prim = wep.Primary
-			local delay = math.Round(wep_prim.Delay or 1 / ((wep_prim.RPM or 0) / 60) or 1, 3)
-
-			local usemulshots = wep_prim.NumShots and wep_prim.NumShots ~= 0 and wep_prim.NumShots ~= 1
-			draw.DrawText(Format("Damage: %s (Max DPS: %s)",
-				usemulshots and wep_prim.Damage.." x ".. wep_prim.NumShots or wep_prim.Damage, math.Round((usemulshots and wep_prim.Damage * wep_prim.NumShots or wep_prim.Damage or 0) / (delay), 2)
-			), "TargetIDSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-			y = y - 15
-
-			draw.DrawText(Format("Attack Delay: %s", delay), "TargetIDSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-			y = y - 15
-			if wep_prim.ClipSize ~= -1 then
-				draw.DrawText(Format("Clip size: %s", wep_prim.ClipSize), "TargetIDSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-				y = y - 15
+			if name ~= wep:GetClass() then
+				y = y - 20
+				draw.DrawText(translate.Format("wep_class", wep:GetClass()), "TargetID", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 			end
-			draw.DrawText(Format("Recoil: %s", wep_prim.Recoil), "TargetIDSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-			y = y - 15
-			if wep.HitDistance then
-				draw.DrawText(Format("Hit distance: %s", wep.HitDistance), "TargetIDSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+			y = y - 25
+
+			if wep.Primary then
+				local wep_prim = wep.Primary
+				local class = wep:GetClass()
+				local delay = math.Round(wep_prim.Delay or 1 / ((wep_prim.RPM or 0) / 60) or 1, 3)
+
+				local usemulshots = wep_prim.NumShots and wep_prim.NumShots ~= 0 and wep_prim.NumShots ~= 1
+				draw.DrawText(Format("Damage: %s (Max DPS: %s)",
+					usemulshots and wep_prim.Damage.." x ".. wep_prim.NumShots or wep_prim.Damage, math.Round((usemulshots and wep_prim.Damage * wep_prim.NumShots or wep_prim.Damage or 0) / (delay), 2)
+				), "TargetIDSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 				y = y - 15
+
+				draw.DrawText(Format("Attack Delay: %s", delay), "TargetIDSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+				y = y - 15
+				if wep_prim.ClipSize ~= -1 then
+					draw.DrawText(Format("Clip size: %s", wep_prim.ClipSize), "TargetIDSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+					y = y - 15
+				end
+				draw.DrawText(Format("Recoil: %s", wep_prim.Recoil), "TargetIDSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+				y = y - 15
+				if wep.HitDistance then
+					draw.DrawText(Format("Hit distance: %s", wep.HitDistance), "TargetIDSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+				y = y - 15
+				end
+				draw.DrawText(Format("Is automatic: %s", wep_prim.Automatic), "TargetIDSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+				y = y - 15
+
 			end
-			draw.DrawText(Format("Is automatic: %s", wep_prim.Automatic), "TargetIDSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-			y = y - 15
 		end
 
 
@@ -108,23 +111,23 @@ function GM:CMenu()
 			local infection = math.Round(self:GetInfectionLevel(), 2)
 			local text,color
 
-			if infection > 200 then
+			if infection >= 200 then
 				text,color = "Chaotic", Color(91,31,31)
-			elseif infection > 150 then
+			elseif infection >= 150 then
 				text,color = "Nightmare", Color(127,31,31)
-			elseif infection > 125 then
+			elseif infection >= 125 then
 				text,color = "Horror", Color(191,31,31)
 			elseif infection >= 100 then
 				text,color = "Maximal", Color(255,0,0)
-			elseif infection > 90 then
+			elseif infection >= 90 then
 				text,color = "Infected", Color(255,63,63)
-			elseif infection > 75 then
+			elseif infection >= 75 then
 				text,color = "Very hard", Color(255,127,127)
-			elseif infection > 55 then
+			elseif infection >= 55 then
 				text,color = "Hard", Color(191,127,127)
-			elseif infection > 25 then
+			elseif infection >= 25 then
 				text,color = "Normal", Color(191,191,127)
-			elseif infection > 10 then
+			elseif infection >= 10 then
 				text,color = "Average", Color(127,255,127)
 			else
 				text,color = "Easy", Color(127,255,255)
@@ -134,10 +137,10 @@ function GM:CMenu()
 			draw.SimpleText(Format("Infection level: %s%%", infection), "TargetID", scw - 590, sch / 2 - 145, color, 0, 0)
 
 			draw.SimpleText(Format("Difficulty level: %s", text), "TargetIDSmall", scw - 590, sch / 2 - 120, color, 0, 0)
-			draw.SimpleText(Format("Zombies take: %s%% damage", math.Round(1 / GAMEMODE:GetInfectionMul()*100, 2)), "TargetIDSmall", scw - 590, sch / 2 - 105, color, 0, 0)
-			draw.SimpleText(Format("Zombies deal: %s%% damage", math.Round(GAMEMODE:GetInfectionMul(0.5)*100, 2)), "TargetIDSmall", scw - 590, sch / 2 - 90, color, 0, 0)
-			draw.SimpleText(Format("Zombie cash reward: %s%%", math.Round(GAMEMODE:GetInfectionMul(0.5)*100, 2)), "TargetIDSmall", scw - 590, sch / 2 - 75, color, 0, 0)
-			draw.SimpleText(Format("Zombie xp reward: %s%%", math.Round(GAMEMODE:GetInfectionMul()*100, 2)), "TargetIDSmall", scw - 590, sch / 2 - 60, color, 0, 0)
+			draw.SimpleText(Format("Zombies take: %s%% damage", math.Round(1 / self:GetInfectionMul()*100, 2)), "TargetIDSmall", scw - 590, sch / 2 - 105, color, 0, 0)
+			draw.SimpleText(Format("Zombies deal: %s%% damage", math.Round(self:GetInfectionMul(0.5)*100, 2)), "TargetIDSmall", scw - 590, sch / 2 - 90, color, 0, 0)
+			draw.SimpleText(Format("Zombie cash reward: %s%%", math.Round(self:GetInfectionMul(0.5)*100, 2)), "TargetIDSmall", scw - 590, sch / 2 - 75, color, 0, 0)
+			draw.SimpleText(Format("Zombie xp reward: %s%%", math.Round(self:GetInfectionMul()*100, 2)), "TargetIDSmall", scw - 590, sch / 2 - 60, color, 0, 0)
 		end
 
 		surface.DrawCircle(panel:GetWide() / 2, panel:GetTall() / 2, 150, Color(100, 100, 100, 205))
@@ -164,7 +167,7 @@ function GM:CMenu()
 		surface.SetDrawColor(150, 150, 0, 105)
 		surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
 
-		local progress = math.min(1, (MyLvl - 1 + (MyXP / self:GetReqXP())) / (self.MaxLevel + (MyPrestige * self.LevelsPerPrestige) - 1))
+		local progress = math.min(1, (MyLvl - 1 + (MyXP / self:GetReqXP())) / (LocalPlayer():GetMaxLevel() - 1))
 		dynprogress = math.Approach(dynprogress, progress, math.Round((progress - dynprogress) * 0.04, 6))
 
 		surface.SetDrawColor(50, 150, 150, 205)
@@ -377,7 +380,7 @@ function GM:WantToPrestige()
 	prestigetext:SetFont("TargetIDSmall")
 	prestigetext:SetColor(Color(205,205,205,255))
 	prestigetext:SetWrap(true)
-	prestigetext:SetText("Prestiging allows you to gain more levels depending on your Prestige level. You will also be given some cash and a perk point if you prestige. You need to be at least level "..self.MaxLevel + (MyPrestige * self.LevelsPerPrestige).." ("..self.MaxLevel.." plus "..self.LevelsPerPrestige.." depending on prestige) in order to prestige.")
+	prestigetext:SetText("Prestiging allows you to gain more levels depending on your Prestige level. You will also be given some cash and a perk point if you prestige. You need to be at least level "..LocalPlayer():GetMaxLevel().." ("..self.MaxLevel.." plus "..self.LevelsPerPrestige.." depending on prestige) in order to prestige.")
 	prestigetext:SetSize(540, 60)
 	prestigetext:SetPos(10,30)
 
@@ -385,7 +388,7 @@ function GM:WantToPrestige()
 	prestigetext2:SetFont("TargetIDSmall")
 	prestigetext2:SetColor(Color(205,205,205,255))
 	prestigetext2:SetWrap(true)
-	prestigetext2:SetText(Format("You may %sprestige.", MyLvl >= (self.MaxLevel + (self.LevelsPerPrestige * MyPrestige)) and "" or "not "))
+	prestigetext2:SetText(Format("You may %sprestige.", MyLvl >= LocalPlayer():GetMaxLevel() and "" or "not "))
 	prestigetext2:SetSize(540, 240)
 	prestigetext2:SetPos(10,30)
 
@@ -402,7 +405,7 @@ function GM:WantToPrestige()
 		draw.RoundedBox(2, 0, 0, doprestige:GetWide(), doprestige:GetTall(), Color(0, 0, 0, 130))
 	end
 	doprestige.DoClick = function(panel)
-		local levelrequiredforprestige = self.MaxLevel + (self.LevelsPerPrestige * MyPrestige)
+		local levelrequiredforprestige = LocalPlayer():GetMaxLevel()
 		if shouldprestige then
 			pframe:Remove()
 --			gamemode.Call("ConfirmPrestige")

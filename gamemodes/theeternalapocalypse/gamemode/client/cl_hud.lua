@@ -104,6 +104,8 @@ local function GetMyPvP()
 	return 0
 end
 
+local lastent
+local lastdraw = 0
 
 function GM:DrawNames()
 	local me = LocalPlayer()
@@ -115,6 +117,8 @@ function GM:DrawNames()
 	
 	local tr = util.TraceLine(trace)
 	local ent = tr.Entity
+	local npcent = lastdraw + 1 > CurTime() and (IsValid(lastent) and lastent) or ent or NULL
+
 	if ent:IsValid() and ent:IsPlayer() and ent != me and ent:Alive() then
 		local headPos = (ent:GetShootPos() + Vector(0,0,18)):ToScreen()
 		surface.SetFont("TargetID")
@@ -163,23 +167,29 @@ function GM:DrawNames()
 		draw.SimpleTextOutlined(translate.Format("bounty", stats[7]), "TargetIDSmall", headPos.x - (wo5 / 2) - 2, headPos.y + 20, Color(255, 64, 64, 255), 0, 0, 1, Color(0, 0, 0, 255))
 		draw.SimpleTextOutlined(translate.Format("faction", stats[8]), "TargetIDSmall", headPos.x - (wo6 / 2) - 2, headPos.y + 33, team.GetColor(ent:Team()), 0, 0, 1, Color(0, 0, 0, 255))
 
-/*
-	elseif ent:IsValid() and (ent:IsNPC() or ent:IsNextBot()) and (self.Config["ZombieClasses"][ent:GetClass()] or self.Config["BossClasses"][ent:GetClass()]) and self.DrawZombiesInfo then
-		draw.RoundedBox(1, (ScrW() / 2) - 170, 230, 340, 60, Color(0, 0, 0, 175))
-		surface.SetDrawColor(90,0,0,155)
+	end
+
+	if npcent and npcent:IsValid() and (npcent:IsNPC() or npcent:IsNextBot()) and (self.Config["ZombieClasses"][npcent:GetClass()] or self.Config["BossClasses"][npcent:GetClass()]) and self.DrawZombiesInfo and self:GetDebug() >= DEBUGGING_ADVANCED then
+		if ent and ent:IsValid() and (ent:IsNPC() or ent:IsNextBot()) and (self.Config["ZombieClasses"][ent:GetClass()] or self.Config["BossClasses"][ent:GetClass()]) then
+			lastent = ent
+			lastdraw = CurTime()
+		end
+		local colormult = lastdraw + 1 - CurTime()
+
+		draw.RoundedBox(1, (ScrW() / 2) - 170, 230, 340, 60, Color(0, 0, 0, colormult * 175))
+		surface.SetDrawColor(90,0,0,colormult * 155)
 		surface.DrawOutlinedRect((ScrW() / 2) - 170, 230, 340, 60)
 
-		local class = self.Config["ZombieClasses"][ent:GetClass()] or self.Config["BossClasses"][ent:GetClass()]
-		draw.SimpleText(class.Name..(ent:GetEliteVariant() ~= 0 and " (Elite variant: "..(self.VariantNames[ent:GetEliteVariant()] or "N/A")..")" or ""), "TargetIDSmall", (ScrW() / 2) - 160, 244, Color(108,108,108,255), 0, 1)
-		draw.SimpleText(translate.Format("health", ent:Health(), ent:GetMaxHealth()), "TargetIDSmall", (ScrW() / 2) - 160, 262, Color(math.Clamp(255 * (ent:Health() / ent:GetMaxHealth()), 127, 255),48,48,255), 0, 1)
-		draw.SimpleText(tostring(ent.Purpose), "DefaultFontSmall", (ScrW() / 2) - 160, 280, Color(148,148,148,255), 0, 1)
+		local class = self.Config["ZombieClasses"][npcent:GetClass()] or self.Config["BossClasses"][npcent:GetClass()]
+		draw.SimpleText(class.Name..(npcent:GetEliteVariant() ~= 0 and " (Elite variant: "..(self.VariantNames[npcent:GetEliteVariant()] or "N/A")..")" or ""), "TargetIDSmall", (ScrW() / 2) - 160, 244, Color(108,108,108,colormult * 255), 0, 1)
+		draw.SimpleText(translate.Format("health", npcent:Health(), npcent:GetMaxHealth()), "TargetIDSmall", (ScrW() / 2) - 160, 262, Color(math.Clamp(255 * (npcent:Health() / npcent:GetMaxHealth()), 127, 255),48,48,colormult * 255), 0, 1)
+		draw.SimpleText(tostring(npcent.Purpose), "DefaultFontSmall", (ScrW() / 2) - 160, 280, Color(148,148,148,colormult * 255), 0, 1)
 --		draw.RoundedBox(2, 20, ScrH() - 86, 160, 20, Color(50, 0, 0, 160))
-		if ent:Health() > 0 then
-			local hpbarclamp = math.Clamp(160 * (ent:Health() / ent:GetMaxHealth()), 0, 160)
+		if npcent:Health() > 0 then
+			local hpbarclamp = math.Clamp(160 * (npcent:Health() / npcent:GetMaxHealth()), 0, 160)
 --			draw.RoundedBox(4, 20, ScrH() - 86, hpbarclamp, 20, Color(150, 0, 0, 160))
 --			draw.RoundedBox(4, 20, ScrH() - 86, hpbarclamp, 10, Color(150, 0, 0, 100))
 		end
-*/
 	end
 end
 
@@ -570,6 +580,7 @@ function GM:DrawVitals()
 
 --	draw.SimpleText("Height difference: "..math.Round(me:GetPos().z - me:GetEyeTrace().HitPos.z), "TargetIDSmall", ScrW() / 2, 255, Color(205, 205, 205, 255), 1, 1)
 
+	local tr = me:GetEyeTrace()
 	local y = 172
 	if self:GetDebug() >= DEBUGGING_NORMAL then
 		draw.SimpleText(translate.Get(GetGlobalBool("GM.ZombieSpawning") and "zspawnon" or "zspawnoff"), "TargetIDSmall", 20, y, Color(255, 255, 205, 255), 0, 1)
@@ -580,7 +591,6 @@ function GM:DrawVitals()
 		y = y + 8
 	end
 	if self:GetDebug() >= DEBUGGING_EXPERIMENTAL then
-		local tr = me:GetEyeTrace()
 		draw.SimpleText("Trace Entity: "..tostring(tr.Entity), "TargetIDSmall", 20, y, Color(205,205,255,255), 0, 0)
 		y = y + 22
 		if tr.Entity != NULL and tr.Entity:Health() > 0 then
@@ -590,6 +600,7 @@ function GM:DrawVitals()
 		end
 
 		draw.SimpleText("Held weapon: "..tostring(weapon), "TargetIDSmall", 20, y, Color(205,205,255,255), 0, 1)
+		y = y + 22
 	end
 	if self:GetDebug() >= DEBUGGING_TRUE then
 		draw.SimpleText("Trace Entity: "..tostring(tr.Entity), "TargetIDSmall", 20, y, Color(205,205,255,255), 0, 0)
@@ -695,7 +706,7 @@ function GM:DrawVitals()
 	elseif self.HUDStyle == HUDSTYLE_TEA then
 	end
 
-	for _, ent in pairs (ents.FindByClass("trader")) do
+	for _, ent in pairs (ents.FindByClass("tea_trader")) do
 		if ent:GetPos():DistToSqr(me:GetPos()) < 14400 then --120^2
 			draw.RoundedBox(2, scrw / 2 - 230, 20, 460, 75, Color(0, 0, 0, 175))
 			surface.SetDrawColor(155, 155, 0 ,255)
@@ -837,7 +848,7 @@ function GM:HUDShouldDraw(name)
 	for k, v in pairs(donotdraw) do
 		if (name == v) then return false end
 	end
-	if me:IsValid() and me:GetObserverMode() ~= OBS_MODE_NONE and name == "CHudDamageIndicator" then return false end 
+	if me:IsValid() and (me:GetObserverMode() ~= OBS_MODE_NONE or !me:Alive()) and name == "CHudDamageIndicator" then return false end 
 	return true
 end
 
@@ -860,13 +871,16 @@ function GM:RenderScreenspaceEffects()
 	end
 
 	if GAMEMODE.WraithAlpha > 220 then DrawMotionBlur(0.4, 0.8, 0.01) end
-	
+
+
+	local horror = false
+
 	modify["$pp_colour_addr"] = 0
 	modify["$pp_colour_addg"] = 0
 	modify["$pp_colour_addb"] = 0
-	modify["$pp_colour_brightness"] = 0
-	modify["$pp_colour_contrast"] = 1
-	modify["$pp_colour_colour"] = color
+	modify["$pp_colour_brightness"] = horror and -0.045 or 0
+	modify["$pp_colour_contrast"] = (horror and 1.15 or 1) * (!me:Alive() and math.Clamp(1 + (self.LastAliveTime + 5 - CurTime()) * 0.2, 0.05, 1) or 1)
+	modify["$pp_colour_colour"] = horror and math.max(0, color - 0.725) or color
 	modify["$pp_colour_mulr"] = 0
 	modify["$pp_colour_mulg"] = 0
 	modify["$pp_colour_mulb"] = 0
@@ -1042,12 +1056,13 @@ end
 
 
 function GM.ScreenEffects()
-	if LocalPlayer():GetObserverMode() ~= OBS_MODE_NONE then return end
-	if LocalPlayer():Alive() then
+	local me = LocalPlayer()
+	if me:GetObserverMode() ~= OBS_MODE_NONE then return end
+	if me:Alive() then
 		if GAMEMODE.WraithAlpha <= 0 then return end
 
 		surface.SetDrawColor(0, 0, 0, math.Round(GAMEMODE.WraithAlpha))
-		surface.DrawRect(-1, -1, surface.ScreenWidth() + 1, surface.ScreenHeight() + 1)
+		surface.DrawRect(-1, -1, ScrW() + 1, ScrH() + 1)
 	else
 		GAMEMODE.WraithAlpha = 0
 	end
@@ -1064,7 +1079,7 @@ function GM.PrestigeEffects()
 	else return end
 	
 	surface.SetDrawColor(255, 255, 255, math.Round(math.Clamp(pralpha, 0, 255)))
-	surface.DrawRect(-1, -1, surface.ScreenWidth() + 1, surface.ScreenHeight() + 1)
+	surface.DrawRect(-1, -1, ScrW() + 1, ScrH() + 1)
 end
 hook.Add("RenderScreenspaceEffects", "PrestigeEffect", GM.PrestigeEffects)
 

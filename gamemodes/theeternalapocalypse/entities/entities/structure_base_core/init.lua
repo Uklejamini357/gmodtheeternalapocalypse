@@ -159,21 +159,21 @@ function ENT:OnTakeDamage( dmg )
 		self:BreakPanel()
 --		self.Entity:EmitSound("physics/wood/wood_plank_break"..math.random(1,2)..".wav", 100, 100)
 		self.Entity:EmitSound("npc/dog/car_impact1.wav", 120, 100)
-		tea_SystemBroadcast("The "..team.GetName(owner:Team()).."'s base has been destroyed!", Color(205,205,255,255), true)
+		GAMEMODE:SystemBroadcast("The "..team.GetName(owner:Team()).."'s base has been destroyed!", Color(205,205,255,255), true)
 		if self.IsBuilt then
-			local EntDrop = ents.Create( "loot_cache_faction" )
-			EntDrop:SetPos( self:GetPos() + Vector(0, 0, 30) )
-			EntDrop:SetAngles( self:GetAngles() )
-			EntDrop.LootType = table.Random(GAMEMODE.LootTableFaction)["Class"]
-			EntDrop:Spawn()
-			EntDrop:Activate()
+			local ent = ents.Create( "loot_cache_faction" )
+			ent:SetPos( self:GetPos() + Vector(0, 0, 30) )
+			ent:SetAngles( self:GetAngles() )
+			ent.LootType = table.Random(GAMEMODE.LootTableFaction)["Class"]
+			ent:Spawn()
+			ent:Activate()
 
 			if attacker:IsPlayer() then
 				GAMEMODE:Payout(attacker, 4500, 5000)
 			end
 		else
 			if attacker:IsPlayer() then
-				attacker:SystemMessage("Well... What did you expect? Thought you would get more? No.", Color(255,170,170,255))
+				attacker:SystemMessage("What did you expect? Thought you would get more? No.", Color(255,170,170,255))
 				GAMEMODE:Payout(attacker, 1500, 2000)
 			end
 		end

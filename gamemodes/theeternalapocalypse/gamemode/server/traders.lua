@@ -18,7 +18,7 @@ end
 
 function GM:SpawnTraders()
 	if TradersData ~= "" then
-		for k, v in pairs(ents.FindByClass("trader")) do
+		for k, v in pairs(ents.FindByClass("tea_trader")) do
 			v:Remove()
 		end
 
@@ -27,7 +27,7 @@ function GM:SpawnTraders()
 			Trader = string.Explode(";", v)
 			local pos = util.StringToType(Trader[1], "Vector")
 			local ang = util.StringToType(Trader[2], "Angle")
-			local ent = ents.Create("trader")
+			local ent = ents.Create("tea_trader")
 			ent:SetPos(pos)
 			ent:SetAngles(ang)
 			ent:SetNetworkedString("Owner", "World")

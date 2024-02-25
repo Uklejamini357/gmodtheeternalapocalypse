@@ -77,8 +77,20 @@ F4 (gm_showspare2): Open Options Menu panel\n\n", "TargetIDSmall"))
 - SELECTING BUILD TOOL FOR FIRST TIME IN SESSION HAS A CHANCE TO CRASH YOUR GAME!!"
 (Couldn't fix, but more likely to happen later, so equip that weapon on joining)"
 - If you encounter any problem, error, or any kind of mistranslation, report it to the dev."
-Good hunting. (this panel may be changed every update)
 */
+
+    if #self.ServerRules >= 1 then
+        local txt = MakeText(HelpFrame, "Server Rules (Yes, there are server rules!):", "Trebuchet24")
+        txt:SetTextColor(Color(255,255,127))
+        H1List:AddItem(txt)
+        for count,rule in pairs(self.ServerRules) do
+            local txt = MakeText(HelpFrame, count..". "..rule, "TargetIDSmall")
+            txt:SetTextColor(Color(255,255,191))
+            H1List:AddItem(txt)
+        end
+        H1List:AddItem(MakeText(HelpFrame, " ", "TargetIDSmall"))
+    end
+
 
     H1List:AddItem(MakeText(HelpFrame, "General Help:\n", "Trebuchet24"))
     H1List:AddItem(MakeText(HelpFrame, "When you spawn in, you get fists and build tool. The goal is to survive with your\
@@ -109,14 +121,17 @@ you gain following buffs to get started:\
 
     H2List:AddItem(MakeText(HelpFrame, "Press and hold TAB (scoreboard key) to open your inventory\
 You will find starting items for your survival here.", "TargetIDSmall"))
-    H2List:AddItem(MakeText(HelpFrame, "Factions system is a feature to the gamemode, being able to make team.", "TargetIDSmall"))
+    H2List:AddItem(MakeText(HelpFrame, "Factions system is a feature to the gamemode, being able to make team.\n", "TargetIDSmall"))
+    H2List:AddItem(MakeText(HelpFrame, "Hint: Right-Clicking on Sell item button will quickly sell 1 item without confirmation.\
+Holding SHIFT while Right-Clicking on the button will quickly sell all items of a specified type.", "TargetIDSmall"))
+    H2List:AddItem(MakeText(HelpFrame, "This section is work in progress.", "TargetIDSmall"))
     
-    H3List:AddItem(MakeText(HelpFrame, "There are around 7 types of normal zombies. Each of them have unique abilities.", "TargetIDSmall"))
+    H3List:AddItem(MakeText(HelpFrame, "There are around 7 types of normal zombies. Each of them have different abilities.", "TargetIDSmall"))
     H3List:AddItem(MakeText(HelpFrame, "Killing them gives XP and cash. You gain XP in an instant, but cash goes through bounty. To receive cash,\
 go to trader and cash your bounty in. Otherwise, you will die with 30-40% of your bounty pool.", "TargetIDSmall"))
     H3List:AddItem(MakeText(HelpFrame, "There are also 2 bosses. Killing a boss grants you Cash and XP, whatever amount of damage you did to the boss.\
 Dealing higher damage can grant you more cash and XP, when also dealt highest amount of damage,\
-grants you being able to pickup the boss loot.\n", "TargetIDSmall"))
+grants you being able to pickup the boss loot.", "TargetIDSmall"))
     H3List:AddItem(MakeText(HelpFrame, "Beware of the zombies! If you die to a zombie, you will lose 1% of your XP, or 0.4% if it's a boss zombie, this only\
 happens if you have less than level 10 and prestige 0.\
 Max possible value of losing XP is 250. This feature is currently "..(self.PlayerLoseXPOnDeath and "enabled" or "disabled")..".\
@@ -125,7 +140,8 @@ Note that infection level doesn't decrease when new players are killed by zombie
     H4List:AddItem(MakeText(HelpFrame, "Factions system is a feature to the gamemode, being able to make team.", "TargetIDSmall"))
     H4List:AddItem(MakeText(HelpFrame, "Creating a faction is not that hard. Open scoreboard (TAB key), navigate to factions\
 category, then Create faction.", "TargetIDSmall"))
-    H4List:AddItem(MakeText(HelpFrame, "Note, that some money to create a faction.", "TargetIDSmall"))
+    H4List:AddItem(MakeText(HelpFrame, "Note, that you need some money to create a faction.\n", "TargetIDSmall"))
+    H4List:AddItem(MakeText(HelpFrame, "This section is work in progress.", "TargetIDSmall"))
 
     H5List:AddItem(MakeText(HelpFrame, "Want to fight for loot? Make competition? Toggle PVP and annihilate your enemies!", "TargetIDSmall"))
     H5List:AddItem(MakeText(HelpFrame, "PVP is a feature in this gamemode where you fight against other survivors. Beware,\
@@ -135,13 +151,19 @@ player, you will not be able to disable your PVP for certain amount of time. (Ba
     H6List:AddItem(MakeText(HelpFrame, "New feature in this gamemode, crafting.", "TargetIDSmall"))
     H6List:AddItem(MakeText(HelpFrame, "(This section is still in progress.)", "TargetIDSmall"))
 
-    H7List:AddItem(MakeText(HelpFrame, "New feature: Infection Level", "TargetID"))
-    H7List:AddItem(MakeText(HelpFrame, "Infection Level is also known as dynamic difficulty scaling. As Infection Level goes up, some things change.", "TargetIDSmall"))
+    H7List:AddItem(MakeText(HelpFrame, "Infection Level\n", "TargetID"))
+    H7List:AddItem(MakeText(HelpFrame, "Also known as dynamic difficulty scaling. As Infection Level goes up, some things change.", "TargetIDSmall"))
+    txt = MakeText(HelpFrame, "Not to be confused with \"Infection\" and \"Infection Level\", as they function separately.", "TargetIDSmall")
+    txt:SetTextColor(Color(255,155,155))
+    H7List:AddItem(txt)
     H7List:AddItem(MakeText(HelpFrame, "- More XP gained from killing zombies\
 - More Cash gained from killing zombies, but 50% less effects than XP\
-- Zombies take less damage\
-- Zombies deal more damage to players and barricades", "TargetIDSmall"))
-    H7List:AddItem(MakeText(HelpFrame, "\nNormal Difficulty scaling: (Difficulty: Low, Medium, Hard, etc.)\
+- Zombies take less damage"))
+    H7List:AddItem(MakeText(HelpFrame, "\nPlayer Voting Difficulty scaling: (Difficulty: Low, Medium, Hard, etc.)\
+- Players will be able to vote for difficulty they want.\
+- Will be added in future update.\n", "TargetIDSmall"))
+    H7List:AddItem(MakeText(HelpFrame, "\nPlayer Count Difficulty scaling:\
+- Zombies become harder the more players are on.\
 - Will be added in future update.", "TargetIDSmall"))
 
     H8List:AddItem(MakeText(HelpFrame, "(WORK IN PROGRESS) Seasonal Events:", "TargetID"))

@@ -395,7 +395,7 @@ GM.ItemsList = {
 		Supply = -1,
 		Rarity = RARITY_EVENT,
 		Category = 1,
-		UseFunc = function(ply) GAMEMODE:SystemBroadcast("Infection Level has been increased by 50%, difficulty greatly increases!", Color(155,255,255), false) GAMEMODE:SetInfectionLevel(math.max(0, self:GetInfectionLevel() + 50)) return true end,
+		UseFunc = function(ply) GAMEMODE:SystemBroadcast("Infection Level has been increased by 50%, difficulty greatly increases!", Color(155,255,255), false) GAMEMODE:SetInfectionLevel(math.max(0, GAMEMODE:GetInfectionLevel() + 50)) return true end,
 		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_difficulty_shard") return drop end
 	},
 
@@ -1985,7 +1985,7 @@ GM.ItemsList = {
 
 
 	["item_armor_jacket_leather"] = {
-		Cost = 5000,
+		Cost = 4000,
 		Model = "models/player/group03/male_07.mdl",
 		Weight = 1.1,
 		Supply = 0,
@@ -2007,7 +2007,7 @@ GM.ItemsList = {
 	},
 
 	["item_armor_chainmail"] = {
-		Cost = 8500,
+		Cost = 6500,
 		Model = "models/player/group03/male_05.mdl",
 		Weight = 1.6,
 		Supply = 0,
@@ -2028,7 +2028,7 @@ GM.ItemsList = {
 	},
 
 	["item_armor_jacket_bandit"] = {
-		Cost = 10000,
+		Cost = 8000,
 		Model = "models/player/stalker/bandit_backpack.mdl",
 		Weight = 1.4,
 		Supply = 0,
@@ -2048,7 +2048,7 @@ GM.ItemsList = {
 	},
 
 	["item_armor_scrap"] = {
-		Cost = 12500,
+		Cost = 10000,
 		Model = "models/player/group03/male_05.mdl",
 		Weight = 3.8,
 		Supply = 0,
@@ -2068,7 +2068,7 @@ GM.ItemsList = {
 	},
 
 	["item_armor_trenchcoat_brown"] = {
-		Cost = 15000,
+		Cost = 11750,
 		Model = "models/player/stalker/bandit_brown.mdl",
 		Weight = 2.28,
 		Supply = 0,
@@ -2088,7 +2088,7 @@ GM.ItemsList = {
 	},
 
 	["item_armor_trenchcoat_black"] = {
-		Cost = 20000,
+		Cost = 15500,
 		Model = "models/player/stalker/bandit_black.mdl",
 		Weight = 2.9,
 		Supply = 0,
@@ -2108,7 +2108,7 @@ GM.ItemsList = {
 	},
 
 	["item_armor_mercenary_guerilla"] = {
-		Cost = 25000,
+		Cost = 19000,
 		Model = "models/player/guerilla.mdl",
 		Weight = 3.2,
 		Supply = 0,
@@ -2128,7 +2128,7 @@ GM.ItemsList = {
 	},
 
 	["item_armor_mercenary_arctic"] = {
-		Cost = 27500,
+		Cost = 21500,
 		Model = "models/player/arctic.mdl",
 		Weight = 3.35,
 		Supply = 0,
@@ -2148,7 +2148,7 @@ GM.ItemsList = {
 	},
 
 	["item_armor_mercenary_leet"] = {
-		Cost = 26000,
+		Cost = 20000,
 		Model = "models/player/leet.mdl",
 		Weight = 3,
 		Supply = 0,
@@ -2168,7 +2168,7 @@ GM.ItemsList = {
 	},
 
 	["item_armor_mercenary_phoenix"] = {
-		Cost = 30000,
+		Cost = 23500,
 		Model = "models/player/phoenix.mdl",
 		Weight = 4.15,
 		Supply = 0,
@@ -2188,7 +2188,7 @@ GM.ItemsList = {
 	},
 
 	["item_armor_police_gasmask"] = {
-		Cost = 35000,
+		Cost = 27500,
 		Model = "models/player/gasmask.mdl",
 		Weight = 5.5,
 		Supply = 0,
@@ -2208,7 +2208,7 @@ GM.ItemsList = {
 	},
 
 	["item_armor_police_riot"] = {
-		Cost = 37000,
+		Cost = 29000,
 		Model = "models/player/riot.mdl",
 		Weight = 5.8,
 		Supply = 0,
@@ -2228,7 +2228,7 @@ GM.ItemsList = {
 	},
 
 	["item_armor_police_swat"] = {
-		Cost = 36000,
+		Cost = 28000,
 		Model = "models/player/swat.mdl",
 		Weight = 5.8,
 		Supply = 0,
@@ -2248,7 +2248,7 @@ GM.ItemsList = {
 	},
 
 	["item_armor_police_urban"] = {
-		Cost = 40000,
+		Cost = 31000,
 		Model = "models/player/urban.mdl",
 		Weight = 6.5,
 		Supply = 0,
@@ -2268,7 +2268,7 @@ GM.ItemsList = {
 	},
 
 	["item_armor_sunrise"] = {
-		Cost = 55000,
+		Cost = 42500,
 		Model = "models/player/stalker/loner_vet.mdl",
 		Weight = 5.5,
 		Supply = 0,
@@ -2288,7 +2288,7 @@ GM.ItemsList = {
 	},
 
 	["item_armor_sunrise_dolg"] = {
-		Cost = 80000,
+		Cost = 61000,
 		Model = "models/player/stalker/duty_vet.mdl",
 		Weight = 7.1,
 		Supply = 0,
@@ -2308,7 +2308,7 @@ GM.ItemsList = {
 	},
 
 	["item_armor_sunrise_svoboda"] = {
-		Cost = 60000,
+		Cost = 46000,
 		Model = "models/player/stalker/freedom_vet.mdl",
 		Weight = 5,
 		Supply = 0,
@@ -2328,7 +2328,7 @@ GM.ItemsList = {
 	},
 
 	["item_armor_sunrise_monolith"] = {
-		Cost = 75000,
+		Cost = 58750,
 		Model = "models/player/stalker/monolith_vet.mdl",
 		Weight = 6,
 		Supply = 3,
@@ -2348,7 +2348,7 @@ GM.ItemsList = {
 	},
 
 	["item_armor_military_green"] = {
-		Cost = 125000,
+		Cost = 95000,
 		Model = "models/player/stalker/military_spetsnaz_green.mdl",
 		Weight = 12,
 		Supply = 0,
@@ -2368,7 +2368,7 @@ GM.ItemsList = {
 	},
 
 	["item_armor_military_black"] = {
-		Cost = 150000,
+		Cost = 115000,
 		Model = "models/player/stalker/military_spetsnaz_black.mdl",
 		Weight = 15,
 		Supply = 0,
@@ -2388,7 +2388,7 @@ GM.ItemsList = {
 	},
 
 	["item_armor_exo"] = {
-		Cost = 250000,
+		Cost = 190000,
 		Model = "models/player/stalker/loner_exo.mdl",
 		Weight = 25,
 		Supply = 0,
@@ -2408,7 +2408,7 @@ GM.ItemsList = {
 	},
 
 	["item_armor_exo_merc"] = {
-		Cost = 225000,
+		Cost = 172500,
 		Model = "models/player/stalker/merc_exo.mdl",
 		Weight = 23.75,
 		Supply = 0,
@@ -2428,7 +2428,7 @@ GM.ItemsList = {
 	},
 
 	["item_armor_exo_dolg"] = {
-		Cost = 275000,
+		Cost = 212500,
 		Model = "models/player/stalker/duty_exo.mdl",
 		Weight = 27.5,
 		Supply = 0,
@@ -2448,7 +2448,7 @@ GM.ItemsList = {
 	},
 
 	["item_armor_exo_svoboda"] = {
-		Cost = 237500,
+		Cost = 185000,
 		Model = "models/player/stalker/freedom_exo.mdl",
 		Weight = 22.5,
 		Supply = 0,
@@ -2468,7 +2468,7 @@ GM.ItemsList = {
 	},
 
 	["item_armor_exo_monolith"] = {
-		Cost = 262500,
+		Cost = 207500,
 		Model = "models/player/stalker/monolith_exo.mdl",
 		Weight = 25,
 		Supply = 0,
@@ -2488,7 +2488,7 @@ GM.ItemsList = {
 	},
 
 	["item_armor_cs2_goggles"] = {
-		Cost = 650000,
+		Cost = 450000,
 		Model = "models/stalkertnb/cs2_goggles.mdl",
 		Weight = 13.5,
 		Supply = 0,

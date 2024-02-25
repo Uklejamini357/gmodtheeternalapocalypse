@@ -92,7 +92,7 @@ function GM:Think()
 		self.WraithAlpha = self.WraithAlpha - (RealFrameTime() * 30)
 	end
 
-	if self.DeathSoundEffectEnabled and death_sound_current:IsPlaying() then
+	if self.DeathSoundEffectEnabled and death_sound_current and death_sound_current:IsPlaying() then
 		if me:Alive() then
 			if death_sound_volume > 0 then
 				death_sound_current:ChangeVolume(death_sound_volume)
@@ -100,7 +100,7 @@ function GM:Think()
 				death_sound_current:Stop()
 			end
 		end
-	elseif not self.DeathSoundEffectEnabled then
+	elseif not self.DeathSoundEffectEnabled and death_sound_current then
 		death_sound_volume = 0
 		death_sound_current:Stop()
 	end
@@ -141,6 +141,7 @@ function GM:Think()
 				{Color(207, 191, 255), translate.Get("Tip14")},
 				{Color(0, 223, 255), translate.Get("Tip15")},
 				{Color(31, 223, 223), translate.Get("Tip16")},
+				{Color(31, 223, 223), translate.Get("Tip17")},
 				{Color(63, 255, 191), "Press ESCAPE button while having trader panel open to quickly close it!"},
 				{Color(91, 111, 159), "Keep an eye on infection level. Zombies become more dangerous, but more rewarding as it goes up..."},
 			}
@@ -311,7 +312,6 @@ function GM:PostProcessPermitted(name)
 	return false
 end
 
--- copied from zs yet again, used for most panels, much easier and size saving
 function EasyLabel(parent, text, font, textcolor)
 	local dpanel = vgui.Create("DLabel", parent)
 	if font then
@@ -369,7 +369,7 @@ function DeathView(pl, origin, angles, fov)
 		end
 	end
 end
-hook.Add("CalcView", "DeathView", DeathView, HOOK_LOW) --now more compatible with mappatcher (also why is this a hook)
+hook.Add("CalcView", "DeathView", DeathView, HOOK_LOW)
 
 function GM:OnUndo(name, str)
 -- this is still needed by the test zombies function
@@ -377,6 +377,7 @@ function GM:OnUndo(name, str)
 	surface.PlaySound("buttons/button15.wav")
 end
 
+/* -- i guess this one is a bit buggy
 function GM:OnPlayerChat(ply, text, team, dead)
 	local tab = {}
 	if dead or (IsValid(ply) and ply:Team() == TEAM_DEAD) then
@@ -439,7 +440,7 @@ function GM:OnPlayerChat(ply, text, team, dead)
 	chat.AddText(unpack(tab))
 	return true
 end
-
+*/
 function GM:PlayerBindPress(pl, key, wasin)
 --	local str1, str2 = string.find("+forward", bind)
 --	print(bind, str1, str2)

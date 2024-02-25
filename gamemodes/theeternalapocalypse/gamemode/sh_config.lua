@@ -23,8 +23,8 @@ GM.MaxZombieWanderingDistance = 7000
 -- Default: true
 GM.GiveAmmoOnDropWeapon = true
 
--- Minimal required player count for boss to spawn. Default: 2
-GM.MinPlayersBossRequired = 2
+-- Minimal required player count for boss to spawn. Default: 3
+GM.MinPlayersBossRequired = 3
 
 -- Minimal required player count for airdrop event to be called. Default: 4
 GM.MinPlayersAirdropRequired = 4
@@ -41,19 +41,31 @@ GM.InfectionLevelGainMul = 1
 -- Should infection level NOT decrease? Suggesting for setting to true if doing events. Default: false
 GM.InfectionLevelShouldNotDecrease = false
 
--- Should players lose XP if they die to zombie? Only 1% of their XP is lost. Default: true
-GM.PlayerLoseXPOnDeath = true
+-- Should players lose XP if they die to zombie? Only 1% of their XP is lost, max of 250. Default: false
+GM.PlayerLoseXPOnDeath = false
 
 -- Should players drop their weapons when they die? Set false if making deathmatch for fun, doing an event or anything else in which you don't want anyone to lose their weapons. Default: true
 GM.DropActiveWeaponOnDeath = true
 
---
+-- Enable map cycling system for every maintenance. Map is rolled out before auto-maintenance. Default: false (Doesn't work yet)
 GM.EnableMapCycleSystem = false
 
---
+-- Maps to cycle through
 GM.MapCycles = {
 	"rp_pripyat_fixed",
 	"gm_construct",
+}
+
+-- Rules for server. Please keep the default ones! (You can still change them)
+GM.ServerRules = {
+-- Default rules
+	"You may not block off spawn area nor traders with your props. You can still build it as a fort against zombies.",
+	"Do not block off loot spawns so that only you can access it. Unless you're building a base.",
+	"Building a base just to claim airdrop spots is not allowed. You can still build near it, but not in it.",
+	"Faction Base cores are only for basing and NOT for trolling, do NOT use the base core to kill players near spawn!",
+
+-- Put your rules below
+
 }
 
 -------- CONFIG --------
@@ -285,25 +297,25 @@ GM.Config["ZombieClasses"] = {
 GM.Config["BossClasses"] = {
 	["npc_tea_boss_tyrant"] = {
 		Name = "The Tyrant",	-- Name used in deathnotice for boss
-		SpawnChance = 60,
-		XPReward = 5000, -- remember that xp and money for bosses is distributed by who damaged them, if you did all of the damage you would get 5,000 xp in this case
-		MoneyReward = 4500,
-		SpawnDelay = 14, -- how long to wait before actually spawning it, gives the radio message time to play out
-		AnnounceMessage = "[BOSS]: The Tyrant has appeared!",
-		BroadCast = function(nonotify)
+		SpawnChance = 70,	-- Chance for the boss to be selected to spawn
+		XPReward = 5000,	-- remember that xp and money for bosses is distributed by who damaged them, if you did all of the damage you would get 5,000 xp in this case
+		MoneyReward = 4500,	-- same here
+		SpawnDelay = 14,	-- how long to wait before actually spawning it, gives the radio message time to play out
+		AnnounceMessage = "[BOSS]: The Tyrant has appeared!",	-- Announce the message when boss spawns in
+		BroadCast = function(nonotify)	-- Call a function before boss spawns
 			if !nonotify then
 				GAMEMODE:RadioBroadcast(0, "This is an urgent broadcast on all bands!", "Watchdog", true)
 				GAMEMODE:RadioBroadcast(4, "Siesmic readings are showing a massive quadruped approaching the area, most likely a tyrant.", "Watchdog", false)
 				GAMEMODE:RadioBroadcast(8, "It is currently inbound for this sector, so you better get inside something solid and make sure you have good amount of ammo.", "Watchdog", false)
 			end
 		end,
-		InfectionRate = 1.85,
+		InfectionRate = 1.85,	-- Infection rate
 		AllowEliteVariants = true,	-- Some bosses don't like being elite variants, so we only enable for some of them!
 	},
 	
 	["npc_tea_boss_lordking"] = {
 		Name = "Zombie Lord King",
-		SpawnChance = 40,
+		SpawnChance = 30,
 		XPReward = 7500,
 		MoneyReward = 6250,
 		SpawnDelay = 15,
@@ -333,18 +345,19 @@ GM.Config["NewbieGear"] = {
 	["item_tinnedfood"] = 2,
 	["weapon_tea_noobcannon"] = 1,
 	["item_soda"] = 1,
-	["item_medkit"] = 1,
+	["item_medkit"] = 2,
 	["item_pistolammo"] = 3,
 }
 
 -- What new players will have in their vault
 GM.Config["NewbieVault"] = {
 	["weapon_tea_grenade_pipe"] = 2,
-	["item_soda"] = 1,
+	["item_soda"] = 2,
+	["item_potato"] = 1,
 }
 
 
--- Vehicles don't exist, maybe they'll be added in next, future update or even never
+-- Vehicles don't exist, maybe they'll be added in next, future update or even never. (Consider this as unfinished for now)
 GM.Config["Vehicles"] = {
 	["Basic Hatchback (Yellow)"] = {
 		["Health"] = 1000,
@@ -453,15 +466,15 @@ GM.PerksList = {
 	["xpboost"] = {
 		Name = "XP gain boost I",
 		Description = "Increase your XP gain rate by +10%",
-		Cost = 3,
-			PrestigeReq = 6,
+		Cost = 2,
+		PrestigeReq = 5,
 	},
 
 	["xpboost2"] = {
 		Name = "XP gain boost II",
 		Description = "Increase your XP gain rate by +15%",
-		Cost = 5,
-		PrestigeReq = 16,
+		Cost = 4,
+		PrestigeReq = 13,
 	},
 
 	["jumpboost"] = {
@@ -487,39 +500,46 @@ GM.PerksList = {
 
 	["skillpointsbonus"] = {
 		Name = "Bonus skill points I",
-		Description = "On prestige, you gain additional 3 skill points.",
-		AddDescription = "WARNING: UNLOCKING THIS NOW DOES NOT AFFECT THE CURRENT PRESTIGE!!",
+		Description = "You start every prestige with additional 5 skill points.",
+		AddDescription = "Also applies to current prestige",
 		Cost = 1,
 		PrestigeReq = 4,
+		OnUnlock = function(ply)
+			ply.StatPoints = tonumber(ply.StatPoints) + 5
+		end
 	},
 
 	["criticaldamage"] = {
 		Name = "Critical Damage",
 		Description = "Increased damage by 1.2x damage with 1 in 15 chance on inflicting damage.",
 		Cost = 1,
-		PrestigeReq = 5,
+		PrestigeReq = 4,
 	},
 
 	["skillpointsbonus2"] = {
 		Name = "Bonus skill points II",
-		Description = "On prestige, you gain additional 7 skill points.",
-		AddDescription = "WARNING: UNLOCKING THIS NOW DOES NOT AFFECT THE CURRENT PRESTIGE!!",
-		Cost = 3,
-		PrestigeReq = 11,
+		Description = "You start every prestige with the additional skill points based on your current prestige.",
+		AddDescription = "Also applies to current prestige",
+		Cost = 2,
+		PrestigeReq = 10,
+		OnUnlock = function(ply)
+			ply.StatPoints = tonumber(ply.StatPoints) + tonumber(ply.Prestige)
+		end
 	},
 
 	["damageresistance"] = {
 		Name = "Damage Resistance",
 		Description = "-7.5% damage taken from all sources",
-		Cost = 2,
-		PrestigeReq = 7,
+		Cost = 1,
+		PrestigeReq = 6,
 	},
 
 	["celestiality"] = {
 		Name = "Celestiality",
 		Description = "+10% damage dealt to elite variant zombies. Otherwise, +3% damage to zombies. Does not affect bosses.",
+		AddDescription = "Makes you feel slightly more powerful.",
 		GetTextColor = function()
-			return Color(255,255,175)
+			return Color(255,255,215)
 		end,
 		KeepUpdatingColor = false,
 		Cost = 2,

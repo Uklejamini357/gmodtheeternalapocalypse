@@ -131,7 +131,7 @@ function GM:AdminCmds_ClearZeds(ply, cmd, args)
 	if args[1] == "force" then
 		-- force remove all nextbots and npcs
 		for k, v in pairs(ents.GetAll()) do
-			if v.Type == "nextbot" or (v:IsNPC() and v:GetClass() != "trader" and v:GetClass() != "tea_taskdealer") then v.LastAttacker = nil c = c + 1 v:Remove() end
+			if v.Type == "nextbot" or (v:IsNPC() and v:GetClass() != "tea_trader" and v:GetClass() != "tea_taskdealer") then v.LastAttacker = nil c = c + 1 v:Remove() end
 		end
 		self:DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has cleaned up all NPCs and nextbots! ("..c.." entities removed)")
 		ply:SystemMessage("Cleaned up all nextbots and NPCs! ("..c.." entities removed)", Color(180,255,180,255), true)

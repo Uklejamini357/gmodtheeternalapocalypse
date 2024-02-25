@@ -27,7 +27,7 @@ SWEP.Secondary.DefaultClip	= -1
 SWEP.Secondary.Automatic	= false
 SWEP.Secondary.Ammo		= "none"
 
-SWEP.StaminaNeeded = 7.75
+SWEP.StaminaNeeded = 5.35
 SWEP.HitDistance = 90
 
 SWEP.ShellEffect			= "none"				-- "effect_mad_shell_pistol" or "effect_mad_shell_rifle" or "effect_mad_shell_shotgun"

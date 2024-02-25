@@ -211,12 +211,12 @@ function GM:GainLevel(ply)
 	self:NetUpdatePeriodicStats(ply)
 
 	timer.Simple(0.04, function() -- Timer was created to prevent Buffer Overflow if user has too much XP if user levels up
-		if ply:IsValid() and ply.XP >= self:GetReqXP(ply) and tonumber(ply.Level) < self.MaxLevel + (ply.Prestige * self.LevelsPerPrestige) then
+		if ply:IsValid() and ply.XP >= self:GetReqXP(ply) and tonumber(ply.Level) < ply:GetMaxLevel() then
 			self:GainLevel(ply) -- This is so the user will gain another level if user has required xp for next level and will repeat
 		end
 	end)
 
-	if tonumber(ply.Level) >= self.MaxLevel + (ply.Prestige * self.LevelsPerPrestige) then
+	if tonumber(ply.Level) >= ply:GetMaxLevel() then
 		ply.MaxLevelTime = CurTime() + 120
 		ply:SendChat("You have reached max level, consider prestiging.")
 	end
@@ -224,10 +224,10 @@ end
 
 net.Receive("Prestige", function(length, ply)
 	if !ply:Alive() then ply:SendChat("Must be alive in order to prestige!") return end
-	if tonumber(ply.Level) >= GAMEMODE.MaxLevel + (GAMEMODE.LevelsPerPrestige * ply.Prestige) then
+	if tonumber(ply.Level) >= ply:GetMaxLevel() then
 		gamemode.Call("GainPrestige", ply)
 	else
-		ply:SystemMessage("You must be at least level ".. GAMEMODE.MaxLevel + (GAMEMODE.LevelsPerPrestige * ply.Prestige) .." to prestige!", Color(255,155,155), true)
+		ply:SystemMessage("You must be at least level ".. ply:GetMaxLevel() .." to prestige!", Color(255,155,155), true)
 		ply:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
 	end
 end)
@@ -237,7 +237,7 @@ function GM:GainPrestige(ply)
 	ply.Prestige = prestige
 	ply.Level = 1
 	ply.XP = 0
-	ply.StatPoints = (ply.UnlockedPerks["skillpointsbonus"] and 3 or 0) + (ply.UnlockedPerks["skillpointsbonus2"] and 7 or 0)
+	ply.StatPoints = (ply.UnlockedPerks["skillpointsbonus"] and 5 or 0) + (ply.UnlockedPerks["skillpointsbonus2"] and prestige or 0)
 	ply.PerkPoints = ply.PerkPoints + 1
 
 	for statname, _ in pairs(self.StatConfigs) do
@@ -309,14 +309,11 @@ end
 
 function GM:FullyUpdatePlayer(ply)
 	if !ply:IsValid() then return end
-	net.Start("UpdateInventory")
-	net.WriteTable(ply.Inventory)
-	net.Send(ply)
-
 	ply:SetNWInt("PlyBounty", ply.Bounty)
 	ply:SetNWInt("PlyLevel", ply.Level)
 	ply:SetNWInt("PlyPrestige", ply.Prestige)
 
+	self:SendInventory(ply)
 	self:NetUpdatePeriodicStats(ply)
 	self:NetUpdatePerks(ply)
 	self:NetUpdateStatistics(ply)

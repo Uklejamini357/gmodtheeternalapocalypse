@@ -113,8 +113,8 @@ function ENT:Initialize()
 --	self.breathing:ChangeVolume(0.3, 0)
 	self.loco:SetDeathDropHeight(700)
 	self.loco:SetAcceleration(800)
-	self:SetHealth(25000)
-	self:SetMaxHealth(25000)
+	self:SetHealth(21500) --18000
+	self:SetMaxHealth(21500) --18000
 	self.IsEnraged = false
 	self:SetModelScale(0.8, 0)
 	self:SetCollisionBounds(Vector(-34,-34, 0), Vector(34, 34, 84))
@@ -152,6 +152,7 @@ function ENT:RunBehaviour()
 	while (true) do
 		if CLIENT then return end
 		local target = self.target
+		local selfpos = self:GetPos()
 
 		if (IsValid(target) and target:Alive() and !target.TEANoTarget) then
 			local data = {}
@@ -305,6 +306,7 @@ function ENT:RunBehaviour()
 				coroutine.wait(self.AttackWaitTime + self.AttackFinishTime)
 				self:StartActivity(self.WalkAnim)	
 			else
+				local distance = selfpos:Distance(target:GetPos())
 				self:StartActivity(self.RunAnim)
 
 				if (self.breathing) then
@@ -321,8 +323,9 @@ function ENT:RunBehaviour()
 
 
 				self:MoveToPos(target:GetPos(), {
-					tolerance = 80,
-					maxage = 2
+					tolerance = 90,
+					maxage = distance < 2000 and 1 or distance < 5000 and 2 or 3,
+					repath = 3,
 				})
 			end
 		else

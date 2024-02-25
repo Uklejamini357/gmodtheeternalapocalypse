@@ -254,7 +254,7 @@ net.Receive("CashBounty", function(len, ply)
 	local plycheck = ents.FindInSphere(ply:GetPos(), 150)
 
 	for k, v in pairs(plycheck) do
-		if v:GetClass() == "trader" then trader = true break end
+		if v:GetClass() == "tea_trader" then trader = true break end
 	end
 	if !trader then ply:SystemMessage("You are not in a trader area!", Color(255,205,205), true) return false end
 	if ply.Bounty <= 0 then ply:SystemMessage("You don't have any bounty to cash in!", Color(255,205,205), true) return false end
@@ -265,7 +265,7 @@ net.Receive("CashBounty", function(len, ply)
 	ply.Bounty = 0
 	ply:SetNWInt("PlyBounty", ply.Bounty)
 
-	gamemode.Call("FullyUpdatePlayer", ply)
+	GAMEMODE:NetUpdateStatistics(ply)
 end)
 
 net.Receive("UpdateTargetStats", function(len, ply)
@@ -318,12 +318,18 @@ net.Receive("tea_perksunlock", function(len, pl)
 	pl.UnlockedPerks[perk] = true
 	pl.PerkPoints = pl.PerkPoints - cost
 
+	if perkl.OnUnlock then
+		perkl.OnUnlock(pl)
+	end
+
+
 	pl:SetMaxHealth(GAMEMODE:CalcMaxHealth(pl))
 	pl:SetMaxArmor(GAMEMODE:CalcMaxArmor(pl))
 	pl:SetJumpPower(GAMEMODE:CalcJumpPower(pl))
 --	if GAMEMODE:GetDebug() >= DEBUGGING_ADVANCED then print(pl:Nick().." used "..amt * mul.." skill point(s) on "..perk.." skill ("..tonumber(pl.StatPoints).." skill points remaining)") end
 	pl:SendChat("You unlocked perk: "..perkl.Name)
 	GAMEMODE:RecalcPlayerSpeed(pl)
+--	GAMEMODE:NetUpdateStatistics(pl)
 	GAMEMODE:FullyUpdatePlayer(pl)
 end)
 

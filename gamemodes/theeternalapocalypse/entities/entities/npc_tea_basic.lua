@@ -32,7 +32,7 @@ function ENT:SetUpStats()
 
 		["Health"] = 145, -- self explanatory
 		["MoveSpeedWalk"] = 50, -- zombies move speed when idly wandering around
-		["MoveSpeedRun"] = 75, -- zombies move speed when moving towards a target
+		["MoveSpeedRun"] = 65, -- zombies move speed when moving towards a target
 		["VisionRange"] = 1200, -- how far is the zombies standard sight range in source units, this will be tripled when they are frenzied
 		["LoseTargetRange"] = 1500, -- how far must the target be from the zombie before it will lose interest and revert to wandering, this will be tripled when the zombie is frenzied
 
@@ -195,19 +195,22 @@ function ENT:RunBehaviour()
 	while (true) do
 		if CLIENT then return end
 		local target = self.target
+		local selfpos = self:GetPos()
 
 		if IsValid(target) and target:Alive() and (self:GetRangeTo(target) <= (1500 * self.RageLevel) or GAMEMODE.ZombieApocalypse) and !target.TEANoTarget then
 			self.loco:FaceTowards(target:GetPos())
 
 -- check if we are obstructed by props and smash them if we are
-			local breakshit = ents.FindInSphere(self:GetPos() + self:GetAngles():Up() * 55, 45)
+			local breakshit = ents.FindInSphere(selfpos + self:GetAngles():Up() * 55, 45)
 
 			for k,v in pairs(breakshit) do
 				if v:IsValid() then
 					if v:GetClass() == "prop_flimsy" or v:GetClass() == "prop_strong" or SpecialSpawns[v:GetClass()] then
 						self:AttackProp(v)
+						break
 					elseif v:GetClass() == "prop_door_rotating" and v:GetNoDraw() == false then
 						self:AttackDoor(v)
+						break
 					else continue end
 				end
 			end
@@ -247,12 +250,13 @@ function ENT:RunBehaviour()
 
 -- we can see a player but we cant reach them so lets go fuck their shit up
 			else
+				local distance = selfpos:Distance(target:GetPos())
 				self:StartActivity(self.RunAnim)
 
 				self.loco:SetDesiredSpeed(self.ZombieStats["MoveSpeedRun"] * self:GetTEAZombieSpeedMul())
 				self:MoveToPos(target:GetPos(), {
 					tolerance = self.ZombieStats["Reach"],
-					maxage = 1,
+					maxage = distance < 1000 and 1 or distance < 2500 and 3 or 5,
 					repath = 1,
 				})
 			end

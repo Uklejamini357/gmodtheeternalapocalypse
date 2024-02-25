@@ -112,8 +112,8 @@ function ENT:Initialize()
 	self:SetModel("models/undead/undead.mdl")
 	self.loco:SetDeathDropHeight(700)
 	self.loco:SetAcceleration(800)
-	self:SetHealth(22000)
-	self:SetMaxHealth(22000)
+	self:SetHealth(19500) --15500
+	self:SetMaxHealth(19500) --15500
 	self:SetUpStats()
 	self:SetModelScale(1.4, 0)
 	self:SetColor(Color(127,127,255))
@@ -175,6 +175,7 @@ function ENT:RunBehaviour()
 	while (true) do
 		if CLIENT then return end
 		local target = self.target
+		local selfpos = self:GetPos()
 
 		if (IsValid(target) and target:Alive() and !target.TEANoTarget) then
 			local data = {}
@@ -212,7 +213,7 @@ function ENT:RunBehaviour()
 				self.NxtTick = self.NxtTick - 1
 			end
 
-			if (self:GetRangeTo(target) <= 80) and self:CanSeeTarget(target) then									-- hit the player
+			if (self:GetRangeTo(target) <= 100) and self:CanSeeTarget(target) then									-- hit the player
 				self:EmitSound(table.Random(self.AttackSounds), 125, math.random(85, 95))
 
 				self:TimedEvent(0.35, function()
@@ -228,8 +229,10 @@ function ENT:RunBehaviour()
 						damageInfo:SetDamage(GAMEMODE:CalcPlayerDamage(target, self.IsEnraged and math.random(65, 75) or math.random(50, 55)))
 						damageInfo:SetDamageType(DMG_CLUB)
 
-						local force = target:GetAimVector() * -800
-						force.z = 260
+						local distancevector = target:GetPos() - self:GetPos()
+						local force = (distancevector / distancevector:Length()) * 800
+						force.z = force.z + 260
+
 
 						local function DOIT()
 							self:EmitSound("ambient/energy/zap9.wav", 120, 80)
@@ -269,6 +272,7 @@ function ENT:RunBehaviour()
 				coroutine.wait(self.AttackWaitTime + self.AttackFinishTime)
 				self:StartActivity(self.WalkAnim)	
 			else
+				local distance = selfpos:Distance(target:GetPos())
 				self:StartActivity(self.RunAnim)
 
 				if (self.breathing) then
@@ -285,8 +289,9 @@ function ENT:RunBehaviour()
 
 
 				self:MoveToPos(target:GetPos(), {
-					tolerance = 80,
-					maxage = 2
+					tolerance = 100,
+					maxage = distance < 2000 and 1 or distance < 5000 and 2 or 3,
+					repath = 3,
 				})
 			end
 		else

@@ -150,7 +150,7 @@ function GM:BootFromFaction( ply, target )
 	local targetfaction = team.GetName(target:Team())
 	if Factions[plyfaction]["leader"] != ply then ply:SystemMessage("You are not the leader of your faction!", Color(255,205,205,255), true) return false end
 	if target == ply then ply:SystemMessage("You can't kick yourself! Use the leave faction or disband faction command instead!", Color(255,205,205,255), true) return false end
-	if plyfaction != targetfaction then ply:SystemMessage("Stop trying to hack you little faggot", Color(255,205,205,255), true) return false end
+	if plyfaction != targetfaction then ply:SystemMessage("just what the FUCK ARE YOU DOING?!", Color(255,205,205,255), true) return false end
 
 	target:SetTeam(1)
 	self:ClearFactionStructures(target)

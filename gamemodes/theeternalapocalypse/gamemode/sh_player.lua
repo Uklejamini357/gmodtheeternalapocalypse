@@ -59,9 +59,8 @@ function meta:GetTEAPrestige()
 	return self.Prestige or self:GetNWInt("PlyPrestige", 0)
 end
 
--- Not yet.
 function meta:GetMaxLevel()
-	return GAMEMODE.MaxLevel + (self:GetTEAPrestige() * GAMEMODE.LevelsPerPrestige)
+	return math.min(100, GAMEMODE.MaxLevel + (self:GetTEAPrestige() * GAMEMODE.LevelsPerPrestige))
 end
 
 -- maybe i should also do it for entity meta table

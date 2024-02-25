@@ -97,19 +97,22 @@ function ENT:Explosion()
 		explo:Activate()
 		explo:Fire("Explode", "", 0)
 --	end
-	
+/*	-- thanks rain bob for pointing this out, this one is excluded and other one is added
 	local shake = ents.Create("env_shake")
-		shake:SetOwner(self.Owner)
-		shake:SetPos(self.Entity:GetPos())
-		shake:SetKeyValue("amplitude", "2000")	// Power of the shake
-		shake:SetKeyValue("radius", "900")		// Radius of the shake
-		shake:SetKeyValue("duration", "2")	// Time of shake
-		shake:SetKeyValue("frequency", "255")	// How har should the screenshake be
-		shake:SetKeyValue("spawnflags", "4")	// Spawnflags(In Air)
-		shake:Spawn()
-		shake:Activate()
-		shake:Fire("StartShake", "", 0)
-	
+	shake:SetOwner(self.Owner)
+	shake:SetPos(self.Entity:GetPos())
+	shake:SetKeyValue("amplitude", "2000")	// Power of the shake
+	shake:SetKeyValue("radius", "900")		// Radius of the shake
+	shake:SetKeyValue("duration", "2")	// Time of shake
+	shake:SetKeyValue("frequency", "255")	// How har should the screenshake be
+	shake:SetKeyValue("spawnflags", "4")	// Spawnflags(In Air)
+	shake:Spawn()
+	shake:Activate()
+	shake:Fire("StartShake", "", 0)
+	shake:Fire("Kill", "", 0.5)
+*/
+	util.ScreenShake( self:GetPos(), 2000, 255, 2.5, 900, true )
+
 
 	local effectdata = EffectData()
 		effectdata:SetOrigin(self.Entity:GetPos())

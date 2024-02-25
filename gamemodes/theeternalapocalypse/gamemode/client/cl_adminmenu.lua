@@ -565,6 +565,7 @@ function GM:AdminMenu()
 			SpawnButton.DoClick = function()
 				RunConsoleCommand("tea_sadmin_spawnitem", k)
 			end
+--			SpawnButton.DoDoubleClick = SpawnButton.DoClick
 
 			local GiveButton = vgui.Create("DButton", ItemBackground)
 			GiveButton:SetSize(60, 20)
@@ -583,6 +584,7 @@ function GM:AdminMenu()
 					CheckWeight:SizeToContents()
 				end)
 			end
+--			GiveButton.DoDoubleClick = GiveButton.DoClick
 
 			if TEADevCheck(LocalPlayer()) and cat == 4 then
 				local EquipButton = vgui.Create("DButton", ItemBackground)
