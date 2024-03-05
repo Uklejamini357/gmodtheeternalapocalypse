@@ -10,7 +10,7 @@
 		1
 		{
 			"name"		"sk_grenades"
-			"text"		"Allow Grenades"
+			"text"		"#tea.cvar.allownades"
 			"help"		"If enabled ) then grenades are enabled"
 			"type"		"checkbox"
 			"default"	"1"

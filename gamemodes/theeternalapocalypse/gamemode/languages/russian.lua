@@ -636,8 +636,6 @@ LANG.pllvlup = "Поздравляем! Вы достигли %d-й уровня
 LANG.plhasprestiged_1 = "Вы активировали %d-й престиж!"
 
 LANG.plcaughtinfection = "Вы получили заражение!"
-LANG.pljoined = "%s подключается к серверу"
-LANG.plspawned = "%s появляется в игре"
 LANG.factionnewleader = "%s случайно выбирается лидером фракции «%s»!"
 
 LANG.itemnouse = "Бесполезный предмет"

@@ -642,8 +642,6 @@ LANG.pllvlup = "Congratulations! You are now level %d, you have gained %d skill 
 LANG.plhasprestiged_1 = "You have prestiged to Prestige %d!"
 
 LANG.plcaughtinfection = "You have caught infection!"
-LANG.pljoined = "%s has joined the server"
-LANG.plspawned = "%s has spawned into the game"
 LANG.factionnewleader = "%s has been randomly selected to be the new leader of %s!"
 
 LANG.itemnouse = "This is just useless trash"
