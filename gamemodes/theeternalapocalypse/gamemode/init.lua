@@ -360,7 +360,7 @@ end
 
 function GM:PlayerConnect(name, ip)
 	for _, ply in pairs(player.GetAll()) do
-		ply:SystemMessage(Format("#eternalapocalypse.pljoined", name), Color(255,255,155,255), false)
+		ply:SystemMessage(Format("#tea.chat_message.pljoined", name), Color(255,255,155,255), false)
 	end
 end
 
