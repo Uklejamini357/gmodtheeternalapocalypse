@@ -287,7 +287,7 @@ net.Receive("tea_player_ready_spawn", function(len, ply)
 	net.Send(ply)
 
 	if !ply.HasSpawnedReady then
-		GAMEMODE:SystemBroadcast(translate.Format("plspawned", ply:Nick()), Color(255,255,155,255), false)
+		GAMEMODE:SystemBroadcast(Format("#tea.chat_message.plspawned", ply:Nick()), Color(255,255,155,255), false)
 	end
 	ply.HasSpawnedReady = true
 	ply:Spawn()
