@@ -104,8 +104,7 @@ LANG.sb_sheet7 = "Achievements"
 LANG.sb_sheet7_d = "See what is your next goal"
 LANG.sb_sheet1_1 = "My Skills"
 LANG.sb_sheet1_1_d = "Upgrade your stats"
-LANG.weight_1 = "Currently Carrying: %skg"
-LANG.weight_2 = "Max Carry Weight: %skg"
+LANG.inv_weight = "Inventory Weight: %s%s/%s%s (Max: %s%s)"
 LANG.item_descr_1 = "(Item ID: %s, Base Cost: %d, Rarity: %s)"
 LANG.item_descr_2 = "(Item ID: %s, Rarity: %s)"
 LANG.item_armor_descr = "Protection: %s%%\
@@ -642,6 +641,8 @@ LANG.pllvlup = "Congratulations! You are now level %d, you have gained %d skill 
 LANG.plhasprestiged_1 = "You have prestiged to Prestige %d!"
 
 LANG.plcaughtinfection = "You have caught infection!"
+LANG.pljoined = "%s has joined the server"
+LANG.plspawned = "%s has spawned into the game"
 LANG.factionnewleader = "%s has been randomly selected to be the new leader of %s!"
 
 LANG.itemnouse = "This is just useless trash"

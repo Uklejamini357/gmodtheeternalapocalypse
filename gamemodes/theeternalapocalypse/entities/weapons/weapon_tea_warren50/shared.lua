@@ -50,8 +50,8 @@ SWEP.RunArmOffset = Vector(0, 0, 6.377)
 
 SWEP.RunArmAngle = Vector(-26.181, 0, 0)
 
-SWEP.ZWweight				= 35 -- in kilograms divided by 10 eg 20 = 2kg
-SWEP.ZWrarity				= "Uncommon" -- Junk, Common, Uncommon, Rare, Epic
+
+
 function SWEP:Precache()
 
     	util.PrecacheSound("weapons/deagle/deagle-1.wav")

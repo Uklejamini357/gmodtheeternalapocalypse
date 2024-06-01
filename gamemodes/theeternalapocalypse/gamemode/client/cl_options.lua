@@ -93,6 +93,9 @@ function GM:MakeOptions()
 	check = CreateCheckLabel(pan, list, "Do not display bounty tip message", "tea_cl_nobountytipmessage")
 	check:SetToolTip("If disabled, the tip about to cash in bounties regularly is shown upon dying.")
 
+	check = CreateCheckLabel(pan, list, "Don't display Inventory Weight on HUD", "tea_cl_noinvweighthuddisplay")
+	check:SetToolTip("Disables tips being displayed in chat.")
+
 	local slider = CreateSlider(pan, list, "Death sound effect volume", "tea_cl_deathsfx_vol")
 	slider:SetDecimals(2)
 	slider:SetToolTip("Death sound effect varies on game volume and this value.")

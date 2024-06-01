@@ -450,9 +450,15 @@ function GM:AdminMenu()
 	CheckWeight:SetPos(400, 5)
 	CheckWeight:SetColor(Color(205,205,205,255))
 	CheckWeight:SetFont("TargetIDSmall")
-	CheckWeight:SetText(translate.Format("weight_1", CalculateWeightClient()).."    "..translate.Format("weight_2", CalculateMaxWeightClient()))
+	CheckWeight:SetText(translate.Format("inv_weight", LocalPlayer():CalculateWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWalkWeight(), WEIGHT_UNIT))
 	CheckWeight:SizeToContents()
-
+	CheckWeight.Think = function(this)
+		local changetxt = translate.Format("inv_weight", LocalPlayer():CalculateWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWalkWeight(), WEIGHT_UNIT)
+		if changetxt == this:GetText() then return end
+		this:SetText(changetxt)
+		this:SizeToContents()
+		this:SetTextColor(LocalPlayer():CalculateWeight() >= LocalPlayer():CalculateMaxWalkWeight() and Color(255,0,0) or LocalPlayer():CalculateWeight() >= LocalPlayer():CalculateMaxWeight() and Color(255,255,0) or Color(255,255,255))
+	end
 	local tall = 635
 	local wide = 890
 
@@ -579,10 +585,6 @@ function GM:AdminMenu()
 			end
 			GiveButton.DoClick = function()
 				RunConsoleCommand("tea_sadmin_giveitem", k, GiveAmount:GetInt())
-				timer.Simple(0.5, function()
-					CheckWeight:SetText(translate.Format("weight_1", CalculateWeightClient()).."    "..translate.Format("weight_2", CalculateMaxWeightClient()))
-					CheckWeight:SizeToContents()
-				end)
 			end
 --			GiveButton.DoDoubleClick = GiveButton.DoClick
 

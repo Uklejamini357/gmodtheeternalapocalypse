@@ -101,7 +101,7 @@ function ENT:HasLOS()
 end
 
 function ENT:GetTEAZombieSpeedMul()
-	return math.min(self:GetEliteVariant() == VARIANT_ENRAGED and 1.6 or 1, 2 - (self:Health() / self:GetMaxHealth())) * GAMEMODE.ZombieSpeedMultiplier * self.SpeedBuff
+	return math.min(self:GetEliteVariant() == VARIANT_ENRAGED and 1.6 or 1, 2 - (self:Health() / self:GetMaxHealth())) * math.Clamp(GAMEMODE:GetInfectionMul(0.5)-0.25, 1, 1.25) * GAMEMODE.ZombieSpeedMultiplier * self.SpeedBuff
 end
 
 function ENT:Initialize()

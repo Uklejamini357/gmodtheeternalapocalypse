@@ -49,8 +49,8 @@ else
 end
 
 	caller:SendChat("You picked up a loot cache containing [ "..LootTable1[name]["Name"].." ]")
-	SystemBroadcast( caller:Nick().." has found a loot cache!", Color(255,255,255,255), true)
-	SendInventory(caller)
+	GAMEMODE:SystemBroadcast( caller:Nick().." has found a loot cache!", Color(255,255,255,255), true)
+	GAMEMODE:SendInventory(caller)
 	caller:EmitSound("items/ammopickup.wav", 100, 100)
 	self:Remove()
 end

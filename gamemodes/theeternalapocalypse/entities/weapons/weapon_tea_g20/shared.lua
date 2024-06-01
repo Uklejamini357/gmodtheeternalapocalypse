@@ -56,8 +56,8 @@ SWEP.BurstTimer			= 0
 SWEP.Type				= 3
 SWEP.Mode				= false
 
-SWEP.ZWweight				= 20 -- in kilograms divided by 10 eg 20 = 2kg
-SWEP.ZWrarity				= "Common" -- Junk, Common, Uncommon, Rare, Epic
+
+
 
 --SWEP.data 				= {}
 --SWEP.data.NormalMsg		= "Switched to semi-automatic."

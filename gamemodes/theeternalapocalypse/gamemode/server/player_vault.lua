@@ -13,6 +13,8 @@ function GM:SendVault(ply)
 	net.Start("UpdateVault")
 	net.WriteTable(ply.Vault)
 	net.Send(ply)
+
+	ply:SendNetworkEvent("tea_plyevent_vaultupdate")
 end
 concommand.Add("refresh_vault", function(ply)
 	gamemode.Call("SendVault", ply)
@@ -97,11 +99,12 @@ function GM:WithdrawFromVault(ply, str, amt)
 	
 	local item = self.ItemsList[str]
 	local weight = item["Weight"] * amt
-	if ((self:CalculateWeight(ply) + weight) > (self:CalculateMaxWeight(ply))) then
+/*
+	if ((ply:CalculateWeight() + weight) > (ply:CalculateMaxWeight())) then
 		ply:SystemMessage(Format("You don't have enough space for that! Need %skg more space!", gamemode.Call("CalculateRemainingInventoryWeight", ply, weight)), Color(255,205,205,255), true)
 		return false
 	end
-
+*/
 	ply.Vault[str] = ply.Vault[str] - amt
 	if ply.Vault[str] < amt then ply.Vault[str] = nil end
 

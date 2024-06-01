@@ -76,6 +76,11 @@ function GM:CMenu()
 				draw.DrawText(Format("Is automatic: %s", wep_prim.Automatic), "TargetIDSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 				y = y - 15
 
+				local dmgvszms = wep.DamageVsZombiesMul or self.WeaponDamageVsZombiesMul[class]
+				if dmgvszms then
+					draw.DrawText(Format("Damage against zombies: %sx", dmgvszms), "TargetIDSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+					y = y - 15
+				end
 			end
 		end
 
@@ -92,7 +97,7 @@ function GM:CMenu()
 			draw.DrawText(Format("Current Task: %s", tasktbl.Name), "TargetIDSmall", scw/2 - 155, y2, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 			y2 = y2 + 15
 
-			draw.DrawText(Format("Progress: %s/%s", self.CurrentTaskProgress, tasktbl.ReqProgress), "TargetIDSmall", scw/2 - 155, y2, self.CurrentTaskCompleted and Color(155,255,155) or color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+			draw.DrawText(Format("Progress: %s/%s", self.CurrentTaskProgress, tasktbl.ReqProgress), "TargetIDSmall", scw/2 - 155, y2, LocalPlayer():HasCompletedTask() and Color(155,255,155) or color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 			y2 = y2 + 15
 
 		end
@@ -141,6 +146,17 @@ function GM:CMenu()
 			draw.SimpleText(Format("Zombies deal: %s%% damage", math.Round(self:GetInfectionMul(0.5)*100, 2)), "TargetIDSmall", scw - 590, sch / 2 - 90, color, 0, 0)
 			draw.SimpleText(Format("Zombie cash reward: %s%%", math.Round(self:GetInfectionMul(0.5)*100, 2)), "TargetIDSmall", scw - 590, sch / 2 - 75, color, 0, 0)
 			draw.SimpleText(Format("Zombie xp reward: %s%%", math.Round(self:GetInfectionMul()*100, 2)), "TargetIDSmall", scw - 590, sch / 2 - 60, color, 0, 0)
+			draw.SimpleText(Format("Zombie speed: %s%%", math.Round(math.Clamp(self:GetInfectionMul(0.5)-0.25, 1, 1.25)*100, 2)), "TargetIDSmall", scw - 590, sch / 2 - 45, color, 0, 0)
+			draw.SimpleText(Format("Elite variant spawn chance: %s%%", "1"), "TargetIDSmall", scw - 590, sch / 2 - 25, color, 0, 0)
+			draw.SimpleText(Format("Elite variant Boss spawn chance: %s%%", "10"), "TargetIDSmall", scw - 590, sch / 2 - 10, color, 0, 0)
+			
+			
+			draw.SimpleText("Infection Level gain decreases at 50% and 75%.", "TargetIDSmall", scw - 590, sch / 2 + 95, Color(225,225,225), 0, 0)
+			draw.SimpleText("Above 100% the gain decreases even further.", "TargetIDSmall", scw - 590, sch / 2 + 110, Color(225,225,225), 0, 0)
+			draw.SimpleText(Format("Infection Level gain from killing zombies: %s%%", math.Round((self:GetInfectionLevel() >= 100 and 0.25/(self:GetInfectionMul()-1) or
+				self:GetInfectionLevel() >= 75 and 0.5 or
+				self:GetInfectionLevel() >= 50 and 0.75 or
+			1.00)*100, 2)), "TargetIDSmall", scw - 590, sch / 2 + 130, Color(255,155,155), 0, 0)
 		end
 
 		surface.DrawCircle(panel:GetWide() / 2, panel:GetTall() / 2, 150, Color(100, 100, 100, 205))
@@ -167,7 +183,7 @@ function GM:CMenu()
 		surface.SetDrawColor(150, 150, 0, 105)
 		surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
 
-		local progress = math.min(1, (MyLvl - 1 + (MyXP / self:GetReqXP())) / (LocalPlayer():GetMaxLevel() - 1))
+		local progress = LocalPlayer():GetProgressToPrestige()
 		dynprogress = math.Approach(dynprogress, progress, math.Round((progress - dynprogress) * 0.04, 6))
 
 		surface.SetDrawColor(50, 150, 150, 205)

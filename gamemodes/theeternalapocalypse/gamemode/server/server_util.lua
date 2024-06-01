@@ -5,62 +5,6 @@ end
 local MT_PLAYER = FindMetaTable("Player")
 local MT_ENTITY = FindMetaTable("Entity")
 
-function MT_PLAYER:CheckPvPDamage(dmginfo)
-	local attacker, inflictor = dmginfo:GetAttacker(), dmginfo:GetInflictor()
-	if self:IsPlayer() and attacker:IsPlayer() and self != attacker and !self:IsPvPForced() and self.Territory != team.GetName(attacker:Team()) then
-		 
-		if self:Alive() and attacker:IsPlayer() and self:IsPlayer() and (self:HasGodMode() or self.SpawnProtected) then
-			if !timer.Exists("NoPvPMsgAntiSpamTimer"..attacker:EntIndex()) then
-				attacker:SystemMessage("This target is invulnerable!", Color(255,205,205), true)
-				timer.Create("NoPvPMsgAntiSpamTimer"..attacker:EntIndex(), 0.5, 1, function() end)
-			end
-			dmginfo:SetDamage(0)
-			return false
-		elseif self:Alive() and attacker:IsPlayer() and self:IsPlayer() and attacker:IsPvPGuarded() then
-			if !timer.Exists("NoPvPMsgAntiSpamTimer"..attacker:EntIndex()) then
-				attacker:SystemMessage("You have PvP guarded! You can't damage other players!", Color(255,205,205), true)
-				timer.Create("NoPvPMsgAntiSpamTimer"..attacker:EntIndex(), 0.5, 1, function() end)
-			end
-			dmginfo:SetDamage(0)
-			return false
-		elseif self:Alive() and attacker:IsPlayer() and self:IsPlayer() and self:IsPvPGuarded() then
-			if !timer.Exists("NoPvPMsgAntiSpamTimer"..attacker:EntIndex()) then
-				attacker:SystemMessage("Target has PvP guarded! You can't damage that player!", Color(255,205,205), true)
-				timer.Create("NoPvPMsgAntiSpamTimer"..attacker:EntIndex(), 0.5, 1, function() end)
-			end
-			dmginfo:SetDamage(0)
-			return false
-		end
-
-		if self:Alive() and attacker:Team() == TEAM_LONER and attacker:GetNWBool("pvp") == false and GAMEMODE.VoluntaryPvP then
-			if !timer.Exists("NoPvPMsgAntiSpamTimer"..attacker:EntIndex()) then
-				attacker:SystemMessage("Your PvP is not enabled!", Color(255,205,205), true)
-				timer.Create("NoPvPMsgAntiSpamTimer"..attacker:EntIndex(), 0.5, 1, function() end)
-			end
-			dmginfo:SetDamage(0)
-			return false
-		elseif self:Alive() and self:Team() == TEAM_LONER and self:GetNWBool("pvp") == false and GAMEMODE.VoluntaryPvP then
-			if !timer.Exists("NoPvPMsgAntiSpamTimer"..attacker:EntIndex()) then
-				attacker:SystemMessage("You can't attack loners unless they have PvP enabled!", Color(255,205,205), true)
-				timer.Create("NoPvPMsgAntiSpamTimer"..attacker:EntIndex(), 0.5, 1, function() end)
-			end
-			dmginfo:SetDamage(0)
-			return false
-		elseif self:Alive() and (self:Team() == attacker:Team()) and not (self:Team() == TEAM_LONER or attacker:Team() == TEAM_LONER) then
-			if !timer.Exists("NoPvPMsgAntiSpamTimer"..attacker:EntIndex()) then
-				attacker:SystemMessage("You can't attack your factionmates!", Color(255,205,205), true)
-				timer.Create("NoPvPMsgAntiSpamTimer"..attacker:EntIndex(), 0.5, 1, function() end)
-			end
-			dmginfo:SetDamage(0)
-			return false
-		end
-
-		self.PvPNoToggle = CurTime() + 60
-		attacker.PvPNoToggle = CurTime() + 60
-	end
-
-	return true
-end
 
 function MT_PLAYER:ProcessPlayerDamage(dmginfo)
 	local attacker = dmginfo:GetAttacker()
@@ -187,6 +131,9 @@ function MT_ENTITY:ProcessDamage(dmginfo)
 		if IsMeleeDamage(dmginfo:GetDamageType()) then
 			dmginfo:ScaleDamage(1 + (0.01 * attacker.StatStrength) + (0.005 * math.Clamp(attacker.MasteryMeleeLevel, 0, 10)))
 		end
+		if IsMeleeDamage(dmginfo:GetDamageType()) and attacker:HasPerk("weightboost3") then
+			dmginfo:ScaleDamage(1.05)
+		end
 		if self:IsNextBot() or self:IsNPC() then
 			if IsMeleeDamage(dmginfo:GetDamageType()) then
 				attacker.MeleeDamageDealt = attacker.MeleeDamageDealt + math.Clamp(0.05 * dmginfo:GetDamage(), 0, 0.05 * self:Health())
@@ -240,6 +187,11 @@ function MT_ENTITY:ProcessNPCDamage(dmginfo)
 		if inflictor == attacker and (attacker:IsPlayer() or attacker:IsNPC()) then
 			inflictor = attacker:GetActiveWeapon()
 			if !inflictor:IsValid() then inflictor = attacker end
+		end
+	
+		local damagewepmul = inflictor.DamageVsZombiesMul or GAMEMODE.WeaponDamageVsZombiesMul[inflictor:GetClass()]
+		if damagewepmul then
+			dmginfo:ScaleDamage(damagewepmul)
 		end
 
 		if self:GetEliteVariant() == VARIANT_REFLECTOR and IsMeleeDamage(dmginfo:GetDamageType()) and attacker:IsPlayer() and attacker:Alive() then
@@ -368,21 +320,27 @@ function GM:PlayerDeath(ply, inflictor, attacker)
 	player_manager.RunClass(ply, "Death", inflictor, attacker)
 end
 
+
+-- gonna do dead luck perk later
 function GM:DoPlayerDeath(ply, attacker, dmginfo)
 	local survived = CurTime() - ply.SurvivalTime
 
+	local keptbounty
 	local stolenbounty
 	if tonumber(ply.Bounty) >= 5 then
 		if ply ~= attacker and attacker:IsPlayer() and attacker:IsValid() and attacker.UnlockedPerks["bountyhunter"] then
 			stolenbounty = math.ceil(ply.Bounty * 0.5)
+--			keptbounty = math.ceil(ply.Bounty * 0.5)
 			attacker:SystemMessage("You stole "..stolenbounty.." bounty from "..ply:Nick().."!")
 			attacker.Bounty = attacker.Bounty + stolenbounty
 
 			ply.Bounty = ply.Bounty - stolenbounty
 		end
 
-		local cashloss = ply.Bounty * math.Rand(0.3, 0.4)
-		local bountyloss = ply.Bounty - cashloss
+		local cashloss = (ply.Bounty * math.Rand(0.3, 0.4))-- * (ply:HasPerk("dead_luck") and 0.6 or 1)
+		local bountyloss = (ply.Bounty - cashloss)-- * (ply:HasPerk("dead_luck") and 0.6 or 1)
+
+--		keptbounty = ply:HasPerk("dead_luck") and ply.Bounty * 0.4 or 0
 		if self:GetDebug() >= DEBUGGING_NORMAL then
 			print(ply:Nick().." has died with "..ply.Bounty.." bounty, dropped money worth of "..math.floor(cashloss).." "..GAMEMODE.Config["Currency"].."s and survived for "..math.floor(survived).."s")
 		end
@@ -394,7 +352,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 		ent:Spawn()
 		ent:Activate()
 
-		ply:SystemMessage("You died and dropped your bounty cash worth of "..math.floor(cashloss).." "..GAMEMODE.Config["Currency"].."s! The remaining "..math.ceil(bountyloss).." "..GAMEMODE.Config["Currency"].."s is lost forever!"..(stolenbounty and " Your bounty of "..stolenbounty.." was stolen by the killer." or ""), Color(255,205,205), true)
+		ply:SystemMessage("You died and dropped your bounty cash worth of "..math.floor(cashloss).." "..GAMEMODE.Config["Currency"].."s! "..("The remaining "..math.ceil(bountyloss).." "..GAMEMODE.Config["Currency"].."s is lost forever!")..""..(stolenbounty and " Your bounty of "..stolenbounty.." was stolen by the killer." or ""), Color(255,205,205), true)
 		if ply:GetInfoNum("tea_cl_nobountytipmessage", 0) < 1 then
 			ply:SystemMessage("Remember to cash in your bounties regularly, this specifically means if you have high bounty!", Color(255,205,205), true)
 		end
@@ -408,7 +366,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 		MsgN("[Death Log] "..ply:Nick().." was killed by "..attacker:Nick().." using "..attacker:GetActiveWeapon():GetClass())
 	end
 
-	ply.Bounty = 0
+	ply.Bounty = keptbounty or 0
 	ply:SetNWInt("PlyBounty", ply.Bounty)
 
 	ply:Flashlight(false)
@@ -474,7 +432,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 			if weapon_name == v then nodrop = true break end
 		end
 
-		if !nodrop and self.ItemsList[weapon_name] and ply.Inventory[weapon_name] and !self.DropActiveWeaponOnDeath then
+		if !nodrop and self.ItemsList[weapon_name] and ply.Inventory[weapon_name] and (self.DropActiveWeaponOnDeath and (attacker:IsPlayer() and attacker ~= ply and ply:HasPerk("dead_luck"))) then
 			self:SystemRemoveItem(ply, weapon_name)
 
 			local ent = ents.Create("ate_droppeditem")
@@ -631,4 +589,11 @@ function GM:CalcDefenseDamage(ply, dmg)
 	newdmg = newdmg * ( 1 - (ply.StatDefense * 0.015))
 	
 	return math.max(0, newdmg)
+end
+
+
+function MT_PLAYER:SendNetworkEvent(str)
+	if !str then return end
+	net.Start(str)
+	net.Send(self)
 end

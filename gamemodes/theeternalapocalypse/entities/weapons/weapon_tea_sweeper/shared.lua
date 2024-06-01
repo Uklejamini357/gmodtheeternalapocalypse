@@ -45,8 +45,8 @@ SWEP.ShotgunReloading		= true
 SWEP.ShotgunFinish		= 0.3
 SWEP.ShotgunBeginReload		= 0.5
 
-SWEP.ZWweight				= 90 -- in kilograms divided by 10 eg 20 = 2kg
-SWEP.ZWrarity				= "Rare" -- Junk, Common, Uncommon, Rare, Epic
+
+
 
 function SWEP:Precache()
 

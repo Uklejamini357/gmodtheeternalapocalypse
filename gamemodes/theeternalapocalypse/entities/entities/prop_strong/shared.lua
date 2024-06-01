@@ -25,7 +25,7 @@ end
 function ENT:Initialize()
 	local selfent = self.Entity
 	self.IsBuilt = false
-	self.BuildLevel = 1
+	self.BuildLevel = 0
 	self.Entity:PhysicsInit(SOLID_VPHYSICS)
 	self.Entity:SetMoveType(MOVETYPE_VPHYSICS)
 	self.Entity:SetSolid(SOLID_VPHYSICS)
@@ -55,13 +55,47 @@ self:SetCollisionGroup(COLLISION_GROUP_NONE)
 end
 end
 
-function ENT:Think() end
+function ENT:Think()
+
+	local owner = self:GetNWEntity("owner")
+	
+	if !self.IsBuilt and owner:IsValid() and owner:HasPerk("speedy_hands") and self.CreateTime and self.CreateTime + 60 < CurTime() then
+		local mins, maxs = self:LocalToWorld(self:OBBMins()), self:LocalToWorld(self:OBBMaxs( ))
+		local cube = ents.FindInBox(mins, maxs)
+
+		for _,v in pairs(cube) do
+			if v:IsPlayer() or v:IsNPC() or v.Type == "nextbot" then
+				self:NextThink(CurTime() + 1)
+				if CLIENT then
+					self:SetNextClientThink(CurTime() + 1)
+				end
+				return true
+			end
+		end
+
+		self:NextThink(CurTime() + 1)
+		if CLIENT then
+			self:SetNextClientThink(CurTime() + 1)
+		end
+		self:FinishBuild()
+		return true
+	end
+
+	self:NextThink(CurTime() + 1)
+	if CLIENT then
+		self:SetNextClientThink(CurTime() + 1)
+	end
+	return true
+end
 
 
 function ENT:OnTakeDamage(dmg)
 	local damage = dmg:GetDamage()
 	local attacker = dmg:GetAttacker()
 
+	local ownerhasperk = self:GetNWEntity("owner"):HasPerk("speedy_hands")
+
+	if damage <= 0 then return end
 	if attacker:IsPlayer() and attacker:IsValid() and attacker:Team() == 1 and attacker:GetNWBool("pvp") != true and self:GetNWEntity("owner") != attacker then -- this should stop little shitters from wrecking your base while not in pvp mode
 		if !timer.Exists("NoPvPMsgAntiSpamTimer"..attacker:EntIndex()) then
 			attacker:SystemMessage("You cannot damage other players props unless you have PvP mode enabled!", Color(255,205,205,255), true)
@@ -70,6 +104,9 @@ function ENT:OnTakeDamage(dmg)
 	return false 
 	end
 
+	if ownerhasperk and !self.IsBuilt then
+		damage = damage * 20
+	end
 
 	local currenthealth = self:GetStructureHealth()
 	local maxhealth = self:GetStructureMaxHealth()
@@ -86,7 +123,7 @@ function ENT:OnTakeDamage(dmg)
 
 	self:SetColor(Color(swag +5,swag+5,swag+5,255))
 
-	if currenthealth < 0 or !self.IsBuilt then
+	if currenthealth < 0 or !self.IsBuilt and (!ownerhasperk or attacker:IsPlayer()) then
 		self:BreakPanel()
 --		self.Entity:EmitSound("physics/wood/wood_plank_break"..math.random(1,2)..".wav", 100, 100)
 		self.Entity:EmitSound("physics/metal/metal_box_break2.wav", 80, 100)              
@@ -112,9 +149,9 @@ function ENT:BreakPanel()
 	util.Effect("HelicopterMegaBomb", effectdata)
 
 	local sparkeffect = effectdata
-		sparkeffect:SetMagnitude(3)
-		sparkeffect:SetRadius(8)
-		sparkeffect:SetScale(5)
-		util.Effect("Sparks", sparkeffect)
+	sparkeffect:SetMagnitude(3)
+	sparkeffect:SetRadius(8)
+	sparkeffect:SetScale(5)
+	util.Effect("Sparks", sparkeffect)
 
 end

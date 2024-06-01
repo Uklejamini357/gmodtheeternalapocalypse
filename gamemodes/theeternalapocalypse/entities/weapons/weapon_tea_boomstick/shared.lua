@@ -47,8 +47,8 @@ SWEP.RunArmOffset = Vector(3.47, 0.18, 0.381)
 
 SWEP.RunArmAngle = Vector(-9.903, 19.238, 0)
 
-SWEP.ZWweight				= 85 -- in kilograms divided by 10 eg 20 = 2kg
-SWEP.ZWrarity				= "Common" -- Junk, Common, Uncommon, Rare, Epic
+
+
 
 function SWEP:Precache()
     util.PrecacheSound("weapons/spas/spas-1.wav")

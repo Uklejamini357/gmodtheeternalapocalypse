@@ -8,7 +8,7 @@ GM.MaxLevel = 40
 -- Additional number of levels needed per every prestige level. Default: 3
 GM.LevelsPerPrestige = 3
 
--- i don't feel like i have to explain about this one. Default: 45
+-- Max zombies to spawn by natural spawns. Default: 45
 GM.MaxZombies = 45
 
 -- Max distance from players in hammer units zombies can spawn. Default: 6000
@@ -41,6 +41,17 @@ GM.InfectionLevelGainMul = 1
 -- Should infection level NOT decrease? Suggesting for setting to true if doing events. Default: false
 GM.InfectionLevelShouldNotDecrease = false
 
+
+-- How should Infection Level increasing work?
+-- 1 = Killing zombies increases Infection Level, slowly decreases when no zombies are being killed.
+-- Current level is saved between server restarts and infection shard increases infection level by +50%
+-- (wip) 2 = Let players decide how much infection level should be globally, infection shard however increases infection level by +50%, with its' bonus slowly degrading.
+-- (wip) 3 = Infection Level amount depends on online player count, but infection shard works like in 2.
+-- (wip) 4 = Infection Level amount depends on average player progression. (Only affects players who are online)
+-- This makes it a good challenge for high prestige players. Infection Shard works just like in 2.
+GM.InfectionLevelIncreaseType = 1
+
+
 -- Should players lose XP if they die to zombie? Only 1% of their XP is lost, max of 250. Default: false
 GM.PlayerLoseXPOnDeath = false
 
@@ -55,6 +66,23 @@ GM.MapCycles = {
 	"rp_pripyat_fixed",
 	"gm_construct",
 }
+
+-- Enable Special events. Default: true (Doesn't work yet)
+-- Info:
+-- 1 - Zombie Fog: Limited Vision to 1500 hammer units, vision obscured by greenish fog, zombies defense increased by +20% and move 20% faster. Rewards increased.
+-- 2 - Blood Moon: Vision turns more red and dark, zombie speed greatly increased (+60%), zombies deal +30% damage
+-- 3 - Increased Infection Level gain from killing zombies by +50% and Infection Level does not decrease by its' own.
+-- 4 - Horde Event: Zombie spawn rate decreased down to 2 seconds and zombies can see players 2x further.
+GM.EnableSpecialEventsSystem = true
+
+-- Weapon Damage Multiplier against zombies. Does not affect players!
+GM.WeaponDamageVsZombiesMul = {
+	["weapon_tea_punisher"] = 1.55,
+	["m9k_intervention"] = 1.3,
+}
+
+-- Zombies don't target players if they're in trader area. This also means that they can't damage zombies to prevent farming! Default: false (not working)
+GM.TraderAreaProtectsFromZombies = false
 
 -- Rules for server. Please keep the default ones! (You can still change them)
 GM.ServerRules = {
@@ -129,79 +157,101 @@ GM.Config = {
 
 
 GM.StatConfigs = {
+	-- Keep this at max of 10!
 	["Agility"] = {
 		Max = 10,
 		Cost = 1,
+		PerkMaxIncrease = 5, -- Max amount that can be applied for this skill is increased by this amount when having a perk "Empowered Skills"
 	},
 
+	-- Keep this at max of 10!
 	["Barter"] = {
 		Max = 10,
 		Cost = 1,
 	},
 
+	-- Keep this at max of 10!
 	["Defense"] = {
 		Max = 10,
 		Cost = 1,
 	},
 
+	-- Keep this at max of 10!
 	["Endurance"] = {
 		Max = 10,
 		Cost = 1,
+		PerkMaxIncrease = 5,
 	},
 
+	-- Keep this at max of 10!
 	["Engineer"] = {
 		Max = 10,
 		Cost = 1,
+		PerkMaxIncrease = 10,
 	},
 
 	["Gunslinger"] = {
 		Max = 10,
 		Cost = 1,
+		PerkMaxIncrease = 10,
 	},
 
+	-- Keep this at max of 10!
 	["Immunity"] = {
 		Max = 10,
 		Cost = 1,
+		PerkMaxIncrease = 5,
 	},
 
 	["Knowledge"] = {
 		Max = 10,
 		Cost = 1,
+		PerkMaxIncrease = 10,
 	},
 
 	["MedSkill"] = {
 		Max = 10,
 		Cost = 1,
+		PerkMaxIncrease = 10,
 	},
 
 	["Salvage"] = {
 		Max = 10,
 		Cost = 1,
+		PerkMaxIncrease = 10,
 	},
 
+	-- Keep this at max of 10!
 	["Scavenging"] = {
 		Max = 10,
-		Cost = 1
+		Cost = 1,
+		PerkMaxIncrease = 10,
 	},
 
+	-- Keep this at max of 10!
 	["Speed"] = {
 		Max = 10,
 		Cost = 1,
+		PerkMaxIncrease = 5,
 	},
 
 	["Strength"] = {
 		Max = 10,
 		Cost = 1,
+		PerkMaxIncrease = 5,
 	},
 
+	-- Keep this at max of 10!
 	["Survivor"] = {
 		Max = 10,
 		Cost = 1,
+		PerkMaxIncrease = 5,
 	},
 
 	["Vitality"] = {
 		Max = 10,
 		Cost = 1,
+		PerkMaxIncrease = 10,
 	},
 }
 
@@ -211,11 +261,13 @@ GM.StatConfigs = {
 GM.Config["ZombieClasses"] = {
 	["npc_tea_basic"] = {		-- table name must be the entclass name of the zombie, see garrysmod/gamemodes/theeternalapocalypse/entities for entclasses (or you can add other zombie types by yourself)
 		Name = "Shambler Zombie",	-- Name for the zombie, used in death notice/killfeed
-		SpawnChance = 66.8,	-- spawn chance in % (there is a helper function that will tell you how much the current total spawn chance for zombies is)
+		SpawnChance = 66.75,	-- spawn chance in % (there is a helper function that will tell you how much the current total spawn chance for zombies is)
 		XPReward = 48,		-- xp reward for killing this zombie, varies with the convar tea_server_xpreward convar
 		MoneyReward = 22,	-- money reward for killing this zombie, varies with the convar tea_server_moneyreward convar
 		InfectionRate = 0.03,	-- Infection Level increase if the zombie is killed by player (Affected by player count!)
 		AllowEliteVariants = true,	-- Some zombies may not like being as elite variant as it confuses between colors - Only allow some! (By default, it's true)
+		Miniboss = false,	-- If it is true, they are not spawned unless Infection Level is 25% or more, or if the player count is less than 3! Instead, they will be rerolled as a basic zombie.
+		-- (in that case, if minibosses can't spawn then there is slightly higher chance for basics to spawn)
 	},
 
 	["npc_tea_leaper"] = {
@@ -274,20 +326,32 @@ GM.Config["ZombieClasses"] = {
 
 	["npc_tea_superlord"] = {
 		Name = "Zombie Superlord",
-		SpawnChance = 0.25,
+		SpawnChance = 0.2,
 		XPReward = 850,
 		MoneyReward = 700,
 		InfectionRate = 0.35,
 		AllowEliteVariants = true,
+		Miniboss = true,
 	},
 
 	["npc_tea_heavy_tank"] = {
 		Name = "Heavy Tank Zombie",
-		SpawnChance = 0.2,
+		SpawnChance = 0.15,
 		XPReward = 750,
 		MoneyReward = 650,
 		InfectionRate = 0.4,
 		AllowEliteVariants = true,
+		Miniboss = true,
+	},
+
+	["npc_tea_hunter"] = {
+		Name = "Hunter Zombie",
+		SpawnChance = 0.15,
+		XPReward = 750,
+		MoneyReward = 650,
+		InfectionRate = 0.4,
+		AllowEliteVariants = true,
+		Miniboss = true,
 	},
 
 }
@@ -457,8 +521,8 @@ GM.PerksList = {
 	},
 
 	["weightboost3"] = {
-		Name = "Weight boost III",
-		Description = "Increase your max carrying capacity by +3.5kg",
+		Name = "Heavyweight",
+		Description = "Increase your max carrying capacity by +3.5kg and melee damage multiplier increased by 5%",
 		Cost = 2,
 		PrestigeReq = 7,
 	},
@@ -554,7 +618,51 @@ GM.PerksList = {
 		PrestigeReq = 7,
 	},
 
+	["enduring_endurance"] = {
+		Name = "Enduring Endurance",
+		Description = "Stamina regeneration is doubled and stamina drain is decreased when your stamina is below 25%",
+		Cost = 1,
+		PrestigeReq = 3,
+	},
 
+	["starting_ammunition"] = {
+		Name = "Starting Ammo",
+		Description = "You spawn with more ammo.",
+		AddDescription = "You spawn with:\n200 Pistol ammo\n150 Rifle ammo\n100 buckhot ammo\n75 sniper ammo\n5 crossbow bolts",
+		Cost = 1,
+		PrestigeReq = 2,
+	},
+
+	["speedy_hands"] = {
+		Name = "Handy Engineer",
+		Description = "Gives big buffs for prop and Builder's Wrench",
+		AddDescription = "Your unbuilt props take 20x damage instead of being destroyed instantly on being hit.\nBuilder's Wrench delay is decreased by 20% and spends less stamina.\nYour wrench builds props 1.5x faster.\nFlimsy Props are automatically built within 60 seconds (If they're not obstructed)\nYou salvage your props 2x faster.",
+		Cost = 2,
+		PrestigeReq = 6,
+	},
+
+	["bloodlust"] = { -- Not done
+		Name = "Bloodlust",
+		Description = "Heal 10% of your damage with melee.",
+		AddDescription = "Beware, as the heal cap is quickly drained the more this is used in short time!",
+		Cost = 1,
+		PrestigeReq = 2,
+	},
+
+	["dead_luck"] = { -- Not done
+		Name = "Dead luck",
+		Description = "On death, you keep 80% of your ammo you had and you do not drop your active weapon outside PVP.",
+		AddDescription = "In addition, you keep 40% of your bounty you had on death, minimum of 20 bounty is lost.\nYou still lose some of your bounty if killed by a player who has Bounty Hunter perk.",
+		Cost = 1,
+		PrestigeReq = 2,
+	},
+
+	["empowered_skills"] = { -- Not done
+		Name = "Empowered Skills",
+		Description = "You can apply more skill points to the same skill, but cost is doubled if applying beyond normal limit",
+		Cost = 3,
+		PrestigeReq = 10,
+	},
 
 
 }

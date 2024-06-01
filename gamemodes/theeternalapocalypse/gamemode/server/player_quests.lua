@@ -6,7 +6,6 @@ function GM:GiveTask(pl, task)
 
     pl.CurrentTask = task
     pl.CurrentTaskProgress = 0
-    pl.TaskComplete = false
 
     net.Start("tea_taskassign")
     net.WriteString(pl.CurrentTask)
@@ -17,12 +16,11 @@ end
 
 function GM:GiveTaskProgress(pl, task, amt)
     local taskl = self.Tasks[task]
-    if pl.CurrentTask ~= task or pl.TaskComplete or !taskl then return end
+    if pl.CurrentTask ~= task or !taskl then return end
 
-    pl.CurrentTaskProgress = math.Clamp(pl.CurrentTaskProgress + amt, 0, taskl.ReqProgress)
-    if pl.CurrentTaskProgress >= taskl.ReqProgress and not pl.TaskComplete then
-        gamemode.Call("CompleteTask", pl, task)
-	elseif not pl.TaskComplete then
+	local prevprogress = pl.CurrentTaskProgress
+	pl.CurrentTaskProgress = math.Clamp(prevprogress + amt, 0, taskl.ReqProgress)
+    if prevprogress < taskl.ReqProgress then
         pl.CurrentTaskProgress = math.min(taskl.ReqProgress, pl.CurrentTaskProgress)
 	else return
 	end
@@ -35,27 +33,13 @@ function GM:GiveTaskProgress(pl, task, amt)
 	pl:RefreshTasksStats()
 end
 
-function GM:CompleteTask(pl, task)
-    local taskl = self.Tasks[task]
-    if pl.CurrentTask ~= task or pl.TaskComplete or !taskl or tonumber(pl.CurrentTaskProgress) < taskl.ReqProgress then return end
-
-    pl.TaskComplete = true
-
-    net.Start("tea_taskcomplete")
-    net.WriteString(task)
-    net.Send(pl)
-
-	pl:RefreshTasksStats()
-end
-
 function GM:FinishTask(pl, task)
     local taskl = self.Tasks[task]
-    if pl.CurrentTask ~= task or !taskl or !pl.TaskComplete or tonumber(pl.CurrentTaskProgress) < taskl.ReqProgress then return end
+    if pl.CurrentTask ~= task or !taskl or !pl:HasCompletedTask() or tonumber(pl.CurrentTaskProgress) < taskl.ReqProgress then return end
 
 	pl.TaskCooldowns[task] = os.time() + taskl.Cooldown
     pl.CurrentTask = ""
     pl.CurrentTaskProgress = 0
-    pl.TaskComplete = false
 
     if taskl.Callback then
         taskl.Callback(pl)
@@ -70,7 +54,7 @@ end
 
 function GM:CancelTask(pl, task)
     local taskl = self.Tasks[task]
-    if pl.CurrentTask ~= task or !taskl then return end
+    if pl.CurrentTask ~= task or !taskl or pl:HasCompletedTask() then return end
 
 	for tasks,_ in pairs(self.Tasks) do
 		pl.TaskCooldowns[tasks] = os.time() + TIME_HOUR -- 1 hour before they can assign new task
@@ -78,7 +62,6 @@ function GM:CancelTask(pl, task)
 	pl.TaskCooldowns[task] = os.time() + taskl.CancelCooldown
     pl.CurrentTask = ""
     pl.CurrentTaskProgress = 0
-    pl.TaskComplete = false
 
     net.Start("tea_taskcancel")
     net.WriteString(task)
@@ -216,6 +199,5 @@ function meta:RefreshTasksStats()
 	net.Start("tea_taskstatsupdate")
 	net.WriteString(self.CurrentTask)
 	net.WriteFloat(self.CurrentTaskProgress)
-	net.WriteBool(self.TaskComplete)
 	net.Send(self)
 end

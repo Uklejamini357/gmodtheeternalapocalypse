@@ -1,5 +1,5 @@
 local meta = FindMetaTable("Player")
-
+--[[
 function GM:CalculateWeight(ply)
 	local totalweight = 0
 	for k, v in pairs(ply.Inventory) do
@@ -21,9 +21,9 @@ function GM:CalculateMaxWeight(ply)
 end
 
 function GM:CalculateRemainingInventoryWeight(ply, weight)
-	return math.Round((-self:CalculateMaxWeight(ply) + self:CalculateWeight(ply) + weight), 2)
+	return math.Round((-ply:CalculateMaxWeight() + ply:CalculateWeight() + weight), 2)
 end
-
+]]
 function GM:SendInventory(ply)
 	if !ply:IsValid() then return end
 	timer.Create("tea_sendinventory_"..ply:EntIndex(), (ply.m_LastTimeInventorySent or 0) + 0.5 - CurTime(), 1, function()
@@ -32,6 +32,7 @@ function GM:SendInventory(ply)
 		net.Send(ply)
 --		self:FullyUpdatePlayer(ply)
 		self:SendVault(ply)
+		ply:SendNetworkEvent("tea_plyevent_vaultupdate")
 	end)
 	ply.m_LastTimeInventorySent = CurTime()
 end
@@ -152,7 +153,7 @@ function GM:SystemGiveItem(ply, str, qty)
 
 	local item = self.ItemsList[str]
 	-- dont need to pester them with notifications from a system function, just return false
-	if ((self:CalculateWeight(ply) + (qty * item["Weight"])) > (self:CalculateMaxWeight(ply))) then ply:SendChat(Format("You don't have any inventory space left for this item! (Need %skg more space)", GAMEMODE:CalculateRemainingInventoryWeight(ply, qty * item["Weight"]))) return false end
+	-- if ((ply:CalculateWeight() + (qty * item["Weight"])) > (ply:CalculateMaxWeight())) then ply:SendChat(Format("You don't have any inventory space left for this item! (Need %skg more space)", GAMEMODE:CalculateRemainingInventoryWeight(ply, qty * item["Weight"]))) return false end
 
 	if ply.Inventory[str] then
 		ply.Inventory[str] = ply.Inventory[str] + qty
@@ -196,14 +197,15 @@ end
 
 
 net.Receive("UseItem", function(length, ply) -- this function also handles item dropping
-	GAMEMODE:UseItem(ply, net.ReadString(), net.ReadBool())
+	GAMEMODE:UseItem(ply, net.ReadString(), net.ReadBool(), net.ReadEntity())
 end)
 
 
-function GM:UseItem(ply, item, use)
+function GM:UseItem(ply, item, use, targetply)
 	local str = GAMEMODE.ItemsList[item]
 	local ftoggle
 	if use then ftoggle = "UseFunc" else ftoggle = "DropFunc" end
+	if !targetply or !targetply:IsValid() then targetply = ply end
 
 	if !ply.CanUseItem then return false end -- cancel the function if they are spamming net messages
 	if !str then ply:SendChat(translate.ClientGet(ply, "itemnonexistant")) return false end -- if the item doenst exist
@@ -216,7 +218,7 @@ function GM:UseItem(ply, item, use)
 
 	if ply.Inventory[item] then
 		if ply.Inventory[item] > 0 then
-			local func = ref[ftoggle](ply)
+			local func = ref[ftoggle](ply, targetply)
 			if func == true then
 				GAMEMODE:SystemRemoveItem(ply, item, false) -- leave this as false otherwise grenades are unusable
 				timer.Simple(0.25, function() if ply:IsValid() then ply.CanUseItem = true end end)
@@ -257,7 +259,7 @@ function meta:BuyItem(str)
 	local cash = tonumber(self.Money)
 
 	if (cash < buyprice) then self:SendChat("You cannot afford that!") return false end
-	if ((GAMEMODE:CalculateWeight(self) + item["Weight"]) > GAMEMODE:CalculateMaxWeight(self)) then self:SendChat(translate.ClientFormat(self, "notenoughspace", GAMEMODE:CalculateRemainingInventoryWeight(self, item["Weight"]))) return false end
+	-- if ((self:CalculateWeight() + item["Weight"]) > self:CalculateMaxWeight()) then self:SendChat(translate.ClientFormat(self, "notenoughspace", GAMEMODE:CalculateRemainingInventoryWeight(self, item["Weight"]))) return false end
 
 	GAMEMODE:SystemGiveItem(self, str)
 	self:PrintTranslatedMessage(HUD_PRINTCONSOLE, "tr_itembought", translate.ClientGet(self, str.."_n"), buyprice, GAMEMODE.Config["Currency"])

@@ -90,7 +90,7 @@ function ENT:SetUpStats()
 end
 
 function ENT:Think()
-	if !SERVER then return end --once again, clientside error here, so this was added to prevent further clientside errors
+	if !SERVER then return end
 	if !IsValid(self) then return end
 
 -- need to drown them in water otherwise the stupid fucks will just skip happily along the sea floor

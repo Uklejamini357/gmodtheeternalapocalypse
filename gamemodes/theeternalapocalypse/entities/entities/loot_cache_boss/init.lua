@@ -38,7 +38,7 @@ function ENT:Use( activator, caller )
 	if !name or !item or !qtycheck then caller:SendChat(translate.ClientGet(caller, "buggedcache")) self:Remove() return false end
 
 	if !item then return false end
-	if (GAMEMODE:CalculateWeight(caller) + (qtycheck * itemweight)) > GAMEMODE:CalculateMaxWeight(caller) then caller:SendChat(translate.ClientFormat(caller, "notenoughspaceloot", qtycheck * itemweight, -GAMEMODE:CalculateMaxWeight(caller) + GAMEMODE:CalculateWeight(caller) + (qtycheck * itemweight))) return false end
+	-- if (caller:CalculateWeight() + (qtycheck * itemweight)) > caller:CalculateMaxWeight() then caller:SendChat(translate.ClientFormat(caller, "notenoughspaceloot", qtycheck * itemweight, -caller:CalculateMaxWeight() + caller:CalculateWeight() + (qtycheck * itemweight))) return false end
 
 	gamemode.Call("SystemGiveItem", caller, name, qtycheck)
 

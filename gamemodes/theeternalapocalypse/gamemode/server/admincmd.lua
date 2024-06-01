@@ -36,7 +36,7 @@ function GM:AdminCmds_GiveItem(ply, cmd, args)
 		ply:ConCommand("playgamesound buttons/button8.wav")
 	return false end
 
-	if (self:CalculateWeight(ply) + (item.Weight * addqty)) > (self:CalculateMaxWeight(ply)) then ply:SendChat("You don't have any inventory space left for this item! (Need "..-self:CalculateMaxWeight(ply) + self:CalculateWeight(ply) + (addqty * item["Weight"]).."kg more space)") return false end
+	if (ply:CalculateWeight() + (item.Weight * addqty)) > (ply:CalculateMaxWeight()) then ply:SendChat("You don't have any inventory space left for this item! (Need "..-ply:CalculateMaxWeight() + ply:CalculateWeight() + (addqty * item["Weight"]).."kg more space)") return false end
 
 	gamemode.Call("SystemGiveItem", ply, name, addqty)
 

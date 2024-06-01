@@ -59,7 +59,7 @@ function GM:OpenTasksMenu()
 	DoTasksList = function(parent)
 		for k, v in pairs(GAMEMODE.Tasks) do
 			local selected = GAMEMODE.CurrentTask == k
-			local completed = selected and self.CurrentTaskCompleted
+			local completed = selected and LocalPlayer():HasCompletedTask()
 
 			local taskpanel = vgui.Create("DPanel")
 			parent:AddItem(taskpanel)

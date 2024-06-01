@@ -48,8 +48,8 @@ SWEP.RunArmOffset = Vector(0, 0, 0.865)
 
 SWEP.RunArmAngle = Vector(-15.157, 12.953, -6.89)
 
-SWEP.ZWweight				= 45 -- in kilograms divided by 10 eg 20 = 2kg
-SWEP.ZWrarity				= "Common" -- Junk, Common, Uncommon, Rare, Epic
+
+
 
 function SWEP:Precache()
 

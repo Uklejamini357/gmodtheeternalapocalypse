@@ -68,6 +68,8 @@ VARIANT_SICKNESS = 6
 VARIANT_LEECH = 7
 VARIANT_ENRAGED = 8
 
+WEIGHT_UNIT = "kg"
+
 GM.VariantNames = {
     [VARIANT_POISONOUS] = "Poisonous",
     [VARIANT_SHOCK] = "Shock",

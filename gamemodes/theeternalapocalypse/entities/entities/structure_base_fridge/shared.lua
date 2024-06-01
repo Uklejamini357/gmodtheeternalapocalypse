@@ -21,7 +21,7 @@ function ENT:Initialize()
 	local selfent = self.Entity
 	self.IsBuilt = false
 	self.UseTimer = CurTime()
-	self.BuildLevel = 1
+	self.BuildLevel = 0
 	self.integrity = 1000
 	self.maxinteg = 1000
 	self.Entity:PhysicsInit( SOLID_VPHYSICS )

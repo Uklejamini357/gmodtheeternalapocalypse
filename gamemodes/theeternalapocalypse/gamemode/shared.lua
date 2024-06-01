@@ -5,8 +5,8 @@ GM.AltName	= "After The End Reborn"
 GM.Author	= "Uklejamini"
 GM.Email	= "[You may not view this information.]"
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.11.1c"
-GM.DateVer	= "25.02.2024" -- oh my gosh there was no update for so long
+GM.Version	= "Pre-0.11.2" -- Beta
+GM.DateVer	= "01.06.2024" -- oh my gosh there was no update for so long
 
 
 include("sh_globals.lua") -- globals
@@ -85,36 +85,6 @@ function GM:PlayerShouldTakeDamage(ply, attacker)
 	return true
 end
 
-function GM:GetReqXP(ply)
-	local basexpreq = 709
-	local addxpperlevel = 102
-	local addxpperlevel2 = 1.1229
-
-	local plyprestige = SERVER and ply.Prestige or MyPrestige
-	local plylevel = SERVER and ply.Level or MyLvl
-
-	return math.floor((basexpreq + (plylevel  * addxpperlevel) * (1 + (plyprestige * (0.0072 + math.min(20, plyprestige) * 0.0003)))) ^ addxpperlevel2)
-end
-
-function GetReqMasteryMeleeXP(ply)
-	local xpreq = 984
-	local addexpperlevel = 165
-	local addexpperlevel2 = 1.161
-
-	local mlvl = SERVER and ply.MasteryMeleeLevel or MyMMeleelvl
-
-	return math.floor(xpreq + (mlvl * addexpperlevel) ^ addexpperlevel2)
-end
-
-function GetReqMasteryPvPXP(ply)
-	local expreq = 593
-	local addxpprlevel = 85
-	local addexpperlevel2 = 1.153
-
-	local mlvl = SERVER and ply.MasteryPvPLevel or MyMPvplvl
-
-	return math.floor(expreq + (mlvl * addxpprlevel) ^ addexpperlevel2)
-end
 
 function GetPerk(perk)
 	return GAMEMODE.StatConfigs[perk]

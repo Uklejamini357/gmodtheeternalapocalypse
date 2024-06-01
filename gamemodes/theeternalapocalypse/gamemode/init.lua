@@ -187,11 +187,20 @@ function GM:Think()
 			end)
 		end
 
-		if self.InfectionLevelEnabled and plycount > 0 and self.NextInfectionDecrease < ct and self:GetInfectionLevel() > 0 and not self.InfectionLevelShouldNotDecrease then
-			self.NextInfectionDecrease = ct + 9
-			self.InfectionDecreasedTimes = math.Clamp(self.InfectionDecreasedTimes + 1, 0, 45)
-	
-			self:SetInfectionLevel(math.max(0, self:GetInfectionLevel() - (0.045 + (self.InfectionDecreasedTimes * 0.0072))))
+		if false then
+			if self.InfectionLevelEnabled and plycount > 0 and self.NextInfectionDecrease < ct and self:GetInfectionLevel() > 0 and not self.InfectionLevelShouldNotDecrease then
+				self.NextInfectionDecrease = ct + 9
+				self.InfectionDecreasedTimes = math.Clamp(self.InfectionDecreasedTimes + 1, 0, 45)
+			
+				self:SetInfectionLevel(math.max(0, self:GetInfectionLevel() - (0.045 + (self.InfectionDecreasedTimes * 0.0072))))
+			end
+		else
+			local averageprestige = 0
+			for _,pl in pairs(player.GetAll()) do
+				averageprestige = pl.Prestige + pl:GetProgressToPrestige()
+			end
+
+			self:SetInfectionLevel(0)
 		end
 
 		if self.NextSave + 240 < ct then
@@ -296,6 +305,8 @@ function GM:Think()
 		end
 	*/ -- Trying to find function that drains stamina on jumping, but this one doesn't really work
 	
+			local staminaperk = ply.UnlockedPerks["enduring_endurance"] and ply.Stamina < 25 and 2 or 1
+
 			if ply:WaterLevel() == 3 and ply:Alive() then
 				ply.Thirst = math.Clamp(ply.Thirst + 0.243 , 0, 10000)
 				if tonumber(ply.Stamina) <= 0 then
@@ -314,18 +325,18 @@ function GM:Think()
 						ply.DrownDamage = ply.DrownDamage - math.floor(ply.DrownDamage)
 					end
 				else
-					ply.Stamina = math.Clamp(ply.Stamina - (0.093 - endurance), 0, 100)
+					ply.Stamina = math.Clamp(ply.Stamina - ((0.093 / staminaperk) - endurance), 0, 100)
 				end
 			elseif !ply:InVehicle() and (ply:IsSprinting() and PlayerIsMoving and not ply:Crouching()) then
-				ply.Stamina = math.Clamp(ply.Stamina - (0.0755 - endurance), 0, 100)
+				ply.Stamina = math.Clamp(ply.Stamina - ((0.0755 / staminaperk) - endurance), 0, 100)
 			elseif !ply:InVehicle() and PlayerIsMoving and ply:Crouching() then
-				ply.Stamina = math.Clamp(ply.Stamina + 0.01097 + endurance, 0, 100)
+				ply.Stamina = math.Clamp(ply.Stamina + (0.01097 + endurance) * staminaperk, 0, 100)
 			elseif !ply:InVehicle() and PlayerIsMoving then
-				ply.Stamina = math.Clamp(ply.Stamina + 0.00824 + endurance, 0, 100)
+				ply.Stamina = math.Clamp(ply.Stamina + (0.00824 + endurance) * staminaperk, 0, 100)
 			elseif ply:InVehicle() or ply:Crouching() then
-				ply.Stamina = math.Clamp(ply.Stamina + 0.043 + endurance, 0, 100)
+				ply.Stamina = math.Clamp(ply.Stamina + (0.043 + endurance) * staminaperk, 0, 100)
 			else
-				ply.Stamina = math.Clamp(ply.Stamina + 0.047 + endurance, 0, 100)
+				ply.Stamina = math.Clamp(ply.Stamina + (0.047 + endurance) * staminaperk, 0, 100)
 			end
 		
 			if ply.Stamina > 30 then
@@ -360,7 +371,8 @@ end
 
 function GM:PlayerConnect(name, ip)
 	for _, ply in pairs(player.GetAll()) do
-		ply:SystemMessage(Format("#tea.chat_message.pljoined", name), Color(255,255,155,255), false)
+		ply:SystemMessage(translate.ClientFormat(ply, "pljoined", name), Color(255,255,155,255), false)
+		-- ply:SystemMessage(Format("#tea.chat_message.pljoined", name), Color(255,255,155,255), false)
 	end
 end
 
@@ -412,6 +424,7 @@ function GM:Initialize()
 	self.NextInfectionDecrease = 0
 	self.InfectionDecreasedTimes = 0
 	self.NextSave = 0
+	self.DebugLogs = {}
 
 	SetGlobalBool("GM.ZombieSpawning", true)
 
@@ -425,7 +438,6 @@ function GM:Initialize()
 	self:LoadTraders()
 	self:LoadPlayerSpawns()
 	self:LoadTaskDealers()
-	self.DebugLogs = {}
 	self:CheckSpawnChanceErrors()
 end
 
@@ -621,7 +633,7 @@ end
 
 function GM:EntityTakeDamage(ent, dmginfo)
 	if ent.ProcessDamage and not ent:ProcessDamage(dmginfo) then return end
-	if ent.CheckPvPDamage and not ent:CheckPvPDamage(dmginfo) then return end
+	if ent:IsPlayer() and not gamemode.Call("PlayerShouldTakeDamage", ent, dmginfo:GetAttacker()) then return end
 	if ent.ProcessPlayerDamage and not ent:ProcessPlayerDamage(dmginfo) then return end
 	if (ent:IsNPC() or ent:IsNextBot()) and not ent:ProcessNPCDamage(dmginfo) then return end
 
@@ -670,6 +682,56 @@ function GM:EntityTakeDamage(ent, dmginfo)
 	end
 end
 
+function GM:PlayerShouldTakeDamage(ply, attacker)
+	if ply:IsPlayer() and attacker:IsPlayer() and ply != attacker and !ply:IsPvPForced() and ply.Territory != team.GetName(attacker:Team()) then
+		 
+		if ply:Alive() and attacker:IsPlayer() and ply:IsPlayer() and (ply:HasGodMode() or ply.SpawnProtected) then
+			if !timer.Exists("NoPvPMsgAntiSpamTimer"..attacker:EntIndex()) then
+				attacker:SystemMessage("This target is invulnerable!", Color(255,205,205), true)
+				timer.Create("NoPvPMsgAntiSpamTimer"..attacker:EntIndex(), 0.5, 1, function() end)
+			end
+			return false
+		elseif ply:Alive() and attacker:IsPlayer() and ply:IsPlayer() and attacker:IsPvPGuarded() then
+			if !timer.Exists("NoPvPMsgAntiSpamTimer"..attacker:EntIndex()) then
+				attacker:SystemMessage("You have PvP guarded! You can't damage other players!", Color(255,205,205), true)
+				timer.Create("NoPvPMsgAntiSpamTimer"..attacker:EntIndex(), 0.5, 1, function() end)
+			end
+			return false
+		elseif ply:Alive() and attacker:IsPlayer() and ply:IsPlayer() and ply:IsPvPGuarded() then
+			if !timer.Exists("NoPvPMsgAntiSpamTimer"..attacker:EntIndex()) then
+				attacker:SystemMessage("Target has PvP guarded! You can't damage that player!", Color(255,205,205), true)
+				timer.Create("NoPvPMsgAntiSpamTimer"..attacker:EntIndex(), 0.5, 1, function() end)
+			end
+			return false
+		end
+
+		if ply:Alive() and attacker:Team() == TEAM_LONER and attacker:GetNWBool("pvp") == false and GAMEMODE.VoluntaryPvP then
+			if !timer.Exists("NoPvPMsgAntiSpamTimer"..attacker:EntIndex()) then
+				attacker:SystemMessage("Your PvP is not enabled!", Color(255,205,205), true)
+				timer.Create("NoPvPMsgAntiSpamTimer"..attacker:EntIndex(), 0.5, 1, function() end)
+			end
+			return false
+		elseif ply:Alive() and ply:Team() == TEAM_LONER and ply:GetNWBool("pvp") == false and GAMEMODE.VoluntaryPvP then
+			if !timer.Exists("NoPvPMsgAntiSpamTimer"..attacker:EntIndex()) then
+				attacker:SystemMessage("You can't attack loners unless they have PvP enabled!", Color(255,205,205), true)
+				timer.Create("NoPvPMsgAntiSpamTimer"..attacker:EntIndex(), 0.5, 1, function() end)
+			end
+			return false
+		elseif ply:Alive() and (ply:Team() == attacker:Team()) and not (ply:Team() == TEAM_LONER or attacker:Team() == TEAM_LONER) then
+			if !timer.Exists("NoPvPMsgAntiSpamTimer"..attacker:EntIndex()) then
+				attacker:SystemMessage("You can't attack your factionmates!", Color(255,205,205), true)
+				timer.Create("NoPvPMsgAntiSpamTimer"..attacker:EntIndex(), 0.5, 1, function() end)
+			end
+			return false
+		end
+
+		ply.PvPNoToggle = CurTime() + 60
+		attacker.PvPNoToggle = CurTime() + 60
+	end
+
+	return true
+end
+
 function GM:PlayerInitialSpawn(ply, transition)
 	self.BaseClass:PlayerInitialSpawn(ply)
 	ply:AllowFlashlight(true)
@@ -710,7 +772,6 @@ function GM:PlayerInitialSpawn(ply, transition)
 	ply.playerdeaths = 0
 	ply.CurrentTask = ""
 	ply.CurrentTaskProgress = 0
-	ply.TaskComplete = false
 	----------------
 	
 	-------- Mastery Stats --------
@@ -909,6 +970,20 @@ end
 function GM:PlayerLoadout(ply)
 	ply:Give("tea_fists")
 	ply:Give("tea_buildtool")
+
+	if ply.UnlockedPerks["starting_ammo_upgrade"] then
+		ply:GiveAmmo(200, "Pistol")
+		ply:GiveAmmo(150, "ammo_rifle")
+		ply:GiveAmmo(100, "Buckshot")
+		ply:GiveAmmo(75, "ammo_sniper")
+		ply:GiveAmmo(5, "XBowBolt")
+	elseif ply:IsNewbie() then
+		ply:GiveAmmo(100, "Pistol")
+		ply:GiveAmmo(50, "Buckshot")
+		ply:GiveAmmo(100, "ammo_rifle")
+	else
+		ply:GiveAmmo(50, "Pistol")
+	end
 
 	ply:SelectWeapon("tea_fists")
 end

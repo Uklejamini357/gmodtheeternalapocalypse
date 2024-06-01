@@ -9,6 +9,16 @@ local DoTraderList
 local DoSellPanel
 local DoVaultPanel
 
+net.Receive("tea_plyevent_vaultupdate", function()
+	if DoSellPanel then
+		DoSellPanel()
+	end
+
+	if DoVaultPanel then
+		DoVaultPanel()
+	end
+end)
+
 function GM:OpenTraderMenu()
 	if IsValid(TraderMenu) then TraderMenu:Remove() end
 	TraderMenu = vgui.Create("DFrame")
@@ -183,19 +193,25 @@ function GM:TraderMenu()
 	LWeight:SetPos(10, TraderFrame:GetTall() - 42)
 	LWeight:SetSize(350, 25)
 	LWeight:SetColor(Color(255,255,255,255))
-	LWeight:SetText(translate.Format("weight_1", CalculateWeightClient()).." / "..CalculateMaxWeightClient().."kg")
+	LWeight:SetText(translate.Format("inv_weight", LocalPlayer():CalculateWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWalkWeight(), WEIGHT_UNIT))
+	LWeight.Think = function(this)
+		local txt = translate.Format("inv_weight", LocalPlayer():CalculateWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWalkWeight(), WEIGHT_UNIT)
+		if this:GetText() == txt then return end
+		this:SetText(txt)
+		this:SizeToContents()
+	end
 
 	local LMoney = vgui.Create("DLabel", TraderFrame)
 	LMoney:SetFont("TargetID")
-	LMoney:SetPos(350, TraderFrame:GetTall() - 50)
-	LMoney:SetSize(350, 41)
+	LMoney:SetPos(400, TraderFrame:GetTall() - 38)
 	LMoney:SetColor(Color(155,255,155,255))
 	LMoney:SetText("My Wallet: "..math.floor(MyMoney))
-	LMoney.Think = function()
+	LMoney:SizeToContents()
+	LMoney.Think = function(this)
 		local txt = "My Wallet: "..math.floor(MyMoney)
-		if LMoney:GetText() == txt then return end
-		LMoney:SetText(txt)
-		LMoney:SizeToContents()
+		if this:GetText() == txt then return end
+		this:SetText(txt)
+		this:SizeToContents()
 	end
 
 /*
@@ -219,11 +235,11 @@ function GM:TraderMenu()
 	LVaultWeight = vgui.Create("DLabel", TraderFrame)
 	LVaultWeight:SetFont("TargetIDSmall")
 	LVaultWeight:SetColor(Color(255,255,255,255))
-	LVaultWeight:SetText("Vault Capacity: "..CalculateVaultClient().."kg / "..GAMEMODE.Config["VaultSize"].."kg")
+	LVaultWeight:SetText("Vault Capacity: "..LocalPlayer():CalculateVaultWeight().."kg / "..GAMEMODE.Config["VaultSize"].."kg")
 	LVaultWeight:SizeToContents()
 	LVaultWeight:SetPos(TraderFrame:GetWide() - LVaultWeight:GetWide() - 200, TraderFrame:GetTall() - 38)
 	LVaultWeight.Think = function(this)
-		local txt = "Vault Capacity: "..CalculateVaultClient().."kg / "..GAMEMODE.Config["VaultSize"].."kg"
+		local txt = "Vault Capacity: "..LocalPlayer():CalculateVaultWeight().."kg / "..GAMEMODE.Config["VaultSize"].."kg"
 		if this:GetText() == txt then return end
 		this:SetText(txt)
 		this:SizeToContents()
@@ -232,7 +248,7 @@ function GM:TraderMenu()
 	local backbutton = vgui.Create("DButton", TraderFrame)
 	backbutton:SetSize(120, 45)
 	backbutton:SetText("Back")
-	backbutton:SetPos(TraderFrame:GetWide() - backbutton:GetWide() - 50, TraderFrame:GetTall() - 52)
+	backbutton:SetPos(TraderFrame:GetWide() - backbutton:GetWide() - 30, TraderFrame:GetTall() - 52)
 	backbutton:SetTextColor(Color(255, 255, 255, 255))
 	backbutton.Paint = function(panel, w, h)
 		surface.SetDrawColor(0, 150, 0,255)
@@ -326,11 +342,6 @@ function GM:TraderMenu()
 				net.Start("BuyItem")
 				net.WriteString(k)
 				net.SendToServer()
-				timer.Simple(0.3, function()
-					LWeight:SetText(translate.Format("weight_1", CalculateWeightClient()).." / "..CalculateMaxWeightClient().."kg")
---					LMoney:SetText("My Wallet: "..math.floor(MyMoney))
-					DoSellPanel()
-				end)
 			end
 			BuyButton.DoDoubleClick = BuyButton.DoClick
 --		end
@@ -429,13 +440,8 @@ function GM:TraderMenu()
 					net.SendToServer()
 
 					timer.Simple(0.3, function()
-						LWeight:SetText(translate.Format("weight_1", CalculateWeightClient()).." / "..CalculateMaxWeightClient().."kg")
+						LWeight:SetText(translate.Format("inv_weight", LocalPlayer():CalculateWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWalkWeight(), WEIGHT_UNIT))
 --						LMoney:SetText("My Wallet: "..math.floor(MyMoney))
-					end)
-					timer.Simple(0.25, function() 
-						if IsValid(SellPanel) then
-							DoSellPanel()
-						end
 					end)
 				end
 
@@ -475,16 +481,8 @@ function GM:TraderMenu()
 					net.SendToServer()
 
 					timer.Simple(0.4, function()
-						LWeight:SetText(translate.Format("weight_1", CalculateWeightClient()).." / "..CalculateMaxWeightClient().."kg")
+						LWeight:SetText(translate.Format("inv_weight", LocalPlayer():CalculateWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWalkWeight(), WEIGHT_UNIT))
 --						LMoney:SetText("My Wallet: "..math.floor(MyMoney))
-					end)
-					timer.Simple(0.4, function() 
-						if IsValid(SellPanel) then
-							DoSellPanel()
-						end
-						if IsValid(VaultPanel) then
-							DoVaultPanel()
-						end
 					end)
 				end
 
@@ -576,11 +574,7 @@ function GM:TraderMenu()
 				net.WriteUInt(amt, 32)
 				net.SendToServer()
 				timer.Simple(0.4, function()
-					LWeight:SetText(translate.Format("weight_1", CalculateWeightClient()).." / "..CalculateMaxWeightClient().."kg")
-				end)
-				timer.Simple(0.4, function() 
-					if IsValid(VaultPanel) then DoVaultPanel() end
-					if IsValid(SellPanel) then DoSellPanel() end
+					LWeight:SetText(translate.Format("inv_weight", LocalPlayer():CalculateWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWalkWeight(), WEIGHT_UNIT))
 				end)
 			end
 

@@ -86,6 +86,12 @@ local function CheckLocalPlayerDeath(victim, attacker, dmg, dmgtype, msgoverride
 
 	if victim == LocalPlayer() then
 		gamemode.Call("LocalPlayerDeath", attacker)
+
+		if msgoverride then
+			GAMEMODE.DeathMessage = msgoverride
+			return
+		end
+
 		if attacker == LocalPlayer() then
 			GAMEMODE.DeathMessage = table.Random(suicidetable)
 		elseif IsValid(attacker) and attacker:IsPlayer() then
@@ -130,6 +136,7 @@ local function RecvPlayerKilledByPlayer()
 	local dmg			= net.ReadFloat()
 	local dmgtype		= net.ReadUInt(32)
 	local msgoverride	= net.ReadString()
+	local deathmsg		= net.ReadString()
 
 	if ( !IsValid( attacker ) ) then return end
 	if ( !IsValid( victim ) ) then return end
@@ -147,6 +154,7 @@ local function RecvPlayerKilledSelf()
 	local dmg		= net.ReadFloat()
 	local dmgtype	= net.ReadUInt(32)
 	local msgoverride	= net.ReadString()
+	local deathmsg		= net.ReadString()
 
 	if ( !IsValid( victim ) ) then return end
 	CheckLocalPlayerDeath(victim, attacker, dmg, dmgtype, msgoverride)
@@ -164,6 +172,7 @@ local function RecvPlayerKilled()
 	local dmg		= net.ReadFloat()
 	local dmgtype	= net.ReadUInt(32)
 	local msgoverride	= net.ReadString()
+	local deathmsg		= net.ReadString()
 	local attacker = CheckAttacker(attackertype)
 
 	CheckLocalPlayerDeath(victim, attackertype, dmg, dmgtype, msgoverride)

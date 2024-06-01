@@ -26,7 +26,8 @@ function ENT:Initialize()
 
 	local selfent = self.Entity
 	self.IsBuilt = false
-	self.BuildLevel = 1
+	self.CreateTime = CurTime()
+	self.BuildLevel = 0
 	self.Entity:PhysicsInit( SOLID_VPHYSICS )
 	self.Entity:SetMoveType( MOVETYPE_VPHYSICS )
 	self.Entity:SetSolid( SOLID_VPHYSICS )
@@ -50,7 +51,7 @@ function ENT:Initialize()
 	local phys = self.Entity:GetPhysicsObject()
 	if (phys:IsValid()) then
 		phys:Wake()
-	end	
+	end
 
 /*
 	timer.Simple(3, function()
@@ -88,28 +89,57 @@ function ENT:FinishBuild()
 end
 
 function ENT:Think()
+
+	local owner = self:GetNWEntity("owner")
+	
+	if SERVER then
+		if !self.IsBuilt and owner:IsValid() and owner:HasPerk("speedy_hands") and self.CreateTime and self.CreateTime + 60 < CurTime() then
+			local mins, maxs = self:LocalToWorld(self:OBBMins()), self:LocalToWorld(self:OBBMaxs( ))
+			local cube = ents.FindInBox(mins, maxs)
+
+			for _,v in pairs(cube) do
+				if v:IsPlayer() or v:IsNPC() or v.Type == "nextbot" then
+					self:NextThink(CurTime() + 1)
+					if CLIENT then
+						self:SetNextClientThink(CurTime() + 1)
+					end
+					return true
+				end
+			end
+
+			self:NextThink(CurTime() + 1)
+			if CLIENT then
+				self:SetNextClientThink(CurTime() + 1)
+			end
+			self:FinishBuild()
+			return true
+		end
+
+		self:NextThink(CurTime() + 1)
+		if CLIENT then
+			self:SetNextClientThink(CurTime() + 1)
+		end
+	end
+	return true
 end
 
 
 function ENT:OnTakeDamage( dmg )
-/*
-	self:SetHealth( self:Health() - dmg:GetDamage() )
-	local ColorAmount =  ( ( self:Health() / self.maxhealth ) * 255 )
-	self:SetColor( Color(ColorAmount, ColorAmount, ColorAmount, 255) )
-	if self:Health() <= 0 then
-		self:GibBreakClient(Vector(math.random(-50, 50),math.random(-50, 50),math.random(-50, 50)))
-		self:Remove()
-	end
-*/
 	local damage = dmg:GetDamage()
 	local attacker = dmg:GetAttacker()
+	local ownerhasperk = self:GetNWEntity("owner"):HasPerk("speedy_hands")
 
+	if damage <= 0 then return end
 	if attacker:IsPlayer() and attacker:IsValid() and attacker:Team() == 1 and attacker:GetNWBool("pvp") != true and self:GetNWEntity("owner") != attacker then
 		if !timer.Exists("NoPvPMsgAntiSpamTimer"..attacker:EntIndex()) then
 			attacker:SystemMessage("You cannot damage other players props unless you have PvP mode enabled!", Color(255,205,205,255), true)
 			timer.Create("NoPvPMsgAntiSpamTimer"..attacker:EntIndex(), 0.5, 1, function() end)
 		end
 		return false 
+	end
+
+	if ownerhasperk and !self.IsBuilt then
+		damage = damage * 20
 	end
 
 
@@ -127,7 +157,7 @@ function ENT:OnTakeDamage( dmg )
 
 	self:SetColor(Color(swag +5,swag+5,swag+5,255))
 
-	if currenthealth < 0 or !self.IsBuilt then
+	if currenthealth < 0 or !self.IsBuilt and (!ownerhasperk or attacker:IsPlayer()) then
 		self:BreakPanel()
 		self.Entity:EmitSound("physics/metal/metal_box_break2.wav", 80, 100)              
 		self.Entity:Remove()

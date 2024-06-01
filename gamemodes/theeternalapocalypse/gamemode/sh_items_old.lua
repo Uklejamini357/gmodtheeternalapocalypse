@@ -3130,3 +3130,16 @@ GM.ItemsList = {
 
 }
 
+
+
+
+--[[
+	Secret lore content?
+
+
+	Chapter 1
+	Somewhere in 1999, scientists have accidentally made a zombie virus. This type of virus would spread to the organism and would only affect humans.
+	However, this virus isn't noticable at first day of catching it, as this virus will most likely show symptoms at day 2. The symptoms become way more noticable gradually,
+	and after day 7, at most, the infected person with that virus would die. However, only after few days, the person would come back alive, as a zombie.
+	That zombie will only 
+]]

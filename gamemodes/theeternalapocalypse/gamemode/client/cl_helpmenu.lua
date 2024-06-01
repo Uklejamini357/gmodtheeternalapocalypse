@@ -102,7 +102,9 @@ in order to gain more advantage in surviving this post-apocalyptic world.\n", "T
     H1List:AddItem(MakeText(HelpFrame, "Note: If you are new to the server and are below level 10 and prestige 0,\
 you gain following buffs to get started:\
 • -10% damage taken from zombies\
-• +15% damage dealt to zombies\n\n", "TargetIDSmall"))
+• +15% damage dealt to zombies\
+• Spawn with more ammo (there is a perk that allow you to spawn with even more ammo)\
+• Wraith blind effect decreased by 20%\n\n", "TargetIDSmall"))
 
     local changelog = vgui.Create("DButton", ContextMenu)
 	changelog:SetText("Changelogs")
@@ -129,9 +131,17 @@ Holding SHIFT while Right-Clicking on the button will quickly sell all items of 
     H3List:AddItem(MakeText(HelpFrame, "There are around 7 types of normal zombies. Each of them have different abilities.", "TargetIDSmall"))
     H3List:AddItem(MakeText(HelpFrame, "Killing them gives XP and cash. You gain XP in an instant, but cash goes through bounty. To receive cash,\
 go to trader and cash your bounty in. Otherwise, you will die with 30-40% of your bounty pool.", "TargetIDSmall"))
+    H3List:AddItem(MakeText(HelpFrame, "There are Minibosses. They only spawn if Infection Level is above 25% or if player count is 3 or more.\
+Be careful while dealing with them, as sometimes they might have unique abilities! Superlord is currently most dangerous,\
+Heavy Tank zombie is the toughest, whilst Hunter zombie is agile tough zombie.", "TargetIDSmall"))
     H3List:AddItem(MakeText(HelpFrame, "There are also 2 bosses. Killing a boss grants you Cash and XP, whatever amount of damage you did to the boss.\
 Dealing higher damage can grant you more cash and XP, when also dealt highest amount of damage,\
 grants you being able to pickup the boss loot.", "TargetIDSmall"))
+    local txt = MakeText(HelpFrame, "Note, that there are also factors for the bosses, such as player count!\
+If player count is more while the boss is spawning, the boss may be slightly tougher, but grant more XP and cash.\n", "TargetIDSmall")
+    txt:SetTextColor(Color(255,155,155))
+    H3List:AddItem(txt)
+
     H3List:AddItem(MakeText(HelpFrame, "Beware of the zombies! If you die to a zombie, you will lose 1% of your XP, or 0.4% if it's a boss zombie, this only\
 happens if you have less than level 10 and prestige 0.\
 Max possible value of losing XP is 250. This feature is currently "..(self.PlayerLoseXPOnDeath and "enabled" or "disabled")..".\
@@ -158,7 +168,9 @@ player, you will not be able to disable your PVP for certain amount of time. (Ba
     H7List:AddItem(txt)
     H7List:AddItem(MakeText(HelpFrame, "- More XP gained from killing zombies\
 - More Cash gained from killing zombies, but 50% less effects than XP\
-- Zombies take less damage"))
+- Zombies take less damage\
+- Zombies deal more damage to players and barricades\
+- Zombies speed (TEA base only!)", "TargetIDSmall"))
     H7List:AddItem(MakeText(HelpFrame, "\nPlayer Voting Difficulty scaling: (Difficulty: Low, Medium, Hard, etc.)\
 - Players will be able to vote for difficulty they want.\
 - Will be added in future update.\n", "TargetIDSmall"))

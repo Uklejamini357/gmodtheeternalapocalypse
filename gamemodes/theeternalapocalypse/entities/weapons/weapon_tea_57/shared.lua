@@ -44,8 +44,8 @@ SWEP.Sniper				= false
 SWEP.IronSightsPos = Vector(-5.949, -0.922, 3.104)
 SWEP.IronSightsAng = Vector(-0.597, 0, 0)
 
-SWEP.ZWweight				= 20 -- in kilograms divided by 10 eg 20 = 2kg
-SWEP.ZWrarity				= "Common" -- Junk, Common, Uncommon, Rare, Epic
+
+
 
 function SWEP:Precache()
 

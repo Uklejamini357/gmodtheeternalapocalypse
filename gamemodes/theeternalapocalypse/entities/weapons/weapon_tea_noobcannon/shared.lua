@@ -64,8 +64,7 @@ SWEP.data.Cone			= 2
 SWEP.data.Damage			= 1
 SWEP.data.Recoil			= 1
 
-SWEP.ZWweight				= 15 -- in kilograms divided by 10 eg 20 = 2kg
-SWEP.ZWrarity				= "Junk" -- Junk, Common, Uncommon, Rare, Epic
+
 
 function SWEP:Precache()
 

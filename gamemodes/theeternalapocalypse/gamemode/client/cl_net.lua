@@ -86,8 +86,6 @@ net.Receive("tea_taskcomplete", function(len)
 
 	local taskl = GAMEMODE.Tasks[task]
 
-	GAMEMODE.CurrentTaskCompleted = true
-
 	chat.AddText(Color(255,255,255), "You have completed a task ", Color(255,255,127), taskl.Name, Color(255,255,255), ", go to task dealer to claim the reward!")
 end)
 
@@ -98,7 +96,6 @@ net.Receive("tea_taskfinish", function(len)
 
 	GAMEMODE.CurrentTask = ""
 	GAMEMODE.CurrentTaskProgress = nil
-	GAMEMODE.CurrentTaskCompleted = nil
 
 	chat.AddText(Color(255,255,255), "You have finished a task ", Color(255,255,127), taskl.Name, Color(255,255,255), "!")
 end)
@@ -110,7 +107,6 @@ net.Receive("tea_taskcancel", function(len)
 
 	GAMEMODE.CurrentTask = ""
 	GAMEMODE.CurrentTaskProgress = nil
-	GAMEMODE.CurrentTaskCompleted = nil
 
 	chat.AddText(Color(255,255,255), "You cancelled task ", Color(255,255,127), taskl.Name, Color(255,255,255), ", you have ", Color(255,127,127), "1", Color(255,255,255), " hour cooldown before taking in new task and ", Color(255,127,127), taskl.CancelCooldown / TIME_HOUR, Color(255,255,255), " hour cooldown before taking this task again!")
 end)
@@ -122,7 +118,6 @@ net.Receive("tea_taskstatsupdate", function(len)
 
 	GAMEMODE.CurrentTask = task
 	GAMEMODE.CurrentTaskProgress = value
-	GAMEMODE.CurrentTaskCompleted = complete
 end)
 
 net.Receive("tea_perksupdate", function(len)

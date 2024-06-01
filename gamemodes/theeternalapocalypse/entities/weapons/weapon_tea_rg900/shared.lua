@@ -51,8 +51,8 @@ SWEP.RunArmAngle = Vector(-5.788, 23.424, 0)
 
 SWEP.AllowPlaybackRate		= false
 
-SWEP.ZWweight				= 50 -- in kilograms divided by 10 eg 20 = 2kg
-SWEP.ZWrarity				= "Uncommon" -- Junk, Common, Uncommon, Rare, Epic
+
+
 
 function SWEP:Precache()
 

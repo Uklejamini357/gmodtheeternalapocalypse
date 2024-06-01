@@ -29,12 +29,12 @@ function GM:CreateItem(itemid, name, desc, cost, model, weight, supply, rarity, 
 		Description = desc,
 		Cost = cost,
 		Model = model,
-	Weight = weight,
-	Supply = supply,
-	Rarity = rarity,
-	Category = category,
-	UseFunc = usefunc,
-	DropFunc = dropfunc,
+		Weight = weight,
+		Supply = supply,
+		Rarity = rarity,
+		Category = category,
+		UseFunc = usefunc,
+		DropFunc = dropfunc,
 	}
 
 	return self.ItemsList[itemid]
@@ -173,7 +173,7 @@ GM.ItemsList = {
 		Model = "models/props_junk/garbage_metalcan002a.mdl",
 		Weight = 0.1,
 		Supply = -1,
-		Rarity = 0,
+		Rarity = RARITY_TRASH,
 		Category = 1,
 		UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
 		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_tin") return drop end
@@ -184,7 +184,7 @@ GM.ItemsList = {
 		Model = "models/props_junk/Shoe001a.mdl",
 		Weight = 0.17,
 		Supply = -1,
-		Rarity = 0,
+		Rarity = RARITY_TRASH,
 		Category = 1,
 		UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
 		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_boot") return drop end
@@ -196,7 +196,7 @@ GM.ItemsList = {
 		Model = "models/props_junk/garbage_newspaper001a.mdl",
 		Weight = 0.12,
 		Supply = -1,
-		Rarity = 0,
+		Rarity = RARITY_TRASH,
 		Category = 1,
 		UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
 		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_paper") return drop end
@@ -207,7 +207,7 @@ GM.ItemsList = {
 		Model = "models/props_c17/computer01_keyboard.mdl",
 		Weight = 0.23,
 		Supply = -1,
-		Rarity = 0,
+		Rarity = RARITY_TRASH,
 		Category = 1,
 		UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
 		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_keyboard") return drop end
@@ -218,7 +218,7 @@ GM.ItemsList = {
 		Model = "models/props_junk/terracotta01.mdl",
 		Weight = 0.25,
 		Supply = -1,
-		Rarity = 0,
+		Rarity = RARITY_TRASH,
 		Category = 1,
 		UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
 		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_gardenpot") return drop end
@@ -229,7 +229,7 @@ GM.ItemsList = {
 		Model = "models/props_junk/metal_paintcan001a.mdl",
 		Weight = 0.25,
 		Supply = -1,
-		Rarity = 0,
+		Rarity = RARITY_TRASH,
 		Category = 1,
 		UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
 		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_paint") return drop end
@@ -240,7 +240,7 @@ GM.ItemsList = {
 		Model = "models/props_c17/doll01.mdl",
 		Weight = 0.15,
 		Supply = -1,
-		Rarity = 0,
+		Rarity = RARITY_TRASH,
 		Category = 1,
 		UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
 		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_doll") return drop end
@@ -251,7 +251,7 @@ GM.ItemsList = {
 		Model = "models/props_interiors/pot02a.mdl",
 		Weight = 0.2,
 		Supply = -1,
-		Rarity = 0,
+		Rarity = RARITY_TRASH,
 		Category = 1,
 		UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
 		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_pot") return drop end
@@ -262,7 +262,7 @@ GM.ItemsList = {
 		Model = "models/props_lab/huladoll.mdl",
 		Weight = 0.1,
 		Supply = -1,
-		Rarity = 0,
+		Rarity = RARITY_TRASH,
 		Category = 1,
 		UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
 		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_hula") return drop end
@@ -273,7 +273,7 @@ GM.ItemsList = {
 		Model = "models/props_lab/box01a.mdl",
 		Weight = 0.06,
 		Supply = -1,
-		Rarity = 0,
+		Rarity = RARITY_TRASH,
 		Category = 1,
 		UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
 		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_nailbox") return drop end
@@ -284,7 +284,7 @@ GM.ItemsList = {
 		Model = "models/props/cs_office/Snowman_arm.mdl",
 		Weight = 0.1,
 		Supply = -1,
-		Rarity = 0,
+		Rarity = RARITY_TRASH,
 		Category = 1,
 		UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
 		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_twig") return drop end
@@ -405,6 +405,17 @@ GM.ItemsList = {
 		Weight = 0,
 		Supply = -1,
 		Rarity = RARITY_COMMON,
+		Category = 1,
+		UseFunc = function(ply) ply:SendChat("Added "..ply.Inventory["item_money"].."$ to account") ply.Money = ply.Money + ply.Inventory["item_money"] ply.Inventory["item_money"] = nil return false end,
+		DropFunc = function(ply) ply:SendChat("You may not drop this item.") --[[local drop = UseFunc_DropItem(ply, "item_money") return drop]] return false end
+	},
+
+	["item_moneyprinter"] = {
+		Cost = 0,
+		Model = "models/props_c17/consolebox01a.mdl",
+		Weight = 5,
+		Supply = -1,
+		Rarity = 6,
 		Category = 1,
 		UseFunc = function(ply) ply:SendChat("Added "..ply.Inventory["item_money"].."$ to account") ply.Money = ply.Money + ply.Inventory["item_money"] ply.Inventory["item_money"] = nil return false end,
 		DropFunc = function(ply) ply:SendChat("You may not drop this item.") --[[local drop = UseFunc_DropItem(ply, "item_money") return drop]] return false end
@@ -2513,18 +2524,22 @@ GM.ItemsList = {
 
 -- Consumables
 
-GM:CreateItem("item_bandage", nil, nil, 55, "models/wick/wrbstalker/anomaly/items/wick_dev_bandage.mdl", 0.06, 0, 2, 1,
-function(ply) local healing = UseFunc_Heal(ply, 3, 11, 0, "comrade_vodka/inv_bandages.ogg") return healing end,
+local i = GM:CreateItem("item_bandage", nil, nil, 55, "models/wick/wrbstalker/anomaly/items/wick_dev_bandage.mdl", 0.06, 0, 2, 1,
+function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 11, 0, "comrade_vodka/inv_bandages.ogg") return healing end,
 function(ply) local drop = UseFunc_DropItem(ply, "item_bandage") return drop end)
-GM:CreateItem("item_medkit", nil, nil, 175, "models/wick/wrbstalker/anomaly/items/wick_dev_aptechka_low.mdl", 0.5, 30, 3, 1,
-function(ply) local healing = UseFunc_Heal(ply, 3, 45, 5, "comrade_vodka/inv_aptecka.ogg") return healing end,
+i.CanUseOnOthers = true
+i = GM:CreateItem("item_medkit", nil, nil, 175, "models/wick/wrbstalker/anomaly/items/wick_dev_aptechka_low.mdl", 0.5, 30, 3, 1,
+function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 45, 5, "comrade_vodka/inv_aptecka.ogg") return healing end,
 function(ply) local drop = UseFunc_DropItem(ply, "item_medkit") return drop end)
-GM:CreateItem("item_armymedkit", nil, nil, 300, "models/wick/wrbstalker/anomaly/items/wick_dev_aptechka_high.mdl", 0.6, 10, 4, 1,
-function(ply) local healing = UseFunc_Heal(ply, 3, 70, 20, "comrade_vodka/inv_aptecka.ogg") return healing end,
+i.CanUseOnOthers = true
+i = GM:CreateItem("item_armymedkit", nil, nil, 300, "models/wick/wrbstalker/anomaly/items/wick_dev_aptechka_high.mdl", 0.6, 10, 4, 1,
+function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 70, 20, "comrade_vodka/inv_aptecka.ogg") return healing end,
 function(ply) local drop = UseFunc_DropItem(ply, "item_armymedkit") return drop end)
-GM:CreateItem("item_scientificmedkit", nil, nil, 500, "models/wick/wrbstalker/anomaly/items/wick_dev_aptechka_mid.mdl", 0.5, 30, 3, 1,
-function(ply) local healing = UseFunc_Heal(ply, 3, 100, 60, "comrade_vodka/inv_aptecka.ogg") return healing end,
+i.CanUseOnOthers = true
+i = GM:CreateItem("item_scientificmedkit", nil, nil, 500, "models/wick/wrbstalker/anomaly/items/wick_dev_aptechka_mid.mdl", 0.5, 30, 3, 1,
+function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 100, 60, "comrade_vodka/inv_aptecka.ogg") return healing end,
 function(ply) local drop = UseFunc_DropItem(ply, "item_scientificmedkit") return drop end)
+i.CanUseOnOthers = true
 GM:CreateItem("item_antidote", nil, nil, 100, "models/wick/wrbstalker/cop/newmodels/items/wick_antidot.mdl", 0.08, 12, 3, 1,
 function(ply) local healing = UseFunc_HealInfection(ply, 3, 40, "items/medshot4.wav") return healing end,
 function(ply) local drop = UseFunc_DropItem(ply, "item_antidote") return drop end)
@@ -2813,26 +2828,37 @@ function UseFunc_GiveAmmo(ply, amount, type)
 end
 
 
-function UseFunc_Heal(ply, usetime, hp, infection, snd)
+function UseFunc_Heal(ply, targetply, usetime, hp, infection, snd)
 	if !SERVER then return false end
-	if !ply:IsValid() then return false end
+	if !ply:IsValid() or !targetply:IsValid() then return false end
 	if ply:Alive() then
-		if ply:Health() >= ply:GetMaxHealth() and ply.Infection < 1 then
-			ply:SendChat("You are perfectly fine, using this would be wasteful at this time.")
-			return false
+		if ply ~= targetply then
+			if targetply:Health() >= targetply:GetMaxHealth() and targetply.Infection < 1 then
+				ply:SendChat("This player does not have any injuries.")
+				return false
+			end
+		else
+			if ply:Health() >= ply:GetMaxHealth() and ply.Infection < 1 then
+				ply:SendChat("You are perfectly fine, using this would be wasteful at this time.")
+				return false
+			end
 		end
 
-		ply:SetHealth(math.Clamp(ply:Health() + (hp * (1 + (ply.StatMedSkill * 0.025))), 0, ply:GetMaxHealth()))
-		ply.Infection = math.Clamp(ply.Infection - (infection * 100), 0, 10000)
-		ply:EmitSound(snd, 100, 100)
+		local healedhp = math.min(targetply:GetMaxHealth() - targetply:Health(), hp * (1 + (ply.StatMedSkill * 0.025)))
+		targetply:SetHealth(math.Clamp(targetply:Health() + healedhp, 0, targetply:GetMaxHealth()))
+		targetply.Infection = math.Clamp(targetply.Infection - (infection * 100), 0, 10000)
+		targetply:EmitSound(snd, 100, 100)
 		ply:SendUseDelay(usetime)
+		if ply ~= targetply then
+			ply.XP = ply.XP + math.floor(healedhp)
+			ply:SendChat("Healed "..targetply:Nick().." for "..healedhp.." health, "..math.floor(healedhp*1.5).." XP gained")
+		end
 		timer.Create("Isplyusingitem"..ply:EntIndex(), usetime, 1, function()
 			timer.Destroy("Isplyusingitem"..ply:EntIndex())
 		end)
 		return true
 	else
-		ply:SendChat("You could have healed yourself before you died!") -- if they try to call this function when they are dead
-		return false
+		return false -- return false. do not use the item.
 	end
 end
 

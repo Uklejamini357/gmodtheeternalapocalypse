@@ -95,12 +95,12 @@ LANG.sb_sheet6 = "Статистика"
 LANG.sb_sheet6_d = "Здесь вы можете узнать свою статистику на сервере.\nНапример, как долго вы продержались, прежде чем вас убили."
 LANG.sb_sheet7 = "Достижения"
 LANG.sb_sheet7_d = "Посмотрите вашу следующую цель"
-LANG.sb_sheet1_1 = "Мои навыки"
-LANG.sb_sheet1_1_d = "Улучшение характеристик"
-LANG.weight_1 = "Сейчас в инвентаре: %s кг."
-LANG.weight_2 = "Макс. переносимый вес: %s кг."
-LANG.item_descr_1 = "(ИД предмета: %s, цена: %d, редкость: %s)"
-LANG.item_descr_2 = "(ИД предмета: %s, редкость: %s)"
+LANG.sb_sheet1_1 = "Мои скиллы"
+LANG.sb_sheet1_1_d = "Улучшайте свои хар-ки"
+LANG.inv_weight = "Сейчас в инвентаре: %skg"
+LANG.weight_2 = "Макс. переносимый вес: %skg"
+LANG.item_descr_1 = "(Item ID: %s, Стоимость: %d, Редкость: %s)"
+LANG.item_descr_2 = "(Item ID: %s, Редкость: %s)"
 LANG.item_armor_descr = "Защита: %s%%\
 Защ. от окруж. ср.: %s%%\
 Скорость: %s\
@@ -168,8 +168,8 @@ LANG.takeitems = "Взять предметы"
 LANG.take = "Взять"
 LANG.storeitems = "Положить предметы"
 LANG.loottaken = "Найден предмет: %s"
-LANG.tr_itemsold = "Продан предмет \"%s\" (%dx) за %d (%ss)!"
-LANG.tr_itembought = "Куплен предмет \"%s\" за %d (%ss)!"
+LANG.tr_itemsold = "Продан предмет %dx '%s' за %d!"
+LANG.tr_itembought = "Куплен предмет '%s' за %d!"
 
 
 --Items (too much to do, adding translates for this was literally a lot harder than i thought)
@@ -636,6 +636,8 @@ LANG.pllvlup = "Поздравляем! Вы достигли %d-й уровня
 LANG.plhasprestiged_1 = "Вы активировали %d-й престиж!"
 
 LANG.plcaughtinfection = "Вы получили заражение!"
+LANG.pljoined = "%s подключается к серверу"
+LANG.plspawned = "%s появляется в игре"
 LANG.factionnewleader = "%s случайно выбирается лидером фракции «%s»!"
 
 LANG.itemnouse = "Бесполезный предмет"

@@ -89,7 +89,7 @@ local function DoLootPanel(canstore)
 	local weightlabel = vgui.Create( "DLabel", lootpanel )
 	weightlabel:SetPos(20, 560)
 	weightlabel:SetFont("TargetIDSmall")
-	weightlabel:SetText(translate.Format("weight_1", CalculateWeightClient()).."    "..translate.Format("weight_2", CalculateMaxWeightClient()))
+	weightlabel:SetText(translate.Format("inv_weight", LocalPlayer():CalculateWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWalkWeight(), WEIGHT_UNIT))
 	weightlabel:SizeToContents()
 
 
@@ -105,9 +105,9 @@ local function DoLootPanel(canstore)
 				surface.DrawOutlinedRect(0, 0, w, h)
 				surface.SetDrawColor(0, 0, 0 ,200)
 				surface.DrawRect(0, 0, w, h)
-				local canpick = (CalculateWeightClient() + v.Weight) <= CalculateMaxWeightClient()
+				local canpick = (LocalPlayer():CalculateWeight() + v.Weight) <= LocalPlayer():CalculateMaxWeight()
 				if !canpick then
-					draw.DrawText(Format("Not enough weight (need %skg space)", math.Round((CalculateWeightClient() + v.Weight) - CalculateMaxWeightClient(), 2)), "TargetIDSmall", ItemBackground:GetWide() - 20, 45, Color(255,205,205), TEXT_ALIGN_RIGHT)
+					draw.DrawText(Format("Not enough weight (need %skg space)", math.Round((LocalPlayer():CalculateWeight() + v.Weight) - LocalPlayer():CalculateMaxWeight(), 2)), "TargetIDSmall", ItemBackground:GetWide() - 20, 45, Color(255,205,205), TEXT_ALIGN_RIGHT)
 				end
 			end
 
@@ -156,7 +156,7 @@ local function DoLootPanel(canstore)
 				if currentcrate:IsValid() then
 					-- this distance check exists on the server too so don't even try being a smartarse with net messages m8
 					if !LocalPlayer():Alive() or LocalPlayer():GetPos():Distance(currentcrate:GetPos()) > 120 then chat.AddText(Color(255,200,200), "You have moved too far away from this crate!") lootpanel:Remove() return end
-					if (CalculateWeightClient() + v.Weight) > CalculateMaxWeightClient() then chat.AddText(Color(255,200,200), "You don't have enough free space to carry that! (Need "..math.Round((CalculateWeightClient() + v.Weight) - CalculateMaxWeightClient(), 2).."kg space)") return end
+					if (LocalPlayer():CalculateWeight() + v.Weight) > LocalPlayer():CalculateMaxWeight() then chat.AddText(Color(255,200,200), "You don't have enough free space to carry that! (Need "..math.Round((LocalPlayer():CalculateWeight() + v.Weight) - LocalPlayer():CalculateMaxWeight(), 2).."kg space)") return end
 					net.Start("UseCrate")
 					net.WriteEntity(currentcrate)
 					net.WriteString(k)
@@ -170,7 +170,7 @@ local function DoLootPanel(canstore)
 							TheListPanel:Clear()
 							uwotm8(tab, parent)
 						end
-						weightlabel:SetText(translate.Format("weight_1", CalculateWeightClient()).."    "..translate.Format("weight_2", CalculateMaxWeightClient()))
+						weightlabel:SetText(translate.Format("inv_weight", LocalPlayer():CalculateWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWalkWeight(), WEIGHT_UNIT))
 						weightlabel:SizeToContents()
 					end)
 				end

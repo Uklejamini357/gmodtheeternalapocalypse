@@ -22,7 +22,7 @@ function ENT:Initialize()
 	self.IsBuilt = false
 	self.IsOpen = false
 	self.Public = 0
-	self.BuildLevel = 1
+	self.BuildLevel = 0
 	self.integrity = 1000
 	self.maxinteg = 1000
 	self.Entity:PhysicsInit( SOLID_VPHYSICS )

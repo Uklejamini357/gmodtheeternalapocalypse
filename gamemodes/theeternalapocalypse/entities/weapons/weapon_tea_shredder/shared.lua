@@ -50,8 +50,8 @@ SWEP.RunArmAngle = Vector(-1.93, 33.897, 0)
 SWEP.ScopeZooms			= {2}
 SWEP.RedDot				= true
 
-SWEP.ZWweight				= 70 -- in kilograms divided by 10 eg 20 = 2kg
-SWEP.ZWrarity				= "Rare" -- Junk, Common, Uncommon, Rare, Epic
+
+
 
 function SWEP:Precache()
 

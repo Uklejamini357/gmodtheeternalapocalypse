@@ -42,9 +42,8 @@ function meta:SystemMessage(msg, color, sys)
 	net.Send(self)
 end
 
--- not working for client yet!!
 function meta:IsNewbie()
-	return SERVER and tonumber(self:GetTEALevel()) < 10 and tonumber(self:GetTEAPrestige()) < 1
+	return tonumber(self:GetTEALevel()) < 10 and tonumber(self:GetTEAPrestige()) < 1
 end
 
 function meta:AddInfection(inf)
@@ -61,6 +60,103 @@ end
 
 function meta:GetMaxLevel()
 	return math.min(100, GAMEMODE.MaxLevel + (self:GetTEAPrestige() * GAMEMODE.LevelsPerPrestige))
+end
+
+function meta:HasPerk(perk)
+	return self.UnlockedPerks and self.UnlockedPerks[perk] or GAMEMODE.LocalPerks[perk]
+end
+
+function meta:HasCompletedTask()
+	local task = self.CurrentTask or GAMEMODE.CurrentTask or ""
+	local taskl = GAMEMODE.Tasks[task]
+
+	if !taskl then return false end
+	return taskl.GetCompleted and taskl.GetCompleted(self) or !taskl.GetCompleted and (self.CurrentTaskProgress or GAMEMODE.CurrentTaskProgress or 0) >= taskl.ReqProgress
+end
+
+function meta:GetReqXP()
+	local basexpreq = 709
+	local addxpperlevel = 102
+	local addxpperlevel2 = 1.1229
+
+	local plyprestige = SERVER and self.Prestige or MyPrestige
+	local plylevel = SERVER and self.Level or MyLvl
+
+	return math.floor((basexpreq + (plylevel  * addxpperlevel) * (1 + (plyprestige * (0.0072 + math.min(20, plyprestige) * 0.0003)))) ^ addxpperlevel2)
+end
+
+function meta:GetReqMasteryMeleeXP(ply)
+	local xpreq = 984
+	local addexpperlevel = 165
+	local addexpperlevel2 = 1.161
+
+	local mlvl = SERVER and self.MasteryMeleeLevel or MyMMeleelvl
+
+	return math.floor(xpreq + (mlvl * addexpperlevel) ^ addexpperlevel2)
+end
+
+function meta:GetReqMasteryPvPXP(ply)
+	local expreq = 593
+	local addxpprlevel = 85
+	local addexpperlevel2 = 1.153
+
+	local mlvl = SERVER and self.MasteryPvPLevel or MyMPvplvl
+
+	return math.floor(expreq + (mlvl * addxpprlevel) ^ addexpperlevel2)
+end
+
+function meta:GetProgressToPrestige()
+	local lvl, xp = SERVER and self.Level or CLIENT and MyLvl or 0
+	local xp = math.min(self:GetReqXP(), SERVER and self.XP or CLIENT and MyXP or 0)
+
+	return math.min(1, (lvl - 1 + (xp / self:GetReqXP())) / (self:GetMaxLevel() - 1))
+end
+
+
+function meta:CalculateVaultWeight()
+	local totalweight = 0
+	for k, v in pairs(LocalVault) do
+		totalweight = totalweight + (v.Weight * v.Qty)
+	end
+	return totalweight
+end
+
+function meta:CalculateWeight()
+	local totalweight = 0
+	if SERVER then
+		for k, v in pairs(self.Inventory) do
+			local ref = GAMEMODE.ItemsList[k]
+			if !ref then ErrorNoHalt("CalculateWeight error on "..self:Nick().."! They must have a corrupt inventory (file) or something\n") continue end
+			totalweight = totalweight + (ref.Weight * v)
+		end
+	else
+		for k, v in pairs(LocalInventory) do
+			totalweight = totalweight + (v.Weight * v.Qty)
+		end
+	end
+	return totalweight
+end
+
+function meta:CalculateMaxWeight()
+	local armorstr = self:GetNWString("ArmorType") or "none"
+	local armortype = GAMEMODE.ItemsList[armorstr]
+
+	if SERVER then
+		if self.StatsPaused then return 1e300 end
+
+		return self.Config["MaxCarryWeight"] + (self.UnlockedPerks["weightboost"] and 1.5 or 0) + (self.UnlockedPerks["weightboost2"] and 2.5 or 0) + (self.UnlockedPerks["weightboost3"] and 3.5 or 0)
+			+ ((self.StatStrength or 0) * 1.53) + (self:GetNWString("ArmorType") ~= "none" and armortype["ArmorStats"]["carryweight"] or 0)
+	else
+		local baseweight = GAMEMODE.Config["MaxCarryWeight"]
+		local perksweight = (GAMEMODE.LocalPerks["weightboost"] and 1.5 or 0) + (GAMEMODE.LocalPerks["weightboost2"] and 2.5 or 0) + (GAMEMODE.LocalPerks["weightboost3"] and 3.5 or 0)
+		local skillsweight = (Perks.Strength or 0) * 1.53
+		local additionalarmorweight = armorstr ~= "none" and armortype["ArmorStats"]["carryweight"] or 0
+		return math.Round(baseweight + perksweight + skillsweight + additionalarmorweight, 2)
+	end
+end
+
+function meta:CalculateMaxWalkWeight()
+	return math.Round(self:CalculateMaxWeight() * 1.2, 2)
 end
 
 -- maybe i should also do it for entity meta table

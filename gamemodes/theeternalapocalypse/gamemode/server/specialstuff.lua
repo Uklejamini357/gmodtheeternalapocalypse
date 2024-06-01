@@ -3,10 +3,10 @@
 
 GM.ZS = GM.ZS or {}
 GM.ZS.Hooks = {}
-GM.ZS.ZombiesWaveActive = GM.ZS.ZombiesWaveActive or false
+--GM.ZS.ZombiesWaveActive = GM.ZS.ZombiesWaveActive or false
 GM.ZS.WaveDuration = GM.ZS.WaveDuration or 1
-GM.ZS.LastZombieApocalypse = GM.ZS.LastZombieApocalypse or false
-GM.ZS.LastZSpawning = GM.ZS.LastZSpawning or true
+--GM.ZS.LastZombieApocalypse = GM.ZS.LastZombieApocalypse or false
+--GM.ZS.LastZSpawning = GM.ZS.LastZSpawning or true
 
 function GM.ZS.StartZombieApocalypse(preptime, wavedur)
 	if GAMEMODE:GetEvent() ~= EVENT_NONE then print("Event has already started!") return false end
@@ -18,7 +18,7 @@ function GM.ZS.StartZombieApocalypse(preptime, wavedur)
 	GAMEMODE:SystemBroadcast("---=== ZOMBIE APOCALYPSE EVENT ===---", Color(255,95,95), false)
 	GAMEMODE:SystemBroadcast("Welcome to Zombie Apocalypse Event. You must survive the wave of the zombies. If you die during the wave, you are put into spectator mode.", Color(255,95,95), false)
 	GAMEMODE:SystemBroadcast(Format("The wave will stay on for %s minutes. You have only %s minutes to prepare. Good luck!", wavedur, preptime), Color(255,95,95), false)
-	GAMEMODE:SystemBroadcast("Note: Zombies will track you anywhere on the map. It's recommended to stay inside due to increased zombies speed.", Color(255,95,95), false)
+	GAMEMODE:SystemBroadcast("Note: Zombies will track you anywhere on the map. It's recommended to stay inside barricades due to increased zombies speed.", Color(255,95,95), false)
 	GAMEMODE:SystemBroadcast("Tip: Make the barricade as strong as possible and you will possibly survive the onslaught!", Color(255,95,95), false)
 	GAMEMODE:SystemBroadcast("Damaging players and props is disabled, even if your PVP is enabled.", Color(255,95,95), false)
 
@@ -77,6 +77,7 @@ function GM.ZS.Hooks.DoPlayerDeath(ply, attacker, dmginfo)
 		end)
 		return
 	end
+
 	local alive = 0
 	for _,pl in pairs(player.GetAll()) do
 		if pl:Alive() then

@@ -318,6 +318,7 @@ function SWEP:Think()
 	if not IsValid(self.Ghost) then
 		self.Ghost = ents.CreateClientProp(pmodel)
 		self.Ghost:SetOwner(self.Owner)
+		self.Ghost:GetPhysicsObject():EnableMotion(false)
 		self.Ghost:SetRenderMode(RENDERMODE_TRANSALPHA)
 		self:SetDTEntity(0,self.Ghost)
 	elseif self.Ghost:GetModel() != pmodel then

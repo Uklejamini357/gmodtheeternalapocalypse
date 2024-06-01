@@ -40,8 +40,8 @@ SWEP.Rifle				= true
 SWEP.Shotgun			= false
 SWEP.Sniper				= false
 
-SWEP.ZWweight				= 110 -- in kilograms divided by 10 eg 20 = 2kg
-SWEP.ZWrarity				= "Uncommon" -- Junk, Common, Uncommon, Rare, Epic
+
+
 
 SWEP.IronSightsPos = Vector(-6.507, -14.591, 2.483)
 SWEP.IronSightsAng = Vector(2.819, 0.2, 0)

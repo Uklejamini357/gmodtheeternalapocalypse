@@ -353,9 +353,9 @@ function GM:DrawVitals()
 		surface.SetDrawColor(90, 90, 0 ,255)
 		surface.DrawOutlinedRect(scrw - 270, scrh - 60, 250, 50)
 
-		draw.SimpleText(Format("XP: %s/%s (%s%%)", math.floor(MyXP), self:GetReqXP(), math.Round(math.floor(MyXP) * 100 / self:GetReqXP())), "TargetIDSmall", scrw - 259, scrh - 48, Color(255, 255, 255, 255), 0, 1)
+		draw.SimpleText(Format("XP: %s/%s (%s%%)", math.floor(MyXP), me:GetReqXP(), math.Round(math.floor(MyXP) * 100 / me:GetReqXP())), "TargetIDSmall", scrw - 259, scrh - 48, Color(255, 255, 255, 255), 0, 1)
 		draw.RoundedBox(2, scrw - 250, scrh - 36, 210, 20, Color(50, 0, 0, 160))
-		draw.RoundedBox(4, scrw - 250, scrh - 36, math.Clamp(210 * (MyXP / self:GetReqXP()), 0, 210), 20, Color(150, 0, 0, 160))
+		draw.RoundedBox(4, scrw - 250, scrh - 36, math.Clamp(210 * (MyXP / me:GetReqXP()), 0, 210), 20, Color(150, 0, 0, 160))
 
 		draw.RoundedBox(1, 200, scrh - 200, 180, 190, Color(0, 0, 0, 175))
 		surface.SetDrawColor(125, 125, 55 ,255)
@@ -475,10 +475,10 @@ function GM:DrawVitals()
 -------------- EXperience --------------
 		surface.SetDrawColor(0, 0, 0 ,255)
 		surface.DrawOutlinedRect(scrw - 250, scrh - 50, 200, 8)
-		draw.SimpleText(Format("XP: %s/%s (%s%%)", math.floor(MyXP), self:GetReqXP(), math.Round(math.floor(MyXP) * 100 / self:GetReqXP())), "TargetIDSmall", scrw - 250, scrh - 60, Color(205, 205, 205, 255), 0, 1)
+		draw.SimpleText(Format("XP: %s/%s (%s%%)", math.floor(MyXP), me:GetReqXP(), math.Round(math.floor(MyXP) * 100 / me:GetReqXP())), "TargetIDSmall", scrw - 250, scrh - 60, Color(205, 205, 205, 255), 0, 1)
 		surface_DrawRectColor(scrw - 250, scrh - 50, 200, 8, Color(50,0,0,75))
 	
-		local xpbarclamp = math.Clamp(200 * (MyXP / self:GetReqXP()), 0, 200)
+		local xpbarclamp = math.Clamp(200 * (MyXP / me:GetReqXP()), 0, 200)
 		surface_DrawRectColor(scrw - 250, scrh - 50, xpbarclamp, 8, Color(150,0,0,160))
 		--Bounty
 		draw.SimpleText(translate.Format("bounty", math.floor(MyBounty)), "TargetIDSmall", 270, scrh - 68, Color(205, 205, 205, 255), 0, 1)
@@ -575,7 +575,9 @@ function GM:DrawVitals()
 
 
 	--Max Weight
-	draw.SimpleText(translate.Format("weight_1", CalculateWeightClient(me)).."/"..CalculateMaxWeightClient(me).."kg", "TargetIDSmall", 20, 155, Color(205, 205, 205, 255), 0, 1)
+	if not self.NoInvWeightHUDDisplay then
+		draw.SimpleText(translate.Format("inv_weight", LocalPlayer():CalculateWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWalkWeight(), WEIGHT_UNIT), "TargetIDSmall", 20, 155, Color(205, 205, 205, 255), 0, 1)
+	end
 
 
 --	draw.SimpleText("Height difference: "..math.Round(me:GetPos().z - me:GetEyeTrace().HitPos.z), "TargetIDSmall", ScrW() / 2, 255, Color(205, 205, 205, 255), 1, 1)
@@ -609,6 +611,21 @@ function GM:DrawVitals()
 	if self:GetServerRestartTime() ~= 0 then
 		draw.DrawText("Server restarts in: "..util.ToMinutesSeconds(math.max(0, self:GetServerRestartTime() - CurTime())), "TargetID", ScrW()/2, 180, Color(255,255,255,255), TEXT_ALIGN_CENTER)
 	end
+
+	if self:GetEventTimer() ~= -1 and self:GetEvent() ~= EVENT_NONE then
+		local events = {
+			[EVENT_ZOMBIEAPOCALYPSE] = "Zombie Survival",
+		}
+
+		if events[self:GetEvent()] then
+			draw.DrawText("Event: "..events[self:GetEvent()], "TargetIDSmall", ScrW()/2, 210, Color(255,215,155,255), TEXT_ALIGN_CENTER)
+		end
+
+		local str = "Event timer: "
+		local s = self:GetEventTimer() - CurTime() < 60 and math.sin(CurTime()*2.1)*100 or 0
+		draw.DrawText(str..util.ToMinutesSeconds(math.max(0, self:GetEventTimer() - CurTime())), "TargetIDSmall", ScrW()/2, 230, Color(255,155+s,155+s,255), TEXT_ALIGN_CENTER)
+	end
+
 
 -- Compass
 
@@ -789,12 +806,8 @@ function GM:PostDrawHUD()
 		draw.DrawText(text, "DeathScreenFont_2", (ScrW() / 2) - 275, (ScrH() / 2) + 150, Color(255, 255, 255, tonumber(self.tea_survivalstats_a)), 0)
 	end
 */
-	if !me:Alive() then
+	if !me:Alive() and self:GetEvent() == EVENT_NONE then
 		local a = 205
-		
-		if self.LastAliveTime + 5 < CurTime() then
-			surface_DrawRectColor(0, 0, ScrW(), ScrH(), Color(0,0,0, math.min(205, math.abs((self.LastAliveTime + 5 - CurTime())) * 240/5)))
-		end
 
 		local message
 		draw.DrawText("You died", "DeathScreenFont_2", ScrW() / 2, ScrH() / 2 - 40, Color(230,115,115,a), TEXT_ALIGN_CENTER)
@@ -1061,7 +1074,7 @@ function GM.ScreenEffects()
 	if me:Alive() then
 		if GAMEMODE.WraithAlpha <= 0 then return end
 
-		surface.SetDrawColor(0, 0, 0, math.Round(GAMEMODE.WraithAlpha))
+		surface.SetDrawColor(0, 0, 0, math.Round(GAMEMODE.WraithAlpha * (me:IsNewbie() and 0.8 or 1)))
 		surface.DrawRect(-1, -1, ScrW() + 1, ScrH() + 1)
 	else
 		GAMEMODE.WraithAlpha = 0

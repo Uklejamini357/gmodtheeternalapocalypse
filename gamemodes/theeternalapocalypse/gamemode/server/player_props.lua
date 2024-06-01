@@ -55,9 +55,10 @@ function GM:DestroyProp(ply, ent)
 
 	if owner != ply then ply:SystemMessage("You don't own this prop!", Color(255,205,205,255), true) return false end
 
-	ply:SendUseDelay(2)
+	local salvagedelay = ply:HasPerk("speedy_hands") and 1 or 2
+	ply:SendUseDelay(salvagedelay)
 
-	timer.Simple(2, function()
+	timer.Simple(salvagedelay, function()
 		if !ply:IsValid() or !ply:Alive() or !ent:IsValid() then return false end
 
 		local refund = checktable[ent:GetModel()]["COST"]
@@ -82,8 +83,9 @@ function GM:DestroyStructure(ply, ent)
 
 	if owner != ply then ply:SystemMessage("You don't own this structure!", Color(255,205,205,255), true) return false end
 
-	ply:SendUseDelay(2)
-	timer.Simple(2, function()
+	local salvagedelay = ply:HasPerk("speedy_hands") and 1 or 2
+	ply:SendUseDelay(salvagedelay)
+	timer.Simple(salvagedelay, function()
 		if !ply:IsValid() or !ply:Alive() or !ent:IsValid() then return false end
 
 		local refund = SpecialSpawns[ent:GetClass()]["Cost"]

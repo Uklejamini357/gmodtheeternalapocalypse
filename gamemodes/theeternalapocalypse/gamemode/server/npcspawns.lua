@@ -100,6 +100,9 @@ function GM:SpawnRandomZombie(pos, ang)
 		if v.Disabled then continue end
 		total = total + v.SpawnChance
 		if total >= dice then
+			k = v.Miniboss and (#player.GetAll() >= 3 or self:GetInfectionLevel() > 25) and k or !v.Miniboss and k or "npc_tea_basic"
+			v = self.Config["ZombieClasses"][k]
+
 			local elite = math.random(100) == 1 or self:GetCurrentSeasonalEvent() == SEASONAL_EVENT_HALLOWEEN and math.random(20) == 1
 			local ent = self:CreateZombie(k, pos, ang, v.XPReward, v.MoneyReward, v.InfectionRate, false)
 
@@ -351,8 +354,8 @@ function GM:NPCReward(ent)
 
 			self:SendPlayerSurvivalStats(attacker)
 			self:NetUpdateStatistics(attacker)
-			local addinfection = ((ent.InfectionRate or 0) * math.min(3, 1 + (attacker.ZombieKillStreak * 0.04))) / (1 + ((player.GetCount() - 1) * (5 / 9))) * self.InfectionLevelGainMul
-			addinfection = addinfection * (self:GetInfectionLevel() > 100 and 0.25 or self:GetInfectionLevel() > 75 and 0.5 or self:GetInfectionLevel() > 50 and 0.75 or 1)
+			local addinfection = ((ent.InfectionRate or 0) * math.min(3, 1 + (attacker.ZombieKillStreak * 0.04))) / (1 + ((player.GetCount() - 1) * (7 / 9))) * self.InfectionLevelGainMul
+			addinfection = addinfection * (self:GetInfectionLevel() > 100 and 0.25/(self:GetInfectionMul()-1) or self:GetInfectionLevel() > 75 and 0.5 or self:GetInfectionLevel() > 50 and 0.75 or 1)
 
 			self:SetInfectionLevel(self:GetInfectionLevel() + addinfection)
 			self.NextInfectionDecrease = math.max(self.NextInfectionDecrease, ct + 25)
@@ -434,7 +437,7 @@ function GM:Payout(ply, xp, cash)
 	end
 
 	if tonumber(ply.Level) < ply:GetMaxLevel() then
-		local reqxp = self:GetReqXP(ply)
+		local reqxp = ply:GetReqXP()
 		if ply.XP >= reqxp then
 			self:GainLevel(ply)
 		end

@@ -118,7 +118,7 @@ end
 
 
 function ENT:GetTEAZombieSpeedMul()
-	return math.min(self:GetEliteVariant() == VARIANT_ENRAGED and 1.6 or 1, 2 - (self:Health() / self:GetMaxHealth())) * GAMEMODE.ZombieSpeedMultiplier * self.SpeedBuff
+	return math.min(self:GetEliteVariant() == VARIANT_ENRAGED and 1.6 or 1, 2 - (self:Health() / self:GetMaxHealth())) * math.Clamp(GAMEMODE:GetInfectionMul(0.5)-0.25, 1, 1.25) * GAMEMODE.ZombieSpeedMultiplier * self.SpeedBuff
 end
 
 
@@ -256,7 +256,7 @@ function ENT:RunBehaviour()
 				self.loco:SetDesiredSpeed(self.ZombieStats["MoveSpeedRun"] * self:GetTEAZombieSpeedMul())
 				self:MoveToPos(target:GetPos(), {
 					tolerance = self.ZombieStats["Reach"],
-					maxage = distance < 1000 and 1 or distance < 2500 and 3 or 5,
+					maxage = distance < 1750 and 1 or 3,
 					repath = 1,
 				})
 			end

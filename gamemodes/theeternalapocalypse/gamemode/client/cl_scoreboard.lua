@@ -1,5 +1,8 @@
 ---------------- Scoreboard ----------------
 
+local DoInvPanel
+local TheListPanel
+
 LocalFactions = LocalFactions or {}
 
 if !LocalFactions["Loner"] then LocalFactions["Loner"] = 
@@ -89,6 +92,11 @@ net.Receive("UpdateInventory", function(length)
 			["ModelColor"] = ref.ModelColor,
 		}
 	end
+
+	if DoInvPanel and TheListPanel and TheListPanel:IsValid() then
+		TheListPanel:Clear()
+		DoInvPanel()
+	end
 end)
 
 net.Receive("UpdateVault", function(length)
@@ -111,6 +119,11 @@ net.Receive("UpdateVault", function(length)
 			["ModelColor"] = ref.ModelColor,
 		}
 	end
+
+	if DoInvPanel and TheListPanel and TheListPanel:IsValid() then
+		TheListPanel:Clear()
+		DoInvPanel()
+	end
 end)
 
 net.Receive("RecvFactions", function(length, client)
@@ -130,14 +143,21 @@ net.Receive("RecvFactions", function(length, client)
 		team.SetUp(v.index, k, v.color, v.public)
 	end
 end)
-
+/*
 function CalculateMaxWeightClient()
 	local armorstr = LocalPlayer():GetNWString("ArmorType") or "none"
 	local armortype = GAMEMODE.ItemsList[armorstr]
 
 	return GAMEMODE.Config["MaxCarryWeight"] + (GAMEMODE.LocalPerks["weightboost"] and 1.5 or 0) + (GAMEMODE.LocalPerks["weightboost2"] and 2.5 or 0) + (GAMEMODE.LocalPerks["weightboost3"] and 3.5 or 0)
 	+ ((Perks.Strength or 0) * 1.53) + (LocalPlayer():GetNWString("ArmorType") ~= "none" and armortype["ArmorStats"]["carryweight"] or 0)
+end
 
+function CalculateMaxWalkWeightClient()
+	local armorstr = LocalPlayer():GetNWString("ArmorType") or "none"
+	local armortype = GAMEMODE.ItemsList[armorstr]
+
+	return GAMEMODE.Config["MaxCarryWeight"] + (GAMEMODE.LocalPerks["weightboost"] and 1.5 or 0) + (GAMEMODE.LocalPerks["weightboost2"] and 2.5 or 0) + (GAMEMODE.LocalPerks["weightboost3"] and 3.5 or 0)
+	+ ((Perks.Strength or 0) * 1.53) + (LocalPlayer():GetNWString("ArmorType") ~= "none" and armortype["ArmorStats"]["carryweight"] or 0)
 end
 
 function CalculateVaultClient()
@@ -155,10 +175,12 @@ function CalculateWeightClient()
 	end
 	return totalweight
 end
-
+*/
 
 
 function GM:CreateScoreboardInv()
+	local me = LocalPlayer()
+
 	ScoreBoardFrame = vgui.Create("DFrame")
 	ScoreBoardFrame:SetSize(1000, 700)
 	ScoreBoardFrame:Center()
@@ -176,7 +198,7 @@ function GM:CreateScoreboardInv()
 		surface.SetDrawColor(0, 0, 0 ,155)
 		surface.DrawRect(self:GetWide() - 260, 25, 250, 205)
 		surface.DrawRect(self:GetWide() - 260, 230, 250, 100)
-		local armorstr = LocalPlayer():GetNWString("ArmorType") or "none"
+		local armorstr = me:GetNWString("ArmorType") or "none"
 		local armortype = GAMEMODE.ItemsList[armorstr]
 		if armorstr and armortype then
 			draw.SimpleText(translate.Format("cur_armor", translate.Get(armorstr.."_n")), "TargetIDSmall", self:GetWide() - 255, 235, Color(255,255,255,255))
@@ -216,9 +238,8 @@ function GM:CreateScoreboardInv()
 	
 -----------------------------------------Inventory---------------------------------------------------------------
 
-	local InvForm = vgui.Create("DForm", PropertySheet)
+	local InvForm = vgui.Create("DPanel", PropertySheet)
 	InvForm:SetSize(675, 700)
-	InvForm:SetPadding(4)
 	InvForm:SetName("Items")
 	InvForm.Paint = function()
 		draw.RoundedBox(2, 0, 0, InvForm:GetWide(), InvForm:GetTall(), Color(0, 0, 0, 100))
@@ -226,7 +247,20 @@ function GM:CreateScoreboardInv()
 		surface.DrawOutlinedRect(0, 0, InvForm:GetWide(), InvForm:GetTall())
 	end
 
-	local TheListPanel = vgui.Create("DPanelList", InvForm)
+	local InvWeightText = vgui.Create("DLabel", InvForm)
+	InvWeightText:SizeToContents()
+	InvWeightText:SetPos(5, 5)
+	InvWeightText.Think = function(this)
+		local changetxt = translate.Format("inv_weight", LocalPlayer():CalculateWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWalkWeight(), WEIGHT_UNIT)
+		if changetxt == this:GetText() then return end
+		this:SetText(changetxt)
+		this:SizeToContents()
+		this:SetTextColor(me:CalculateWeight() >= me:CalculateMaxWalkWeight() and Color(255,0,0) or me:CalculateWeight() >= LocalPlayer():CalculateMaxWeight() and Color(255,255,0) or Color(255,255,255))
+	end
+	InvWeightText:Think()
+--	InvWeightText:SetFont()
+
+	TheListPanel = vgui.Create("DPanelList", InvForm)
 	TheListPanel:SetTall(635)
 	TheListPanel:SetWide(980)
 	TheListPanel:SetPos(5, 25)
@@ -235,9 +269,10 @@ function GM:CreateScoreboardInv()
    	TheListPanel:SetSpacing(5)
 
 
-	local function DoInvPanel()
-		InvForm:SetName(translate.Format("weight_1", CalculateWeightClient()).."    "..translate.Format("weight_2", CalculateMaxWeightClient()))
+	DoInvPanel = function()
+		if !ScoreBoardFrame:IsValid() then return end
 		for k, v in SortedPairsByMemberValue(LocalInventory, "Weight", true) do
+			local item = GAMEMODE.ItemsList[k]
 			local raretbl = gamemode.Call("CheckItemRarity", v.Rarity)
 			local ItemBackground = vgui.Create("DPanel")
 			ItemBackground:SetPos(5, 5)
@@ -258,7 +293,49 @@ function GM:CreateScoreboardInv()
 			ItemDisplay:SetToolTip(translate.Get(k.."_d")..(v["ArmorStats"] and "\n"..translate.Format("item_armor_descr", v.ArmorStats["reduction"] or 0, v.ArmorStats["env_reduction"] or 0, (-v.ArmorStats["speedloss"] or 0) / 10, v.ArmorStats["slots"] or 0, v.ArmorStats["battery"] or 0, v.ArmorStats["carryweight"] or 0) or "").."\n"..translate.Format("item_descr_1", k, v.Cost, raretbl.text))
 			ItemDisplay:SetSize(60,60)
 			ItemDisplay.PaintOver = function() return end
-			ItemDisplay.OnMousePressed = function() return false end
+			ItemDisplay.OnMousePressed = function(this, mc)
+				if mc == MOUSE_LEFT then
+					local derma = DermaMenu()
+					derma:AddOption("Item: "..translate.Get(k.."_n"), function() end)
+					if item.CanUseOnOthers then
+						local sub = derma:AddSubMenu("Use", function()
+							net.Start("UseItem")
+							net.WriteString(k)
+							net.WriteBool(true)
+							net.WriteEntity(me)
+							net.SendToServer()
+						end)
+						for _,ply in pairs(ents.FindInSphere(me:GetPos(), 500)) do
+							if ply:IsPlayer() and ply ~= me then
+								sub:AddOption(ply:Nick(), function()
+									net.Start("UseItem")
+									net.WriteString(k)
+									net.WriteBool(true)
+									net.WriteEntity(ply)
+									net.SendToServer()
+								end)
+							end
+						end
+					else
+						derma:AddOption("Use", function()
+							net.Start("UseItem")
+							net.WriteString(k)
+							net.WriteBool(true)
+							net.WriteEntity(LocalPlayer())
+							net.SendToServer()
+						end)
+					end
+					derma:AddOption("Drop", function()
+						net.Start("UseItem")
+						net.WriteString(k)
+						net.WriteBool(false)
+						net.WriteEntity(me)
+						net.SendToServer()
+					end)
+					derma:Open()
+				end
+				return false
+			end
 			
 			local ItemName = vgui.Create("DLabel", ItemBackground)
 			ItemName:SetPos(80, 10)
@@ -297,12 +374,6 @@ function GM:CreateScoreboardInv()
 				net.WriteString(k)
 				net.WriteBool(true)
 				net.SendToServer()
-				timer.Simple(0.3, function() 
-					if TheListPanel:IsValid() then
-						TheListPanel:Clear()
-						DoInvPanel()
-					end
-				end)
 			end
 
 			local DropButton = vgui.Create("DButton", ItemBackground)
@@ -320,12 +391,6 @@ function GM:CreateScoreboardInv()
 				net.WriteString(k)
 				net.WriteBool(false)
 				net.SendToServer()
-				timer.Simple(0.3, function() 
-					if TheListPanel:IsValid() then
-						TheListPanel:Clear()
-						DoInvPanel()
-					end
-				end)
 			end
 			TheListPanel:AddItem(ItemBackground)
 		end
@@ -434,7 +499,7 @@ function GM:CreateScoreboardInv()
 					end
 					surface.PlaySound("buttons/button7.wav")
 				end)
-				if LocalPlayer():Team() ~= TEAM_LONER then
+				if me:Team() ~= TEAM_LONER then
 					menu:AddOption("Invite player to your faction", function()
 						net.Start("InviteFaction")
 						net.WriteEntity(v)
@@ -830,7 +895,7 @@ function GM:CreateScoreboardInv()
 		surface.SetDrawColor(50,0,0,75)
 		surface.DrawRect(15, 165, 200, 8)
 	
-		local bar1 = math.Clamp( 200 * (MyMMeleexp / GetReqMasteryMeleeXP()), 0, 200)
+		local bar1 = math.Clamp( 200 * (MyMMeleexp / me:GetReqMasteryMeleeXP()), 0, 200)
 		surface.SetDrawColor(150,0,0,160)
 		surface.DrawRect(15, 165, bar1, 8)
 
@@ -839,7 +904,7 @@ function GM:CreateScoreboardInv()
 		surface.SetDrawColor(50,0,0,75)
 		surface.DrawRect(15, 210, 200, 8)
 	
-		local bar2 = math.Clamp( 200 * (MyMPvpxp / GetReqMasteryPvPXP()), 0, 200)
+		local bar2 = math.Clamp( 200 * (MyMPvpxp / me:GetReqMasteryPvPXP()), 0, 200)
 		surface.SetDrawColor(150,0,0,160)
 		surface.DrawRect(15, 210, bar2, 8 )
 	end
@@ -847,26 +912,26 @@ function GM:CreateScoreboardInv()
 	local sttext1 = vgui.Create("DLabel", StatisticsForm)
 	sttext1:SetFont("TargetID")
 	sttext1:SetTextColor(Color(205,205,205,255))
-	sttext1:SetText("Mastery Melee XP: ".. math.floor(MyMMeleexp) .."/".. GetReqMasteryMeleeXP().." (Level "..math.floor(MyMMeleelvl)..")")
+	sttext1:SetText("Mastery Melee XP: ".. math.floor(MyMMeleexp) .."/".. me:GetReqMasteryMeleeXP().." (Level "..math.floor(MyMMeleelvl)..")")
 	sttext1:SetToolTip("Increases melee damage by 0.5% per level, increases when doing melee damage to zombies. \nGain rate is DECREASED when damaging players with melee weapons.")
 	sttext1:SetMouseInputEnabled(true)
 	sttext1:SizeToContents()
 	sttext1:SetPos(15, 140)
 	sttext1.Think = function(self)
-		self:SetText("Mastery Melee XP: ".. math.floor(MyMMeleexp) .."/".. GetReqMasteryMeleeXP().." (Level "..math.floor(MyMMeleelvl)..")")
+		self:SetText("Mastery Melee XP: ".. math.floor(MyMMeleexp) .."/".. me:GetReqMasteryMeleeXP().." (Level "..math.floor(MyMMeleelvl)..")")
 		self:SizeToContents()
 	end
 
 	local sttext2 = vgui.Create("DLabel", StatisticsForm)
 	sttext2:SetFont("TargetID")
 	sttext2:SetTextColor(Color(205,205,205,255))
-	sttext2:SetText("Mastery PvP XP: ".. math.floor(MyMPvpxp) .."/".. GetReqMasteryPvPXP().." (Level "..math.floor(MyMPvplvl)..")")
+	sttext2:SetText("Mastery PvP XP: ".. math.floor(MyMPvpxp) .."/".. me:GetReqMasteryPvPXP().." (Level "..math.floor(MyMPvplvl)..")")
 	sttext2:SetToolTip("Gained from killing players. (no other benefits other than money gain on level up)\nGain rate increased when they have higher level and prestige.")
 	sttext2:SetMouseInputEnabled(true)
 	sttext2:SizeToContents()
 	sttext2:SetPos(15, 185)
 	sttext2.Think = function(self)
-		self:SetText("Mastery PvP XP: ".. math.floor(MyMPvpxp) .."/".. GetReqMasteryPvPXP().." (Level "..math.floor(MyMPvplvl)..")")
+		self:SetText("Mastery PvP XP: ".. math.floor(MyMPvpxp) .."/".. me:GetReqMasteryPvPXP().." (Level "..math.floor(MyMPvplvl)..")")
 		self:SizeToContents()
 	end
 
@@ -977,7 +1042,7 @@ function GM:CreateScoreboardInv()
 	local ModelInfo = vgui.Create("DModelPanel", ScoreBoardFrame)
 	ModelInfo:SetSize(200, 200)
 	ModelInfo:SetPos(ScoreBoardFrame:GetWide() - 240, 25)
-	ModelInfo:SetModel(LocalPlayer():GetModel())
+	ModelInfo:SetModel(me:GetModel())
 	ModelInfo:SetAnimSpeed(1)
 	ModelInfo:SetAnimated(true)
 	ModelInfo:SetAmbientLight(Color(50, 50, 50))
@@ -986,7 +1051,7 @@ function GM:CreateScoreboardInv()
 	ModelInfo:SetCamPos(Vector(50, 0, 50))
 	ModelInfo:SetLookAt(Vector(0, 0, 40))
 	ModelInfo:SetFOV(80)
-	function ModelInfo.Entity:GetPlayerColor() return LocalPlayer():GetPlayerColor() end
+	function ModelInfo.Entity:GetPlayerColor() return me:GetPlayerColor() end
 
 	local ModelButton = vgui.Create("DButton", ScoreBoardFrame)
 	ModelButton:SetSize(90, 20)
@@ -1004,7 +1069,7 @@ function GM:CreateScoreboardInv()
 		RunConsoleCommand("-score")
 	end
 
-	function ModelInfo.Entity:GetPlayerColor() return LocalPlayer():GetPlayerColor() end
+	function ModelInfo.Entity:GetPlayerColor() return me:GetPlayerColor() end
 	local function DoStatsList()
 		for k, v in SortedPairs(self.StatConfigs) do
 			local LabelDefense = vgui.Create("DLabel")

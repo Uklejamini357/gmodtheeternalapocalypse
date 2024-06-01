@@ -22,10 +22,6 @@ function GM:LoadPlayer(ply)
 			if TheLine[1] == "PerkPoints" then
 				perkpoints = true
 			end
-
-			if TheLine[1] == "TaskComplete" then
-				ply.TaskComplete = tobool(TheLine[2])
-			end
 		end
 
 		if !perkpoints then
@@ -99,7 +95,6 @@ function GM:SavePlayer(ply)
 	Data["ChosenModelColor"] = tostring(ply.ChosenModelColor)
 	Data["CurrentTask"] = ply.CurrentTask
 	Data["CurrentTaskProgress"] = ply.CurrentTaskProgress
-	Data["TaskComplete"] = tostring(ply.TaskComplete)
 
 	Data["MasteryMeleeXP"] = ply.MasteryMeleeXP
 	Data["MasteryMeleeLevel"] = ply.MasteryMeleeLevel
@@ -187,7 +182,7 @@ end
 function GM:GainLevel(ply)
 	local sp = tonumber(ply.Level) >= 55 and 3 or tonumber(ply.Level) >= 30 and 2 or 1
 	local moneyreward = 56 + math.floor((ply.Level ^ 1.1217) * 16 + (ply.Level * 5) + (ply.Prestige * 2.4892))
-	local reqxp = self:GetReqXP(ply)
+	local reqxp = ply:GetReqXP()
 	
 	ply.XP = ply.XP - reqxp
 	ply.Level = ply.Level + 1
@@ -211,7 +206,7 @@ function GM:GainLevel(ply)
 	self:NetUpdatePeriodicStats(ply)
 
 	timer.Simple(0.04, function() -- Timer was created to prevent Buffer Overflow if user has too much XP if user levels up
-		if ply:IsValid() and ply.XP >= self:GetReqXP(ply) and tonumber(ply.Level) < ply:GetMaxLevel() then
+		if ply:IsValid() and ply.XP >= ply:GetReqXP() and tonumber(ply.Level) < ply:GetMaxLevel() then
 			self:GainLevel(ply) -- This is so the user will gain another level if user has required xp for next level and will repeat
 		end
 	end)
@@ -325,11 +320,5 @@ function GM:FullyUpdatePlayer(ply)
 	net.Send(ply)
 end
 
-local meta = FindMetaTable("Player")
-/*
-function meta:AddTEAXP(xp)
-	self.XP = self.XP + xp
+--local meta = FindMetaTable("Player")
 
-	GAMEMODE:NetUpdatePeriodicStats(self)
-end
-*/

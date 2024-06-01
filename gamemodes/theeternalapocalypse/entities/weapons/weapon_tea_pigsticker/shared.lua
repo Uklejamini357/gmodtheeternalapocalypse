@@ -52,8 +52,8 @@ SWEP.RunArmAngle	 		= Vector (-37.4833, 2.7476, 0)
 
 SWEP.Sequence			= 0
 
-SWEP.ZWweight				= 10 -- in kilograms divided by 10 eg 20 = 2kg
-SWEP.ZWrarity				= "Common" -- Junk, Common, Uncommon, Rare, Epic
+
+
 
 
 /*---------------------------------------------------------

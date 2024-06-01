@@ -104,7 +104,7 @@ function ENT:HasLOS()
 end
 
 function ENT:GetTEAZombieSpeedMul()
-	return math.min(self:GetEliteVariant() == VARIANT_ENRAGED and 1.6 or 1, 2 - (self:Health() / self:GetMaxHealth())) * GAMEMODE.ZombieSpeedMultiplier * self.SpeedBuff
+	return math.min(self:GetEliteVariant() == VARIANT_ENRAGED and 1.6 or 1, 2 - (self:Health() / self:GetMaxHealth())) * math.Clamp(GAMEMODE:GetInfectionMul(0.5)-0.25, 1, 1.25) * GAMEMODE.ZombieSpeedMultiplier * self.SpeedBuff
 end
 
 function ENT:Initialize()
@@ -112,6 +112,7 @@ function ENT:Initialize()
 	self:SetModel("models/undead/undead.mdl")
 	self.loco:SetDeathDropHeight(700)
 	self.loco:SetAcceleration(800)
+	self.loco:SetJumpHeight(240)
 	self:SetHealth(19500) --15500
 	self:SetMaxHealth(19500) --15500
 	self:SetUpStats()
@@ -123,6 +124,7 @@ function ENT:Initialize()
 	
 	self.NextPainSound = CurTime()
 	self.AbilityCD = CurTime()
+	self.Ability2CD = CurTime()
 	self.NxtTick = 5
 
 	timer.Simple(1200, function()
@@ -168,6 +170,26 @@ function ENT:Think()
 		end
 
 		self.AbilityCD = CurTime() + math.Rand(20,25) -- i would enjoy the chaos if you set this to 0 (HIGHLY UNRECOMMENDED)
+	end
+
+	if IsValid(target) and target:Alive() and !target.TEANoTarget and (self:GetRangeTo(target) <= 1000 && self.Ability2CD < CurTime() && self:HasLOS()) and self.IsEnraged then
+		self:TimedEvent(0.4, function()
+			local jtr = util.TraceLine( {
+				start = self:GetPos() + Vector(0, 0, 40), 
+				endpos = self:GetPos() + Vector(0, 0, 340), 
+				filter = {self}
+			} )
+
+			if !jtr.Hit then
+				self.loco:Jump()
+				return true
+			end
+				
+--			self:StartActivity(self.AttackAnim)
+			self.loco:Jump()
+		end)
+
+		self.Ability2CD = CurTime() + math.Rand(10,14)
 	end
 end
 
@@ -426,7 +448,7 @@ function ENT:AttackProp(targetprops)
 			util.ScreenShake(v:GetPos(), 8, 6, math.Rand(0.3, 0.5), 400)
 			end
 		coroutine.wait(self.AttackFinishTime)
-		self:StartActivity(self.WalkAnim)	
+		self:StartActivity(self.WalkAnim)
 			return true
 		end
 	end

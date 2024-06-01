@@ -50,8 +50,8 @@ SWEP.RunArmAngle = Vector(-14.606, 20.118, -4.134)
 SWEP.Type				= 2
 SWEP.Mode				= true
 
-SWEP.ZWweight				= 100 -- in kilograms divided by 10 eg 20 = 2kg
-SWEP.ZWrarity				= "Common" -- Junk, Common, Uncommon, Rare, Epic
+
+
 
 SWEP.data 				= {}
 SWEP.data.NormalMsg		= ""

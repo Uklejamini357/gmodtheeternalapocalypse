@@ -416,7 +416,7 @@ function GM:DevCmds_PlayerForceGainLevel(ply)
 	end
 
 	local CurrentXP = ply.XP
-	local RequiredXP = self:GetReqXP(ply)
+	local RequiredXP = ply:GetReqXP()
 	ply.XP = tonumber((RequiredXP + 1) or 2^1024)
 	gamemode.Call("GainLevel", ply)
 	ply.XP = CurrentXP - RequiredXP
@@ -434,7 +434,7 @@ function GM:DevCmds_PlayerForceGainLevelNoXP(ply)
 	end
 	
 	local CurrentXP = ply.XP
-	local RequiredXP = self:GetReqXP(ply)
+	local RequiredXP = ply:GetReqXP()
 	ply.XP = tonumber((RequiredXP + 1) or 2^1024)
 	gamemode.Call("GainLevel", ply)
 	ply.XP = CurrentXP

@@ -223,6 +223,12 @@ if CLIENT then
 		GAMEMODE:OnConVarChanged(cvar, old, new)
 	end, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_cl_notips")
 
+	GM.NoInvWeightHUDDisplay = CreateClientConVar("tea_cl_noinvweighthuddisplay", 0, true, false, "Don't display Inventory Weight on HUD.", 0, 1):GetBool()
+	cvars.AddChangeCallback("tea_cl_noinvweighthuddisplay", function(cvar,old,new)
+		GAMEMODE.NoInvWeightHUDDisplay = tobool(new)
+		GAMEMODE:OnConVarChanged(cvar, old, new)
+	end, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_cl_noinvweighthuddisplay")
+
 	GM.DrawZombiesInfo = CreateClientConVar("tea_cl_drawzinfo", 0, true, false, "Draw zombie info? (Name, Health and its' purpose (or what does it do)) Currently not working", 0, 1):GetBool()
 	cvars.AddChangeCallback("tea_cl_drawzinfo", function(cvar,old,new)
 		GAMEMODE.DrawZombiesInfo = tobool(new)
@@ -258,6 +264,12 @@ if CLIENT then
 		GAMEMODE.DamageNumberLifetime = tonumber(new)
 		GAMEMODE:OnConVarChanged(cvar, old, new)
 	end, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_cl_damagenumber_lifetime")
+
+	GM.ConfirmationSellItems = CreateClientConVar("tea_cl_confirmation_sellitems", 1, true, false, "Popup to confirm when selling an item", 0, 1):GetBool()
+	cvars.AddChangeCallback("tea_cl_confirmation_sellitems", function(cvar,old,new)
+		GAMEMODE.ConfirmationSellItems = tobool(new)
+		GAMEMODE:OnConVarChanged(cvar, old, new)
+	end, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_cl_confirmation_sellitems")
 
 else
 

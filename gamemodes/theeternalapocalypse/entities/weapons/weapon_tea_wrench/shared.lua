@@ -106,13 +106,14 @@ function SWEP:EntityFaceBack(ent)
 end
 
 function SWEP:PrimaryAttack()
-	if (CLIENT and MyStamina < self.StaminaNeeded) or (SERVER and self.Owner.Stamina < self.StaminaNeeded) then return end
+	local stamina = self:GetOwner():HasPerk("speedy_hands") and self.StaminaNeeded * 0.75 or self.StaminaNeeded
+	if (CLIENT and MyStamina < stamina) or (SERVER and self.Owner.Stamina < stamina) then return end
 	self.Weapon:SendWeaponAnim(ACT_VM_MISSCENTER)
 
 	timer.Simple( 0.2, function()
 	if ( !IsValid( self ) || !IsValid( self.Owner ) || !self.Owner:GetActiveWeapon() || self.Owner:GetActiveWeapon() != self || CLIENT ) then return end
 		self:DealDamage( anim )
-		self.Owner.Stamina = math.Clamp(self.Owner.Stamina - self.StaminaNeeded, 0, 100)
+		self.Owner.Stamina = math.Clamp(self.Owner.Stamina - stamina, 0, 100)
 		self.Owner:EmitSound( "weapons/slam/throw.wav" )
 	end )
 
@@ -128,8 +129,9 @@ function SWEP:PrimaryAttack()
 
 	if self.Weapon:GetNetworkedBool("Holsted") then return end
 
-	self.Weapon:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-	self.Weapon:SetNextSecondaryFire(CurTime() + self.Primary.Delay)
+	local delay = self:GetOwner():HasPerk("speedy_hands") and self.Primary.Delay * 0.75 or self.Primary.Delay
+	self.Weapon:SetNextPrimaryFire(CurTime() + delay)
+	self.Weapon:SetNextSecondaryFire(CurTime() + delay)
 	self.Owner:SetAnimation(PLAYER_ATTACK1)
 
 
@@ -196,10 +198,11 @@ function SWEP:DealDamage( anim )
 				if v:IsPlayer() or v:IsNPC() or v.Type == "nextbot" then self.Owner:SystemMessage("Unable to build: prop obstructed!", Color(255,205,205,255), true) return false end
 			end
 
-			if (tr.Entity:GetClass() == "prop_flimsy" and tr.Entity.BuildLevel >= (3 + (FLIMSYPROPS[tr.Entity:GetModel()]["TOUGHNESS"] or 0))) or (tr.Entity:GetClass() == "prop_strong" and tr.Entity.BuildLevel >= 5 + (TOUGHPROPS[tr.Entity:GetModel()]["TOUGHNESS"] or 0)) or (SpecialSpawns[tr.Entity:GetClass()] and tr.Entity.BuildLevel >= 7) then
+			local ownerhasperk = self:GetOwner():HasPerk("speedy_hands")
+			local buildlvl = (tr.Entity.BuildLevel or 0) + (ownerhasperk and 1.5 or 1)
+			tr.Entity.BuildLevel = buildlvl
+			if (tr.Entity:GetClass() == "prop_flimsy" and buildlvl >= (3 + (FLIMSYPROPS[tr.Entity:GetModel()]["TOUGHNESS"] or 0))) or (tr.Entity:GetClass() == "prop_strong" and buildlvl >= 5 + (TOUGHPROPS[tr.Entity:GetModel()]["TOUGHNESS"] or 0)) or (SpecialSpawns[tr.Entity:GetClass()] and buildlvl >= 7) then
 				tr.Entity:FinishBuild()
-			else
-				tr.Entity.BuildLevel = tr.Entity.BuildLevel + 1
 			end
 
 			tr.Entity:EmitSound("weapons/crowbar/crowbar_impact"..math.random(1,2)..".wav")

@@ -56,6 +56,10 @@ util.AddNetworkString("tea_player_ready_spawn")
 util.AddNetworkString("tea_perksupdate")
 util.AddNetworkString("tea_perksunlock")
 
+-- Misc network strings
+util.AddNetworkString("tea_plyevent_vaultupdate")
+
+
 --util.AddNetworkString("Respawn")
 
 function GM:NetUpdateStats(ply)
@@ -125,10 +129,10 @@ function GM:NetUpdatePlayerStatistics(ply, target)
 	net.WriteFloat(target.playerdeaths)
 	net.WriteFloat(target.MasteryMeleeXP)
 	net.WriteFloat(target.MasteryMeleeLevel)
-	net.WriteFloat(GetReqMasteryMeleeXP(target))
+	net.WriteFloat(target:GetReqMasteryMeleeXP())
 	net.WriteFloat(target.MasteryPvPXP)
 	net.WriteFloat(target.MasteryPvPLevel)
-	net.WriteFloat(GetReqMasteryPvPXP(target))
+	net.WriteFloat(target:GetReqMasteryPvPXP())
 	net.Send(ply)
 end
 
@@ -222,20 +226,22 @@ net.Receive("UpgradePerk", function(len, ply)
 	local amt = net.ReadUInt(16)
 
 	local perk2 = "Stat"..perk
-	local mul = GAMEMODE.StatConfigs[perk].Cost or 1
-	amt = math.min(amt, ply.StatPoints, 10 - ply[perk2])
+	local skill = GAMEMODE.StatConfigs[perk]
+	local curskillamt = tonumber(ply[perk2])
+	local mul = (skill.Cost or 1) * (curskillamt >= skill.Max and 2 or 1)
+	amt = skill.Max >= curskillamt and math.min(amt, ply.StatPoints, skill.Max - curskillamt) or math.min(amt, ply.StatPoints, skill.Max - curskillamt)
 
 	if tonumber(ply.StatPoints) < amt * mul or tonumber(ply.StatPoints) < mul then
 		ply:SendChat("You need skill points to upgrade skill!")
 		return false
 	end
 	if amt < mul then return end
-	if (tonumber(ply[perk2]) >= 10) then
+	if ply:HasPerk("empowered_skills") and skill.Max >= curskillamt and (tonumber(curskillamt) >= (skill.Max + (skill.PerkMaxIncrease or 0))) or skill.Max < curskillamt and (tonumber(curskillamt) >= skill.Max) then
 		ply:SendChat("You have reached the maximum number of points for this skill")
 		return false
 	end
 
-	ply[perk2] = ply[perk2] + (amt * mul)
+	ply[perk2] = curskillamt + (amt * mul)
 	ply.StatPoints = ply.StatPoints - (amt * mul)
 	ply:SetMaxHealth(GAMEMODE:CalcMaxHealth(ply))
 	ply:SetMaxArmor(GAMEMODE:CalcMaxArmor(ply))
@@ -287,7 +293,8 @@ net.Receive("tea_player_ready_spawn", function(len, ply)
 	net.Send(ply)
 
 	if !ply.HasSpawnedReady then
-		GAMEMODE:SystemBroadcast(Format("#tea.chat_message.plspawned", ply:Nick()), Color(255,255,155,255), false)
+		GAMEMODE:SystemBroadcast(translate.Format("plspawned", ply:Nick()), Color(255,255,155,255), false)
+		-- GAMEMODE:SystemBroadcast(Format("#tea.chat_message.plspawned", ply:Nick()), Color(255,255,155,255), false)
 	end
 	ply.HasSpawnedReady = true
 	ply:Spawn()

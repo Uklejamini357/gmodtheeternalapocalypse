@@ -27,7 +27,7 @@ function ENT:Initialize()
 
 	local selfent = self.Entity
 	self.IsBuilt = false
-	self.BuildLevel = 1
+	self.BuildLevel = 0
 	self.Attacked = 0
 	self.integrity = 2000
 	self.maxinteg = 2000

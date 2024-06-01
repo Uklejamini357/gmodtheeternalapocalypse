@@ -30,11 +30,12 @@ function ENT:Use( activator, caller )
 	if activator:KeyDown(IN_RELOAD) or activator:GetInfoNum("tea_cl_usereloadtopickup", 0) < 1 then
 		local name = self:GetNWString("ItemClass")
 		local ref = GAMEMODE.ItemsList[name]
-		if (GAMEMODE:CalculateWeight(activator) + ref.Weight) > GAMEMODE:CalculateMaxWeight(activator) then
+/*
+		if (activator:CalculateWeight() + ref.Weight) > activator:CalculateMaxWeight() then
 			caller:SendChat(Format("You don't have enough space for this item! Need %skg more space!", GAMEMODE:CalculateRemainingInventoryWeight(activator, ref.Weight)))
 			return false
 		end
-		
+*/		
 		gamemode.Call("SystemGiveItem", activator, name)
 		
 		GAMEMODE:SendInventory(activator)

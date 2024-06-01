@@ -19,5 +19,20 @@ GM.Tasks = {
 		end
 	},
 
+	["loot_finder"] = {
+		Name = "Loot Finder",
+		Description = "Find 10 loot caches.",
+		RewardText = "1250XP & 800$",
+		Cooldown = TIME_HOUR * 6,
+		CancelCooldown = TIME_HOUR * 12,
+		ReqProgress = 10,
+		LevelReq = 10,
+		Callback = function(ply)
+			ply.XP = ply.XP + 1250
+			ply.Money = ply.Money + 800
+			ply:SystemMessage("You gained 1250 XP and 800 cash for completing a task!", Color(180,255,255))
+		end
+	},
+
 
 }
