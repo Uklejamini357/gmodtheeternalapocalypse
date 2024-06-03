@@ -134,6 +134,7 @@ function ENT:Initialize()
 	self:SetCollisionGroup(COLLISION_GROUP_NONE)
 	self.NxtTick = 5
 	self.NextPainSound = CurTime()
+	self:PhysicsInitShadow()
 end
 
 
@@ -173,6 +174,12 @@ function ENT:Think()
 	if !SERVER then return end
 	if !IsValid(self) then return end
 
+	local phy=self:GetPhysicsObject()
+	if IsValid(phy) then
+		phy:SetPos(self:GetPos())
+		phy:SetAngles(self:GetAngles())
+	end
+	
 -- need to slowly drown them in water or else they will just skip happily along the sea floor
 	if self:WaterLevel() >= 3 and self:Health() > 0 then
 		local drown = DamageInfo()
