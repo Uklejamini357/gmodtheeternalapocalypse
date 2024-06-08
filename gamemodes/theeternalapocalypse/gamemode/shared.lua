@@ -140,11 +140,25 @@ function GM:CheckItemRarity(rarity)
 end
 
 function GM:StartCommand(ply, cmd)
+	local keys = cmd:GetButtons()
+	cmd:ClearButtons()
 
---	if cmd == "+jump" then
---	end
---	cmd:ClearMovement()
---	cmd:ClearButtons()
+	if (ply.Stamina or MyStamina) > 30 then
+		ply.sprintrecharge = false
+	end
+
+	if (ply:IsSprinting() and ply:GetPlayerMoving() and (ply.Stamina or MyStamina) <= 0) then
+		-- ply:ConCommand("-speed")
+		ply.sprintrecharge = true
+	end
+
+	if bit.band(IN_SPEED, keys) ~= 0 and ply.sprintrecharge then
+		keys = keys - IN_SPEED
+	end
+	if bit.band(IN_JUMP, keys) ~= 0 and ply.sprintrecharge then
+		keys = keys - IN_JUMP
+	end
+	cmd:SetButtons(keys)
 end
 
 function util.ToMinutesSeconds(seconds)

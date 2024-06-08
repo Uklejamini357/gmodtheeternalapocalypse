@@ -80,3 +80,9 @@ GM.VariantNames = {
     [VARIANT_LEECH] = "Leech",
     [VARIANT_ENRAGED] = "Enraged"
 }
+
+
+
+--- ↓ Do. Not. Touch. ↓
+
+GM.PlayerCharactersTest = false

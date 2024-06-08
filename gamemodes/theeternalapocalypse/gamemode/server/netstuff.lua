@@ -58,6 +58,7 @@ util.AddNetworkString("tea_perksunlock")
 
 -- Misc network strings
 util.AddNetworkString("tea_plyevent_vaultupdate")
+util.AddNetworkString("tea_player_sendcharacters")
 
 
 --util.AddNetworkString("Respawn")

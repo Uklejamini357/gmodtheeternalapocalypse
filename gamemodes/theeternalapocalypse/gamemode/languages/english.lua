@@ -723,7 +723,8 @@ LANG.Tip17 = "Factions are automatically disbanded when the faction member count
 -- New ?????
 
 LANG.the_eternal_apocalypse = "The Eternal Apocalypse" -- ?????
-LANG.the_eternal_apocalypse_desc = "An apocalyptic survival-based gamemode.\nThe zombies await you."
+LANG.the_eternal_apocalypse_desc = "An apocalyptic survival-based gamemode. The zombies are waiting for you."
+LANG.the_eternal_apocalypse_character = "Choose your character to play."
 LANG.play = "Play"
 LANG.disconnect = "Disconnect"
 LANG.loading = "Loading..."

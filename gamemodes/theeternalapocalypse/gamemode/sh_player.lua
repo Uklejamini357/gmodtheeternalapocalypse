@@ -144,7 +144,7 @@ function meta:CalculateMaxWeight()
 	if SERVER then
 		if self.StatsPaused then return 1e300 end
 
-		return self.Config["MaxCarryWeight"] + (self.UnlockedPerks["weightboost"] and 1.5 or 0) + (self.UnlockedPerks["weightboost2"] and 2.5 or 0) + (self.UnlockedPerks["weightboost3"] and 3.5 or 0)
+		return GAMEMODE.Config["MaxCarryWeight"] + (self.UnlockedPerks["weightboost"] and 1.5 or 0) + (self.UnlockedPerks["weightboost2"] and 2.5 or 0) + (self.UnlockedPerks["weightboost3"] and 3.5 or 0)
 			+ ((self.StatStrength or 0) * 1.53) + (self:GetNWString("ArmorType") ~= "none" and armortype["ArmorStats"]["carryweight"] or 0)
 	else
 		local baseweight = GAMEMODE.Config["MaxCarryWeight"]
@@ -159,6 +159,16 @@ function meta:CalculateMaxWalkWeight()
 	return math.Round(self:CalculateMaxWeight() * 1.2, 2)
 end
 
+function meta:GetPlayerMoving()
+	if self:GetMoveType() != MOVETYPE_NOCLIP or self:InVehicle() then
+		if (self:KeyDown(IN_FORWARD) or self:KeyDown(IN_BACK) or self:KeyDown(IN_MOVELEFT) or self:KeyDown(IN_MOVERIGHT)) then
+			return true
+		else
+			return false
+		end
+	end
+end
+
 -- maybe i should also do it for entity meta table
 local meta_entity = FindMetaTable("Entity")
 
@@ -169,3 +179,5 @@ end
 function meta_entity:GetEliteVariant()
 	return self:GetNWInt("TEA_ELITE_VARIANT", 0)
 end
+
+

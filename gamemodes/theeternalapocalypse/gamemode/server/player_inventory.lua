@@ -160,19 +160,7 @@ function GM:SystemGiveItem(ply, str, qty)
 	else 
 		ply.Inventory[str] = qty
 	end
-	return true
-end
-
-function GM:SystemGiveItem_NoWeight(ply, str, qty) -- same as above except that it ignores player's remaining weight
-	if !ply:IsValid() or !ply:IsPlayer() then return false end
-	if !self.ItemsList[str] or !ply.Inventory then return false end
-	qty = tonumber(qty) or 1
-
-	if ply.Inventory[str] then
-		ply.Inventory[str] = ply.Inventory[str] + qty
-	else 
-		ply.Inventory[str] = qty
-	end
+	gamemode.Call("RecalcPlayerSpeed", ply)
 	return true
 end
 
@@ -192,6 +180,7 @@ function GM:SystemRemoveItem(ply, str, strip, amt)
 	end
 	ply.Inventory[str] = ply.Inventory[str] - amt
 	if ply.Inventory[str] < 1 then ply.Inventory[str] = nil end
+	gamemode.Call("RecalcPlayerSpeed", ply)
 end
 
 

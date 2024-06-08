@@ -292,13 +292,8 @@ function GM:Think()
 			ply.Infection = math.Clamp(ply.Infection + (0.1176 * (1 - (ply.StatImmunity * 0.04))), 0, 10000)
 		end
 
-		local PlayerIsMoving
+		local PlayerIsMoving = ply:GetPlayerMoving()
 		if ply:GetMoveType() != MOVETYPE_NOCLIP or ply:InVehicle() then
-			if (ply:KeyDown(IN_FORWARD) or ply:KeyDown(IN_BACK) or ply:KeyDown(IN_MOVELEFT) or ply:KeyDown(IN_MOVERIGHT)) then
-				PlayerIsMoving = true
-			else
-				PlayerIsMoving = false
-			end
 	
 	/*		if ply:OnGround() and ply:KeyPressed(IN_JUMP) then
 			ply.Stamina = ply.Stamina - 5
@@ -339,18 +334,18 @@ function GM:Think()
 				ply.Stamina = math.Clamp(ply.Stamina + (0.047 + endurance) * staminaperk, 0, 100)
 			end
 		
-			if ply.Stamina > 30 then
-				ply.sprintrecharge = false
-			end
-		
-			if (ply:IsSprinting() and PlayerIsMoving and ply.Stamina <= 0) then
-				ply:ConCommand("-speed")
-				ply.sprintrecharge = true
-			end
-		
-			if (ply:IsSprinting() and PlayerIsMoving and ply.sprintrecharge and ply.Stamina <= 30) then
-				ply:ConCommand("-speed")
-			end
+			-- if ply.Stamina > 30 then
+			-- 	ply.sprintrecharge = false
+			-- end
+
+			-- if (ply:IsSprinting() and PlayerIsMoving and ply.Stamina <= 0) then
+			-- 	-- ply:ConCommand("-speed")
+			-- 	ply.sprintrecharge = true
+			-- end
+
+			-- if (ply:IsSprinting() and PlayerIsMoving and ply.sprintrecharge and ply.Stamina <= 30) then
+			-- 	ply:ConCommand("-speed")
+			-- end
 		end
 	
 		if tonumber(ply.Stamina) > 0 or ply:WaterLevel() != 3 then
@@ -772,6 +767,7 @@ function GM:PlayerInitialSpawn(ply, transition)
 	ply.playerdeaths = 0
 	ply.CurrentTask = ""
 	ply.CurrentTaskProgress = 0
+	ply.CharactersData = {}
 	----------------
 	
 	-------- Mastery Stats --------
@@ -849,8 +845,6 @@ end
 function GM:PlayerPostThink(ply)
 end
 
-function GM:StartCommand(ply)
-end
 
 function GM:PlayerReady(ply)
 	self:FullyUpdatePlayer(ply)
@@ -1048,8 +1042,23 @@ function GM:RecalcPlayerSpeed(ply)
 		armorspeed = tonumber(armortype["ArmorStats"]["speedloss"])
 	end
 	
-	self:SetPlayerSpeed(ply, math.max(1, ((walkspeed - (armorspeed / 2)) + walkspeedbonus) * (1 - slowdown)), math.max(1, ((runspeed - armorspeed) + runspeedbonus) * (1 - slowdown)))
-	ply:SetSlowWalkSpeed(math.Clamp(((walkspeed - (armorspeed / 2)) + walkspeedbonus) * (0.75 * (1 - slowdown)), 1, 100))
+	local totalwspeed,totalrspeed = math.max(1, ((walkspeed - (armorspeed / 2)) + walkspeedbonus) * (1 - slowdown)), math.max(1, ((runspeed - armorspeed) + runspeedbonus) * (1 - slowdown))
+	local totalswspeed = math.Clamp(((walkspeed - (armorspeed / 2)) + walkspeedbonus) * (0.75 * (1 - slowdown)), 1, 100)
+
+
+	local weight, maxweight, maxwalkweight = ply:CalculateWeight(), ply:CalculateMaxWeight(), ply:CalculateMaxWalkWeight()
+	local weightpenalty = 1
+	if weight >= maxwalkweight then
+		totalwspeed = 1
+		totalrspeed = 1
+		totalswspeed = 1
+	elseif weight >= maxweight then
+		weightpenalty = math.Clamp(0.2 + ((maxwalkweight - maxweight) - (weight - maxweight)) / ((maxwalkweight - maxweight)/0.6), 0.2, 0.8)
+		ply:PrintMessage(3, weightpenalty)
+	end
+
+	self:SetPlayerSpeed(ply, totalwspeed * weightpenalty, totalrspeed * weightpenalty)
+	ply:SetSlowWalkSpeed(totalswspeed * weightpenalty)
 end
 
 function GM:CheckSpawnChanceErrors()

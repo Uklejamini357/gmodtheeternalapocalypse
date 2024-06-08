@@ -1,15 +1,22 @@
-function GM:LoadPlayer(ply)
-	local filedir = self.DataFolder.."/players/".. string.lower(string.gsub(ply:SteamID(), ":", "_"))
-	local filedir_ply = self.DataFolder.."/players/".. string.lower(string.gsub(ply:SteamID(), ":", "_") .."/profile.txt")
-	if not file.IsDir(filedir, "DATA") then
-	   file.CreateDir(filedir)
+function GM:LoadPlayer(ply, id)
+	local filedir
+	local filedir_ply
+	if self.PlayerCharactersTest then
+		filedir = self.DataFolder.."/players/".. string.lower(string.gsub(ply:SteamID(), ":", "_").."/characters/"..tostring(id))
+		filedir_ply = self.DataFolder.."/players/".. string.lower(string.gsub(ply:SteamID(), ":", "_") .."/characters/"..tostring(id).."/profile.txt")
+	else
+		filedir = self.DataFolder.."/players/".. string.lower(string.gsub(ply:SteamID(), ":", "_"))
+		filedir_ply = self.DataFolder.."/players/".. string.lower(string.gsub(ply:SteamID(), ":", "_") .."/profile.txt")
 	end
+
+	if not file.IsDir(filedir, "DATA") then file.CreateDir(filedir) end
+
 	if (file.Exists(filedir_ply, "DATA")) then
 		local TheFile = file.Read(filedir_ply, "DATA")
 		local DataPieces = string.Explode("\n", TheFile)
 
 		local Output = {}
-		local perkpoints = false
+		local perkpoints
 
 		for k, v in pairs(DataPieces) do
 			local TheLine = string.Explode(";", v) -- convert txt string to stats table
@@ -71,6 +78,8 @@ function GM:LoadPlayer(ply)
 	end
 	self:NetUpdatePeriodicStats(ply)
 	self:NetUpdateStatistics(ply)
+
+	return true
 end
 
 
@@ -321,4 +330,74 @@ function GM:FullyUpdatePlayer(ply)
 end
 
 --local meta = FindMetaTable("Player")
+
+
+
+function GM:GetPlayerCharacters(ply)
+	if !self.PlayerCharactersTest then return end
+		local tbl = {}
+	for i=1,3 do
+		
+		local t = {}
+		local filedir = self.DataFolder.."/players/"..string.lower(string.gsub(ply:SteamID(), ":", "_") .."/characters/"..tostring(id))
+		local filedir_ply = self.DataFolder.."/players/".. string.lower(string.gsub(ply:SteamID(), ":", "_") .."/profile.txt")
+
+		if (file.Exists(filedir_ply, "DATA")) then
+			local TheFile = file.Read(filedir_ply, "DATA")
+			local DataPieces = string.Explode("\n", TheFile)
+	
+			local Output = {}
+			local perkpoints
+	
+			for k, v in pairs(DataPieces) do
+				local TheLine = string.Explode(";", v)
+
+				t[TheLine[1]] = TheLine[2]
+	
+				if TheLine[1] == "PerkPoints" then
+					perkpoints = true
+				end
+			end
+	
+			if !perkpoints then
+				t.PerkPoints = t.Prestige
+			end
+		else
+			t.Money = tonumber(self.Config["StartMoney"])
+	/*
+			ply.ChosenModel = "models/player/kleiner.mdl"
+			ply.BestSurvivalTime = 0
+			ply.XP = 0 
+			ply.Level = 1
+			ply.Prestige = 0
+			ply.playerskilled = 0
+			ply.playerdeaths = 0
+			ply.ZKills = 0
+			ply.BestSurvivalTime = 0
+			ply.StatPoints = 0
+			ply.EquippedArmor = "none"
+			ply.StatsReset = 0
+	
+			ply.MasteryMeleeXP = 0
+			ply.MasteryMeleeLevel = 0
+			ply.MasteryPvPXP = 0
+			ply.MasteryPvPLevel = 0
+	
+			for k, v in pairs(self.StatsListServer) do
+				local TheStatPieces = string.Explode(";", v)
+				local TheStatName = TheStatPieces[1]
+				ply[TheStatName] = 0
+			end
+	*/
+		end
+
+		tbl[i] = t
+	end
+
+	return tbl
+end
+
+
+
+
 
