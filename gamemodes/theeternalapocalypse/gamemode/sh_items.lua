@@ -384,7 +384,14 @@ GM.ItemsList = {
 		Supply = -1,
 		Rarity = RARITY_EVENT,
 		Category = 1,
-		UseFunc = function(ply) GAMEMODE:SystemBroadcast("Boss is being summoned by an used boss shard", Color(155,255,255), false) GAMEMODE:SpawnBoss(#player.GetAll() + 8, true) return true end,
+		UseFunc = function(ply)
+			local random = table.Random({
+				"This is going to be a terrible time...",
+				"Calm before the storm...",
+			})
+			GAMEMODE:SystemBroadcast(random, Color(115,205,205), false)
+			GAMEMODE:SpawnBoss(#player.GetAll() + 8, true)
+		return true end,
 		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_boss_shard") return drop end
 	},
 
@@ -395,7 +402,17 @@ GM.ItemsList = {
 		Supply = -1,
 		Rarity = RARITY_EVENT,
 		Category = 1,
-		UseFunc = function(ply) GAMEMODE:SystemBroadcast("Infection Level has been increased by 50%, difficulty greatly increases!", Color(155,255,255), false) GAMEMODE:SetInfectionLevel(math.max(0, GAMEMODE:GetInfectionLevel() + 50)) return true end,
+		UseFunc = function(ply)
+			if GAMEMODE.InfectionLevelIncreaseType ~= 1 then PrintMessage(3, "Item is unusable currently at the moment due to config setting (GAMEMODE.InfectionLevelIncreaseType need to be 1)") return false end
+			local random = table.Random({
+				"You feel like zombies suddenly become stronger...",
+				"Zombies become stronger. This isn't good...",
+			})
+
+			local set = math.max(0, GAMEMODE:GetInfectionLevel() + 50)
+			GAMEMODE:SystemBroadcast(random.." ("..GAMEMODE:GetInfectionLevel().."% -> "..set.."%)", Color(115,205,205), false)
+			GAMEMODE:SetInfectionLevel(set)
+		return true end,
 		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_difficulty_shard") return drop end
 	},
 

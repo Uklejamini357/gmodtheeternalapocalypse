@@ -195,12 +195,21 @@ function GM:Think()
 				self:SetInfectionLevel(math.max(0, self:GetInfectionLevel() - (0.045 + (self.InfectionDecreasedTimes * 0.0072))))
 			end
 		else
+			local averagelevelprogress = 0
 			local averageprestige = 0
 			for _,pl in pairs(player.GetAll()) do
-				averageprestige = pl.Prestige + pl:GetProgressToPrestige()
+				averagelevelprogress = averagelevelprogress + math.Clamp((pl.Level-1) / (pl:GetMaxLevel()-1), 0, 1)
 			end
+			averagelevelprogress = averagelevelprogress / player.GetCount()
 
-			self:SetInfectionLevel(0)
+			for _,pl in pairs(player.GetAll()) do
+				-- averageprestige = pl.Prestige + pl:GetProgressToPrestige()
+				averageprestige = averageprestige + math.Clamp(pl.Prestige, 0, 100)
+			end
+			averageprestige = averageprestige / player.GetCount()
+
+
+			self:SetInfectionLevel(averagelevelprogress*10+averageprestige*5)
 		end
 
 		if self.NextSave + 240 < ct then

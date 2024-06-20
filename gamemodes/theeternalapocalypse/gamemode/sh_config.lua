@@ -47,8 +47,10 @@ GM.InfectionLevelShouldNotDecrease = false
 -- Current level is saved between server restarts and infection shard increases infection level by +50%
 -- (wip) 2 = Let players decide how much infection level should be globally, infection shard however increases infection level by +50%, with its' bonus slowly degrading.
 -- (wip) 3 = Infection Level amount depends on online player count, but infection shard works like in 2.
--- (wip) 4 = Infection Level amount depends on average player progression. (Only affects players who are online)
+-- (done) 4 = Infection Level amount depends on average player progression. (Only affects players who are online)
 -- This makes it a good challenge for high prestige players. Infection Shard works just like in 2.
+
+-- Currently Infection Shard is only usable when this value is 1
 GM.InfectionLevelIncreaseType = 1
 
 
