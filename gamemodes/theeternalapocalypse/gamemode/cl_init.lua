@@ -377,6 +377,21 @@ function GM:OnUndo(name, str)
 	surface.PlaySound("buttons/button15.wav")
 end
 
+function GM:SpawnMenuEnabled()
+	return true
+end
+
+function GM:SpawnMenuOpen()
+	return true
+end
+
+function GM:ContextMenuOpen()
+	return true
+end
+
+
+
+
 /* -- i guess this one is a bit buggy
 function GM:OnPlayerChat(ply, text, team, dead)
 	local tab = {}
@@ -455,6 +470,20 @@ function GM:PlayerBindPress(pl, key, wasin)
 		gamemode.Call("DropGoldMenu")
 	elseif key == "gm_showspare2" then
 		gamemode.Call("MakeOptions")
+	elseif key == "+menu_context" then
+	elseif key == "+menu" then
+	end
+end
+
+function GM:KeyRelease(pl, key)
+	if key == input.LookupBinding("+menu_context") then
+		if !IsValid(ContextMenu) then return end
+		ContextMenu:SetVisible(false)
+		ContextMenu:Remove()
+	elseif key == input.LookupBinding("+menu") then
+		if IsValid(PropsFrame) then
+			PropsFrame:Close()
+		end
 	end
 end
 

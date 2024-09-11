@@ -6,39 +6,26 @@ local Spawn = 0
 
 
 net.Receive("UpdateStats", function(len) -- this net message is received once per frame
-	local stam = net.ReadFloat()
-	local hung = net.ReadFloat()
-	local thir = net.ReadFloat()
-	local fat = net.ReadFloat()
-	local infec = net.ReadFloat()
-	local survtim = net.ReadFloat()
-	local bat = net.ReadFloat()
 
-	MyStamina = stam
-	MyHunger = hung
-	MyThirst = thir
-	MyFatigue = fat
-	MyInfection = infec
-	MySurvivaltime = survtim
-	MyBattery = bat
+	MyStamina = net.ReadFloat()
+	MyHunger = net.ReadFloat()
+	MyThirst = net.ReadFloat()
+	MyFatigue = net.ReadFloat()
+	MyInfection = net.ReadFloat()
+	MySurvivaltime = net.ReadFloat()
+	MyBattery = net.ReadFloat()
 end)
 
 net.Receive("UpdatePeriodicStats", function(len) -- this net message is only received when one of these values need to be updated
-	local level = net.ReadFloat()
-	local prestige = net.ReadFloat()
-	local money = net.ReadFloat()
-	local setxp = net.ReadFloat()
-	local statpoints = net.ReadFloat()
-	local perkpts = net.ReadFloat()
-	local bounty = net.ReadFloat()
 
-	MyLvl = level
-	MyPrestige = prestige
-	MyMoney = money
-	MyXP = setxp
-	MySP = statpoints
-	MyPerkPoints = perkpts
-	MyBounty = bounty
+
+	MyLvl = net.ReadFloat()
+	MyPrestige = net.ReadFloat()
+	MyMoney = net.ReadFloat()
+	MyXP = net.ReadFloat()
+	MySP = net.ReadFloat()
+	MyPerkPoints = net.ReadFloat()
+	MyBounty = net.ReadFloat()
 end)
 
 

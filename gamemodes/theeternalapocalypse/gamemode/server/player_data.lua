@@ -286,6 +286,7 @@ function GM:PrepareStats(ply)
 	ply.Thirst = 10000
 	ply.Fatigue = 0
 	ply.Infection = 0
+	ply.Oxygen = 100
 	ply.Battery = 100 + (armorstr and armortype and armortype["ArmorStats"]["battery"] or 0)
 	ply.HPRegen = 0
 	ply.SurvivalTime = CurTime()

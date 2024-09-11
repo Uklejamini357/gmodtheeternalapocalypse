@@ -128,6 +128,7 @@ local NextTick = 0
 
 function GM:Think()
 	local ct = CurTime()
+	local ft = FrameTime()
 
 	if NextTick < ct then
 		NextTick = ct + 1
@@ -187,7 +188,7 @@ function GM:Think()
 			end)
 		end
 
-		if false then
+		if self.InfectionLevelIncreaseType == 1 then
 			if self.InfectionLevelEnabled and plycount > 0 and self.NextInfectionDecrease < ct and self:GetInfectionLevel() > 0 and not self.InfectionLevelShouldNotDecrease then
 				self.NextInfectionDecrease = ct + 9
 				self.InfectionDecreasedTimes = math.Clamp(self.InfectionDecreasedTimes + 1, 0, 45)
@@ -246,14 +247,14 @@ function GM:Think()
 		local infection = ply.Infection or 0
 		local battery = ply.Battery or 0
 	
-		local endurance = (ply.StatEndurance or 0) / 500
+		local endurance = ((ply.StatEndurance or 0) / 500) / ft
 	
 		-- hunger, thirst, fatigue, infection
-		ply.Hunger = math.Clamp(hunger - (0.065 * (1 - (ply.StatSurvivor * 0.04))), 0, 10000)
-		ply.Thirst = math.Clamp(thirst - (0.0782 * (1 - (ply.StatSurvivor * 0.0425))), 0, 10000)
-		ply.Fatigue = math.Clamp(fatig + (0.045 * (1 - (ply.StatSurvivor * 0.035))), 0, 10000)
+		ply.Hunger = math.Clamp(hunger - (4.35*ft * (1 - (ply.StatSurvivor * 0.04))), 0, 10000)
+		ply.Thirst = math.Clamp(thirst - (5.2*ft * (1 - (ply.StatSurvivor * 0.0425))), 0, 10000)
+		ply.Fatigue = math.Clamp(fatig + (3*ft * (1 - (ply.StatSurvivor * 0.035))), 0, 10000)
 	
-		if (ply.Thirst <= 0 or ply.Hunger <= 0 or ply.Fatigue >= 10000 or ply.Infection >= 10000) and ply:Alive() then
+		if (ply.Thirst <= 0 or ply.Hunger <= 0 or ply.Fatigue >= 10000 or ply.Infection >= 10000) then
 			if !timer.Exists("DyingFromStats_"..ply:EntIndex()) then
 				timer.Create("DyingFromStats_"..ply:EntIndex(), 30, 1, function()
 					if ply:Alive() then ply:Kill() end
@@ -273,10 +274,10 @@ function GM:Think()
 				ply:AllowFlashlight(false)
 				ply.CanUseFlashlight = false
 			else
-				ply.Battery = math.Clamp(ply.Battery - 0.01, 0, 100 + (armorstr and armortype and armortype["ArmorStats"]["battery"] or 0))
+				ply.Battery = math.Clamp(ply.Battery - 1*ft, 0, 100 + (armorstr and armortype and armortype["ArmorStats"]["battery"] or 0))
 			end
 		else
-			ply.Battery = math.Clamp(ply.Battery + 0.0135, 0, 100 + (armorstr and armortype and armortype["ArmorStats"]["battery"] or 0))
+			ply.Battery = math.Clamp(ply.Battery + 1.35*ft, 0, 100 + (armorstr and armortype and armortype["ArmorStats"]["battery"] or 0))
 			if ply.Battery >= 10 then
 				ply:AllowFlashlight(true)
 				ply.CanUseFlashlight = true
@@ -285,7 +286,7 @@ function GM:Think()
 	
 	-- in case if player's HPRegen value is nil then it's set to 0
 		if ply.HPRegen and ply:Health() < ply:GetMaxHealth() and ply.Thirst >= (3000 - (125 * ply.StatSurvivor)) and ply.Hunger >= (3000 - (150 * ply.StatSurvivor)) and ply.Fatigue <= (7000 + (150 * ply.StatSurvivor)) and ply.Infection <= (5000 - (100 * ply.StatImmunity)) then
-			ply.HPRegen = math.Clamp(ply.HPRegen + 0.00175 + (ply.StatMedSkill * 0.0001), 0, ply:GetMaxHealth())
+			ply.HPRegen = math.Clamp(ply.HPRegen + 0.11*ft + (ply.StatMedSkill * 0.0001), 0, ply:GetMaxHealth())
 		elseif !ply.HPRegen or ply.HPRegen > 0 then
 			ply.HPRegen = 0
 		end
@@ -297,9 +298,40 @@ function GM:Think()
 --			ply:SendChat(translate.ClientGet(ply, "plcaughtinfection"))
 		end
 */
-		if (ply.Infection > 0 or infectionchance and infectionchance <= 1 and math.floor(ct - ply.SurvivalTime) >= 900) and ply:Alive() then
-			ply.Infection = math.Clamp(ply.Infection + (0.1176 * (1 - (ply.StatImmunity * 0.04))), 0, 10000)
+		if (ply.Infection > 0 or infectionchance and infectionchance <= 1 and math.floor(ct - ply.SurvivalTime) >= 900) then
+			ply.Infection = math.Clamp(ply.Infection + (7.84*ft * (1 - (ply.StatImmunity * 0.04))), 0, 10000)
 		end
+
+
+		if ply:WaterLevel() == 3 then
+			ply.Thirst = math.Clamp(ply.Thirst + 16.2*ft, 0, 10000)
+			if tonumber(ply.Oxygen) <= 0 then
+				if not ply.DrownStartTime then
+					ply.DrownStartTime = ct
+				end
+
+				ply.DrownDamage = ply.DrownDamage + (0.08+(0.008*(CurTime()-ply.DrownStartTime)))*ft*ply:GetMaxHealth()
+				if ply.DrownDamage >= 1 then
+					ply:SetHealth(ply:Health() - math.floor(ply.DrownDamage))
+					if ply:Health() < 1 then
+						local d = DamageInfo()
+						d:SetDamage(1)
+						d:SetDamageType(DMG_DROWN)
+						d:SetAttacker(ply)
+						d:SetInflictor(ply)
+						ply:TakeDamageInfo(d)
+					end
+					ply.DrownDamage = ply.DrownDamage - math.floor(ply.DrownDamage)
+				end
+			else
+				ply.Oxygen = math.Clamp(ply.Oxygen - 6*ft, 0, 100)
+				-- ply.Stamina = math.Clamp(ply.Stamina - ((0.093 / staminaperk) - endurance), 0, 100)
+			end
+		else
+			ply.Oxygen = math.Clamp(ply.Oxygen + 12*ft, 0, 100)
+			ply.DrownStartTime = nil
+		end
+
 
 		local PlayerIsMoving = ply:GetPlayerMoving()
 		if ply:GetMoveType() != MOVETYPE_NOCLIP or ply:InVehicle() then
@@ -311,36 +343,16 @@ function GM:Think()
 	
 			local staminaperk = ply.UnlockedPerks["enduring_endurance"] and ply.Stamina < 25 and 2 or 1
 
-			if ply:WaterLevel() == 3 and ply:Alive() then
-				ply.Thirst = math.Clamp(ply.Thirst + 0.243 , 0, 10000)
-				if tonumber(ply.Stamina) <= 0 then
-					ply.DrownDamage = ply.DrownDamage + 0.1
-					if ply.DrownDamage >= 1 then
-						if ply:Health() > 1 then
-							ply:SetHealth(ply:Health() - math.floor(ply.DrownDamage))
-						else
-							local d = DamageInfo()
-							d:SetDamage(1)
-							d:SetDamageType(DMG_DROWN)
-							d:SetAttacker(ply)
-							d:SetInflictor(ply)
-							ply:TakeDamageInfo(d)
-						end
-						ply.DrownDamage = ply.DrownDamage - math.floor(ply.DrownDamage)
-					end
-				else
-					ply.Stamina = math.Clamp(ply.Stamina - ((0.093 / staminaperk) - endurance), 0, 100)
-				end
-			elseif !ply:InVehicle() and (ply:IsSprinting() and PlayerIsMoving and not ply:Crouching()) then
-				ply.Stamina = math.Clamp(ply.Stamina - ((0.0755 / staminaperk) - endurance), 0, 100)
+			if !ply:InVehicle() and (ply:IsSprinting() and PlayerIsMoving and not ply:Crouching()) then
+				ply.Stamina = math.Clamp(ply.Stamina - ((5.03*ft / staminaperk) - endurance), 0, 100)
 			elseif !ply:InVehicle() and PlayerIsMoving and ply:Crouching() then
-				ply.Stamina = math.Clamp(ply.Stamina + (0.01097 + endurance) * staminaperk, 0, 100)
+				ply.Stamina = math.Clamp(ply.Stamina + (0.73*ft + endurance) * staminaperk, 0, 100)
 			elseif !ply:InVehicle() and PlayerIsMoving then
-				ply.Stamina = math.Clamp(ply.Stamina + (0.00824 + endurance) * staminaperk, 0, 100)
+				ply.Stamina = math.Clamp(ply.Stamina + (0.55*ft + endurance) * staminaperk, 0, 100)
 			elseif ply:InVehicle() or ply:Crouching() then
-				ply.Stamina = math.Clamp(ply.Stamina + (0.043 + endurance) * staminaperk, 0, 100)
+				ply.Stamina = math.Clamp(ply.Stamina + (2.86*ft + endurance) * staminaperk, 0, 100)
 			else
-				ply.Stamina = math.Clamp(ply.Stamina + (0.047 + endurance) * staminaperk, 0, 100)
+				ply.Stamina = math.Clamp(ply.Stamina + (3.13*ft + endurance) * staminaperk, 0, 100)
 			end
 		
 			-- if ply.Stamina > 30 then
@@ -356,13 +368,13 @@ function GM:Think()
 			-- 	ply:ConCommand("-speed")
 			-- end
 		end
-	
+/*	
 		if tonumber(ply.Stamina) > 0 or ply:WaterLevel() != 3 then
 			if timer.Exists("DrownTimer"..ply:EntIndex()) then
 				timer.Destroy("DrownTimer"..ply:EntIndex())
 			end
 		end
-
+*/
 		if (ply.NextTick or 0) < RealTime() then
 			self:NetUpdateStats(ply)
 			ply.NextTick = RealTime() + 0.06
@@ -748,6 +760,7 @@ function GM:PlayerInitialSpawn(ply, transition)
 	ply.Fatigue = 0
 	ply.Infection = 0
 	ply.Battery = 100
+	ply.Oxygen = 100
 	ply.HPRegen = 0
 	ply.ChosenModel = "models/player/kleiner.mdl"
 	ply.Inventory = {}
