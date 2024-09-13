@@ -477,6 +477,10 @@ function GM:InitPostEntity()
 	RunConsoleCommand("M9KDisablePenetration", "1") --they are op with penetration, time to nerf them again (unless you want them to remain the same, remove or exclude this line)
 	RunConsoleCommand("sv_defaultdeployspeed", "1") --so that users don't just switch weapons too quickly
 
+	self:MapReInit()
+end
+
+function GM:MapReInit()
 	--Don't disable this function below, unless you want to have some fun of course
 	for k, v in pairs(ents.FindByClass("npc_*")) do v:Remove() end
 	for k, v in pairs(ents.FindByClass("weapon_*")) do v:Remove() end
@@ -571,6 +575,7 @@ function GM:DoAutoMaintenance(time)
 end
 
 function GM:PostCleanupMap()
+	self:MapReInit()
 	timer.Simple(0.5, function() self:SpawnTraders() end)
 end
 

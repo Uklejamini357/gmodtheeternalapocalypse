@@ -22,12 +22,15 @@ function GM:LoadPlayer(ply, id)
 			local TheLine = string.Explode(";", v) -- convert txt string to stats table
 			
 			ply[TheLine[1]] = TheLine[2]  -- dump all their stats into their player table
+
 			if self:GetDebug() >= DEBUGGING_EXPERIMENTAL then
 				print(TheLine[1].." = "..TheLine[2])
 			end
 
 			if TheLine[1] == "PerkPoints" then
 				perkpoints = true
+			elseif TheLine[1] == "TaskCooldowns" then
+				ply[TheLine[1]] = util.JSONToTable(TheLine[2])
 			end
 		end
 
@@ -104,6 +107,7 @@ function GM:SavePlayer(ply)
 	Data["ChosenModelColor"] = tostring(ply.ChosenModelColor)
 	Data["CurrentTask"] = ply.CurrentTask
 	Data["CurrentTaskProgress"] = ply.CurrentTaskProgress
+	Data["TaskCooldowns"] = util.TableToJSON(ply.TaskCooldowns)
 
 	Data["MasteryMeleeXP"] = ply.MasteryMeleeXP
 	Data["MasteryMeleeLevel"] = ply.MasteryMeleeLevel
