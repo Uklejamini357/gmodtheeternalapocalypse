@@ -36,7 +36,7 @@ function GM.ZS.StartZombieApocalypse(preptime, wavedur)
 end
 
 
-function GM.ZS.EndEvent()
+function GM.ZS.EndEvent(noplyfrespawn)
 	SetGlobalBool("GM.ZombieSpawning", GAMEMODE.ZS.LastZSpawning)
 	GAMEMODE.ZombieApocalypse = GAMEMODE.ZS.LastZombieApocalypse
 	BroadcastLua(GAMEMODE.ZS.LastZombieApocalypse and "GAMEMODE.ZombieApocalypse = true" or "GAMEMODE.ZombieApocalypse = false")
@@ -55,9 +55,16 @@ function GM.ZS.EndEvent()
 	end
 
 	timer.Simple(5, function()
-		for _,pl in pairs(player.GetAll()) do pl:Spectate(OBS_MODE_ROAMING) pl:StripWeapons() end
+		for _,pl in pairs(player.GetAll()) do
+			if not pl:Alive() or not noplyfrespawn then return end end
+			pl:Spectate(OBS_MODE_ROAMING)
+			pl:StripWeapons()
+		end
 		timer.Simple(1, function()
-			for _,pl in pairs(player.GetAll()) do pl:KillSilent() pl:Spawn() end
+			for _,pl in pairs(player.GetAll()) do
+				if not pl:Alive() or not noplyfrespawn then return end end
+				pl:KillSilent() pl:Spawn()
+			end
 			GAMEMODE:SetEvent(EVENT_NONE)
 		end)
 	end)
