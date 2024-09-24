@@ -2,12 +2,37 @@
 
 pPropsFrame = nil
 
+local function SpawnMenuOpen(self)
+	if ( !hook.Call( "SpawnMenuOpen", self ) ) then return end
+
+	if ( IsValid( g_SpawnMenu ) ) then
+		g_SpawnMenu:Open()
+		menubar.ParentTo( g_SpawnMenu )
+	end
+
+	hook.Call( "SpawnMenuOpened", self )
+
+end
+
+local function SpawnMenuClose(self)
+	if ( IsValid( g_SpawnMenu ) ) then g_SpawnMenu:Close() end
+	hook.Call( "SpawnMenuClosed", self )
+end
+
 function GM:OnSpawnMenuOpen()
 	if IsValid(PropsFrame) then PropsFrame:Close() end
+	if SuperAdminCheck(LocalPlayer()) and input.IsShiftDown() then
+		SpawnMenuOpen(self)
+		return true
+	end
 	self:PropMenu()
 end
 
 function GM:OnSpawnMenuClose()
+	if g_SpawnMenu:IsVisible() then
+		SpawnMenuClose(self)
+	end
+
 	if IsValid(PropsFrame) then
 		PropsFrame:Close()
 	end

@@ -1,3 +1,5 @@
+DeriveGamemode("sandbox")
+
 GM.Name		= "The Eternal Apocalypse"
 GM.AltName	= "After The End Reborn"
 GM.Author	= "Uklejamini"

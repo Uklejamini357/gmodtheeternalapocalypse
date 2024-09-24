@@ -1,13 +1,38 @@
 -------------------------------- Context Menu --------------------------------
 
 
+local function ContextMenuOpen(self)
+	if ( !hook.Call( "ContextMenuOpen", self ) ) then return end
+
+	if ( IsValid( g_ContextMenu ) && !g_ContextMenu:IsVisible() ) then
+		g_ContextMenu:Open()
+		menubar.ParentTo( g_ContextMenu )
+	end
+	
+	hook.Call( "ContextMenuOpened", self )
+end
+
+local function ContextMenuClose(self)
+	if ( IsValid( g_ContextMenu ) ) then g_ContextMenu:Close() end
+	hook.Call( "ContextMenuClosed", self )
+end
+
 function GM:OnContextMenuOpen()
 	if IsValid(ContextMenu) then return end
+	if SuperAdminCheck(LocalPlayer()) and input.IsShiftDown() then
+		ContextMenuOpen(self)
+		return true
+	end
+
 	self:CMenu()
 	ContextMenu:SetVisible(true)
 end
 
 function GM:OnContextMenuClose()
+	if g_ContextMenu:IsVisible() then
+		ContextMenuClose(self)
+	end
+
 	if !IsValid(ContextMenu) then return end
 	ContextMenu:SetVisible(false)
 	ContextMenu:Remove()
