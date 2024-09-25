@@ -33,11 +33,12 @@ function ENT:Use( activator, caller )
 	if !name or !item or !qtycheck then caller:SendChat(translate.ClientGet(caller, "buggedcache")) self:Remove() return false end
 
 	if !item then return false end
+/*
 	if (caller:CalculateWeight() + (qtycheck * itemweight)) > caller:CalculateMaxWeight() then
 		caller:SendChat(translate.ClientFormat(caller, "notenoughspaceloot", qtycheck * itemweight, GAMEMODE:CalculateRemainingInventoryWeight(caller, qtycheck * itemweight)))
 		return false
 	end
-
+*/
 	gamemode.Call("SystemGiveItem", caller, name, qtycheck)
 	gamemode.Call("GiveTaskProgress", caller, "loot_finder", 1)
 
