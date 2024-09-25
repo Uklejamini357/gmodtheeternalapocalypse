@@ -40,6 +40,7 @@ function ENT:Use( activator, caller )
 	end
 */
 	gamemode.Call("SystemGiveItem", caller, name, qtycheck)
+	gamemode.Call("GiveTaskProgress", caller, "loot_finder", 1)
 
 	caller:SendChat("You picked up a faction loot cache containing [ "..qtycheck.."x "..itemname.." ]")
 	GAMEMODE:SystemBroadcast(caller:Nick().." has found a faction loot cache containing "..qtycheck.."x "..itemname.."!", Color(255,255,255,255), true)
