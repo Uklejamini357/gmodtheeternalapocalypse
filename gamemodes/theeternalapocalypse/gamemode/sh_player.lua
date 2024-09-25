@@ -71,7 +71,7 @@ function meta:HasCompletedTask()
 	local taskl = GAMEMODE.Tasks[task]
 
 	if !taskl then return false end
-	return taskl.GetCompleted and taskl.GetCompleted(self) or !taskl.GetCompleted and (self.CurrentTaskProgress or GAMEMODE.CurrentTaskProgress or 0) >= taskl.ReqProgress
+	return taskl.GetCompleted and taskl.GetCompleted(self) or !taskl.GetCompleted and tonumber(self.CurrentTaskProgress or GAMEMODE.CurrentTaskProgress or 0) >= taskl.ReqProgress
 end
 
 function meta:GetReqXP()

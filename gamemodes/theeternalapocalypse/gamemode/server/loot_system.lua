@@ -179,7 +179,7 @@ function GM:WithdrawFromContainer(ply, str, ent)
 
 	local item = self.ItemsList[str]
 
-	if ((gamemode.Call("CalculateWeight", ply) + item["Weight"]) > gamemode.Call("CalculateMaxWeight", ply)) then ply:SystemMessage("You don't have enough space for that!", Color(255,205,205,255), true) return end
+	-- if ((gamemode.Call("CalculateWeight", ply) + item["Weight"]) > gamemode.Call("CalculateMaxWeight", ply)) then ply:SystemMessage("You don't have enough space for that!", Color(255,205,205,255), true) return end
 
 
 	ent.ContainerItems[str] = ent.ContainerItems[str] - 1

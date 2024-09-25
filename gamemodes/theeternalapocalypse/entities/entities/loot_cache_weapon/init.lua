@@ -39,6 +39,7 @@ function ENT:Use( activator, caller )
 	end
 
 	gamemode.Call("SystemGiveItem", caller, name, qtycheck )
+	gamemode.Call("GiveTaskProgress", caller, "loot_finder", 1)
 
 	caller:SendChat("You picked up a loot cache containing [ "..qtycheck.."x "..itemname.." ]")
 	GAMEMODE:SendInventory(caller)

@@ -247,7 +247,7 @@ function GM:Think()
 		local infection = ply.Infection or 0
 		local battery = ply.Battery or 0
 	
-		local endurance = ((ply.StatEndurance or 0) / 500) / ft
+		local endurance = ((ply.StatEndurance or 0) / 500) * ft
 	
 		-- hunger, thirst, fatigue, infection
 		ply.Hunger = math.Clamp(hunger - (4.35*ft * (1 - (ply.StatSurvivor * 0.04))), 0, 10000)
@@ -1081,7 +1081,6 @@ function GM:RecalcPlayerSpeed(ply)
 		totalswspeed = 1
 	elseif weight >= maxweight then
 		weightpenalty = math.Clamp(0.2 + ((maxwalkweight - maxweight) - (weight - maxweight)) / ((maxwalkweight - maxweight)/0.6), 0.2, 0.8)
-		ply:PrintMessage(3, weightpenalty)
 	end
 
 	self:SetPlayerSpeed(ply, totalwspeed * weightpenalty, totalrspeed * weightpenalty)
