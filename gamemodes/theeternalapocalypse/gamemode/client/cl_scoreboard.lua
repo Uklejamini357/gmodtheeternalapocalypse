@@ -1117,6 +1117,9 @@ function GM:CreateScoreboardInv()
 			Button.Paint = function()
 				draw.RoundedBox(0, 0, 0, Button:GetWide(), Button:GetTall(), Color(30, 30, 30, 50))
 				draw.RoundedBox(0, 0, 0, Perks[k] * 225 / v.Max, Button:GetTall(), Color(100, 100, 0, 150))
+				if Perks[k] > v.Max then -- Empowered Skills
+					draw.RoundedBox(0, 0, 0, (Perks[k]-v.Max) * 225 / (v.Max + v.PerkMaxIncrease), Button:GetTall(), Color(200, 0, 0, 150))
+				end
 				surface.SetDrawColor(100, 100, 0 ,255)
 				surface.DrawOutlinedRect(0, 0, Button:GetWide(), Button:GetTall())
 			end

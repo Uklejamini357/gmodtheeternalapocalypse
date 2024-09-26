@@ -388,6 +388,8 @@ GM.ItemsList = {
 			local random = table.Random({
 				"This is going to be a terrible time...",
 				"Calm before the storm...",
+				"A boss is being created by the unknown powers...",
+				"There is no going back now...",
 			})
 			GAMEMODE:SystemBroadcast(random, Color(115,205,205), false)
 			GAMEMODE:SpawnBoss(#player.GetAll() + 8, true)
@@ -407,6 +409,7 @@ GM.ItemsList = {
 			local random = table.Random({
 				"You feel like zombies suddenly become stronger...",
 				"Zombies become stronger. This isn't good...",
+				"You are not going to survive this...",
 			})
 
 			local set = math.max(0, GAMEMODE:GetInfectionLevel() + 50)

@@ -237,7 +237,7 @@ net.Receive("UpgradePerk", function(len, ply)
 		return false
 	end
 	if amt < mul then return end
-	if ply:HasPerk("empowered_skills") and skill.Max >= curskillamt and (tonumber(curskillamt) >= (skill.Max + (skill.PerkMaxIncrease or 0))) or skill.Max < curskillamt and (tonumber(curskillamt) >= skill.Max) then
+	if ply:HasPerk("empowered_skills") and skill.Max >= curskillamt and (curskillamt >= (skill.Max + (skill.PerkMaxIncrease or 0))) or skill.Max < curskillamt and (tonumber(curskillamt) >= skill.Max) then
 		ply:SendChat("You have reached the maximum number of points for this skill")
 		return false
 	end

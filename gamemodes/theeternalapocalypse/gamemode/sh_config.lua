@@ -659,7 +659,7 @@ GM.PerksList = {
 		PrestigeReq = 2,
 	},
 
-	["empowered_skills"] = { -- Not done
+	["empowered_skills"] = { -- Should work now
 		Name = "Empowered Skills",
 		Description = "You can apply more skill points to the same skill, but cost is doubled if applying beyond normal limit",
 		Cost = 3,
