@@ -239,6 +239,12 @@ function GM:GetInfectionMul(value, bypass)
 --	return tonumber((1 * value) + (self:GetInfectionLevel() * (0.01 / value)))
 end
 
+function GM:GetEliveVariantSpawnChance(boss)
+	local chance = self:GetCurrentSeasonalEvent() != SEASONAL_EVENT_HALLOWEEN and (boss and 10 or 1) or
+	self:GetCurrentSeasonalEvent() == SEASONAL_EVENT_HALLOWEEN and (boss and 35 or 5)
+	return chance
+end
+
 function GM:GetDebug()
 	return SERVER and self.DebuggingMode or CLIENT and self.DebuggingModeClient or 0
 end

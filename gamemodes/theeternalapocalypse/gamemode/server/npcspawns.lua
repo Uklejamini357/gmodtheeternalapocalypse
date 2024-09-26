@@ -103,7 +103,8 @@ function GM:SpawnRandomZombie(pos, ang)
 			k = v.Miniboss and (#player.GetAll() >= 3 or self:GetInfectionLevel() > 25) and k or !v.Miniboss and k or "npc_tea_basic"
 			v = self.Config["ZombieClasses"][k]
 
-			local elite = math.random(100) == 1 or self:GetCurrentSeasonalEvent() == SEASONAL_EVENT_HALLOWEEN and math.random(20) == 1
+			local elitechance = math.Rand(0, 100)
+			local elite = elitechance ~= 0 and elitechance <= self:GetEliveVariantSpawnChance(false)
 			local ent = self:CreateZombie(k, pos, ang, v.XPReward, v.MoneyReward, v.InfectionRate, false)
 
 			if elite and v.AllowEliteVariants then
@@ -167,7 +168,8 @@ function GM:SpawnRandomBoss(pos, ang, plycountoverride, nonotify)
 				self:SystemBroadcast(v.AnnounceMessage, Color(255,105,105), false)
 				for k, v in pairs(player.GetAll()) do BroadcastLua([[if GetConVar("tea_cl_soundboss"):GetInt() >= 1 then RunConsoleCommand("playgamesound", "music/stingers/hl1_stinger_song8.mp3") end]]) end
 
-				local elite = math.random(10) == 1 or self:GetCurrentSeasonalEvent() == SEASONAL_EVENT_HALLOWEEN and math.random(3) == 1
+				local elitechance = math.Rand(0, 100)
+				local elite = elitechance ~= 0 and elitechance <= self:GetEliveVariantSpawnChance(true)
 				local ent = self:CreateZombie(k, pos, ang, v.XPReward, v.MoneyReward, v.InfectionRate, true)
 	
 				if elite and v.AllowEliteVariants then

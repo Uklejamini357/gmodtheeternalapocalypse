@@ -14,11 +14,11 @@ SWEP.StaminaNeeded			= 11.5
 SWEP.HitDistance			= 75
 
 SWEP.Primary.Recoil		= 5
-SWEP.Primary.Damage		= 191
+SWEP.Primary.Damage		= 183
 SWEP.Primary.PlayerDamage	= 84
 SWEP.Primary.NumShots	= 0
 SWEP.Primary.Cone		= 0.075
-SWEP.Primary.Delay 		= 1.7
+SWEP.Primary.Delay 		= 1.6
 
 SWEP.Primary.ClipSize		= -1
 SWEP.Primary.DefaultClip	= 0

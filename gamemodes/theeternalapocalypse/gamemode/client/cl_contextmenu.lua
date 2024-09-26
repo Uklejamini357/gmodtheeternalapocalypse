@@ -172,8 +172,8 @@ function GM:CMenu()
 			draw.SimpleText(Format("Zombie cash reward: %s%%", math.Round(self:GetInfectionMul(0.5)*100, 2)), "TargetIDSmall", scw - 590, sch / 2 - 75, color, 0, 0)
 			draw.SimpleText(Format("Zombie xp reward: %s%%", math.Round(self:GetInfectionMul()*100, 2)), "TargetIDSmall", scw - 590, sch / 2 - 60, color, 0, 0)
 			draw.SimpleText(Format("Zombie speed: %s%%", math.Round(math.Clamp(self:GetInfectionMul(0.5)-0.25, 1, 1.25)*100, 2)), "TargetIDSmall", scw - 590, sch / 2 - 45, color, 0, 0)
-			draw.SimpleText(Format("Elite variant spawn chance: %s%%", "1"), "TargetIDSmall", scw - 590, sch / 2 - 25, color, 0, 0)
-			draw.SimpleText(Format("Elite variant Boss spawn chance: %s%%", "10"), "TargetIDSmall", scw - 590, sch / 2 - 10, color, 0, 0)
+			draw.SimpleText(Format("Elite variant spawn chance: %s%%", math.Round(self:GetEliveVariantSpawnChance(false), 2)), "TargetIDSmall", scw - 590, sch / 2 - 25, color, 0, 0)
+			draw.SimpleText(Format("Elite variant Boss spawn chance: %s%%", math.Round(self:GetEliveVariantSpawnChance(true), 2)), "TargetIDSmall", scw - 590, sch / 2 - 10, color, 0, 0)
 			
 			
 			draw.SimpleText("Infection Level gain decreases at 50% and 75%.", "TargetIDSmall", scw - 590, sch / 2 + 95, Color(225,225,225), 0, 0)
