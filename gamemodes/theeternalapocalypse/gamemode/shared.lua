@@ -143,19 +143,19 @@ function GM:StartCommand(ply, cmd)
 	local keys = cmd:GetButtons()
 	cmd:ClearButtons()
 
-	if (ply.Stamina or MyStamina) > 30 then
-		ply.sprintrecharge = false
+	if (ply.Stamina or MyStamina) > 30 and !ply:GetCanSprint() then
+		ply:SetCanSprint(true)
 	end
 
-	if (ply:IsSprinting() and ply:GetPlayerMoving() and (ply.Stamina or MyStamina) <= 0) then
+	if (ply:IsSprinting() and ply:GetPlayerMoving() and (ply.Stamina or MyStamina) <= 0) and ply:GetCanSprint() then
 		-- ply:ConCommand("-speed")
-		ply.sprintrecharge = true
+		ply:SetCanSprint(false)
 	end
 
-	if bit.band(IN_SPEED, keys) ~= 0 and ply.sprintrecharge then
+	if bit.band(IN_SPEED, keys) ~= 0 and !ply:GetCanSprint() then
 		keys = keys - IN_SPEED
 	end
-	if bit.band(IN_JUMP, keys) ~= 0 and ply.sprintrecharge then
+	if bit.band(IN_JUMP, keys) ~= 0 and !ply:GetCanSprint() then
 		keys = keys - IN_JUMP
 	end
 	cmd:SetButtons(keys)

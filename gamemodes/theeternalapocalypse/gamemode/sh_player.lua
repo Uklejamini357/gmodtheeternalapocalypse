@@ -169,6 +169,14 @@ function meta:GetPlayerMoving()
 	end
 end
 
+function meta:SetCanSprint(cansprint)
+	self:SetNWBool("cansprint", cansprint)
+end
+
+function meta:GetCanSprint()
+	return self:GetNWBool("cansprint", true)
+end
+
 -- maybe i should also do it for entity meta table
 local meta_entity = FindMetaTable("Entity")
 
