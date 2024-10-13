@@ -886,7 +886,11 @@ function GM:PlayerSay(ply, text, team)
 	return text
 end
 
+local sv_alltalk = GetConVar("sv_alltalk")
 function GM:PlayerCanHearPlayersVoice(listener, talker)
+	if sv_alltalk:GetInt() ~= 1 then return true, false end
+
+
 	if listener:GetPos():Distance(talker:GetPos()) <= 1250 then
 		return true, false
 	else

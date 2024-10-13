@@ -56,14 +56,16 @@ function GM.ZS.EndEvent(noplyfrespawn)
 
 	timer.Simple(5, function()
 		for _,pl in pairs(player.GetAll()) do
-			if not pl:Alive() or not noplyfrespawn then return end end
+			if not pl:Alive() or not noplyfrespawn then return end
 			pl:Spectate(OBS_MODE_ROAMING)
 			pl:StripWeapons()
 		end
+
 		timer.Simple(1, function()
 			for _,pl in pairs(player.GetAll()) do
-				if not pl:Alive() or not noplyfrespawn then return end end
-				pl:KillSilent() pl:Spawn()
+				if not pl:Alive() or not noplyfrespawn then return end
+				pl:KillSilent()
+				pl:Spawn()
 			end
 			GAMEMODE:SetEvent(EVENT_NONE)
 		end)

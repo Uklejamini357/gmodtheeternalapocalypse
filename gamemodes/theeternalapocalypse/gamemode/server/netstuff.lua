@@ -272,7 +272,7 @@ net.Receive("CashBounty", function(len, ply)
 	ply.Bounty = 0
 	ply:SetNWInt("PlyBounty", ply.Bounty)
 
-	GAMEMODE:NetUpdateStatistics(ply)
+	GAMEMODE:NetUpdatePeriodicStats(ply)
 end)
 
 net.Receive("UpdateTargetStats", function(len, ply)
