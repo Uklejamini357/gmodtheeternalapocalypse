@@ -442,30 +442,3 @@ concommand.Add("tea_sadmin_cleargmspawns", function(ply, cmd, args)
 	gamemode.Call("AdminCmds_ClearGMSpawns", ply, cmd, args)
 end, nil, "Clears Zombie spawns and such for client")
 
-
-function GM:AdminCmds_SendGMSpawns(ply)
-	if !SuperAdminCheck(ply) then
-		ply:SystemMessage(translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205,255), true)
-		ply:ConCommand("playgamesound buttons/button8.wav")
-		return
-	end
-
-	self:SendAllSpawnsToPlayer(ply)
-end
-concommand.Add("tea_sadmin_sendgmspawns", function(ply, cmd, args)
-	gamemode.Call("AdminCmds_SendGMSpawns", ply, cmd, args)
-end, nil, "Sends zombie spawns and such to client")
-
-function GM:AdminCmds_ClearGMSpawns(ply)
-	if !SuperAdminCheck(ply) then
-		ply:SystemMessage(translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205,255), true)
-		ply:ConCommand("playgamesound buttons/button8.wav")
-		return
-	end
-
-	ply:SendLua("GAMEMODE.Spawns = {}")
-end
-concommand.Add("tea_sadmin_cleargmspawns", function(ply, cmd, args)
-	gamemode.Call("AdminCmds_ClearGMSpawns", ply, cmd, args)
-end, nil, "Clears Zombie spawns and such for client")
-
