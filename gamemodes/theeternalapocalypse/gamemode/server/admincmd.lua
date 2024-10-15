@@ -43,7 +43,6 @@ function GM:AdminCmds_GiveItem(ply, cmd, args)
 	self:DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.."x "..translate.Get(name.."_n"))
 	ply:SystemMessage("You gave yourself "..addqty.."x "..translate.ClientGet(ply, name.."_n"), Color(155,255,155,255), true)
 	self:FullyUpdatePlayer(ply)
-	ply:ConCommand("playgamesound buttons/button3.wav")
 end
 concommand.Add("tea_sadmin_giveitem", function(ply, cmd, args)
 	gamemode.Call("AdminCmds_GiveItem", ply, cmd, args)
@@ -69,7 +68,6 @@ function GM:AdminCmds_RemoveItem(ply, cmd, args)
 	self:DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave "..translate.Get(name.."_n").." from their inventory!")
 	ply:SystemMessage("You removed "..translate.ClientGet(ply, name.."_n").." from your inventory!", Color(155,255,155,255), true)
 	gamemode.Call("FullyUpdatePlayer", ply)
-	ply:ConCommand("playgamesound buttons/button3.wav")
 end
 concommand.Add("tea_sadmin_removeitem", function(ply, cmd, args)
 	gamemode.Call("AdminCmds_RemoveItem", ply, cmd, args)
@@ -89,7 +87,6 @@ function GM:AdminCmds_GiveCash(ply, cmd, args)
 	ply:SystemMessage("You gave yourself "..addqty.." "..self.Config["Currency"].."s!", Color(155,255,155,255), true)
 
 	gamemode.Call("FullyUpdatePlayer", ply)
-	ply:ConCommand("playgamesound buttons/button3.wav")
 end
 concommand.Add("tea_sadmin_givecash", function(ply, cmd, args)
 	gamemode.Call("AdminCmds_GiveCash", ply, cmd, args)
@@ -114,7 +111,6 @@ function GM:AdminCmds_ClearProps(ply, cmd, args)
 	self:DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has cleaned up all props!")
 
 	ply:SystemMessage("Cleaned up all props!", Color(155,255,155,255), true)
-	ply:ConCommand("playgamesound buttons/button3.wav") 
 end
 concommand.Add("tea_sadmin_clearprops", function(ply, cmd, args)
 	gamemode.Call("AdminCmds_ClearProps", ply, cmd, args)
@@ -135,14 +131,12 @@ function GM:AdminCmds_ClearZeds(ply, cmd, args)
 		end
 		self:DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has cleaned up all NPCs and nextbots! ("..c.." entities removed)")
 		ply:SystemMessage("Cleaned up all nextbots and NPCs! ("..c.." entities removed)", Color(180,255,180,255), true)
-		ply:ConCommand("playgamesound buttons/button15.wav")
 	else
 		for k, v in pairs(self.Config["ZombieClasses"]) do
 			for _, ent in pairs(ents.FindByClass(k)) do ent.LastAttacker = nil c = c + 1 ent:Remove() end
 		end
 		self:DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has cleaned up all zombies! ("..c.." zombies removed)")
 		ply:SystemMessage("Cleaned up all zombies! ("..c.." zombies removed)", Color(180,255,180,255), true)
-		ply:ConCommand("playgamesound buttons/button15.wav")
 	end
 end
 concommand.Add("tea_admin_clearzombies", function(ply, cmd, args)
@@ -185,7 +179,6 @@ function GM:AdminCmds_ClearLoots(ply, cmd, args)
 		v:Remove()
 	end
 
-	ply:ConCommand("playgamesound buttons/button15.wav") 	
 end
 concommand.Add("tea_admin_clearloots", function(ply, cmd, args)
 	gamemode.Call("AdminCmds_ClearLoots", ply, cmd, args)
@@ -224,7 +217,6 @@ function GM:AdminCmds_SpawnBoss(ply)
 	end
 
 	gamemode.Call("SpawnBoss")
-	ply:ConCommand("playgamesound buttons/button3.wav")
 	ply:SystemMessage("Command received, boss will spawn soon.", Color(155,255,155,255), true)
 	self:DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has used spawn boss command!")
 end
@@ -240,7 +232,6 @@ function GM:AdminCmds_SpawnAirdrop(ply)
 	end
 
 	gamemode.Call("SpawnAirdrop")
-	ply:ConCommand("playgamesound buttons/button3.wav")
 	ply:SystemMessage("Command received, airdrop will arrive soon.", Color(155,255,155,255), true)
 	self:DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has used spawn airdrop command!")
 end
@@ -305,7 +296,6 @@ function GM:AdminCmds_SpawnItem(ply, cmd, args)
 
 	self:DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." spawned a dropped item: "..translate.Get(name.."_n"))
 	ply:SystemMessage("You spawned a dropped item: "..translate.ClientGet(ply, name.."_n").."!", Color(155,255,155,255), true)
-	ply:ConCommand("playgamesound buttons/button3.wav")
 end
 concommand.Add("tea_sadmin_spawnitem", function(ply, cmd, args)
 	gamemode.Call("AdminCmds_SpawnItem", ply, cmd, args)
@@ -346,7 +336,6 @@ function GM:AdminCmds_SpawnMoney(ply, cmd, args)
 	self:DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." spawned dropped cash with "..cash.." "..self.Config["Currency"].."s!")
 	ply:SystemMessage("You spawned dropped cash with "..cash.." "..self.Config["Currency"].."s!", Color(155,255,155,255), true)
 	
-	ply:ConCommand("playgamesound buttons/button3.wav")
 end
 concommand.Add("tea_sadmin_spawnmoney", function(ply, cmd, args)
 	gamemode.call("AdminCmds_SpawnMoney", ply, cmd, args)

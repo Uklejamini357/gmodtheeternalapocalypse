@@ -1,4 +1,3 @@
-GM.PlayerSpawnsData = ""
 
 function GM:LoadPlayerSpawns()
 	if not file.IsDir(GAMEMODE.DataFolder.."/spawns/"..string.lower(game.GetMap()), "DATA") then
@@ -64,11 +63,12 @@ function GM:AddPlayerSpawn(ply, cmd, args, str)
 	
 	ply:SendChat("Added a new player spawnpoint called '"..str.."' at position "..tostring(ply:GetPos()).."!")
 	self:DebugLog("[SPAWNPOINTS MODIFIED] "..ply:Nick().." has added a new player spawnpoint called '"..str.."' at position "..tostring(ply:GetPos()).."!")
-	ply:ConCommand("playgamesound buttons/button3.wav")
 	GAMEMODE:LoadPlayerSpawns() --reload them
 	timer.Simple(0.5, function() GAMEMODE:LoadPlayerSpawns() end) -- and again (to prevent any unnecessary missing spawnpoints)
 end
-concommand.Add("tea_addplayerspawnpoint", GM.AddPlayerSpawn)
+concommand.Add("tea_addplayerspawnpoint", function(ply, cmd, args, str)
+	gamemode.Call("AddPlayerSpawn", ply, cmd, args, str)
+end)
 
 function GM:ClearPlayerSpawns(ply, cmd, args)
 	if !SuperAdminCheck(ply) then 
@@ -82,7 +82,6 @@ function GM:ClearPlayerSpawns(ply, cmd, args)
 	end
 	ply:SendChat("Deleted all player spawnpoints")
 	self:DebugLog("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all player spawnpoints!")
-	ply:ConCommand("playgamesound buttons/button15.wav")
 end
 concommand.Add("tea_clearplayerspawnpoints", function(ply, cmd, args)
 	gamemode.Call("ClearPlayerSpawns", ply, cmd, args)

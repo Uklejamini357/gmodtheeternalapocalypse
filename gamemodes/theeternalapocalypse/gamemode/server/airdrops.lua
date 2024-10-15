@@ -1,4 +1,3 @@
-local DropData = ""
 
 function GM:LoadAD()
 	if not file.IsDir(self.DataFolder.."/spawns/"..string.lower(game.GetMap()), "DATA") then

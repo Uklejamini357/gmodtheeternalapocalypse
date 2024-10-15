@@ -1127,3 +1127,75 @@ hook.Add("PostDrawOpaqueRenderables", "circle", function()
 	end
 end)
 
+
+local spawntypes = {
+	["zombies"] = {
+		txt = "Zombie Spawn %s",
+		col = Color(255,0,0)
+	},
+
+	["loots"] = {
+		txt = "Loot Spawn %s",
+		col = Color(0,255,0)
+	},
+
+	["traders"] = {
+		txt = "Trader Spawn %s",
+		col = Color(0,128,255)
+	},
+
+	["taskdealers"] = {
+		txt = "Task Dealer Spawn %s",
+		col = Color(128,0,255)
+	},
+
+	["airdrops"] = {
+		txt = "Airdrop Spawn %s",
+		col = Color(255,255,0)
+	},
+
+	["playerspawns"] = {
+		txt = "Player Spawn %s",
+		col = Color(255,255,255)
+	},
+}
+hook.Add("PostDrawTranslucentRenderables", "GM.Spawns", function(bDrawingDepth, bDrawingSkybox, isDraw3DSkybox)
+	if not GAMEMODE.Spawns then return end
+	local ply = LocalPlayer()
+
+
+	for spawntype, spawns in pairs(GAMEMODE.Spawns) do
+		for _,v in pairs(spawns) do
+			if not spawntypes[spawntype] then continue end
+			local pos = v[1]
+			local ang = v[2]
+
+			-- pos.x = math.Round(pos.x)
+			-- pos.y = math.Round(pos.y)
+			-- pos.z = math.Round(pos.z)
+
+			local txt = spawntypes[spawntype].txt
+			local col = spawntypes[spawntype].col
+			local ang = ply:EyeAngles() + Angle(0,-90,90)
+			ang.pitch = 0
+
+			-- PrintTable(pos)
+			render.DrawLine(pos + Vector(0,0,40), pos, col)
+			cam.Start3D2D(pos + Vector(0,0,60), ang, math.Clamp(ply:GetPos():Distance(pos)/500, 0.5, 5))
+			cam.IgnoreZ(true)
+			draw.DrawText(Format(txt, pos), "TargetID", 0, 0, col, TEXT_ALIGN_CENTER)
+			cam.End3D2D()
+			cam.Start3D2D(pos + Vector(0,0,60), ang + Angle(0,180,0), math.Clamp(ply:GetPos():Distance(pos)/500, 0.5, 5))
+			draw.DrawText(Format(txt, pos), "TargetID", 0, 0, col, TEXT_ALIGN_CENTER)
+			cam.End3D2D()
+			-- pos
+			-- local Ang = Angle(0,0,0)
+			-- cam.Start3D2D(pos + Vector(0,0,40), Ang, 0.6)
+			-- surface.DrawLine(startX, startY, endX, endY)
+		end
+	end
+	cam.IgnoreZ(false)
+end)
+
+
+

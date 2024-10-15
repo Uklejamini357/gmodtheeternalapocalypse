@@ -123,3 +123,12 @@ end)
 net.Receive("tea_perksupdate", function(len)
 	GAMEMODE.LocalPerks = net.ReadTable()
 end)
+
+net.Receive("tea_admin_sendspawns", function(len)
+	local typ = net.ReadString()
+	local tbl = net.ReadTable()
+
+
+	GAMEMODE.Spawns = GAMEMODE.Spawns or {}
+	GAMEMODE.Spawns[typ] = tbl
+end)

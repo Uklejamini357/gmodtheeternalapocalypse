@@ -289,7 +289,7 @@ net.Receive("SellItem", function(len, ply)
 		UseFunc_RemoveArmor(ply, str)
 	end
 
-	ply:PrintTranslatedMessage(HUD_PRINTCONSOLE, "tr_itemsold", amt, translate.ClientGet(ply, str.."_n"), sellprice, GAMEMODE.Config["Currency"])
+	ply:PrintTranslatedMessage(HUD_PRINTCONSOLE, "tr_itemsold", translate.ClientGet(ply, str.."_n"), amt, sellprice, GAMEMODE.Config["Currency"])
 	ply.Money = math.floor(cash + sellprice) -- base sell price 20% of the original buy price plus 0.5% per barter level to max of 25%
 	GAMEMODE:SendInventory(ply)
 	ply:EmitSound("physics/cardboard/cardboard_box_break3.wav", 100, 100)

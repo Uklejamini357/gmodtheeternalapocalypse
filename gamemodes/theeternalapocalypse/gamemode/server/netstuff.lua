@@ -61,6 +61,9 @@ util.AddNetworkString("tea_plyevent_vaultupdate")
 util.AddNetworkString("tea_player_sendcharacters")
 
 
+util.AddNetworkString("tea_admin_sendspawns")
+
+
 --util.AddNetworkString("Respawn")
 
 function GM:NetUpdateStats(ply)
@@ -340,6 +343,82 @@ net.Receive("tea_perksunlock", function(len, pl)
 --	GAMEMODE:NetUpdateStatistics(pl)
 	GAMEMODE:FullyUpdatePlayer(pl)
 end)
+
+function GM:SendSpawnsToPlayer(pl, spawn)
+	net.Start("tea_admin_sendspawns")
+	net.WriteString(spawn)
+
+	local spawns = {}
+	if spawn == "zombies" then
+		local SpawnsList = string.Explode("\n", ZombieData)
+		for k,v in pairs(SpawnsList) do
+			local Spawning = string.Explode(";", v)
+			local pos  = util.StringToType(Spawning[1], "Vector")
+			local ang  = util.StringToType(Spawning[2], "Angle")
+
+			table.insert(spawns, {pos, ang})
+		end
+	elseif spawn == "loots" then
+		local SpawnsList = string.Explode("\n", LootData)
+		for k,v in pairs(SpawnsList) do
+			local Spawning = string.Explode(";", v)
+			local pos  = util.StringToType(Spawning[1], "Vector")
+			local ang  = util.StringToType(Spawning[2], "Angle")
+
+			table.insert(spawns, {pos, ang})
+		end
+
+	elseif spawn == "traders" then
+		local SpawnsList = string.Explode("\n", TradersData)
+		for k,v in pairs(SpawnsList) do
+			local Spawning = string.Explode(";", v)
+			local pos  = util.StringToType(Spawning[1], "Vector")
+			local ang  = util.StringToType(Spawning[2], "Angle")
+
+			table.insert(spawns, {pos, ang})
+		end
+	elseif spawn == "taskdealers" then
+		local SpawnsList = string.Explode("\n", TaskDealersData)
+		for k,v in pairs(SpawnsList) do
+			local Spawning = string.Explode(";", v)
+			local pos  = util.StringToType(Spawning[1], "Vector")
+			local ang  = util.StringToType(Spawning[2], "Angle")
+
+			table.insert(spawns, {pos, ang})
+		end
+	elseif spawn == "airdrops" then
+		local SpawnsList = string.Explode("\n", DropData)
+		for k,v in pairs(SpawnsList) do
+			local Spawning = string.Explode(";", v)
+			local pos  = util.StringToType(Spawning[1], "Vector")
+			local ang  = util.StringToType(Spawning[2], "Angle")
+
+			table.insert(spawns, {pos, ang})
+		end
+	elseif spawn == "playerspawns" then
+		local SpawnsList = string.Explode("\n", GAMEMODE.PlayerSpawnsData)
+		for k,v in pairs(SpawnsList) do
+			local Spawning = string.Explode(";", v)
+			local pos  = util.StringToType(Spawning[1], "Vector")
+			local ang  = util.StringToType(Spawning[2], "Angle")
+			local name = tostring(Spawning[3])
+
+			table.insert(spawns, {pos, ang, name})
+		end
+	end
+	net.WriteTable(spawns)
+	net.Send(pl)
+end
+
+
+function GM:SendAllSpawnsToPlayer(pl)
+	self:SendSpawnsToPlayer(pl, "zombies")
+	self:SendSpawnsToPlayer(pl, "loots")
+	self:SendSpawnsToPlayer(pl, "traders")
+	self:SendSpawnsToPlayer(pl, "taskdealers")
+	self:SendSpawnsToPlayer(pl, "airdrops")
+	self:SendSpawnsToPlayer(pl, "playerspawns")
+end
 
 local meta = FindMetaTable("Player")
 if not meta then return end

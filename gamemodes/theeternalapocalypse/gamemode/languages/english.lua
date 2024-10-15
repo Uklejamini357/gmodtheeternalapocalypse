@@ -174,7 +174,7 @@ LANG.takeitems = "Take Items"
 LANG.take = "Take"
 LANG.storeitems = "Store Items"
 LANG.loottaken = "Loot Taken: %s"
-LANG.tr_itemsold = "Sold item %dx '%s' for %d %ss!"
+LANG.tr_itemsold = "Sold item '%s' (%dx) for %d %ss!"
 LANG.tr_itembought = "Purchased item '%s' for %d %ss!"
 
 

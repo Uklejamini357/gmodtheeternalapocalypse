@@ -1,6 +1,5 @@
 ---------------- Zombies! ----------------
 
-local ZombieData = ""
 
 function GM:ZombieCount()
 	local AliveZombies = 0

@@ -1,7 +1,6 @@
 util.AddNetworkString("SendCrateItems")
 util.AddNetworkString("UseCrate")
 
-LootData = ""
 
 function GM:LootCount()
 	local LootBoxes = 0

@@ -8,7 +8,7 @@ end
 
 hook.Add("PostDrawOpaqueRenderables", "tea_trader", function()
 	local me = LocalPlayer()
-for _, ent in pairs (ents.FindByClass("trader")) do
+for _, ent in pairs (ents.FindByClass("tea_trader")) do
 
 	if ent:GetPos():Distance(me:GetPos()) < 2560000 then -- 1600^2
 	local Pos = ent:GetPos()

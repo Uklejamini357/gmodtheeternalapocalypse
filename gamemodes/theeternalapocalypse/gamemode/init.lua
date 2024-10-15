@@ -442,6 +442,13 @@ function GM:Initialize()
 	self.NextSave = 0
 	self.DebugLogs = {}
 
+	ZombieData = ""
+	DropData = ""
+	LootData = ""
+	TaskDealersData = TaskDealersData or ""
+	TradersData = ""
+	self.PlayerSpawnsData = self.PlayerSpawnsData or ""
+
 	SetGlobalBool("GM.ZombieSpawning", true)
 
 	self:LoadServerData()
@@ -878,13 +885,15 @@ function GM:PlayerReady(ply)
 end
 
 function GM:PlayerSay(ply, text, team)
+	return text
+end
+
+hook.Add("PlayerSay", "TheEternalApocalypse.PlayerSay", function(ply, text, team)
 	if ply:IsValid() and string.Explode(" ", text)[1] == "!help" then
 		ply:SendLua("GAMEMODE:HelpMenu()")
 		return false
 	end
-
-	return text
-end
+end)
 
 local sv_alltalk = GetConVar("sv_alltalk")
 function GM:PlayerCanHearPlayersVoice(listener, talker)

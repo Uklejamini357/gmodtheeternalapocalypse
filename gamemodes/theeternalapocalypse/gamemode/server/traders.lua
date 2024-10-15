@@ -1,4 +1,3 @@
-TradersData = ""
 
 function GM:LoadTraders()
 	if not file.IsDir(self.DataFolder.."/spawns/"..string.lower(game.GetMap()), "DATA") then

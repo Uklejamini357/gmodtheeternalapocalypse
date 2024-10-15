@@ -70,7 +70,6 @@ function GM:CancelTask(pl, task)
 	pl:RefreshTasksStats()
 end
 
-TaskDealersData = TaskDealersData or ""
 
 function GM:LoadTaskDealers()
 	if not file.IsDir(self.DataFolder.."/spawns/"..string.lower(game.GetMap()), "DATA") then

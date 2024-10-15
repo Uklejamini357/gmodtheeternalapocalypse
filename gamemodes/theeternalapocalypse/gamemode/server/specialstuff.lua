@@ -35,7 +35,6 @@ function GM.ZS.StartZombieApocalypse(preptime, wavedur)
 	end
 end
 
-
 function GM.ZS.EndEvent(noplyfrespawn)
 	SetGlobalBool("GM.ZombieSpawning", GAMEMODE.ZS.LastZSpawning)
 	GAMEMODE.ZombieApocalypse = GAMEMODE.ZS.LastZombieApocalypse
@@ -56,23 +55,21 @@ function GM.ZS.EndEvent(noplyfrespawn)
 
 	timer.Simple(5, function()
 		for _,pl in pairs(player.GetAll()) do
-			if not pl:Alive() or not noplyfrespawn then return end
+			if not pl:Alive() then return end
 			pl:Spectate(OBS_MODE_ROAMING)
 			pl:StripWeapons()
 		end
 
 		timer.Simple(1, function()
 			for _,pl in pairs(player.GetAll()) do
-				if not pl:Alive() or not noplyfrespawn then return end
-				pl:KillSilent()
-				pl:Spawn()
+				if not pl:Alive() or noplyfrespawn then return end
+				pl:KillSilent() pl:Spawn()
 			end
 			GAMEMODE:SetEvent(EVENT_NONE)
 		end)
 	end)
 
 end
-
 
 function GM.ZS.Hooks.DoPlayerDeath(ply, attacker, dmginfo)
 	local pos = ply:GetPos()

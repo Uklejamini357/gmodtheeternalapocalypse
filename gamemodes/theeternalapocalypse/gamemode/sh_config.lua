@@ -74,7 +74,7 @@ GM.MapCycles = {
 -- 1 - Zombie Fog: Limited Vision to 1500 hammer units, vision obscured by greenish fog, zombies defense increased by +20% and move 20% faster. Rewards increased.
 -- 2 - Blood Moon: Vision turns more red and dark, zombie speed greatly increased (+60%), zombies deal +30% damage
 -- 3 - Increased Infection Level gain from killing zombies by +50% and Infection Level does not decrease by its' own.
--- 4 - Horde Event: Zombie spawn rate decreased down to 2 seconds and zombies can see players 2x further.
+-- 4 - Horde Event: Zombie spawn rate decreased down to 2 seconds and zombies can see players 2.5x further.
 GM.EnableSpecialEventsSystem = true
 
 -- Weapon Damage Multiplier against zombies. Does not affect players!
