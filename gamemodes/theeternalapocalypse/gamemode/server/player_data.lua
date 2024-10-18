@@ -20,8 +20,9 @@ function GM:LoadPlayer(ply, id)
 
 		for k, v in pairs(DataPieces) do
 			local TheLine = string.Explode(";", v) -- convert txt string to stats table
-			
-			ply[TheLine[1]] = TheLine[2]  -- dump all their stats into their player table
+			-- dump all their stats into their player table
+			-- tonumber coz sometimes ply.Money and other strings becomes string
+			ply[TheLine[1]] = tonumber(TheLine[2]) or TheLine[2]
 
 			if self:GetDebug() >= DEBUGGING_EXPERIMENTAL then
 				print(TheLine[1].." = "..TheLine[2])

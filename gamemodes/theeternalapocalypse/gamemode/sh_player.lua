@@ -109,7 +109,7 @@ function meta:GetProgressToPrestige()
 	local lvl, xp = SERVER and self.Level or CLIENT and MyLvl or 0
 	local xp = math.min(self:GetReqXP(), SERVER and self.XP or CLIENT and MyXP or 0)
 
-	return math.min(1, (lvl - 1 + (xp / self:GetReqXP())) / (self:GetMaxLevel() - 1))
+	return math.min(1, lvl >= self:GetMaxLevel() and 1 or (lvl - 1 + (xp / self:GetReqXP())) / (self:GetMaxLevel() - 1))
 end
 
 

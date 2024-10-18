@@ -1159,9 +1159,12 @@ local spawntypes = {
 		col = Color(255,255,255)
 	},
 }
+
 hook.Add("PostDrawTranslucentRenderables", "GM.Spawns", function(bDrawingDepth, bDrawingSkybox, isDraw3DSkybox)
+	if isDraw3DSkybox then return end
 	if not GAMEMODE.Spawns then return end
 	local ply = LocalPlayer()
+	if not AdminCheck(ply) then return end
 
 
 	for spawntype, spawns in pairs(GAMEMODE.Spawns) do

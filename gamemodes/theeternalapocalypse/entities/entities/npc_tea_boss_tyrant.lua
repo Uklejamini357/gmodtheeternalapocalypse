@@ -118,6 +118,7 @@ function ENT:Initialize()
 	self.IsEnraged = false
 	self:SetModelScale(0.8, 0)
 	self:SetCollisionBounds(Vector(-34,-34, 0), Vector(34, 34, 84))
+	self:SetLagCompensated(true)
 --	self:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
 --	self:SetSkin(math.random(0, self:SkinCount() - 1))
 	

@@ -310,8 +310,8 @@ function GM:Think()
 					ply.DrownStartTime = ct
 				end
 
-				ply.DrownDamage = ply.DrownDamage + (0.08+(0.008*(CurTime()-ply.DrownStartTime)))*ft*ply:GetMaxHealth()
-				if ply.DrownDamage >= 1 then
+				ply.DrownDamage = ply.DrownDamage + (8+(0.8*(CurTime()-ply.DrownStartTime)))*ft
+				if ply.DrownDamage >= 1 and not ply:HasGodMode() then
 					ply:SetHealth(ply:Health() - math.floor(ply.DrownDamage))
 					if ply:Health() < 1 then
 						local d = DamageInfo()

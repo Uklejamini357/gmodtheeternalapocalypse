@@ -3,6 +3,91 @@
 GM.LocalPerks = GM.LocalPerks or {}
 
 local perksvgui
+local perkresetconfirm
+
+local function PrettySureYouDontWannaDoThis()
+	if IsValid(perkresetconfirm) then perkresetconfirm:Remove() end
+	perkresetconfirm = vgui.Create("DFrame")
+	perkresetconfirm:SetSize(600, 350)
+	perkresetconfirm:Center()
+	perkresetconfirm:SetTitle("About to reset your perks")
+	perkresetconfirm:SetDraggable(false)
+	perkresetconfirm:SetVisible(true)
+	perkresetconfirm:SetAlpha(0)
+	perkresetconfirm:AlphaTo(255, 1, 0)
+	perkresetconfirm:ShowCloseButton(true)
+	perkresetconfirm:MakePopup()
+	perkresetconfirm.Paint = function(this)
+		draw.RoundedBox(2, 0, 0, this:GetWide(), this:GetTall(), Color(0, 0, 0, 200))
+		surface.SetDrawColor(150, 150, 0,255)
+		surface.DrawOutlinedRect(0, 0, this:GetWide(), this:GetTall())
+	end
+	perkresetconfirm.Think = function(this)
+		if input.IsKeyDown(KEY_ESCAPE) and gui.IsGameUIVisible() then
+			timer.Simple(0, function()
+				this:Remove()
+			end)
+			gui.HideGameUI()
+		end
+	end
+
+
+	local costpoints = 0
+	local points = MyPerkPoints
+
+	for perk,_ in pairs(GAMEMODE.LocalPerks) do
+		local perkinfo = GAMEMODE.PerksList[perk]
+
+		costpoints = costpoints + perkinfo.Cost
+		points = points + perkinfo.Cost
+	end
+	
+	local finalcost = 2000 * costpoints + (costpoints * 500*((costpoints-1)/2))
+
+
+	local txt = vgui.Create("DLabel", perkresetconfirm)
+	txt:SetFont("TargetIDSmall")
+	txt:SetPos(10, 33)
+	txt:SetText("This will reset your perks, but will also refund your perk points.")
+	txt:SizeToContents()
+
+	local txt2 = vgui.Create("DLabel", perkresetconfirm)
+	txt2:SetFont("TargetIDSmall")
+	txt2:SetPos(10, 55)
+	txt2:SetText("However, you will need at least "..finalcost.." "..GAMEMODE.Config["Currency"].."s to do this.")
+	txt2:SizeToContents()
+
+	local txt3 = vgui.Create("DLabel", perkresetconfirm)
+	txt3:SetFont("TargetIDSmall")
+	txt3:SetPos(10, 77)
+	txt3:SetText("However, there is no cooldown for resetting perks.")
+	txt3:SizeToContents()
+
+	local txt4 = vgui.Create("DLabel", perkresetconfirm)
+	txt4:SetFont("TargetIDSmall")
+	txt4:SetPos(10, 99)
+	txt4:SetText("Are you sure you want to do this?")
+	txt4:SizeToContents()
+
+	local reset = vgui.Create("DButton", perkresetconfirm)
+	reset:SetSize(150, 25)
+	reset:Center()
+	local _x,_y = reset:GetPos()
+	reset:SetPos(_x,_y + 100)
+	reset:SetText("Confirm")
+	reset:SetTextColor(Color(255,155,0,255))
+	reset.Paint = function(panel)
+		surface.SetDrawColor(0, 150, 0, 255)
+		surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
+		draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(0, 50, 0, 130))
+	end
+	reset.DoClick = function(this)
+		perkresetconfirm:Close()
+		net.Start("tea_perksreset")
+		net.SendToServer()
+	end
+end
+
 
 function GM:CallPerksMenu()
 	if IsValid(perksvgui) then perksvgui:Remove() end
@@ -69,6 +154,23 @@ function GM:CallPerksMenu()
 		LWeight:SetSize(math.min(x, 350), 25)
 	end
 
+	local ResetPerks = vgui.Create("DButton", perksvgui)
+	ResetPerks:SetSize(150, 25)
+	ResetPerks:SetPos(perksvgui:GetWide()-ResetPerks:GetWide()-100, 5)
+	ResetPerks:SetText("Reset your perks")
+	ResetPerks:SetTextColor(Color(255,255,0,255))
+	ResetPerks:SetMouseInputEnabled(true)
+	ResetPerks:SetToolTip("Reset your perks at the cost of money")
+	ResetPerks.Paint = function(panel)
+		surface.SetDrawColor(0, 150, 0, 255)
+		surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
+		draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(0, 50, 0, 130))
+	end
+	ResetPerks.DoClick = function(this)
+		perksvgui:Close()
+		PrettySureYouDontWannaDoThis()
+	end
+
 
 
 
@@ -77,7 +179,7 @@ function GM:CallPerksMenu()
 
 	local hoverdesc = vgui.Create("DLabel", perksvgui)
 	hoverdesc:SetFont("TargetIDSmall")
-	hoverdesc:SetPos(150, 0)
+	hoverdesc:SetPos(120, 0)
 	hoverdesc:SetText("Note: Hover your cursor over perks' description with white color for more info")
 	hoverdesc:SizeToContents()
 	local x,y = hoverdesc:GetSize()

@@ -132,6 +132,7 @@ function ENT:Initialize()
 	self:SetMaxHealth(self.ZombieStats["Health"])
 	self:SetCollisionBounds(Vector(-12,-12, 0), Vector(12, 12, 64))
 	self:SetCollisionGroup(COLLISION_GROUP_NONE)
+	self:SetLagCompensated(true)
 	self.NxtTick = 5
 	self.NextPainSound = CurTime()
 	self:PhysicsInitShadow()

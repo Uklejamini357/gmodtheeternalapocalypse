@@ -55,6 +55,7 @@ util.AddNetworkString("tea_taskstatsupdate")
 util.AddNetworkString("tea_player_ready_spawn")
 util.AddNetworkString("tea_perksupdate")
 util.AddNetworkString("tea_perksunlock")
+util.AddNetworkString("tea_perksreset")
 
 -- Misc network strings
 util.AddNetworkString("tea_plyevent_vaultupdate")
@@ -340,8 +341,40 @@ net.Receive("tea_perksunlock", function(len, pl)
 --	if GAMEMODE:GetDebug() >= DEBUGGING_ADVANCED then print(pl:Nick().." used "..amt * mul.." skill point(s) on "..perk.." skill ("..tonumber(pl.StatPoints).." skill points remaining)") end
 	pl:SendChat("You unlocked perk: "..perkl.Name)
 	GAMEMODE:RecalcPlayerSpeed(pl)
---	GAMEMODE:NetUpdateStatistics(pl)
-	GAMEMODE:FullyUpdatePlayer(pl)
+	GAMEMODE:SendPlayerPerksUnlocked(pl)
+	GAMEMODE:NetUpdatePeriodicStats(pl)
+end)
+
+net.Receive("tea_perksreset", function(len, pl)
+	local costpoints = 0
+	local points = pl.PerkPoints
+
+	for perk,_ in pairs(pl.UnlockedPerks) do
+		local perkinfo = GAMEMODE.PerksList[perk]
+
+		costpoints = costpoints + perkinfo.Cost
+		points = points + perkinfo.Cost
+	end
+	
+	local finalcost = 2000 * costpoints + (costpoints * 500*((costpoints-1)/2))
+
+	if pl.Money < finalcost then
+		pl:SystemMessage("You do not have enough money to reset your perks!", Color(255,0,0), true)
+		return
+	end
+
+
+	pl.PerkPoints = points
+	pl.Money = pl.Money - finalcost
+	pl.UnlockedPerks = {}
+	pl:SystemMessage("Reset all your perks and refunded perk points for "..finalcost.." "..GAMEMODE.Config["Currency"].."s!")
+
+	pl:SetMaxHealth(GAMEMODE:CalcMaxHealth(pl))
+	pl:SetMaxArmor(GAMEMODE:CalcMaxArmor(pl))
+	pl:SetJumpPower(GAMEMODE:CalcJumpPower(pl))
+	GAMEMODE:RecalcPlayerSpeed(pl)
+	GAMEMODE:SendPlayerPerksUnlocked(pl)
+	GAMEMODE:NetUpdatePeriodicStats(pl)
 end)
 
 function GM:SendSpawnsToPlayer(pl, spawn)

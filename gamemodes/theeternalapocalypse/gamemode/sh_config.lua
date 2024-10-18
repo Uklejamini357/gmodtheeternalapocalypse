@@ -141,9 +141,9 @@ GM.Config = {
 	["VaultSize"] = 175,
 
 	-- remember that the speed skill increases your walk speed by 3.5 for each level, so at 140 walkspeed players can reach a possible maximum of 175 walk speed
-	["WalkSpeed"] = 135,
+	["WalkSpeed"] = 155,
 	-- speed skill increases your running speed by 7 per skill level, so if default is 280, players can reach max of 350 run speed
-	["RunSpeed"] = 260,
+	["RunSpeed"] = 270,
 
 	-- set to Legacy or PData
 	-- legacy saves player data as text files under garrysmod/data/theeternalapocalypse/profiles/(players steamid)/
