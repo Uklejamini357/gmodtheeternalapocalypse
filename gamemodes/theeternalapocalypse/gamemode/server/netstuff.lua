@@ -358,6 +358,7 @@ net.Receive("tea_perksreset", function(len, pl)
 	
 	local finalcost = 2000 * costpoints + (costpoints * 500*((costpoints-1)/2))
 
+	if finalcost <= 0 then return end
 	if pl.Money < finalcost then
 		pl:SystemMessage("You do not have enough money to reset your perks!", Color(255,0,0), true)
 		return

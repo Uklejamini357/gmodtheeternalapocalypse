@@ -6,6 +6,20 @@ local perksvgui
 local perkresetconfirm
 
 local function PrettySureYouDontWannaDoThis()
+	local costpoints = 0
+	local points = MyPerkPoints
+
+	for perk,_ in pairs(GAMEMODE.LocalPerks) do
+		local perkinfo = GAMEMODE.PerksList[perk]
+
+		costpoints = costpoints + perkinfo.Cost
+		points = points + perkinfo.Cost
+	end
+	
+	local finalcost = 2000 * costpoints + (costpoints * 500*((costpoints-1)/2))
+
+	if finalcost <= 0 then return end
+
 	if IsValid(perkresetconfirm) then perkresetconfirm:Remove() end
 	perkresetconfirm = vgui.Create("DFrame")
 	perkresetconfirm:SetSize(600, 350)
@@ -30,19 +44,6 @@ local function PrettySureYouDontWannaDoThis()
 			gui.HideGameUI()
 		end
 	end
-
-
-	local costpoints = 0
-	local points = MyPerkPoints
-
-	for perk,_ in pairs(GAMEMODE.LocalPerks) do
-		local perkinfo = GAMEMODE.PerksList[perk]
-
-		costpoints = costpoints + perkinfo.Cost
-		points = points + perkinfo.Cost
-	end
-	
-	local finalcost = 2000 * costpoints + (costpoints * 500*((costpoints-1)/2))
 
 
 	local txt = vgui.Create("DLabel", perkresetconfirm)
