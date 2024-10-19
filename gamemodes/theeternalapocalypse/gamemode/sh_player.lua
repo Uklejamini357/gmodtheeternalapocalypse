@@ -75,14 +75,15 @@ function meta:HasCompletedTask()
 end
 
 function meta:GetReqXP()
-	local basexpreq = 709
-	local addxpperlevel = 102
-	local addxpperlevel2 = 1.1229
+	local basexpreq = 509
+	local addxpperlevel = 97
+	local addxpperlevel2 = 1.1329
 
 	local plyprestige = SERVER and self.Prestige or MyPrestige
 	local plylevel = SERVER and self.Level or MyLvl
 
-	return math.floor((basexpreq + (plylevel  * addxpperlevel) * (1 + (plyprestige * (0.0072 + math.min(20, plyprestige) * 0.0003)))) ^ addxpperlevel2)
+	local xp = (basexpreq + (plylevel  * addxpperlevel) * (1 + (plyprestige * (0.0072 + math.min(20, plyprestige) * 0.0003)))) ^ addxpperlevel2
+	return math.floor(xp * math.max(1, 1+(plylevel-30)*0.01))
 end
 
 function meta:GetReqMasteryMeleeXP(ply)
@@ -175,6 +176,33 @@ end
 
 function meta:GetCanSprint()
 	return self:GetNWBool("cansprint", true)
+end
+
+function meta:SkillsReset()
+	if !SERVER then return false end
+
+	local refund = 0 + self.StatPoints
+	self.StatPoints = 0
+
+	for statname, stat in pairs(GAMEMODE.StatConfigs) do
+		local name = "Stat"..statname
+
+		local statcnt = tonumber(self[name])
+		local refunding = (statcnt * (stat.Cost or 1)) + (statcnt > stat.Max and (statcnt-stat.Max)*(stat.Cost or 1) or 0)
+		refund = refund + refunding
+		self[name] = 0
+	end
+
+	self.StatPoints = refund
+
+	self:SetMaxHealth(GAMEMODE:CalcMaxHealth(self))
+	self:SetMaxArmor(GAMEMODE:CalcMaxArmor(self))
+	self:SetJumpPower(GAMEMODE:CalcJumpPower(self))
+	gamemode.Call("RecalcPlayerSpeed", self)
+
+	GAMEMODE:NetUpdatePeriodicStats(self)
+	GAMEMODE:NetUpdatePerks(self)
+	return true
 end
 
 -- maybe i should also do it for entity meta table

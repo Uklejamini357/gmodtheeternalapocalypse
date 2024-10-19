@@ -421,7 +421,7 @@ function GM:WantToPrestige()
 	prestigetext:SetFont("TargetIDSmall")
 	prestigetext:SetColor(Color(205,205,205,255))
 	prestigetext:SetWrap(true)
-	prestigetext:SetText("Prestiging allows you to gain more levels depending on your Prestige level. You will also be given some cash and a perk point if you prestige. You need to be at least level "..LocalPlayer():GetMaxLevel().." ("..self.MaxLevel.." plus "..self.LevelsPerPrestige.." depending on prestige) in order to prestige.")
+	prestigetext:SetText("Prestiging allows you to gain more levels depending on your Prestige level.\nYou will also be given some cash and a perk point if you prestige.\nYou need to be at least level "..LocalPlayer():GetMaxLevel().." ("..self.MaxLevel.." plus "..self.LevelsPerPrestige.." depending on prestige) in order to prestige.")
 	prestigetext:SetSize(540, 60)
 	prestigetext:SetPos(10,30)
 
@@ -453,8 +453,19 @@ function GM:WantToPrestige()
 			net.Start("Prestige")
 			net.SendToServer()
 		elseif MyLvl >= levelrequiredforprestige then
-			panel:SetText("ARE YOU SURE?")
-			prestigetext:SetText("WARNING: Once you prestige, there is no return! Your levels and skills will be reset and skill points will not be refunded! Are you really sure you want to prestige??")
+			panel:SetText("")
+
+			local t = "D O  I T"
+			for i=1,string.len(t) do
+				timer.Simple(i*0.2, function()
+					if not panel:IsValid() then return end
+					panel:SetText(string.sub(t, 1, i))
+				end)
+			end
+			panel.Think = function(this)
+				this:SetTextColor(HSVToColor((RealTime() * 160) % 360, 0.5, 1))
+			end
+			prestigetext:SetText("WARNING: Once you prestige, there is no return!\nYour levels and skills will be reset and your skill points will not be refunded!\nAre you really sure you want to prestige??")
 			prestigetext2:SetVisible(false)
 			shouldprestige = true
 		else

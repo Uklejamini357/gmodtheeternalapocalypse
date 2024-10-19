@@ -247,7 +247,7 @@ function GM:Think()
 		local infection = ply.Infection or 0
 		local battery = ply.Battery or 0
 	
-		local endurance = ((ply.StatEndurance or 0) / 500) * ft
+		local endurance = ((ply.StatEndurance or 0) / 500)
 	
 		-- hunger, thirst, fatigue, infection
 		ply.Hunger = math.Clamp(hunger - (4.35*ft * (1 - (ply.StatSurvivor * 0.04))), 0, 10000)
@@ -583,7 +583,10 @@ end
 
 function GM:PostCleanupMap()
 	self:MapReInit()
-	timer.Simple(0.5, function() self:SpawnTraders() end)
+	timer.Simple(0.5, function()
+		self:SpawnTraders()
+		self:SpawnTaskDealers()
+	end)
 end
 
 function GM:OnNPCKilled(ent, attacker, inflictor, dmginfo)

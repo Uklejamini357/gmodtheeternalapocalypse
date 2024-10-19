@@ -1075,7 +1075,7 @@ function GM:CreateScoreboardInv()
 			local LabelDefense = vgui.Create("DLabel")
 			LabelDefense:SetPos(50, 50)
 			LabelDefense:SetText(translate.Get(k)..": "..Perks[k])
-			LabelDefense:SetToolTip(translate.Get(k.."_d").."\n\nDouble-Click to apply all SP if possible.\nCost per point: "..v.Cost.."\nMax: "..v.Max)
+			LabelDefense:SetToolTip(translate.Get(k.."_d").."\n\nRight-Click to apply all SP if possible.\nCost per point: "..v.Cost.."\nMax: "..v.Max.."\nEmpowered Skill Max Limit increase: "..(v.PerkMaxIncrease or 0))
 			LabelDefense:SizeToContents()
 			StatsForm:AddItem(LabelDefense)
 
@@ -1084,26 +1084,12 @@ function GM:CreateScoreboardInv()
 			Button:SetSize(10, 20)
 			Button:SetTextColor(Color(255, 255, 255, 255))
 			Button:SetText(translate.Format("inc1stat", translate.Get(k)))
-			Button:SetToolTip(translate.Get(k.."_d").."\n\nDouble-Click to apply all SP if possible.\nCost per point: "..v.Cost.."\nMax: "..v.Max)
-			Button.DoClick = function(Button)
-				timer.Remove("use_sp")
-				timer.Create("use_sp", 0.15, 1, function()
-					net.Start("UpgradePerk")
-					net.WriteString(k)
-					net.WriteUInt(1, 16)
-					net.SendToServer()
-					timer.Simple(0.3, function()
-						if StatsForm:IsValid() then
-							StatsForm:Clear()
-							DoStatsList()
-						end
-					end)
-				end)
-			end
-			Button.DoDoubleClick = function(Button)
+			Button:SetToolTip(translate.Get(k.."_d").."\n\nRight-Click to apply all SP if possible.\nCost per point: "..v.Cost.."\nMax: "..v.Max.."\nEmpowered Skill Max Limit increase: "..(v.PerkMaxIncrease or 0))
+
+			local function applypoint(num)
 				net.Start("UpgradePerk")
 				net.WriteString(k)
-				net.WriteUInt(math.Clamp(math.floor(MySP), 1, math.min(MySP, 65535)), 16)
+				net.WriteUInt(num, 16)
 				net.SendToServer()
 				timer.Simple(0.3, function()
 					if StatsForm:IsValid() then
@@ -1111,14 +1097,26 @@ function GM:CreateScoreboardInv()
 						DoStatsList()
 					end
 				end)
+			end
 
-				timer.Remove("use_sp")
+			Button.DoClick = function(Button)
+				applypoint(1)
+			end
+			Button.DoDoubleClick = function(Button)
+				applypoint(1)
+			end
+			Button.DoRightClick = function(Button)
+				local d = DermaMenu()
+				d:AddOption("Confirm", function()
+					applypoint(math.Clamp(math.floor(MySP), 1, math.min(MySP, 65535)))
+				end)
+				d:Open()
 			end
 			Button.Paint = function()
 				draw.RoundedBox(0, 0, 0, Button:GetWide(), Button:GetTall(), Color(30, 30, 30, 50))
 				draw.RoundedBox(0, 0, 0, Perks[k] * 225 / v.Max, Button:GetTall(), Color(100, 100, 0, 150))
-				if Perks[k] > v.Max then -- Empowered Skills
-					draw.RoundedBox(0, 0, 0, (Perks[k]-v.Max) * 225 / (v.Max + v.PerkMaxIncrease), Button:GetTall(), Color(200, 0, 0, 150))
+				if Perks[k] > v.Max and v.PerkMaxIncrease then -- Empowered Skills
+					draw.RoundedBox(0, 0, 0, (Perks[k]-v.Max) * 225 / (v.PerkMaxIncrease), Button:GetTall(), Color(200, 0, 0, 150))
 				end
 				surface.SetDrawColor(100, 100, 0 ,255)
 				surface.DrawOutlinedRect(0, 0, Button:GetWide(), Button:GetTall())

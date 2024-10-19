@@ -81,7 +81,7 @@ function GM:AdminCmds_GiveCash(ply, cmd, args)
 		return
 	end
 
-	local addqty = math.Clamp(tonumber(args[1] or 1), -1000000, 1000000)
+	local addqty = math.Clamp(tonumber(args[1] or 1), -1e30, 1e30)
 	ply.Money = ply.Money + addqty
 	self:DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.." "..self.Config["Currency"].."s!")
 	ply:SystemMessage("You gave yourself "..addqty.." "..self.Config["Currency"].."s!", Color(155,255,155,255), true)

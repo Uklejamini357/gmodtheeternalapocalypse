@@ -2969,45 +2969,26 @@ function UseFunc_Drink(ply, usetime, health, hunger, thirst, stamina, fatigue, s
 end
 
 function UseFunc_Respec(ply)
-	if !SERVER then return false end
 	if !ply:IsValid() or !ply:Alive() then return false end
 	if ply.StatsReset and tonumber(ply.StatsReset) > os.time() then
 		ply:SendChat(Format("Can't use an item! Wait for %d more seconds!", ply.StatsReset - os.time()))
 		return false
 	end
 
-	local refund = 0 + ply.StatPoints
-	ply.StatPoints = 0
-/*
-	for k, v in pairs(GAMEMODE.StatsListServer) do
-		local TheStatPieces = string.Explode(";", v)
-		local TheStatName = TheStatPieces[1]
-		refund = refund + tonumber(ply[TheStatName])
-		ply[TheStatName] = 0
+	local reset, callback = ply:SkillsReset()
+	if not reset then
+		if callback then
+			callback(ply)
+		end
+		return false
 	end
-*/
-	for statname, stat in pairs(GAMEMODE.StatConfigs) do
-		local name = "Stat"..statname
-
-		refund = refund + (tonumber(ply[name]) * (stat.Cost or 1))
-		ply[name] = 0
-	end
-
-	ply.StatPoints = refund
-
-	ply:SetMaxHealth(GAMEMODE:CalcMaxHealth(ply))
-	ply:SetMaxArmor(GAMEMODE:CalcMaxArmor(ply))
-	ply:SetJumpPower(GAMEMODE:CalcJumpPower(ply))
-	gamemode.Call("RecalcPlayerSpeed", ply)
 
 	ply:EmitSound("npc/barnacle/barnacle_gulp2.wav")
 
-	GAMEMODE:NetUpdatePeriodicStats(ply)
-	GAMEMODE:NetUpdatePerks(ply)
-
 	ply.StatsReset = os.time() + 86400
 	ply:SystemMessage(translate.ClientGet(ply, "itemusedskillsreset"), Color(255,255,205,255), true)
-	return true
+
+	return reset
 end
 
 function UseFunc_StripWeapon(ply, class, drop) -- use false to strip weapon but not to give ammo unless gamemode function is ok

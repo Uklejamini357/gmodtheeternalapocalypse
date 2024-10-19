@@ -228,31 +228,36 @@ end)
 
 net.Receive("UpgradePerk", function(len, ply)
 	local perk = net.ReadString()
-	local amt = net.ReadUInt(16)
+	local amount = net.ReadUInt(16)
 
 	local perk2 = "Stat"..perk
 	local skill = GAMEMODE.StatConfigs[perk]
 	local curskillamt = tonumber(ply[perk2])
-	local mul = (skill.Cost or 1) * (curskillamt >= skill.Max and 2 or 1)
-	amt = skill.Max >= curskillamt and math.min(amt, ply.StatPoints, skill.Max - curskillamt) or math.min(amt, ply.StatPoints, skill.Max - curskillamt)
+	local mul = 1--(skill.Cost or 1) * (curskillamt >= skill.Max and 2 or 1)
+	local max = skill.Max + (ply:HasPerk("empowered_skills") and skill.PerkMaxIncrease or 0)
+	amt = math.min(amount, ply.StatPoints, max - curskillamt)
+	local new = curskillamt + amt
+	local cost = (amt * mul) + math.max(0, new - math.max(curskillamt, skill.Max))
+	amt = math.min(amt, math.floor(ply.StatPoints-(cost-amt)), max - curskillamt)
 
-	if tonumber(ply.StatPoints) < amt * mul or tonumber(ply.StatPoints) < mul then
+	if tonumber(ply.StatPoints) < cost then
 		ply:SendChat("You need skill points to upgrade skill!")
 		return false
 	end
+
 	if amt < mul then return end
-	if ply:HasPerk("empowered_skills") and skill.Max >= curskillamt and (curskillamt >= (skill.Max + (skill.PerkMaxIncrease or 0))) or skill.Max < curskillamt and (tonumber(curskillamt) >= skill.Max) then
+	if max < curskillamt and (tonumber(curskillamt) >= max) then
 		ply:SendChat("You have reached the maximum number of points for this skill")
 		return false
 	end
 
-	ply[perk2] = curskillamt + (amt * mul)
-	ply.StatPoints = ply.StatPoints - (amt * mul)
+	ply[perk2] = new
+	ply.StatPoints = ply.StatPoints - cost
 	ply:SetMaxHealth(GAMEMODE:CalcMaxHealth(ply))
 	ply:SetMaxArmor(GAMEMODE:CalcMaxArmor(ply))
 	ply:SetJumpPower(GAMEMODE:CalcJumpPower(ply))
 	if GAMEMODE:GetDebug() >= DEBUGGING_ADVANCED then print(ply:Nick().." used "..amt * mul.." skill point(s) on "..perk.." skill ("..tonumber(ply.StatPoints).." skill points remaining)") end
-	ply:SendChat(translate.ClientFormat(ply, "perkincreased", perk, amt * mul))
+	ply:SendChat(translate.ClientFormat(ply, "perkincreased", perk, amt))
 	GAMEMODE:RecalcPlayerSpeed(ply)
 	GAMEMODE:FullyUpdatePlayer(ply)
 end)
@@ -354,6 +359,10 @@ net.Receive("tea_perksreset", function(len, pl)
 
 		costpoints = costpoints + perkinfo.Cost
 		points = points + perkinfo.Cost
+
+		if perkinfo.OnReset then
+			perkinfo.OnReset(pl)
+		end
 	end
 	
 	local finalcost = 2000 * costpoints + (costpoints * 500*((costpoints-1)/2))

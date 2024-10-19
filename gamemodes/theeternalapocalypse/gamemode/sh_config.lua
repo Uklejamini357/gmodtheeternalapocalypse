@@ -567,11 +567,17 @@ GM.PerksList = {
 	["skillpointsbonus"] = {
 		Name = "Bonus skill points I",
 		Description = "You start every prestige with additional 5 skill points.",
-		AddDescription = "Also applies to current prestige",
+		AddDescription = "Also applies to current prestige. Resetting this perk takes away your skill points.\nIf skill points go negative whilst resetting this perk, your skills may get forcefully reset.",
 		Cost = 1,
 		PrestigeReq = 4,
 		OnUnlock = function(ply)
 			ply.StatPoints = tonumber(ply.StatPoints) + 5
+		end,
+		OnReset = function(ply)
+			ply.StatPoints = tonumber(ply.StatPoints) - 5
+			if ply.StatPoints < 0 then
+				ply:SkillsReset()
+			end
 		end
 	},
 
@@ -585,11 +591,17 @@ GM.PerksList = {
 	["skillpointsbonus2"] = {
 		Name = "Bonus skill points II",
 		Description = "You start every prestige with the additional skill points based on your current prestige.",
-		AddDescription = "Also applies to current prestige",
+		AddDescription = "Also applies to current prestige. Resetting this perk takes away your skill points.\nIf skill points go negative whilst resetting this perk, your skills may get forcefully reset.",
 		Cost = 2,
 		PrestigeReq = 10,
 		OnUnlock = function(ply)
 			ply.StatPoints = tonumber(ply.StatPoints) + tonumber(ply.Prestige)
+		end,
+		OnReset = function(ply)
+			ply.StatPoints = tonumber(ply.StatPoints) - tonumber(ply.Prestige)
+			if ply.StatPoints < 0 then
+				ply:SkillsReset()
+			end
 		end
 	},
 
@@ -659,11 +671,15 @@ GM.PerksList = {
 		PrestigeReq = 2,
 	},
 
-	["empowered_skills"] = { -- Should work now
+	["empowered_skills"] = {
 		Name = "Empowered Skills",
 		Description = "You can apply more skill points to the same skill, but cost is doubled if applying beyond normal limit",
+		AddDescription = "On perks reset, your skills will be reset.",
 		Cost = 3,
 		PrestigeReq = 10,
+		OnReset = function(ply)
+			ply:SkillsReset()
+		end
 	},
 
 
