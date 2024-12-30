@@ -61,7 +61,7 @@ function MT_PLAYER:ProcessPlayerDamage(dmginfo)
 		dmginfo:ScaleDamage(0.5)
 	end
 
-	if !directdmg and self.UnlockedPerks["damageresistance"] then
+	if !directdmg and self:HasPerk("damageresistance") then
 		dmginfo:ScaleDamage(0.925)
 	end
 
@@ -151,7 +151,7 @@ function MT_ENTITY:ProcessDamage(dmginfo)
 	end
 
 	-- This is so RNG...
-	if attacker:IsPlayer() and attacker.UnlockedPerks["criticaldamage"] and !directdmg and math.random(15) == 1 then
+	if attacker:IsPlayer() and attacker:HasPerk("criticaldamage") and !directdmg and math.random(15) == 1 then
 		dmginfo:ScaleDamage(1.2)
 	end
 
@@ -176,7 +176,7 @@ function MT_ENTITY:ProcessNPCDamage(dmginfo)
 	if !directdmg and self.IsZombie then
 		dmginfo:ScaleDamage(1 / GAMEMODE:GetInfectionMul())
 
-		if !self.BossMonster and attacker:IsPlayer() and attacker.UnlockedPerks["celestiality"] then
+		if !self.BossMonster and attacker:IsPlayer() and attacker:HasPerk("celestiality") then
 			if self:GetEliteVariant() ~= 0 then
 				dmginfo:ScaleDamage(1.1)
 			else

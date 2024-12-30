@@ -67,6 +67,13 @@ function GM:OpenTasksMenu()
 			taskpanel:SetSize(570, 85)
 			taskpanel.Paint = function() -- Paint function
 				draw.RoundedBoxEx(8,1,1,taskpanel:GetWide()-2,taskpanel:GetTall()-2,Color(0, 0, 0, 50), false, false, false, false)
+				if completed then
+					surface.SetDrawColor(50, 250, 50,15)
+					surface.DrawRect(0, 0, taskpanel:GetWide(), taskpanel:GetTall())
+				elseif selected then
+					surface.SetDrawColor(250, 250, 50,15)
+					surface.DrawRect(0, 0, taskpanel:GetWide(), taskpanel:GetTall())
+				end
 				surface.SetDrawColor(50, 50, 50,255)
 				surface.DrawOutlinedRect(0, 0, taskpanel:GetWide(), taskpanel:GetTall())
 			end

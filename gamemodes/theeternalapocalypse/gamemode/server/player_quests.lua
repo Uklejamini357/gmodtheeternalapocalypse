@@ -49,7 +49,8 @@ function GM:FinishTask(pl, task)
     net.WriteString(task)
     net.Send(pl)
 
-	pl:RefreshTasksStats()
+	self:FullyUpdatePlayer(pl)
+	-- pl:RefreshTasksStats()
 end
 
 function GM:CancelTask(pl, task)

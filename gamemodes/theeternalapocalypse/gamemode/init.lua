@@ -93,15 +93,15 @@ function GM:ShowSpare2(ply)
 end
 
 function GM:CalcMaxHealth(ply)
-	return 100 + (5 * (ply.StatVitality or 0)) + (ply.UnlockedPerks["healthboost"] and 5 or 0) + (ply.UnlockedPerks["healthboost2"] and 8 or 0)
+	return 100 + (5 * (ply.StatVitality or 0)) + (ply:HasPerk("healthboost") and 5 or 0) + (ply:HasPerk("healthboost2") and 8 or 0)
 end
 
 function GM:CalcMaxArmor(ply)
-	return 100 + (2 * (ply.StatEngineer or 0)) + (ply.UnlockedPerks["armorboost"] and 5 or 0) --(tonumber(ply.Prestige or 0) >= 5 and 5 or 0)
+	return 100 + (2 * (ply.StatEngineer or 0)) + (ply:HasPerk("armorboost") and 5 or 0) --(tonumber(ply.Prestige or 0) >= 5 and 5 or 0)
 end
 
 function GM:CalcJumpPower(ply)
-	return 160 + (2 * (ply.StatAgility or 0)) + (ply.UnlockedPerks["jumppowerboost"] and 10 or 0) --(tonumber(ply.Prestige or 0) >= 4 and 10 or 0)
+	return 160 + (2 * (ply.StatAgility or 0)) + (ply:HasPerk("jumppowerboost") and 10 or 0) --(tonumber(ply.Prestige or 0) >= 4 and 10 or 0)
 end
 
 function GM:OnPlayerHitGround(ply, inWater, onFloater, speed)
@@ -341,7 +341,7 @@ function GM:Think()
 		end
 	*/ -- Trying to find function that drains stamina on jumping, but this one doesn't really work
 	
-			local staminaperk = ply.UnlockedPerks["enduring_endurance"] and ply.Stamina < 25 and 2 or 1
+			local staminaperk = ply:HasPerk("enduring_endurance") and ply.Stamina < 25 and 2 or 1
 
 			if !ply:InVehicle() and (ply:IsSprinting() and PlayerIsMoving and not ply:Crouching()) then
 				ply.Stamina = math.Clamp(ply.Stamina - ((5.03*ft / staminaperk) - endurance), 0, 100)
@@ -1008,7 +1008,7 @@ function GM:PlayerLoadout(ply)
 	ply:Give("tea_fists")
 	ply:Give("tea_buildtool")
 
-	if ply.UnlockedPerks["starting_ammo_upgrade"] then
+	if ply:HasPerk("starting_ammo_upgrade") then
 		ply:GiveAmmo(200, "Pistol")
 		ply:GiveAmmo(150, "ammo_rifle")
 		ply:GiveAmmo(100, "Buckshot")

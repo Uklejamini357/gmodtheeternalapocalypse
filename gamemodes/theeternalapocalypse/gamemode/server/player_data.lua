@@ -155,10 +155,10 @@ end
 function GM:XPBonus(ply)
 	if !ply:IsValid() then return 0 end
 	local xpmul = 1
-	if ply.UnlockedPerks["xpboost"] then
+	if ply:HasPerk("xpboost") then
 		xpmul = xpmul + 0.1
 	end
-	if ply.UnlockedPerks["xpboost2"] then
+	if ply:HasPerk("xpboost2") then
 		xpmul = xpmul + 0.15
 	end
 	
@@ -177,10 +177,10 @@ end
 function GM:CashBonus(ply)
 	if !ply:IsValid() then return 0 end
 	local cashmul = 1
-	if ply.UnlockedPerks["cashboost"] then
+	if ply:HasPerk("cashboost") then
 		cashmul = cashmul + 0.05
 	end
-	if ply.UnlockedPerks["cashboost2"] then
+	if ply:HasPerk("cashboost2") then
 		cashmul = cashmul + 0.08
 	end
 	
@@ -246,7 +246,7 @@ function GM:GainPrestige(ply)
 	ply.Prestige = prestige
 	ply.Level = 1
 	ply.XP = 0
-	ply.StatPoints = (ply.UnlockedPerks["skillpointsbonus"] and 5 or 0) + (ply.UnlockedPerks["skillpointsbonus2"] and prestige or 0)
+	ply.StatPoints = (ply:HasPerk("skillpointsbonus") and 5 or 0) + (ply:HasPerk("skillpointsbonus2") and prestige or 0)
 	ply.PerkPoints = ply.PerkPoints + 1
 
 	for statname, _ in pairs(self.StatConfigs) do
@@ -302,13 +302,6 @@ function GM:PrepareStats(ply)
 	ply.LifeZKills = 0
 	ply.LifePlayerKills = 0
 	----------------
-
-	if ply.TEANoTarget then
-		ply.TEANoTarget = false
-		if SuperAdminCheck(ply) then
-			ply:SystemMessage("You died, so your notarget has worn off.", Color(255,255,255), true)
-		end
-	end
 
 
 -- send their stats to them so their hud can display it (this function is called every tick, see server/netstuff.lua)

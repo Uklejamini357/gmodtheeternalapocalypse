@@ -2854,12 +2854,12 @@ function UseFunc_Heal(ply, targetply, usetime, hp, infection, snd)
 	if ply:Alive() then
 		if ply ~= targetply then
 			if targetply:Health() >= targetply:GetMaxHealth() and targetply.Infection < 1 then
-				ply:SendChat("This player does not have any injuries.")
+				ply:SendChat(translate.ClientGet(ply, "this_player_has_no_injuries"))
 				return false
 			end
 		else
 			if ply:Health() >= ply:GetMaxHealth() and ply.Infection < 1 then
-				ply:SendChat("You are perfectly fine, using this would be wasteful at this time.")
+				ply:SendChat(translate.ClientGet(ply, "you_are_perfectly_fine"))
 				return false
 			end
 		end
@@ -2871,7 +2871,7 @@ function UseFunc_Heal(ply, targetply, usetime, hp, infection, snd)
 		ply:SendUseDelay(usetime)
 		if ply ~= targetply then
 			ply.XP = ply.XP + math.floor(healedhp)
-			ply:SendChat("Healed "..targetply:Nick().." for "..healedhp.." health, "..math.floor(healedhp*1.5).." XP gained")
+			ply:SendChat(translate.ClientFormat(ply, "healed_x_for_y", targetply:Nick(), healedhp, math.floor(healedhp*1.5)))
 		end
 		timer.Create("Isplyusingitem"..ply:EntIndex(), usetime, 1, function()
 			timer.Destroy("Isplyusingitem"..ply:EntIndex())
@@ -2893,7 +2893,7 @@ function UseFunc_HealInfection(ply, usetime, infection, snd)
 		timer.Create("Isplyusingitem"..ply:EntIndex(), usetime, 1, function() end)
 		return true
 	else
-		ply:SendChat("You could have healed yourself before you died!")
+		ply:SendChat(translate.ClientGet(ply, "you_could_have_healed_before_died"))
 		return false
 	end
 end
@@ -2903,7 +2903,7 @@ function UseFunc_Armor(ply, usetime, battery, armor, snd)
 	if !ply:IsValid() then return false end
 	if ply:Alive() then
 		if ply:Armor() >= ply:GetMaxArmor() then
-			ply:SendChat("Your armor is already at full condition.")
+			ply:SendChat(translate.ClientGet(ply, "your_armor_is_at_full_condition"))
 			return false
 		end
 		local armorstr = ply:GetNWString("ArmorType") or "none"
@@ -2915,7 +2915,7 @@ function UseFunc_Armor(ply, usetime, battery, armor, snd)
 		timer.Create("Isplyusingitem"..ply:EntIndex(), usetime, 1, function() end)
 		return true
 	else
-		ply:SendChat("You could have reinforced your armor before you died.")
+		ply:SendChat(translate.ClientGet(ply, "could_have_used_armor_before_died"))
 		return false
 	end
 end
@@ -2924,13 +2924,6 @@ function UseFunc_Eat(ply, usetime, health, hunger, thirst, stamina, fatigue, snd
 	if !SERVER then return false end
 	if !ply:IsValid() then return false end
 	if ply:Alive() then
-		if !timer.Exists("plywantstoeat"..ply:EntIndex()) and ply.Hunger > 9500 then
-			timer.Create("plywantstoeat"..ply:EntIndex(), 10, 1, function()
-			end)
-			ply:SendChat("I am not hungry, I should save this for later. \n(Use the item again within 10 seconds to confirm usage)")
-			return false
-		end
-
 		ply:SetHealth(math.Clamp(ply:Health() + health, 0, ply:GetMaxHealth()))
 		ply.Hunger = math.Clamp(ply.Hunger + (hunger * 100), 0, 10000)
 		ply.Thirst = math.Clamp(ply.Thirst + (thirst * 100), 0, 10000)
@@ -2939,7 +2932,6 @@ function UseFunc_Eat(ply, usetime, health, hunger, thirst, stamina, fatigue, snd
 		ply:EmitSound(snd, 100, 100)
 		ply:SendUseDelay(usetime)
 		timer.Create("Isplyusingitem"..ply:EntIndex(), usetime, 1, function() end)
-		timer.Destroy("plywantstoeat"..ply:EntIndex())
 		return true
 	else
 		ply:SendChat("You can't eat when you're dead") -- if they try to call this function when they are dead
@@ -2952,7 +2944,6 @@ function UseFunc_Drink(ply, usetime, health, hunger, thirst, stamina, fatigue, s
 	if !ply:IsValid() then return false end
 	if ply:WaterLevel() == 3 then ply:SendChat("It is impossible to drink when you are underwater. Get out of the water if you want to drink.") return false end
 	if ply:Alive() then
-		if !timer.Exists("plywantstodrink"..ply:EntIndex()) and ply.Thirst > 9500 then timer.Create("plywantstodrink"..ply:EntIndex(), 10, 1, function() end) ply:SendChat("You are not thirsty, consider saving this for later. \n(Use item again within 10 seconds to confirm usage)") return false end
 		ply:SetHealth(math.Clamp(ply:Health() + health, 0, ply:GetMaxHealth()))
 		ply.Hunger = math.Clamp(ply.Hunger + (hunger * 100), 0, 10000)
 		ply.Thirst = math.Clamp(ply.Thirst + (thirst * 100), 0, 10000)
@@ -2961,7 +2952,6 @@ function UseFunc_Drink(ply, usetime, health, hunger, thirst, stamina, fatigue, s
 		ply:EmitSound(snd, 100, 100)
 		ply:SendUseDelay(usetime)
 		timer.Create("Isplyusingitem"..ply:EntIndex(), usetime, 1, function() end)
-		timer.Destroy("plywantstodrink"..ply:EntIndex())
 		return true
 	else
 		return false
@@ -2971,7 +2961,7 @@ end
 function UseFunc_Respec(ply)
 	if !ply:IsValid() or !ply:Alive() then return false end
 	if ply.StatsReset and tonumber(ply.StatsReset) > os.time() then
-		ply:SendChat(Format("Can't use an item! Wait for %d more seconds!", ply.StatsReset - os.time()))
+		ply:SendChat(Format("Can't use this item! Wait for %d more seconds!", ply.StatsReset - os.time()))
 		return false
 	end
 

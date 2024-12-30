@@ -755,6 +755,17 @@ LANG.admin_panel_tab_4_d = "Spawn or give yourself some stuff\n(SUPERADMIN ONLY)
 
 LANG.boss_defeated = "Boss Defeated"
 
+
+-- New
+
+LANG.you_are_perfectly_fine = "You are perfectly fine, using this would be wasteful at this time."
+LANG.this_player_has_no_injuries = "This player does not have any injuries."
+LANG.healed_x_for_y = "Healed %s for %d health, %d XP gained"
+LANG.you_could_have_healed_before_died = "You could have healed yourself before you died!"
+LANG.your_armor_is_at_full_condition = "Your armor is already at full condition."
+LANG.could_have_used_armor_before_died = "You could have reinforced your armor before you died."
+
+
 -- Edited
 
 LANG.dmgtaken = "Damage taken: %s"

@@ -342,16 +342,19 @@ function GM:NPCReward(ent)
 	local isboss = ent.BossMonster and ent.DamagedBy
 	if !ent.TEA_DeadNPC and (ent:IsNextBot() or ent:IsNPC()) and (ent.XPReward and ent.MoneyReward) then
 		if !isboss and attacker and attacker:IsValid() then
-			local plyhasperk = attacker.UnlockedPerks["bountyhunter"]
+			local hasbountyhunter = attacker:HasPerk("bountyhunter")
 			local xp = ent.XPReward * self.XPGainMul * GAMEMODE:GetInfectionMul() * math.Round(1 + (attacker.StatKnowledge * 0.025), 3)
 			local cash = ent.MoneyReward * self.CashGainMul * (0.5 + (GAMEMODE:GetInfectionMul() * 0.5)) * (self:CashBonus(attacker) or 1) * math.Round(1 + (attacker.StatSalvage * 0.025), 3)
 			GAMEMODE:Payout(attacker,
-				xp * (plyhasperk and (isvariant and 1.1 or 1) or 1),
-				cash * (plyhasperk and (isvariant and 1.15 or 1) or 1)
+				xp * (hasbountyhunter and (isvariant and 1.1 or 1) or 1),
+				cash * (hasbountyhunter and (isvariant and 1.15 or 1) or 1)
 			)
 			attacker.ZKills = attacker.ZKills + 1
 			attacker.LifeZKills = attacker.LifeZKills + 1
 			gamemode.Call("GiveTaskProgress", attacker, "zombie_killer", 1)
+			if isvariant then
+				gamemode.Call("GiveTaskProgress", attacker, "elite_problem", 1)
+			end
 
 			self:SendPlayerSurvivalStats(attacker)
 			self:NetUpdateStatistics(attacker)
@@ -362,24 +365,29 @@ function GM:NPCReward(ent)
 			self.NextInfectionDecrease = math.max(self.NextInfectionDecrease, ct + 25)
 			self.InfectionDecreasedTimes = 0
 			attacker.ZombieKillStreak = attacker.ZombieKillStreak + 1
-			timer.Create("TEA_InfectionStreak_1_"..attacker:EntIndex(), 7.5, 1, function()
+			timer.Create("TEA_InfectionStreak_1_"..attacker:EntIndex(), 7, 1, function()
 				if !attacker:IsValid() then return end
 				attacker.ZombieKillStreak = math.floor(attacker.ZombieKillStreak / 3)
 			end)
-			timer.Create("TEA_InfectionStreak_2_"..attacker:EntIndex(), 20, 1, function()
+			timer.Create("TEA_InfectionStreak_2_"..attacker:EntIndex(), 17.5, 1, function()
 				if !attacker:IsValid() then return end
 				attacker.ZombieKillStreak = 0
 			end)
 		elseif isboss then
 			for pl, v in pairs(ent.DamagedBy) do
 				if !pl:IsValid() or !pl:IsPlayer() then continue end
-				local plyhasperk = pl.UnlockedPerks["bountyhunter"]
+				local hasbountyhunter = pl:HasPerk("bountyhunter")
 				local payxp = tonumber(math.min(v, ent:GetMaxHealth()) * ent.XPReward / ent:GetMaxHealth())
 				local paycash = tonumber(math.min(v, ent:GetMaxHealth()) * ent.MoneyReward / ent:GetMaxHealth())
 				self:Payout(pl,
-					math.Round(payxp * self.XPGainMul * self:GetInfectionMul() * (plyhasperk and (isvariant and 1.2 or 1.1) or 1)),
-					math.Round(paycash * self.CashGainMul * (0.5 + (GAMEMODE:GetInfectionMul() * 0.5)) * (self:CashBonus(pl) or 1) * (plyhasperk and (isvariant and 1.3 or 1.15) or 1))
+					math.Round(payxp * self.XPGainMul * self:GetInfectionMul() * (hasbountyhunter and (isvariant and 1.2 or 1.1) or 1)),
+					math.Round(paycash * self.CashGainMul * (0.5 + (GAMEMODE:GetInfectionMul() * 0.5)) * (self:CashBonus(pl) or 1) * (hasbountyhunter and (isvariant and 1.3 or 1.15) or 1))
 				)
+				
+				if v >= ent:GetMaxHealth()*0.05 then
+					gamemode.Call("GiveTaskProgress", pl, "boss_hunter", 1)
+				end
+
 				pl:PrintMessage(HUD_PRINTTALK, Format("Damage dealt to boss: %s (%s%% damage)", math.Round(v), math.Round((v * 100) / ent:GetMaxHealth())))
 			end
 

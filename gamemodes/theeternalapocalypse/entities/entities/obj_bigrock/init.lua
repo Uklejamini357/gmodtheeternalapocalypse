@@ -54,7 +54,7 @@ function ENT:Splode()
 
 	for _,v in pairs(damagedents) do
 		if v:IsPlayer() then
-			v:TakeDamage(GAMEMODE:CalcDefenseDamage(v, 50), self.Owner)
+			v:TakeDamage(GAMEMODE:CalcDefenseDamage(v, 30), self.Owner)
 		elseif v:GetClass() == "prop_flimsy" or v:GetClass() == "prop_strong" then
 			v:TakeDamage(300,self.Owner)
 		elseif SpecialSpawns[v:GetClass()] then
@@ -66,6 +66,8 @@ function ENT:Splode()
 end
 
 function ENT:PhysicsCollide(data, physobj)
+	if self.ctime == CurTime() then return end
+	self.ctime = CurTime()
 	if data.HitEntity:IsPlayer() then
 		data.HitEntity:TakeDamage(GAMEMODE:CalcDefenseDamage(data.HitEntity, 10), self.Owner)
 	end
@@ -79,7 +81,7 @@ function ENT:PhysicsCollide(data, physobj)
 
 	self.bounce = self.bounce + 1
 	if self.bounce > 3 then
-	self:Splode()
+		self:Splode()
 	end
 	return true
 end

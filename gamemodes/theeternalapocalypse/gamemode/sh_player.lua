@@ -142,14 +142,13 @@ function meta:CalculateMaxWeight()
 	local armorstr = self:GetNWString("ArmorType") or "none"
 	local armortype = GAMEMODE.ItemsList[armorstr]
 
+	local baseweight = GAMEMODE.Config["MaxCarryWeight"]
+	local perksweight = (self:HasPerk("weightboost") and 1.5 or 0) + (self:HasPerk("weightboost2") and 2.5 or 0) + (self:HasPerk("weightboost3") and 3.5 or 0)
 	if SERVER then
-		if self.StatsPaused then return 1e300 end
+		if self.StatsPaused then return math.huge end
 
-		return GAMEMODE.Config["MaxCarryWeight"] + (self.UnlockedPerks["weightboost"] and 1.5 or 0) + (self.UnlockedPerks["weightboost2"] and 2.5 or 0) + (self.UnlockedPerks["weightboost3"] and 3.5 or 0)
-			+ ((self.StatStrength or 0) * 1.53) + (self:GetNWString("ArmorType") ~= "none" and armortype["ArmorStats"]["carryweight"] or 0)
+		return baseweight + perksweight + ((self.StatStrength or 0) * 1.53) + (self:GetNWString("ArmorType") ~= "none" and armortype["ArmorStats"]["carryweight"] or 0)
 	else
-		local baseweight = GAMEMODE.Config["MaxCarryWeight"]
-		local perksweight = (GAMEMODE.LocalPerks["weightboost"] and 1.5 or 0) + (GAMEMODE.LocalPerks["weightboost2"] and 2.5 or 0) + (GAMEMODE.LocalPerks["weightboost3"] and 3.5 or 0)
 		local skillsweight = (Perks.Strength or 0) * 1.53
 		local additionalarmorweight = armorstr ~= "none" and armortype["ArmorStats"]["carryweight"] or 0
 		return math.Round(baseweight + perksweight + skillsweight + additionalarmorweight, 2)

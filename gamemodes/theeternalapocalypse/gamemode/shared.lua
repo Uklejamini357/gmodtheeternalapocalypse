@@ -1,12 +1,12 @@
 DeriveGamemode("sandbox")
 
-GM.Name		= "The Eternal Apocalypse"
+GM.Name		= "The Eternal Apocalypse" -- The Eternol Apocalypse
 GM.AltName	= "After The End Reborn"
 GM.Author	= "Uklejamini"
 GM.Email	= "[You may not view this information.]"
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "Pre-0.11.2" -- Beta
-GM.DateVer	= "01.06.2024" -- oh my gosh there was no update for so long
+GM.Version	= "0.11.2"
+GM.DateVer	= "30.12.2024" -- oh my gosh there was no update for so long
 
 
 include("sh_globals.lua") -- globals

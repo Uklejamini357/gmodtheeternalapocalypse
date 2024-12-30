@@ -34,5 +34,51 @@ GM.Tasks = {
 		end
 	},
 
+	["elite_problem"] = {
+		Name = "Elite Problem",
+		Description = "Kill 5 elite zombie variants.",
+		RewardText = "1550XP & 1150$",
+		Cooldown = TIME_HOUR * 12,
+		CancelCooldown = TIME_HOUR * 24,
+		ReqProgress = 5,
+		LevelReq = 16,
+		Callback = function(ply)
+			ply.XP = ply.XP + 1550
+			ply.Money = ply.Money + 1150
+			ply:SystemMessage("You gained 1550 XP and 1150 cash for completing a task!", Color(180,255,255))
+		end
+	},
+
+	["boss_hunter"] = {
+		Name = "Boss Hunter",
+		Description = "Kill 1 boss zombie. (At least 5% damage dealt to boss is required)",
+		RewardText = "2000XP & 1500$",
+		Cooldown = TIME_HOUR * 16,
+		CancelCooldown = TIME_HOUR * 32,
+		ReqProgress = 1,
+		LevelReq = 18,
+		Callback = function(ply)
+			ply.XP = ply.XP + 2000
+			ply.Money = ply.Money + 1500
+			ply:SystemMessage("You gained 2000 XP, 1500 cash and 1x Army Medkit for completing a task!", Color(180,255,255))
+		end
+	},
+
+	["medical_attention"] = {
+		Name = "Medical Attention",
+		Description = "Heal other players 3 times using an item.",
+		RewardText = "1550XP, 1150$ & 1x Army Medkit",
+		Cooldown = TIME_HOUR * 6,
+		CancelCooldown = TIME_HOUR * 12,
+		ReqProgress = 3,
+		LevelReq = 16,
+		Callback = function(ply)
+			ply.XP = ply.XP + 1550
+			ply.Money = ply.Money + 1150
+			gamemode.Call("SystemGiveItem", ply, "item_armymedkit", 1)
+			ply:SystemMessage("You gained 1550 XP and 1150 cash for completing a task!", Color(180,255,255))
+		end
+	},
+
 
 }
