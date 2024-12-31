@@ -2606,11 +2606,11 @@ i = GM:CreateItem("item_medbag_enhanced", nil, nil, 6000, "models/wick/wrbstalke
 function(ply, targetply)
 	local healing = UseFunc_Heal(ply, targetply, 5, 150, 100, "theeternalapocalypse/items/inv_medbag.ogg")
 	if healing then
-		local entindex = ply:EntIndex()
+		local entindex = targetply:EntIndex()
 		hook.Add("EntityTakeDamage", "TEA.EntityTakeDamage.MedicBagEnhancedEffect_Player"..entindex, function(ent, dmginfo)
 			local directdmg = bit.band(DMG_DIRECT, dmginfo:GetDamageType()) ~= 0
 
-			if ent == ply and not directdmg then
+			if ent == targetply and not directdmg then
 				dmginfo:ScaleDamage(0.7)
 			end
 		end)
@@ -2618,15 +2618,15 @@ function(ply, targetply)
 		local identifier = "TEA.EntityTakeDamage.MedicBagEnhancedEffect"..entindex
 
 		hook.Add("DoPlayerDeath", "TEA.DoPlayerDeath.MedicBagEnhancedEffect_Player"..entindex, function(pl, attacker, dmginfo)
-			if pl ~= ply then return end
+			if pl ~= targetply then return end
 			hook.Remove("DoPlayerDeath", "TEA.DoPlayerDeath.MedicBagEnhancedEffect_Player"..entindex)
 			hook.Remove("EntityTakeDamage", "TEA.EntityTakeDamage.MedicBagEnhancedEffect_Player"..entindex)
 			if timer.Exists(identifier) then
 				timer.Remove(identifier)
 			end
 
-			if ply:IsValid() then
-				ply:PrintMessage(3, "You died, the effect is no longer present!")
+			if targetply:IsValid() then
+				targetply:PrintMessage(3, "You died, the effect is no longer present!")
 			end
 		end)
 
@@ -2635,19 +2635,19 @@ function(ply, targetply)
 			local new = math.min(150, old + 60)
 
 			timer.Adjust(identifier, new, 1)
-			if ply:IsValid() then
-				ply:PrintMessage(3, "The effect has been prolonged by "..math.Round(new - old , 2).." seconds, remaining: "..math.Round(new, 2).."s")
+			if targetply:IsValid() then
+				targetply:PrintMessage(3, "The effect has been prolonged by "..math.Round(new - old , 2).." seconds, remaining: "..math.Round(new, 2).."s")
 			end
 		else
 			timer.Create(identifier, 60, 1, function()
 				hook.Remove("DoPlayerDeath", "TEA.DoPlayerDeath.MedicBagEnhancedEffect_Player"..entindex)
 				hook.Remove("EntityTakeDamage", "TEA.EntityTakeDamage.MedicBagEnhancedEffect_Player"..entindex)
-				if ply:IsValid() then
-					ply:PrintMessage(3, "The effect has expired!")
+				if targetply:IsValid() then
+					targetply:PrintMessage(3, "The effect has expired!")
 				end
 			end)
-			if ply:IsValid() then
-				ply:PrintMessage(3, "You now take 30% less damage. Duration: 60s")
+			if targetply:IsValid() then
+				targetply:PrintMessage(3, "You now take 30% less damage. Duration: 60s")
 			end
 		end
 	end
