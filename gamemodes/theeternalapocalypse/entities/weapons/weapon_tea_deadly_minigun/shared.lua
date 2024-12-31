@@ -7,23 +7,23 @@ SWEP.UseHands			= true
 SWEP.HoldType			= "crossbow"
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= false
-SWEP.Category			= "ZW Weapons"
+SWEP.Category			= "T.E.A. Weapons"
 SWEP.Instructions		= ""
 SWEP.Purpose			= "Deadly minigun that uses 2 ammo per shot and has extreme damage, even against zombies. High recoil and less accurate."
 
 SWEP.Primary.Sound		= Sound("Weapon_M249.Single")
-SWEP.Primary.Recoil		= 1.35
-SWEP.Primary.Damage		= 17
-SWEP.Primary.NumShots	= 2
-SWEP.Primary.Cone		= 0.087
-SWEP.Primary.Delay		= 0.053
+SWEP.Primary.Recoil		= 0.65
+SWEP.Primary.Damage		= 30
+SWEP.Primary.NumShots	= 1
+SWEP.Primary.Cone		= 0.047
+SWEP.Primary.Delay		= 0.04
 
 SWEP.IronFireAccel	= 5
 
-SWEP.Primary.ClipSize		= 400
+SWEP.Primary.ClipSize		= 200
 SWEP.Primary.DefaultClip	= 0
 SWEP.Primary.Automatic		= true
-SWEP.Primary.Ammo			= "ammo_rifle"
+SWEP.Primary.Ammo			= "ammo_minigun" -- new ammo type
 
 SWEP.Secondary.ClipSize		= -1
 SWEP.Secondary.DefaultClip	= -1
@@ -80,7 +80,7 @@ function SWEP:PrimaryAttack()
 
 	self.Weapon:EmitSound(self.Primary.Sound)
 
-	self:TakePrimaryAmmo(2)
+	self:TakePrimaryAmmo(1)
 
 	self:ShootBulletInformation()
 end

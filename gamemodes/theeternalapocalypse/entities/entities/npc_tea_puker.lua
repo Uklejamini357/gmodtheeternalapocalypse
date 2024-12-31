@@ -128,5 +128,5 @@ function ENT:OnKilled(damageInfo)
 	util.Effect("Explosion", effectdata)
 
 	self:Remove()
-	gamemode.Call("OnNPCKilled", self, damageInfo)
+	gamemode.Call("OnNPCKilled", self, damageInfo:GetAttacker(), damageInfo:GetInflictor())
 end

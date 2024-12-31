@@ -128,6 +128,8 @@ function ENT:Initialize()
 	self:SetModel(self.ZombieStats["Model"])
 	self.NextVehicleCollide = CurTime()
 	self.loco:SetDeathDropHeight(700)
+	self.loco:SetStepHeight(32)
+	self.loco:SetClimbAllowed(false)
 	self:SetHealth(self.ZombieStats["Health"])
 	self:SetMaxHealth(self.ZombieStats["Health"])
 	self:SetCollisionBounds(Vector(-12,-12, 0), Vector(12, 12, 64))
@@ -180,6 +182,10 @@ function ENT:Think()
 		phy:SetPos(self:GetPos())
 		phy:SetAngles(self:GetAngles())
 	end
+
+	-- if self.target and self.target:IsValid() then
+		-- self.loco:Approach( self.target:GetPos(), 1 )
+	-- end
 	
 -- need to slowly drown them in water or else they will just skip happily along the sea floor
 	if self:WaterLevel() >= 3 and self:Health() > 0 then
@@ -262,11 +268,22 @@ function ENT:RunBehaviour()
 				self:StartActivity(self.RunAnim)
 
 				self.loco:SetDesiredSpeed(self.ZombieStats["MoveSpeedRun"] * self:GetTEAZombieSpeedMul())
-				self:MoveToPos(target:GetPos(), {
-					tolerance = self.ZombieStats["Reach"],
-					maxage = distance < 1750 and 1 or 3,
-					repath = 1,
-				})
+
+				local nav = navmesh.GetNearestNavArea(target:GetPos(), false, 10000, false, true, -2)
+				local reachpos
+				if nav then
+					if self.loco:IsAreaTraversable(nav) then
+						reachpos = nav:GetClosestPointOnArea(target:GetPos())
+					end
+				end
+				if reachpos then
+					local result = self:MoveToPos(reachpos or target:GetPos(), {
+						tolerance = self.ZombieStats["Reach"],
+						maxage = 1,
+						repath = 1,
+					})
+				end
+
 			end
 
 -- failed all above checks, they arent in range so we lose interest and go back to wandering
@@ -313,7 +330,7 @@ function ENT:OnKilled(damageInfo)
 	timer.Simple(0.25, function()
 		self:Remove()
 	end)
-	gamemode.Call("OnNPCKilled", self, damageInfo)
+	gamemode.Call("OnNPCKilled", self, damageInfo:GetAttacker(), damageInfo:GetInflictor())
 end
 
 function ENT:OnInjured(damageInfo)

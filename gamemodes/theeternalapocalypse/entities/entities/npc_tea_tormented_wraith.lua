@@ -145,5 +145,5 @@ function ENT:OnKilled(damageInfo)
 	timer.Simple(0.25, function()
 		self:Remove()
 	end)
-	gamemode.Call("OnNPCKilled", self, damageInfo)
+	gamemode.Call("OnNPCKilled", self, damageInfo:GetAttacker(), damageInfo:GetInflictor())
 end

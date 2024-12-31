@@ -197,7 +197,8 @@ function ENT:RunBehaviour()
 			
 			if (self:GetRangeTo(target) <= 400 && self.nextslam < CurTime() && self:HasLOS()) then 
 				self:StartActivity(ACT_RANGE_ATTACK1)
-				self:TimedEvent(3.2, function()
+				self:SetPlaybackRate(self.IsEnraged and 1.3 or 1)
+				self:TimedEvent(3.2 / (self.IsEnraged and 1.3 or 1), function()
 					if not (self:IsValid() && self:Health() > 0) then return end
 					self:EmitSound("npc/env_headcrabcanister/explosion.wav", 140, 100)
 					local effectdata = EffectData()
@@ -232,7 +233,7 @@ function ENT:RunBehaviour()
 						end
 					end
 				end)
-				coroutine.wait(4)
+				coroutine.wait(4 / (self.IsEnraged and 1.3 or 1))
 
 				self.nextslam = CurTime() + 25
 
@@ -240,7 +241,8 @@ function ENT:RunBehaviour()
 			elseif (self:GetRangeTo(target) <= 1000 && self.nexttoss < CurTime() && self:HasLOS()) then 
 
 				self:StartActivity(self.AttackAnim)
-				coroutine.wait(self.AttackWaitTime)
+				self:SetPlaybackRate(self.IsEnraged and 1.3 or 1)
+				coroutine.wait(self.AttackWaitTime / (self.IsEnraged and 1.3 or 1))
 
 				local tracedata = {}
 				tracedata.start = self:GetPos() + Vector(0, 0, 40)
@@ -410,7 +412,7 @@ function ENT:OnKilled(damageInfo)
 
 	self:EmitSound(table.Random(deathSounds), 100, math.random(95, 105))
 	self:BecomeRagdoll(damageInfo)
-	gamemode.Call("OnNPCKilled", self, damageInfo)
+	gamemode.Call("OnNPCKilled", self, damageInfo:GetAttacker(), damageInfo:GetInflictor())
 end
 
 function ENT:OnRemove()

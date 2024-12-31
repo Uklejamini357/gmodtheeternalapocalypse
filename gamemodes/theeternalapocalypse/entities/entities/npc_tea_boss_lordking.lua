@@ -392,7 +392,7 @@ function ENT:OnKilled(damageInfo)
 
 	self:EmitSound(table.Random(self.DeathSounds), 130, math.random(95, 105))
 	self:BecomeRagdoll(damageInfo)
-	gamemode.Call("OnNPCKilled", self, damageInfo)
+	gamemode.Call("OnNPCKilled", self, damageInfo:GetAttacker(), damageInfo:GetInflictor())
 end
 
 function ENT:OnInjured(damageInfo)

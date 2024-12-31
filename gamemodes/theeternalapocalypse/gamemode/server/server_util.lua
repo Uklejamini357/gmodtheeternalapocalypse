@@ -328,7 +328,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 	local keptbounty
 	local stolenbounty
 	if tonumber(ply.Bounty) >= 5 then
-		if ply ~= attacker and attacker:IsPlayer() and attacker:IsValid() and attacker.UnlockedPerks["bountyhunter"] then
+		if ply ~= attacker and attacker:IsPlayer() and attacker:IsValid() and attacker:HasPerk("bountyhunter") then
 			stolenbounty = math.ceil(ply.Bounty * 0.5)
 --			keptbounty = math.ceil(ply.Bounty * 0.5)
 			attacker:SystemMessage("You stole "..stolenbounty.." bounty from "..ply:Nick().."!")
@@ -432,7 +432,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 			if weapon_name == v then nodrop = true break end
 		end
 
-		if !nodrop and self.ItemsList[weapon_name] and ply.Inventory[weapon_name] and (self.DropActiveWeaponOnDeath and (attacker:IsPlayer() and attacker ~= ply and ply:HasPerk("dead_luck"))) then
+		if !nodrop and self.ItemsList[weapon_name] and ply.Inventory[weapon_name] and (self.DropActiveWeaponOnDeath--[[ and (attacker:IsPlayer() and attacker ~= ply and not ply:HasPerk("dead_luck"))]]) then
 			self:SystemRemoveItem(ply, weapon_name)
 
 			local ent = ents.Create("ate_droppeditem")

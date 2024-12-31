@@ -128,9 +128,9 @@ LANG.Barter_d = "Decreases Cost of items that you buy at traders by 1.5% per poi
 LANG.Defense = "Defense"
 LANG.Defense_d = "Increases total protection by 1.5%.\nIncreases total environmental protection by 1%. Per point."
 LANG.Engineer = "Engineer"
-LANG.Engineer_d = "Increases repairing HP by 3HP, max of 50. Also decreases prop cost by 2% per point.\nIncreases max armor by 2 and increases effectiveness of armor-reinforcing items by 2% per point."
+LANG.Engineer_d = "Increases repairing HP for props by 3HP. Also decreases prop cost by 2% per point.\nIncreases max armor by 2 and increases effectiveness of armor-reinforcing items by 2% per point." -- Edited
 LANG.Endurance = "Endurance"
-LANG.Endurance_d = "Decreases stamina reduction when running by ~3% and decreases stamina reduction when underwater by ~1.67%.\nDecreases stamina reduction when landing onto ground by 4.5% per point."
+LANG.Endurance_d = "Decreases stamina reduction when running by ~3%.\nDecreases stamina reduction when landing onto ground by 4.5% per point." -- Edited
 LANG.Gunslinger = "Gunslinger"
 LANG.Gunslinger_d = "Increases bullet damage by 1% per point."
 LANG.Immunity = "Immunity"
@@ -188,6 +188,8 @@ LANG.item_armymedkit_n = "Army Medkit"
 LANG.item_armymedkit_d = "A specialized medical set to fight against physical damage and blood loss.\nIn it is included a component for blood coagulation, antibiotics, immunal stimulators, and painkillers.\nOn usage:\n+70 health points\n-20% infection"
 LANG.item_scientificmedkit_n = "Scientific Medkit"
 LANG.item_scientificmedkit_d = "High end medical set designed for use in The Zone. This medkit includes items used to stop bleeding, treat burns, clean wounds, and treat a variety of different injuries.\nIt also includes anti-radiation pills and medicine.\nOn usage:\n+100 health points\n-60% infection"
+LANG.item_medbag_enhanced_n = "Medical Bag Enhanced" -- New
+LANG.item_medbag_enhanced_d = "A set of a very high end medical supplies\nOn usage:\n+150 health points\n-100% infection\n+30% damage resistance for 60 seconds (Effect can be prolonged, max 150 seconds)" -- New
 LANG.item_antidote_n = "Antidote"
 LANG.item_antidote_d = "A rare and expensive antidote that is capable of curing the zombie plague, It's a shame this wasn't invented until most of the world had already been overrun.\nOn usage:\n-40% infection"
 LANG.item_egg_n = "Raw Egg"
@@ -195,11 +197,13 @@ LANG.item_egg_d = "A raw egg.\nOn usage:\n+4% hunger\n-1% thirst"
 LANG.item_milk_n = "Old Milk"
 LANG.item_milk_d = "An old milk.\nOn usage:\n+11% hunger\n+20% thirst"
 LANG.item_soda_n = "Can of Softdrink"
-LANG.item_soda_d = "An old pre apocalyptic softdrink, it even still has bubbles left in it!\nOn usage:\n+1 health point\n+8% hunger\n+35% thirst\n+5% stamina\n-1% fatigue"
+LANG.item_soda_d = "An old pre apocalyptic softdrink, it even still has bubbles left in it!\nOn usage:\n+1 health point\n+3% hunger\n+35% thirst\n+5% stamina\n-0.5% fatigue" -- Edited
+LANG.item_waterbottle_n = "Mineral Water Bottle" -- New
+LANG.item_waterbottle_d = "A fresh bottle of mineral water. It's rare to find clean source of drinkable water in the apocalyptic days, so make good use of it.\nOn usage:\n+1 health point\n+4% hunger\n+80% thirst\n+5% stamina\n-1% fatigue" -- New
 LANG.item_energydrink_n = "Energy Drink 'S.T.A.L.K.E.R.'"
-LANG.item_energydrink_d = "This is an excellent energy drink consisting of caffeine, taurine and a mixture of rejuvenating vitamins. Just the ticket when you're too tired to push forward!\nOn usage:\n+1 health point\n+5% hunger\n+30% thirst\n+55% stamina\n-8% fatigue"
+LANG.item_energydrink_d = "This is an excellent energy drink consisting of caffeine, taurine and a mixture of rejuvenating vitamins. Just the ticket when you're too tired to push forward!\nOn usage:\n+1 health point\n+2% hunger\n+30% thirst\n+55% stamina\n-6% fatigue" -- Edited
 LANG.item_energydrink_nonstop_n = "'Nonstop' Energy Drink"
-LANG.item_energydrink_nonstop_d = "This drink will instantly rejuvenate your mind and body. This drink is similar to the common energy drink, but also heals you, reduces radiation somewhat, reduces hunger, and gives you more endurance.\nOf course it's a bit expensive, but the price is worth it!\nOn usage:\n+2 health points\n+6% hunger\n+32% thirst\n+85% stamina\n-11% fatigue"
+LANG.item_energydrink_nonstop_d = "This drink will instantly rejuvenate your mind and body. This drink is similar to the common energy drink, but also heals you, reduces radiation somewhat, reduces hunger, and gives you more endurance.\nOf course it's a bit expensive, but the price is worth it!\nOn usage:\n+2 health points\n+3% hunger\n+32% thirst\n+85% stamina\n-8% fatigue" -- Edited
 LANG.item_beerbottle_n = "Bottle of Beer"
 LANG.item_beerbottle_d = "Makes the apocalypse a bit more bearable.\nOn usage:\n+1 health point\n+9% hunger\n+5% thirst\n-15% stamina\n+10% fatigue"
 LANG.item_tinnedfood_n = "Tinned Rations"
@@ -312,6 +316,10 @@ LANG.item_rocketammo_n = "RPG Rocket"
 LANG.item_rocketammo_d = "A missile designed for use with the RPG launcher."
 LANG.item_ar2pulseammo_n = "AR2 Pulse Ammo"
 LANG.item_ar2pulseammo_d = "Description about this item is currently unavailable. - Reason: [DATA EXPUNGED]"
+LANG.item_deadly_crossbowbolt_n = "Deadly Crossbow Bolts" -- New
+LANG.item_deadly_crossbowbolt_d = "Deadly Crossbow Bolts used for Deadly Crossbows. Explodes upon impact." -- New
+LANG.item_minigunammo_n = "Minigun Ammo" -- New
+LANG.item_minigunammo_d = "Incredibly expensive and heavy ammunition, however it only serves purpose for one weapon - the Deadly Minigun." -- New
 
 -- Weapons
 
@@ -429,6 +437,8 @@ LANG.weapon_tea_deadly_minigun_n = "Deadly GAU-8C Chaingun"
 LANG.weapon_tea_deadly_minigun_d = "Deadly minigun that uses 2 ammo per shot and has extreme damage, even against zombies. High recoil and less accurate."
 LANG.weapon_tea_deadly_scrapcrossbow_n = "Deadly Crossbow"
 LANG.weapon_tea_deadly_scrapcrossbow_d = "A crossbow cobbled together from an old battery and a bunch of scrap metal. Unlike regular crossbow, this makes bolts explode on impact."
+LANG.weapon_tea_krukov_uniq_n = "Magnus KA-357" -- New
+LANG.weapon_tea_krukov_uniq_d = "A very powerful Kalashnikov weapon. Modified by a legendary survivor, at the cost of accuracy and fire rate now uses magnum rounds instead of rifle ammo, making this weapon deadlier!" -- New
 
 --M9k Guns (yes, i will get to editing descriptions to be more accurate later)
 

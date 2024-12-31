@@ -45,6 +45,15 @@ end
 local trans_get = translate.Get
 local trans_format = translate.Format
 
+-- This is something that I might be using in the future
+local ammocostmul = 1
+local consumcostmul = 1
+local wepcostmul = 1
+local meleecostmul = 1
+local armorcostmul = 1
+local misccostmul = 1
+
+
 
 GM.ItemsList = {
 
@@ -748,6 +757,17 @@ GM.ItemsList = {
 		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_krukov") UseFunc_StripWeapon(ply, "weapon_tea_krukov", drop) return drop end
 	},
 
+	["weapon_tea_krukov_uniq"] = {
+		Cost = 185000,
+		Model = "models/weapons/w_rif_ak47.mdl",
+		Weight = 4.46,
+		Supply = 0,
+		Rarity = 8,
+		Category = 3,
+		UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_krukov_uniq") return false end,
+		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_krukov_uniq") UseFunc_StripWeapon(ply, "weapon_tea_krukov_uniq", drop) return drop end
+	},
+
 	["weapon_tea_l303"] = {
 		Cost = 13500,
 		Model = "models/weapons/w_rif_galil.mdl",
@@ -1018,6 +1038,17 @@ GM.ItemsList = {
 		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_sniperammo") return drop end
 	},
 
+	["item_minigunammo"] = {
+		Cost = 1000,
+		Model = "models/wick/wrbstalker/anomaly/items/wick_ammo_792x33_ap.mdl", -- I'll find the right model for this soon, hopefully.
+		Weight = 1,
+		Supply = 0,
+		Rarity = 4,
+		Category = 2,
+		UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 100, "ammo_minigun") return bool end,
+		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_minigunammo") return drop end
+	},
+
 	["item_ar2pulseammo"] = {
 		Cost = 150,
 		Model = "models/Items/combine_rifle_cartridge01.mdl",
@@ -1049,6 +1080,17 @@ GM.ItemsList = {
 		Category = 2,
 		UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 25, "XBowBolt") return bool end,
 		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_crossbowbolt_crate") return drop end
+	},
+
+	["item_deadly_crossbowbolt"] = {
+		Cost = 500,
+		Model = "models/Items/CrossbowRounds.mdl",
+		Weight = 0.8,
+		Supply = 0,
+		Rarity = 4,
+		Category = 2,
+		UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 25, "ammo_deadlybolt") return bool end,
+		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_deadly_crossbowbolt") return drop end
 	},
 
 	["item_rocketammo"] = {
@@ -2556,9 +2598,61 @@ i = GM:CreateItem("item_armymedkit", nil, nil, 300, "models/wick/wrbstalker/anom
 function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 70, 20, "comrade_vodka/inv_aptecka.ogg") return healing end,
 function(ply) local drop = UseFunc_DropItem(ply, "item_armymedkit") return drop end)
 i.CanUseOnOthers = true
-i = GM:CreateItem("item_scientificmedkit", nil, nil, 500, "models/wick/wrbstalker/anomaly/items/wick_dev_aptechka_mid.mdl", 0.5, 30, 3, 1,
+i = GM:CreateItem("item_scientificmedkit", nil, nil, 500, "models/wick/wrbstalker/anomaly/items/wick_dev_aptechka_mid.mdl", 0.5, 8, 4, 1,
 function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 100, 60, "comrade_vodka/inv_aptecka.ogg") return healing end,
 function(ply) local drop = UseFunc_DropItem(ply, "item_scientificmedkit") return drop end)
+i.CanUseOnOthers = true
+i = GM:CreateItem("item_medbag_enhanced", nil, nil, 6000, "models/wick/wrbstalker/anomaly/items/wick_dev_med_bag.mdl", 1.4, 3, 6, 1,
+function(ply, targetply)
+	local healing = UseFunc_Heal(ply, targetply, 5, 150, 100, "theeternalapocalypse/items/inv_medbag.ogg")
+	if healing then
+		local entindex = ply:EntIndex()
+		hook.Add("EntityTakeDamage", "TEA.EntityTakeDamage.MedicBagEnhancedEffect_Player"..entindex, function(ent, dmginfo)
+			local directdmg = bit.band(DMG_DIRECT, dmginfo:GetDamageType()) ~= 0
+
+			if ent == ply and not directdmg then
+				dmginfo:ScaleDamage(0.7)
+			end
+		end)
+
+		local identifier = "TEA.EntityTakeDamage.MedicBagEnhancedEffect"..entindex
+
+		hook.Add("DoPlayerDeath", "TEA.DoPlayerDeath.MedicBagEnhancedEffect_Player"..entindex, function(pl, attacker, dmginfo)
+			if pl ~= ply then return end
+			hook.Remove("DoPlayerDeath", "TEA.DoPlayerDeath.MedicBagEnhancedEffect_Player"..entindex)
+			hook.Remove("EntityTakeDamage", "TEA.EntityTakeDamage.MedicBagEnhancedEffect_Player"..entindex)
+			if timer.Exists(identifier) then
+				timer.Remove(identifier)
+			end
+
+			if ply:IsValid() then
+				ply:PrintMessage(3, "You died, the effect is no longer present!")
+			end
+		end)
+
+		if timer.Exists(identifier) then
+			local old = timer.TimeLeft(identifier)
+			local new = math.min(150, old + 60)
+
+			timer.Adjust(identifier, new, 1)
+			if ply:IsValid() then
+				ply:PrintMessage(3, "The effect has been prolonged by "..math.Round(new - old , 2).." seconds, remaining: "..math.Round(new, 2).."s")
+			end
+		else
+			timer.Create(identifier, 60, 1, function()
+				hook.Remove("DoPlayerDeath", "TEA.DoPlayerDeath.MedicBagEnhancedEffect_Player"..entindex)
+				hook.Remove("EntityTakeDamage", "TEA.EntityTakeDamage.MedicBagEnhancedEffect_Player"..entindex)
+				if ply:IsValid() then
+					ply:PrintMessage(3, "The effect has expired!")
+				end
+			end)
+			if ply:IsValid() then
+				ply:PrintMessage(3, "You now take 30% less damage. Duration: 60s")
+			end
+		end
+	end
+	return healing end,
+function(ply) local drop = UseFunc_DropItem(ply, "item_medbag_enhanced") return drop end)
 i.CanUseOnOthers = true
 GM:CreateItem("item_antidote", nil, nil, 100, "models/wick/wrbstalker/cop/newmodels/items/wick_antidot.mdl", 0.08, 12, 3, 1,
 function(ply) local healing = UseFunc_HealInfection(ply, 3, 40, "items/medshot4.wav") return healing end,
@@ -2570,13 +2664,16 @@ GM:CreateItem("item_milk", nil, nil, 35, "models/props_junk/garbage_milkcarton00
 function(ply) local food = UseFunc_Drink(ply, 4, 0, 3, 20, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
 function(ply) local drop = UseFunc_DropItem(ply, "item_milk") return drop end)
 GM:CreateItem("item_soda", nil, nil, 50, "models/props_junk/PopCan01a.mdl", 0.33, 0, 1, 1,
-function(ply) local food = UseFunc_Drink(ply, 3, 1, 8, 35, 5, -1, "comrade_vodka/inv_drink_can2.ogg") return food end,
+function(ply) local food = UseFunc_Drink(ply, 3, 1, 3, 35, 5, -0.5, "comrade_vodka/inv_drink_can2.ogg") return food end,
 function(ply) local drop = UseFunc_DropItem(ply, "item_soda") return drop end)
+GM:CreateItem("item_waterbottle", nil, nil, 80, "models/wick/wrbstalker/anomaly/items/wick_dev_mineral_water.mdl", 0.58, 0, 2, 1,
+function(ply) local food = UseFunc_Drink(ply, 5, 1, 4, 80, 5, -1, "theeternalapocalypse/items/inv_water.ogg") return food end,
+function(ply) local drop = UseFunc_DropItem(ply, "item_waterbottle") return drop end)
 GM:CreateItem("item_energydrink", nil, nil, 100, "models/wick/wrbstalker/anomaly/items/wick_dev_drink_stalker.mdl", 0.36, 0, 2, 1,
-function(ply) local food = UseFunc_Drink(ply, 4, 1, 5, 30, 55, -8, "comrade_vodka/inv_drink_can.ogg") return food end,
+function(ply) local food = UseFunc_Drink(ply, 4, 1, 2, 30, 55, -6, "comrade_vodka/inv_drink_can.ogg") return food end,
 function(ply) local drop = UseFunc_DropItem(ply, "item_energydrink") return drop end)
 GM:CreateItem("item_energydrink_nonstop", nil, nil, 145, "models/wick/wrbstalker/cop/newmodels/items/wick_nonstop.mdl", 0.38, 0, 2, 1,
-function(ply) local food = UseFunc_Drink(ply, 4, 2, 6, 32, 85, -11, "comrade_vodka/inv_drink_can.ogg") return food end,
+function(ply) local food = UseFunc_Drink(ply, 4, 2, 3, 32, 85, -8, "comrade_vodka/inv_drink_can.ogg") return food end,
 function(ply) local drop = UseFunc_DropItem(ply, "item_energydrink_nonstop") return drop end)
 GM:CreateItem("item_beerbottle", nil, nil, 35, "models/props_junk/garbage_glassbottle003a.mdl", 0.8, 10, 3, 1,
 function(ply) local food = UseFunc_Drink(ply, 5, 1, 9, 5, -15, 10, "npc/barnacle/barnacle_gulp2.wav") return food end,

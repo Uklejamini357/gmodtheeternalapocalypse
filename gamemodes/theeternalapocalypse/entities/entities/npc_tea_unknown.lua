@@ -21,15 +21,15 @@ function ENT:SetUpStats()
 	self.ZombieStats = {
 		["Model"] = "models/zombie/classic.mdl",
 
-		["Damage"] = 40,
-		["PropDamage"] = 70,
+		["Damage"] = 90,
+		["PropDamage"] = 150,
 		["Force"] = 300,
 		["Infection"] = 18,
 		["Reach"] = 85,
-		["StrikeDelay"] = 0.8,
-		["AfterStrikeDelay"] = 1,
+		["StrikeDelay"] = 0.1,
+		["AfterStrikeDelay"] = 0.2,
 
-		["Health"] = 6000,
+		["Health"] = 29000,
 		["MoveSpeedWalk"] = 80,
 		["MoveSpeedRun"] = 145,
 		["VisionRange"] = 1200,
@@ -82,8 +82,8 @@ function ENT:SetUpStats()
 	self.Miss = Sound("npc/zombie/claw_miss1.wav")
 
 	self.CanScream = true
-	self.RageLevel = 1
-	self.SpeedBuff = 1
+	self.RageLevel = 0
+	self.SpeedBuff = 10
 
 	self.Ability1CD = CurTime()
 	self.SpawnTime = CurTime()

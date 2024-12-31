@@ -14,6 +14,7 @@ net.Receive("UpdateStats", function(len) -- this net message is received once pe
 	MyInfection = net.ReadFloat()
 	MySurvivaltime = net.ReadFloat()
 	MyBattery = net.ReadFloat()
+	MyOxygen = net.ReadFloat()
 end)
 
 net.Receive("UpdatePeriodicStats", function(len) -- this net message is only received when one of these values need to be updated
@@ -565,6 +566,17 @@ function GM:DrawVitals()
 	if not self.NoInvWeightHUDDisplay then
 		draw.SimpleText(translate.Format("inv_weight", LocalPlayer():CalculateWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWalkWeight(), WEIGHT_UNIT), "TargetIDSmall", 20, 155, Color(205, 205, 205, 255), 0, 1)
 	end
+
+	if MyOxygen < 100 then
+		draw.SimpleText(Format("Oxygen: %d%%", math.Round(MyOxygen)), "TargetIDTiny", ScrW()/2, 186, Color(205, 205, 255, 255), TEXT_ALIGN_CENTER, 0)
+		draw.RoundedBox(2, 210, scrh - 176, 160, 15, Color(50, 50, 0, 100))
+		if MyStamina > 0 then
+			local staminabarclamp = math.Clamp(MyStamina * 1.6, 0, 160)
+			draw.RoundedBox(4, 210, scrh - 176, staminabarclamp, 15, Color(100, 150, 0, 160))
+			draw.RoundedBox(4, 210, scrh - 176, staminabarclamp, 8, Color(100, 150, 0, 160))
+		end
+	end
+
 
 
 --	draw.SimpleText("Height difference: "..math.Round(me:GetPos().z - me:GetEyeTrace().HitPos.z), "TargetIDSmall", ScrW() / 2, 255, Color(205, 205, 205, 255), 1, 1)
