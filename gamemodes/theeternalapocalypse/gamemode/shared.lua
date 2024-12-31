@@ -6,7 +6,7 @@ GM.Author	= "Uklejamini"
 GM.Email	= "[You may not view this information.]"
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
 GM.Version	= "0.11.2"
-GM.DateVer	= "30.12.2024" -- oh my gosh there was no update for so long
+GM.DateVer	= "31.12.2024" -- oh my gosh there was no update for so long
 
 
 include("sh_globals.lua") -- globals

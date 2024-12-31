@@ -9,7 +9,7 @@ SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= false
 SWEP.Category			= "T.E.A. Weapons"
 SWEP.Instructions		= ""
-SWEP.Purpose			= "Deadly minigun that uses 2 ammo per shot and has extreme damage, even against zombies. High recoil and less accurate."
+SWEP.Purpose			= "Deadly minigun despite being incredibly bulky is also very deadly! Uses Minigun Ammo."
 
 SWEP.Primary.Sound		= Sound("Weapon_M249.Single")
 SWEP.Primary.Recoil		= 0.65

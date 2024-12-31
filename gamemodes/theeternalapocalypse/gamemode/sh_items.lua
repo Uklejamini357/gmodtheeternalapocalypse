@@ -2969,6 +2969,7 @@ function UseFunc_Heal(ply, targetply, usetime, hp, infection, snd)
 		if ply ~= targetply then
 			ply.XP = ply.XP + math.floor(healedhp)
 			ply:SendChat(translate.ClientFormat(ply, "healed_x_for_y", targetply:Nick(), healedhp, math.floor(healedhp*1.5)))
+			gamemode.Call("GiveTaskProgress", ply, "medical_attention", 1)
 		end
 		timer.Create("Isplyusingitem"..ply:EntIndex(), usetime, 1, function()
 			timer.Destroy("Isplyusingitem"..ply:EntIndex())
