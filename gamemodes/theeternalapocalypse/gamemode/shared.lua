@@ -5,8 +5,8 @@ GM.AltName	= "After The End Reborn"
 GM.Author	= "Uklejamini"
 GM.Email	= "[You may not view this information.]"
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.11.2"
-GM.DateVer	= "31.12.2024" -- oh my gosh there was no update for so long
+GM.Version	= "0.11.2a"
+GM.DateVer	= "02.01.2025"
 
 
 include("sh_globals.lua") -- globals
@@ -152,11 +152,13 @@ function GM:StartCommand(ply, cmd)
 		ply:SetCanSprint(false)
 	end
 
-	if bit.band(IN_SPEED, keys) ~= 0 and !ply:GetCanSprint() then
-		keys = keys - IN_SPEED
-	end
-	if bit.band(IN_JUMP, keys) ~= 0 and !ply:GetCanSprint() then
-		keys = keys - IN_JUMP
+	if ply:GetMoveType() != MOVETYPE_NOCLIP then
+		if bit.band(IN_SPEED, keys) ~= 0 and !ply:GetCanSprint() then
+			keys = keys - IN_SPEED
+		end
+		if bit.band(IN_JUMP, keys) ~= 0 and !ply:GetCanSprint() then
+			keys = keys - IN_JUMP
+		end
 	end
 	cmd:SetButtons(keys)
 end

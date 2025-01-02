@@ -41,7 +41,7 @@ function GM:CraftItem(ply, str)
 			end
 
 			local xp = gamemode.Call("Payout", ply, tonumber(self.CraftableList[str]["XP"]), 0)
-			gamemode.Call("SystemGiveItem_NoWeight", ply, str, qty)
+			gamemode.Call("SystemGiveItem", ply, str, qty)
 			ply:EmitSound("items/itempickup.wav")
 
 			gamemode.Call("SendInventory", ply)
@@ -98,7 +98,7 @@ function GM:CraftSpecialItem(ply, str)
 			end
 
 			local xp = Payout(ply, tonumber(self.CraftableSpecialList[str]["XP"]), 0)
-			gamemode.Call("SystemGiveItem_NoWeight", ply, str, qty)
+			gamemode.Call("SystemGiveItem", ply, str, qty)
 			ply:EmitSound("items/itempickup.wav")
 
 			gamemode.Call("SendInventory", ply)

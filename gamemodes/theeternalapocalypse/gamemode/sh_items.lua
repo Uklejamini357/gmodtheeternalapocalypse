@@ -1,21 +1,27 @@
 --sorry i haven't finished m9k item list yet
 /*
-Item template:
 
-["item_healthkit"] = {							-- what the item will be called within the games code, can be anything as long as you don't use the same name twice
-	Cost = 200,								-- how much money will it cost if you buy it from the trader?
-	Model = "models/Items/HealthKit.mdl",	-- the items model
-	Weight = 1,								-- weight in kilograms (if your american and want to use imperial then your shit out of luck m8)
-	Supply = 0,								-- how many of these items does each trader have in stock? stock refills every 24 hours. (Stock limits don't work, will try to fix/add one) Putting 0 means unlimited stock, Putting -1 as stock will make it so the item isn't sold by traders
-	Rarity = 1,								-- 0 = trash, 1 = junk, 2 = common, 3 = uncommon, 4 = rare, 5 = super rare, 6 = epic, 7 = mythic, 8 = legendary, 9 = godly, 10 = event, 11 = unobtainable, any other = uncategorized
-	Category = 1,							-- 1 = supplies, 2 = ammunition, 3 = weapons, 4 = armor, any other = ignored by trader
-	UseFunc = function(ply) end,			-- the function to call when the player uses the item from their inventory, you will need lua skillz here
-	DropFunc = function(ply) end,			-- the function to call when the player drops the item, just like usefunc, you need to know lua here
-	IsGrenade = false						-- if the item is grenade then it will confirm that it's grenade (this is used when selling items, not to remove grenade from inventory when selling). Not needed when an item is not a grenade.
-	IsSecret = false,						-- Item cannot be spawned with from spawn menu nor from giving item command (Can still be spawned if player is dev)
+--[[ -- Use this function template for adding new items!
+GM:CreateItem(itemid, { -- what the item will be called within the games code as a string, can be anything as long as you don't use the same name twice
+    	Name = name,            -- Name for the item. Unused.
+		Description = desc,		-- Description for the item. Unused.
+		Cost = cost,            -- how much money will it cost if you buy it from the trader?
+		Model = model,          -- the items model
+		Weight = weight,        -- weight in kilograms (if your american and want to use imperial then your shit out of luck m8)
+		Supply = supply,        -- how many of these items does each trader have in stock? stock refills every 24 hours.
+-- (Stock limits don't work, will try to fix/add one) Putting 0 means unlimited stock, Putting -1 as stock will make it so the item isn't sold by traders
+		Rarity = rarity,        -- 0 = trash, 1 = junk, 2 = common, 3 = uncommon, 4 = rare, 5 = super rare, 6 = epic, 7 = mythic, 8 = legendary, 9 = godly, 10 = event, 11 = unobtainable, any other = uncategorized
+		Category = category,    -- 1 = supplies, 2 = ammunition, 3 = weapons, 4 = armor, any other = ignored by trader
+		UseFunc = function(ply, targetply) return UseFunc_Heal(ply, targetply, usetime, health, infection, playsound) end,  -- the function to call when the player uses the item from their inventory, you will need lua skillz here
+		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_bandage") return drop end,                        -- the function to call when the player drops the item, just like usefunc, you need to know lua here
+
+-- Additional variables, they are not required however still can be useful
+    	IsGrenade = false,						-- if the item is grenade then it will confirm that it's grenade (this is used when selling items, not to remove grenade from inventory when selling). Not needed when an item is not a grenade.
+	    IsSecret = false,						-- Item cannot be spawned with from spawn menu nor from giving item command (Can still be spawned if player is dev)
+
 }
 
-
+]]
 // IMPORTANT NOTE: Use and drop functions must always return true or false here.  Returning true will subtract one of that item type from the player, returning false will make it so nothing is subtracted.
 see server/player_inventory.lua for more info
 
@@ -23,19 +29,8 @@ see server/player_inventory.lua for more info
 */
 
 GM.ItemsList = {}
-function GM:CreateItem(itemid, name, desc, cost, model, weight, supply, rarity, category, usefunc, dropfunc)
-	self.ItemsList[itemid] = {
-		Name = name,
-		Description = desc,
-		Cost = cost,
-		Model = model,
-		Weight = weight,
-		Supply = supply,
-		Rarity = rarity,
-		Category = category,
-		UseFunc = usefunc,
-		DropFunc = dropfunc,
-	}
+function GM:CreateItem(itemid, table)	--name, desc, cost, model, weight, supply, rarity, category, usefunc, dropfunc
+	self.ItemsList[itemid] = table
 
 	return self.ItemsList[itemid]
 end
@@ -65,390 +60,7 @@ GM.ItemsList = {
 
 
 
-	["item_radio"] = {
-		Cost = 300,
-		Model = "models/wick/wrbstalker/anomaly/items/dez_radio.mdl",
-		Weight = 1,
-		Supply = -1,
-		Rarity = 2,
-		Category = 1,
-		UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousesellable")) return false end,
-		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_radio") return drop end
-	},
 
-	["item_scrap"] = {
-		Cost = 350,
-		Model = "models/Gibs/helicopter_brokenpiece_02.mdl",
-		Weight = 1,
-		Supply = -1,
-		Rarity = 2,
-		Category = 1,
-		UseFunc = function(ply) local armor = UseFunc_Armor(ply, 3, 0, 10, "npc/combine_soldier/zipline_hitground2.wav") return armor end,
-		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_scrap") return drop end
-	},
-
-	["item_chems"] = {
-		Cost = 600,
-		Model = "models/props_junk/plasticbucket001a.mdl",
-		Weight = 1.5,
-		Supply = -1,
-		Rarity = 3,
-		Category = 1,
-		UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousesellable")) return false end,
-		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_chems") return drop end
-	},
-
-	["item_tv"] = {
-		Cost = 800,
-		Model = "models/props_c17/tv_monitor01.mdl",
-		Weight = 2,
-		Supply = -1,
-		Rarity = 3,
-		Category = 1,
-		UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousesellable")) return false end,
-		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_tv") return drop end
-	},
-
-	["item_beer"] = {
-		Cost = 1200,
-		Model = "models/props/CS_militia/caseofbeer01.mdl",
-		Weight = 5,
-		Supply = -1,
-		Rarity = 3,
-		Category = 1,
-		UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousesellable")) return false end,
-		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_beer") return drop end
-	},
-
-	["item_hamradio"] = {
-		Cost = 1500,
-		Model = "models/props_lab/citizenradio.mdl",
-		Weight = 2.5,
-		Supply = -1,
-		Rarity = 3,
-		Category = 1,
-		UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousesellable")) return false end,
-		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_hamradio") return drop end
-	},
-
-	["item_computer"] = {
-		Cost = 2000,
-		Model = "models/props_lab/harddrive02.mdl",
-		Weight = 4,
-		Supply = -1,
-		Rarity = 4,
-		Category = 1,
-		UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousesellable")) return false end,
-		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_computer") return drop end
-	},
-
-
-	["item_blueprint_sawbow"] = {
-		Cost = 5000,
-		Model = "models/props_lab/clipboard.mdl",
-		Weight = 0.25,
-		Supply = -1,
-		Rarity = 11,
-		Category = 1,
-		UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouseweapon")) return false end,
-		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_blueprint_sawbow") return drop end
-	},
-
-	["item_blueprint_railgun"] = {
-		Cost = 5000,
-		Model = "models/props_lab/clipboard.mdl",
-		Weight = 0.25,
-		Supply = -1,
-		Rarity = 11,
-		Category = 1,
-		UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouseweapon")) return false end,
-		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_blueprint_railgun") return drop end
-	},
-
-
-
-
-
-
-
-
--- junk
-
-
-
-
-	["item_junk_tin"] = {
-		Cost = 0,
-		Model = "models/props_junk/garbage_metalcan002a.mdl",
-		Weight = 0.1,
-		Supply = -1,
-		Rarity = RARITY_TRASH,
-		Category = 1,
-		UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
-		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_tin") return drop end
-	},
-
-	["item_junk_boot"] = {
-		Cost = 0,
-		Model = "models/props_junk/Shoe001a.mdl",
-		Weight = 0.17,
-		Supply = -1,
-		Rarity = RARITY_TRASH,
-		Category = 1,
-		UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
-		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_boot") return drop end
-	},
-
-
-	["item_junk_paper"] = {
-		Cost = 0,
-		Model = "models/props_junk/garbage_newspaper001a.mdl",
-		Weight = 0.12,
-		Supply = -1,
-		Rarity = RARITY_TRASH,
-		Category = 1,
-		UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
-		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_paper") return drop end
-	},
-
-	["item_junk_keyboard"] = {
-		Cost = 0,
-		Model = "models/props_c17/computer01_keyboard.mdl",
-		Weight = 0.23,
-		Supply = -1,
-		Rarity = RARITY_TRASH,
-		Category = 1,
-		UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
-		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_keyboard") return drop end
-	},
-
-	["item_junk_gardenpot"] = {
-		Cost = 0,
-		Model = "models/props_junk/terracotta01.mdl",
-		Weight = 0.25,
-		Supply = -1,
-		Rarity = RARITY_TRASH,
-		Category = 1,
-		UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
-		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_gardenpot") return drop end
-	},
-
-	["item_junk_paint"] = {
-		Cost = 0,
-		Model = "models/props_junk/metal_paintcan001a.mdl",
-		Weight = 0.25,
-		Supply = -1,
-		Rarity = RARITY_TRASH,
-		Category = 1,
-		UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
-		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_paint") return drop end
-	},
-
-	["item_junk_doll"] = {
-		Cost = 0,
-		Model = "models/props_c17/doll01.mdl",
-		Weight = 0.15,
-		Supply = -1,
-		Rarity = RARITY_TRASH,
-		Category = 1,
-		UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
-		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_doll") return drop end
-	},
-
-	["item_junk_pot"] = {
-		Cost = 0,
-		Model = "models/props_interiors/pot02a.mdl",
-		Weight = 0.2,
-		Supply = -1,
-		Rarity = RARITY_TRASH,
-		Category = 1,
-		UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
-		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_pot") return drop end
-	},
-
-	["item_junk_hula"] = {
-		Cost = 0,
-		Model = "models/props_lab/huladoll.mdl",
-		Weight = 0.1,
-		Supply = -1,
-		Rarity = RARITY_TRASH,
-		Category = 1,
-		UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
-		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_hula") return drop end
-	},
-
-	["item_junk_nailbox"] = {
-		Cost = 0,
-		Model = "models/props_lab/box01a.mdl",
-		Weight = 0.06,
-		Supply = -1,
-		Rarity = RARITY_TRASH,
-		Category = 1,
-		UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
-		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_nailbox") return drop end
-	},
-
-	["item_junk_twig"] = {
-		Cost = 0,
-		Model = "models/props/cs_office/Snowman_arm.mdl",
-		Weight = 0.1,
-		Supply = -1,
-		Rarity = RARITY_TRASH,
-		Category = 1,
-		UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
-		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_twig") return drop end
-	},
-
--- GOODBYE UPGRADE IMMUNITY SKILL ITEM!!
-
-
--- crafting related
-
-
-	["item_craft_fueltank"] = {
-		Cost = 500,
-		Model = "models/props_junk/metalgascan.mdl",
-		Weight = 0.25,
-		Supply = -1,
-		Rarity = 11,
-		Category = 1,
-		UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousevehicle")) return false end,
-		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_craft_fueltank") return drop end
-	},
-
-	["item_craft_wheel"] = {
-		Cost = 300,
-		Model = "models/props_vehicles/carparts_wheel01a.mdl",
-		Weight = 1.5,
-		Supply = -1,
-		Rarity = 11,
-		Category = 1,
-		UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousevehicle")) return false end,
-		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_craft_wheel") return drop end
-	},
-
-	["item_craft_oil"] = {
-		Cost = 500,
-		Model = "models/props_junk/garbage_plasticbottle001a.mdl",
-		Weight = 1,
-		Supply = -1,
-		Rarity = 11,
-		Category = 1,
-		UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousevehicle")) return false end,
-		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_craft_oil") return drop end
-	},
-
-	["item_craft_battery"] = {
-		Cost = 500,
-		Model = "models/Items/car_battery01.mdl",
-		Weight = 0.6,
-		Supply = -1,
-		Rarity = 11,
-		Category = 1,
-		UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousecraftable")) return false end,
-		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_craft_battery") return drop end
-	},
-
-	["item_craft_ecb"] = {
-		Cost = 250,
-		Model = "models/props_lab/reciever01b.mdl",
-		Weight = 0.35,
-		Supply = -1,
-		Rarity = 11,
-		Category = 1,
-		UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousecraftable")) return false end,
-		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_craft_ecb") return drop end
-	},
-
-	["item_craft_engine_small"] = {
-		Cost = 1000,
-		Model = "models/gibs/airboat_broken_engine.mdl",
-		Weight = 3,
-		Supply = -1,
-		Rarity = 11,
-		Category = 1,
-		UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousevehicle")) return false end,
-		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_craft_engine_small") return drop end
-	},
-
-	["item_craft_engine_large"] = {
-		Cost = 3000,
-		Model = "models/props_c17/TrapPropeller_Engine.mdl",
-		Weight = 5,
-		Supply = -1,
-		Rarity = 11,
-		Category = 1,
-		UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousevehicle")) return false end,
-		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_craft_engine_large") return drop end
-	},
-
-
-	-- Misc
-
-
-	["item_boss_shard"] = {
-		Cost = 45000,
-		Model = "models/props_junk/rock001a.mdl",
-		Weight = 1,
-		Supply = -1,
-		Rarity = RARITY_EVENT,
-		Category = 1,
-		UseFunc = function(ply)
-			local random = table.Random({
-				"This is going to be a terrible time...",
-				"Calm before the storm...",
-				"A boss is being created by the unknown powers...",
-				"There is no going back now...",
-			})
-			GAMEMODE:SystemBroadcast(random, Color(115,205,205), false)
-			GAMEMODE:SpawnBoss(#player.GetAll() + 8, true)
-		return true end,
-		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_boss_shard") return drop end
-	},
-
-	["item_difficulty_shard"] = {
-		Cost = 35000,
-		Model = "models/props_junk/rock001a.mdl",
-		Weight = 1,
-		Supply = -1,
-		Rarity = RARITY_EVENT,
-		Category = 1,
-		UseFunc = function(ply)
-			if GAMEMODE.InfectionLevelIncreaseType ~= 1 then PrintMessage(3, "Item is unusable currently at the moment due to config setting (GAMEMODE.InfectionLevelIncreaseType need to be 1)") return false end
-			local random = table.Random({
-				"You feel like zombies suddenly become stronger...",
-				"Zombies become stronger. This isn't good...",
-				"You are not going to survive this...",
-			})
-
-			local set = math.max(0, GAMEMODE:GetInfectionLevel() + 50)
-			GAMEMODE:SystemBroadcast(random.." ("..GAMEMODE:GetInfectionLevel().."% -> "..set.."%)", Color(115,205,205), false)
-			GAMEMODE:SetInfectionLevel(set)
-		return true end,
-		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_difficulty_shard") return drop end
-	},
-
-	["item_money"] = {
-		Cost = 0,
-		Model = "models/props/cs_assault/Money.mdl",
-		Weight = 0,
-		Supply = -1,
-		Rarity = RARITY_COMMON,
-		Category = 1,
-		UseFunc = function(ply) ply:SendChat("Added "..ply.Inventory["item_money"].."$ to account") ply.Money = ply.Money + ply.Inventory["item_money"] ply.Inventory["item_money"] = nil return false end,
-		DropFunc = function(ply) ply:SendChat("You may not drop this item.") --[[local drop = UseFunc_DropItem(ply, "item_money") return drop]] return false end
-	},
-
-	["item_moneyprinter"] = {
-		Cost = 0,
-		Model = "models/props_c17/consolebox01a.mdl",
-		Weight = 5,
-		Supply = -1,
-		Rarity = 6,
-		Category = 1,
-		UseFunc = function(ply) ply:SendChat("Added "..ply.Inventory["item_money"].."$ to account") ply.Money = ply.Money + ply.Inventory["item_money"] ply.Inventory["item_money"] = nil return false end,
-		DropFunc = function(ply) ply:SendChat("You may not drop this item.") --[[local drop = UseFunc_DropItem(ply, "item_money") return drop]] return false end
-	},
 
 
 
@@ -2586,137 +2198,7 @@ GM.ItemsList = {
 
 -- Consumables
 
-local i = GM:CreateItem("item_bandage", nil, nil, 55, "models/wick/wrbstalker/anomaly/items/wick_dev_bandage.mdl", 0.06, 0, 2, 1,
-function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 11, 0, "comrade_vodka/inv_bandages.ogg") return healing end,
-function(ply) local drop = UseFunc_DropItem(ply, "item_bandage") return drop end)
-i.CanUseOnOthers = true
-i = GM:CreateItem("item_medkit", nil, nil, 175, "models/wick/wrbstalker/anomaly/items/wick_dev_aptechka_low.mdl", 0.5, 30, 3, 1,
-function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 45, 5, "comrade_vodka/inv_aptecka.ogg") return healing end,
-function(ply) local drop = UseFunc_DropItem(ply, "item_medkit") return drop end)
-i.CanUseOnOthers = true
-i = GM:CreateItem("item_armymedkit", nil, nil, 300, "models/wick/wrbstalker/anomaly/items/wick_dev_aptechka_high.mdl", 0.6, 10, 4, 1,
-function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 70, 20, "comrade_vodka/inv_aptecka.ogg") return healing end,
-function(ply) local drop = UseFunc_DropItem(ply, "item_armymedkit") return drop end)
-i.CanUseOnOthers = true
-i = GM:CreateItem("item_scientificmedkit", nil, nil, 500, "models/wick/wrbstalker/anomaly/items/wick_dev_aptechka_mid.mdl", 0.5, 8, 4, 1,
-function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 100, 60, "comrade_vodka/inv_aptecka.ogg") return healing end,
-function(ply) local drop = UseFunc_DropItem(ply, "item_scientificmedkit") return drop end)
-i.CanUseOnOthers = true
-i = GM:CreateItem("item_medbag_enhanced", nil, nil, 6000, "models/wick/wrbstalker/anomaly/items/wick_dev_med_bag.mdl", 1.4, 3, 6, 1,
-function(ply, targetply)
-	local healing = UseFunc_Heal(ply, targetply, 5, 150, 100, "theeternalapocalypse/items/inv_medbag.ogg")
-	if healing then
-		local entindex = targetply:EntIndex()
-		hook.Add("EntityTakeDamage", "TEA.EntityTakeDamage.MedicBagEnhancedEffect_Player"..entindex, function(ent, dmginfo)
-			local directdmg = bit.band(DMG_DIRECT, dmginfo:GetDamageType()) ~= 0
 
-			if ent == targetply and not directdmg then
-				dmginfo:ScaleDamage(0.7)
-			end
-		end)
-
-		local identifier = "TEA.EntityTakeDamage.MedicBagEnhancedEffect"..entindex
-
-		hook.Add("DoPlayerDeath", "TEA.DoPlayerDeath.MedicBagEnhancedEffect_Player"..entindex, function(pl, attacker, dmginfo)
-			if pl ~= targetply then return end
-			hook.Remove("DoPlayerDeath", "TEA.DoPlayerDeath.MedicBagEnhancedEffect_Player"..entindex)
-			hook.Remove("EntityTakeDamage", "TEA.EntityTakeDamage.MedicBagEnhancedEffect_Player"..entindex)
-			if timer.Exists(identifier) then
-				timer.Remove(identifier)
-			end
-
-			if targetply:IsValid() then
-				targetply:PrintMessage(3, "You died, the effect is no longer present!")
-			end
-		end)
-
-		if timer.Exists(identifier) then
-			local old = timer.TimeLeft(identifier)
-			local new = math.min(150, old + 60)
-
-			timer.Adjust(identifier, new, 1)
-			if targetply:IsValid() then
-				targetply:PrintMessage(3, "The effect has been prolonged by "..math.Round(new - old , 2).." seconds, remaining: "..math.Round(new, 2).."s")
-			end
-		else
-			timer.Create(identifier, 60, 1, function()
-				hook.Remove("DoPlayerDeath", "TEA.DoPlayerDeath.MedicBagEnhancedEffect_Player"..entindex)
-				hook.Remove("EntityTakeDamage", "TEA.EntityTakeDamage.MedicBagEnhancedEffect_Player"..entindex)
-				if targetply:IsValid() then
-					targetply:PrintMessage(3, "The effect has expired!")
-				end
-			end)
-			if targetply:IsValid() then
-				targetply:PrintMessage(3, "You now take 30% less damage. Duration: 60s")
-			end
-		end
-	end
-	return healing end,
-function(ply) local drop = UseFunc_DropItem(ply, "item_medbag_enhanced") return drop end)
-i.CanUseOnOthers = true
-GM:CreateItem("item_antidote", nil, nil, 100, "models/wick/wrbstalker/cop/newmodels/items/wick_antidot.mdl", 0.08, 12, 3, 1,
-function(ply) local healing = UseFunc_HealInfection(ply, 3, 40, "items/medshot4.wav") return healing end,
-function(ply) local drop = UseFunc_DropItem(ply, "item_antidote") return drop end)
-GM:CreateItem("item_egg", nil, nil, 10, "models/props_phx/misc/egg.mdl", 0.08, 0, 0, 1,
-function(ply) local food = UseFunc_Eat(ply, 1, 0, 4, -1, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
-function(ply) local drop = UseFunc_DropItem(ply, "item_egg") return drop end)
-GM:CreateItem("item_milk", nil, nil, 35, "models/props_junk/garbage_milkcarton002a.mdl", 1.05, 20, 1, 1,
-function(ply) local food = UseFunc_Drink(ply, 4, 0, 3, 20, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
-function(ply) local drop = UseFunc_DropItem(ply, "item_milk") return drop end)
-GM:CreateItem("item_soda", nil, nil, 50, "models/props_junk/PopCan01a.mdl", 0.33, 0, 1, 1,
-function(ply) local food = UseFunc_Drink(ply, 3, 1, 3, 35, 5, -0.5, "comrade_vodka/inv_drink_can2.ogg") return food end,
-function(ply) local drop = UseFunc_DropItem(ply, "item_soda") return drop end)
-GM:CreateItem("item_waterbottle", nil, nil, 80, "models/wick/wrbstalker/anomaly/items/wick_dev_mineral_water.mdl", 0.58, 0, 2, 1,
-function(ply) local food = UseFunc_Drink(ply, 5, 1, 4, 80, 5, -1, "theeternalapocalypse/items/inv_water.ogg") return food end,
-function(ply) local drop = UseFunc_DropItem(ply, "item_waterbottle") return drop end)
-GM:CreateItem("item_energydrink", nil, nil, 100, "models/wick/wrbstalker/anomaly/items/wick_dev_drink_stalker.mdl", 0.36, 0, 2, 1,
-function(ply) local food = UseFunc_Drink(ply, 4, 1, 2, 30, 55, -6, "comrade_vodka/inv_drink_can.ogg") return food end,
-function(ply) local drop = UseFunc_DropItem(ply, "item_energydrink") return drop end)
-GM:CreateItem("item_energydrink_nonstop", nil, nil, 145, "models/wick/wrbstalker/cop/newmodels/items/wick_nonstop.mdl", 0.38, 0, 2, 1,
-function(ply) local food = UseFunc_Drink(ply, 4, 2, 3, 32, 85, -8, "comrade_vodka/inv_drink_can.ogg") return food end,
-function(ply) local drop = UseFunc_DropItem(ply, "item_energydrink_nonstop") return drop end)
-GM:CreateItem("item_beerbottle", nil, nil, 35, "models/props_junk/garbage_glassbottle003a.mdl", 0.8, 10, 3, 1,
-function(ply) local food = UseFunc_Drink(ply, 5, 1, 9, 5, -15, 10, "npc/barnacle/barnacle_gulp2.wav") return food end,
-function(ply) local drop = UseFunc_DropItem(ply, "item_beerbottle") return drop end)
-GM:CreateItem("item_tinnedfood", nil, nil, 45, "models/props_junk/garbage_metalcan001a.mdl", 0.4, 30, 2, 1,
-function(ply) local food = UseFunc_Eat(ply, 2, 3, 20, -10, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
-function(ply) local drop = UseFunc_DropItem(ply, "item_tinnedfood") return drop end)
-GM:CreateItem("item_potato", nil, nil, 60, "models/props_phx/misc/potato.mdl", 0.2, 20, 1, 1,
-function(ply) local food = UseFunc_Eat(ply, 2, 2, 22, -8, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
-function(ply) local drop = UseFunc_DropItem(ply, "item_potato") return drop end)
-GM:CreateItem("item_traderfood", nil, nil, 75, "models/props_junk/garbage_takeoutcarton001a.mdl", 0.6, 5, 2, 1,
-function(ply) local food = UseFunc_Eat(ply, 5, 4, 47, -15, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
-function(ply) local drop = UseFunc_DropItem(ply, "item_traderfood") return drop end)
-GM:CreateItem("item_trout", nil, nil, 95, "models/props/CS_militia/fishriver01.mdl", 0.75, 2, 3, 1,
-function(ply) local food = UseFunc_Eat(ply, 6, 5, 65, -4, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
-function(ply) local drop = UseFunc_DropItem(ply, "item_trout") return drop end)
-GM:CreateItem("item_melon", nil, nil, 150, "models/props_junk/watermelon01.mdl", 2, 3, 3, 1,
-function(ply) local food = UseFunc_Eat(ply, 7, 7, 85, 20, 3, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
-function(ply) local drop = UseFunc_DropItem(ply, "item_melon") return drop end)
-GM:CreateItem("item_burger", nil, nil, 750, "models/food/burger.mdl", 0.4, -1, 7, 1,
-function(ply) local food = UseFunc_Eat(ply, 5, 30, 100, 15, 90, -15, "vo/npc/male01/yeah02.wav") return food end,
-function(ply) local drop = UseFunc_DropItem(ply, "item_burger") return drop end)
-GM:CreateItem("item_hotdog", nil, nil, 400, "models/food/hotdog.mdl", 0.35, -1, 6, 1,
-function(ply) local food = UseFunc_Eat(ply, 5, 20, 80, 10, 40, -15, "vo/npc/male01/nice.wav") return food end,
-function(ply) local drop = UseFunc_DropItem(ply, "item_hotdog") return drop end)
-GM:CreateItem("item_donut", nil, nil, 65, "models/noesis/donut.mdl", 0.2, 5, 2, 1,
-function(ply) local food = UseFunc_Eat(ply, 3, 2, 25, -7, 5, -1, "npc/barnacle/barnacle_gulp2.wav") return food end,
-function(ply) local drop = UseFunc_DropItem(ply, "item_donut") return drop end)
-GM:CreateItem("item_bed", nil, nil, 80, "models/props/de_inferno/bed.mdl", 4.5, 0, 2, 1,
-function(ply) local bool = UseFunc_DeployBed(ply, 1) return bool end,
-function(ply) local bool = UseFunc_DeployBed(ply, 1) return bool end)
-GM:CreateItem("item_sleepingbag", nil, nil, 1130, "models/wick/wrbstalker/anomaly/items/dez_item_sleepbag.mdl", 2.2, 0, 5, 1,
-function(ply) UseFunc_Sleep(ply, false) return false end,
-function(ply) local drop = UseFunc_DropItem(ply, "item_sleepingbag") return drop end)
-GM:CreateItem("item_amnesiapills", nil, nil, 1250, "models/props_lab/jar01b.mdl", 0.1, 0, 2, 1,
-function(ply) local bool = UseFunc_Respec(ply) return bool end,
-function(ply) local drop = UseFunc_DropItem(ply, "item_amnesiapills") return drop end)
-GM:CreateItem("item_armorbattery", nil, nil, 600, "models/Items/battery.mdl", 0.35, 6, 4, 1,
-function(ply) local armor = UseFunc_Armor(ply, 2, 50, 15, "items/battery_pickup.wav") return armor end,
-function(ply) local drop = UseFunc_DropItem(ply, "item_armorbattery") return drop end)
-GM:CreateItem("item_armorkevlar", nil, nil, 1500, "models/wick/wrbstalker/anomaly/items/dez_kevlar.mdl", 1.13, 3, 5, 1,
-function(ply) local armor = UseFunc_Armor(ply, 4, 0, 35, "npc/combine_soldier/zipline_hitground2.wav") return armor end,
-function(ply) local drop = UseFunc_DropItem(ply, "item_armorkevlar") return drop end)
 
 --[[ Sellables
 
@@ -3093,4 +2575,15 @@ function UseFunc_StripWeapon(ply, class, drop) -- use false to strip weapon but 
 		ply:StripWeapon(class)
 	end
 	return true
+end
+
+
+-- Add every file in items folder.
+-- Note: Adds support for custom made items via steam workshop!
+for k,v in pairs(file.Find("gamemodes/"..engine.ActiveGamemode().."/gamemode/items/*.lua", "GAME")) do
+	if SERVER then
+		AddCSLuaFile("items/"..v)
+	end
+
+	include("items/"..v)
 end
