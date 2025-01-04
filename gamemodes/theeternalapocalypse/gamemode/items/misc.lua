@@ -1,28 +1,26 @@
--- Consumables!
+-- Miscellaneous Items --
 
 --[[ -- Use this function template for adding new items!
 GM:CreateItem(itemid, {
-    	Name = nil,
-		Description = nil,
-		Cost = cost,
-		Model = model,
-		Weight = weight,
-		Supply = supply,
-		Rarity = rarity,
-		Category = category,
-		UseFunc = function(ply, targetply) return UseFunc_Heal(ply, targetply, usetime, health, infection, playsound) end,
-		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_bandage") return drop end,
+    Cost = cost,
+    Model = model,
+    Weight = weight,
+    Supply = supply,
+    Rarity = rarity,
+    Category = category,
+    UseFunc = function(ply) return false end,
+    DropFunc = function(ply) return true end
 
 -- Additional variables if needed
-	    IsSecret = false,
-}
+    IsSecret = false,
+})
 
 ]]
 
+-- Sellables
+
 
 local i = GM:CreateItem("item_radio", {
-	Name = nil,
-	Description = nil,
     Cost = 300,
     Model = "models/wick/wrbstalker/anomaly/items/dez_radio.mdl",
     Weight = 1,
@@ -34,8 +32,6 @@ local i = GM:CreateItem("item_radio", {
 })
 
 i = GM:CreateItem("item_scrap", {
-    Name = nil,
-    Description = nil,
     Cost = 350,
     Model = "models/Gibs/helicopter_brokenpiece_02.mdl",
     Weight = 1,
@@ -47,8 +43,6 @@ i = GM:CreateItem("item_scrap", {
 })
 
 i = GM:CreateItem("item_chems", {
-    Name = nil,
-    Description = nil,
     Cost = 600,
     Model = "models/props_junk/plasticbucket001a.mdl",
     Weight = 1.5,
@@ -60,8 +54,6 @@ i = GM:CreateItem("item_chems", {
 })
 
 i = GM:CreateItem("item_tv", {
-    Name = nil,
-    Description = nil,
     Cost = 800,
     Model = "models/props_c17/tv_monitor01.mdl",
     Weight = 2,
@@ -73,8 +65,6 @@ i = GM:CreateItem("item_tv", {
 })
 
 i = GM:CreateItem("item_beer", {
-    Name = nil,
-    Description = nil,
     Cost = 1200,
     Model = "models/props/CS_militia/caseofbeer01.mdl",
     Weight = 5,
@@ -86,8 +76,6 @@ i = GM:CreateItem("item_beer", {
 })
 
 i = GM:CreateItem("item_hamradio", {
-    Name = nil,
-    Description = nil,
     Cost = 1500,
     Model = "models/props_lab/citizenradio.mdl",
     Weight = 2.5,
@@ -99,8 +87,6 @@ i = GM:CreateItem("item_hamradio", {
 })
 
 i = GM:CreateItem("item_computer", {
-    Name = nil,
-    Description = nil,
     Cost = 2000,
     Model = "models/props_lab/harddrive02.mdl",
     Weight = 4,
@@ -112,8 +98,6 @@ i = GM:CreateItem("item_computer", {
 })
 
 i = GM:CreateItem("item_blueprint_sawbow", {
-    Name = nil,
-    Description = nil,
     Cost = 5000,
     Model = "models/props_lab/clipboard.mdl",
     Weight = 0.25,
@@ -125,8 +109,6 @@ i = GM:CreateItem("item_blueprint_sawbow", {
 })
 
 i = GM:CreateItem("item_blueprint_railgun", {
-    Name = nil,
-    Description = nil,
     Cost = 5000,
     Model = "models/props_lab/clipboard.mdl",
     Weight = 0.25,
@@ -146,8 +128,6 @@ i = GM:CreateItem("item_blueprint_railgun", {
 
 
 i = GM:CreateItem("item_junk_tin", {
-    Name = nil,
-    Description = nil,
     Cost = 0,
     Model = "models/props_junk/garbage_metalcan002a.mdl",
     Weight = 0.1,
@@ -159,8 +139,6 @@ i = GM:CreateItem("item_junk_tin", {
 })
 
 i = GM:CreateItem("item_junk_boot", {
-    Name = nil,
-    Description = nil,
     Cost = 0,
     Model = "models/props_junk/Shoe001a.mdl",
     Weight = 0.17,
@@ -172,8 +150,6 @@ i = GM:CreateItem("item_junk_boot", {
 })
 
 i = GM:CreateItem("item_junk_paper", {
-    Name = nil,
-    Description = nil,
     Cost = 0,
     Model = "models/props_junk/garbage_newspaper001a.mdl",
     Weight = 0.12,
@@ -185,8 +161,6 @@ i = GM:CreateItem("item_junk_paper", {
 })
 
 i = GM:CreateItem("item_junk_keyboard", {
-    Name = nil,
-    Description = nil,
     Cost = 0,
     Model = "models/props_c17/computer01_keyboard.mdl",
     Weight = 0.23,
@@ -198,8 +172,6 @@ i = GM:CreateItem("item_junk_keyboard", {
 })
 
 i = GM:CreateItem("item_junk_gardenpot", {
-    Name = nil,
-    Description = nil,
     Cost = 0,
     Model = "models/props_junk/terracotta01.mdl",
     Weight = 0.25,
@@ -211,8 +183,6 @@ i = GM:CreateItem("item_junk_gardenpot", {
 })
 
 i = GM:CreateItem("item_junk_paint", {
-    Name = nil,
-    Description = nil,
     Cost = 0,
     Model = "models/props_junk/metal_paintcan001a.mdl",
     Weight = 0.25,
@@ -224,8 +194,6 @@ i = GM:CreateItem("item_junk_paint", {
 })
 
 i = GM:CreateItem("item_junk_doll", {
-    Name = nil,
-    Description = nil,
     Cost = 0,
     Model = "models/props_c17/doll01.mdl",
     Weight = 0.15,
@@ -237,8 +205,6 @@ i = GM:CreateItem("item_junk_doll", {
 })
 
 i = GM:CreateItem("item_junk_pot", {
-    Name = nil,
-    Description = nil,
     Cost = 0,
     Model = "models/props_interiors/pot02a.mdl",
     Weight = 0.2,
@@ -250,8 +216,6 @@ i = GM:CreateItem("item_junk_pot", {
 })
 
 i = GM:CreateItem("item_junk_hula", {
-    Name = nil,
-    Description = nil,
     Cost = 0,
     Model = "models/props_lab/huladoll.mdl",
     Weight = 0.1,
@@ -263,8 +227,6 @@ i = GM:CreateItem("item_junk_hula", {
 })
 
 i = GM:CreateItem("item_junk_nailbox", {
-    Name = nil,
-    Description = nil,
     Cost = 0,
     Model = "models/props_lab/box01a.mdl",
     Weight = 0.06,
@@ -276,8 +238,6 @@ i = GM:CreateItem("item_junk_nailbox", {
 })
 
 i = GM:CreateItem("item_junk_twig", {
-    Name = nil,
-    Description = nil,
     Cost = 0,
     Model = "models/props/cs_office/Snowman_arm.mdl",
     Weight = 0.1,
@@ -293,8 +253,6 @@ i = GM:CreateItem("item_junk_twig", {
 
 
 i = GM:CreateItem("item_craft_fueltank", {
-    Name = nil,
-    Description = nil,
     Cost = 500,
     Model = "models/props_junk/metalgascan.mdl",
     Weight = 0.25,
@@ -306,8 +264,6 @@ i = GM:CreateItem("item_craft_fueltank", {
 })
 
 i = GM:CreateItem("item_craft_wheel", {
-    Name = nil,
-    Description = nil,
     Cost = 300,
     Model = "models/props_vehicles/carparts_wheel01a.mdl",
     Weight = 1.5,
@@ -319,8 +275,6 @@ i = GM:CreateItem("item_craft_wheel", {
 })
 
 i = GM:CreateItem("item_craft_oil", {
-    Name = nil,
-    Description = nil,
     Cost = 500,
     Model = "models/props_junk/garbage_plasticbottle001a.mdl",
     Weight = 1,
@@ -332,8 +286,6 @@ i = GM:CreateItem("item_craft_oil", {
 })
 
 i = GM:CreateItem("item_craft_battery", {
-    Name = nil,
-    Description = nil,
     Cost = 500,
     Model = "models/Items/car_battery01.mdl",
     Weight = 0.6,
@@ -345,8 +297,6 @@ i = GM:CreateItem("item_craft_battery", {
 })
 
 i = GM:CreateItem("item_craft_ecb", {
-    Name = nil,
-    Description = nil,
     Cost = 250,
     Model = "models/props_lab/reciever01b.mdl",
     Weight = 0.35,
@@ -358,8 +308,6 @@ i = GM:CreateItem("item_craft_ecb", {
 })
 
 i = GM:CreateItem("item_craft_engine_small", {
-    Name = nil,
-    Description = nil,
     Cost = 1000,
     Model = "models/gibs/airboat_broken_engine.mdl",
     Weight = 3,
@@ -371,8 +319,6 @@ i = GM:CreateItem("item_craft_engine_small", {
 })
 
 i = GM:CreateItem("item_craft_engine_large", {
-    Name = nil,
-    Description = nil,
     Cost = 3000,
     Model = "models/props_c17/TrapPropeller_Engine.mdl",
     Weight = 5,
@@ -387,8 +333,6 @@ i = GM:CreateItem("item_craft_engine_large", {
 
 
 i = GM:CreateItem("item_boss_shard", {
-    Name = nil,
-    Description = nil,
     Cost = 45000,
     Model = "models/props_junk/rock001a.mdl",
     Weight = 1,
@@ -409,8 +353,6 @@ i = GM:CreateItem("item_boss_shard", {
 })
 
 i = GM:CreateItem("item_difficulty_shard", {
-    Name = nil,
-    Description = nil,
     Cost = 35000,
     Model = "models/props_junk/rock001a.mdl",
     Weight = 1,
@@ -433,8 +375,6 @@ i = GM:CreateItem("item_difficulty_shard", {
 })
 
 i = GM:CreateItem("item_money", {
-    Name = nil,
-    Description = nil,
     Cost = 0,
     Model = "models/props/cs_assault/Money.mdl",
     Weight = 0,
@@ -446,8 +386,6 @@ i = GM:CreateItem("item_money", {
 })
 
 i = GM:CreateItem("item_moneyprinter", {
-    Name = nil,
-    Description = nil,
     Cost = 0,
     Model = "models/props_c17/consolebox01a.mdl",
     Weight = 5,

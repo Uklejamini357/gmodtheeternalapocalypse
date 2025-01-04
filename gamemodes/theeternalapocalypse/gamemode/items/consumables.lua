@@ -1,29 +1,25 @@
--- Consumables!
+-- Consumable items --
 
 --[[ -- Use this function template for adding new items!
 GM:CreateItem(itemid, {
-    	Name = nil,
-		Description = nil,
-		Cost = cost,
-		Model = model,
-		Weight = weight,
-		Supply = supply,
-		Rarity = rarity,
-		Category = category,
-		UseFunc = function(ply, targetply) return UseFunc_Heal(ply, targetply, usetime, health, infection, playsound) end,
-		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_bandage") return drop end,
+    Cost = cost,
+    Model = model,
+    Weight = weight,
+    Supply = supply,
+    Rarity = rarity,
+    Category = 1,
+    UseFunc = function(ply, targetply) return UseFunc_Heal(ply, targetply, usetime, health, infection, playsound) end,
+    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_bandage") return drop end,
 
 -- Additional variables if needed
-	    IsSecret = false,
-        CanUseOnOthers = true   -- Highly recommended to use for certain medical items. UseFunc will need a 2nd argument to be providable!
-}
+    IsSecret = false,
+    CanUseOnOthers = true   -- Highly recommended to use for certain medical items. UseFunc will need a 2nd argument to be providable!
+})
 
 ]]
 
 
 local i = GM:CreateItem("item_bandage", {
-	Name = nil,
-	Description = nil,
 	Cost = 55,
 	Model = "models/wick/wrbstalker/anomaly/items/wick_dev_bandage.mdl",
 	Weight = 0.06,
@@ -36,8 +32,6 @@ local i = GM:CreateItem("item_bandage", {
 })
 
 i = GM:CreateItem("item_medkit", {
-    Name = nil,
-    Description = nil,
     Cost = 175,
     Model = "models/wick/wrbstalker/anomaly/items/wick_dev_aptechka_low.mdl",
     Weight = 0.5,
@@ -50,8 +44,6 @@ i = GM:CreateItem("item_medkit", {
 })
 
 i = GM:CreateItem("item_armymedkit", {
-    Name = nil,
-    Description = nil,
     Cost = 300,
     Model = "models/wick/wrbstalker/anomaly/items/wick_dev_aptechka_high.mdl",
     Weight = 0.6,
@@ -64,8 +56,6 @@ i = GM:CreateItem("item_armymedkit", {
 })
 
 i = GM:CreateItem("item_scientificmedkit", {
-    Name = nil,
-    Description = nil,
     Cost = 500,
     Model = "models/wick/wrbstalker/anomaly/items/wick_dev_aptechka_mid.mdl",
     Weight = 0.5,
@@ -78,8 +68,6 @@ i = GM:CreateItem("item_scientificmedkit", {
 })
 
 i = GM:CreateItem("item_medbag_enhanced", {
-    Name = nil,
-    Description = nil,
     Cost = 6000,
     Model = "models/wick/wrbstalker/anomaly/items/wick_dev_med_bag.mdl",
     Weight = 1.4,
@@ -141,8 +129,6 @@ i = GM:CreateItem("item_medbag_enhanced", {
 })
 
 GM:CreateItem("item_antidote", {
-    Name = nil,
-    Description = nil,
     Cost = 100,
     Model = "models/wick/wrbstalker/cop/newmodels/items/wick_antidot.mdl",
     Weight = 0.08,
@@ -154,8 +140,6 @@ GM:CreateItem("item_antidote", {
 })
 
 GM:CreateItem("item_egg", {
-    Name = nil,
-    Description = nil,
     Cost = 10,
     Model = "models/props_phx/misc/egg.mdl",
     Weight = 0.08,
@@ -167,8 +151,6 @@ GM:CreateItem("item_egg", {
 })
 
 GM:CreateItem("item_milk", {
-    Name = nil,
-    Description = nil,
     Cost = 35,
     Model = "models/props_junk/garbage_milkcarton002a.mdl",
     Weight = 1.05,
@@ -180,8 +162,6 @@ GM:CreateItem("item_milk", {
 })
 
 GM:CreateItem("item_soda", {
-    Name = nil,
-    Description = nil,
     Cost = 50,
     Model = "models/props_junk/PopCan01a.mdl",
     Weight = 0.33,
@@ -193,8 +173,6 @@ GM:CreateItem("item_soda", {
 })
 
 GM:CreateItem("item_waterbottle", {
-    Name = nil,
-    Description = nil,
     Cost = 80,
     Model = "models/wick/wrbstalker/anomaly/items/wick_dev_mineral_water.mdl",
     Weight = 0.58,
@@ -206,8 +184,6 @@ GM:CreateItem("item_waterbottle", {
 })
 
 GM:CreateItem("item_energydrink", {
-    Name = nil,
-    Description = nil,
     Cost = 100,
     Model = "models/wick/wrbstalker/anomaly/items/wick_dev_drink_stalker.mdl",
     Weight = 0.36,
@@ -219,8 +195,6 @@ GM:CreateItem("item_energydrink", {
 })
 
 GM:CreateItem("item_energydrink_nonstop", {
-    Name = nil,
-    Description = nil,
     Cost = 145,
     Model = "models/wick/wrbstalker/cop/newmodels/items/wick_nonstop.mdl",
     Weight = 0.38,
@@ -232,8 +206,6 @@ GM:CreateItem("item_energydrink_nonstop", {
 })
 
 GM:CreateItem("item_beerbottle", {
-    Name = nil,
-    Description = nil,
     Cost = 35,
     Model = "models/props_junk/garbage_glassbottle003a.mdl",
     Weight = 0.8,
@@ -245,8 +217,6 @@ GM:CreateItem("item_beerbottle", {
 })
 
 GM:CreateItem("item_tinnedfood", {
-    Name = nil,
-    Description = nil,
     Cost = 45,
     Model = "models/props_junk/garbage_metalcan001a.mdl",
     Weight = 0.4,
@@ -258,8 +228,6 @@ GM:CreateItem("item_tinnedfood", {
 })
 
 GM:CreateItem("item_potato", {
-    Name = nil,
-    Description = nil,
     Cost = 60,
     Model = "models/props_phx/misc/potato.mdl",
     Weight = 0.2,
@@ -271,8 +239,6 @@ GM:CreateItem("item_potato", {
 })
 
 GM:CreateItem("item_traderfood", {
-    Name = nil,
-    Description = nil,
     Cost = 75,
     Model = "models/props_junk/garbage_takeoutcarton001a.mdl",
     Weight = 0.6,
@@ -284,8 +250,6 @@ GM:CreateItem("item_traderfood", {
 })
 
 GM:CreateItem("item_trout", {
-    Name = nil,
-    Description = nil,
     Cost = 95,
     Model = "models/props/CS_militia/fishriver01.mdl",
     Weight = 0.75,
@@ -297,8 +261,6 @@ GM:CreateItem("item_trout", {
 })
 
 GM:CreateItem("item_melon", {
-    Name = nil,
-    Description = nil,
     Cost = 150,
     Model = "models/props_junk/watermelon01.mdl",
     Weight = 2,
@@ -310,8 +272,6 @@ GM:CreateItem("item_melon", {
 })
 
 GM:CreateItem("item_burger", {
-    Name = nil,
-    Description = nil,
     Cost = 750,
     Model = "models/food/burger.mdl",
     Weight = 0.4,
@@ -323,8 +283,6 @@ GM:CreateItem("item_burger", {
 })
 
 GM:CreateItem("item_hotdog", {
-    Name = nil,
-    Description = nil,
     Cost = 400,
     Model = "models/food/hotdog.mdl",
     Weight = 0.35,
@@ -336,8 +294,6 @@ GM:CreateItem("item_hotdog", {
 })
 
 GM:CreateItem("item_donut", {
-    Name = nil,
-    Description = nil,
     Cost = 65,
     Model = "models/noesis/donut.mdl",
     Weight = 0.2,
@@ -349,8 +305,6 @@ GM:CreateItem("item_donut", {
 })
 
 GM:CreateItem("item_bed", {
-    Name = nil,
-    Description = nil,
     Cost = 80,
     Model = "models/props/de_inferno/bed.mdl",
     Weight = 4.5,
@@ -362,8 +316,6 @@ GM:CreateItem("item_bed", {
 })
 
 GM:CreateItem("item_sleepingbag", {
-    Name = nil,
-    Description = nil,
     Cost = 1130,
     Model = "models/wick/wrbstalker/anomaly/items/dez_item_sleepbag.mdl",
     Weight = 2.2,
@@ -375,8 +327,6 @@ GM:CreateItem("item_sleepingbag", {
 })
 
 GM:CreateItem("item_amnesiapills", {
-    Name = nil,
-    Description = nil,
     Cost = 1250,
     Model = "models/props_lab/jar01b.mdl",
     Weight = 0.1,
@@ -388,8 +338,6 @@ GM:CreateItem("item_amnesiapills", {
 })
 
 GM:CreateItem("item_armorbattery", {
-    Name = nil,
-    Description = nil,
     Cost = 600,
     Model = "models/Items/battery.mdl",
     Weight = 0.35,
@@ -402,8 +350,6 @@ GM:CreateItem("item_armorbattery", {
 
 
 GM:CreateItem("item_armorkevlar", {
-    Name = nil,
-    Description = nil,
     Cost = 1500,
     Model = "models/wick/wrbstalker/anomaly/items/dez_kevlar.mdl",
     Weight = 1.13,

@@ -103,7 +103,7 @@ function GM:SpawnRandomZombie(pos, ang)
 			v = self.Config["ZombieClasses"][k]
 
 			local elitechance = math.Rand(0, 100)
-			local elite = elitechance ~= 0 and elitechance <= self:GetEliveVariantSpawnChance(false)
+			local elite = elitechance ~= 0 and elitechance <= self:GetEliteVariantSpawnChance(false)
 			local ent = self:CreateZombie(k, pos, ang, v.XPReward, v.MoneyReward, v.InfectionRate, false)
 
 			if elite and v.AllowEliteVariants then
@@ -168,7 +168,7 @@ function GM:SpawnRandomBoss(pos, ang, plycountoverride, nonotify)
 				for k, v in pairs(player.GetAll()) do BroadcastLua([[if GetConVar("tea_cl_soundboss"):GetInt() >= 1 then RunConsoleCommand("playgamesound", "music/stingers/hl1_stinger_song8.mp3") end]]) end
 
 				local elitechance = math.Rand(0, 100)
-				local elite = elitechance ~= 0 and elitechance <= self:GetEliveVariantSpawnChance(true)
+				local elite = elitechance ~= 0 and elitechance <= self:GetEliteVariantSpawnChance(true)
 				local ent = self:CreateZombie(k, pos, ang, v.XPReward, v.MoneyReward, v.InfectionRate, true)
 	
 				if elite and v.AllowEliteVariants then
