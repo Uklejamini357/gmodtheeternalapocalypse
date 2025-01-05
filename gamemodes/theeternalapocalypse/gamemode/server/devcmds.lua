@@ -401,7 +401,7 @@ function GM:DevCmds_ForceEquipArmor(ply, cmd, args)
 		ply:SystemMessage("You removed equipped armor for yourself!", Color(155,255,155,255), true)
 	else
 		ForceEquipArmor(ply, name)
-		ply:SystemMessage("You equipped armor '"..translate.ClientGet(ply, name.."_n").."' for yourself!", Color(155,255,155,255), true)
+		ply:SystemMessage("You equipped armor '"..GAMEMODE:GetItemName(name, ply).."' for yourself!", Color(155,255,155,255), true)
 	end
 end
 concommand.Add("tea_dev_forceequiparmor", function(ply, cmd, args)

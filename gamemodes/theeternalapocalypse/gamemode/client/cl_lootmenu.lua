@@ -114,7 +114,7 @@ local function DoLootPanel(canstore)
 			local ItemDisplay = vgui.Create("SpawnIcon", ItemBackground)
 			ItemDisplay:SetPos(5, 5)
 			ItemDisplay:SetModel(v.Model)
-			ItemDisplay:SetToolTip(translate.Get(k.."_d").."\n"..translate.Format("item_descr_2", k, raretbl.text))
+			ItemDisplay:SetToolTip(GAMEMODE:GetItemDescription(k).."\n"..translate.Format("item_descr_2", k, raretbl.text))
 			ItemDisplay:SetSize(56,56)
 			ItemDisplay.PaintOver = function()
 			end
@@ -132,7 +132,7 @@ local function DoLootPanel(canstore)
 					ItemName:SetTextColor(tbl_rarity.col)
 				end
 			end
-			ItemName:SetText(translate.Get(k.."_n").." ("..v.Weight.."kg)")
+			ItemName:SetText(GAMEMODE:GetItemName(k).." ("..v.Weight.."kg)")
 			ItemName:SizeToContents()
 
 			local ItemQty = vgui.Create("DLabel", ItemBackground)

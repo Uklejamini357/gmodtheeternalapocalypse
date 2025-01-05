@@ -283,8 +283,8 @@ function GM:TraderMenu()
 			local ItemDisplay = vgui.Create("SpawnIcon", ItemBackground)
 			ItemDisplay:SetPos(10, 10)
 			ItemDisplay:SetModel(v.Model)
-			ItemDisplay:SetToolTip(translate.Get(k.."_d")..(v["ArmorStats"] and "\n"..translate.Format("item_armor_descr", v.ArmorStats["reduction"] or 0, v.ArmorStats["env_reduction"] or 0, (-v.ArmorStats["speedloss"] or 0) / 10, v.ArmorStats["slots"] or 0, v.ArmorStats["battery"] or 0, v.ArmorStats["carryweight"] or 0) or "").."\n"..translate.Format("item_descr_1", k, v.Cost, raretbl.text))
---			ItemDisplay:SetToolTip(translate.Get(k.."_d").."\n"..translate.Format("item_descr_1", k, v.Cost, raretbl.text))
+			ItemDisplay:SetToolTip(GAMEMODE:GetItemDescription(k)..(v["ArmorStats"] and "\n"..translate.Format("item_armor_descr", v.ArmorStats["reduction"] or 0, v.ArmorStats["env_reduction"] or 0, (-v.ArmorStats["speedloss"] or 0) / 10, v.ArmorStats["slots"] or 0, v.ArmorStats["battery"] or 0, v.ArmorStats["carryweight"] or 0) or "").."\n"..translate.Format("item_descr_1", k, v.Cost, raretbl.text))
+--			ItemDisplay:SetToolTip(GAMEMODE:GetItemDescription(k).."\n"..translate.Format("item_descr_1", k, v.Cost, raretbl.text))
 			ItemDisplay:SetSize(60,60)
 			ItemDisplay.PaintOver = function()
 				return
@@ -303,7 +303,7 @@ function GM:TraderMenu()
 					ItemName:SetTextColor(tbl_rarity.col)
 				end
 			end
-			ItemName:SetText(translate.Get(k.."_n"))
+			ItemName:SetText(GAMEMODE:GetItemName(k))
 
 			local ItemCost = vgui.Create("DLabel", ItemBackground)
 			ItemCost:SetFont("TargetIDSmall")
@@ -348,8 +348,8 @@ function GM:TraderMenu()
 			parent:AddItem(ItemBackground)
 		end
 	end
-	DoTraderList(ITEMCATEGORY_AMMO, SupplyPanel)
-	DoTraderList(ITEMCATEGORY_SUPPLIES, AmmoPanel)
+	DoTraderList(ITEMCATEGORY_SUPPLIES, SupplyPanel)
+	DoTraderList(ITEMCATEGORY_AMMO, AmmoPanel)
 	DoTraderList(ITEMCATEGORY_WEAPONS, GunPanel)
 	DoTraderList(ITEMCATEGORY_ARMOR, ArmorPanel)
 
@@ -380,8 +380,8 @@ function GM:TraderMenu()
 			local ItemDisplay = vgui.Create("SpawnIcon", ItemBackground)
 			ItemDisplay:SetPos(5, 5)
 			ItemDisplay:SetModel(v.Model)
-			ItemDisplay:SetToolTip(translate.Get(k.."_d")..(v["ArmorStats"] and "\n"..translate.Format("item_armor_descr", v.ArmorStats["reduction"] or 0, v.ArmorStats["env_reduction"] or 0, (-v.ArmorStats["speedloss"] or 0) / 10, v.ArmorStats["slots"] or 0, v.ArmorStats["battery"] or 0, v.ArmorStats["carryweight"] or 0) or "").."\n"..translate.Format("item_descr_1", k, v.Cost, raretbl.text))
---			ItemDisplay:SetToolTip(translate.Get(k.."_d").."\n"..translate.Format("item_descr_1", k, v.Cost, raretbl.text))
+			ItemDisplay:SetToolTip(GAMEMODE:GetItemDescription(k)..(v["ArmorStats"] and "\n"..translate.Format("item_armor_descr", v.ArmorStats["reduction"] or 0, v.ArmorStats["env_reduction"] or 0, (-v.ArmorStats["speedloss"] or 0) / 10, v.ArmorStats["slots"] or 0, v.ArmorStats["battery"] or 0, v.ArmorStats["carryweight"] or 0) or "").."\n"..translate.Format("item_descr_1", k, v.Cost, raretbl.text))
+--			ItemDisplay:SetToolTip(GAMEMODE:GetItemDescription(k).."\n"..translate.Format("item_descr_1", k, v.Cost, raretbl.text))
 			ItemDisplay:SetSize(60,60)
 			ItemDisplay.PaintOver = function()
 				return
@@ -401,7 +401,7 @@ function GM:TraderMenu()
 					ItemName:SetTextColor(tbl_rarity.col)
 				end
 			end
-			ItemName:SetText(translate.Get(k.."_n").." ("..v.Weight.."kg)")
+			ItemName:SetText(GAMEMODE:GetItemName(k).." ("..v.Weight.."kg)")
 			ItemName:SizeToContents()
 
 			if icost > 1 then
@@ -535,8 +535,8 @@ function GM:TraderMenu()
 			local ItemDisplay = vgui.Create("SpawnIcon", ItemBackground)
 			ItemDisplay:SetPos(5, 5)
 			ItemDisplay:SetModel(v.Model)
-			ItemDisplay:SetToolTip(translate.Get(k.."_d")..(v["ArmorStats"] and "\n"..translate.Format("item_armor_descr", v.ArmorStats["reduction"] or 0, v.ArmorStats["env_reduction"] or 0, (-v.ArmorStats["speedloss"] or 0) / 10, v.ArmorStats["slots"] or 0, v.ArmorStats["battery"] or 0, v.ArmorStats["carryweight"] or 0) or "").."\n"..translate.Format("item_descr_1", k, v.Cost, raretbl.text))
---			ItemDisplay:SetToolTip(translate.Get(k.."_d").."\n"..translate.Format("item_descr_1", k, v.Cost, raretbl.text))
+			ItemDisplay:SetToolTip(GAMEMODE:GetItemDescription(k)..(v["ArmorStats"] and "\n"..translate.Format("item_armor_descr", v.ArmorStats["reduction"] or 0, v.ArmorStats["env_reduction"] or 0, (-v.ArmorStats["speedloss"] or 0) / 10, v.ArmorStats["slots"] or 0, v.ArmorStats["battery"] or 0, v.ArmorStats["carryweight"] or 0) or "").."\n"..translate.Format("item_descr_1", k, v.Cost, raretbl.text))
+--			ItemDisplay:SetToolTip(GAMEMODE:GetItemDescription(k).."\n"..translate.Format("item_descr_1", k, v.Cost, raretbl.text))
 			ItemDisplay:SetSize(60,60)
 			ItemDisplay.PaintOver = function()
 				return
@@ -555,7 +555,7 @@ function GM:TraderMenu()
 					ItemName:SetTextColor(tbl_rarity.col)
 				end
 			end
-			ItemName:SetText(translate.Get(k.."_n").." ("..v.Weight.."kg)")
+			ItemName:SetText(GAMEMODE:GetItemName(k).." ("..v.Weight.."kg)")
 			ItemName:SizeToContents()
 
 			local ItemQty = vgui.Create("DLabel", ItemBackground)

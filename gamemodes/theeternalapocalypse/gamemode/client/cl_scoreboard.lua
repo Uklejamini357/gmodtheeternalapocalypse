@@ -201,7 +201,7 @@ function GM:CreateScoreboardInv()
 		local armorstr = me:GetNWString("ArmorType") or "none"
 		local armortype = GAMEMODE.ItemsList[armorstr]
 		if armorstr and armortype then
-			draw.SimpleText(translate.Format("cur_armor", translate.Get(armorstr.."_n")), "TargetIDSmall", self:GetWide() - 255, 235, Color(255,255,255,255))
+			draw.SimpleText(translate.Format("cur_armor", GAMEMODE:GetItemName(armorstr)), "TargetIDSmall", self:GetWide() - 255, 235, Color(255,255,255,255))
 			draw.SimpleText(translate.Format("armorprot", armortype["ArmorStats"]["reduction"], armortype["ArmorStats"]["reduction"] + ((Perks.Defense or 0) * 1.5)), "TargetIDSmall", self:GetWide() - 255, 250, Color(205,255,205,255))
 			draw.SimpleText(translate.Format("armor_envprot", armortype["ArmorStats"]["env_reduction"], armortype["ArmorStats"]["env_reduction"] + ((Perks.Defense or 0) * 1)), "TargetIDSmall", self:GetWide() - 255, 265, Color(255,230,255,255))
 			draw.SimpleText(armortype["ArmorStats"]["speedloss"] < 0 and translate.Get("armorspeed")..": Increased ("..-(armortype["ArmorStats"]["speedloss"] / 10)..")" or armortype["ArmorStats"]["speedloss"] == 0 and translate.Get("armorspeed")..": None" or translate.Get("armorspeed")..": Decreased (-"..(armortype["ArmorStats"]["speedloss"] / 10)..")", "TargetIDSmall", self:GetWide() - 255, 280, Color(205,205,255,255))
@@ -213,7 +213,7 @@ function GM:CreateScoreboardInv()
 			draw.SimpleText(translate.Get("armorspeed")..": None", "TargetIDSmall", self:GetWide() - 255, 280, Color(205,205,255,255))
 			draw.SimpleText(translate.Format("armormaxweight", "+", "0"), "TargetIDSmall", self:GetWide() - 255, 295, Color(255,235,205,255))
 		end
-		draw.SimpleText( translate.Format("pts", math.floor(MySP)), "TargetIDSmall", self:GetWide() - 255, 310, Color(205, 205, 205, 255))
+		draw.SimpleText( translate.Format("skillpoints", math.floor(MySP)), "TargetIDSmall", self:GetWide() - 255, 310, Color(205, 205, 205, 255))
 	end
 	
 	
@@ -290,13 +290,13 @@ function GM:CreateScoreboardInv()
 			if v.ModelColor then
 				ItemDisplay:SetColor(v.ModelColor)
 			end
-			ItemDisplay:SetToolTip(translate.Get(k.."_d")..(v["ArmorStats"] and "\n"..translate.Format("item_armor_descr", v.ArmorStats["reduction"] or 0, v.ArmorStats["env_reduction"] or 0, (-v.ArmorStats["speedloss"] or 0) / 10, v.ArmorStats["slots"] or 0, v.ArmorStats["battery"] or 0, v.ArmorStats["carryweight"] or 0) or "").."\n"..translate.Format("item_descr_1", k, v.Cost, raretbl.text))
+			ItemDisplay:SetToolTip(GAMEMODE:GetItemDescription(k)..(v["ArmorStats"] and "\n"..translate.Format("item_armor_descr", v.ArmorStats["reduction"] or 0, v.ArmorStats["env_reduction"] or 0, (-v.ArmorStats["speedloss"] or 0) / 10, v.ArmorStats["slots"] or 0, v.ArmorStats["battery"] or 0, v.ArmorStats["carryweight"] or 0) or "").."\n"..translate.Format("item_descr_1", k, v.Cost, raretbl.text))
 			ItemDisplay:SetSize(60,60)
 			ItemDisplay.PaintOver = function() return end
 			ItemDisplay.OnMousePressed = function(this, mc)
 				if mc == MOUSE_LEFT then
 					local derma = DermaMenu()
-					derma:AddOption("Item: "..translate.Get(k.."_n"), function() end)
+					derma:AddOption("Item: "..GAMEMODE:GetItemName(k), function() end)
 					if item.CanUseOnOthers then
 						local sub = derma:AddSubMenu("Use", function()
 							net.Start("UseItem")
@@ -347,7 +347,7 @@ function GM:CreateScoreboardInv()
 					ItemName:SetTextColor(tbl_rarity.col)
 				end
 			end
-			ItemName:SetText(translate.Get(k.."_n").." ("..v.Weight.."kg)")
+			ItemName:SetText(GAMEMODE:GetItemName(k).." ("..v.Weight.."kg)")
 			ItemName:SizeToContents()
 
 			local ItemQty = vgui.Create("DLabel", ItemBackground)
@@ -797,7 +797,7 @@ function GM:CreateScoreboardInv()
 			local ItemDisplay = vgui.Create("SpawnIcon", ItemBG)
 			ItemDisplay:SetPos(8, 8)
 			ItemDisplay:SetModel(v.Model)
-			ItemDisplay:SetToolTip(translate.Get(k.."_d")..(v["ArmorStats"] and "\n"..translate.Format("item_armor_descr", v.ArmorStats["reduction"] or 0, v.ArmorStats["env_reduction"] or 0, (-v.ArmorStats["speedloss"] or 0) / 10, v.ArmorStats["slots"] or 0, v.ArmorStats["battery"] or 0, v.ArmorStats["carryweight"] or 0) or "").."\n"..translate.Format("item_descr_1", k, v.Cost, raretbl.text))
+			ItemDisplay:SetToolTip(GAMEMODE:GetItemDescription(k)..(v["ArmorStats"] and "\n"..translate.Format("item_armor_descr", v.ArmorStats["reduction"] or 0, v.ArmorStats["env_reduction"] or 0, (-v.ArmorStats["speedloss"] or 0) / 10, v.ArmorStats["slots"] or 0, v.ArmorStats["battery"] or 0, v.ArmorStats["carryweight"] or 0) or "").."\n"..translate.Format("item_descr_1", k, v.Cost, raretbl.text))
 			ItemDisplay:SetSize(64,64)
 			ItemDisplay.PaintOver = function() return end
 			ItemDisplay.OnMousePressed = function() return false end
@@ -812,7 +812,7 @@ function GM:CreateScoreboardInv()
 					ItemName:SetTextColor(tbl_rarity.col)
 				end
 			end
-			ItemName:SetText(translate.Get(k.."_n"))
+			ItemName:SetText(GAMEMODE:GetItemName(k))
 
 			local ItemWeight = vgui.Create("DLabel", ItemBG)
 			ItemWeight:SetFont("TargetIDSmall")
@@ -847,9 +847,9 @@ function GM:CreateScoreboardInv()
 				draw.RoundedBox(2, 0, 0, ReqButton:GetWide(), ReqButton:GetTall(), Color(0, 50, 0, 130))
 			end
 			ReqButton.DoClick = function()
-				chat.AddText(Color(0,192,192), "Required Items to craft item '"..translate.Get(k.."_n").."':")
+				chat.AddText(Color(0,192,192), "Required Items to craft item '"..GAMEMODE:GetItemName(k).."':")
 				for r,q in pairs(GAMEMODE.CraftableList[k]["Requirements"]) do
-					chat.AddText(Color(0,192,255), "\t"..q.."x "..translate.Get(r.."_n"))
+					chat.AddText(Color(0,192,255), "\t"..q.."x "..GAMEMODE:GetItemName(r))
 				end
 			end
 
@@ -1075,7 +1075,7 @@ function GM:CreateScoreboardInv()
 			local LabelDefense = vgui.Create("DLabel")
 			LabelDefense:SetPos(50, 50)
 			LabelDefense:SetText(translate.Get(k)..": "..Perks[k])
-			LabelDefense:SetToolTip(translate.Get(k.."_d").."\n\nRight-Click to apply all SP if possible.\nCost per point: "..v.Cost.."\nMax: "..v.Max.."\nEmpowered Skill Max Limit increase: "..(v.PerkMaxIncrease or 0))
+			LabelDefense:SetToolTip(GAMEMODE:GetSkillDescription(k).."\n\nRight-Click to apply all SP if possible.\nCost per point: "..v.Cost.."\nMax: "..v.Max.."\nEmpowered Skill Max Limit increase: "..(v.PerkMaxIncrease or 0))
 			LabelDefense:SizeToContents()
 			StatsForm:AddItem(LabelDefense)
 
@@ -1084,7 +1084,7 @@ function GM:CreateScoreboardInv()
 			Button:SetSize(10, 20)
 			Button:SetTextColor(Color(255, 255, 255, 255))
 			Button:SetText(translate.Format("inc1stat", translate.Get(k)))
-			Button:SetToolTip(translate.Get(k.."_d").."\n\nRight-Click to apply all SP if possible.\nCost per point: "..v.Cost.."\nMax: "..v.Max.."\nEmpowered Skill Max Limit increase: "..(v.PerkMaxIncrease or 0))
+			Button:SetToolTip(GAMEMODE:GetSkillDescription(k).."\n\nRight-Click to apply all SP if possible.\nCost per point: "..v.Cost.."\nMax: "..v.Max.."\nEmpowered Skill Max Limit increase: "..(v.PerkMaxIncrease or 0))
 
 			local function applypoint(num)
 				net.Start("UpgradePerk")

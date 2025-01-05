@@ -251,7 +251,7 @@ function meta:BuyItem(str)
 	-- if ((self:CalculateWeight() + item["Weight"]) > self:CalculateMaxWeight()) then self:SendChat(translate.ClientFormat(self, "notenoughspace", GAMEMODE:CalculateRemainingInventoryWeight(self, item["Weight"]))) return false end
 
 	GAMEMODE:SystemGiveItem(self, str)
-	self:PrintTranslatedMessage(HUD_PRINTCONSOLE, "tr_itembought", translate.ClientGet(self, str.."_n"), buyprice, GAMEMODE.Config["Currency"])
+	self:PrintTranslatedMessage(HUD_PRINTCONSOLE, "tr_itembought", GAMEMODE:GetItemName(str, self), buyprice, GAMEMODE.Config["Currency"])
 	self.Money = math.floor(self.Money - (item["Cost"] * (1 - (self.StatBarter * 0.015)))) -- reduce buy cost by 1.5% per barter level
 	GAMEMODE:SendInventory(self)
 	self:EmitSound("items/ammopickup.wav", 100, 100)
@@ -289,7 +289,7 @@ net.Receive("SellItem", function(len, ply)
 		UseFunc_RemoveArmor(ply, str)
 	end
 
-	ply:PrintTranslatedMessage(HUD_PRINTCONSOLE, "tr_itemsold", translate.ClientGet(ply, str.."_n"), amt, sellprice, GAMEMODE.Config["Currency"])
+	ply:PrintTranslatedMessage(HUD_PRINTCONSOLE, "tr_itemsold", GAMEMODE:GetItemName(name, ply), amt, sellprice, GAMEMODE.Config["Currency"])
 	ply.Money = math.floor(cash + sellprice) -- base sell price 20% of the original buy price plus 0.5% per barter level to max of 25%
 	GAMEMODE:SendInventory(ply)
 	ply:EmitSound("physics/cardboard/cardboard_box_break3.wav", 100, 100)

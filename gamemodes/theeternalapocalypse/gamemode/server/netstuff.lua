@@ -5,7 +5,8 @@ util.AddNetworkString("CashBounty")
 util.AddNetworkString("AddVault")
 util.AddNetworkString("WithdrawVault")
 
-util.AddNetworkString("UpdateStats") -- no functions for this in this file, see player_data.lua and cl_hud.lua
+util.AddNetworkString("tea_updatestamina") -- no functions for this in this file, see player_data.lua and cl_hud.lua
+util.AddNetworkString("UpdateStats")
 util.AddNetworkString("UpdatePeriodicStats")
 util.AddNetworkString("UpdateStatistics")
 util.AddNetworkString("UpdatePerks")
@@ -69,7 +70,6 @@ util.AddNetworkString("tea_admin_sendspawns")
 
 function GM:NetUpdateStats(ply)
 	net.Start("UpdateStats")
-	net.WriteFloat(ply.Stamina)
 	net.WriteFloat(math.Round(ply.Hunger))
 	net.WriteFloat(math.Round(ply.Thirst))
 	net.WriteFloat(math.Round(ply.Fatigue))
@@ -474,3 +474,8 @@ function meta:SendUseDelay(delay)
 	net.Send(self)
 end
 
+function meta:NWSendStamina()
+	net.Start("tea_updatestamina")
+	net.WriteFloat(self.Stamina)
+	net.Send(self)
+end

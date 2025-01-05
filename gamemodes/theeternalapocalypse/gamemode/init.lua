@@ -236,7 +236,7 @@ function GM:Think()
 		if !ply:Alive() or ply.StatsPaused or ply:GetObserverMode() ~= OBS_MODE_NONE then 
 			if (ply.NextTick or 0) < RealTime() then
 				self:NetUpdateStats(ply)
-				ply.NextTick = RealTime() + 0.06
+				ply.NextTick = RealTime() + 1
 			end
 			continue
 		end
@@ -250,9 +250,9 @@ function GM:Think()
 		local endurance = ((ply.StatEndurance or 0) / 500)
 	
 		-- hunger, thirst, fatigue, infection
-		ply.Hunger = math.Clamp(hunger - (4.35*ft * (1 - (ply.StatSurvivor * 0.04))), 0, 10000)
-		ply.Thirst = math.Clamp(thirst - (5.2*ft * (1 - (ply.StatSurvivor * 0.0425))), 0, 10000)
-		ply.Fatigue = math.Clamp(fatig + (3*ft * (1 - (ply.StatSurvivor * 0.035))), 0, 10000)
+		ply.Hunger = math.Clamp(hunger - (5*ft / (1 + (ply.StatSurvivor * 0.045))), 0, 10000)
+		ply.Thirst = math.Clamp(thirst - (6*ft / (1 + (ply.StatSurvivor * 0.045))), 0, 10000)
+		ply.Fatigue = math.Clamp(fatig + (3.2*ft / (1 + (ply.StatSurvivor * 0.045))), 0, 10000)
 	
 		if (ply.Thirst <= 0 or ply.Hunger <= 0 or ply.Fatigue >= 10000 or ply.Infection >= 10000) then
 			if !timer.Exists("DyingFromStats_"..ply:EntIndex()) then
@@ -377,8 +377,10 @@ function GM:Think()
 */
 		if (ply.NextTick or 0) < RealTime() then
 			self:NetUpdateStats(ply)
-			ply.NextTick = RealTime() + 0.06
+			ply.NextTick = RealTime() + 1
 		end
+
+		ply:NWSendStamina()
 	end
 end
 

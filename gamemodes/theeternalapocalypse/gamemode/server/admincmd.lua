@@ -40,8 +40,8 @@ function GM:AdminCmds_GiveItem(ply, cmd, args)
 
 	gamemode.Call("SystemGiveItem", ply, name, addqty)
 
-	self:DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.."x "..translate.Get(name.."_n"))
-	ply:SystemMessage("You gave yourself "..addqty.."x "..translate.ClientGet(ply, name.."_n"), Color(155,255,155,255), true)
+	self:DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.."x "..GAMEMODE:GetItemName(name))
+	ply:SystemMessage("You gave yourself "..addqty.."x "..GAMEMODE:GetItemName(name, ply), Color(155,255,155,255), true)
 	self:FullyUpdatePlayer(ply)
 end
 concommand.Add("tea_sadmin_giveitem", function(ply, cmd, args)
@@ -65,8 +65,8 @@ function GM:AdminCmds_RemoveItem(ply, cmd, args)
 
 	gamemode.Call("SystemRemoveItem", ply, name, strip)
 	
-	self:DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave "..translate.Get(name.."_n").." from their inventory!")
-	ply:SystemMessage("You removed "..translate.ClientGet(ply, name.."_n").." from your inventory!", Color(155,255,155,255), true)
+	self:DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave "..GAMEMODE:GetItemName(name).." from their inventory!")
+	ply:SystemMessage("You removed "..GAMEMODE:GetItemName(name, ply).." from your inventory!", Color(155,255,155,255), true)
 	gamemode.Call("FullyUpdatePlayer", ply)
 end
 concommand.Add("tea_sadmin_removeitem", function(ply, cmd, args)
@@ -294,8 +294,8 @@ function GM:AdminCmds_SpawnItem(ply, cmd, args)
 	EntDrop:Activate()
 	EntDrop:SetVelocity(ply:GetForward() * 80 + Vector(0,0,50))
 
-	self:DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." spawned a dropped item: "..translate.Get(name.."_n"))
-	ply:SystemMessage("You spawned a dropped item: "..translate.ClientGet(ply, name.."_n").."!", Color(155,255,155,255), true)
+	self:DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." spawned a dropped item: "..GAMEMODE:GetItemName(name))
+	ply:SystemMessage("You spawned a dropped item: "..GAMEMODE:GetItemName(name, ply).."!", Color(155,255,155,255), true)
 end
 concommand.Add("tea_sadmin_spawnitem", function(ply, cmd, args)
 	gamemode.Call("AdminCmds_SpawnItem", ply, cmd, args)

@@ -220,7 +220,7 @@ net.Receive("UseCrate", function(len, ply)
 		GAMEMODE:PlaceInContainer(ply, item, ent)
 	else
 		GAMEMODE:WithdrawFromContainer(ply, item, ent)
-		ply:PrintTranslatedMessage(4, "loottaken", translate.ClientGet(ply, item.."_n"))
+		ply:PrintTranslatedMessage(4, "loottaken", GAMEMODE:GetItemName(item, ply))
 	end
 end)
 

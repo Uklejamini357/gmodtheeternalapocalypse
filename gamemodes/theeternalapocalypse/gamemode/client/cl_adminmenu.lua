@@ -514,8 +514,8 @@ function GM:AdminMenu()
 			if v.ModelColor then
 				ItemDisplay:SetColor(v.ModelColor)
 			end
-			ItemDisplay:SetToolTip(translate.Get(k.."_d")..(v["ArmorStats"] and "\n"..translate.Format("item_armor_descr", v.ArmorStats["reduction"] or 0, v.ArmorStats["env_reduction"] or 0, (-v.ArmorStats["speedloss"] or 0) / 10, v.ArmorStats["slots"] or 0, v.ArmorStats["battery"] or 0, v.ArmorStats["carryweight"] or 0) or "").."\n"..translate.Format("item_descr_1", k, v.Cost, raretbl.text))
---			ItemDisplay:SetToolTip(translate.Get(k.."_d").."\n"..translate.Format("item_descr_1", k, v.Cost, GAMEMODE.Config["Currency"], raretext))
+			ItemDisplay:SetToolTip(GAMEMODE:GetItemDescription(k)..(v["ArmorStats"] and "\n"..translate.Format("item_armor_descr", v.ArmorStats["reduction"] or 0, v.ArmorStats["env_reduction"] or 0, (-v.ArmorStats["speedloss"] or 0) / 10, v.ArmorStats["slots"] or 0, v.ArmorStats["battery"] or 0, v.ArmorStats["carryweight"] or 0) or "").."\n"..translate.Format("item_descr_1", k, v.Cost, raretbl.text))
+--			ItemDisplay:SetToolTip(GAMEMODE:GetItemDescription(k).."\n"..translate.Format("item_descr_1", k, v.Cost, GAMEMODE.Config["Currency"], raretext))
 			ItemDisplay:SetSize(60,60)
 			ItemDisplay.PaintOver = function()
 				return
@@ -534,7 +534,7 @@ function GM:AdminMenu()
 					ItemName:SetTextColor(tbl_rarity.col)
 				end
 			end
-			ItemName:SetText(translate.Get(k.."_n"))
+			ItemName:SetText(GAMEMODE:GetItemName(k))
 		
 			local ItemCost = vgui.Create("DLabel", ItemBackground)
 			ItemCost:SetFont("TargetIDSmall")
@@ -625,10 +625,10 @@ function GM:AdminMenu()
 			end
 		end
 	end
-	RefreshItemList(1, SpawnMenuAmmo)
-	RefreshItemList(2, SpawnMenuSupplies)
-	RefreshItemList(3, SpawnMenuGuns)
-	RefreshItemList(4, SpawnMenuArmor)
+	RefreshItemList(ITEMCATEGORY_AMMO, SpawnMenuAmmo)
+	RefreshItemList(ITEMCATEGORY_SUPPLIES, SpawnMenuSupplies)
+	RefreshItemList(ITEMCATEGORY_WEAPONS, SpawnMenuGuns)
+	RefreshItemList(ITEMCATEGORY_ARMOR, SpawnMenuArmor)
 
 	RefreshPanel()
 

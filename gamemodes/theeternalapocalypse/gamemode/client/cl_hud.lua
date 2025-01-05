@@ -5,9 +5,12 @@ local pralpha = 0 -- wraith blind effect (but white and when prestiged)
 local Spawn = 0
 
 
-net.Receive("UpdateStats", function(len) -- this net message is received once per frame
-
+net.Receive("tea_updatestamina", function(len) -- this net message is received once per frame
 	MyStamina = net.ReadFloat()
+end)
+
+net.Receive("UpdateStats", function(len) -- this net message is received once every second
+
 	MyHunger = net.ReadFloat()
 	MyThirst = net.ReadFloat()
 	MyFatigue = net.ReadFloat()
@@ -18,8 +21,6 @@ net.Receive("UpdateStats", function(len) -- this net message is received once pe
 end)
 
 net.Receive("UpdatePeriodicStats", function(len) -- this net message is only received when one of these values need to be updated
-
-
 	MyLvl = net.ReadFloat()
 	MyPrestige = net.ReadFloat()
 	MyMoney = net.ReadFloat()
@@ -1002,7 +1003,7 @@ function GM:DrawMiscThings()
 		surface.DrawOutlinedRect(t, s, 200, 65)
 		surface.SetDrawColor(0, 0, 0, 200)
 		surface.DrawRect(t, s, 200, 65)
-		draw.DrawText(translate.Get(name.."_n"), "TargetID", t + 5, s + 4, Color(255, 255, 255, 255))
+		draw.DrawText(GAMEMODE:GetItemName(name), "TargetID", t + 5, s + 4, Color(255, 255, 255, 255))
 		draw.DrawText(itemtable.Weight.."kg", "TargetID", t + 5, s + 22, Color(255, 255, 155, 255))
 		draw.DrawText("Rarity: "..raretbl.text, "TargetID", t + 5, s + 40, raretbl.col)
 	end

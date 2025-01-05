@@ -7,7 +7,7 @@ GM:CreateItem(itemid, { -- It's necessary to use the Entity Classname here for t
     Weight = weight,
     Supply = supply,
     Rarity = rarity,
-    Category = 4,
+    Category = ITEMCATEGORY_ARMOR,
 	UseFunc = function(ply) UseFunc_EquipArmor(ply, itemid) end,
 	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, itemid) return drop end,
 
@@ -35,7 +35,7 @@ GM:CreateItem("item_armor_jacket_leather", {
 	Weight = 1.1,
 	Supply = 0,
 	Rarity = 2,
-	Category = 4,
+	Category = ITEMCATEGORY_ARMOR,
 	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_jacket_leather") end,
 	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_jacket_leather") return drop end,
 
@@ -56,7 +56,7 @@ GM:CreateItem("item_armor_chainmail", {
 	Weight = 1.6,
 	Supply = 0,
 	Rarity = 2,
-	Category = 4,
+	Category = ITEMCATEGORY_ARMOR,
 	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_chainmail") end,
 	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_chainmail") return drop end,
 
@@ -77,7 +77,7 @@ GM:CreateItem("item_armor_jacket_bandit", {
 	Weight = 1.4,
 	Supply = 0,
 	Rarity = 3,
-	Category = 4,
+	Category = ITEMCATEGORY_ARMOR,
 	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_jacket_bandit") end,
 	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_jacket_bandit") return drop end,
 	ArmorStats = {
@@ -97,7 +97,7 @@ GM:CreateItem("item_armor_scrap", {
 	Weight = 3.8,
 	Supply = 0,
 	Rarity = 3,
-	Category = 4,
+	Category = ITEMCATEGORY_ARMOR,
 	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_scrap") end,
 	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_scrap") return drop end,
 	ArmorStats = {
@@ -117,7 +117,7 @@ GM:CreateItem("item_armor_trenchcoat_brown", {
 	Weight = 2.28,
 	Supply = 0,
 	Rarity = 3,
-	Category = 4,
+	Category = ITEMCATEGORY_ARMOR,
 	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_trenchcoat_brown") end,
 	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_trenchcoat_brown") return drop end,
 	ArmorStats = {
@@ -137,7 +137,7 @@ GM:CreateItem("item_armor_trenchcoat_black", {
 	Weight = 2.9,
 	Supply = 0,
 	Rarity = 4,
-	Category = 4,
+	Category = ITEMCATEGORY_ARMOR,
 	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_trenchcoat_black") end,
 	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_trenchcoat_black") return drop end,
 	ArmorStats = {
@@ -157,7 +157,7 @@ GM:CreateItem("item_armor_mercenary_guerilla", {
 	Weight = 3.2,
 	Supply = 0,
 	Rarity = 4,
-	Category = 4,
+	Category = ITEMCATEGORY_ARMOR,
 	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_mercenary_guerilla") end,
 	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_mercenary_guerilla") return drop end,
 	ArmorStats = {
@@ -177,7 +177,7 @@ GM:CreateItem("item_armor_mercenary_arctic", {
 	Weight = 3.35,
 	Supply = 0,
 	Rarity = 5,
-	Category = 4,
+	Category = ITEMCATEGORY_ARMOR,
 	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_mercenary_arctic") end,
 	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_mercenary_arctic") return drop end,
 	ArmorStats = {
@@ -197,7 +197,7 @@ GM:CreateItem("item_armor_mercenary_leet", {
 	Weight = 3,
 	Supply = 0,
 	Rarity = 4,
-	Category = 4,
+	Category = ITEMCATEGORY_ARMOR,
 	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_mercenary_leet") end,
 	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_mercenary_leet") return drop end,
 	ArmorStats = {
@@ -217,7 +217,7 @@ GM:CreateItem("item_armor_mercenary_phoenix", {
 	Weight = 4.15,
 	Supply = 0,
 	Rarity = 5,
-	Category = 4,
+	Category = ITEMCATEGORY_ARMOR,
 	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_mercenary_phoenix") end,
 	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_mercenary_phoenix") return drop end,
 	ArmorStats = {
@@ -237,7 +237,7 @@ GM:CreateItem("item_armor_police_gasmask", {
 	Weight = 5.5,
 	Supply = 0,
 	Rarity = 5,
-	Category = 4,
+	Category = ITEMCATEGORY_ARMOR,
 	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_police_gasmask") end,
 	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_police_gasmask") return drop end,
 	ArmorStats = {
@@ -257,7 +257,7 @@ GM:CreateItem("item_armor_police_riot", {
 	Weight = 5.8,
 	Supply = 0,
 	Rarity = 5,
-	Category = 4,
+	Category = ITEMCATEGORY_ARMOR,
 	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_police_riot") end,
 	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_police_riot") return drop end,
 	ArmorStats = {
@@ -277,7 +277,7 @@ GM:CreateItem("item_armor_police_swat", {
 	Weight = 5.8,
 	Supply = 0,
 	Rarity = 5,
-	Category = 4,
+	Category = ITEMCATEGORY_ARMOR,
 	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_police_swat") end,
 	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_police_swat") return drop end,
 	ArmorStats = {
@@ -297,7 +297,7 @@ GM:CreateItem("item_armor_police_urban", {
 	Weight = 6.5,
 	Supply = 0,
 	Rarity = 5,
-	Category = 4,
+	Category = ITEMCATEGORY_ARMOR,
 	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_police_urban") end,
 	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_police_urban") return drop end,
 	ArmorStats = {
@@ -317,7 +317,7 @@ GM:CreateItem("item_armor_sunrise", {
 	Weight = 5.5,
 	Supply = 0,
 	Rarity = 5,
-	Category = 4,
+	Category = ITEMCATEGORY_ARMOR,
 	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_sunrise") end,
 	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_sunrise") return drop end,
 	ArmorStats = {
@@ -337,7 +337,7 @@ GM:CreateItem("item_armor_sunrise_dolg", {
 	Weight = 7.1,
 	Supply = 0,
 	Rarity = 6,
-	Category = 4,
+	Category = ITEMCATEGORY_ARMOR,
 	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_sunrise_dolg") end,
 	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_sunrise_dolg") return drop end,
 	ArmorStats = {
@@ -357,7 +357,7 @@ GM:CreateItem("item_armor_sunrise_svoboda", {
 	Weight = 5,
 	Supply = 0,
 	Rarity = 6,
-	Category = 4,
+	Category = ITEMCATEGORY_ARMOR,
 	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_sunrise_svoboda") end,
 	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_sunrise_svoboda") return drop end,
 	ArmorStats = {
@@ -377,7 +377,7 @@ GM:CreateItem("item_armor_sunrise_monolith", {
 	Weight = 6,
 	Supply = 3,
 	Rarity = 6,
-	Category = 4,
+	Category = ITEMCATEGORY_ARMOR,
 	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_sunrise_monolith") end,
 	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_sunrise_monolith") return drop end,
 	ArmorStats = {
@@ -397,7 +397,7 @@ GM:CreateItem("item_armor_military_green", {
 	Weight = 12,
 	Supply = 0,
 	Rarity = 6,
-	Category = 4,
+	Category = ITEMCATEGORY_ARMOR,
 	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_military_green") end,
 	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_military_green") return drop end,
 	ArmorStats = {
@@ -417,7 +417,7 @@ GM:CreateItem("item_armor_military_black", {
 	Weight = 15,
 	Supply = 0,
 	Rarity = 7,
-	Category = 4,
+	Category = ITEMCATEGORY_ARMOR,
 	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_military_black") end,
 	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_military_black") return drop end,
 	ArmorStats = {
@@ -437,7 +437,7 @@ GM:CreateItem("item_armor_exo", {
 	Weight = 25,
 	Supply = 0,
 	Rarity = 7,
-	Category = 4,
+	Category = ITEMCATEGORY_ARMOR,
 	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_exo") end,
 	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_exo") return drop end,
 	ArmorStats = {
@@ -457,7 +457,7 @@ GM:CreateItem("item_armor_exo_merc", {
 	Weight = 23.75,
 	Supply = 0,
 	Rarity = 8,
-	Category = 4,
+	Category = ITEMCATEGORY_ARMOR,
 	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_exo_merc") end,
 	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_exo_merc") return drop end,
 	ArmorStats = {
@@ -477,7 +477,7 @@ GM:CreateItem("item_armor_exo_dolg", {
 	Weight = 27.5,
 	Supply = 0,
 	Rarity = 8,
-	Category = 4,
+	Category = ITEMCATEGORY_ARMOR,
 	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_exo_dolg") end,
 	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_exo_dolg") return drop end,
 	ArmorStats = {
@@ -497,7 +497,7 @@ GM:CreateItem("item_armor_exo_svoboda", {
 	Weight = 22.5,
 	Supply = 0,
 	Rarity = 7,
-	Category = 4,
+	Category = ITEMCATEGORY_ARMOR,
 	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_exo_svoboda") end,
 	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_exo_svoboda") return drop end,
 	ArmorStats = {
@@ -517,7 +517,7 @@ GM:CreateItem("item_armor_exo_monolith", {
 	Weight = 25,
 	Supply = 0,
 	Rarity = 8,
-	Category = 4,
+	Category = ITEMCATEGORY_ARMOR,
 	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_exo_monolith") end,
 	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_exo_monolith") return drop end,
 	ArmorStats = {
@@ -537,7 +537,7 @@ GM:CreateItem("item_armor_cs2_goggles", {
 	Weight = 13.5,
 	Supply = 0,
 	Rarity = 9,
-	Category = 4,
+	Category = ITEMCATEGORY_ARMOR,
 	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_cs2_goggles") end,
 	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_cs2_goggles") return drop end,
 	ArmorStats = {

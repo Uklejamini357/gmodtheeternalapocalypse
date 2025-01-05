@@ -5,8 +5,8 @@ GM.AltName	= "After The End Reborn"
 GM.Author	= "Uklejamini"
 GM.Email	= "[You may not view this information.]"
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.11.2a"
-GM.DateVer	= "02.01.2025"
+GM.Version	= "0.11.2b"
+GM.DateVer	= "05.01.2025"
 
 
 include("sh_globals.lua") -- globals
@@ -288,3 +288,23 @@ function GM:GetEventTimer()
 	return GetGlobalFloat("TEA_Event_Timer", -1)
 end
 
+function GM:GetItemName(id, ply) -- ply is for the server
+	local item = self.ItemsList[id]
+	local name = item.Name or ply and translate.ClientGet(ply, id.."_n") or translate.Get(id.."_n")
+
+	return name
+end
+
+function GM:GetItemDescription(id, ply) -- ply is for the server
+	local item = self.ItemsList[id]
+	local desc = item.Description or ply and translate.ClientGet(ply, id.."_d") or translate.Get(id.."_d")
+
+	return desc
+end
+
+function GM:GetSkillDescription(id, ply)
+	local skill = self.StatConfigs[id]
+	local desc = skill.Description or ply and translate.ClientGet(ply, id.."_d") or translate.Get(id.."_d")
+
+	return desc
+end

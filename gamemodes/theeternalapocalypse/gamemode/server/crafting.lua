@@ -51,7 +51,7 @@ function GM:CraftItem(ply, str)
 		ply:SystemMessage("You don't have the required items to craft this!", Color(255,205,205), true)
 		ply:SystemMessage("You need:", Color(255,205,205), false)
 		for k,v in pairs(self.CraftableList[str]["Requirements"]) do
-			ply:SystemMessage("	"..v.."x "..translate.Get(k.."_n"), Color(255,230,230), false)
+			ply:SystemMessage("	"..v.."x "..GAMEMODE:GetItemName(k), Color(255,230,230), false)
 		end
 	end
 end
@@ -108,7 +108,7 @@ function GM:CraftSpecialItem(ply, str)
 		ply:SystemMessage("You don't have the required items to craft this!", Color(255,205,205), true)
 		ply:SystemMessage("You need:", Color(255,205,205), false)
 		for k,v in pairs(self.CraftableSpecialList[str]["Requirements"]) do
-			ply:SystemMessage("	"..v.."x "..translate.Get(k.."_n"), Color(255,230,230), false)
+			ply:SystemMessage("	"..v.."x "..GAMEMODE:GetItemName(k), Color(255,230,230), false)
 		end
 	end
 end

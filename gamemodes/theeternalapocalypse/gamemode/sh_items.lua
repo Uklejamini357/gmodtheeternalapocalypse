@@ -132,14 +132,14 @@ function UseFunc_EquipArmor(ply, item)
 
 	if !timer.Exists("plywantstoremovearmor"..ply:EntIndex().."_"..item) and ply.EquippedArmor == item then
 		timer.Create("plywantstoremovearmor"..ply:EntIndex().."_"..item, 10, 1, function() end)
-		ply:SendChat("Unequip "..translate.ClientGet(ply, item.."_n").."? Use the same armor again to confirm.")
+		ply:SendChat("Unequip "..GAMEMODE:GetItemName(item, ply).."? Use the same armor again to confirm.")
 		return false
 	elseif timer.Exists("plywantstoremovearmor"..ply:EntIndex().."_"..item) and ply.EquippedArmor == item then
 		ply:SendUseDelay(3)
 		ply:EmitSound("npc/combine_soldier/zipline_hitground2.wav")
 		timer.Simple(3, function()
 			if !ply:IsValid() or !ply:Alive() then return false end
-			ply:SystemMessage(Format("You unequipped %s.", translate.ClientGet(ply, item.."_n")), Color(205,255,205,255), false)
+			ply:SystemMessage(Format("You unequipped %s.", GAMEMODE:GetItemName(item, ply)), Color(205,255,205,255), false)
 			UseFunc_RemoveArmor(ply, item)
 		end)
 		return false
@@ -151,7 +151,7 @@ function UseFunc_EquipArmor(ply, item)
 	timer.Create("Isplyequippingarmor"..ply:EntIndex(), 3, 1, function() end)
 	timer.Create("Isplyequippingarmor"..ply:EntIndex().."_"..item, 3, 1, function()
 		if !ply:IsValid() or !ply:Alive() then return false end
-		ply:SystemMessage("You equipped "..translate.ClientGet(ply, item.."_n")..". Use the same armor again to unequip.", Color(205,255,205,255), false)
+		ply:SystemMessage("You equipped "..GAMEMODE:GetItemName(item, ply)..". Use the same armor again to unequip.", Color(205,255,205,255), false)
 		ply.EquippedArmor = tostring(item)
 		ply:SetNWString("ArmorType", tostring(item))
 		gamemode.Call("RecalcPlayerModel", ply)
