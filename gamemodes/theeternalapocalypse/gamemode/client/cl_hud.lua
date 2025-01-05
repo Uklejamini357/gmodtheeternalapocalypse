@@ -469,8 +469,6 @@ function GM:DrawVitals()
 	
 		local xpbarclamp = math.Clamp(200 * (MyXP / me:GetReqXP()), 0, 200)
 		surface_DrawRectColor(scrw - 250, scrh - 50, xpbarclamp, 8, Color(150,0,0,160))
-		--Bounty
-		draw.SimpleText(translate.Format("bounty", math.floor(MyBounty)), "TargetIDSmall", 270, scrh - 68, Color(205, 205, 205, 255), 0, 1)
 
 -------------- Stamina -------------- 
 		surface.SetDrawColor(0, 0, 0 ,255)
@@ -542,6 +540,7 @@ function GM:DrawVitals()
 		draw.SimpleText(translate.Format("prestige", math.floor(MyPrestige)), "TargetIDSmall", 270, scrh - 140, Color(205,205,205,255), 0, 1)
 		draw.SimpleText(translate.Format("level", math.floor(MyLvl)), "TargetIDSmall", 270, scrh - 122, Color(205,205,205,255), 0, 1)
 		draw.SimpleText(translate.Format("money", math.floor(MyMoney)), "TargetIDSmall", 270, scrh - 104, Color(205,205,205,255), 0, 1)
+		draw.SimpleText(translate.Format("bounty", math.floor(MyBounty)), "TargetIDSmall", 270, scrh - 86, Color(205, 205, 205, 255), 0, 1)
 	elseif self.HUDStyle == HUDSTYLE_TEA then
 		surface_DrawRectColor(16, scrh - 108, 192, 100, Color(255,255,255,65))
 		draw.SimpleText(string.upper(translate.Format("health", Health, MaxHealth)), "TargetIDSmall", 21, scrh - 96, Color(255,255,255), 0, 1)
@@ -807,18 +806,33 @@ function GM:PostDrawHUD()
 	end
 */
 	if !me:Alive() and self:GetEvent() == EVENT_NONE then
-		local a = 205
+		if self.HUDStyle == HUDSTYLE_CLASSIC then
+			local a = 205
 
-		local message
-		draw.DrawText("You died", "DeathScreenFont_2", ScrW() / 2, ScrH() / 2 - 40, Color(230,115,115,a), TEXT_ALIGN_CENTER)
-		draw.DrawText("Cause of death: "..self.DeathMessage, "DeathScreenFont_2", ScrW() / 2, ScrH() / 2 - 180, Color(230,230,230,a), TEXT_ALIGN_CENTER)
+			local message
+			draw.DrawText("You died", "TargetIDSmall", ScrW() / 2, ScrH() / 2 - 40, Color(230,115,115,a), TEXT_ALIGN_CENTER)
+			draw.DrawText("Cause of death: "..self.DeathMessage, "TargetIDSmall", ScrW() / 2, ScrH() / 2 - 180, Color(230,230,230,a), TEXT_ALIGN_CENTER)
 
-		local survtime,bsurvtime = math.floor(self.MyLastSurvivalStats.SurvivalTime), math.floor(self.MyLastSurvivalStats.BestSurvivalTime)
+			local survtime,bsurvtime = math.floor(self.MyLastSurvivalStats.SurvivalTime), math.floor(self.MyLastSurvivalStats.BestSurvivalTime)
 
-		draw.DrawText(Format(bsurvtime < survtime and "Survival Time: %s (Previous Best: %s, +%s)" or "Survival Time: %s", util.ToMinutesSeconds(survtime), util.ToMinutesSeconds(bsurvtime), util.ToMinutesSeconds(survtime - bsurvtime)),
-		"DeathScreenFont_2", ScrW() / 2, ScrH() / 2 + 20, Color(230,230,230,a), TEXT_ALIGN_CENTER)
-		draw.DrawText(Format("Zombies killed: %d", self.MyLastSurvivalStats.ZombiesKilled), "DeathScreenFont_2", ScrW() / 2, ScrH() / 2 + 44, Color(230,230,230,a), TEXT_ALIGN_CENTER)
-		draw.DrawText(Format("Players killed: %d", self.MyLastSurvivalStats.PlayersKilled), "DeathScreenFont_2", ScrW() / 2, ScrH() / 2 + 68, Color(230,230,230,a), TEXT_ALIGN_CENTER)
+			draw.DrawText(Format(bsurvtime < survtime and "Survival Time: %s (Previous Best: %s, +%s)" or "Survival Time: %s", util.ToMinutesSeconds(survtime), util.ToMinutesSeconds(bsurvtime), util.ToMinutesSeconds(survtime - bsurvtime)),
+			"TargetIDSmall", ScrW() / 2, ScrH() / 2 + 20, Color(230,230,230,a), TEXT_ALIGN_CENTER)
+			draw.DrawText(Format("Zombies killed: %d", self.MyLastSurvivalStats.ZombiesKilled), "TargetIDSmall", ScrW() / 2, ScrH() / 2 + 44, Color(230,230,230,a), TEXT_ALIGN_CENTER)
+			draw.DrawText(Format("Players killed: %d", self.MyLastSurvivalStats.PlayersKilled), "TargetIDSmall", ScrW() / 2, ScrH() / 2 + 68, Color(230,230,230,a), TEXT_ALIGN_CENTER)
+		else
+			local a = 205
+
+			local message
+			draw.DrawText("You died", "DeathScreenFont_2", ScrW() / 2, ScrH() / 2 - 40, Color(230,115,115,a), TEXT_ALIGN_CENTER)
+			draw.DrawText("Cause of death: "..self.DeathMessage, "DeathScreenFont_2", ScrW() / 2, ScrH() / 2 - 180, Color(230,230,230,a), TEXT_ALIGN_CENTER)
+
+			local survtime,bsurvtime = math.floor(self.MyLastSurvivalStats.SurvivalTime), math.floor(self.MyLastSurvivalStats.BestSurvivalTime)
+
+			draw.DrawText(Format(bsurvtime < survtime and "Survival Time: %s (Previous Best: %s, +%s)" or "Survival Time: %s", util.ToMinutesSeconds(survtime), util.ToMinutesSeconds(bsurvtime), util.ToMinutesSeconds(survtime - bsurvtime)),
+			"DeathScreenFont_2", ScrW() / 2, ScrH() / 2 + 20, Color(230,230,230,a), TEXT_ALIGN_CENTER)
+			draw.DrawText(Format("Zombies killed: %d", self.MyLastSurvivalStats.ZombiesKilled), "DeathScreenFont_2", ScrW() / 2, ScrH() / 2 + 44, Color(230,230,230,a), TEXT_ALIGN_CENTER)
+			draw.DrawText(Format("Players killed: %d", self.MyLastSurvivalStats.PlayersKilled), "DeathScreenFont_2", ScrW() / 2, ScrH() / 2 + 68, Color(230,230,230,a), TEXT_ALIGN_CENTER)
+		end
 
 
 		if self.HUDStyle == HUDSTYLE_ATE then

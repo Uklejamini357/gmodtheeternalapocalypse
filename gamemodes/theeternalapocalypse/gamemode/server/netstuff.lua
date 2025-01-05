@@ -470,7 +470,7 @@ if not meta then return end
 function meta:SendUseDelay(delay)
 	if !self:IsValid() or !self:Alive() then return end
 	net.Start("UseDelay")
-	net.WriteUInt(delay, 8)
+	net.WriteFloat(delay)
 	net.Send(self)
 end
 

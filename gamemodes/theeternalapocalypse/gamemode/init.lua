@@ -1075,7 +1075,7 @@ end
 
 function GM:RecalcPlayerSpeed(ply)
 	if !ply:IsValid() then return false end
-	local armorspeed = 0
+	local armorspeedmul = 1
 	local walkspeed = self.Config["WalkSpeed"]
 	local runspeed = self.Config["RunSpeed"]
 	local walkspeedbonus = ply.StatSpeed * 3.5
@@ -1085,11 +1085,12 @@ function GM:RecalcPlayerSpeed(ply)
 
 	if plyarmor and plyarmor != "none" then
 		local armortype = self.ItemsList[plyarmor]
-		armorspeed = tonumber(armortype["ArmorStats"]["speedloss"])
+		armorspeedmul = 1 - armortype.ArmorStats["speedloss_percent"]*0.01
 	end
 	
-	local totalwspeed,totalrspeed = math.max(1, ((walkspeed - (armorspeed / 2)) + walkspeedbonus) * (1 - slowdown)), math.max(1, ((runspeed - armorspeed) + runspeedbonus) * (1 - slowdown))
-	local totalswspeed = math.Clamp(((walkspeed - (armorspeed / 2)) + walkspeedbonus) * (0.75 * (1 - slowdown)), 1, 100)
+	local totalwspeed = math.max(1, (walkspeed + walkspeedbonus) * (1 - slowdown)) * armorspeedmul -- walk
+	local totalrspeed = math.max(1, (runspeed + runspeedbonus) * (1 - slowdown)) * armorspeedmul -- run
+	local totalswspeed = math.Clamp((walkspeed + walkspeedbonus) * (0.75 * (1 - slowdown)), 1, 100) * armorspeedmul -- slowwalk
 
 
 	local weight, maxweight, maxwalkweight = ply:CalculateWeight(), ply:CalculateMaxWeight(), ply:CalculateMaxWalkWeight()
@@ -1102,8 +1103,8 @@ function GM:RecalcPlayerSpeed(ply)
 		weightpenalty = math.Clamp(0.2 + ((maxwalkweight - maxweight) - (weight - maxweight)) / ((maxwalkweight - maxweight)/0.6), 0.2, 0.8)
 	end
 
-	self:SetPlayerSpeed(ply, totalwspeed * weightpenalty, totalrspeed * weightpenalty)
-	ply:SetSlowWalkSpeed(totalswspeed * weightpenalty)
+	self:SetPlayerSpeed(ply, math.max(1, totalwspeed * weightpenalty), math.max(1, totalrspeed * weightpenalty))
+	ply:SetSlowWalkSpeed(math.max(1, totalswspeed * weightpenalty))
 end
 
 function GM:CheckSpawnChanceErrors()

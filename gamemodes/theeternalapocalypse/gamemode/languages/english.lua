@@ -105,14 +105,6 @@ LANG.sb_sheet7_d = "See what is your next goal"
 LANG.sb_sheet1_1 = "My Skills"
 LANG.sb_sheet1_1_d = "Upgrade your stats"
 LANG.inv_weight = "Inventory Weight: %s%s/%s%s (Max: %s%s)"
-LANG.item_descr_1 = "(Item ID: %s, Base Cost: %d, Rarity: %s)"
-LANG.item_descr_2 = "(Item ID: %s, Rarity: %s)"
-LANG.item_armor_descr = "Protection: %s%%\
-Environmental Protection: %s%%\
-Speed: %s\
-Attachment Slots: %s\
-Battery: %s\
-Max Carry Weight: +%skg"
 LANG.cur_armor = "Armor: %s"
 LANG.noarmor = "No Armor"
 LANG.armorprot = "Protection: %s%% (%s%% Total)"
@@ -753,6 +745,10 @@ LANG.items_category_3 = "Weapons"
 LANG.items_category_3_d = "Good guns that cost a lot and uses ammo, but also melee that cost less."
 LANG.items_category_4 = "Armor"
 LANG.items_category_4_d = "Protective Armor to protect yourself from any sort of danger\n(also includes option to equip armors which works only for devs)"
+LANG.items_category_5 = "Junk"
+LANG.items_category_5_d = "Junk items. Don't buy them. They won't do anything."
+LANG.items_category_6 = "Misc"
+LANG.items_category_6_d = "Sellable items, items for various use, you name it."
 
 LANG.admin_panel_tab_1 = "Player List"
 LANG.admin_panel_tab_1_d = "Player list on admin panel\n\nUse admin commands for certain purposes (Remember not to abuse them without any control!!)"

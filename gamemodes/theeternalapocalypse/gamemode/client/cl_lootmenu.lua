@@ -114,7 +114,7 @@ local function DoLootPanel(canstore)
 			local ItemDisplay = vgui.Create("SpawnIcon", ItemBackground)
 			ItemDisplay:SetPos(5, 5)
 			ItemDisplay:SetModel(v.Model)
-			ItemDisplay:SetToolTip(GAMEMODE:GetItemDescription(k).."\n"..translate.Format("item_descr_2", k, raretbl.text))
+			ItemDisplay:SetToolTip(GAMEMODE:GetItemDescription(k))
 			ItemDisplay:SetSize(56,56)
 			ItemDisplay.PaintOver = function()
 			end

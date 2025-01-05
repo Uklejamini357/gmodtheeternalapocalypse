@@ -15,11 +15,11 @@ GM:CreateItem(itemid, { -- It's necessary to use the Entity Classname here for t
 	ArmorStats = {
 		reduction = number,			-- damage reduction in percentage
 		env_reduction = number,		-- damage reduction from environment in percentage (protection from entity classes "trigger_hurt", "point_hurt", "entityflame", "env_fire" and nothing else)
-		speedloss = number,			-- speed loss in source units (default player sprint speed: 260 (330 with maxed speed stat))
+		speedloss_percent = number,	-- speed loss in percentage
 		slots = number,				-- attachment slots (to be removed)
-		battery = number,			-- battery capacity, suits with 0 battery will only be able to use passive attachments (may be reworked, with flashlight)
-		carryweight = number,		-- additional max carryweight when user wears the armor
-		allowmodels = table			-- force the player to be one of these models, nil to let them choose from the default citizen models
+		battery = number,			-- battery capacity, suits with 0 battery will only be able to use passive attachments. Works for INCREASING FLASHLIGHTS CAPACITY currently.
+		carryweight = number,		-- additional max carryweight when the player is wearing the armor
+		allowmodels = table			-- force the player to be one of these models, nil to let them choose from the default models
 	}
 
 -- Additional variables if needed
@@ -42,7 +42,7 @@ GM:CreateItem("item_armor_jacket_leather", {
 	ArmorStats = {
 		reduction = 5,
 		env_reduction = 2.5,
-		speedloss = 0,
+		speedloss_percent = 0,
 		slots = 1,
 		battery = 0,
 		carryweight = 0,
@@ -63,7 +63,7 @@ GM:CreateItem("item_armor_chainmail", {
 	ArmorStats = {
 		reduction = 7.5,
 		env_reduction = 2.5,
-		speedloss = 10,
+		speedloss_percent = 1,
 		slots = 1,
 		battery = 0,
 		carryweight = 0,
@@ -83,7 +83,7 @@ GM:CreateItem("item_armor_jacket_bandit", {
 	ArmorStats = {
 		reduction = 8,
 		env_reduction = 3.5,
-		speedloss = 10,
+		speedloss_percent = 1,
 		slots = 1,
 		battery = 0,
 		carryweight = 0,
@@ -103,7 +103,7 @@ GM:CreateItem("item_armor_scrap", {
 	ArmorStats = {
 		reduction = 12.5,
 		env_reduction = 2.5,
-		speedloss = 35,
+		speedloss_percent = 2,
 		slots = 2,
 		battery = 20,
 		carryweight = 0,
@@ -123,7 +123,7 @@ GM:CreateItem("item_armor_trenchcoat_brown", {
 	ArmorStats = {
 		reduction = 10,
 		env_reduction = 5,
-		speedloss = 10,
+		speedloss_percent = 1,
 		slots = 2,
 		battery = 0,
 		carryweight = 0,
@@ -143,7 +143,7 @@ GM:CreateItem("item_armor_trenchcoat_black", {
 	ArmorStats = {
 		reduction = 15,
 		env_reduction = 6.25,
-		speedloss = 17.5,
+		speedloss_percent = 1,
 		slots = 2,
 		battery = 0,
 		carryweight = 0,
@@ -163,7 +163,7 @@ GM:CreateItem("item_armor_mercenary_guerilla", {
 	ArmorStats = {
 		reduction = 16.25,
 		env_reduction = 7.5,
-		speedloss = 25,
+		speedloss_percent = 2,
 		slots = 2,
 		battery = 50,
 		carryweight = 0,
@@ -183,7 +183,7 @@ GM:CreateItem("item_armor_mercenary_arctic", {
 	ArmorStats = {
 		reduction = 16.25,
 		env_reduction = 8.75,
-		speedloss = 27.5,
+		speedloss_percent = 2,
 		slots = 2,
 		battery = 50,
 		carryweight = 0,
@@ -203,7 +203,7 @@ GM:CreateItem("item_armor_mercenary_leet", {
 	ArmorStats = {
 		reduction = 15,
 		env_reduction = 5,
-		speedloss = 20,
+		speedloss_percent = 2,
 		slots = 2,
 		battery = 50,
 		carryweight = 0,
@@ -223,7 +223,7 @@ GM:CreateItem("item_armor_mercenary_phoenix", {
 	ArmorStats = {
 		reduction = 20,
 		env_reduction = 10,
-		speedloss = 30,
+		speedloss_percent = 2,
 		slots = 2,
 		battery = 50,
 		carryweight = 0,
@@ -243,7 +243,7 @@ GM:CreateItem("item_armor_police_gasmask", {
 	ArmorStats = {
 		reduction = 22.5,
 		env_reduction = 15,
-		speedloss = 47.5,
+		speedloss_percent = 3,
 		slots = 2,
 		battery = 50,
 		carryweight = 0,
@@ -263,7 +263,7 @@ GM:CreateItem("item_armor_police_riot", {
 	ArmorStats = {
 		reduction = 25,
 		env_reduction = 10,
-		speedloss = 55,
+		speedloss_percent = 3,
 		slots = 2,
 		battery = 50,
 		carryweight = 0,
@@ -283,7 +283,7 @@ GM:CreateItem("item_armor_police_swat", {
 	ArmorStats = {
 		reduction = 23.75,
 		env_reduction = 12.5,
-		speedloss = 53.75,
+		speedloss_percent = 3,
 		slots = 2,
 		battery = 50,
 		carryweight = 0,
@@ -303,7 +303,7 @@ GM:CreateItem("item_armor_police_urban", {
 	ArmorStats = {
 		reduction = 27.5,
 		env_reduction = 12.5,
-		speedloss = 57.5,
+		speedloss_percent = 3,
 		slots = 2,
 		battery = 50,
 		carryweight = 0,
@@ -323,7 +323,7 @@ GM:CreateItem("item_armor_sunrise", {
 	ArmorStats = {
 		reduction = 30,
 		env_reduction = 20,
-		speedloss = 33.75,
+		speedloss_percent = 3,
 		slots = 3,
 		battery = 75,
 		carryweight = 0,
@@ -343,7 +343,7 @@ GM:CreateItem("item_armor_sunrise_dolg", {
 	ArmorStats = {
 		reduction = 37.5,
 		env_reduction = 20,
-		speedloss = 42.5,
+		speedloss_percent = 5,
 		slots = 3,
 		battery = 100,
 		carryweight = 0,
@@ -363,7 +363,7 @@ GM:CreateItem("item_armor_sunrise_svoboda", {
 	ArmorStats = {
 		reduction = 30,
 		env_reduction = 20,
-		speedloss = 27.5,
+		speedloss_percent = 3,
 		slots = 3,
 		battery = 100,
 		carryweight = 0,
@@ -383,7 +383,7 @@ GM:CreateItem("item_armor_sunrise_monolith", {
 	ArmorStats = {
 		reduction = 35,
 		env_reduction = 20,
-		speedloss = 35,
+		speedloss_percent = 5,
 		slots = 3,
 		battery = 100,
 		carryweight = 0,
@@ -403,7 +403,7 @@ GM:CreateItem("item_armor_military_green", {
 	ArmorStats = {
 		reduction = 42.5,
 		env_reduction = 25,
-		speedloss = 50,
+		speedloss_percent = 11,
 		slots = 2,
 		battery = 100,
 		carryweight = 0,
@@ -423,7 +423,7 @@ GM:CreateItem("item_armor_military_black", {
 	ArmorStats = {
 		reduction = 47.5,
 		env_reduction = 27.5,
-		speedloss = 70,
+		speedloss_percent = 13,
 		slots = 2,
 		battery = 125,
 		carryweight = 5,
@@ -443,7 +443,7 @@ GM:CreateItem("item_armor_exo", {
 	ArmorStats = {
 		reduction = 60,
 		env_reduction = 25,
-		speedloss = 125,
+		speedloss_percent = 28,
 		slots = 3,
 		battery = 100,
 		carryweight = 30,
@@ -463,7 +463,7 @@ GM:CreateItem("item_armor_exo_merc", {
 	ArmorStats = {
 		reduction = 57.5,
 		env_reduction = 25,
-		speedloss = 115,
+		speedloss_percent = 28,
 		slots = 3,
 		battery = 100,
 		carryweight = 30,
@@ -483,7 +483,7 @@ GM:CreateItem("item_armor_exo_dolg", {
 	ArmorStats = {
 		reduction = 65,
 		env_reduction = 25,
-		speedloss = 130,
+		speedloss_percent = 29,
 		slots = 3,
 		battery = 100,
 		carryweight = 30,
@@ -503,7 +503,7 @@ GM:CreateItem("item_armor_exo_svoboda", {
 	ArmorStats = {
 		reduction = 55,
 		env_reduction = 25,
-		speedloss = 110,
+		speedloss_percent = 28,
 		slots = 3,
 		battery = 100,
 		carryweight = 25,
@@ -523,7 +523,7 @@ GM:CreateItem("item_armor_exo_monolith", {
 	ArmorStats = {
 		reduction = 62.5,
 		env_reduction = 30,
-		speedloss = 125,
+		speedloss_percent = 28,
 		slots = 3,
 		battery = 100,
 		carryweight = 30,
@@ -532,7 +532,7 @@ GM:CreateItem("item_armor_exo_monolith", {
 })
 
 GM:CreateItem("item_armor_cs2_goggles", {
-	Cost = 450000,
+	Cost = 400000,
 	Model = "models/stalkertnb/cs2_goggles.mdl",
 	Weight = 13.5,
 	Supply = 0,
@@ -543,10 +543,10 @@ GM:CreateItem("item_armor_cs2_goggles", {
 	ArmorStats = {
 		reduction = 40,
 		env_reduction = 35,
-		speedloss = -12.5,
+		speedloss_percent = -2.5,
 		slots = 3,
 		battery = 200,
-		carryweight = 10,
+		carryweight = 8,
 		allowmodels = {"models/stalkertnb/cs2_goggles.mdl"}
 	}
 })
@@ -568,7 +568,7 @@ GM:CreateItem("item_armor_beril5m", {
 	ArmorStats = {
 		reduction = 40,
 		env_reduction = 20,
-		speedloss = 15,
+		speedloss_percent = 7,
 		slots = 3,
 		battery = 50,
 		carryweight = 0,
@@ -591,7 +591,7 @@ GM:CreateItem("item_armor_merc_sunrise", {
 	ArmorStats = {
 		reduction = 35,
 		env_reduction = 25,
-		speedloss = 30,
+		speedloss_percent = 6,
 		slots = 3,
 		battery = 50,
 		carryweight = 0,
@@ -613,7 +613,7 @@ GM:CreateItem("item_armor_army_seva", {
 	ArmorStats = {
 		reduction = 35,
 		env_reduction = 55,
-		speedloss = 15,
+		speedloss_percent = 11,
 		slots = 3,
 		battery = 100,
 		carryweight = 5,
@@ -635,7 +635,7 @@ GM:CreateItem("item_armor_stalker_seva", {
 	ArmorStats = {
 		reduction = 45,
 		env_reduction = 60,
-		speedloss = 25,
+		speedloss_percent = 10,
 		slots = 3,
 		battery = 150,
 		carryweight = 5,
@@ -657,7 +657,7 @@ GM:CreateItem("item_armor_svoboda_seva", {
 	ArmorStats = {
 		reduction = 45,
 		env_reduction = 60,
-		speedloss = 25,
+		speedloss_percent = 10,
 		slots = 3,
 		battery = 150,
 		carryweight = 5,
@@ -679,7 +679,7 @@ GM:CreateItem("item_armor_dolg_seva", {
 	ArmorStats = {
 		reduction = 45,
 		env_reduction = 60,
-		speedloss = 25,
+		speedloss_percent = 11,
 		slots = 3,
 		battery = 150,
 		carryweight = 5,
@@ -701,7 +701,7 @@ GM:CreateItem("item_armor_monolith_seva_heavy", {
 	ArmorStats = {
 		reduction = 45,
 		env_reduction = 60,
-		speedloss = 25,
+		speedloss_percent = 16,
 		slots = 3,
 		battery = 150,
 		carryweight = 5,
@@ -723,7 +723,7 @@ GM:CreateItem("item_armor_exo_dolg_heavy", {
 	ArmorStats = {
 		reduction = 70,
 		env_reduction = 40,
-		speedloss = 150,
+		speedloss_percent = 44,
 		slots = 4,
 		battery = 150,
 		carryweight = 30,
@@ -745,7 +745,7 @@ GM:CreateItem("item_armor_rad_svoboda", {
 	ArmorStats = {
 		reduction = 50,
 		env_reduction = 35,
-		speedloss = 40,
+		speedloss_percent = 12,
 		slots = 3,
 		battery = 150,
 		carryweight = 10,
@@ -767,7 +767,7 @@ GM:CreateItem("item_armor_rad_monolith_boss", {
 	ArmorStats = {
 		reduction = 60,
 		env_reduction = 45,
-		speedloss = 50,
+		speedloss_percent = 16,
 		slots = 3,
 		battery = 150,
 		carryweight = 10,

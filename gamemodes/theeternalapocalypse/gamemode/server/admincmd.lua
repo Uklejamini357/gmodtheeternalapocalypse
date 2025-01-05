@@ -288,7 +288,7 @@ function GM:AdminCmds_SpawnItem(ply, cmd, args)
 	EntDrop:SetPos(tr.HitPos)
 	EntDrop:SetAngles(Angle(0, 0, 0))
 	--if item category is 4 (armor category), it will detect that it is an armor, as long as it doesn't have flaws it should work fine
-	EntDrop:SetModel(item.Category == 4 and "models/props/cs_office/cardboard_box01.mdl" or self.ItemsList[name]["Model"])
+	EntDrop:SetModel(item.Category == ITEMCATEGORY_ARMOR and "models/props/cs_office/cardboard_box01.mdl" or self.ItemsList[name]["Model"])
 	EntDrop:SetNWString("ItemClass", name)
 	EntDrop:Spawn()
 	EntDrop:Activate()

@@ -204,7 +204,7 @@ function GM:CreateScoreboardInv()
 			draw.SimpleText(translate.Format("cur_armor", GAMEMODE:GetItemName(armorstr)), "TargetIDSmall", self:GetWide() - 255, 235, Color(255,255,255,255))
 			draw.SimpleText(translate.Format("armorprot", armortype["ArmorStats"]["reduction"], armortype["ArmorStats"]["reduction"] + ((Perks.Defense or 0) * 1.5)), "TargetIDSmall", self:GetWide() - 255, 250, Color(205,255,205,255))
 			draw.SimpleText(translate.Format("armor_envprot", armortype["ArmorStats"]["env_reduction"], armortype["ArmorStats"]["env_reduction"] + ((Perks.Defense or 0) * 1)), "TargetIDSmall", self:GetWide() - 255, 265, Color(255,230,255,255))
-			draw.SimpleText(armortype["ArmorStats"]["speedloss"] < 0 and translate.Get("armorspeed")..": Increased ("..-(armortype["ArmorStats"]["speedloss"] / 10)..")" or armortype["ArmorStats"]["speedloss"] == 0 and translate.Get("armorspeed")..": None" or translate.Get("armorspeed")..": Decreased (-"..(armortype["ArmorStats"]["speedloss"] / 10)..")", "TargetIDSmall", self:GetWide() - 255, 280, Color(205,205,255,255))
+			draw.SimpleText(translate.Get("armorspeed")..": "..(100 - armortype["ArmorStats"]["speedloss_percent"]).."%", "TargetIDSmall", self:GetWide() - 255, 280, Color(205,205,255,255))
 			draw.SimpleText(armortype["ArmorStats"]["carryweight"] > 0 and translate.Format("armormaxweight", "+", armortype["ArmorStats"]["carryweight"]) or armortype["ArmorStats"]["carryweight"] >= 0 and translate.Format("armormaxweight", "+", armortype["ArmorStats"]["carryweight"]) or translate.Format("armormaxweight", "", armortype["ArmorStats"]["carryweight"]), "TargetIDSmall", self:GetWide() - 255, 295, Color(255,255,175,255))
 		else
 			draw.SimpleText(translate.Get("noarmor"), "TargetIDSmall", self:GetWide() - 255, 235, Color(255,255,255,255))
@@ -290,7 +290,7 @@ function GM:CreateScoreboardInv()
 			if v.ModelColor then
 				ItemDisplay:SetColor(v.ModelColor)
 			end
-			ItemDisplay:SetToolTip(GAMEMODE:GetItemDescription(k)..(v["ArmorStats"] and "\n"..translate.Format("item_armor_descr", v.ArmorStats["reduction"] or 0, v.ArmorStats["env_reduction"] or 0, (-v.ArmorStats["speedloss"] or 0) / 10, v.ArmorStats["slots"] or 0, v.ArmorStats["battery"] or 0, v.ArmorStats["carryweight"] or 0) or "").."\n"..translate.Format("item_descr_1", k, v.Cost, raretbl.text))
+			ItemDisplay:SetToolTip(GAMEMODE:GetItemDescription(k))
 			ItemDisplay:SetSize(60,60)
 			ItemDisplay.PaintOver = function() return end
 			ItemDisplay.OnMousePressed = function(this, mc)
@@ -797,7 +797,7 @@ function GM:CreateScoreboardInv()
 			local ItemDisplay = vgui.Create("SpawnIcon", ItemBG)
 			ItemDisplay:SetPos(8, 8)
 			ItemDisplay:SetModel(v.Model)
-			ItemDisplay:SetToolTip(GAMEMODE:GetItemDescription(k)..(v["ArmorStats"] and "\n"..translate.Format("item_armor_descr", v.ArmorStats["reduction"] or 0, v.ArmorStats["env_reduction"] or 0, (-v.ArmorStats["speedloss"] or 0) / 10, v.ArmorStats["slots"] or 0, v.ArmorStats["battery"] or 0, v.ArmorStats["carryweight"] or 0) or "").."\n"..translate.Format("item_descr_1", k, v.Cost, raretbl.text))
+			ItemDisplay:SetToolTip(GAMEMODE:GetItemDescription(k))
 			ItemDisplay:SetSize(64,64)
 			ItemDisplay.PaintOver = function() return end
 			ItemDisplay.OnMousePressed = function() return false end

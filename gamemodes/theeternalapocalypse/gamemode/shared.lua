@@ -5,7 +5,7 @@ GM.AltName	= "After The End Reborn"
 GM.Author	= "Uklejamini"
 GM.Email	= "[You may not view this information.]"
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.11.2d"
+GM.Version	= "0.11.2e"
 GM.DateVer	= "05.01.2025"
 
 
@@ -298,6 +298,33 @@ end
 function GM:GetItemDescription(id, ply) -- ply is for the server
 	local item = self.ItemsList[id]
 	local desc = item.Description or ply and translate.ClientGet(ply, id.."_d") or translate.Get(id.."_d")
+
+	local armorstats = item.ArmorStats
+	if armorstats then
+		if armorstats.reduction then
+			desc = desc.."\n"..Format("Protection: %s%%", armorstats.reduction)
+		end
+
+		if armorstats.env_reduction then
+			desc = desc.."\n"..Format("Environmental Protection: %s%%", armorstats.env_reduction)
+		end
+
+		if armorstats.speedloss_percent then
+			desc = desc.."\n"..Format("Speed: %s%%", 100 - armorstats.speedloss_percent)
+		end
+
+		if armorstats.slots then
+			desc = desc.."\n"..Format("Attachment Slots: %s", armorstats.slots)
+		end
+
+		if armorstats.battery then
+			desc = desc.."\n"..Format("Battery: %s", armorstats.battery)
+		end
+
+		if armorstats.carryweight then
+			desc = desc.."\n"..Format("Max Carry Weight: +%skg", armorstats.carryweight)
+		end
+	end
 
 	return desc
 end

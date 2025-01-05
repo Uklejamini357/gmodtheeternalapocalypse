@@ -462,14 +462,6 @@ function GM:AdminMenu()
 	local tall = 635
 	local wide = 890
 
-	local SpawnMenuSupplies = vgui.Create("DPanelList")
-	SpawnMenuSupplies:SetTall(tall)
-	SpawnMenuSupplies:SetWide(wide)
-	SpawnMenuSupplies:SetPos(5, 25)
-	SpawnMenuSupplies:EnableVerticalScrollbar(true)
-	SpawnMenuSupplies:EnableHorizontal(true)
-	SpawnMenuSupplies:SetSpacing(10)
-
 	local SpawnMenuAmmo = vgui.Create("DPanelList")
 	SpawnMenuAmmo:SetTall(tall)
 	SpawnMenuAmmo:SetWide(wide)
@@ -477,6 +469,14 @@ function GM:AdminMenu()
 	SpawnMenuAmmo:EnableVerticalScrollbar(true)
 	SpawnMenuAmmo:EnableHorizontal(true)
 	SpawnMenuAmmo:SetSpacing(10)
+
+	local SpawnMenuSupplies = vgui.Create("DPanelList")
+	SpawnMenuSupplies:SetTall(tall)
+	SpawnMenuSupplies:SetWide(wide)
+	SpawnMenuSupplies:SetPos(5, 25)
+	SpawnMenuSupplies:EnableVerticalScrollbar(true)
+	SpawnMenuSupplies:EnableHorizontal(true)
+	SpawnMenuSupplies:SetSpacing(10)
 
 	local SpawnMenuGuns = vgui.Create("DPanelList")
 	SpawnMenuGuns:SetTall(tall)
@@ -493,6 +493,22 @@ function GM:AdminMenu()
 	SpawnMenuArmor:EnableVerticalScrollbar(true)
 	SpawnMenuArmor:EnableHorizontal(true)
 	SpawnMenuArmor:SetSpacing(10)
+
+	local SpawnMenuJunk = vgui.Create("DPanelList")
+	SpawnMenuJunk:SetTall(tall)
+	SpawnMenuJunk:SetWide(wide)
+	SpawnMenuJunk:SetPos(5, 25)
+	SpawnMenuJunk:EnableVerticalScrollbar(true)
+	SpawnMenuJunk:EnableHorizontal(true)
+	SpawnMenuJunk:SetSpacing(10)
+
+	local SpawnMenuMisc = vgui.Create("DPanelList")
+	SpawnMenuMisc:SetTall(tall)
+	SpawnMenuMisc:SetWide(wide)
+	SpawnMenuMisc:SetPos(5, 25)
+	SpawnMenuMisc:EnableVerticalScrollbar(true)
+	SpawnMenuMisc:EnableHorizontal(true)
+	SpawnMenuMisc:SetSpacing(10)
 
 	local function RefreshItemList(cat, parent)
 		for k,v in SortedPairsByMemberValue(GAMEMODE.ItemsList, "Cost") do
@@ -514,8 +530,7 @@ function GM:AdminMenu()
 			if v.ModelColor then
 				ItemDisplay:SetColor(v.ModelColor)
 			end
-			ItemDisplay:SetToolTip(GAMEMODE:GetItemDescription(k)..(v["ArmorStats"] and "\n"..translate.Format("item_armor_descr", v.ArmorStats["reduction"] or 0, v.ArmorStats["env_reduction"] or 0, (-v.ArmorStats["speedloss"] or 0) / 10, v.ArmorStats["slots"] or 0, v.ArmorStats["battery"] or 0, v.ArmorStats["carryweight"] or 0) or "").."\n"..translate.Format("item_descr_1", k, v.Cost, raretbl.text))
---			ItemDisplay:SetToolTip(GAMEMODE:GetItemDescription(k).."\n"..translate.Format("item_descr_1", k, v.Cost, GAMEMODE.Config["Currency"], raretext))
+			ItemDisplay:SetToolTip(GAMEMODE:GetItemDescription(k))
 			ItemDisplay:SetSize(60,60)
 			ItemDisplay.PaintOver = function()
 				return
@@ -629,13 +644,17 @@ function GM:AdminMenu()
 	RefreshItemList(ITEMCATEGORY_SUPPLIES, SpawnMenuSupplies)
 	RefreshItemList(ITEMCATEGORY_WEAPONS, SpawnMenuGuns)
 	RefreshItemList(ITEMCATEGORY_ARMOR, SpawnMenuArmor)
+	RefreshItemList(ITEMCATEGORY_JUNK, SpawnMenuJunk)
+	RefreshItemList(ITEMCATEGORY_MISCELLANEOUS, SpawnMenuMisc)
 
 	RefreshPanel()
 
-	SpawnMenuProperties:AddSheet(translate.Get("items_category_1"), SpawnMenuAmmo, "icon16/box.png", false, false, translate.Get("items_category_1_d"))
-	SpawnMenuProperties:AddSheet(translate.Get("items_category_2"), SpawnMenuSupplies, "icon16/briefcase.png", false, false, translate.Get("items_category_2_d"))
-	SpawnMenuProperties:AddSheet(translate.Get("items_category_3"), SpawnMenuGuns, "icon16/bomb.png", false, false, translate.Get("items_category_3_d"))
+	SpawnMenuProperties:AddSheet(translate.Get("items_category_1"), SpawnMenuAmmo, "icon16/ammo_three.png", false, false, translate.Get("items_category_1_d"))
+	SpawnMenuProperties:AddSheet(translate.Get("items_category_2"), SpawnMenuSupplies, "icon16/box.png", false, false, translate.Get("items_category_2_d"))
+	SpawnMenuProperties:AddSheet(translate.Get("items_category_3"), SpawnMenuGuns, "icon16/gun.png", false, false, translate.Get("items_category_3_d"))
 	SpawnMenuProperties:AddSheet(translate.Get("items_category_4"), SpawnMenuArmor, "icon16/shield.png", false, false, translate.Get("items_category_4_d"))
+	SpawnMenuProperties:AddSheet(translate.Get("items_category_5"), SpawnMenuJunk, "icon16/bin.png", false, false, translate.Get("items_category_5_d"))
+	SpawnMenuProperties:AddSheet(translate.Get("items_category_6"), SpawnMenuMisc, "icon16/basket.png", false, false, translate.Get("items_category_6_d"))
 
 	PropertySheet:AddSheet(translate.Get("admin_panel_tab_2"), AdminCmds, "icon16/shield.png", false, false, translate.Get("admin_panel_tab_2_d"))
 	PropertySheet:AddSheet(translate.Get("admin_panel_tab_1"), PlayerList, "icon16/shield.png", false, false, translate.Get("admin_panel_tab_1_d"))

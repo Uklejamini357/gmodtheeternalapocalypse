@@ -388,44 +388,44 @@ GM:CreateItem("item_stalker_bread", {
 })
 
 GM:CreateItem("item_stalker_stimpack", {
-    Name = "Stimpack",
-    Description = "",
-    Cost = 450,
+    Name = "Improvised Stimpack",
+    Description = "Improvised Stimpacks are used for much faster healing.\nThey are usually less effective than a regular medkit, however these are very useful during combats.",
+    Cost = 750,
     Model = "models/wick/wrbstalker/anomaly/items/dez_stim1.mdl",
-    Weight = 0.5,
+    Weight = 0.22,
     Supply = -1,
     Rarity = 3,
     Category = ITEMCATEGORY_SUPPLIES,
-    function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 45, 5, "theeternalapocalypse/items/inv_aptecka.ogg") return healing end,
-    function(ply) local drop = UseFunc_DropItem(ply, "item_medkit") return drop end,
+    UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 1.6, 40, 0, "theeternalapocalypse/items/inv_stimpack.ogg") return healing end,
+    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_medkit") return drop end,
     CanUseOnOthers = true
 })
 
 GM:CreateItem("item_stalker_stimpack_army", {
     Name = "Army Stimpack",
-    Description = "",
-    Cost = 750,
+    Description = "Improvised Stimpacks are used for much faster healing.\nThey are usually less effective than a regular medkit, however these are very useful during combats.",
+    Cost = 1250,
     Model = "models/wick/wrbstalker/anomaly/items/dez_stim2.mdl",
-    Weight = 0.5,
+    Weight = 0.26,
     Supply = -1,
     Rarity = 3,
     Category = ITEMCATEGORY_SUPPLIES,
-    function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 45, 5, "theeternalapocalypse/items/inv_aptecka.ogg") return healing end,
-    function(ply) local drop = UseFunc_DropItem(ply, "item_medkit") return drop end,
+    UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 1.6, 70, 0, "theeternalapocalypse/items/inv_stimpack.ogg") return healing end,
+    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_medkit") return drop end,
     CanUseOnOthers = true
 })
 
 GM:CreateItem("item_stalker_stimpack_scientific", {
     Name = "Scientific Stimpack",
     Description = "",
-    Cost = 1200,
+    Cost = 2000,
     Model = "models/wick/wrbstalker/anomaly/items/dez_stim3.mdl",
-    Weight = 0.5,
+    Weight = 0.32,
     Supply = -1,
     Rarity = 3,
     Category = ITEMCATEGORY_SUPPLIES,
-    function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 45, 5, "theeternalapocalypse/items/inv_aptecka.ogg") return healing end,
-    function(ply) local drop = UseFunc_DropItem(ply, "item_medkit") return drop end,
+    UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 1.6, 105, 30, "theeternalapocalypse/items/inv_stimpack.ogg") return healing end,
+    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_medkit") return drop end,
     CanUseOnOthers = true
 })
 
@@ -438,8 +438,8 @@ GM:CreateItem("item_stalker_beer", {
     Supply = -1,
     Rarity = 3,
     Category = ITEMCATEGORY_SUPPLIES,
-    function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 45, 5, "theeternalapocalypse/items/inv_aptecka.ogg") return healing end,
-    function(ply) local drop = UseFunc_DropItem(ply, "item_medkit") return drop end,
+    UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 45, 5, "theeternalapocalypse/items/inv_aptecka.ogg") return healing end,
+    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_medkit") return drop end,
     CanUseOnOthers = true
 })
 

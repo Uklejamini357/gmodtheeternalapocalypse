@@ -56,7 +56,7 @@ end)
 
 
 net.Receive("UseDelay", function()
-	local delay = net.ReadUInt(8)
+	local delay = net.ReadFloat()
 	local remaining = CurTime() + delay
 
 	local t = ScrW() / 2 - 100
