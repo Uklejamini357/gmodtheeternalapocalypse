@@ -1275,12 +1275,11 @@ end
 
 -------- Workshop addons --------
 
+	resource.AddWorkshop("3044942684") -- gamemode content
+	resource.AddWorkshop("2438451886") -- STALKER item models pack
+	resource.AddWorkshop("1270991543") -- STALKER armor playermodels
+	resource.AddWorkshop("355101935") -- STALKER TNB armor playermodels
 	resource.AddWorkshop("128089118") -- m9k assault rifles
 	resource.AddWorkshop("128091208") -- m9k heavy weapons
 	resource.AddWorkshop("128093075") -- m9k small arms pack
-	resource.AddWorkshop("355101935") -- stalker playermodels
-	resource.AddWorkshop("411284648") -- gamemode content pack
-	--resource.AddWorkshop("448170926") -- ate swep pack (excluded because i copied and remade my own (no, the textures are not fixed yet because i don't know which textures were used by some weapons))
-	resource.AddWorkshop("1270991543") -- armor models
-	resource.AddWorkshop("1680884607") -- project stalker sounds 
-	resource.AddWorkshop("2438451886") -- stalker item models pack
+	resource.AddWorkshop("144982052") -- m9k specialties
