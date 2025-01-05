@@ -31,28 +31,10 @@ function MT_PLAYER:ProcessPlayerDamage(dmginfo)
 	
 	if attacker:IsPlayer() then
 		dmginfo:SetDamage(GAMEMODE:CalcPlayerDamage(self, dmginfo:GetDamage()))
-/*
-		if plyarmor and plyarmor != "none" then
-			local armortype = GAMEMODE.ItemsList[plyarmor]
-			armorvalue = tonumber((armortype["ArmorStats"]["reduction"]) / 100)
-		end
-
-		local defencebonus = 0.015 * self.StatDefense
-		local armorbonus = armorvalue
-		dmginfo:SetDamage(math.max(0, dmginfo:GetDamage() * (1 - (defencebonus + armorbonus))))
-*/
 	elseif env_classes[dmginfo:GetAttacker():GetClass()] then
 		dmginfo:SetDamage(GAMEMODE:CalcEnvDamage(self, dmginfo:GetDamage()))
-/*
-		if plyarmor and plyarmor != "none" then
-			local armortype = GAMEMODE.ItemsList[plyarmor]
-			armorvalue = tonumber((armortype["ArmorStats"]["env_reduction"]) / 100)
-		end
-		
-		local defencebonus = 0.01 * self.StatDefense
-		local armorbonus = armorvalue
-		dmginfo:ScaleDamage(1 - (defencebonus + armorbonus))
-*/
+	elseif bit.band(dmginfo:GetDamageType(), DMG_BULLET) ~= 0 then
+		dmginfo:SetDamage(GAMEMODE:CalcPlayerDamage(self, dmginfo:GetDamage()))
 	end
 
 	if dmginfo:GetDamageType() == DMG_CRUSH and attackerclass == "obj_bigrock" then

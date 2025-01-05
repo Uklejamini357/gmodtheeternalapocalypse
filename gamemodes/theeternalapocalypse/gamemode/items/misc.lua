@@ -389,12 +389,14 @@ i = GM:CreateItem("item_money", {
 })
 
 i = GM:CreateItem("item_moneyprinter", {
+    Name = "Money Printer",
+    Description = "A money printer from DarkRP?!",
     Cost = 0,
     Model = "models/props_c17/consolebox01a.mdl",
     Weight = 5,
     Supply = -1,
     Rarity = 6,
     Category = ITEMCATEGORY_SUPPLIES,
-    UseFunc = function(ply) ply:SendChat("Added "..ply.Inventory["item_money"].."$ to account") ply.Money = ply.Money + ply.Inventory["item_money"] ply.Inventory["item_money"] = nil return false end,
+    UseFunc = function(ply) ply:SendChat("You cannot use this yet.") return false end,
     DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_moneyprinter") return drop end
 })

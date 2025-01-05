@@ -4,94 +4,94 @@
 
 GM.PlayerModel_DeathSounds = {
 	["FemaleSounds"] = {
-		"vo/npc/female01/pain01.wav",
-		"vo/npc/female01/pain02.wav",
-		"vo/npc/female01/pain03.wav",
-		"vo/npc/female01/pain04.wav",
-		"vo/npc/female01/pain05.wav",
-		"vo/npc/female01/pain06.wav",
-		"vo/npc/female01/pain07.wav",
-		"vo/npc/female01/pain08.wav",
-		"vo/npc/female01/pain09.wav"
+		"vo/theeternalapocalypse/playerdeaths/female01/pain01.wav",
+		"vo/theeternalapocalypse/playerdeaths/female01/pain02.wav",
+		"vo/theeternalapocalypse/playerdeaths/female01/pain03.wav",
+		"vo/theeternalapocalypse/playerdeaths/female01/pain04.wav",
+		"vo/theeternalapocalypse/playerdeaths/female01/pain05.wav",
+		"vo/theeternalapocalypse/playerdeaths/female01/pain06.wav",
+		"vo/theeternalapocalypse/playerdeaths/female01/pain07.wav",
+		"vo/theeternalapocalypse/playerdeaths/female01/pain08.wav",
+		"vo/theeternalapocalypse/playerdeaths/female01/pain09.wav"
 	},
 	
 	["MaleSounds"] = {
-		"vo/npc/male01/no02.wav",
-		"vo/npc/male01/pain01.wav",
-		"vo/npc/male01/pain02.wav",
-		"vo/npc/male01/pain03.wav",
-		"vo/npc/male01/pain04.wav",
-		"vo/npc/male01/pain05.wav",
-		"vo/npc/male01/pain06.wav",
-		"vo/npc/male01/pain07.wav",
-		"vo/npc/male01/pain08.wav",
-		"vo/npc/male01/pain09.wav"
+		"vo/theeternalapocalypse/playerdeaths/male01/no02.wav",
+		"vo/theeternalapocalypse/playerdeaths/male01/pain01.wav",
+		"vo/theeternalapocalypse/playerdeaths/male01/pain02.wav",
+		"vo/theeternalapocalypse/playerdeaths/male01/pain03.wav",
+		"vo/theeternalapocalypse/playerdeaths/male01/pain04.wav",
+		"vo/theeternalapocalypse/playerdeaths/male01/pain05.wav",
+		"vo/theeternalapocalypse/playerdeaths/male01/pain06.wav",
+		"vo/theeternalapocalypse/playerdeaths/male01/pain07.wav",
+		"vo/theeternalapocalypse/playerdeaths/male01/pain08.wav",
+		"vo/theeternalapocalypse/playerdeaths/male01/pain09.wav"
 	},
 
 	["Stalker_BanditSounds"] = {
-		"npc/bandit/death_1.ogg",
-		"npc/bandit/death_2.ogg",
-		"npc/bandit/death_3.ogg",
-		"npc/bandit/death_4.ogg",
-		"npc/bandit/death_5.ogg",
-		"npc/bandit/death_6.ogg",
-		"npc/bandit/death_7.ogg"
+		"theeternalapocalypse/playerdeaths/bandit/death_1.ogg",
+		"theeternalapocalypse/playerdeaths/bandit/death_2.ogg",
+		"theeternalapocalypse/playerdeaths/bandit/death_3.ogg",
+		"theeternalapocalypse/playerdeaths/bandit/death_4.ogg",
+		"theeternalapocalypse/playerdeaths/bandit/death_5.ogg",
+		"theeternalapocalypse/playerdeaths/bandit/death_6.ogg",
+		"theeternalapocalypse/playerdeaths/bandit/death_7.ogg"
 	},
 
 	["Stalker_DutySounds"] = {
-		"npc/duty/death_1.ogg",
-		"npc/duty/death_2.ogg",
-		"npc/duty/death_3.ogg"
+		"theeternalapocalypse/playerdeaths/duty/death_1.ogg",
+		"theeternalapocalypse/playerdeaths/duty/death_2.ogg",
+		"theeternalapocalypse/playerdeaths/duty/death_3.ogg"
 	},
 	
 	["Stalker_FreedomSounds"] = {
-		"npc/freedom/death_1.ogg",
-		"npc/freedom/death_2.ogg",
-		"npc/freedom/death_3.ogg",
-		"npc/freedom/death_4.ogg",
-		"npc/freedom/death_5.ogg",
-		"npc/freedom/death_6.ogg",
-		"npc/freedom/death_7.ogg",
-		"npc/freedom/death_8.ogg"
+		"theeternalapocalypse/playerdeaths/freedom/death_1.ogg",
+		"theeternalapocalypse/playerdeaths/freedom/death_2.ogg",
+		"theeternalapocalypse/playerdeaths/freedom/death_3.ogg",
+		"theeternalapocalypse/playerdeaths/freedom/death_4.ogg",
+		"theeternalapocalypse/playerdeaths/freedom/death_5.ogg",
+		"theeternalapocalypse/playerdeaths/freedom/death_6.ogg",
+		"theeternalapocalypse/playerdeaths/freedom/death_7.ogg",
+		"theeternalapocalypse/playerdeaths/freedom/death_8.ogg"
 	},
 	
 	["Stalker_KillerSounds"] = {
-		"npc/killer/death_1.ogg",
-		"npc/killer/death_2.ogg",
-		"npc/killer/death_3.ogg",
-		"npc/killer/death_4.ogg",
-		"npc/killer/death_5.ogg",
-		"npc/killer/death_6.ogg",
-		"npc/killer/death_7.ogg"
+		"theeternalapocalypse/playerdeaths/killer/death_1.ogg",
+		"theeternalapocalypse/playerdeaths/killer/death_2.ogg",
+		"theeternalapocalypse/playerdeaths/killer/death_3.ogg",
+		"theeternalapocalypse/playerdeaths/killer/death_4.ogg",
+		"theeternalapocalypse/playerdeaths/killer/death_5.ogg",
+		"theeternalapocalypse/playerdeaths/killer/death_6.ogg",
+		"theeternalapocalypse/playerdeaths/killer/death_7.ogg"
 	},
 	
 	["Stalker_LonerSounds"] = {
-		"npc/stalker/death_1.ogg",
-		"npc/stalker/death_2.ogg",
-		"npc/stalker/death_3.ogg",
-		"npc/stalker/death_4.ogg",
-		"npc/stalker/death_5.ogg",
-		"npc/stalker/death_6.ogg",
-		"npc/stalker/death_7.ogg"
+		"theeternalapocalypse/playerdeaths/stalker/death_1.ogg",
+		"theeternalapocalypse/playerdeaths/stalker/death_2.ogg",
+		"theeternalapocalypse/playerdeaths/stalker/death_3.ogg",
+		"theeternalapocalypse/playerdeaths/stalker/death_4.ogg",
+		"theeternalapocalypse/playerdeaths/stalker/death_5.ogg",
+		"theeternalapocalypse/playerdeaths/stalker/death_6.ogg",
+		"theeternalapocalypse/playerdeaths/stalker/death_7.ogg"
 	},
 	
 	["Stalker_MilitarySounds"] = {
-		"npc/military/death_1.ogg",
-		"npc/military/death_2.ogg",
-		"npc/military/death_3.ogg",
-		"npc/military/death_4.ogg",
-		"npc/military/death_5.ogg"
+		"theeternalapocalypse/playerdeaths/military/death_1.ogg",
+		"theeternalapocalypse/playerdeaths/military/death_2.ogg",
+		"theeternalapocalypse/playerdeaths/military/death_3.ogg",
+		"theeternalapocalypse/playerdeaths/military/death_4.ogg",
+		"theeternalapocalypse/playerdeaths/military/death_5.ogg"
 	},
 	
 	["Stalker_MonolithSounds"] = {
-		"npc/monolit4/death_1.ogg",
-		"npc/monolit4/death_2.ogg",
-		"npc/monolit4/death_3.ogg",
-		"npc/monolit4/death_4.ogg",
-		"npc/monolit4/death_5.ogg",
-		"npc/monolit4/death_6.ogg",
-		"npc/monolit4/death_7.ogg",
-		"npc/monolit4/death_8.ogg"
+		"theeternalapocalypse/playerdeaths/monolit4/death_1.ogg",
+		"theeternalapocalypse/playerdeaths/monolit4/death_2.ogg",
+		"theeternalapocalypse/playerdeaths/monolit4/death_3.ogg",
+		"theeternalapocalypse/playerdeaths/monolit4/death_4.ogg",
+		"theeternalapocalypse/playerdeaths/monolit4/death_5.ogg",
+		"theeternalapocalypse/playerdeaths/monolit4/death_6.ogg",
+		"theeternalapocalypse/playerdeaths/monolit4/death_7.ogg",
+		"theeternalapocalypse/playerdeaths/monolit4/death_8.ogg"
 	},
 	
 }

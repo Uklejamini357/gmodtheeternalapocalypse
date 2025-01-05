@@ -219,12 +219,21 @@ function GM:Think()
 		end
 	
 		for _,ply in pairs(player.GetAll()) do
-			local hp = ply.HPRegen
-			local noregen_thirst = (3000 - (125 * ply.StatSurvivor))
-			local noregen_hunger = (3000 - (150 * ply.StatSurvivor))
-			local noregen_fatigue = (7000 + (150 * ply.StatSurvivor))
-			local noregen_infection = (5000 - (100 * ply.StatImmunity))
+			local noregen_thirst = 3000
+			local noregen_hunger = 3000
+			local noregen_fatigue = 7000
+			local noregen_infection = 5000
 			if !hp or hp < 1 or !(ply.Thirst >= noregen_thirst and ply.Hunger >= noregen_hunger and ply.Fatigue <= noregen_fatigue and ply.Infection <= noregen_infection) then continue end
+
+			-- in case if player's HPRegen value is nil then it's set to 0
+			local hp = ply.HPRegen
+			if ply.HPRegen and ply:Health() < ply:GetMaxHealth() then
+				ply.HPRegen = math.Clamp(ply.HPRegen + 0.11*(1 + ply.StatMedSkill * 0.075), 0, ply:GetMaxHealth())
+			elseif !ply.HPRegen or ply.HPRegen > 0 then
+				ply.HPRegen = 0
+			end
+
+
 			ply:SetHealth(math.Clamp(ply:Health() + math.floor(hp), 5, ply:GetMaxHealth()))
 			ply.HPRegen = ply.HPRegen - math.floor(ply.HPRegen)
 		end
@@ -282,13 +291,6 @@ function GM:Think()
 				ply:AllowFlashlight(true)
 				ply.CanUseFlashlight = true
 			end
-		end
-	
-	-- in case if player's HPRegen value is nil then it's set to 0
-		if ply.HPRegen and ply:Health() < ply:GetMaxHealth() and ply.Thirst >= (3000 - (125 * ply.StatSurvivor)) and ply.Hunger >= (3000 - (150 * ply.StatSurvivor)) and ply.Fatigue <= (7000 + (150 * ply.StatSurvivor)) and ply.Infection <= (5000 - (100 * ply.StatImmunity)) then
-			ply.HPRegen = math.Clamp(ply.HPRegen + 0.11*ft + (ply.StatMedSkill * 0.0001), 0, ply:GetMaxHealth())
-		elseif !ply.HPRegen or ply.HPRegen > 0 then
-			ply.HPRegen = 0
 		end
 	
 		--random chance of getting infected per tick is very rare, but has chance if survived for more than 10 minutes, can decrease chance of this happening by increasing immunity skill level
@@ -482,8 +484,7 @@ end
 
 function GM:InitPostEntity()
 	RunConsoleCommand("mp_falldamage", "1")
-	RunConsoleCommand("M9KDefaultClip", "0") --it's set to 0 so the users don't abuse use and drop commands on m9k weapons over and over again
-	RunConsoleCommand("M9KDisablePenetration", "1") --they are op with penetration, time to nerf them again (unless you want them to remain the same, remove or exclude this line)
+	RunConsoleCommand("M9KDisablePenetration", "1") --they are op with penetration, time to nerf them again (unless you want them to remain the same, remove or comment this line)
 	RunConsoleCommand("sv_defaultdeployspeed", "1") --so that users don't just switch weapons too quickly
 
 	self:MapReInit()

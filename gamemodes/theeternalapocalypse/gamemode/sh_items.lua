@@ -1,4 +1,3 @@
---sorry i haven't finished m9k item list yet
 /*
 
 --[[ -- Use this function template for adding new items!
@@ -24,6 +23,8 @@ GM:CreateItem(itemid, { -- what the item will be called within the games code as
 ]]
 // IMPORTANT NOTE: Use and drop functions must always return true or false here.  Returning true will subtract one of that item type from the player, returning false will make it so nothing is subtracted.
 see server/player_inventory.lua for more info
+-- DO NOT USE ARCCW! ArcCW will give players ammuntion when they select an ARCCW weapon for the first time.
+-- Regardless if it should give ammo or not on PLAYER:Give function! (And no, there are no other ways to prevent this.)
 
 
 */
@@ -217,7 +218,7 @@ function UseFunc_EquipGun(ply, gun)
 	if !SERVER then return false end
 	if !ply:IsValid() or !ply:Alive() then return false end
 	if ply:GetActiveWeapon() != gun then
-		ply:Give(gun)
+		ply:Give(gun, true)
 		ply:SelectWeapon(gun)
 	end
 	return false
@@ -227,7 +228,7 @@ function UseFunc_EquipNade(ply, gun, nadetype)
 	if !SERVER then return false end
 	if !ply:IsValid() or !ply:Alive() then return false end
 	ply:GiveAmmo(1, nadetype)
-	ply:Give(gun)
+	ply:Give(gun, true)
 
 	if ply:GetActiveWeapon() != gun then
 		ply:SelectWeapon(gun)
