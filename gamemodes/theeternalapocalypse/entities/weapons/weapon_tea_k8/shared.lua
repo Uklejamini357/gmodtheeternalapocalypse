@@ -6,7 +6,7 @@ SWEP.WorldModel			= "models/weapons/w_smg_ump45.mdl"
 SWEP.HoldType				= "smg"
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= false
-SWEP.Category			= "ZW Weapons"
+SWEP.Category			= "T.E.A. Weapons"
 SWEP.UseHands			= true
 SWEP.ViewModelFOV		= 54
 

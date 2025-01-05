@@ -6,7 +6,7 @@ SWEP.WorldModel			= "models/weapons/w_snip_m14sp.mdl"
 SWEP.HoldType				= "ar2"
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= false
-SWEP.Category			= "ZW Weapons"
+SWEP.Category			= "T.E.A. Weapons"
 SWEP.UseHands			= true
 
 SWEP.Author				= ""

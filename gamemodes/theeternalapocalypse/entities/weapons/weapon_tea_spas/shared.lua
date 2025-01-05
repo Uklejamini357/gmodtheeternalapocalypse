@@ -6,7 +6,7 @@ SWEP.HoldType				= "shotgun"
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= false
 SWEP.UseHands			= true
-SWEP.Category			= "ZW Weapons"
+SWEP.Category			= "T.E.A. Weapons"
 SWEP.Shotgun			= true
 
 SWEP.Author				= ""

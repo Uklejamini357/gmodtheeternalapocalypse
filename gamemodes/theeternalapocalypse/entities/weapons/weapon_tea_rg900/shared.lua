@@ -6,7 +6,7 @@ SWEP.WorldModel			= "models/weapons/w_smg_tmp.mdl"
 SWEP.HoldType				= "ar2"
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= false
-SWEP.Category			= "Mad Cows Weapons"
+SWEP.Category			= "T.E.A. Weapons"
 SWEP.UseHands			= true
 SWEP.ViewModelFOV		= 54
 

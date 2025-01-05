@@ -9,7 +9,7 @@ SWEP.ViewModelFOV		= 60
 SWEP.HoldType				= "ar2"
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= false
-SWEP.Category			= "ZW Weapons"
+SWEP.Category			= "T.E.A. Weapons"
 
 SWEP.Purpose			= "Boom"
 SWEP.Instructions			= "Left click to fire, Right click to aim, uses sniper rounds"

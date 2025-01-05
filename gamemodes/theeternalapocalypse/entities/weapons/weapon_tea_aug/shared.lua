@@ -6,7 +6,7 @@ SWEP.WorldModel			= "models/weapons/w_rif_aug.mdl"
 SWEP.HoldType				= "smg"
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= false
-SWEP.Category			= "Mad Cows Weapons"
+SWEP.Category			= "T.E.A. Weapons"
 SWEP.UseHands			= true
 
 SWEP.Primary.Sound 		= Sound("Weapon_Aug.Single")

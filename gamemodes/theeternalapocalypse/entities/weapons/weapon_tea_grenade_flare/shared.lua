@@ -6,7 +6,7 @@ SWEP.WorldModel			= "models/weapons/w_eq_fraggrenade.mdl"
 SWEP.HoldType				= "grenade"
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= false
-SWEP.Category			= "ZW Weapons"
+SWEP.Category			= "T.E.A. Weapons"
 SWEP.UseHands			= true
 SWEP.Instructions   = "For times of distress (or when you can't see a damn thing because its too dark)"
 

@@ -7,7 +7,7 @@ SWEP.UseHands			= true
 
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= false
-SWEP.Category			= "ZW Weapons"
+SWEP.Category			= "T.E.A. Weapons"
 SWEP.Author				= ""
 SWEP.Contact			= ""
 SWEP.Purpose			= "A bulky revolver that fires large caliber magnum bullets"

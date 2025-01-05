@@ -6,7 +6,7 @@ SWEP.WorldModel			= "models/weapons/w_snip_awp.mdl"
 SWEP.HoldType				= "ar2"
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= false
-SWEP.Category			= "Mad Cows Weapons"
+SWEP.Category			= "T.E.A. Weapons"
 SWEP.UseHands			= true
 
 SWEP.Primary.Sound 		= Sound("Weapon_AWP.Single")

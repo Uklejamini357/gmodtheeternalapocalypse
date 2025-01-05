@@ -10,7 +10,7 @@ SWEP.SwayScale = 0.1
 SWEP.HoldType				= "ar2"
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= false
-SWEP.Category			= "ZW Weapons"
+SWEP.Category			= "T.E.A. Weapons"
 
 SWEP.Purpose			= "The russians found this old sniper rifle to be particularly effective at popping off zombies, now you will too"
 SWEP.Instructions			= "Left click to fire, Right click to aim, uses sniper rounds"

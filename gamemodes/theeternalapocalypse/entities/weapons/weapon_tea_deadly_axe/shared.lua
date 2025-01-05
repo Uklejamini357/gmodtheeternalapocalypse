@@ -1,5 +1,5 @@
 SWEP.Base 				= "weapon_tea_basemelee"
-SWEP.Category          = "ZW Weapons"
+SWEP.Category          = "T.E.A. Weapons"
 SWEP.Instructions   	= "Chop off zombies with the deadly axe. Less damage dealt to players."
 SWEP.ViewModelFlip		= false
 SWEP.ViewModel 			= "models/weapons/v_crowbar.mdl"

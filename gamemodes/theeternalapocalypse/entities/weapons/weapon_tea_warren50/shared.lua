@@ -4,7 +4,7 @@ SWEP.ViewModelFOV			= 55
 SWEP.ViewModelFlip		= false
 SWEP.ViewModel			= "models/weapons/cstrike/c_pist_deagle.mdl"
 SWEP.WorldModel			= "models/weapons/w_pist_deagle.mdl"
-SWEP.Category			= "ZW Weapons"
+SWEP.Category			= "T.E.A. Weapons"
 SWEP.UseHands			= true
 SWEP.HoldType			= "revolver"
 

@@ -6,7 +6,7 @@ SWEP.WorldModel 			= "models/weapons/w_irifle.mdl"
 SWEP.HoldType				= "ar2"
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= false
-SWEP.Category			= "Mad Cows Weapons"
+SWEP.Category			= "T.E.A. Weapons"
 SWEP.Instructions    = "A weapon used by combine soldiers, before and after an outbreak has begun. Uses Pulse ammo."
 SWEP.UseHands			= true
 

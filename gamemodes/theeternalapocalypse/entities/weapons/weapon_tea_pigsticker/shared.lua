@@ -8,7 +8,7 @@ SWEP.BobScale 			= 2
 SWEP.HoldType			= "knife"
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= false
-SWEP.Category			= "ZW Weapons"
+SWEP.Category			= "T.E.A. Weapons"
 
 SWEP.Author				= ""
 SWEP.Contact			= ""

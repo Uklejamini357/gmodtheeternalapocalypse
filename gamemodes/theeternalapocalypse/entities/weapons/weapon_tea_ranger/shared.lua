@@ -8,7 +8,7 @@ SWEP.UseHands			= true
 SWEP.HoldType				= "ar2"
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= false
-SWEP.Category			= "ZW Weapons"
+SWEP.Category			= "T.E.A. Weapons"
 
 SWEP.Primary.Sound 		= Sound("Weapon_M4A1.Single")
 SWEP.Primary.SuppressorSound 	= Sound("Weapon_M4A1.Silenced")

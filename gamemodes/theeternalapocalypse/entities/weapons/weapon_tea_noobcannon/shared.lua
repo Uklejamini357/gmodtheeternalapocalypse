@@ -15,7 +15,7 @@ SWEP.Instructions			= "Left click to fire, Right click to aim, uses pistol round
 
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= false
-SWEP.Category			= "ZW Weapons"
+SWEP.Category			= "T.E.A. Weapons"
 
 SWEP.Primary.Sound 		= Sound("Weapon_Glock.Single")
 SWEP.Primary.Recoil		= 0.8

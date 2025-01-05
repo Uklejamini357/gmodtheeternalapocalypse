@@ -7,7 +7,7 @@ SWEP.UseHands			= true
 SWEP.HoldType			= "crossbow"
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= false
-SWEP.Category			= "ZW Weapons"
+SWEP.Category			= "T.E.A. Weapons"
 SWEP.Instructions		= ""
 SWEP.Purpose			= "An enormous minigun that spews a constant stream of hot lead. Uses Rifle ammo."
 

@@ -7,7 +7,7 @@ SWEP.UseHands			= false
 
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= false
-SWEP.Category			= "Mad Cows Weapons"
+SWEP.Category			= "T.E.A. Weapons"
 
 SWEP.Primary.Sound 		= Sound("weapons/CombinePistol/CombinePistol_Fire3.wav")
 SWEP.Primary.Reload 		= Sound("weapons/CombinePistol/CP_Reload.wav")

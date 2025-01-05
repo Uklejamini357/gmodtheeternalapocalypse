@@ -8,7 +8,7 @@ SWEP.UseHands			= true
 SWEP.HoldType				= "pistol"
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= false
-SWEP.Category			= "ZW Weapons"
+SWEP.Category			= "T.E.A. Weapons"
 
 SWEP.Author				= ""
 SWEP.Contact			= ""

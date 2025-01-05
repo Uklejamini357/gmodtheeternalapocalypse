@@ -5,7 +5,7 @@ SWEP.WorldModel			= "models/weapons/w_smg1.mdl"
 SWEP.HoldType				= "smg"
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= false
-SWEP.Category			= "ZW Weapons"
+SWEP.Category			= "T.E.A. Weapons"
 SWEP.UseHands			= true
 
 SWEP.Primary.Sound 		= Sound("Weapon_SMG1.Single")

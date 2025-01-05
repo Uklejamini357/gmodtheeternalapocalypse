@@ -8,7 +8,7 @@ SWEP.HoldType			= "ar2"
 
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= false
-SWEP.Category			= "ZW Weapons"
+SWEP.Category			= "T.E.A. Weapons"
 
 SWEP.Author				= ""
 SWEP.Contact			= ""

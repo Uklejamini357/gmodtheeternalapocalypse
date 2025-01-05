@@ -7,7 +7,7 @@ SWEP.UseHands			= true
 
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= false
-SWEP.Category			= "ZW Weapons"
+SWEP.Category			= "T.E.A. Weapons"
 
 SWEP.Primary.Sound 		= Sound("NPC_Helicopter.FireRocket")
 SWEP.Primary.Recoil		= 0

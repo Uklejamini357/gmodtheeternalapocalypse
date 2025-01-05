@@ -1,5 +1,5 @@
 SWEP.Base 				= "weapon_tea_base_melee"
-SWEP.Category          	= "ZW Weapons"
+SWEP.Category          	= "T.E.A. Weapons"
 SWEP.Instructions 	  	= "Can i axe you a question?"
 SWEP.ViewModelFlip		= false
 SWEP.ViewModel 			= "models/weapons/v_crowbar.mdl"

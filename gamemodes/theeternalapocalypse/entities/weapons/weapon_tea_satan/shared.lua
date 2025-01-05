@@ -7,7 +7,7 @@ SWEP.UseHands			= true
 
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= false
-SWEP.Category			= "ZW Weapons"
+SWEP.Category			= "T.E.A. Weapons"
 SWEP.Author				= ""
 SWEP.Contact			= ""
 SWEP.Purpose			= "This thing is fucking huge, i hope i can fire it without my hand breaking off!"
