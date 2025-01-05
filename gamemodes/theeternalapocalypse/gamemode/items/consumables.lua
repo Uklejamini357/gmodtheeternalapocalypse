@@ -38,8 +38,8 @@ i = GM:CreateItem("item_medkit", {
     Supply = 30,
     Rarity = 3,
     Category = ITEMCATEGORY_SUPPLIES,
-    function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 45, 5, "comrade_vodka/inv_aptecka.ogg") return healing end,
-    function(ply) local drop = UseFunc_DropItem(ply, "item_medkit") return drop end,
+    UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 45, 5, "comrade_vodka/inv_aptecka.ogg") return healing end,
+    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_medkit") return drop end,
     CanUseOnOthers = true
 })
 
