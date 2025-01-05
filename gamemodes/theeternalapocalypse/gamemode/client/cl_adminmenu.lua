@@ -632,13 +632,13 @@ function GM:AdminMenu()
 
 	RefreshPanel()
 
-	SpawnMenuProperties:AddSheet(translate.Get("items_category_1"), SpawnMenuSupplies, "icon16/briefcase.png", false, false, translate.Get("items_category_1_d"))
-	SpawnMenuProperties:AddSheet(translate.Get("items_category_2"), SpawnMenuAmmo, "icon16/box.png", false, false, translate.Get("items_category_2_d"))
+	SpawnMenuProperties:AddSheet(translate.Get("items_category_1"), SpawnMenuAmmo, "icon16/box.png", false, false, translate.Get("items_category_1_d"))
+	SpawnMenuProperties:AddSheet(translate.Get("items_category_2"), SpawnMenuSupplies, "icon16/briefcase.png", false, false, translate.Get("items_category_2_d"))
 	SpawnMenuProperties:AddSheet(translate.Get("items_category_3"), SpawnMenuGuns, "icon16/bomb.png", false, false, translate.Get("items_category_3_d"))
 	SpawnMenuProperties:AddSheet(translate.Get("items_category_4"), SpawnMenuArmor, "icon16/shield.png", false, false, translate.Get("items_category_4_d"))
 
-	PropertySheet:AddSheet(translate.Get("admin_panel_tab_1"), PlayerList, "icon16/shield.png", false, false, translate.Get("admin_panel_tab_1_d"))
 	PropertySheet:AddSheet(translate.Get("admin_panel_tab_2"), AdminCmds, "icon16/shield.png", false, false, translate.Get("admin_panel_tab_2_d"))
+	PropertySheet:AddSheet(translate.Get("admin_panel_tab_1"), PlayerList, "icon16/shield.png", false, false, translate.Get("admin_panel_tab_1_d"))
 	PropertySheet:AddSheet(translate.Get("admin_panel_tab_3"), SAdminCmds, "icon16/shield_add.png", false, false, translate.Get("admin_panel_tab_3_d"))
 	PropertySheet:AddSheet(translate.Get("admin_panel_tab_4"), SpawnMenu, "icon16/table.png", false, false, translate.Get("admin_panel_tab_4_d"))
 end

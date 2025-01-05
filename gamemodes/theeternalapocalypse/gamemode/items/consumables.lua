@@ -26,7 +26,7 @@ local i = GM:CreateItem("item_bandage", {
 	Supply = 0,
 	Rarity = 2,
 	Category = ITEMCATEGORY_SUPPLIES,
-	UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 11, 0, "comrade_vodka/inv_bandages.ogg") return healing end,
+	UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 11, 0, "theeternalapocalypse/items/inv_bandages.ogg") return healing end,
 	DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_bandage") return drop end,
     CanUseOnOthers = true
 })
@@ -50,7 +50,7 @@ i = GM:CreateItem("item_armymedkit", {
     Supply = 10,
     Rarity = 4,
     Category = ITEMCATEGORY_SUPPLIES,
-    UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 70, 20, "comrade_vodka/inv_aptecka.ogg") return healing end,
+    UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 70, 20, "theeternalapocalypse/items/inv_aptecka.ogg") return healing end,
     DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_armymedkit") return drop end,
     CanUseOnOthers = true
 })
@@ -62,7 +62,7 @@ i = GM:CreateItem("item_scientificmedkit", {
     Supply = 8,
     Rarity = 4,
     Category = ITEMCATEGORY_SUPPLIES,
-    UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 100, 60, "comrade_vodka/inv_aptecka.ogg") return healing end,
+    UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 100, 60, "theeternalapocalypse/items/inv_aptecka.ogg") return healing end,
     DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_scientificmedkit") return drop end,
     CanUseOnOthers = true
 })
@@ -168,7 +168,7 @@ GM:CreateItem("item_soda", {
     Supply = 0,
     Rarity = 1,
     Category = ITEMCATEGORY_SUPPLIES,
-    UseFunc = function(ply) local food = UseFunc_Drink(ply, 3, 1, 3, 35, 5, -0.5, "comrade_vodka/inv_drink_can2.ogg") return food end,
+    UseFunc = function(ply) local food = UseFunc_Drink(ply, 3, 1, 3, 35, 5, -0.5, "theeternalapocalypse/items/inv_drink_can2.ogg") return food end,
     DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_soda") return drop end
 })
 
@@ -190,7 +190,7 @@ GM:CreateItem("item_energydrink", {
     Supply = 0,
     Rarity = 2,
     Category = ITEMCATEGORY_SUPPLIES,
-    UseFunc = function(ply) local food = UseFunc_Drink(ply, 4, 1, 2, 30, 55, -6, "comrade_vodka/inv_drink_can.ogg") return food end,
+    UseFunc = function(ply) local food = UseFunc_Drink(ply, 4, 1, 2, 30, 55, -6, "theeternalapocalypse/items/inv_drink_can.ogg") return food end,
     DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_energydrink") return drop end
 })
 
@@ -201,7 +201,7 @@ GM:CreateItem("item_energydrink_nonstop", {
     Supply = 0,
     Rarity = 2,
     Category = ITEMCATEGORY_SUPPLIES,
-    UseFunc = function(ply) local food = UseFunc_Drink(ply, 4, 2, 3, 32, 85, -8, "comrade_vodka/inv_drink_can.ogg") return food end,
+    UseFunc = function(ply) local food = UseFunc_Drink(ply, 4, 2, 3, 32, 85, -8, "theeternalapocalypse/items/inv_drink_can.ogg") return food end,
     DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_energydrink_nonstop") return drop end
 })
 
@@ -348,7 +348,6 @@ GM:CreateItem("item_armorbattery", {
     DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_armorbattery") return drop end,
 })
 
-
 GM:CreateItem("item_armorkevlar", {
     Cost = 1500,
     Model = "models/wick/wrbstalker/anomaly/items/dez_kevlar.mdl",
@@ -359,3 +358,88 @@ GM:CreateItem("item_armorkevlar", {
     UseFunc = function(ply) local armor = UseFunc_Armor(ply, 4, 0, 35, "npc/combine_soldier/zipline_hitground2.wav") return armor end,
     DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_armorkevlar") return drop end,
 })
+
+-- S.T.A.L.K.E.R.
+
+GM:CreateItem("item_stalker_beans", {
+    Name = "Can of Beans",
+    Description = "",
+    Cost = 240,
+    Model = "models/wick/wrbstalker/anomaly/items/wick_dev_beans.mdl",
+    Weight = 0.62,
+    Supply = -1,
+    Rarity = 3,
+    Category = ITEMCATEGORY_SUPPLIES,
+    UseFunc = function(ply) local food = UseFunc_Eat(ply, 5, 1, 68, -15, 0, -3, "sound") return food end,
+    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_stalker_beans") return drop end
+})
+
+GM:CreateItem("item_stalker_bread", {
+    Name = "Bread",
+    Description = "",
+    Cost = 75,
+    Model = "models/wick/wrbstalker/anomaly/items/wick_dev_bred.mdl",
+    Weight = 0.38,
+    Supply = -1,
+    Rarity = 2,
+    Category = ITEMCATEGORY_SUPPLIES,
+    UseFunc = function(ply) local food = UseFunc_Eat(ply, 3.6, 1, 35, -10, 0, -3, "sound") return food end,
+    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_stalker_beans") return drop end
+})
+
+GM:CreateItem("item_stalker_stimpack", {
+    Name = "Stimpack",
+    Description = "",
+    Cost = 450,
+    Model = "models/wick/wrbstalker/anomaly/items/dez_stim1.mdl",
+    Weight = 0.5,
+    Supply = -1,
+    Rarity = 3,
+    Category = ITEMCATEGORY_SUPPLIES,
+    function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 45, 5, "theeternalapocalypse/items/inv_aptecka.ogg") return healing end,
+    function(ply) local drop = UseFunc_DropItem(ply, "item_medkit") return drop end,
+    CanUseOnOthers = true
+})
+
+GM:CreateItem("item_stalker_stimpack_army", {
+    Name = "Army Stimpack",
+    Description = "",
+    Cost = 750,
+    Model = "models/wick/wrbstalker/anomaly/items/dez_stim2.mdl",
+    Weight = 0.5,
+    Supply = -1,
+    Rarity = 3,
+    Category = ITEMCATEGORY_SUPPLIES,
+    function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 45, 5, "theeternalapocalypse/items/inv_aptecka.ogg") return healing end,
+    function(ply) local drop = UseFunc_DropItem(ply, "item_medkit") return drop end,
+    CanUseOnOthers = true
+})
+
+GM:CreateItem("item_stalker_stimpack_scientific", {
+    Name = "Scientific Stimpack",
+    Description = "",
+    Cost = 1200,
+    Model = "models/wick/wrbstalker/anomaly/items/dez_stim3.mdl",
+    Weight = 0.5,
+    Supply = -1,
+    Rarity = 3,
+    Category = ITEMCATEGORY_SUPPLIES,
+    function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 45, 5, "theeternalapocalypse/items/inv_aptecka.ogg") return healing end,
+    function(ply) local drop = UseFunc_DropItem(ply, "item_medkit") return drop end,
+    CanUseOnOthers = true
+})
+
+GM:CreateItem("item_stalker_beer", {
+    Name = "Beer",
+    Description = "",
+    Cost = 300,
+    Model = "models/wick/wrbstalker/anomaly/items/wick_dev_beer.mdl",
+    Weight = 0.66,
+    Supply = -1,
+    Rarity = 3,
+    Category = ITEMCATEGORY_SUPPLIES,
+    function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 45, 5, "theeternalapocalypse/items/inv_aptecka.ogg") return healing end,
+    function(ply) local drop = UseFunc_DropItem(ply, "item_medkit") return drop end,
+    CanUseOnOthers = true
+})
+

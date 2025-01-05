@@ -60,12 +60,16 @@ end
 if SERVER then
 	function translate.ClientGet(pl, ...)
 		CurrentLanguage = pl:GetInfo("gmod_language_rep")
-		return translate.Get(...)
+		local str = translate.Get(...)
+		CurrentLanguage = DefaultLanguage
+		return str
 	end
 
 	function translate.ClientFormat(pl, ...)
 		CurrentLanguage = pl:GetInfo("gmod_language_rep")
-		return translate.Format(...)
+		local str = translate.Format(...)
+		CurrentLanguage = DefaultLanguage
+		return str
 	end
 
 	function PrintTranslatedMessage(printtype, str, ...)

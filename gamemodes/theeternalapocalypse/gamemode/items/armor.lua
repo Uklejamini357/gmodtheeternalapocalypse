@@ -87,7 +87,7 @@ GM:CreateItem("item_armor_jacket_bandit", {
 		slots = 1,
 		battery = 0,
 		carryweight = 0,
-		allowmodels = {"models/player/stalker/bandit_backpack.mdl"}
+		allowmodels = {"models/player/stalker/bandit_backpack.mdl", "models/stalkertnb/bandit1.mdl", "models/stalkertnb/bandit2.mdl", "models/stalkertnb/bandit3.mdl", "models/stalkertnb/bandit4.mdl"}
 	}
 })
 
@@ -327,7 +327,7 @@ GM:CreateItem("item_armor_sunrise", {
 		slots = 3,
 		battery = 75,
 		carryweight = 0,
-		allowmodels = {"models/player/stalker/loner_vet.mdl"}
+		allowmodels = {"models/player/stalker/loner_vet.mdl", "models/stalkertnb/sunrise_lone.mdl"}
 	}
 })
 
@@ -347,7 +347,7 @@ GM:CreateItem("item_armor_sunrise_dolg", {
 		slots = 3,
 		battery = 100,
 		carryweight = 0,
-		allowmodels = {"models/player/stalker/duty_vet.mdl"}
+		allowmodels = {"models/player/stalker/duty_vet.mdl", "models/stalkertnb/psz9d_duty2.mdl", "models/stalkertnb/psz9d_duty4.mdl"}
 	}
 })
 
@@ -367,7 +367,7 @@ GM:CreateItem("item_armor_sunrise_svoboda", {
 		slots = 3,
 		battery = 100,
 		carryweight = 0,
-		allowmodels = {"models/player/stalker/freedom_vet.mdl"}
+		allowmodels = {"models/player/stalker/freedom_vet.mdl", "models/stalkertnb/exo_freedompracs.mdl", "models/stalkertnb/psz9d_free3.mdl"}
 	}
 })
 
@@ -387,7 +387,7 @@ GM:CreateItem("item_armor_sunrise_monolith", {
 		slots = 3,
 		battery = 100,
 		carryweight = 0,
-		allowmodels = {"models/player/stalker/monolith_vet.mdl"}
+		allowmodels = {"models/player/stalker/monolith_vet.mdl", "models/stalkertnb/psz9d_mono2.mdl", "models/stalkertnb/psz9d_mono4.mdl"}
 	}
 })
 
@@ -467,7 +467,7 @@ GM:CreateItem("item_armor_exo_merc", {
 		slots = 3,
 		battery = 100,
 		carryweight = 30,
-		allowmodels = {"models/player/stalker/merc_exo.mdl"}
+		allowmodels = {"models/player/stalker/merc_exo.mdl", "models/stalkertnb/exo_skat_merc.mdl"}
 	}
 })
 
@@ -487,7 +487,7 @@ GM:CreateItem("item_armor_exo_dolg", {
 		slots = 3,
 		battery = 100,
 		carryweight = 30,
-		allowmodels = {"models/player/stalker/duty_exo.mdl"}
+		allowmodels = {"models/player/stalker/duty_exo.mdl", "models/stalkertnb/exo_skat_duty.mdl"}
 	}
 })
 
@@ -527,7 +527,7 @@ GM:CreateItem("item_armor_exo_monolith", {
 		slots = 3,
 		battery = 100,
 		carryweight = 30,
-		allowmodels = {"models/player/stalker/monolith_exo.mdl"}
+		allowmodels = {"models/player/stalker/monolith_exo.mdl", "models/stalkertnb/exo_mono.mdl"}
 	}
 })
 
@@ -551,3 +551,226 @@ GM:CreateItem("item_armor_cs2_goggles", {
 	}
 })
 
+-- More Armors
+
+
+GM:CreateItem("item_armor_beril5m", {
+	Name = "Beril-5M Military Armor",
+	Description = "",
+	Cost = 70000,
+	Model = "models/stalkertnb/beri_mili.mdl",
+	Weight = 9,
+	Supply = -1,
+	Rarity = 6,
+	Category = ITEMCATEGORY_ARMOR,
+	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_beril5m") end,
+	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_beril5m") return drop end,
+	ArmorStats = {
+		reduction = 40,
+		env_reduction = 20,
+		speedloss = 15,
+		slots = 3,
+		battery = 50,
+		carryweight = 0,
+		allowmodels = {"models/stalkertnb/beri_mili.mdl", "models/stalkertnb/Beri_rogue.mdl", "models/stalkertnb/beri_rogue_cs2.mdl", "models/stalkertnb/beri_rogue_helmet.mdl"}
+	}
+})
+
+
+GM:CreateItem("item_armor_merc_sunrise", {
+	Name = "Mercenary Sunrise Armor",
+	Description = "",
+	Cost = 65000,
+	Model = "models/stalkertnb/sunrise_merc.mdl",
+	Weight = 9,
+	Supply = -1,
+	Rarity = 6,
+	Category = ITEMCATEGORY_ARMOR,
+	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_merc_sunrise") end,
+	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_merc_sunrise") return drop end,
+	ArmorStats = {
+		reduction = 35,
+		env_reduction = 25,
+		speedloss = 30,
+		slots = 3,
+		battery = 50,
+		carryweight = 0,
+		allowmodels = {"models/stalkertnb/beri_mili.mdl", "models/stalkertnb/Beri_rogue.mdl", "models/stalkertnb/beri_rogue_cs2.mdl", "models/stalkertnb/beri_rogue_helmet.mdl"}
+	}
+})
+
+GM:CreateItem("item_armor_army_seva", {
+	Name = "Military SEVA Protection Suit",
+	Description = "",
+	Cost = 200000,
+	Model = "models/stalkertnb/beri_seva.mdl",
+	Weight = 13.5,
+	Supply = -1,
+	Rarity = 7,
+	Category = ITEMCATEGORY_ARMOR,
+	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_army_seva") end,
+	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_army_seva") return drop end,
+	ArmorStats = {
+		reduction = 35,
+		env_reduction = 55,
+		speedloss = 15,
+		slots = 3,
+		battery = 100,
+		carryweight = 5,
+		allowmodels = {"models/stalkertnb/beri_seva.mdl"}
+	}
+})
+
+GM:CreateItem("item_armor_stalker_seva", {
+	Name = "SEVA Protection Suit",
+	Description = "",
+	Cost = 250000,
+	Model = "models/stalkertnb/seva_lone.mdl",
+	Weight = 16.5,
+	Supply = -1,
+	Rarity = 7,
+	Category = ITEMCATEGORY_ARMOR,
+	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_stalker_seva") end,
+	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_stalker_seva") return drop end,
+	ArmorStats = {
+		reduction = 45,
+		env_reduction = 60,
+		speedloss = 25,
+		slots = 3,
+		battery = 150,
+		carryweight = 5,
+		allowmodels = {"models/stalkertnb/seva_lone.mdl"}
+	}
+})
+
+GM:CreateItem("item_armor_svoboda_seva", {
+	Name = "Freedom SEVA Protection Suit",
+	Description = "",
+	Cost = 250000,
+	Model = "models/stalkertnb/seva_free.mdl",
+	Weight = 16.5,
+	Supply = -1,
+	Rarity = 7,
+	Category = ITEMCATEGORY_ARMOR,
+	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_svoboda_seva") end,
+	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_svoboda_seva") return drop end,
+	ArmorStats = {
+		reduction = 45,
+		env_reduction = 60,
+		speedloss = 25,
+		slots = 3,
+		battery = 150,
+		carryweight = 5,
+		allowmodels = {"models/stalkertnb/seva_free.mdl"}
+	}
+})
+
+GM:CreateItem("item_armor_dolg_seva", {
+	Name = "Duty SEVA Protection Suit",
+	Description = "",
+	Cost = 250000,
+	Model = "models/stalkertnb/seva_duty.mdl",
+	Weight = 16.5,
+	Supply = -1,
+	Rarity = 7,
+	Category = ITEMCATEGORY_ARMOR,
+	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_dolg_seva") end,
+	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_dolg_seva") return drop end,
+	ArmorStats = {
+		reduction = 45,
+		env_reduction = 60,
+		speedloss = 25,
+		slots = 3,
+		battery = 150,
+		carryweight = 5,
+		allowmodels = {"models/stalkertnb/seva_duty.mdl"}
+	}
+})
+
+GM:CreateItem("item_armor_monolith_seva_heavy", {
+	Name = "Monolith Heavy SEVA Protection Suit",
+	Description = "",
+	Cost = 250000,
+	Model = "models/stalkertnb/seva_monolith_heavy.mdl",
+	Weight = 16.5,
+	Supply = -1,
+	Rarity = 7,
+	Category = ITEMCATEGORY_ARMOR,
+	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_monolith_seva_heavy") end,
+	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_monolith_seva_heavy") return drop end,
+	ArmorStats = {
+		reduction = 45,
+		env_reduction = 60,
+		speedloss = 25,
+		slots = 3,
+		battery = 150,
+		carryweight = 5,
+		allowmodels = {"models/stalkertnb/seva_monolith_heavy.mdl"}
+	}
+})
+
+GM:CreateItem("item_armor_exo_dolg_heavy", {
+	Name = "Duty Heavy SKAT Exoskeleton",
+	Description = "This armor used by Duty Legends is not only very expensive but also incredibly bulky! Designed for top level military operations.",
+	Cost = 475000,
+	Model = "models/stalkertnb/exo_skat_duty_heavy.mdl",
+	Weight = 35,
+	Supply = -1,
+	Rarity = 8,
+	Category = ITEMCATEGORY_ARMOR,
+	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_exo_dolg_heavy") end,
+	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_exo_dolg_heavy") return drop end,
+	ArmorStats = {
+		reduction = 70,
+		env_reduction = 40,
+		speedloss = 150,
+		slots = 4,
+		battery = 150,
+		carryweight = 30,
+		allowmodels = {"models/stalkertnb/exo_skat_duty_heavy.mdl"}
+	}
+})
+
+GM:CreateItem("item_armor_rad_svoboda", {
+	Name = "Freedom Radiation Suit",
+	Description = "",
+	Cost = 175000,
+	Model = "models/stalkertnb/rad_free.mdl",
+	Weight = 18,
+	Supply = -1,
+	Rarity = 8,
+	Category = ITEMCATEGORY_ARMOR,
+	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_rad_svoboda") end,
+	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_rad_svoboda") return drop end,
+	ArmorStats = {
+		reduction = 50,
+		env_reduction = 35,
+		speedloss = 40,
+		slots = 3,
+		battery = 150,
+		carryweight = 10,
+		allowmodels = {"models/stalkertnb/rad_free.mdl"}
+	}
+})
+
+GM:CreateItem("item_armor_rad_monolith_boss", {
+	Name = "Heavy Monolith Radiation Suit",
+	Description = "",
+	Cost = 175000,
+	Model = "models/stalkertnb/rad_monoboss.mdl",
+	Weight = 23,
+	Supply = -1,
+	Rarity = 8,
+	Category = ITEMCATEGORY_ARMOR,
+	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_rad_monolith_boss") end,
+	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_rad_monolith_boss") return drop end,
+	ArmorStats = {
+		reduction = 60,
+		env_reduction = 45,
+		speedloss = 50,
+		slots = 3,
+		battery = 150,
+		carryweight = 10,
+		allowmodels = {"models/stalkertnb/rad_monoboss.mdl"}
+	}
+})

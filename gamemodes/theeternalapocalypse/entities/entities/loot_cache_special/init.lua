@@ -26,7 +26,7 @@ function ENT:Use( activator, caller )
 	local name = self.LootType
 	local item = GAMEMODE.ItemsList[name]
 	local itemweight = item["Weight"]
-	local itemname = translate.ClientGet(caller, name.."_n")
+	local itemname = GAMEMODE:GetItemName(name, caller)
 
 	local qtycheck = GAMEMODE.LootTable3[name]["Qty"]
 
