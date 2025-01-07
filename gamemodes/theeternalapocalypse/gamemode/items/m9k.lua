@@ -384,10 +384,10 @@ GM:CreateItem("m9k_ares_shrike", {
 })
 
 GM:CreateItem("m9k_fg42", {
-    Cost = 49000,
+    Cost = 49500,
     Model = "models/weapons/w_fg42.mdl",
     Weight = 5.2,
-    Supply = -1,
+    Supply = 0,
     Rarity = 6,
     Category = ITEMCATEGORY_WEAPONS,
     UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_fg42") return false end,

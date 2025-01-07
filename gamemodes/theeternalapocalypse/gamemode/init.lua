@@ -223,19 +223,23 @@ function GM:Think()
 			local noregen_hunger = 3000
 			local noregen_fatigue = 7000
 			local noregen_infection = 5000
-			if !hp or hp < 1 or !(ply.Thirst >= noregen_thirst and ply.Hunger >= noregen_hunger and ply.Fatigue <= noregen_fatigue and ply.Infection <= noregen_infection) then continue end
-
-			-- in case if player's HPRegen value is nil then it's set to 0
-			local hp = ply.HPRegen
-			if ply.HPRegen and ply:Health() < ply:GetMaxHealth() then
-				ply.HPRegen = math.Clamp(ply.HPRegen + 0.11*(1 + ply.StatMedSkill * 0.075), 0, ply:GetMaxHealth())
-			elseif !ply.HPRegen or ply.HPRegen > 0 then
-				ply.HPRegen = 0
+			if (ply.Thirst >= noregen_thirst and ply.Hunger >= noregen_hunger and ply.Fatigue <= noregen_fatigue and ply.Infection <= noregen_infection) then
+				if ply.HPRegen and ply:Health() < ply:GetMaxHealth() then
+					ply.HPRegen = math.Clamp(ply.HPRegen + 0.11*(1 + ply.StatMedSkill * 0.075), 0, ply:GetMaxHealth())
+				elseif !ply.HPRegen or ply.HPRegen > 0 then
+					ply.HPRegen = 0
+				end
 			end
 
+			-- in case if player's HPRegen value is nil then it's set to 0
+			if ply.HPRegen or ply.HPRegen >= 1 then
+				ply:SetHealth(math.min(ply:Health() + math.floor(ply.HPRegen), ply:GetMaxHealth()))
+				ply.HPRegen = ply.HPRegen - math.floor(ply.HPRegen)
+			end
 
-			ply:SetHealth(math.Clamp(ply:Health() + math.floor(hp), 5, ply:GetMaxHealth()))
-			ply.HPRegen = ply.HPRegen - math.floor(ply.HPRegen)
+			if ply.BloodLustMeleeHealCap > 0 and ply.BloodLustLastMeleeHit + 5 < CurTime() then
+				ply.BloodLustMeleeHealCap = math.max(0, ply.BloodLustMeleeHealCap - 0.1 * math.Clamp(CurTime() - (ply.BloodLustLastMeleeHit + 5), 0, 10))
+			end
 		end
 
 	end
@@ -266,7 +270,28 @@ function GM:Think()
 		if (ply.Thirst <= 0 or ply.Hunger <= 0 or ply.Fatigue >= 10000 or ply.Infection >= 10000) then
 			if !timer.Exists("DyingFromStats_"..ply:EntIndex()) then
 				timer.Create("DyingFromStats_"..ply:EntIndex(), 30, 1, function()
-					if ply:Alive() then ply:Kill() end
+					if ply:Alive() then
+						if hunger <= 0 then
+							ply.CauseOfDeath = "Hunger"
+							ply.DeathMessage = "has starved to death"
+						end
+						if thirst <= 0 then
+							ply.CauseOfDeath = "Thirst"
+							ply.DeathMessage = "died from thirst"
+						end
+						if fatig >= 10000 then
+							ply.CauseOfDeath = "Fatigue"
+							ply.DeathMessage = "could not find a place to sleep"
+						end
+						if infection >= 10000 then
+							ply.CauseOfDeath = "Infection"
+							ply.DeathMessage = table.Random({"has succumbed to a zombie infection", "died to an infection"})
+						end
+						ply:Kill()
+
+						-- ply.CauseOfDeath = nil
+						-- ply.DeathMessage = nil
+					end
 				end)
 			end
 		else
@@ -305,6 +330,12 @@ function GM:Think()
 		end
 
 
+		local oxygendrainmul = 1
+		if armortype and armortype.ArmorStats and armortype.ArmorStats.oxygen_capacity then
+			oxygendrainmul = 1 / armortype.ArmorStats.oxygen_capacity
+		end
+		
+		-- print(armortype)
 		if ply:WaterLevel() == 3 then
 			ply.Thirst = math.Clamp(ply.Thirst + 16.2*ft, 0, 10000)
 			if tonumber(ply.Oxygen) <= 0 then
@@ -326,11 +357,11 @@ function GM:Think()
 					ply.DrownDamage = ply.DrownDamage - math.floor(ply.DrownDamage)
 				end
 			else
-				ply.Oxygen = math.Clamp(ply.Oxygen - 6*ft, 0, 100)
+				ply.Oxygen = math.Clamp(ply.Oxygen - 6*ft*oxygendrainmul, 0, 100)
 				-- ply.Stamina = math.Clamp(ply.Stamina - ((0.093 / staminaperk) - endurance), 0, 100)
 			end
 		else
-			ply.Oxygen = math.Clamp(ply.Oxygen + 12*ft, 0, 100)
+			ply.Oxygen = math.Clamp(ply.Oxygen + 12*ft*oxygendrainmul, 0, 100)
 			ply.DrownStartTime = nil
 		end
 
@@ -399,19 +430,6 @@ end
 function GM:PlayerDisconnected(ply)
 	self:SystemBroadcast(Format("%s has left the server", ply:Name()), Color(255,255,155,255), false)
 
-	if ply.Bounty >= 5 then
-		local cashloss = ply.Bounty * math.Rand(0.3, 0.4)
-		local bountyloss = ply.Bounty - cashloss
-		print(ply:Nick() .." has left the server with "..ply.Bounty.." bounty and dropped money worth of "..math.floor(cashloss).." "..self.Config["Currency"].."s!")
-
-		local ent = ents.Create("ate_cash")
-		ent:SetPos(ply:GetPos() + Vector(0, 0, 10))
-		ent:SetAngles(Angle(0, 0, 0))
-		ent:SetNWInt("CashAmount", math.floor(cashloss))
-		ent:Spawn()
-		ent:Activate()
-	end
-	
 	self:SavePlayer(ply)
 	self:SavePlayerInventory(ply)
 	self:SavePlayerVault(ply)
@@ -665,6 +683,10 @@ function GM:DamageFloater(attacker, victim, dmgpos, dmg)
 	net.Send(attacker)
 end
 
+local function IsMeleeDamage(num)
+	return (num == DMG_SLASH or num == DMG_CLUB)
+end
+
 function GM:EntityTakeDamage(ent, dmginfo)
 	if ent.ProcessDamage and not ent:ProcessDamage(dmginfo) then return end
 	if ent:IsPlayer() and not gamemode.Call("PlayerShouldTakeDamage", ent, dmginfo:GetAttacker()) then return end
@@ -672,6 +694,20 @@ function GM:EntityTakeDamage(ent, dmginfo)
 	if (ent:IsNPC() or ent:IsNextBot()) and not ent:ProcessNPCDamage(dmginfo) then return end
 
 	local attacker = dmginfo:GetAttacker()
+
+	if attacker:IsPlayer() then
+		if (ent:IsNextBot() or ent:IsNPC() or ent:IsPlayer()) and IsMeleeDamage(dmginfo:GetDamageType()) and attacker:HasPerk("bloodlust") then
+			local heal = math.min(50 - attacker.BloodLustMeleeHealCap, dmginfo:GetDamage()*0.1)*(50-attacker.BloodLustMeleeHealCap)/50
+			attacker.BloodLustMeleeHeal = attacker.BloodLustMeleeHeal + heal
+			attacker.BloodLustMeleeHealCap = attacker.BloodLustMeleeHealCap + heal
+			attacker.BloodLustLastMeleeHit = CurTime()
+
+			if attacker.BloodLustMeleeHeal and attacker.BloodLustMeleeHeal >= 1 then
+				attacker:SetHealth(math.min(attacker:GetMaxHealth(), attacker:Health() + math.floor(attacker.BloodLustMeleeHeal)))
+				attacker.BloodLustMeleeHeal = attacker.BloodLustMeleeHeal - math.floor(attacker.BloodLustMeleeHeal)
+			end
+		end
+	end
 
 	if (ent.Type == "nextbot" or ent:IsNPC()) and (!ent.LastAttacker or ent:Health() > 0) and attacker:IsPlayer() then
 		if !ent.BossMonster then
@@ -833,6 +869,9 @@ function GM:PlayerInitialSpawn(ply, transition)
 	ply.LastStunTime = 0
 	ply.PoisonDamage = 0
 	ply.DrownDamage = 0
+	ply.BloodLustMeleeHeal = 0
+	ply.BloodLustMeleeHealCap = 0
+	ply.BloodLustLastMeleeHit = 0
 
 	ply.PvPNoToggle = 0
 	ply.PvPAntiMsg = 0 -- prevents spamming messages if player attacks with pvp off or something else
@@ -1025,6 +1064,14 @@ function GM:PlayerLoadout(ply)
 		ply:GiveAmmo(50, "Pistol")
 	end
 
+	if ply.LastLifeAmmo then
+		for k,v in pairs(ply.LastLifeAmmo) do
+			ply:SetAmmo(math.max(ply:GetAmmoCount(k), v*0.4), k)
+		end
+
+		ply.LastLifeAmmo = nil
+	end
+
 	ply:SelectWeapon("tea_fists")
 end
 
@@ -1054,7 +1101,6 @@ end
 
 -- not like setplayermodel, just reads their model and colour settings and sets them to it
 function GM:RecalcPlayerModel(ply)
-	if ply:IsBot() then ply:SetModel("models/player/soldier_stripped.mdl") return end -- this only works for bots
 	if !ply.ChosenModel then ply.ChosenModel = "models/player/kleiner.mdl" end
 	if !ply.ChosenModelColor then ply.ChosenModelColor = Vector(0.25, 0, 0) end
 
@@ -1065,12 +1111,21 @@ function GM:RecalcPlayerModel(ply)
 		if !table.HasValue(self.DefaultModels, ply.ChosenModel) then
 			ply.ChosenModel = table.Random(self.DefaultModels)
 		end
-		ply:SetModel(ply.ChosenModel)
-		return false
+		ply:SetupHands()
+		return true
 	end
 
 	local models = self.ItemsList[ply.EquippedArmor]["ArmorStats"]["allowmodels"]
-	if !models[ply.ChosenModel] then ply.ChosenModel = table.Random(models) ply:SetModel(ply.ChosenModel) end
+	if !table.HasValue(models, ply.ChosenModel) then
+		ply.ChosenModel = table.Random(models)
+		ply:SetModel(ply.ChosenModel)
+		ply:SetupHands()
+		return false
+	else
+		ply:SetModel(ply.ChosenModel)
+		ply:SetupHands()
+		return true
+	end
 end
 
 function GM:RecalcPlayerSpeed(ply)

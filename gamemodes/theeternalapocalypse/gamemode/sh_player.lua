@@ -63,7 +63,7 @@ function meta:GetMaxLevel()
 end
 
 function meta:HasPerk(perk)
-	return self.UnlockedPerks and self.UnlockedPerks[perk] or GAMEMODE.LocalPerks[perk]
+	return self.UnlockedPerks and self.UnlockedPerks[perk] or CLIENT and GAMEMODE.LocalPerks[perk]
 end
 
 function meta:HasCompletedTask()

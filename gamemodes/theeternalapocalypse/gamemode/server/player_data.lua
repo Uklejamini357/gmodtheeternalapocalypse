@@ -30,7 +30,7 @@ function GM:LoadPlayer(ply, id)
 
 			if TheLine[1] == "PerkPoints" then
 				perkpoints = true
-			elseif TheLine[1] == "TaskCooldowns" then
+			elseif TheLine[1] == "TaskCooldowns" or TheLine[1] == "LastSessionInfo" then
 				ply[TheLine[1]] = util.JSONToTable(TheLine[2])
 			end
 		end
@@ -114,6 +114,45 @@ function GM:SavePlayer(ply)
 	Data["MasteryMeleeLevel"] = ply.MasteryMeleeLevel
 	Data["MasteryPvPXP"] = ply.MasteryPvPXP
 	Data["MasteryPvPLevel"] = ply.MasteryPvPLevel
+
+	if ply:Alive() or ply.LastSessionInfo then
+		local lastsessioninfo = {}
+		if ply:Alive() then
+			lastsessioninfo["health"] = ply:Health()
+			lastsessioninfo["armor"] = ply:Armor()
+			lastsessioninfo["bounty"] = ply.Bounty
+			lastsessioninfo["stamina"] = ply.Stamina
+			lastsessioninfo["oxygen"] = ply.Oxygen
+			lastsessioninfo["hunger"] = ply.Hunger
+			lastsessioninfo["thirst"] = ply.Thirst
+			lastsessioninfo["fatigue"] = ply.Fatigue
+			lastsessioninfo["infection"] = ply.Infection
+			lastsessioninfo["battery"] = ply.Battery
+			lastsessioninfo["hpregen"] = ply.HPRegen
+			lastsessioninfo["survivaltime"] = CurTime() - ply.SurvivalTime
+			lastsessioninfo["zombiekills"] = ply.LifeZKills
+			lastsessioninfo["playerkills"] = ply.LifePlayerKills
+			lastsessioninfo["lastmap"] = game.GetMap()
+			lastsessioninfo["lastpos"] = ply:GetPos()
+			lastsessioninfo["lastang"] = ply:EyeAngles()
+			
+			lastsessioninfo["weapons"] = {}
+			for k,v in pairs(ply:GetWeapons()) do
+				table.insert(lastsessioninfo["weapons"], {v:GetClass(), v:Clip1(), v:Clip2()})
+			end
+			lastsessioninfo["ammo"] = {}
+			for k,v in pairs(ply:GetAmmo()) do
+				table.insert(lastsessioninfo["ammo"], {game.GetAmmoName(k), v})
+			end
+
+			local activewep = ply:GetActiveWeapon()
+			if activewep:IsValid() then
+				lastsessioninfo["heldweapon"] = activewep:GetClass()
+			end
+		end
+
+		Data["LastSessionInfo"] = util.TableToJSON(ply.LastSessionInfo or lastsessioninfo)
+	end
 
 /*
 	for k, v in pairs(self.StatsListServer) do

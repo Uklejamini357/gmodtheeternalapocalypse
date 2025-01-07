@@ -73,16 +73,12 @@ function ENT:CanSeeTarget()
 		local tracedata = {}
 		tracedata.start = self:GetPos() + Vector(0, 0, 30)
 		tracedata.endpos = self.target:GetPos() + Vector(0, 0, 30)
-		tracedata.filter = self
+		tracedata.filter = function(ent) return ent == self.target end
 		local trace = util.TraceLine(tracedata)
-		if !trace.HitWorld then
-			return true
-		else 
-			return false
-		end
-	else
-		return false
+		return self.target == trace.Entity
 	end
+
+	return false
 end
 
 function ENT:HasLOS()

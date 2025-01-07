@@ -655,20 +655,19 @@ GM.PerksList = {
 		PrestigeReq = 6,
 	},
 
-	["bloodlust"] = { -- Not done
+	["bloodlust"] = {
 		Name = "Bloodlust",
-		Description = "Heal 10% of your damage with melee.",
-		AddDescription = "Beware, as the heal cap is quickly drained the more this is used in short time!",
+		Description = "Heal 10% of your damage with melee.\nThe healing effect gets quickly softcapped!",
 		Cost = 1,
 		PrestigeReq = 2,
 	},
 
-	["dead_luck"] = { -- Not done
+	["dead_luck"] = {
 		Name = "Dead luck",
-		Description = "On death, you keep 80% of your ammo you had and you do not drop your active weapon outside PVP.",
-		AddDescription = "In addition, you keep 40% of your bounty you had on death, minimum of 20 bounty is lost.\nYou still lose some of your bounty if killed by a player who has Bounty Hunter perk.",
+		Description = "On death, you keep 40% of your ammo you had and you do not drop your active weapon outside PVP.",
+		AddDescription = "In addition, you keep 30% of your bounty you had on death, minimum of 20 bounty is lost.\nYou still lose some of your bounty if killed by a player who has Bounty Hunter perk.",
 		Cost = 1,
-		PrestigeReq = 2,
+		PrestigeReq = 3,
 	},
 
 	["empowered_skills"] = {

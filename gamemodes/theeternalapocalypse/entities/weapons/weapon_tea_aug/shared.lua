@@ -10,7 +10,7 @@ SWEP.Category			= "T.E.A. Weapons"
 SWEP.UseHands			= true
 
 SWEP.Primary.Sound 		= Sound("Weapon_Aug.Single")
-SWEP.Primary.Recoil		= 1
+SWEP.Primary.Recoil		= 0.4
 SWEP.Primary.Damage		= 31
 SWEP.Primary.NumShots		= 1
 SWEP.Primary.Cone			= 0.005

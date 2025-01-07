@@ -248,6 +248,23 @@ i = GM:CreateItem("item_difficulty_shard", {
     DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_difficulty_shard") return drop end
 })
 
+i = GM:CreateItem("item_oxygentank", {
+    Name = "Oxygen Tank",
+    Description = "An air tank filled with Oxygen. For use in underwater explorations, in case of running out of oxygen to quickly refill oxygen.\nBest use with Closed-Cycle Respiration suits.",
+    Cost = 1500,
+    Model = "models/props_c17/canister01a.mdl",
+    Weight = 1.8,
+    Supply = 5,
+    Rarity = RARITY_UNCOMMON,
+    Category = ITEMCATEGORY_MISCELLANEOUS,
+    UseFunc = function(ply)
+        ply.Oxygen = 100
+        ply:SendChat("Oxygen refilled.")
+        return true
+    end,
+    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_oxygentank") return drop end
+})
+
 i = GM:CreateItem("item_money", {
     Cost = 0,
     Model = "models/props/cs_assault/Money.mdl",

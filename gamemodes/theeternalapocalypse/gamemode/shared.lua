@@ -5,8 +5,8 @@ GM.AltName	= "After The End Reborn"
 GM.Author	= "Uklejamini"
 GM.Email	= "[You may not view this information.]"
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.11.2e"
-GM.DateVer	= "05.01.2025"
+GM.Version	= "0.11.3"
+GM.DateVer	= "07.01.2025"
 
 
 include("sh_globals.lua") -- globals
@@ -298,6 +298,11 @@ end
 function GM:GetItemDescription(id, ply) -- ply is for the server
 	local item = self.ItemsList[id]
 	local desc = item.Description or ply and translate.ClientGet(ply, id.."_d") or translate.Get(id.."_d")
+--[[
+	if item.Thirst then
+		desc = desc.."\n"..Format("Thirst: %s%%", tonumber(item.Thirst) > 0 and "+"..item.Thirst or item.Thirst)
+	end
+]]
 
 	local armorstats = item.ArmorStats
 	if armorstats then

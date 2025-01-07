@@ -1200,6 +1200,8 @@ hook.Add("PostDrawTranslucentRenderables", "GM.Spawns", function(bDrawingDepth, 
 			local pos = v[1]
 			local ang = v[2]
 
+			if pos == Vector(0,0,0) then continue end
+
 			-- pos.x = math.Round(pos.x)
 			-- pos.y = math.Round(pos.y)
 			-- pos.z = math.Round(pos.z)

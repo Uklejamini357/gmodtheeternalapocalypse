@@ -96,16 +96,12 @@ function ENT:CanSeeTarget()
 		local tracedata = {}
 		tracedata.start = self:GetPos() + Vector(0, 0, 30)
 		tracedata.endpos = self.target:GetPos() + Vector(0, 0, 30)
-		tracedata.filter = self
+		tracedata.filter = function(ent) return ent == self.target end
 		local trace = util.TraceLine(tracedata)
-		if !trace.HitWorld then
-			return true
-		else 
-			return false
-		end
-	else
-		return false
+		return self.target == trace.Entity
 	end
+
+	return false
 end
 
 
@@ -357,31 +353,31 @@ end
 
 
 function ENT:AttackPlayer(ply)
-if !ply:IsValid() or !self:IsValid() then return false end
-self:EmitSound(table.Random(self.AttackSounds), 100, math.random(95, 105))
+	if !ply:IsValid() or !self:IsValid() then return false end
+	self:EmitSound(table.Random(self.AttackSounds), 100, math.random(95, 105))
 
--- swing those claws baby
-self:DelayedCallback(self.ZombieStats["StrikeDelay"] * 0.75, function()
-	self:EmitSound("npc/vort/claw_swing"..math.random(1, 2)..".wav")
-end)
+	-- swing those claws baby
+	self:DelayedCallback(self.ZombieStats["StrikeDelay"] * 0.75, function()
+		self:EmitSound("npc/vort/claw_swing"..math.random(1, 2)..".wav")
+	end)
 
--- actually apply the damage
-self:DelayedCallback(self.ZombieStats["StrikeDelay"], function()
-if !self:IsValid() or self:Health() < 1 then return end
-					
-	if (IsValid(ply) and self:GetRangeTo(ply) <= self.ZombieStats["Reach"]) then
-		self:ApplyPlayerDamage(ply, self.ZombieStats["Damage"], -self.ZombieStats["Force"], self.ZombieStats["Infection"])
+	-- actually apply the damage
+	self:DelayedCallback(self.ZombieStats["StrikeDelay"], function()
+	if !self:IsValid() or self:Health() < 1 then return end
+
+		if (IsValid(ply) and self:GetRangeTo(ply) <= self.ZombieStats["Reach"]) then
+			self:ApplyPlayerDamage(ply, self.ZombieStats["Damage"], -self.ZombieStats["Force"], self.ZombieStats["Infection"])
+		end
+	end)
+
+	-- check if we killed the guy and find a new target if we did
+	self:DelayedCallback(self.ZombieStats["StrikeDelay"] * 1.2, function()
+	if (IsValid(ply) and !ply:Alive()) then
+		self.target = nil
 	end
-end)
+	end)
 
--- check if we killed the guy and find a new target if we did
-self:DelayedCallback(self.ZombieStats["StrikeDelay"] * 1.2, function()
-if (IsValid(ply) and !ply:Alive()) then
-	self.target = nil
-end
-end)
-
-return false
+	return false
 end
 
 

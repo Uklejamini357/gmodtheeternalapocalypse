@@ -20,6 +20,7 @@ util.AddNetworkString("PlayerIsReady") -- used when player has finished loading 
 util.AddNetworkString("tea_damagefloater")
 
 util.AddNetworkString("UseItem") -- for the following 4 below, see player_inventory.lua
+util.AddNetworkString("DestroyItem") -- For destroying an item
 util.AddNetworkString("UseGun")
 util.AddNetworkString("BuyItem")
 util.AddNetworkString("SellItem")
@@ -219,11 +220,11 @@ net.Receive("ChangeModel", function(len, ply)
 	ply.ChosenModel = model
 	ply.ChosenModelColor = col
 
-	ply:SendUseDelay(1)
-	ply.NxtModelChange = CurTime() + 120
-	timer.Simple(0.75, function()
-		gamemode.Call("RecalcPlayerModel", ply)
-	end)
+	ply.NxtModelChange = CurTime() + 60
+	local success = gamemode.Call("RecalcPlayerModel", ply)
+	if success then
+		ply:PrintMessage(3, "Your playermodel has been changed!")
+	end
 end)
 
 
@@ -309,6 +310,98 @@ net.Receive("tea_player_ready_spawn", function(len, ply)
 	end
 	ply.HasSpawnedReady = true
 	ply:Spawn()
+
+	if ply.LastSessionInfo then
+		if ply.LastSessionInfo["health"] then
+			ply:SetHealth(ply.LastSessionInfo["health"])
+		end
+
+		if ply.LastSessionInfo["armor"] then
+			ply:SetArmor(ply.LastSessionInfo["armor"])
+		end
+
+		if ply.LastSessionInfo["health"] then
+			ply.Bounty = ply.LastSessionInfo["bounty"]
+		end
+
+		if ply.LastSessionInfo["stamina"] then
+			ply.Stamina = ply.LastSessionInfo["stamina"]
+		end
+
+		if ply.LastSessionInfo["oxygen"] then
+			ply.Stamina = ply.LastSessionInfo["oxygen"]
+		end
+
+		if ply.LastSessionInfo["hunger"] then
+			ply.Hunger = ply.LastSessionInfo["hunger"]
+		end
+
+		if ply.LastSessionInfo["thirst"] then
+			ply.Thirst = ply.LastSessionInfo["thirst"]
+		end
+
+		if ply.LastSessionInfo["fatigue"] then
+			ply.Fatigue = ply.LastSessionInfo["fatigue"]
+		end
+
+		if ply.LastSessionInfo["infection"] then
+			ply.Infection = ply.LastSessionInfo["infection"]
+		end
+
+		if ply.LastSessionInfo["battery"] then
+			ply.Battery = ply.LastSessionInfo["battery"]
+		end
+
+		if ply.LastSessionInfo["hpregen"] then
+			ply.HPRegen = ply.LastSessionInfo["hpregen"]
+		end
+
+		if ply.LastSessionInfo["survivaltime"] then
+			ply.SurvivalTime = CurTime() - ply.LastSessionInfo["survivaltime"]
+		end
+
+		if ply.LastSessionInfo["zombiekills"] then
+			ply.LifeZKills = ply.LastSessionInfo["zombiekills"]
+		end
+
+		if ply.LastSessionInfo["playerkills"] then
+			ply.LifePlayerKills = ply.LastSessionInfo["playerkills"]
+		end
+
+		local lastmap = ply.LastSessionInfo["lastmap"]
+
+		if lastmap == game.GetMap() then
+			if ply.LastSessionInfo["lastpos"] then
+				ply:SetPos(ply.LastSessionInfo["lastpos"])
+			end
+
+			if ply.LastSessionInfo["lastang"] then
+				ply:SetEyeAngles(ply.LastSessionInfo["lastang"])
+			end
+		end
+
+		if ply.LastSessionInfo["weapons"] then
+			for _,wep in pairs(ply.LastSessionInfo["weapons"]) do
+				local w = ply:Give(wep[1], true)
+				if w:IsValid() then
+					w:SetClip1(wep[2])
+					w:SetClip2(wep[3])
+				end
+			end
+		end
+
+		if ply.LastSessionInfo["ammo"] then
+			for _,ammo in pairs(ply.LastSessionInfo["ammo"]) do
+				ply:SetAmmo(ammo[2],ammo[1])
+			end
+		end
+
+		if ply.LastSessionInfo["heldweapon"] then
+			ply:SelectWeapon(ply.LastSessionInfo["heldweapon"])
+		end
+
+		ply.LastSessionInfo = nil
+	end
 end)
 
 net.Receive("tea_perksunlock", function(len, pl)

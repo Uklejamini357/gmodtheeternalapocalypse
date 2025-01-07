@@ -641,6 +641,8 @@ LANG.item_armor_cs2_goggles_d = "An experimental armor that provides wearer suit
 LANG.perkincreased = "You increased your %s skill by %d point(s)!"
 LANG.pllvlup = "Congratulations! You are now level %d, you have gained %d skill point(s) and %d %ss!"
 LANG.plhasprestiged_1 = "You have prestiged to Prestige %d!"
+LANG.plhasprestiged_2 = "You have gained %d %ss and %d perk point(s)!"
+LANG.plhasprestiged_3 = "%s has now Prestige %d!"
 
 LANG.plcaughtinfection = "You have caught infection!"
 LANG.pljoined = "%s has joined the server"
@@ -697,9 +699,8 @@ LANG.acceptmodelchange = "Accept Changes"
 LANG.cost = "Cost"
 LANG.x_turned_on_noclip = "%s turned on noclip."
 LANG.x_turned_off_noclip = "%s turned off noclip."
-LANG.upgradestatimmune_n = "Secret item"
-LANG.upgradestatimmune_d = "Congratulations, you find this item! But no, this item does not do anything.\nYou can drop it, but what's the point of spreading this?!?!?"
 LANG.no_one_damaged_boss = "No one damaged boss."
+LANG.dmgtaken = "Damage taken: %s"
 
 -- Tips
 
@@ -773,9 +774,4 @@ LANG.could_have_used_armor_before_died = "You could have reinforced your armor b
 
 
 -- Edited
-
-LANG.dmgtaken = "Damage taken: %s"
-
-LANG.plhasprestiged_2 = "You have gained %d %ss and %d perk point(s)!"
-LANG.plhasprestiged_3 = "%s has now Prestige %d!"
 

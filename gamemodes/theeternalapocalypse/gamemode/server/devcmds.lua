@@ -377,11 +377,13 @@ function GM:DevCmds_PauseStats(ply, cmd)
 		return
 	end
     
-    if !ply.StatsPaused then
-        ply.StatsPaused = true
-    else
-        ply.StatsPaused = false
+    if ply.StatsPaused then
+		ply.SurvivalTime = CurTime() - ply.StatsPaused_LastSurvivalTime
+		ply.StatsPaused_LastSurvivalTime = nil
+	else
+		ply.StatsPaused_LastSurvivalTime = CurTime() - ply.SurvivalTime
     end
+	ply.StatsPaused = !ply.StatsPaused
 end
 concommand.Add("tea_dev_pausestats", function(ply, cmd)
 	gamemode.Call("DevCmds_PauseStats", ply, cmd, args)

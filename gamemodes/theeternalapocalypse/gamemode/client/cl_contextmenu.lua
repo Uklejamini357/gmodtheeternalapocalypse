@@ -67,7 +67,7 @@ function GM:CMenu()
 
 			local name = wep.PrintName or wep:GetClass()
 			local y = 145
-			draw.DrawText(translate.Format("wep_name", name), "TargetID", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+			draw.DrawText(translate.Format("wep_name", language.GetPhrase(name)), "TargetID", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 		
 			if name ~= wep:GetClass() then
 				y = y - 20
@@ -287,7 +287,7 @@ function GM:CMenu()
 		RunConsoleCommand("-menu_context")
 		RunConsoleCommand("refresh_inventory")
 	end
-
+/*
 	local ver = vgui.Create("DButton", ContextMenu)
 	ver:SetSize(buttonsize_x, buttonsize_y)
 	ver:Center()
@@ -302,7 +302,7 @@ function GM:CMenu()
 		draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(0, 0, 0, 130))
 	end
 	ver.DoClick = function() end
-
+*/
 	local cash = vgui.Create("DButton", ContextMenu)
 	cash:SetSize(buttonsize_x, buttonsize_y)
 	cash:Center()

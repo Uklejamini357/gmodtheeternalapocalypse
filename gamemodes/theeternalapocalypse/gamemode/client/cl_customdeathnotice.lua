@@ -9,23 +9,23 @@ local NPC_Color = Color(250, 50, 50, 255)
 
 local Deaths = {}
 local RDtext = {
-	"trashed",
-	"ripped apart",
-	"slaughtered",
-	"chewed up and spat out",
-	"wrecked",
-	"stomped on",
-	"turned inside-out",
-	"ruined",
-	"violated",
-	"vanquished",
-	"butchered",
-	"chopped up",
-	"sliced and diced",
-	"dominated",
-	"wiped out of the reality",
-	"put off their misery",
-	"murdered"
+	"was trashed",
+	"was ripped apart",
+	"was slaughtered",
+	"was chewed up and spat out",
+	"was wrecked",
+	"was stomped on",
+	"was turned inside-out",
+	"was ruined",
+	"was violated",
+	"was vanquished",
+	"was butchered",
+	"was chopped up",
+	"was sliced and diced",
+	"was dominated",
+	"was wiped out of the reality",
+	"was put off their misery",
+	"was murdered"
 }
 
 local RDStext = {
@@ -79,7 +79,7 @@ local function CheckLocalPlayerDeath(victim, attacker, dmg, dmgtype, msgoverride
 	
 	local killedbydoor = {"KILLED BY DOOR WTF"}--[[{""}]]
 	
-	local killedbyenv = {"Enviornment"}--[[{"Better be careful next time.",
+	local killedbyenv = {"Environment"}--[[{"Better be careful next time.",
 		"Environment is harsh these days, be careful!"}]]
 
 	local killedbyother = {"Unknown cause"}--[[{"You were killed by an unknown cause."}]]
@@ -87,7 +87,7 @@ local function CheckLocalPlayerDeath(victim, attacker, dmg, dmgtype, msgoverride
 	if victim == LocalPlayer() then
 		gamemode.Call("LocalPlayerDeath", attacker)
 
-		if msgoverride then
+		if msgoverride != "" then
 			GAMEMODE.DeathMessage = msgoverride
 			return
 		end
@@ -107,7 +107,7 @@ local function CheckLocalPlayerDeath(victim, attacker, dmg, dmgtype, msgoverride
 		elseif attacker == "trigger_hurt" or attacker == "point_hurt" or attacker == "entityflame" or attacker == "env_fire" then
 			GAMEMODE.DeathMessage = table.Random(killedbyenv)
 		elseif attacker == "worldspawn" and dmgtype == DMG_FALL then
-			GAMEMODE.DeathMessage = "Fall damage ("..math.floor(dmg).." taken)"
+			GAMEMODE.DeathMessage = "Fall damage ("..math.floor(dmg).." damage taken)"
 		else
 			GAMEMODE.DeathMessage = table.Random(killedbyother)
 		end
@@ -143,7 +143,7 @@ local function RecvPlayerKilledByPlayer()
 
 	CheckLocalPlayerDeath(victim, attacker, dmg, dmgtype, msgoverride)
 	
-	GAMEMODE:AddDeathNotice( attacker:Nick(), attacker:Team(), inflictor, victim:Nick(), victim:Team(), dmg, dmgtype, msgoverride )
+	GAMEMODE:AddDeathNotice( attacker:Nick(), attacker:Team(), inflictor, victim:Nick(), victim:Team(), dmg, dmgtype, msgoverride, deathmsg )
 end
 net.Receive( "PlayerKilledByPlayer", RecvPlayerKilledByPlayer )
 
@@ -158,7 +158,7 @@ local function RecvPlayerKilledSelf()
 
 	if ( !IsValid( victim ) ) then return end
 	CheckLocalPlayerDeath(victim, attacker, dmg, dmgtype, msgoverride)
-	GAMEMODE:AddDeathNotice( nil, 0, "suicide", victim:Nick(), victim:Team(), dmg, dmgtype, msgoverride )
+	GAMEMODE:AddDeathNotice( nil, 0, "suicide", victim:Nick(), victim:Team(), dmg, dmgtype, msgoverride, deathmsg )
 
 end
 net.Receive( "PlayerKilledSelf", RecvPlayerKilledSelf )
@@ -177,7 +177,7 @@ local function RecvPlayerKilled()
 
 	CheckLocalPlayerDeath(victim, attackertype, dmg, dmgtype, msgoverride)
 
-	GAMEMODE:AddDeathNotice( attacker, -1, inflictor, victim:Nick(), victim:Team(), dmg, dmgtype, msgoverride )
+	GAMEMODE:AddDeathNotice( attacker, -1, inflictor, victim:Nick(), victim:Team(), dmg, dmgtype, msgoverride, deathmsg )
 
 end
 net.Receive( "PlayerKilled", RecvPlayerKilled )
@@ -236,7 +236,7 @@ end
 net.Receive( "NPCKilledNPC", RecvNPCKilledNPC )
 
 
-function GM:AddDeathNotice( Victim, team1, Inflictor, Attacker, team2, dmg, dmgtype, msgoverride )
+function GM:AddDeathNotice( Victim, team1, Inflictor, Attacker, team2, dmg, dmgtype, msgoverride, deathmsg )
 	local Death = {}
 	Death.victim	= Victim
 	Death.attacker	= Attacker
@@ -254,15 +254,22 @@ function GM:AddDeathNotice( Victim, team1, Inflictor, Attacker, team2, dmg, dmgt
 	Death.icon		= Inflictor
 
 	if dmgtype == DMG_BLAST then
-		Death.Message = "blasted into pieces"
+		Death.Message = "was blasted into pieces"
 	end
 
 	if dmgtype == DMG_DROWN then
-		Death.SMessage = "drowned"
+		Death.SMessage = "has drowned"
 	end
 
-	if msgoverride ~= "" then
-		Death.Message = msgoverride
+	if dmgtype == DMG_FALL then
+		Death.SMessage = table.Random({"thought he could fly", "fell off from a great height", "hit the ground too hard"})
+		Death.left = nil
+	end
+
+	if deathmsg ~= "" then
+		Death.left = nil
+		Death.Message = deathmsg
+		Death.SMessage = deathmsg
 	end
 
 
@@ -306,7 +313,7 @@ local function DrawDeath(x, y, death, tea_cl_deathnoticetime)
 		textsize = surface.GetTextSize(text)
 		draw.SimpleText(text, "ChatFont", x - (w / 2) + math.Clamp(350 + textsize - ((1.5 * textsize) * ((RealTime()) - death.Time)), 250, 350 + textsize), y, Color(223,45,45,alpha), TEXT_ALIGN_RIGHT)
 	elseif (death.left) then
-		text = Format("Death: %s%s was %s by %s%s", death.right, death.pteam2, death.Message, death.left, death.pteam1)
+		text = Format("Death: %s%s %s by %s%s", death.right, death.pteam2, death.Message, death.left, death.pteam1)
 		textsize = surface.GetTextSize(text)
 		draw.SimpleText(text, "ChatFont", x - (w / 2) + math.Clamp(350 + textsize - ((1.5 * textsize) * ((RealTime()) - death.Time)), 250, 350 + textsize), y, Color(255,75,75,alpha), TEXT_ALIGN_RIGHT)
 	end

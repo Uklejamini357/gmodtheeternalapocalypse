@@ -238,7 +238,7 @@ function GM:SpawnZombies()
 			local pos = util.StringToType(Zed[1], "Vector") + Vector(0, 0, 5)
 			local ang = util.StringToType(Zed[2], "Angle")
 			local inzedrange = true
-			local zeds = ents.FindInSphere(pos, 250)
+			local zeds = ents.FindInSphere(pos, 200)
 			for k, v in pairs(zeds) do
 				if v:IsNextBot() or v:IsNPC() or v:IsPlayer() then inzedrange = false end -- ignore spawnpoints that are obstructed by zombies or players
 			end
@@ -320,7 +320,7 @@ function GM:SpawnBoss(plycountoverride, nonotify)
 			local pos = util.StringToType(Zed[1], "Vector")
 			local ang = util.StringToType(Zed[2], "Angle")
 			local inzedrange = true
-			local zeds = ents.FindInSphere(pos, 250)
+			local zeds = ents.FindInSphere(pos, 200)
 			for k, v in pairs(zeds) do
 				if v:IsNextBot() or v:IsNPC() or v:IsPlayer() then inzedrange = false end -- ignore spawnpoints that are obstructed by zombies or players
 			end

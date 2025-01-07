@@ -1,5 +1,5 @@
 local function IsMeleeDamage(num)
-	return (num == DMG_GENERIC or num == DMG_SLASH or num == DMG_CLUB)
+	return (num == DMG_SLASH or num == DMG_CLUB)
 end
 
 local MT_PLAYER = FindMetaTable("Player")
@@ -319,10 +319,10 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 			ply.Bounty = ply.Bounty - stolenbounty
 		end
 
-		local cashloss = (ply.Bounty * math.Rand(0.3, 0.4))-- * (ply:HasPerk("dead_luck") and 0.6 or 1)
-		local bountyloss = (ply.Bounty - cashloss)-- * (ply:HasPerk("dead_luck") and 0.6 or 1)
+		local cashloss = (ply.Bounty * math.Rand(0.3, 0.4)) * (ply:HasPerk("dead_luck") and 0.75 or 1)
+		local bountyloss = (ply.Bounty - cashloss) * (ply:HasPerk("dead_luck") and 0.75 or 1)
 
---		keptbounty = ply:HasPerk("dead_luck") and ply.Bounty * 0.4 or 0
+		keptbounty = ply:HasPerk("dead_luck") and ply.Bounty * 0.25 or 0
 		if self:GetDebug() >= DEBUGGING_NORMAL then
 			print(ply:Nick().." has died with "..ply.Bounty.." bounty, dropped money worth of "..math.floor(cashloss).." "..GAMEMODE.Config["Currency"].."s and survived for "..math.floor(survived).."s")
 		end
@@ -414,7 +414,8 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 			if weapon_name == v then nodrop = true break end
 		end
 
-		if !nodrop and self.ItemsList[weapon_name] and ply.Inventory[weapon_name] and (self.DropActiveWeaponOnDeath--[[ and (attacker:IsPlayer() and attacker ~= ply and not ply:HasPerk("dead_luck"))]]) then
+		if !nodrop and self.ItemsList[weapon_name] and ply.Inventory[weapon_name] and
+		(self.DropActiveWeaponOnDeath and not ((!attacker:IsPlayer() or attacker:IsPlayer() and attacker == ply) and ply:HasPerk("dead_luck"))) then
 			self:SystemRemoveItem(ply, weapon_name)
 
 			local ent = ents.Create("ate_droppeditem")
@@ -427,6 +428,10 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 			ent:SetVelocity(ply:GetForward() * 80 + Vector(0,0,50))
 			self:SendInventory(ply)
 		end
+	end
+
+	if !ply.LastLifeAmmo and ply:HasPerk("dead_luck") then
+		ply.LastLifeAmmo = ply:GetAmmo()
 	end
 
 	local inflictor = dmginfo:GetInflictor()

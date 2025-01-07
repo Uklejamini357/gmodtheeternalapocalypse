@@ -229,6 +229,7 @@ function SWEP:DealDamage()
 
 		dmginfo:SetInflictor(self)
 		dmginfo:SetDamage(self.Primary.Damage)
+		dmginfo:SetDamageType(DMG_CLUB)
 
 		if anim == "fists_left" then
 			dmginfo:SetDamageForce( owner:GetRight() * 4912 + owner:GetForward() * 9998 ) -- Yes we need those specific numbers

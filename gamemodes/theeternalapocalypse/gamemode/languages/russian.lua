@@ -625,6 +625,8 @@ LANG.item_armor_cs2_goggles_d = "Экспериментальная броня, 
 LANG.perkincreased = "Вы увеличили навык [%s] на %d очк.!"
 LANG.pllvlup = "Поздравляем! Вы достигли %d-й уровня, вы получили %d очк. навыка и %d (%ss)!"
 LANG.plhasprestiged_1 = "Вы активировали %d-й престиж!"
+LANG.plhasprestiged_2 = "You have gained %d %ss and %d perk point(s)!"
+LANG.plhasprestiged_3 = "%s has now Prestige %d!"
 
 LANG.plcaughtinfection = "Вы получили заражение!"
 LANG.pljoined = "%s подключается к серверу"
@@ -681,9 +683,8 @@ LANG.acceptmodelchange = "Принять"
 LANG.cost = "Цена"
 LANG.x_turned_on_noclip = "%s включает режим полёта."
 LANG.x_turned_off_noclip = "%s отключает режим полёта."
-LANG.upgradestatimmune_n = "Секретный предмет"
-LANG.upgradestatimmune_d = "Поздравляем! Этот предмет ничего не делает.\nВы можете выбросить его, но какой смысл распространять это?!?!?"
 LANG.no_one_damaged_boss = "Никто не нанёс боссу урон."
+LANG.dmgtaken = "Урона получено: %s"
 
 -- Tips
 
@@ -742,7 +743,4 @@ LANG.boss_defeated = "Босс повержен"
 
 -- Edited
 
-LANG.dmgtaken = "Урона получено: %s"
 
-LANG.plhasprestiged_2 = "Вы получили [%d] (%ss) и %d очк. способностей!"
-LANG.plhasprestiged_3 = "%s активирует %d-й престиж!"

@@ -205,6 +205,7 @@ function SWEP:DealDamage( anim )
 		else
 			dmginfo:SetDamage(self.Primary.Damage)
 		end
+		dmginfo:SetDamageType(DMG_SLASH)
 		dmginfo:SetDamageForce( self.Owner:GetRight() * -4912 + self.Owner:GetForward() * 999 ) -- Yes we need those specific numbers
 		dmginfo:SetInflictor( self )
 		local attacker = self.Owner

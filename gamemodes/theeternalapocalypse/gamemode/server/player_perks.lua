@@ -1,9 +1,3 @@
-local meta = FindMetaTable("Player")
-
-function meta:HasPerk(perk)
-    return self.UnlockedPerks[perk]
-end
-
 function GM:LoadPlayerPerks(ply)
 	if !ply:IsValid() or !ply:IsPlayer() then Error("The Eternal Apocalypse: Tried to load a player perks file that doesn't exist!") return end
 	ply.UnlockedPerks = {}

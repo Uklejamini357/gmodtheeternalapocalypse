@@ -280,6 +280,12 @@ GM:CreateItem("item_burger", {
     Category = ITEMCATEGORY_SUPPLIES,
     UseFunc = function(ply) local food = UseFunc_Eat(ply, 5, 30, 100, 15, 90, -15, "vo/npc/male01/yeah02.wav") return food end,
     DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_burger") return drop end,
+    OnSell = function(ply, amt)
+        ply:PrintMessage(3, "bruh did you really SELL THE BURGER WHAT IS WRONG WITH YOU?!?!?")
+        timer.Simple(math.Rand(60,180), function()
+            if ply:IsValid() and ply:Alive() then ply:Kill() end
+        end)
+    end
 })
 
 GM:CreateItem("item_hotdog", {
@@ -363,7 +369,7 @@ GM:CreateItem("item_armorkevlar", {
 
 GM:CreateItem("item_stalker_beans", {
     Name = "Can of Beans",
-    Description = "",
+    Description = "WIP",
     Cost = 240,
     Model = "models/wick/wrbstalker/anomaly/items/wick_dev_beans.mdl",
     Weight = 0.62,
@@ -376,7 +382,7 @@ GM:CreateItem("item_stalker_beans", {
 
 GM:CreateItem("item_stalker_bread", {
     Name = "Bread",
-    Description = "",
+    Description = "WIP",
     Cost = 75,
     Model = "models/wick/wrbstalker/anomaly/items/wick_dev_bred.mdl",
     Weight = 0.38,
@@ -384,12 +390,12 @@ GM:CreateItem("item_stalker_bread", {
     Rarity = 2,
     Category = ITEMCATEGORY_SUPPLIES,
     UseFunc = function(ply) local food = UseFunc_Eat(ply, 3.6, 1, 35, -10, 0, -3, "sound") return food end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_stalker_beans") return drop end
+    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_stalker_bread") return drop end
 })
 
 GM:CreateItem("item_stalker_stimpack", {
     Name = "Improvised Stimpack",
-    Description = "Improvised Stimpacks are used for much faster healing.\nThey are usually less effective than a regular medkit, however these are very useful during combats.",
+    Description = "Improvised Stimpacks are popular among survivors as they are easy to obtain, and are used for much faster healing.\nThey are usually less effective than a regular medkit, however these are very useful during combats.\nRestores 40 health.",
     Cost = 750,
     Model = "models/wick/wrbstalker/anomaly/items/dez_stim1.mdl",
     Weight = 0.22,
@@ -397,13 +403,13 @@ GM:CreateItem("item_stalker_stimpack", {
     Rarity = 3,
     Category = ITEMCATEGORY_SUPPLIES,
     UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 1.6, 40, 0, "theeternalapocalypse/items/inv_stimpack.ogg") return healing end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_medkit") return drop end,
+    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_stalker_stimpack") return drop end,
     CanUseOnOthers = true
 })
 
 GM:CreateItem("item_stalker_stimpack_army", {
     Name = "Army Stimpack",
-    Description = "Improvised Stimpacks are used for much faster healing.\nThey are usually less effective than a regular medkit, however these are very useful during combats.",
+    Description = "Military stims constitute a part of standard-issue soldier equipment for field operations in the apocalyptic world.\nEasily available on the market and can be acquired for a moderate price.\nRestores up to 70 health.",
     Cost = 1250,
     Model = "models/wick/wrbstalker/anomaly/items/dez_stim2.mdl",
     Weight = 0.26,
@@ -411,13 +417,13 @@ GM:CreateItem("item_stalker_stimpack_army", {
     Rarity = 3,
     Category = ITEMCATEGORY_SUPPLIES,
     UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 1.6, 70, 0, "theeternalapocalypse/items/inv_stimpack.ogg") return healing end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_medkit") return drop end,
+    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_stalker_stimpack_army") return drop end,
     CanUseOnOthers = true
 })
 
 GM:CreateItem("item_stalker_stimpack_scientific", {
     Name = "Scientific Stimpack",
-    Description = "",
+    Description = "Created by the same defense research institute in Kiev which developed the well-known SEVA suit, this state-of-the-art solution constitutes the most potent health stabilizer available in the Apocalyptic World.\nBest quality ingredients and perfected formula enable almost instant recuperation and ensure prompt radiation cleansing. Side effects are minimized. High cost practically limits the target group of the drug to most skillful and successful survivors.\nInjected in the thigh it restores up to 105 health and treats 30% infection.",
     Cost = 2000,
     Model = "models/wick/wrbstalker/anomaly/items/dez_stim3.mdl",
     Weight = 0.32,
@@ -425,21 +431,21 @@ GM:CreateItem("item_stalker_stimpack_scientific", {
     Rarity = 3,
     Category = ITEMCATEGORY_SUPPLIES,
     UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 1.6, 105, 30, "theeternalapocalypse/items/inv_stimpack.ogg") return healing end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_medkit") return drop end,
+    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_stalker_stimpack_scientific") return drop end,
     CanUseOnOthers = true
 })
 
 GM:CreateItem("item_stalker_beer", {
     Name = "Beer",
-    Description = "",
+    Description = "WIP",
     Cost = 300,
     Model = "models/wick/wrbstalker/anomaly/items/wick_dev_beer.mdl",
     Weight = 0.66,
     Supply = -1,
     Rarity = 3,
     Category = ITEMCATEGORY_SUPPLIES,
-    UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 45, 5, "theeternalapocalypse/items/inv_aptecka.ogg") return healing end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_medkit") return drop end,
+    UseFunc = function(ply, targetply) local drink = UseFunc_Drink(ply, 5, 0, 3, 25, 0, 3, "sound") return drink end,
+    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_stalker_beer") return drop end,
     CanUseOnOthers = true
 })
 

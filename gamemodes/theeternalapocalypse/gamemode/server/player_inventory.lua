@@ -214,12 +214,45 @@ function GM:UseItem(ply, item, use, targetply)
 				ply.CanUseItem = false
 			end
 			self:SendInventory(ply)
+			/*
+			if ftoggle == "UseFunc" then
+				local func = true
+				if ref.CanUse then
+					ref.CanUse(ply)
+				end
+				if func == true then
+					GAMEMODE:SystemRemoveItem(ply, item, false) -- leave this as false otherwise grenades are unusable
+
+					if ref.Thirst then
+						ply.Thirst = ply.Thirst + ref.Thirst
+					end
+					
+					timer.Simple(0.25, function() if ply:IsValid() then ply.CanUseItem = true end end)
+					ply.CanUseItem = false
+				end
+				self:SendInventory(ply)
+			end
+
+			*/
 		else
 			ply:SendChat(translate.ClientGet(ply, "hasnoitem"))
 		end
 	else
 		ply:SendChat(translate.ClientGet(ply, "hasnoitem"))
 	end
+end
+
+
+net.Receive("DestroyItem", function(length, ply)
+	GAMEMODE:DestroyItem(ply, net.ReadString())
+end)
+
+function GM:DestroyItem(ply, str)
+	local item = GAMEMODE.ItemsList[str]
+	if !ply:IsValid() or !ply:IsPlayer() then return end
+
+	self:SystemRemoveItem(ply, str, not item.IsGrenade, 1)
+	self:SendInventory(ply)
 end
 
 -------------------------------- buy stuff --------------------------------
@@ -275,7 +308,7 @@ net.Receive("SellItem", function(len, ply)
 	local sellprice = item["Cost"] * (0.2 + (ply.StatBarter * 0.005)) * amt
 
 	if ply.Inventory[str] then
-		if item["IsGrenade"] then
+		if item.IsGrenade then
 			GAMEMODE:SystemRemoveItem(ply, str, false, amt)
 		else
 			GAMEMODE:SystemRemoveItem(ply, str, true, amt)
@@ -289,10 +322,13 @@ net.Receive("SellItem", function(len, ply)
 		UseFunc_RemoveArmor(ply, str)
 	end
 
-	ply:PrintTranslatedMessage(HUD_PRINTCONSOLE, "tr_itemsold", GAMEMODE:GetItemName(name, ply), amt, sellprice, GAMEMODE.Config["Currency"])
+	ply:PrintTranslatedMessage(HUD_PRINTCONSOLE, "tr_itemsold", GAMEMODE:GetItemName(str, ply), amt, sellprice, GAMEMODE.Config["Currency"])
 	ply.Money = math.floor(cash + sellprice) -- base sell price 20% of the original buy price plus 0.5% per barter level to max of 25%
-	GAMEMODE:SendInventory(ply)
 	ply:EmitSound("physics/cardboard/cardboard_box_break3.wav", 100, 100)
+	if item.OnSell then
+		item.OnSell(ply, amt)
+	end
+	GAMEMODE:SendInventory(ply)
 	GAMEMODE:NetUpdatePeriodicStats(ply)
 end)
 

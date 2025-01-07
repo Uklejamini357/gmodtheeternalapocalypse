@@ -35,7 +35,7 @@ function ENT:SetUpStats()
 		["Infection"] = 0,
 		["Reach"] = 115,
 		["StrikeDelay"] = 0.6,
-		["AfterStrikeDelay"] = 0.6,
+		["AfterStrikeDelay"] = 1.1,
 
 		["Health"] = 1500,
 		["MoveSpeedWalk"] = 65,
