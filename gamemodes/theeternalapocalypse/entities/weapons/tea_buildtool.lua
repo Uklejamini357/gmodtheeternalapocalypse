@@ -210,7 +210,7 @@ function SWEP:SecondaryAttack()
     if self:GetNextSecondaryFire() > CurTime() then return false end
     if not IsFirstTimePredicted() then return end
     local DFrame = vgui.Create("DFrame")
-    DFrame:SetSize(ScrW() / 2.8, ScrH() / 1.15)
+    DFrame:SetSize(ScrW() / 2.8, ScrH() / 1.55)
     DFrame:SetTitle("Building Menu")
     DFrame:Center()
     DFrame:MakePopup()
