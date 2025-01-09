@@ -45,21 +45,9 @@ SWEP.Secondary.Ammo = "none"
 local stacker_dirs_name = {"Forward", "Backward", "Left", "Right", "Up", "Down"}
 function SWEP:DrawHUD()
     if not CLIENT then return false end
-    local hitpos = util.TraceLine({
-        start = LocalPlayer():GetShootPos(),
-        endpos = LocalPlayer():GetShootPos() + LocalPlayer():GetAimVector() * 4096,
-        filter = LocalPlayer(),
-        mask = MASK_SHOT
-    }).HitPos
-
-    local screenpos = hitpos:ToScreen()
-    local x = screenpos.x
-    local y = screenpos.y
     local ply = LocalPlayer()
-    local weapon = ply:GetActiveWeapon()
     local vmodel = ply:GetViewModel()
     local hudpos = vmodel:GetAttachment("1")
-    local moda
     if hudpos then
         pos2 = hudpos.Pos
         local screenpos2 = pos2:ToScreen()
@@ -70,7 +58,9 @@ function SWEP:DrawHUD()
         surface.SetFont("TargetID")
         surface.DrawText("Left Click: Spawn Prop")
         surface.SetTextPos(x2 - 342, y2 - 32)
-        surface.SetTextPos(x2 - 342, y2 - 124)         --[[
+        surface.SetTextPos(x2 - 342, y2 - 124)
+        surface.SetTextColor(50, 250, 250, 225)
+        surface.DrawText("Stacker Mode: " .. (stacker_mode_enabled:GetBool() and "Enabled" or "Disabled"))         --[[
 	surface.SetTextPos(x2 - 342, y2 - 32)
 	surface.DrawText("Right Click: Change Rotation Axis")
 	surface.SetTextColor(150, 250, 250, 225)
@@ -95,8 +85,6 @@ function SWEP:DrawHUD()
 	surface.SetTextColor(200, 250, 200, 225)
 	surface.DrawText("prop to increase rotation rate by upto 20")
 	--]]
-        surface.SetTextColor(50, 250, 250, 225)
-        surface.DrawText("Stacker Mode: " .. (stacker_mode_enabled:GetBool() and "Enabled" or "Disabled"))
         surface.SetTextPos(x2 - 342, y2 - 104)
         surface.DrawText("Stacker Direction: " .. stacker_dirs_name[stacker_mode_dir:GetInt()])
         surface.SetTextPos(x2 - 342, y2 - 84)
@@ -116,66 +104,69 @@ function SWEP:DrawHUD()
             local ang = self:GetGhost():GetAngles()
             surface.DrawText(string.format("Current Angles: [%.1f %.1f %.1f]", ang.p, ang.y, ang.r))
         end
+
+        surface.SetTextPos(x2 - 342, y2 + 56)
+        surface.SetTextColor(200, 200, 200, 225)
+        surface.DrawText("Left Click + ALT: Drag Unbuilt prop")
     end
 end
 
 function SWEP:SetupDataTables()
     self:NetworkVar("Entity", 0, "Ghost")
+    self:NetworkVar("Entity", 1, "DraggedEnt")
+    self:NetworkVar("Vector", 0, "DraggedEntLPos")
 end
 
 function SWEP:Reload()
     if not SERVER then return false end
     local tr = {}
-    tr.start = self.Owner:GetShootPos()
-    tr.endpos = self.Owner:GetShootPos() + 150 * self.Owner:GetAimVector()
-    tr.filter = {self.Owner}
+    tr.start = self:GetOwner():GetShootPos()
+    tr.endpos = self:GetOwner():GetShootPos() + 150 * self:GetOwner():GetAimVector()
+    tr.filter = {self:GetOwner()}
     local trace = util.TraceLine(tr)
-    if trace.Entity and trace.Entity:IsValid() and (trace.Entity:GetClass() == "prop_flimsy" or trace.Entity:GetClass() == "prop_strong") and not (self.Weapon:GetNextPrimaryFire() > CurTime()) then
-        GAMEMODE:DestroyProp(self.Owner, trace.Entity)
+    if trace.Entity and trace.Entity:IsValid() and (trace.Entity:GetClass() == "prop_flimsy" or trace.Entity:GetClass() == "prop_strong") and (self:GetNextPrimaryFire() <= CurTime()) then
+        GAMEMODE:DestroyProp(self:GetOwner(), trace.Entity)
         self:SetNextPrimaryFire(CurTime() + 2.08)
-    elseif trace.Entity and trace.Entity:IsValid() and SpecialSpawns[trace.Entity:GetClass()] and not (self.Weapon:GetNextPrimaryFire() > CurTime()) then
-        GAMEMODE:DestroyStructure(self.Owner, trace.Entity)
+    elseif trace.Entity and trace.Entity:IsValid() and SpecialSpawns[trace.Entity:GetClass()] and (self:GetNextPrimaryFire() <= CurTime()) then
+        GAMEMODE:DestroyStructure(self:GetOwner(), trace.Entity)
         self:SetNextPrimaryFire(CurTime() + 2.08)
     end
 end
 
 local stacker_dirs = {Vector(1, 0, 0), Vector(-1, 0, 0), Vector(0, 1, 0), Vector(0, -1, 0), Vector(0, 0, 1), Vector(0, 0, -1),}
 local dist = {function(min, max) return math.abs(max.x - min.x) end, function(min, max) return math.abs(max.x - min.x) end, function(min, max) return math.abs(max.y - min.y) end, function(min, max) return math.abs(max.y - min.y) end, function(min, max) return math.abs(max.z - min.z) end, function(min, max) return math.abs(max.z - min.z) end,}
-function SWEP:GetBuildPos()
-    local ply = self.Owner
+function SWEP:GetBuildPos(f)
+    local ply = self:GetOwner()
     local vStart = ply:GetShootPos()
     local vForward = ply:GetAimVector()
     local trace = {}
     trace.start = vStart
     trace.endpos = vStart + (vForward * 150)
-    trace.filter = ply
+    trace.filter = {ply, f}
     local tr = util.TraceLine(trace)
     local stacker_mode = tobool(ply:GetInfo("tea_buildtool_stacker_mode", "0"))
     local stacker_dir = ply:GetInfo("tea_buildtool_stacker_dir", "1")
-    tr.HitPos = tr.HitPos + vector_up * dist[5](self:GetGhost():OBBMins(), self:GetGhost():OBBMaxs()) / 2
-    if stacker_mode then
-        if IsValid(tr.Entity) then
-            local dir = stacker_dirs[tonumber(stacker_dir) or 1] or stacker_dirs[1]
-            local offset = Vector()
-            offset:Set(dir * dist[tonumber(stacker_dir) or 1](tr.Entity:OBBMins(), tr.Entity:OBBMaxs()))
-            offset = offset - Vector(1, 1, 1) / 2 * dir
-            offset:Rotate(tr.Entity:GetAngles())
-            tr.HitPos = tr.Entity:LocalToWorld(Vector(0, 0, 0)) + offset --[[tr.Entity:OBBCenter()--]]
-        end
+    if stacker_mode and IsValid(tr.Entity) then
+        local dir = stacker_dirs[tonumber(stacker_dir) or 1] or stacker_dirs[1]
+        local offset = Vector()
+        offset:Set(dir * dist[tonumber(stacker_dir) or 1](tr.Entity:OBBMins(), tr.Entity:OBBMaxs()))
+        offset = offset - Vector(1, 1, 1) / 2 * dir
+        offset:Rotate(tr.Entity:GetAngles())
+        tr.HitPos = tr.Entity:LocalToWorld(Vector(0, 0, 0)) + offset --[[tr.Entity:OBBCenter()--]]
     end
 
     self.AimedEntity = tr.Entity
     return tr.HitPos
 end
 
-function SWEP:GetBuildAngles()
-    local ply = self.Owner
+function SWEP:GetBuildAngles(f)
+    local ply = self:GetOwner()
     local ang = ply:EyeAngles()
     if ply:KeyDown(IN_SPEED) and ply:GetInfoNum("tea_buildtool_snap_angle", 0) ~= 0 then ang.y = math.SnapTo(ang.y, math.abs(ply:GetInfoNum("tea_buildtool_snap_angle", 0))) end
     if not tobool(ply:GetInfo("tea_buildtool_allow_ang_p", "0")) then ang.p = 0 end
     if tobool(ply:GetInfo("tea_buildtool_world_angle", "0")) then ang = angle_zero end
     local stacker_mode = tobool(ply:GetInfo("tea_buildtool_stacker_mode", "0"))
-    if stacker_mode then if IsValid(self.AimedEntity) then ang = self.AimedEntity:GetAngles() end end
+    if stacker_mode and IsValid(self.AimedEntity) then ang = self.AimedEntity:GetAngles() end
     local p, y, r = ply:GetInfoNum("tea_buildtool_angle_p", 0), ply:GetInfoNum("tea_buildtool_angle_y", 0), ply:GetInfoNum("tea_buildtool_angle_r", 0)
     ang:RotateAroundAxis(ang:Right(), p)
     ang:RotateAroundAxis(ang:Up(), y)
@@ -184,12 +175,38 @@ function SWEP:GetBuildAngles()
 end
 
 function SWEP:GetSelected()
-    local ply = self.Owner
+    local ply = self:GetOwner()
     return ply.SelectedProp or "models/props_debris/wood_board04a.mdl"
 end
 
+local class = {
+    prop_flimsy = true,
+    prop_strong = true,
+}
+
 function SWEP:PrimaryAttack()
-    if self.Owner:KeyDown(IN_USE) and CLIENT and IsFirstTimePredicted() then
+    if self:GetOwner():KeyDown(IN_WALK) and SERVER then
+        if not IsValid(self:GetDraggedEnt()) then
+            local ply = self:GetOwner()
+            local vStart = ply:GetShootPos()
+            local vForward = ply:GetAimVector()
+            local trace = {}
+            trace.start = vStart
+            trace.endpos = vStart + (vForward * 150)
+            trace.filter = ply
+            local tr = util.TraceLine(trace)
+            if IsValid(tr.Entity) and class[tr.Entity:GetClass()] and not tr.Entity.IsBuilt then
+                self:SetDraggedEnt(tr.Entity)
+                self:SetDraggedEntLPos(tr.Entity:WorldToLocal(tr.HitPos))
+            end
+        end
+    elseif SERVER and IsValid(self:GetDraggedEnt()) then
+        self:SetDraggedEnt(NULL)
+        return
+    end
+
+    if IsValid(self:GetDraggedEnt()) or self:GetOwner():KeyDown(IN_WALK) then return end
+    if self:GetOwner():KeyDown(IN_USE) and CLIENT and IsFirstTimePredicted() then
         local i = stacker_mode_dir:GetInt() + 1
         if i > 6 then i = 1 end
         RunConsoleCommand("tea_buildtool_stacker_dir", i)
@@ -197,11 +214,11 @@ function SWEP:PrimaryAttack()
 
     if not SERVER then return false end
     if not IsFirstTimePredicted() then return end
-    local ply = self.Owner
+    local ply = self:GetOwner()
     if ply:KeyDown(IN_USE) then return end
-    if not (self.Weapon:GetNextPrimaryFire() > CurTime()) then
+    if (self:GetNextPrimaryFire() <= CurTime()) then
         GAMEMODE:MakeProp(ply, self:GetSelected(), self:GetBuildPos(), self:GetBuildAngles(), 1)
-        self:SetNextPrimaryFire(CurTime() + 0.7)
+        self:SetNextPrimaryFire(CurTime() + 0.5)
     end
 end
 
@@ -210,9 +227,11 @@ function SWEP:SecondaryAttack()
     if self:GetNextSecondaryFire() > CurTime() then return false end
     if not IsFirstTimePredicted() then return end
     local DFrame = vgui.Create("DFrame")
-    DFrame:SetSize(ScrW() / 2.8, ScrH() / 1.55)
+    DFrame:SetSize(ScrW() / 2.8, ScrH() / 4.0)
     DFrame:SetTitle("Building Menu")
-    DFrame:Center()
+    DFrame:InvalidateLayout(true) --DFrame:Center()
+    DFrame:SetPos(0, ScrH() * 0.985 - DFrame:GetTall())
+    DFrame:CenterHorizontal(0.185)
     DFrame:MakePopup()
     local DScrollPanel = vgui.Create("DScrollPanel", DFrame)
     DScrollPanel:Dock(FILL)
@@ -300,7 +319,8 @@ function SWEP:SecondaryAttack()
 end
 
 function SWEP:Holster()
-    if SERVER then if IsValid(self:GetGhost()) then self:GetGhost():Remove() end end
+    self:SetDraggedEnt(NULL)
+    if SERVER and IsValid(self:GetGhost()) then self:GetGhost():Remove() end
     return true
 end
 
@@ -310,7 +330,7 @@ end
 
 function SWEP:Think()
     if SERVER then
-        if not IsValid(self:GetGhost()) then
+        if not IsValid(self:GetGhost()) then --if IsValid(self:GetDraggedEnt()) and not self:GetOwner():KeyDown(IN_ATTACK) then self:SetDraggedEnt(NULL) end
             self:SetGhost(ents.Create("prop_dynamic"))
             self:GetGhost():SetModel(self:GetSelected())
             self:GetGhost():Spawn()
@@ -325,5 +345,42 @@ function SWEP:Think()
         ghost:SetMaterial("models/wireframe")
         ghost:SetColor(Color(255, 255, 255, 188))
         ghost:SetRenderMode(RENDERMODE_TRANSCOLOR)
+        if IsValid(self:GetDraggedEnt()) then
+            ghost:SetNoDraw(true)
+            local ent = self:GetDraggedEnt()
+            local Invalid = function() self:SetDraggedEnt(NULL) end
+            if ent.IsBuilt then
+                Invalid()
+                return
+            end
+
+            ent:SetPos(self:GetBuildPos(ent))
+            ent:SetAngles(self:GetBuildAngles(ent))
+        else
+            ghost:SetNoDraw(false)
+        end
     end
 end
+
+local halo_clr_drag = Color(0, 255, 0)
+local halo_clr_ghost = Color(255, 255, 0)
+local halo_clr = Color(255, 255, 255)
+hook.Add("PreDrawHalos", "tea_buildtool halo", function()
+    local wep = LocalPlayer():GetActiveWeapon()
+    if IsValid(wep) and wep:GetClass() == "tea_buildtool" then
+        local tbl = {}
+        local l = 0
+        local clr = halo_clr
+        if IsValid(wep:GetDraggedEnt()) then
+            l = l + 1
+            tbl[l] = wep:GetDraggedEnt()
+            clr = halo_clr_drag
+        elseif IsValid(wep:GetGhost()) and not wep:GetGhost():GetNoDraw() then
+            l = l + 1
+            tbl[l] = wep:GetGhost()
+            clr = halo_clr_ghost
+        end
+
+        halo.Add(tbl, clr, 1, 1, 5, true, true)
+    end
+end)
