@@ -466,8 +466,8 @@ function GM:PlayerBindPress(pl, key, wasin)
 	elseif key == "gm_showteam" then
 		if !SuperAdminCheck(pl) then return false end
 		gamemode.Call("AdminMenu")
-	elseif key == "gm_showspare1" then
-		gamemode.Call("DropGoldMenu")
+	-- elseif key == "gm_showspare1" then -- Disabled, I will make something better with it
+		-- gamemode.Call("DropGoldMenu")
 	elseif key == "gm_showspare2" then
 		gamemode.Call("MakeOptions")
 	elseif key == "+menu_context" then
