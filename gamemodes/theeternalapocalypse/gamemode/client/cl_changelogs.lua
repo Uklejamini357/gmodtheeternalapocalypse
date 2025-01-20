@@ -6,7 +6,7 @@ function GM:MakeChangeLogs()
 	self.ChangeLogsFrame = vgui.Create( "DFrame" )
 	self.ChangeLogsFrame:SetSize(wide, tall)
 	self.ChangeLogsFrame:Center()
-	self.ChangeLogsFrame:SetTitle ("")
+	self.ChangeLogsFrame:SetTitle("")
 	self.ChangeLogsFrame:SetDraggable(false)
 	self.ChangeLogsFrame:SetVisible( true )
 	self.ChangeLogsFrame:SetAlpha(0)
@@ -36,12 +36,17 @@ function GM:MakeChangeLogs()
 	gamemode.Call("AddExtraOptions", list, self.ChangeLogsFrame)
 
 	local function MakeText(panel, text, font, color)
-		return EasyLabel(panel, text, font, color or Color(205,205,205))
+		local txt = EasyLabel(panel, text, font, color or Color(205,205,205))
+		-- txt:SetWrap(true)
+		-- surface.SetFont(font)
+		-- local x,y = surface.GetTextSize(text)
+		-- txt:SetSize(x,y)
+		return txt
 	end
 
 ---- Help about changelogs info
 ---- No. there won't be any translations for changelogs.
-	list:AddItem(MakeText(self.ChangeLogsFrame, "Help about changelogs: (Note: Some may not be accurate)", "TargetID", Color(255,255,255)))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "Help about changelogs: (Note: Some changes may not be accurate)", "TargetID", Color(255,255,255)))
 	list:AddItem(MakeText(self.ChangeLogsFrame, "+ added", "TargetIDSmall"))
 	list:AddItem(MakeText(self.ChangeLogsFrame, "- removed", "TargetIDSmall"))
 	list:AddItem(MakeText(self.ChangeLogsFrame, "+- added and something similar is removed", "TargetIDSmall"))
@@ -52,6 +57,28 @@ function GM:MakeChangeLogs()
 	list:AddItem(MakeText(self.ChangeLogsFrame, "? other unknown changes/fixes\n\n", "TargetIDSmall"))
 
 	
+	list:AddItem(MakeText(self.ChangeLogsFrame, "v0.11.2, 31st December 2024\n", "TargetID", Color(255,255,255)))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "Since the Pre-0.11.2:", "TargetIDSmall"))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "+ Added 3 new tasks", "TargetIDSmall"))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "+ Added confirmation for clearing spawns data", "TargetIDSmall"))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "? More\n", "TargetIDSmall"))
+
+	
+	list:AddItem(MakeText(self.ChangeLogsFrame, "vPre-0.11.2, 1st June 2024\n", "TargetID", Color(255,255,255)))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "; Reworked the inventory weight system - you can now pick items up but carrying too much will result in movement speed penalty.\nAlso removed no longer needed text in some UI's.", "TargetIDSmall"))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "+ Infection Level now significantly affects zombie speed at 50-100+%", "TargetIDSmall"))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "+ Zombie Lord King can now jump if enraged", "TargetIDSmall"))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "+ New Miniboss Zombie: Hunter", "TargetIDSmall"))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "+ New perk: Speedy hands - Gives more props", "TargetIDSmall"))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "+ New perk: Enduring Endurance", "TargetIDSmall"))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "+ A new option in Options (F4)", "TargetIDSmall"))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "+ New task: Loot Finder", "TargetIDSmall"))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "= Some weapons are now able to damage zombies more than usual", "TargetIDSmall"))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "/ Inventory tab now update every time the inventory is updated", "TargetIDSmall"))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "/ Changed how the task system works a bit, now progress now shows on C Menu", "TargetIDSmall"))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "/ Renamed Weight Boost III perk to Heavyweight which now also gives a slight melee damage boost", "TargetIDSmall"))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "? And More\n", "TargetIDSmall"))
+
 	list:AddItem(MakeText(self.ChangeLogsFrame, "v0.11.1b, 04 September 2023\n", "TargetID", Color(255,255,255)))
 	list:AddItem(MakeText(self.ChangeLogsFrame, "+ Added confirmation for clearing spawns data", "TargetIDSmall"))
 	list:AddItem(MakeText(self.ChangeLogsFrame, "+ New main menu option", "TargetIDSmall"))
@@ -60,7 +87,7 @@ function GM:MakeChangeLogs()
 	list:AddItem(MakeText(self.ChangeLogsFrame, "= 'Antelope 7.62' now does 2.5x increased headshot damage instead of 2x", "TargetIDSmall"))
 	list:AddItem(MakeText(self.ChangeLogsFrame, "* Tasks system should no longer be bugging now", "TargetIDSmall"))
 	list:AddItem(MakeText(self.ChangeLogsFrame, "* Bug fixes for faction structures when they're being destroyed", "TargetIDSmall"))
-	list:AddItem(MakeText(self.ChangeLogsFrame, "? Also other changes which i couldn't log here, since it was a quick update", "TargetIDSmall"))
+	list:AddItem(MakeText(self.ChangeLogsFrame, "? Also other changes which i couldn't log here, since it was a quick update\n", "TargetIDSmall"))
 
 
 	list:AddItem(MakeText(self.ChangeLogsFrame, "v0.11.1a, 02 September 2023\n", "TargetID", Color(255,255,255)))

@@ -563,9 +563,21 @@ function GM:DrawVitals()
 
 
 	--Max Weight
+	local weight = LocalPlayer():CalculateWeight()
+	local maxweight = LocalPlayer():CalculateMaxWeight()
+	local maxwalkweight = LocalPlayer():CalculateMaxWalkWeight()
+
+	local _y = 155
 	if not self.NoInvWeightHUDDisplay then
-		draw.SimpleText(translate.Format("inv_weight", LocalPlayer():CalculateWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWalkWeight(), WEIGHT_UNIT), "TargetIDSmall", 20, 155, Color(205, 205, 205, 255), 0, 1)
+		draw.SimpleText(translate.Format("inv_weight", weight, WEIGHT_UNIT, maxweight, WEIGHT_UNIT, maxwalkweight, WEIGHT_UNIT), "TargetIDSmall", 20, _y, Color(205, 205, 205, 255), 0, 1)
+		_y = _y + 20
 	end
+	if weight >= maxwalkweight then
+		draw.SimpleText("Carrying too much, cannot move!", "TargetIDSmall", 20, _y, Color(205, 55, 55, 255), 0, 1)
+	elseif weight >= maxweight then
+		draw.SimpleText("Carrying too much, speed penalty x"..math.Round(math.Clamp(0.2 + ((maxwalkweight - maxweight) - (weight - maxweight)) / ((maxwalkweight - maxweight)/0.6), 0.2, 0.8), 2).."!", "TargetIDSmall", 20, _y, Color(205, 205, 55, 205), 0, 1)
+	end
+
 
 	if MyOxygen < 100 then
 		draw.SimpleText(Format("Oxygen: %d%%", math.Round(MyOxygen)), "TargetIDTiny", ScrW()/2, 186, Color(205, 205, 255, 255), TEXT_ALIGN_CENTER, 0)

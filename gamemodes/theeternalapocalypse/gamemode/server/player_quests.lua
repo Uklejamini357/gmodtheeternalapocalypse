@@ -1,7 +1,7 @@
 function GM:GiveTask(pl, task)
     local taskl = self.Tasks[task]
     if pl.CurrentTask ~= "" then return end
-	if pl.TaskCooldowns[task] and pl.TaskCooldowns[task] > os.time() then pl:SystemMessage("This task is still on cooldown! Becomes available in: ".. pl.TaskCooldowns[task] - os.time().." seconds", Color(255,155,155), true) return end
+	if pl.TaskCooldowns[task] and pl.TaskCooldowns[task] > os.time() then pl:SystemMessage("This task is still on cooldown! Becomes available in: ".. util.NiceTime(pl.TaskCooldowns[task] - os.time())..".", Color(255,155,155), true) return end
 	if taskl.LevelReq > tonumber(pl.Level) then pl:SystemMessage("You need to be level "..taskl.LevelReq.." to take this task!", Color(255,155,155), true) return end
 
     pl.CurrentTask = task

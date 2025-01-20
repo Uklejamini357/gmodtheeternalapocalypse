@@ -656,8 +656,8 @@ function GM:AdminMenu()
 	SpawnMenuProperties:AddSheet(translate.Get("items_category_5"), SpawnMenuJunk, "icon16/bin.png", false, false, translate.Get("items_category_5_d"))
 	SpawnMenuProperties:AddSheet(translate.Get("items_category_6"), SpawnMenuMisc, "icon16/basket.png", false, false, translate.Get("items_category_6_d"))
 
-	PropertySheet:AddSheet(translate.Get("admin_panel_tab_2"), AdminCmds, "icon16/shield.png", false, false, translate.Get("admin_panel_tab_2_d"))
 	PropertySheet:AddSheet(translate.Get("admin_panel_tab_1"), PlayerList, "icon16/shield.png", false, false, translate.Get("admin_panel_tab_1_d"))
+	PropertySheet:AddSheet(translate.Get("admin_panel_tab_2"), AdminCmds, "icon16/shield.png", false, false, translate.Get("admin_panel_tab_2_d"))
 	PropertySheet:AddSheet(translate.Get("admin_panel_tab_3"), SAdminCmds, "icon16/shield_add.png", false, false, translate.Get("admin_panel_tab_3_d"))
 	PropertySheet:AddSheet(translate.Get("admin_panel_tab_4"), SpawnMenu, "icon16/table.png", false, false, translate.Get("admin_panel_tab_4_d"))
 end

@@ -1103,6 +1103,7 @@ end
 function GM:RecalcPlayerModel(ply)
 	if !ply.ChosenModel then ply.ChosenModel = "models/player/kleiner.mdl" end
 	if !ply.ChosenModelColor then ply.ChosenModelColor = Vector(0.25, 0, 0) end
+	local gmod_hands = ents.FindByClass("gmod_hands")[1]
 
 	if type(ply.ChosenModelColor) == "string" then ply.ChosenModelColor = Vector(ply.ChosenModelColor) end
 	ply:SetPlayerColor(ply.ChosenModelColor)
@@ -1111,7 +1112,10 @@ function GM:RecalcPlayerModel(ply)
 		if !table.HasValue(self.DefaultModels, ply.ChosenModel) then
 			ply.ChosenModel = table.Random(self.DefaultModels)
 		end
-		ply:SetupHands()
+		ply:SetModel(ply.ChosenModel)
+		if gmod_hands and gmod_hands:IsValid() then
+			ply:SetupHands()
+		end
 		return true
 	end
 
@@ -1119,11 +1123,15 @@ function GM:RecalcPlayerModel(ply)
 	if !table.HasValue(models, ply.ChosenModel) then
 		ply.ChosenModel = table.Random(models)
 		ply:SetModel(ply.ChosenModel)
-		ply:SetupHands()
+		if gmod_hands and gmod_hands:IsValid() then
+			ply:SetupHands()
+		end
 		return false
 	else
 		ply:SetModel(ply.ChosenModel)
-		ply:SetupHands()
+		if gmod_hands and gmod_hands:IsValid() then
+			ply:SetupHands()
+		end
 		return true
 	end
 end

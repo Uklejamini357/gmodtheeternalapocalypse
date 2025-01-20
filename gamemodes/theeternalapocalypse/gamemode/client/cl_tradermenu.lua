@@ -626,12 +626,12 @@ function GM:TraderMenu()
 
 
 
-	PropertySheet:AddSheet("Ammunition", AmmoPanel, "icon16/ammo_three.png", false, false, "Ammunition needed for your guns to shoot")
-	PropertySheet:AddSheet("Supplies", SupplyPanel, "icon16/box.png", false, false, "Food, Medical Supplies, Misc items, for survival")
-	PropertySheet:AddSheet("Weapons", GunPanel, "icon16/gun.png", false, false, "Good guns that cost a lot and uses ammo, but also melee that cost less.")
-	PropertySheet:AddSheet("Armor", ArmorPanel, "icon16/shield.png", false, false, "Protective Armor to protect yourself from any sort of danger")
-	PropertySheet:AddSheet("Junk", JunkPanel, "icon16/bin.png", false, false, "Protective Armor to protect yourself from any sort of danger")
-	PropertySheet:AddSheet("Misc", MiscPanel, "icon16/basket.png", false, false, "Protective Armor to protect yourself from any sort of danger")
+	PropertySheet:AddSheet(translate.Get("items_category_1"), AmmoPanel, "icon16/ammo_three.png", false, false, translate.Get("items_category_1_d"))
+	PropertySheet:AddSheet(translate.Get("items_category_2"), SupplyPanel, "icon16/box.png", false, false, translate.Get("items_category_2_d"))
+	PropertySheet:AddSheet(translate.Get("items_category_3"), GunPanel, "icon16/gun.png", false, false, translate.Get("items_category_3_d"))
+	PropertySheet:AddSheet(translate.Get("items_category_4"), ArmorPanel, "icon16/shield.png", false, false, translate.Get("items_category_4_d"))
+	PropertySheet:AddSheet(translate.Get("items_category_5"), JunkPanel, "icon16/bin.png", false, false, translate.Get("items_category_5_d"))
+	PropertySheet:AddSheet(translate.Get("items_category_6"), MiscPanel, "icon16/basket.png", false, false, translate.Get("items_category_6_d"))
 	PropertySheet:AddSheet("My Items", SellPanel, "icon16/money_dollar.png", false, false, "Sell your items that you don't need for cash")
 	PropertySheet:AddSheet("Item Vault", VaultPanel, "icon16/building.png", false, false, "Store your stuff that you don't need")
 /*
