@@ -140,7 +140,7 @@ function SWEP:GetBuildAngles(f)
     local ang = ply:EyeAngles()
     if ply:KeyDown(IN_SPEED) and ply:GetInfoNum("tea_buildtool_snap_angle", 0) ~= 0 then ang.y = math.SnapTo(ang.y, math.abs(ply:GetInfoNum("tea_buildtool_snap_angle", 0))) end
     if not tobool(ply:GetInfo("tea_buildtool_allow_ang_p", "0")) then ang.p = 0 end
-    if tobool(ply:GetInfo("tea_buildtool_world_angle", "0")) then ang = angle_zero end
+    if tobool(ply:GetInfo("tea_buildtool_world_angle", "0")) then ang = Angle(0,0,0) end
     local stacker_mode = tobool(ply:GetInfo("tea_buildtool_stacker_mode", "0"))
     if stacker_mode and IsValid(self.AimedEntity) then ang = self.AimedEntity:GetAngles() end
     local p, y, r = ply:GetInfoNum("tea_buildtool_angle_p", 0), ply:GetInfoNum("tea_buildtool_angle_y", 0), ply:GetInfoNum("tea_buildtool_angle_r", 0)
@@ -202,6 +202,7 @@ function SWEP:SecondaryAttack()
     if SERVER then return end
     if self:GetNextSecondaryFire() > CurTime() then return false end
     if not IsFirstTimePredicted() then return end
+
     local DFrame = vgui.Create("DFrame")
     DFrame:SetSize(ScrW() / 2.8, ScrH() / 4.0)
     DFrame:SetTitle("Building Menu")
@@ -228,6 +229,7 @@ function SWEP:SecondaryAttack()
     panel:Dock(LEFT)
     panel:DockMargin(2, 0, 5, 0)
     DScrollPanel:AddItem(panel)
+
     local angle_p = vgui.Create("DNumSlider")
     angle_p:SetText("Pitch offset")
     angle_p:SetDecimals(1)
@@ -236,6 +238,7 @@ function SWEP:SecondaryAttack()
     angle_p:SetConVar("tea_buildtool_angle_p")
     angle_p:Dock(TOP)
     DScrollPanel:AddItem(angle_p)
+
     local angle_y = vgui.Create("DNumSlider")
     angle_y:SetText("Yaw offset")
     angle_y:SetDecimals(1)
@@ -244,6 +247,7 @@ function SWEP:SecondaryAttack()
     angle_y:SetConVar("tea_buildtool_angle_y")
     angle_y:Dock(TOP)
     DScrollPanel:AddItem(angle_y)
+
     local angle_r = vgui.Create("DNumSlider")
     angle_r:SetText("Roll offset")
     angle_r:SetDecimals(1)
@@ -252,6 +256,17 @@ function SWEP:SecondaryAttack()
     angle_r:SetConVar("tea_buildtool_angle_r")
     angle_r:Dock(TOP)
     DScrollPanel:AddItem(angle_r)
+
+    local angle_reset = vgui.Create("DButton")
+    angle_reset:SetText("Reset Angles")
+    angle_reset:Dock(TOP)
+	function angle_reset:DoClick()
+		GetConVar("tea_buildtool_angle_p"):SetFloat(0)
+		GetConVar("tea_buildtool_angle_y"):SetFloat(0)
+		GetConVar("tea_buildtool_angle_r"):SetFloat(0)
+	end
+    DScrollPanel:AddItem(angle_reset)
+
     local allow_p = vgui.Create("DCheckBoxLabel")
     allow_p:SetText("Allow Pitch?")
     allow_p:SetConVar("tea_buildtool_allow_ang_p")
@@ -259,6 +274,7 @@ function SWEP:SecondaryAttack()
     allow_p:Dock(TOP)
     allow_p:DockMargin(0, 5, 0, 0)
     DScrollPanel:AddItem(allow_p)
+
     local world_ang = vgui.Create("DCheckBoxLabel")
     world_ang:SetText("Use world angles?")
     world_ang:SetConVar("tea_buildtool_world_angle")
@@ -266,6 +282,7 @@ function SWEP:SecondaryAttack()
     world_ang:Dock(TOP)
     world_ang:DockMargin(0, 5, 0, 0)
     DScrollPanel:AddItem(world_ang)
+
     local stacker_mode = vgui.Create("DCheckBoxLabel")
     stacker_mode:SetText("Stacker Mode?")
     stacker_mode:SetConVar("tea_buildtool_stacker_mode")
@@ -273,6 +290,7 @@ function SWEP:SecondaryAttack()
     stacker_mode:Dock(TOP)
     stacker_mode:DockMargin(0, 15, 0, 0)
     DScrollPanel:AddItem(stacker_mode)
+
     local stacker_dir = vgui.Create("DComboBox")
     stacker_dir:SetValue("Stacker Direction")
     stacker_dir:SetSortItems(false)
