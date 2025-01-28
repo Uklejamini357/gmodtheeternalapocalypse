@@ -2,15 +2,20 @@ AddCSLuaFile()
 
 ENT.Base = "base_nextbot"
 ENT.PrintName = "Zombie Lord King"
-ENT.Category = "Boss Zombie"
-ENT.Author = "Uklejamini"
+ENT.Category = "T.E.A. Bosses"
 ENT.Purpose = "Can teleport nearby zombies"
-ENT.Spawnable = true
-ENT.AdminOnly = true
+ENT.Author = "Uklejamini"
 
-ENT.AttackAnim = (ACT_MELEE_ATTACK_SWING)
-ENT.WalkAnim = (ACT_WALK)
-ENT.RunAnim = (ACT_RUN)
+list.Set("NPC", "npc_tea_boss_lordking", {
+	Name = ENT.PrintName,
+	Class = "npc_tea_boss_lordking",
+	Category = ENT.Category
+})
+
+ENT.AttackAnim = ACT_MELEE_ATTACK_SWING
+ENT.WalkAnim = ACT_WALK
+ENT.RunAnim = ACT_RUN
+ENT.IdleAnim = ACT_IDLE
 
 ENT.FlinchAnim = (ACT_FLINCH_PHYSICS)
 ENT.FallAnim = (ACT_IDLE_ON_FIRE)
@@ -69,13 +74,13 @@ end
 
 function ENT:CanSeeTarget()
 	if !self:IsValid() then return false end
-	if self.target != nil then
+	if self.target then
 		local tracedata = {}
-		tracedata.start = self:GetPos() + Vector(0, 0, 30)
-		tracedata.endpos = self.target:GetPos() + Vector(0, 0, 30)
-		tracedata.filter = function(ent) return ent == self.target end
+		tracedata.start = self:GetPos() + self:OBBCenter()
+		tracedata.endpos = self.target:GetPos() + self.target:OBBCenter()
+		tracedata.filter = function(ent) return ent == self.target or string.sub(ent:GetClass(), 1, 5) == "prop_" end --ent == self.target or ent == NULL end
 		local trace = util.TraceLine(tracedata)
-		return self.target == trace.Entity
+		return not trace.HitWorld and (self.target == trace.Entity)
 	end
 
 	return false
@@ -232,7 +237,7 @@ function ENT:RunBehaviour()
 				self.NxtTick = self.NxtTick - 1
 			end
 
-			if (self:GetRangeTo(target) <= 100) and self:CanSeeTarget(target) then									-- hit the player
+			if (self:GetRangeTo(target) <= 100) and self:CanSeeTarget(target) then -- hit the player
 				self:EmitSound(table.Random(self.AttackSounds), 125, math.random(85, 95))
 
 				self:TimedEvent(0.35, function()

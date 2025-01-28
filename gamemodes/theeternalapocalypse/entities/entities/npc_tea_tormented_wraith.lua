@@ -2,11 +2,15 @@ AddCSLuaFile()
 
 ENT.Base = "npc_tea_basic"
 ENT.PrintName = "Tormented Wraith"
-ENT.Category = ""
-ENT.Author = "Uklejamini"
+ENT.Category = "TEA Zombies"
 ENT.Purpose = "Variant of Wraith - Blind and slow down"
-ENT.Spawnable = true
-ENT.AdminOnly = true
+ENT.Author = "Uklejamini"
+
+list.Set("NPC", "npc_tea_tormented_wraith", {
+	Name = ENT.PrintName,
+	Class = "npc_tea_tormented_wraith",
+	Category = ENT.Category
+})
 
 
 function ENT:SetUpStats()
@@ -16,7 +20,7 @@ function ENT:SetUpStats()
 	self:SetMaterial("models/effects/vol_lightmask01")
 
 	self.loco:SetAcceleration(900)
-	self.loco:SetJumpHeight( 300 )
+	self.loco:SetJumpHeight(300)
 
 -- dont bother changing any of this unless you like derpy shit
 	self.CanScream = true
@@ -24,11 +28,12 @@ function ENT:SetUpStats()
 	self.SpeedBuff = 1
 
 -- animations for the StartActivity function
-	self.AttackAnim = (ACT_MELEE_ATTACK1)
-	self.WalkAnim = (ACT_WALK)
-	self.RunAnim = (ACT_RUN)
-	self.FlinchAnim = (ACT_FLINCH_PHYSICS)
-	self.FallAnim = (ACT_IDLE_ON_FIRE)
+	self.AttackAnim = ACT_MELEE_ATTACK1
+	self.WalkAnim = ACT_WALK
+	self.RunAnim = ACT_RUN
+	self.IdleAnim = ACT_IDLE
+	self.FlinchAnim = ACT_FLINCH_PHYSICS
+	self.FallAnim = ACT_IDLE_ON_FIRE
 
 
 	self.ZombieStats = {
@@ -59,7 +64,8 @@ function ENT:SetUpStats()
 
 	self.AttackSounds = {"npc/stalker/go_alert2a.wav"}
 
-	self.AlertSounds = {"npc/stalker/stalker_scream1.wav",
+	self.AlertSounds = {
+		"npc/stalker/stalker_scream1.wav",
 		"npc/stalker/stalker_scream2.wav",
 		"npc/stalker/stalker_scream3.wav",
 		"npc/stalker/stalker_scream4.wav"
@@ -71,11 +77,13 @@ function ENT:SetUpStats()
 		"npc/fast_zombie/idle3.wav",
 	}
 
-	self.PainSounds = {"npc/stalker/stalker_die1.wav",
+	self.PainSounds = {
+		"npc/stalker/stalker_die1.wav",
 		"npc/stalker/stalker_die2.wav", 
 	}
 
-	self.DieSounds = {"npc/stalker/stalker_die1.wav",
+	self.DieSounds = {
+		"npc/stalker/stalker_die1.wav",
 		"npc/stalker/stalker_die2.wav",
 		"npc/combine_soldier/die1.wav"
 	}

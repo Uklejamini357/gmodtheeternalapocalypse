@@ -28,21 +28,16 @@ function ENT:Use( activator, caller )
 	local itemweight = item["Weight"]
 	local itemname = GAMEMODE:GetItemName(name, caller)
 
-	local qtycheck = GAMEMODE.LootTable2[name]["Qty"]
+	local qty = self.LootQuantity or GAMEMODE.LootTable2[name]["Qty"]
 
-	if !name or !item or !qtycheck then caller:SendChat(translate.ClientGet(caller, "buggedcache")) self:Remove() return false end
+	if !name or !item or !qty then caller:SendChat(translate.ClientGet(caller, "buggedcache")) self:Remove() return false end
 
 	if !item then return false end
-/*
-	if (caller:CalculateWeight() + (qtycheck * itemweight)) > caller:CalculateMaxWeight() then
-		caller:SendChat(translate.ClientFormat(caller, "notenoughspaceloot", qtycheck * itemweight, GAMEMODE:CalculateRemainingInventoryWeight(caller, qtycheck * itemweight)))
-		return false
-	end
-*/
-	gamemode.Call("SystemGiveItem", caller, name, qtycheck )
+
+	gamemode.Call("SystemGiveItem", caller, name, qty )
 	gamemode.Call("GiveTaskProgress", caller, "loot_finder", 1)
 
-	caller:SendChat("You picked up a loot cache containing [ "..qtycheck.."x "..itemname.." ]")
+	caller:SendChat("You picked up a loot cache containing [ "..qty.."x "..itemname.." ]")
 	GAMEMODE:SendInventory(caller)
 	caller:EmitSound("items/ammopickup.wav", 100, 100)
 	self:Remove()

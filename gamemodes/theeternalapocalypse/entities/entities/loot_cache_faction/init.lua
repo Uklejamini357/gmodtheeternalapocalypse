@@ -28,22 +28,17 @@ function ENT:Use( activator, caller )
 	local itemweight = item["Weight"]
 	local itemname = GAMEMODE:GetItemName(name, caller)
 
-	local qtycheck = GAMEMODE.LootTableFaction[name]["Qty"]
+	local qty = self.LootQuantity or GAMEMODE.LootTableFaction[name]["Qty"]
 
-	if !name or !item or !qtycheck then caller:SendChat(translate.ClientGet(caller, "buggedcache")) self:Remove() return false end
+	if !name or !item or !qty then caller:SendChat(translate.ClientGet(caller, "buggedcache")) self:Remove() return false end
 
 	if !item then return false end
-/*
-	if (caller:CalculateWeight() + (qtycheck * itemweight)) > caller:CalculateMaxWeight() then
-		caller:SendChat(translate.ClientFormat(caller, "notenoughspaceloot", qtycheck * itemweight, GAMEMODE:CalculateRemainingInventoryWeight(caller, qtycheck * itemweight)))
-		return false
-	end
-*/
-	gamemode.Call("SystemGiveItem", caller, name, qtycheck)
+
+	gamemode.Call("SystemGiveItem", caller, name, qty)
 	gamemode.Call("GiveTaskProgress", caller, "loot_finder", 1)
 
-	caller:SendChat("You picked up a faction loot cache containing [ "..qtycheck.."x "..itemname.." ]")
-	GAMEMODE:SystemBroadcast(caller:Nick().." has found a faction loot cache containing "..qtycheck.."x "..itemname.."!", Color(255,255,255,255), true)
+	caller:SendChat("You picked up a faction loot cache containing [ "..qty.."x "..itemname.." ]")
+	GAMEMODE:SystemBroadcast(caller:Nick().." has found a faction loot cache containing "..qty.."x "..itemname.."!", Color(255,255,255,255), true)
 	GAMEMODE:SendInventory(caller)
 	caller:EmitSound("items/ammopickup.wav", 100, 100)
 	self:Remove()

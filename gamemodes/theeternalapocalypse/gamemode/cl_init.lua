@@ -372,8 +372,8 @@ end
 hook.Add("CalcView", "DeathView", DeathView, HOOK_LOW)
 
 function GM:OnUndo(name, str)
--- this is still needed by the test zombies function
-	notification.AddLegacy("Undo: "..name, 2, 3)
+	-- this is still needed by the test zombies function
+	notification.AddLegacy("Undone "..name, 2, 3)
 	surface.PlaySound("buttons/button15.wav")
 end
 

@@ -367,8 +367,101 @@ function GM:FullyUpdatePlayer(ply)
 	net.Send(ply)
 end
 
---local meta = FindMetaTable("Player")
+local meta = FindMetaTable("Player")
 
+function meta:LoadLastSession()
+	if self.LastSessionInfo then
+		if self.LastSessionInfo["health"] then
+			self:SetHealth(self.LastSessionInfo["health"])
+		end
+
+		if self.LastSessionInfo["armor"] then
+			self:SetArmor(self.LastSessionInfo["armor"])
+		end
+
+		if self.LastSessionInfo["health"] then
+			self.Bounty = self.LastSessionInfo["bounty"]
+		end
+
+		if self.LastSessionInfo["stamina"] then
+			self.Stamina = self.LastSessionInfo["stamina"]
+		end
+
+		if self.LastSessionInfo["oxygen"] then
+			self.Stamina = self.LastSessionInfo["oxygen"]
+		end
+
+		if self.LastSessionInfo["hunger"] then
+			self.Hunger = self.LastSessionInfo["hunger"]
+		end
+
+		if self.LastSessionInfo["thirst"] then
+			self.Thirst = self.LastSessionInfo["thirst"]
+		end
+
+		if self.LastSessionInfo["fatigue"] then
+			self.Fatigue = self.LastSessionInfo["fatigue"]
+		end
+
+		if self.LastSessionInfo["infection"] then
+			self.Infection = self.LastSessionInfo["infection"]
+		end
+
+		if self.LastSessionInfo["battery"] then
+			self.Battery = self.LastSessionInfo["battery"]
+		end
+
+		if self.LastSessionInfo["hpregen"] then
+			self.HPRegen = self.LastSessionInfo["hpregen"]
+		end
+
+		if self.LastSessionInfo["survivaltime"] then
+			self.SurvivalTime = CurTime() - self.LastSessionInfo["survivaltime"]
+		end
+
+		if self.LastSessionInfo["zombiekills"] then
+			self.LifeZKills = self.LastSessionInfo["zombiekills"]
+		end
+
+		if self.LastSessionInfo["playerkills"] then
+			self.LifePlayerKills = self.LastSessionInfo["playerkills"]
+		end
+
+		local lastmap = self.LastSessionInfo["lastmap"]
+
+		if lastmap == game.GetMap() then
+			if self.LastSessionInfo["lastpos"] then
+				self:SetPos(self.LastSessionInfo["lastpos"])
+			end
+
+			if self.LastSessionInfo["lastang"] then
+				self:SetEyeAngles(self.LastSessionInfo["lastang"])
+			end
+		end
+
+		if self.LastSessionInfo["weapons"] then
+			for _,wep in pairs(self.LastSessionInfo["weapons"]) do
+				local w = self:Give(wep[1], true)
+				if w:IsValid() then
+					w:SetClip1(wep[2])
+					w:SetClip2(wep[3])
+				end
+			end
+		end
+
+		if self.LastSessionInfo["ammo"] then
+			for _,ammo in pairs(self.LastSessionInfo["ammo"]) do
+				self:SetAmmo(ammo[2],ammo[1])
+			end
+		end
+
+		if self.LastSessionInfo["heldweapon"] then
+			self:SelectWeapon(self.LastSessionInfo["heldweapon"])
+		end
+
+		self.LastSessionInfo = nil
+	end
+end
 
 
 function GM:GetPlayerCharacters(ply)

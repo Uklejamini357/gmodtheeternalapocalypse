@@ -3,11 +3,15 @@ AddCSLuaFile()
 -- made from npc_tea_puker
 ENT.Base = "npc_tea_basic"
 ENT.PrintName = "Ghoul Zombie"
-ENT.Category = ""
-ENT.Purpose = ""
+ENT.Category = "TEA Zombies"
+ENT.Purpose = "A zombie that attack you and can infect"
 ENT.Author = "Uklejamini"
-ENT.Spawnable = true
-ENT.AdminOnly = true
+
+list.Set("NPC", "npc_tea_ghoul", {
+	Name = ENT.PrintName,
+	Class = "npc_tea_ghoul",
+	Category = ENT.Category
+})
 
 
 function ENT:SetUpStats()
@@ -19,11 +23,12 @@ function ENT:SetUpStats()
 	self.SpeedBuff = 1
 
 -- animations for the StartActivity function
-	self.AttackAnim = (ACT_MELEE_ATTACK1)
-	self.WalkAnim = (ACT_WALK)
-	self.RunAnim = (ACT_WALK)
-	self.FlinchAnim = (ACT_FLINCH_PHYSICS)
-	self.FallAnim = (ACT_IDLE_ON_FIRE)
+	self.AttackAnim = ACT_MELEE_ATTACK1
+	self.WalkAnim = ACT_WALK
+	self.RunAnim = ACT_WALK
+	self.IdleAnim = ACT_IDLE
+	self.FlinchAnim = ACT_FLINCH_PHYSICS
+	self.FallAnim = ACT_IDLE_ON_FIRE
 
 
 	self.ZombieStats = {

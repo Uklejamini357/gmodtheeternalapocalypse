@@ -115,20 +115,6 @@ function GM:CheckFactionBases(pos)
 end
 
 
-local entmeta = FindMetaTable("Entity")
-
-function entmeta:GetStructureHealth()
-	return self:GetNWInt("ate_integrity", 0)
-end
-
-function entmeta:SetStructureHealth(val)
-	return self:SetNWInt("ate_integrity", val)
-end
-
-function entmeta:GetStructureMaxHealth()
-	return self:GetNWInt("ate_maxintegrity", 0)
-end
-
 
 function GM:MakeProp(ply, model, pos, ang)
 	if !ply:IsValid() or !ply:Alive() then return false end

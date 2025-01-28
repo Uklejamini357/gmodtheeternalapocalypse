@@ -1,22 +1,29 @@
 AddCSLuaFile()
 
 ENT.Base = "npc_tea_basic"
-ENT.PrintName = "? ? ?" -- unknown zombie, not included (but also unfinished)
-ENT.Category = ""
+ENT.PrintName = "Unknown Zombie" -- unknown zombie, not included (but also unfinished)
+ENT.Category = "TEA Zombies"
+ENT.Purpose = "If you attack this creature, you are fucked."
 ENT.Author = "Uklejamini"
-ENT.Purpose = "???????"
-ENT.Spawnable = true
-ENT.AdminOnly = true
+
+list.Set("NPC", "npc_tea_unknown", {
+	Name = ENT.PrintName,
+	Class = "npc_tea_unknown",
+	Category = ENT.Category
+})
+
+
 
 function ENT:SetUpStats()
 
 -- animations for the StartActivity function
-	self.AttackAnim = (ACT_MELEE_ATTACK1)
-	self.WalkAnim = (ACT_WALK)
-	self.RunAnim = (ACT_WALK)
+	self.AttackAnim = ACT_MELEE_ATTACK1
+	self.WalkAnim = ACT_WALK
+	self.RunAnim = ACT_WALK
+	self.IdleAnim = ACT_IDLE
 
-	self.FlinchAnim = (ACT_FLINCH_PHYSICS)
-	self.FallAnim = (ACT_IDLE_ON_FIRE)
+	self.FlinchAnim = ACT_FLINCH_PHYSICS
+	self.FallAnim = ACT_IDLE_ON_FIRE
 
 	self.ZombieStats = {
 		["Model"] = "models/zombie/classic.mdl",
@@ -25,13 +32,14 @@ function ENT:SetUpStats()
 		["PropDamage"] = 150,
 		["Force"] = 300,
 		["Infection"] = 18,
-		["Reach"] = 85,
-		["StrikeDelay"] = 0.1,
-		["AfterStrikeDelay"] = 0.2,
+		["Reach"] = 75,
+		["StrikeDelay"] = 0.15,
+		["AfterStrikeDelay"] = 0.25,
+		["StrikeAnimSpeed"] = 4,
 
 		["Health"] = 29000,
 		["MoveSpeedWalk"] = 80,
-		["MoveSpeedRun"] = 145,
+		["MoveSpeedRun"] = 85,
 		["VisionRange"] = 1200,
 		["LoseTargetRange"] = 1500,
 
@@ -42,11 +50,13 @@ function ENT:SetUpStats()
 	}
 
 
-	self.AttackSounds = {"npc/zombie/zo_attack1.wav",
+	self.AttackSounds = {
+		"npc/zombie/zo_attack1.wav",
 		"npc/zombie/zo_attack2.wav"
 	}
 
-	self.AlertSounds = {"npc/zombie/zombie_alert1.wav", 
+	self.AlertSounds = {
+		"npc/zombie/zombie_alert1.wav", 
 		"npc/zombie/zombie_alert2.wav", 
 		"npc/zombie/zombie_alert3.wav"
 	}
@@ -63,7 +73,8 @@ function ENT:SetUpStats()
 		"npc/zombie/zombie_voice_idle9.wav"
 	}
 
-	self.PainSounds = {"npc/zombie/zombie_pain1.wav",
+	self.PainSounds = {
+		"npc/zombie/zombie_pain1.wav",
 		"npc/zombie/zombie_pain2.wav", 
 		"npc/zombie/zombie_pain3.wav", 
 		"npc/zombie/zombie_pain4.wav", 
@@ -71,7 +82,8 @@ function ENT:SetUpStats()
 		"npc/zombie/zombie_pain6.wav"
 	}
 
-	self.DieSounds = {"npc/zombie/zombie_die1.wav",
+	self.DieSounds = {
+		"npc/zombie/zombie_die1.wav",
 		"npc/zombie/zombie_die2.wav", 
 		"npc/zombie/zombie_die3.wav"
 	}
@@ -83,7 +95,7 @@ function ENT:SetUpStats()
 
 	self.CanScream = true
 	self.RageLevel = 0
-	self.SpeedBuff = 10
+	self.SpeedBuff = 5
 
 	self.Ability1CD = CurTime()
 	self.SpawnTime = CurTime()

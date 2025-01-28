@@ -4,15 +4,20 @@ AddCSLuaFile()
 
 ENT.Base = "base_nextbot"
 ENT.PrintName = "The Tyrant"
-ENT.Category = "Boss Zombie"
-ENT.Author = "Uklejamini"
+ENT.Category = "T.E.A. Bosses"
 ENT.Purpose = "Very tough zombie, can throw rocks and cause shockwave"
-ENT.Spawnable = true
-ENT.AdminOnly = true
+ENT.Author = "Uklejamini"
+
+list.Set("NPC", "npc_tea_boss_tyrant", {
+	Name = ENT.PrintName,
+	Class = "npc_tea_boss_tyrant",
+	Category = ENT.Category
+})
 
 ENT.AttackAnim = (ACT_MELEE_ATTACK1)
 ENT.WalkAnim = (ACT_WALK_HURT)
 ENT.RunAnim = (ACT_RUN)
+ENT.IdleAnim = ACT_IDLE
 
 ENT.FlinchAnim = (ACT_FLINCH_PHYSICS)
 ENT.FallAnim = (ACT_IDLE_ON_FIRE)
@@ -66,13 +71,13 @@ end
 
 function ENT:CanSeeTarget()
 	if !self:IsValid() then return false end
-	if self.target != nil then
+	if self.target then
 		local tracedata = {}
-		tracedata.start = self:GetPos() + Vector(0, 0, 30)
-		tracedata.endpos = self.target:GetPos() + Vector(0, 0, 30)
-		tracedata.filter = function(ent) return ent == self.target end
+		tracedata.start = self:GetPos() + self:OBBCenter()
+		tracedata.endpos = self.target:GetPos() + self.target:OBBCenter()
+		tracedata.filter = function(ent) return ent == self.target or string.sub(ent:GetClass(), 1, 5) == "prop_" end --ent == self.target or ent == NULL end
 		local trace = util.TraceLine(tracedata)
-		return self.target == trace.Entity
+		return not trace.HitWorld and (self.target == trace.Entity)
 	end
 
 	return false

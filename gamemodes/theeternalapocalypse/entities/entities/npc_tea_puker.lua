@@ -2,11 +2,15 @@ AddCSLuaFile()
 
 ENT.Base = "npc_tea_basic"
 ENT.PrintName = "Puker Zombie"
-ENT.Category = ""
+ENT.Category = "TEA Zombies"
+ENT.Purpose = "Pukes at your ass"
 ENT.Author = "Uklejamini"
-ENT.Purpose = "Throws... i don't know."
-ENT.Spawnable = true
-ENT.AdminOnly = true
+
+list.Set("NPC", "npc_tea_puker", {
+	Name = ENT.PrintName,
+	Class = "npc_tea_puker",
+	Category = ENT.Category
+})
 
 
 function ENT:SetUpStats()
@@ -19,11 +23,12 @@ function ENT:SetUpStats()
 	self.SpeedBuff = 1
 
 -- animations for the StartActivity function
-	self.AttackAnim = (ACT_MELEE_ATTACK1)
-	self.WalkAnim = (ACT_WALK)
-	self.RunAnim = (ACT_WALK)
-	self.FlinchAnim = (ACT_FLINCH_PHYSICS)
-	self.FallAnim = (ACT_IDLE_ON_FIRE)
+	self.AttackAnim = ACT_MELEE_ATTACK1
+	self.WalkAnim = ACT_WALK
+	self.RunAnim = ACT_WALK
+	self.IdleAnim = ACT_IDLE
+	self.FlinchAnim = ACT_FLINCH_PHYSICS
+	self.FallAnim = ACT_IDLE_ON_FIRE
 
 
 	self.ZombieStats = {
@@ -52,22 +57,26 @@ function ENT:SetUpStats()
 	}
 
 
-	self.AttackSounds = {"npc/antlion_guard/angry1.wav",
+	self.AttackSounds = {
+		"npc/antlion_guard/angry1.wav",
 		"npc/antlion_guard/angry2.wav", 
 		"npc/antlion_guard/angry3.wav", 
 	}
 
 	self.AlertSounds = {"npc/barnacle/barnacle_tongue_pull1.wav"}
 
-	self.IdleSounds = {"npc/barnacle/barnacle_die1.wav",
+	self.IdleSounds = {
+		"npc/barnacle/barnacle_die1.wav",
 		"npc/barnacle/barnacle_die2.wav", 
 	}
 
-	self.PainSounds = {"npc/barnacle/barnacle_die1.wav",
+	self.PainSounds = {
+		"npc/barnacle/barnacle_die1.wav",
 		"npc/barnacle/barnacle_die2.wav", 
 	}
 
-	self.DieSounds = {"npc/zombie/zombie_die1.wav",
+	self.DieSounds = {
+		"npc/zombie/zombie_die1.wav",
 		"npc/zombie/zombie_die2.wav", 
 		"npc/zombie/zombie_die3.wav"
 	}
@@ -106,7 +115,7 @@ function ENT:SpecialSkill1()
 		phys:AddVelocity( Vector(math.random(-150, 150), math.random(-150, 150), math.random(-150, 150) + 100) )
 	end
 
-return true
+	return true
 end
 
 function ENT:OnKilled(damageInfo)

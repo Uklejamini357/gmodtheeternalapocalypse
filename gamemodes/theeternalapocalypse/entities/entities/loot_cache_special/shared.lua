@@ -1,7 +1,7 @@
 ENT.Type = "anim"
 ENT.Base = "base_gmodentity"
 
-ENT.PrintName = "Loot Cache"
+ENT.PrintName = "Rare Loot Cache"
 ENT.Author = "LegendofRobbo"
 ENT.Contact = ""
 ENT.Purpose = "dank"

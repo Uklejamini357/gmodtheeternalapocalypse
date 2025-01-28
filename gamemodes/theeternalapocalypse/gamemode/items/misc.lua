@@ -200,6 +200,24 @@ i = GM:CreateItem("item_craft_engine_large", {
     DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_craft_engine_large") return drop end
 })
 
+
+-- Explosives
+
+
+i = GM:CreateItem("item_propane", {
+    Name = "Propane",
+    Description = "An explosive propane. Handle with caution! Explodes violently upon being shot at or if it hits the ground too hard.",
+    Cost = 5000,
+    Model = "models/props_junk/PropaneCanister001a.mdl",
+    Weight = 5.6,
+    Supply = -1,
+    Rarity = RARITY_UNOBTAINABLE,
+    Category = ITEMCATEGORY_MISCELLANEOUS,
+    UseFunc = function(ply) local drop = UseFunc_DropEntity(ply, "prop_tea_propane") return drop end,
+    DropFunc = function(ply) local drop = UseFunc_DropEntity(ply, "prop_tea_propane") return drop end
+})
+
+
 -- Misc
 
 

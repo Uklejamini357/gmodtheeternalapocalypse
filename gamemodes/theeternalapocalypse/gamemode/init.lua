@@ -175,6 +175,7 @@ function GM:Think()
 						ent:Remove()
 					end
 				end
+				SetGlobalBool("GM.ZombieSpawning", false)
 			end)
 			timer.Simple(2, function()
 				for k,o in pairs(self.Config["BossClasses"]) do
@@ -271,19 +272,19 @@ function GM:Think()
 			if !timer.Exists("DyingFromStats_"..ply:EntIndex()) then
 				timer.Create("DyingFromStats_"..ply:EntIndex(), 30, 1, function()
 					if ply:Alive() then
-						if hunger <= 0 then
+						if ply.Hunger <= 0 then
 							ply.CauseOfDeath = "Hunger"
 							ply.DeathMessage = "has starved to death"
 						end
-						if thirst <= 0 then
+						if ply.Thirst <= 0 then
 							ply.CauseOfDeath = "Thirst"
 							ply.DeathMessage = "died from thirst"
 						end
-						if fatig >= 10000 then
+						if ply.Fatigue >= 10000 then
 							ply.CauseOfDeath = "Fatigue"
 							ply.DeathMessage = "could not find a place to sleep"
 						end
-						if infection >= 10000 then
+						if ply.Infection >= 10000 then
 							ply.CauseOfDeath = "Infection"
 							ply.DeathMessage = table.Random({"has succumbed to a zombie infection", "died to an infection"})
 						end
@@ -326,7 +327,7 @@ function GM:Think()
 		end
 */
 		if (ply.Infection > 0 or infectionchance and infectionchance <= 1 and math.floor(ct - ply.SurvivalTime) >= 900) then
-			ply.Infection = math.Clamp(ply.Infection + (7.84*ft * (1 - (ply.StatImmunity * 0.04))), 0, 10000)
+			ply.Infection = math.Clamp(ply.Infection + (16*ft * (1 - (ply.StatImmunity * 0.04))), 0, 10000)
 		end
 
 
@@ -514,8 +515,8 @@ function GM:MapReInit()
 	for k, v in pairs(ents.FindByClass("weapon_*")) do v:Remove() end
 	for k, v in pairs(ents.FindByClass("item_*")) do v:Remove() end
 	for k, v in pairs(ents.FindByClass("prop_physics")) do
-		v.maxhealth = 2000
-		v:SetHealth(2000)
+		if v:Health() != 0 then continue end
+		self:SetupProp(v)
 	end --i'm looking forward for new function to scale props health with their size (or their weight)
 	for k, v in pairs(ents.FindByClass("prop_door_rotating")) do
 		v.doorhealth = tonumber(self.Config["DoorHealth"])
@@ -549,6 +550,20 @@ function GM:ShutDown()
 	self:DebugLog("Server shutting down/changing map")
 	self:SaveLog()
 end
+
+function GM:SetupProp(ent)
+	local phys = ent:GetPhysicsObject()
+	local mass, volume = 100,100
+	if phys:IsValid() then
+		mass = phys:GetMass()
+		volume = phys:GetVolume()
+	end
+	local hp = 50 + math.floor(math.max(mass^0.5, 20)*0.5 * math.max(volume^0.6, 2) * 0.02)
+	ent:SetHealth(hp)
+	ent.prophealth = hp
+	ent.maxhealth = hp
+end
+
 
 function GM:DoAutoMaintenance(time)
 	if self.IsMaintenance then return end
@@ -726,14 +741,16 @@ function GM:EntityTakeDamage(ent, dmginfo)
 		end
 	end
 
-	if ent:GetClass() == "prop_physics" and ent.maxhealth then
-		ent:SetHealth(ent:Health() - dmginfo:GetDamage())
-		local ColorAmount = ((ent:Health() / ent.maxhealth) * 255)
-		ent:SetColor(Color(ColorAmount, ColorAmount, ColorAmount, 255))
-		if ent:Health() <= 0 then
+	if ent:GetClass() == "prop_physics" and ent.prophealth then
+		if ent.prophealth then
+			ent.prophealth = ent.prophealth - dmginfo:GetDamage()
+		end
+		-- local ColorAmount = ((ent:Health() / ent.maxhealth) * 255)
+		-- ent:SetColor(Color(ColorAmount, ColorAmount, ColorAmount, 255))
+		if ent.prophealth <= 0 then
+			ent:PrecacheGibs()
 			ent:GibBreakClient(Vector(math.random(-50, 50),math.random(-50, 50),math.random(-50, 50)))
-			ent:EmitSound("physics/metal/metal_box_break2.wav", 80, 100)
-			ent:Remove()
+			ent:Input("break")
 		end
 	end
 
@@ -899,7 +916,7 @@ function GM:PlayerInitialSpawn(ply, transition)
 	if !ply:IsBot() then
 		timer.Simple(0.01, function()
 			ply:KillSilent()
-			ply:SetPos(Vector(0,0,130000)) -- for main menu
+			ply:SetPos(Vector(0,0,100000)) -- for main menu
 		end)
 	end
 
@@ -1047,9 +1064,16 @@ function GM:PlayerSpawn(ply)
 end
 
 function GM:PlayerLoadout(ply)
-	ply:Give("tea_fists")
-	ply:Give("tea_buildtool")
-
+	if ply.AdminMode then
+		ply:Give("weapon_physgun")
+		ply:Give("gmod_tool")
+		ply:Give("tea_buildtool")
+		ply:SelectWeapon("weapon_physgun")
+	else
+		ply:Give("tea_fists")
+		ply:Give("tea_buildtool")
+		ply:SelectWeapon("tea_fists")
+	end
 	if ply:HasPerk("starting_ammo_upgrade") then
 		ply:GiveAmmo(200, "Pistol")
 		ply:GiveAmmo(150, "ammo_rifle")
@@ -1071,8 +1095,6 @@ function GM:PlayerLoadout(ply)
 
 		ply.LastLifeAmmo = nil
 	end
-
-	ply:SelectWeapon("tea_fists")
 end
 
 function GM:PlayerUse(ply, ent) --why is that here??

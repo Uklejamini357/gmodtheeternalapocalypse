@@ -5,8 +5,12 @@ ENT.PrintName = "Hunter Zombie"
 ENT.Category = "TEA Zombies"
 ENT.Purpose = "Very Agile zombie that will tear you apart if it sees you. Beware."
 ENT.Author = "Uklejamini"
-ENT.Spawnable = true
-ENT.AdminOnly = true
+
+list.Set("NPC", "npc_tea_hunter", {
+	Name = ENT.PrintName,
+	Class = "npc_tea_hunter",
+	Category = ENT.Category
+})
 
 
 function ENT:SetUpStats()

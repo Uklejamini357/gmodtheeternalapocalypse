@@ -2,21 +2,27 @@ AddCSLuaFile()
 
 ENT.Base = "npc_tea_basic"
 ENT.PrintName = "Nightmare" --This is unfinished, don't add it to zombie spawns in sh_config.lua yet
-ENT.Category = ""
+ENT.Category = "TEA Zombies"
+ENT.Purpose = "A zombie that attack you and can infect"
 ENT.Author = "Uklejamini"
-ENT.Purpose = ""
-ENT.Spawnable = true
-ENT.AdminOnly = true
+
+list.Set("NPC", "npc_tea_nightmare", {
+	Name = ENT.PrintName,
+	Class = "npc_tea_nightmare",
+	Category = ENT.Category
+})
+
 
 function ENT:SetUpStats()
 
 -- animations for the StartActivity function
-    self.AttackAnim = (ACT_MELEE_ATTACK1)
-    self.WalkAnim = (ACT_WALK)
-    self.RunAnim = (ACT_WALK)
+    self.AttackAnim = ACT_MELEE_ATTACK1
+    self.WalkAnim = ACT_WALK
+    self.RunAnim = ACT_WALK
+	self.IdleAnim = ACT_IDLE
 
-    self.FlinchAnim = (ACT_FLINCH_PHYSICS)
-    self.FallAnim = (ACT_IDLE_ON_FIRE)
+    self.FlinchAnim = ACT_FLINCH_PHYSICS
+    self.FallAnim = ACT_IDLE_ON_FIRE
 
 
     self.ZombieStats = {

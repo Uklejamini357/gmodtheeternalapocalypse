@@ -1,12 +1,12 @@
 ENT.Type = "anim"
 ENT.Base = "base_gmodentity"
 
-ENT.PrintName = "Bed" --The name of the SENT.
-ENT.Author = "" --Your name.
-ENT.Contact = "" --EMail address.
-ENT.Purpose = "" --The purpose of this SENT.
-ENT.Instructions = "" --Instructions
+ENT.PrintName = "Bed"
+ENT.Author = ""
+ENT.Contact = ""
+ENT.Purpose = ""
+ENT.Instructions = ""
 
-ENT.Spawnable = true --Can the clients spawn this SENT?
-ENT.AdminSpawnable = true --Can the admins spawn this SENT?
+ENT.Spawnable = false
+ENT.AdminSpawnable = false
 

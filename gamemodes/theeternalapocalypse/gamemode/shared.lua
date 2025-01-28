@@ -1,13 +1,72 @@
-DeriveGamemode("sandbox")
-
 GM.Name		= "The Eternal Apocalypse" -- The Eternol Apocalypse
 GM.AltName	= "After The End Reborn"
 GM.Author	= "Uklejamini"
 GM.Email	= "[You may not view this information.]"
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.11.3"
-GM.DateVer	= "07.01.2025"
+GM.Version	= "0.11.3a"
+GM.DateVer	= "28.01.2025"
 
+DeriveGamemode("sandbox")
+
+hook.Add( "CanProperty", "TEA.CanProperty", function(ply, property, ent)
+	if not SuperAdminCheck(ply) then return false end
+end)
+
+hook.Add( "CanArmDupe", "TEA.CanArmDupe", function(ply)
+	if not SuperAdminCheck(ply) then return false end
+end)
+
+hook.Add( "CanDrive", "TEA.CanDrive", function(ply, ent)
+	if not SuperAdminCheck(ply) then return false end
+end)
+
+hook.Add( "CanTool", "TEA.CanTool", function(ply, tr, toolname, tool, button)
+	if not SuperAdminCheck(ply) then return false end
+end)
+
+if SERVER then
+
+	hook.Add( "PlayerSpawnEffect", "TEA.PlayerSpawnEffect", function(ply, model)
+		if not SuperAdminCheck(ply) then return false end
+	end)
+
+	hook.Add( "PlayerSpawnNPC", "TEA.PlayerSpawnNPC", function(ply, npc_type, weapon)
+		if not SuperAdminCheck(ply) then return false end
+	end)
+
+	hook.Add( "PlayerSpawnObject", "TEA.PlayerSpawnObject", function(ply, model, skin)
+		if not SuperAdminCheck(ply) then return false end
+	end)
+
+	hook.Add( "PlayerSpawnProp", "TEA.PlayerSpawnProp", function(ply, model)
+		if not SuperAdminCheck(ply) then return false end
+	end)
+
+	hook.Add( "PlayerSpawnRagdoll", "TEA.PlayerSpawnRagdoll", function(ply, model)
+		if not SuperAdminCheck(ply) then return false end
+	end)
+
+	hook.Add( "PlayerSpawnSENT", "TEA.PlayerSpawnSENT", function(ply, class)
+		if not SuperAdminCheck(ply) then return false end
+	end)
+
+	hook.Add( "PlayerSpawnSWEP", "TEA.PlayerSpawnSWEP", function(ply, weapon, swep)
+		if not SuperAdminCheck(ply) then return false end
+	end)
+
+	hook.Add( "PlayerSpawnVehicle", "TEA.PlayerSpawnVehicle", function(ply, model, name, table)
+		if not SuperAdminCheck(ply) then return false end
+	end)
+
+	hook.Add( "PlayerGiveSWEP", "TEA.PlayerGiveSWEP", function(ply, weapon, spawninfo)
+		if not SuperAdminCheck(ply) then return false end
+	end)
+
+	hook.Add( "PlayerSpawnedProp", "TEA.PlayerSpawnedProp", function(ply, model, ent)
+		if ent:Health() != 0 then return end
+		gamemode.Call("SetupProp", ent)
+	end)
+end
 
 include("sh_globals.lua") -- globals
 include("sh_translate.lua") -- translation file
@@ -340,3 +399,22 @@ function GM:GetSkillDescription(id, ply)
 
 	return desc
 end
+
+local entmeta = FindMetaTable("Entity")
+
+function entmeta:GetStructureHealth()
+	return self:GetNWInt("ate_integrity", 0)
+end
+
+function entmeta:SetStructureHealth(val)
+	return self:SetNWInt("ate_integrity", val)
+end
+
+function entmeta:GetStructureMaxHealth()
+	return self:GetNWInt("ate_maxintegrity", 0)
+end
+
+function entmeta:SetStructureMaxHealth(val)
+	return self:SetNWInt("ate_maxintegrity", val)
+end
+

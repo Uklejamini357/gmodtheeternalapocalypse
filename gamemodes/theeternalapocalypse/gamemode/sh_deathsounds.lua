@@ -4,28 +4,28 @@
 
 GM.PlayerModel_DeathSounds = {
 	["FemaleSounds"] = {
-		"vo/theeternalapocalypse/playerdeaths/female01/pain01.wav",
-		"vo/theeternalapocalypse/playerdeaths/female01/pain02.wav",
-		"vo/theeternalapocalypse/playerdeaths/female01/pain03.wav",
-		"vo/theeternalapocalypse/playerdeaths/female01/pain04.wav",
-		"vo/theeternalapocalypse/playerdeaths/female01/pain05.wav",
-		"vo/theeternalapocalypse/playerdeaths/female01/pain06.wav",
-		"vo/theeternalapocalypse/playerdeaths/female01/pain07.wav",
-		"vo/theeternalapocalypse/playerdeaths/female01/pain08.wav",
-		"vo/theeternalapocalypse/playerdeaths/female01/pain09.wav"
+		"vo/npc/female01/pain01.wav",
+		"vo/npc/female01/pain02.wav",
+		"vo/npc/female01/pain03.wav",
+		"vo/npc/female01/pain04.wav",
+		"vo/npc/female01/pain05.wav",
+		"vo/npc/female01/pain06.wav",
+		"vo/npc/female01/pain07.wav",
+		"vo/npc/female01/pain08.wav",
+		"vo/npc/female01/pain09.wav"
 	},
 	
 	["MaleSounds"] = {
-		"vo/theeternalapocalypse/playerdeaths/male01/no02.wav",
-		"vo/theeternalapocalypse/playerdeaths/male01/pain01.wav",
-		"vo/theeternalapocalypse/playerdeaths/male01/pain02.wav",
-		"vo/theeternalapocalypse/playerdeaths/male01/pain03.wav",
-		"vo/theeternalapocalypse/playerdeaths/male01/pain04.wav",
-		"vo/theeternalapocalypse/playerdeaths/male01/pain05.wav",
-		"vo/theeternalapocalypse/playerdeaths/male01/pain06.wav",
-		"vo/theeternalapocalypse/playerdeaths/male01/pain07.wav",
-		"vo/theeternalapocalypse/playerdeaths/male01/pain08.wav",
-		"vo/theeternalapocalypse/playerdeaths/male01/pain09.wav"
+		"vo/npc/male01/no02.wav",
+		"vo/npc/male01/pain01.wav",
+		"vo/npc/male01/pain02.wav",
+		"vo/npc/male01/pain03.wav",
+		"vo/npc/male01/pain04.wav",
+		"vo/npc/male01/pain05.wav",
+		"vo/npc/male01/pain06.wav",
+		"vo/npc/male01/pain07.wav",
+		"vo/npc/male01/pain08.wav",
+		"vo/npc/male01/pain09.wav"
 	},
 
 	["Stalker_BanditSounds"] = {

@@ -596,7 +596,7 @@ GM:CreateItem("item_armor_merc_sunrise", {
 		slots = 3,
 		battery = 50,
 		carryweight = 0,
-		allowmodels = {"models/stalkertnb/beri_mili.mdl", "models/stalkertnb/Beri_rogue.mdl", "models/stalkertnb/beri_rogue_cs2.mdl", "models/stalkertnb/beri_rogue_helmet.mdl"}
+		allowmodels = {"models/stalkertnb/sunrise_merc.mdl"}
 	}
 })
 

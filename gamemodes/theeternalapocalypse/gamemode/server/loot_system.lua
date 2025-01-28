@@ -74,7 +74,61 @@ concommand.Add("tea_clearlootspawns", function(ply, cmd, args)
 	gamemode.Call("ClearLoot", ply, cmd, args)
 end)
 
+function GM:SpawnLootCache(ltype, pos, ang)
+	local ent
+	if ltype == "loot_cache" then
+		ent = ents.Create(ltype)
+	elseif ltype == "loot_cache_weapon" then
+		ent = ents.Create(ltype)
+	elseif ltype == "loot_cache_special" then
+		ent = ents.Create(ltype)
+	elseif ltype == "loot_cache_faction" then
+		ent = ents.Create(ltype)
+	elseif ltype == "loot_cache_boss" then
+		ent = ents.Create(ltype)
+	end
+	if !ent:IsValid() then return end
+	ent:SetPos(pos)
+	ent:SetAngles(ang)
+	self:RandomizeEntityLoot(ent)
+	ent:Spawn()
+	ent:Activate()
+	if self:GetDebug() >= DEBUGGING_ADVANCED then
+		if ltype == "loot_cache" then
+			print("Loot cache spawned:", "\n"..ent:GetClass(), pos, ang, "Loot Type: "..ent.LootType)
+		end
+	end
 
+	return ent
+end
+
+function GM:RandomizeEntityLoot(ent, forceloottype)
+	local loottype = forceloottype or ent:GetClass()
+	local loot
+	if loottype == "loot_cache" then
+		loot = table.Random(self.LootTable1)
+		ent.LootType = loot.Class
+		ent.LootQuantity = loot.Qty or 1
+	elseif loottype == "loot_cache_weapon" then
+		loot = table.Random(self.LootTable2)
+		ent.LootType = loot.Class
+		ent.LootQuantity = loot.Qty or 1
+	elseif loottype == "loot_cache_special" then
+		loot = table.Random(self.LootTable3)
+		ent.LootType = loot.Class
+		ent.LootQuantity = loot.Qty or 1
+	elseif loottype == "loot_cache_faction" then
+		loot = table.Random(self.LootTableFaction)
+		ent.LootType = loot.Class
+		ent.LootQuantity = loot.Qty or 1
+	elseif loottype == "loot_cache_boss" then
+		loot = table.Random(self.LootTableBoss)
+		ent.LootType = loot.Class
+		ent.LootQuantity = loot.Qty or 1
+	end
+
+	return loot
+end
 
 function GM:SpawnLoot()
 	if (self.LootCount() >= self.MaxCaches) then return false end -- dont even bother running any checks if theres already too much loot
@@ -89,31 +143,14 @@ function GM:SpawnLoot()
 			local pos = util.StringToType(Booty[1], "Vector")
 			local ang = util.StringToType(Booty[2], "Angle")
 			local rng = math.Rand(0,300)
+
 			if rng < 100 then
 				if rng > 14 then
-					ent = ents.Create("loot_cache")
-					ent:SetPos(pos)
-					ent:SetAngles(ang)
-					ent.LootType = table.Random(self.LootTable1)["Class"]
-					ent:Spawn()
-					ent:Activate()
-					if self:GetDebug() >= DEBUGGING_ADVANCED then print("Loot cache spawned:", "\n"..ent:GetClass(), pos, ang, "Loot Type: "..ent.LootType) end
+					self:SpawnLootCache("loot_cache", pos, ang)
 				elseif rng > 2 then
-					ent = ents.Create("loot_cache_weapon")
-					ent:SetPos(pos)
-					ent:SetAngles(ang)
-					ent.LootType = table.Random(self.LootTable2)["Class"]
-					ent:Spawn()
-					ent:Activate()
-					if self:GetDebug() >= DEBUGGING_ADVANCED then print("Loot cache spawned:", "\n"..ent:GetClass(), pos, ang, "Loot Type: "..ent.LootType) end
+					self:SpawnLootCache("loot_cache_weapon", pos, ang)
 				else
-					ent = ents.Create("loot_cache_special")
-					ent:SetPos(pos)
-					ent:SetAngles(ang)
-					ent.LootType = table.Random(self.LootTable3)["Class"]
-					ent:Spawn()
-					ent:Activate()
-					if self:GetDebug() >= DEBUGGING_ADVANCED then print("Loot cache spawned:", "\n"..ent:GetClass(), pos, ang, "Loot Type: "..ent.LootType) end
+					self:SpawnLootCache("loot_cache_special", pos, ang)
 				end
 			end
 		end

@@ -383,6 +383,7 @@ function GM:CreateScoreboardInv()
 				net.WriteBool(true)
 				net.SendToServer()
 			end
+			EquipButton.DoDoubleClick = EquipButton.DoClick
 
 			local DropButton = vgui.Create("DButton", ItemBackground)
 			DropButton:SetSize(80, 20)
@@ -400,6 +401,7 @@ function GM:CreateScoreboardInv()
 				net.WriteBool(false)
 				net.SendToServer()
 			end
+			DropButton.DoDoubleClick = DropButton.DoClick
 			TheListPanel:AddItem(ItemBackground)
 		end
 	end

@@ -38,7 +38,7 @@ function ENT:Initialize()
 	self.Entity:EmitSound(RocketSound)
 	util.PrecacheSound("explode_4")
 
-	self.TimeLeft = CurTime() + 3
+	self.TimeLeft = CurTime() + 5
 end
 
 /*---------------------------------------------------------
@@ -86,17 +86,16 @@ function ENT:Explosion()
 	self.Scale = 2
 	self.EffectScale = self.Scale ^ 0.65
 	
-	util.BlastDamage( self.Entity, self.Owner, self:GetPos(), 50, 1500 )
+	-- util.BlastDamage(self.ShotFromWeapon, self.Owner, self:GetPos(), self.ExplosionRadius, self.ExplosionDamage)
+	local explo = ents.Create("env_explosion")
+	explo:SetOwner(self.Owner)
+	explo:SetPos(self.Entity:GetPos())
+	explo:SetKeyValue("iMagnitude", self.ExplosionDamage or 0)
+	explo:SetKeyValue("iRadiusOverride", self.ExplosionRadius or 0)
+	explo:Spawn()
+	explo:Activate()
+	explo:Fire("Explode", "", 0)
 
---	for i=1,2 do
-		local explo = ents.Create("env_explosion")
-		explo:SetOwner(self.Owner)
-		explo:SetPos(self.Entity:GetPos())
-		explo:SetKeyValue("iMagnitude", self.ExplosionDamageRadius or 0)
-		explo:Spawn()
-		explo:Activate()
-		explo:Fire("Explode", "", 0)
---	end
 /*	-- thanks rain bob for pointing this out, this one is excluded and other one is added
 	local shake = ents.Create("env_shake")
 	shake:SetOwner(self.Owner)
@@ -138,6 +137,17 @@ function ENT:PhysicsCollide(data, physobj)
 	if not self.Exploded then
 		self:Explosion()
 		self.Exploded = true -- bug?
+
+		local ent = data.HitEntity
+		if ent:IsValid() then
+			local dmg = DamageInfo()
+			dmg:SetDamage(1000)
+			dmg:SetDamageType(DMG_BLAST)
+			dmg:SetAttacker(self.Owner)
+			dmg:SetInflictor(self.ShotFromWeapon or self)
+			dmg:SetDamagePosition(self:GetPos())
+			ent:TakeDamageInfo(dmg)
+		end
 	end
 
 	self.Entity:Remove()

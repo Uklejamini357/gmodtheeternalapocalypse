@@ -17,13 +17,8 @@ function GM:DevCmds_SpawnLoot(ply)
     trace.endpos = vStart + (vForward * 70)
     trace.filter = ply
     local tr = util.TraceLine(trace)
-    local ent = ents.Create("loot_cache")
-    ent:SetPos(tr.HitPos)
-    ent:SetAngles(Angle(0, 0, 0))
-    ent.LootType = table.Random(GAMEMODE.LootTable1)["Class"]
-    ent:Spawn()
-    ent:Activate()
-    ent:SetVelocity(ply:GetForward() * 80 + Vector(0,0,50))
+	self:SpawnLootCache("loot_cache", tr.HitPos, Angle(0,0,0))
+
 end
 concommand.Add("tea_dev_spawnloot", function(ply, cmd, args)
 	gamemode.Call("DevCmds_SpawnLoot", ply, cmd, args)
@@ -45,13 +40,7 @@ function GM:DevCmds_SpawnLootWeapon(ply)
     trace.endpos = vStart + (vForward * 70)
     trace.filter = ply
     local tr = util.TraceLine(trace)
-    local ent = ents.Create("loot_cache_weapon")
-    ent:SetPos(tr.HitPos)
-    ent:SetAngles(Angle(0, 0, 0))
-    ent.LootType = table.Random(GAMEMODE.LootTable2)["Class"]
-    ent:Spawn()
-    ent:Activate()
-    ent:SetVelocity(ply:GetForward() * 80 + Vector(0,0,50))
+	self:SpawnLootCache("loot_cache_weapon", tr.HitPos, Angle(0,0,0))
     
 end
 concommand.Add("tea_dev_spawnlootweapon", function(ply, cmd, args)
@@ -74,13 +63,7 @@ function GM:DevCmds_SpawnLootRare(ply)
     trace.endpos = vStart + (vForward * 70)
     trace.filter = ply
     local tr = util.TraceLine(trace)
-    local ent = ents.Create("loot_cache_special")
-    ent:SetPos(tr.HitPos)
-    ent:SetAngles(Angle(0, 0, 0))
-    ent.LootType = table.Random(self.LootTable3)["Class"]
-    ent:Spawn()
-    ent:Activate()
-    ent:SetVelocity(ply:GetForward() * 80 + Vector(0,0,50))
+	self:SpawnLootCache("loot_cache_special", tr.HitPos, Angle(0,0,0))
     
 end
 concommand.Add("tea_dev_spawnlootrare", function(ply, cmd, args)
@@ -104,13 +87,7 @@ function GM:DevCmds_SpawnLootFaction(ply)
     trace.endpos = vStart + (vForward * 70)
     trace.filter = ply
     local tr = util.TraceLine(trace)
-    local ent = ents.Create("loot_cache_faction")
-    ent:SetPos(tr.HitPos)
-    ent:SetAngles(Angle(0, 0, 0))
-    ent.LootType = table.Random(GAMEMODE.LootTableFaction)["Class"]
-    ent:Spawn()
-    ent:Activate()
-    ent:SetVelocity(ply:GetForward() * 80 + Vector(0,0,50))
+	self:SpawnLootCache("loot_cache_faction", tr.HitPos, Angle(0,0,0))
     
 end
 concommand.Add("tea_dev_spawnlootfaction", function(ply, cmd, args)
@@ -133,13 +110,7 @@ function GM:DevCmds_SpawnLootBoss(ply)
     trace.endpos = vStart + (vForward * 70)
     trace.filter = ply
     local tr = util.TraceLine(trace)
-    local ent = ents.Create("loot_cache_boss")
-    ent:SetPos(tr.HitPos)
-    ent:SetAngles(Angle(0, 0, 0))
-    ent.LootType = table.Random(GAMEMODE.LootTableBoss)["Class"]
-    ent:Spawn()
-    ent:Activate()
-    ent:SetVelocity(ply:GetForward() * 80 + Vector(0,0,50))
+	self:SpawnLootCache("loot_cache_boss", tr.HitPos, Angle(0,0,0))
     
 end
 concommand.Add("tea_dev_spawnlootboss", function(ply, cmd, args)
@@ -453,12 +424,8 @@ function GM:DevCmds_ForceSavePlayer(ply)
 		return
 	end
 
-	ply.AllowSave = true
-	gamemode.Call("SavePlayer", ply)
-	gamemode.Call("SavePlayerInventory", ply)
-	gamemode.Call("SavePlayerVault", ply)
-	gamemode.Call("SavePlayerPerks", ply)
-	ply.AllowSave = false
+	gamemode.Call("SavePlayer", ply, true)
+
 end
 concommand.Add("tea_dev_forcesaveplayer", function(ply, cmd, args)
 	gamemode.Call("DevCmds_ForceSavePlayer", ply, cmd, args)

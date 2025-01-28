@@ -35,6 +35,8 @@ local RDStext = {
 	"could not stand the living anymore.",
 	"has put to end their misery.",
 	"was unable to survive for the rest of the days.",
+	"has bit the dust.",
+	"kicked the bucket.",
 }
 
 local function CheckAttacker(attacker)
@@ -51,12 +53,13 @@ local function CheckAttacker(attacker)
 	elseif attacker == "func_pushable" then attacker = "Object"
 	elseif attacker == "worldspawn" then attacker = "World"
 	elseif attacker == "env_explosion" then attacker = "Explosion"
+	elseif attacker == "prop_tea_propane" then attacker = "Propane"
 	elseif attacker == "env_fire" or attacker == "entityflame" then attacker = "Fire"
 	elseif attacker == "npc_handgrenade" then attacker = "Grenade"
 	elseif attacker == "airdrop_cache" then attacker = "Airdrop Cache"
 	elseif attacker == "gmod_gamerules" then attacker = "Gmod Gamerules"
 	elseif attacker == "stormfox_mapice" then attacker = "Ice" -- it's just there, for a reason
-	else attacker = Format("#%s", attacker)
+	else attacker = language.GetPhrase(attacker)
 	end
 	return attacker
 end
@@ -108,8 +111,10 @@ local function CheckLocalPlayerDeath(victim, attacker, dmg, dmgtype, msgoverride
 			GAMEMODE.DeathMessage = table.Random(killedbyenv)
 		elseif attacker == "worldspawn" and dmgtype == DMG_FALL then
 			GAMEMODE.DeathMessage = "Fall damage ("..math.floor(dmg).." damage taken)"
-		else
+		elseif attacker == "worldspawn" then
 			GAMEMODE.DeathMessage = table.Random(killedbyother)
+		else
+			GAMEMODE.DeathMessage = language.GetPhrase(attacker)
 		end
 	end
 end
@@ -183,7 +188,7 @@ end
 net.Receive( "PlayerKilled", RecvPlayerKilled )
 
 local function RecvPlayerKilledNPC()
-
+/*
 	local victimtype = net.ReadString()
 	local victim = CheckAttacker(victimtype)
 	local inflictor	= net.ReadString()
@@ -215,11 +220,12 @@ local function RecvPlayerKilledNPC()
 	if ( bIsLocalPlayer && ( !bIsFriend && !bIsEnemy ) ) then
 		achievements.IncBystander()
 	end
-
+*/
 end
 net.Receive( "PlayerKilledNPC", RecvPlayerKilledNPC )
 
 local function RecvNPCKilledNPC()
+/*
 
 	local victimtype	= net.ReadString()
 	local victim = CheckAttacker(victimtype)
@@ -231,6 +237,7 @@ local function RecvNPCKilledNPC()
 	local attacker = CheckAttacker(attackertype)
 
 	GAMEMODE:AddDeathNotice( attacker, -1, inflictor, victim, -1, dmg, dmgtype, msgoverride )
+*/
 
 end
 net.Receive( "NPCKilledNPC", RecvNPCKilledNPC )
@@ -263,6 +270,11 @@ function GM:AddDeathNotice( Victim, team1, Inflictor, Attacker, team2, dmg, dmgt
 
 	if dmgtype == DMG_FALL then
 		Death.SMessage = table.Random({"thought he could fly", "fell off from a great height", "hit the ground too hard"})
+		Death.left = nil
+	end
+
+	if attacker == "trigger_hurt" or attacker == "point_hurt" or attacker == "entityflame" or attacker == "env_fire" then
+		Death.SMessage = table.Random({"went missing"})
 		Death.left = nil
 	end
 
@@ -311,7 +323,7 @@ local function DrawDeath(x, y, death, tea_cl_deathnoticetime)
 	if death.right and not death.left then
 		text = Format("Death: %s%s %s", death.right, death.pteam2, death.SMessage)
 		textsize = surface.GetTextSize(text)
-		draw.SimpleText(text, "ChatFont", x - (w / 2) + math.Clamp(350 + textsize - ((1.5 * textsize) * ((RealTime()) - death.Time)), 250, 350 + textsize), y, Color(223,45,45,alpha), TEXT_ALIGN_RIGHT)
+		draw.SimpleText(text, "ChatFont", x - (w / 2) + math.Clamp(350 + textsize - ((1.5 * textsize) * ((RealTime()) - death.Time)), 250, 350 + textsize), y, Color(255,75,75,alpha), TEXT_ALIGN_RIGHT)
 	elseif (death.left) then
 		text = Format("Death: %s%s %s by %s%s", death.right, death.pteam2, death.Message, death.left, death.pteam1)
 		textsize = surface.GetTextSize(text)

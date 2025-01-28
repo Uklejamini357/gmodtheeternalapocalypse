@@ -349,12 +349,14 @@ function GM:AdminCmds_NoTarget(ply, cmd) --useful for events (but not for abusin
 		return
 	end
     
-    if !ply.TEANoTarget then
-        ply.TEANoTarget = true
+    if !ply:IsFlagSet(FL_NOTARGET) then
+		ply.TEANoTarget = true
+        ply:SetNoTarget(true)
 		self:DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has enabled notarget for themselves!")
 		ply:SystemMessage("Enabled notarget!", Color(155,255,155,255), true)
     else
-        ply.TEANoTarget = false
+		ply.TEANoTarget = false
+        ply:SetNoTarget(false)
 		self:DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has disabled notarget for themselves!")
 		ply:SystemMessage("Disabled notarget!", Color(155,255,155,255), true)
     end
@@ -432,3 +434,45 @@ end
 concommand.Add("tea_sadmin_cleargmspawns", function(ply, cmd, args)
 	gamemode.Call("AdminCmds_ClearGMSpawns", ply, cmd, args)
 end, nil, "Clears Zombie spawns and such for client")
+
+function GM:AdminCmds_ToggleAdminMode(ply)
+	if !SuperAdminCheck(ply) then
+		ply:SystemMessage(translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205,255), true)
+		ply:ConCommand("playgamesound buttons/button8.wav")
+		return
+	end
+
+	if not ply.AdminMode then -- Enable
+		local pos = ply:GetPos()
+		local ang = ply:EyeAngles()
+		ply.AdminMode = true
+		ply.StatsPaused = true
+
+		gamemode.Call("SavePlayer", ply, true)
+
+		ply.NoDataSave = true
+		ply:KillSilent()
+		ply:Spawn()
+		ply:SetPos(pos)
+		ply:SetEyeAngles(ang)
+		ply:SetMaterial("models/shadertest/shader3")
+		ply:GodEnable()
+		ply:PrintMessage(3, "Enabled Admin Mode!")
+	else -- Disable
+		ply.AdminMode = nil
+
+		gamemode.Call("LoadPlayer", ply)
+		ply.NoDataSave = nil
+		ply.StatsPaused = nil
+		ply:KillSilent()
+		ply:SetMaterial("")
+		ply:Spawn()
+		ply:LoadLastSession()
+		ply:GodDisable()
+		ply:PrintMessage(3, "Disabled Admin Mode!")
+	end
+end
+concommand.Add("tea_sadmin_adminmode", function(ply, cmd, args)
+	gamemode.Call("AdminCmds_ToggleAdminMode", ply, cmd, args)
+end, nil, "Toggles Admin Mode. Enabling it saves your progress and disables further auto save too.")
+

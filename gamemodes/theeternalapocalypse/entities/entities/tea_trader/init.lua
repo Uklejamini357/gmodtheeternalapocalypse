@@ -4,15 +4,16 @@ AddCSLuaFile( "shared.lua" )
 include( 'shared.lua' )
 
 function ENT:SpawnFunction( userid, tr )
-	local trace = util.GetPlayerTrace( userid, userid:GetCursorAimVector() )
+	local trace = util.GetPlayerTrace( userid, userid:GetAimVector() )
 	local tr = util.TraceLine( trace )
-	local thisent = ents.Create( "trader" )
+	local thisent = ents.Create( "tea_trader" )
 		thisent:SetPos( tr.HitPos + tr.HitNormal * 32 )
 		thisent:SetAngles( Angle( 0, 0, 0 ) )
-		thisend:SetNetworkedString( "Owner", "World" )
+		thisent:SetNetworkedString( "Owner", "World" )
 		thisent:Spawn()
 		thisent:DropToFloor()
 		thisent:Activate()
+	return thisent
 end
 
 function ENT:Think() 

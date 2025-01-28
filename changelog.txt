@@ -1,3 +1,31 @@
+There's been a lot missed out...
+
++- Added and removed some background images whilst in the main menu
++ Added Propane. It explodes with 500 damage and 450 radius upon a hard impact or if it's shot.
++ Some new death messages
++ (ADMIN) Added Admin Mode. Using this command as an admin will save your stats.
++ (ADMIN) Added Sandbox hooks so they can't be done by a regular player. - Could be used to give weapon to self or spawn anything
+
+; Rewritten function for spawning loot caches
+; Props now spawn with the health depending on their mass and volume instead of 2000HP. Does not change color if damaged anymore.
+
+/ You can now spam click items in your inventory. (There is still a 0.25 seconds delay between using items!)
+/ Changed Infection now increases by 0.16% per second. The infection gets worse now...
+
+= RPG damage increased from to 560 and its' rocket now explodes within radius of 320 hammer units. Now only deals extra 1000 explosion damage on the target it directly hit instead of all targets within 50 radius.
+= Rockets can now fly for 5 seconds instead of 3 seconds
+
+* Build tool can now build faction structures again.
+* Fixed incorrect model for Sunrise Merc Armor
+* Heavy Tank Zombie no longer reflects damage if its' damage type is DMG_GENERIC
+* Fix zombie CanSeeTarget not working nearly all the time
+* Fix death messages for thirst, hunger, fatigue, infection.
+* Fix some death sounds
+
+-------- Missing since v0.11.2 --------
+
+??????
+
 -------- Ver. 0.11.1b of 04 September 2023 --------
 
 + Added confirmation for clearing spawns data

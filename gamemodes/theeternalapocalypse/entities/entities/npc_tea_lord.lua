@@ -2,11 +2,15 @@ AddCSLuaFile()
 
 ENT.Base = "npc_tea_basic"
 ENT.PrintName = "Zombie Lord"
-ENT.Category = ""
+ENT.Category = "TEA Zombies"
 ENT.Author = "Uklejamini"
 ENT.Purpose = "Can teleport if taken too much damage"
-ENT.Spawnable = true
-ENT.AdminOnly = true
+
+list.Set("NPC", "npc_tea_lork", {
+	Name = ENT.PrintName,
+	Class = "npc_tea_lord",
+	Category = ENT.Category
+})
 
 
 function ENT:SetUpStats()
@@ -18,11 +22,12 @@ function ENT:SetUpStats()
 	self.Ouchies = 0
 
 -- animations for the StartActivity function
-	self.AttackAnim = (ACT_MELEE_ATTACK_SWING)
-	self.WalkAnim = (ACT_WALK)
-	self.RunAnim = (ACT_WALK)
-	self.FlinchAnim = (ACT_FLINCH_PHYSICS)
-	self.FallAnim = (ACT_IDLE_ON_FIRE)
+	self.AttackAnim = ACT_MELEE_ATTACK_SWING
+	self.WalkAnim = ACT_WALK
+	self.RunAnim = ACT_WALK
+	self.IdleAnim = ACT_IDLE
+	self.FlinchAnim = ACT_FLINCH_PHYSICS
+	self.FallAnim = ACT_IDLE_ON_FIRE
 
 
 	self.ZombieStats = {

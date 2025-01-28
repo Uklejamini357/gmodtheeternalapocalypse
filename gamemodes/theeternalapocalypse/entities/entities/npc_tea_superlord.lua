@@ -2,85 +2,92 @@ AddCSLuaFile()
 
 ENT.Base = "npc_tea_basic"
 ENT.PrintName = "Zombie Superlord" --Superlord as a miniboss
-ENT.Category = ""
-ENT.Author = "Uklejamini"
+ENT.Category = "TEA Zombies"
 ENT.Purpose = "Miniboss: Can enrage if drop below ~40% health and teleport"
-ENT.Spawnable = true
-ENT.AdminOnly = true
+ENT.Author = "Uklejamini"
+
+list.Set("NPC", "npc_tea_superlord", {
+	Name = ENT.PrintName,
+	Class = "npc_tea_superlord",
+	Category = ENT.Category
+})
 
 
 function ENT:SetUpStats()
-self:SetColor(Color(255,0,255,255))
-self:SetModelScale( 1.35, 0 )
--- dont bother changing any of this unless you like derpy shit
-self.CanScream = true
-self.RageLevel = 1
-self.SpeedBuff = 1
-self.IsEnraged = 0
-self.Ouchies = 0
+	self:SetColor(Color(255,0,255,255))
+	self:SetModelScale( 1.35, 0 )
+	-- dont bother changing any of this unless you like derpy shit
+	self.CanScream = true
+	self.RageLevel = 1
+	self.SpeedBuff = 1
+	self.IsEnraged = 0
+	self.Ouchies = 0
 
--- animations for the StartActivity function
-self.AttackAnim = (ACT_MELEE_ATTACK_SWING)
-self.WalkAnim = (ACT_WALK)
-self.RunAnim = (ACT_WALK)
-self.FlinchAnim = (ACT_FLINCH_PHYSICS)
-self.FallAnim = (ACT_IDLE_ON_FIRE)
-
-
-self.ZombieStats = {
-["Model"] = "models/undead/undead.mdl",
-
---refer to entites/entities/npc_tea_basic.lua
-["Damage"] = 65,
-["PropDamage"] = 200,
-["Force"] = 1125,
-["Infection"] = 100,
-["Reach"] = 140,
-["StrikeDelay"] = 0.6,
-["AfterStrikeDelay"] = 1.5,
-
-["Health"] = 4000,
-["MoveSpeedWalk"] = 65,
-["MoveSpeedRun"] = 95,
-["VisionRange"] = 1200,
-["LoseTargetRange"] = 1500,
-
-["Ability1"] = true,
-["Ability1Range"] = 2500,
-["Ability1Cooldown"] = math.Rand(10,15),
-["Ability1TrigDelay"] = 0,
-
-}
+	-- animations for the StartActivity function
+	self.AttackAnim = ACT_MELEE_ATTACK_SWING
+	self.WalkAnim = ACT_WALK
+	self.RunAnim = ACT_WALK
+	self.IdleAnim = ACT_IDLE
+	self.FlinchAnim = ACT_FLINCH_PHYSICS
+	self.FallAnim = ACT_IDLE_ON_FIRE
 
 
-self.AttackSounds = {"npc/ichthyosaur/attack_growl1.wav",
-"npc/ichthyosaur/attack_growl2.wav",  
-}
+	self.ZombieStats = {
+	["Model"] = "models/undead/undead.mdl",
 
-self.AlertSounds = {"npc/antlion_guard/angry1.wav", "npc/antlion_guard/angry2.wav", "npc/antlion_guard/angry3.wav"}
+	--refer to entites/entities/npc_tea_basic.lua
+	["Damage"] = 65,
+	["PropDamage"] = 200,
+	["Force"] = 1125,
+	["Infection"] = 100,
+	["Reach"] = 140,
+	["StrikeDelay"] = 0.6,
+	["AfterStrikeDelay"] = 1.5,
 
-self.IdleSounds = {
-"npc/antlion_guard/frustrated_growl1.wav",
-"npc/antlion_guard/frustrated_growl2.wav",
-"npc/antlion_guard/frustrated_growl3.wav",
-}
+	["Health"] = 4000,
+	["MoveSpeedWalk"] = 65,
+	["MoveSpeedRun"] = 95,
+	["VisionRange"] = 1200,
+	["LoseTargetRange"] = 1500,
 
-self.PainSounds = {"npc/stalker/stalker_pain1.wav",
-"npc/stalker/stalker_pain2.wav", 
-"npc/stalker/stalker_pain3.wav", 
-}
+	["Ability1"] = true,
+	["Ability1Range"] = 2500,
+	["Ability1Cooldown"] = math.Rand(10,15),
+	["Ability1TrigDelay"] = 0,
 
-self.DieSounds = {"npc/zombie/zombie_die1.wav",
-"npc/zombie/zombie_die2.wav", 
-"npc/zombie/zombie_die3.wav"
-}
+	}
 
-self.DoorBreak = Sound("npc/zombie/zombie_pound_door.wav")
 
-self.Hit = Sound("npc/zombie/zombie_hit.wav")
-self.Miss = Sound("npc/zombie/claw_miss1.wav")
+	self.AttackSounds = {"npc/ichthyosaur/attack_growl1.wav",
+	"npc/ichthyosaur/attack_growl2.wav",  
+	}
 
-self.Ability1CD = CurTime()
+	self.AlertSounds = {"npc/antlion_guard/angry1.wav", "npc/antlion_guard/angry2.wav", "npc/antlion_guard/angry3.wav"}
+
+	self.IdleSounds = {
+		"npc/antlion_guard/frustrated_growl1.wav",
+		"npc/antlion_guard/frustrated_growl2.wav",
+		"npc/antlion_guard/frustrated_growl3.wav",
+	}
+
+	self.PainSounds = {
+		"npc/stalker/stalker_pain1.wav",
+		"npc/stalker/stalker_pain2.wav", 
+		"npc/stalker/stalker_pain3.wav", 
+	}
+
+	self.DieSounds = {
+		"npc/zombie/zombie_die1.wav",
+		"npc/zombie/zombie_die2.wav", 
+		"npc/zombie/zombie_die3.wav"
+	}
+
+	self.DoorBreak = Sound("npc/zombie/zombie_pound_door.wav")
+
+	self.Hit = Sound("npc/zombie/zombie_hit.wav")
+	self.Miss = Sound("npc/zombie/claw_miss1.wav")
+
+	self.Ability1CD = CurTime()
 
 end
 

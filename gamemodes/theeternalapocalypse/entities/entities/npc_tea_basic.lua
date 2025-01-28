@@ -5,15 +5,20 @@ ENT.PrintName = "Shambler Zombie"
 ENT.Category = "TEA Zombies"
 ENT.Purpose = "A zombie that attack you and can infect"
 ENT.Author = "Uklejamini"
-ENT.Spawnable = true
-ENT.AdminOnly = true
+
+list.Set("NPC", "npc_tea_basic", {
+	Name = ENT.PrintName,
+	Class = "npc_tea_basic",
+	Category = ENT.Category
+})
 
 function ENT:SetUpStats()
 
 -- animations for the StartActivity function
-	self.AttackAnim = (ACT_MELEE_ATTACK1)
-	self.WalkAnim = (ACT_WALK)
-	self.RunAnim = (ACT_WALK)
+	self.AttackAnim = ACT_MELEE_ATTACK1
+	self.WalkAnim = ACT_WALK
+	self.RunAnim = ACT_WALK
+	self.IdleAnim = ACT_RESET
 
 	self.FlinchAnim = (ACT_FLINCH_PHYSICS)
 	self.FallAnim = (ACT_IDLE_ON_FIRE)
@@ -91,14 +96,15 @@ function ENT:SetUpStats()
 end
 
 function ENT:CanSeeTarget()
+	
 	if !self:IsValid() then return false end
-	if self.target != nil then
+	if self.target then
 		local tracedata = {}
-		tracedata.start = self:GetPos() + Vector(0, 0, 30)
-		tracedata.endpos = self.target:GetPos() + Vector(0, 0, 30)
-		tracedata.filter = function(ent) return ent == self.target end
+		tracedata.start = self:GetPos() + self:OBBCenter()
+		tracedata.endpos = self.target:GetPos() + self.target:OBBCenter()
+		tracedata.filter = function(ent) return ent == self.target or string.sub(ent:GetClass(), 1, 5) == "prop_" end --ent == self.target or ent == NULL end
 		local trace = util.TraceLine(tracedata)
-		return self.target == trace.Entity
+		return not trace.HitWorld and (self.target == trace.Entity)
 	end
 
 	return false

@@ -127,10 +127,11 @@ end
 function ENT:OnTakeDamage( dmg )
 	local damage = dmg:GetDamage()
 	local attacker = dmg:GetAttacker()
-	local ownerhasperk = self:GetNWEntity("owner"):HasPerk("speedy_hands")
+	local owner = self:GetNWEntity("owner")
+	local ownerhasperk = owner:IsValid() and owner:HasPerk("speedy_hands")
 
 	if damage <= 0 then return end
-	if attacker:IsPlayer() and attacker:IsValid() and attacker:Team() == 1 and attacker:GetNWBool("pvp") != true and self:GetNWEntity("owner") != attacker then
+	if attacker:IsPlayer() and attacker:IsValid() and attacker:Team() == 1 and attacker:GetNWBool("pvp") != true and owner != attacker and owner != NULL then
 		if !timer.Exists("NoPvPMsgAntiSpamTimer"..attacker:EntIndex()) then
 			attacker:SystemMessage("You cannot damage other players props unless you have PvP mode enabled!", Color(255,205,205,255), true)
 			timer.Create("NoPvPMsgAntiSpamTimer"..attacker:EntIndex(), 0.5, 1, function() end)

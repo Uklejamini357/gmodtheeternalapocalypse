@@ -10,7 +10,7 @@ language.Add("ent_mad_rocket", "Rocket")
 ---------------------------------------------------------*/
 function ENT:Initialize()
 	-- TO DO: Disable Gravgun interaction
-	self.TimeLeft = CurTime() + 3
+	self.TimeLeft = CurTime() + 5
 
 	local vOffset 	= self.Entity:LocalToWorld(Vector(0, 0, self.Entity:OBBMins().z))
 	local vNormal 	= (vOffset - self.Entity:GetPos()):GetNormalized()

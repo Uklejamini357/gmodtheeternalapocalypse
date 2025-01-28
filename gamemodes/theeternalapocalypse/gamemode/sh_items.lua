@@ -188,7 +188,7 @@ function UseFunc_RemoveArmor(ply, item)
 	return false
 end
 
-function UseFunc_DeployBed(ply, type)
+function UseFunc_DeployBed(ply)
 	if !SERVER then return false end
 	if !ply:IsValid() or !ply:Alive() then return false end
 
@@ -210,6 +210,27 @@ function UseFunc_DeployBed(ply, type)
 		if v == ent then continue end
 		if !v.Owner:IsValid() or v.Owner == ply then v:Remove() end
 	end
+	return true
+end
+
+function UseFunc_DropEntity(ply, ent)
+	if !SERVER then return false end
+	if !ply:IsValid() or !ply:Alive() then return false end
+
+	local vStart = ply:GetShootPos()
+	local vForward = ply:GetAimVector()
+	local trace = {}
+	trace.start = vStart
+	trace.endpos = vStart + (vForward * 70)
+	trace.filter = ply
+	local tr = util.TraceLine(trace)
+	local ent = ents.Create(ent)
+	ent:SetPos(tr.HitPos)
+	ent:SetAngles(Angle(0, 0, 0))
+	ent:Spawn()
+	ent:Activate()
+	ent.Owner = ply
+
 	return true
 end
 

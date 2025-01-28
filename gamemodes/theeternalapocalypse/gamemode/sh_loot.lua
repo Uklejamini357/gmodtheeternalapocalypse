@@ -123,6 +123,7 @@ GM.LootTable1 = {
 
 }
 
+-- Weapon loot caches
 GM.LootTable2 = {
 	["item_rocketammo"] = {
 		["Qty"] = 2,
@@ -222,7 +223,7 @@ GM.LootTable2 = {
 
 }
 
-
+-- Rare Loot Caches
 GM.LootTable3 = {
 	["weapon_tea_scrapsword"] = {
 		["Qty"] = 1,
@@ -347,7 +348,7 @@ GM.LootTableFaction = {
 
 }
 
--- items you can get from Scavenging skill bonus
+-- items you can get from Scavenging skill bonus (It does not work yet.)
 GM.BonusLoot = {}
 GM.BonusLoot.Normal = {
 	["item_soda"] = {

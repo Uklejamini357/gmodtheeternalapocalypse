@@ -994,9 +994,9 @@ function GM:DrawMiscThings()
 		draw.DrawText(team.GetName(owner:Team()), "TargetID", t + 72, s + 40, team.GetColor(owner:Team()))
 
 
-		local shp = ent:GetNWInt("ate_integrity", -1)
-		local smaxhp = ent:GetNWInt("ate_maxintegrity", -1)
-		if shp < 0 or smaxhp < 0 then return end
+		local shp = ent:GetStructureHealth()
+		local smaxhp = ent:GetStructureMaxHealth()
+		if shp <= 0 or smaxhp <= 0 then return end
 		local dix = ent:LocalToWorld(ent:OBBCenter()):ToScreen()
 		local fraction = shp / smaxhp
 		surface.SetDrawColor(0, 0, 0, 100)

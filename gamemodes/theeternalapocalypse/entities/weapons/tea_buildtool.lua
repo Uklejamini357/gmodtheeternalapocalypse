@@ -100,11 +100,13 @@ function SWEP:Reload()
     tr.endpos = self:GetOwner():GetShootPos() + 150 * self:GetOwner():GetAimVector()
     tr.filter = {self:GetOwner()}
     local trace = util.TraceLine(tr)
-    if trace.Entity and trace.Entity:IsValid() and (trace.Entity:GetClass() == "prop_flimsy" or trace.Entity:GetClass() == "prop_strong") and (self:GetNextPrimaryFire() <= CurTime()) then
-        GAMEMODE:DestroyProp(self:GetOwner(), trace.Entity)
+    local ent = trace.Entity
+    
+    if ent and ent:IsValid() and (ent:GetClass() == "prop_flimsy" or ent:GetClass() == "prop_strong") and (self:GetNextPrimaryFire() <= CurTime()) then
+        GAMEMODE:DestroyProp(self:GetOwner(), ent)
         self:SetNextPrimaryFire(CurTime() + 2.08)
-    elseif trace.Entity and trace.Entity:IsValid() and SpecialSpawns[trace.Entity:GetClass()] and (self:GetNextPrimaryFire() <= CurTime()) then
-        GAMEMODE:DestroyStructure(self:GetOwner(), trace.Entity)
+    elseif ent and ent:IsValid() and SpecialSpawns[ent:GetClass()] and (self:GetNextPrimaryFire() <= CurTime()) then
+        GAMEMODE:DestroyStructure(self:GetOwner(), ent)
         self:SetNextPrimaryFire(CurTime() + 2.08)
     end
 end
@@ -155,10 +157,15 @@ function SWEP:GetSelected()
     return ply.SelectedProp or "models/props_debris/wood_board04a.mdl"
 end
 
-local class = {
-    prop_flimsy = true,
-    prop_strong = true,
-}
+function SWEP:IsSelectedStructure()
+    local ply = self:GetOwner()
+    return SpecialSpawns[ply.SelectedProp]
+end
+
+function SWEP:GetSelectedStructureModel()
+    local ply = self:GetOwner()
+    return SpecialSpawns[ply.SelectedProp].Model
+end
 
 function SWEP:PrimaryAttack()
     if self:GetOwner():KeyDown(IN_WALK) and SERVER then
@@ -171,7 +178,10 @@ function SWEP:PrimaryAttack()
             trace.endpos = vStart + (vForward * 150)
             trace.filter = ply
             local tr = util.TraceLine(trace)
-            if IsValid(tr.Entity) and class[tr.Entity:GetClass()] and not tr.Entity.IsBuilt then
+            local check = function(class)
+                return class == "prop_flimsy" or class == "prop_strong" or SpecialSpawns[class]
+            end
+            if IsValid(tr.Entity) and check(tr.Entity:GetClass()) and not tr.Entity.IsBuilt then
                 self:SetDraggedEnt(tr.Entity)
                 self:SetDraggedEntLPos(tr.Entity:WorldToLocal(tr.HitPos))
             end
@@ -192,8 +202,11 @@ function SWEP:PrimaryAttack()
     if not IsFirstTimePredicted() then return end
     local ply = self:GetOwner()
     if ply:KeyDown(IN_USE) then return end
-    if (self:GetNextPrimaryFire() <= CurTime()) then
-        GAMEMODE:MakeProp(ply, self:GetSelected(), self:GetBuildPos(), self:GetBuildAngles(), 1)
+    if (self:GetNextPrimaryFire() <= CurTime()) and self:IsSelectedStructure() then
+        GAMEMODE:MakeStructure(ply, self:GetSelected(), self:GetBuildPos(), self:GetBuildAngles())
+        self:SetNextPrimaryFire(CurTime() + 0.5)
+    elseif (self:GetNextPrimaryFire() <= CurTime()) then
+        GAMEMODE:MakeProp(ply, self:GetSelected(), self:GetBuildPos(), self:GetBuildAngles())
         self:SetNextPrimaryFire(CurTime() + 0.5)
     end
 end
@@ -324,9 +337,9 @@ end
 
 function SWEP:Think()
     if SERVER then
-        if not IsValid(self:GetGhost()) then 
+        if not IsValid(self:GetGhost()) then
             self:SetGhost(ents.Create("prop_dynamic"))
-            self:GetGhost():SetModel(self:GetSelected())
+            self:GetGhost():SetModel(self:IsSelectedStructure() and self:GetSelectedStructureModel() or self:GetSelected())
             self:GetGhost():Spawn()
             self:GetGhost():Activate()
             self:GetGhost():SetNotSolid(true)
@@ -335,7 +348,7 @@ function SWEP:Think()
         local ghost = self:GetGhost()
         ghost:SetPos(self:GetBuildPos())
         ghost:SetAngles(self:GetBuildAngles())
-        ghost:SetModel(self:GetSelected())
+        ghost:SetModel(self:IsSelectedStructure() and self:GetSelectedStructureModel() or self:GetSelected())
         ghost:SetMaterial("models/wireframe")
         ghost:SetColor(Color(255, 255, 255, 188))
         ghost:SetRenderMode(RENDERMODE_TRANSCOLOR)

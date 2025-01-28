@@ -11,7 +11,8 @@ SWEP.Category			= "T.E.A. Weapons"
 
 SWEP.Primary.Sound 		= Sound("NPC_Helicopter.FireRocket")
 SWEP.Primary.Recoil		= 0
-SWEP.Primary.Damage		= 120
+SWEP.Primary.Damage		= 560
+SWEP.Primary.DamageRadius	= 320
 SWEP.Primary.NumShots		= 1
 SWEP.Primary.Cone			= 0.075
 SWEP.Primary.Delay 		= 2
@@ -59,7 +60,9 @@ function SWEP:Rocket()
 		
 	rocket:SetAngles(self.Owner:EyeAngles())
 	rocket.Number = 1
-	rocket.ExplosionDamageRadius = self.Primary.Damage
+	rocket.ExplosionDamage = self.Primary.Damage
+	rocket.ExplosionRadius = self.Primary.DamageRadius
+	rocket.ShotFromWeapon = self
 	rocket:Spawn()
 	rocket:Activate()
 end
@@ -134,9 +137,7 @@ function SWEP:PrimaryAttack()
 		self.Owner:SetVelocity(self.Owner:GetAimVector() * -150)
 	end
 
-	if ((game.SinglePlayer() and SERVER) or CLIENT) then
-		self.Weapon:SetNetworkedFloat("LastShootTime", CurTime())
-	end
+	self.Weapon:SetNetworkedFloat("LastShootTime", CurTime())
 
 	local WeaponModel = self.Weapon:GetOwner():GetActiveWeapon():GetClass()
 end

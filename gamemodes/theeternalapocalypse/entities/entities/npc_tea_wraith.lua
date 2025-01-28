@@ -2,11 +2,15 @@ AddCSLuaFile()
 
 ENT.Base = "npc_tea_basic"
 ENT.PrintName = "Wraith Zombie"
-ENT.Category = ""
-ENT.Author = "Uklejamini"
+ENT.Category = "TEA Zombies"
 ENT.Purpose = "Can temporarily blind survivors"
-ENT.Spawnable = true
-ENT.AdminOnly = true
+ENT.Author = "Uklejamini"
+
+list.Set("NPC", "npc_tea_wraith", {
+	Name = ENT.PrintName,
+	Class = "npc_tea_wraith",
+	Category = ENT.Category
+})
 
 
 function ENT:SetUpStats()
@@ -59,7 +63,8 @@ function ENT:SetUpStats()
 
 	self.AttackSounds = {"npc/stalker/go_alert2a.wav"}
 
-	self.AlertSounds = {"npc/stalker/stalker_scream1.wav",
+	self.AlertSounds = {
+		"npc/stalker/stalker_scream1.wav",
 		"npc/stalker/stalker_scream2.wav",
 		"npc/stalker/stalker_scream3.wav",
 		"npc/stalker/stalker_scream4.wav"
@@ -71,11 +76,13 @@ function ENT:SetUpStats()
 		"npc/fast_zombie/idle3.wav",
 	}
 
-	self.PainSounds = {"npc/stalker/stalker_die1.wav",
+	self.PainSounds = {
+		"npc/stalker/stalker_die1.wav",
 		"npc/stalker/stalker_die2.wav", 
 	}
 
-	self.DieSounds = {"npc/stalker/stalker_die1.wav",
+	self.DieSounds = {
+		"npc/stalker/stalker_die1.wav",
 		"npc/stalker/stalker_die2.wav", 
 	}
 
