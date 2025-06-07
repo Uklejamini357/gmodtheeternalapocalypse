@@ -9,7 +9,6 @@ ENT.AdminOnly			= true
 
 
 function ENT:SpawnFunction(ply, tr)
-	if (!tr.Hit) then return end
 	local SpawnPos = tr.HitPos
 	local ent = ents.Create("prop_tea_propane")
 	ent:SetPos(SpawnPos)

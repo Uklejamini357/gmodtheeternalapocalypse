@@ -123,6 +123,7 @@ function ENT:GetTEAZombieSpeedMul()
 	return math.min(self:GetEliteVariant() == VARIANT_ENRAGED and 1.6 or 1, 2 - (self:Health() / self:GetMaxHealth())) * math.Clamp(GAMEMODE:GetInfectionMul(0.5)-0.25, 1, 1.25) * GAMEMODE.ZombieSpeedMultiplier * self.SpeedBuff
 end
 
+local ai_disabled = GetConVar("ai_disabled")
 
 function ENT:Initialize()
 	if CLIENT then return end
@@ -140,6 +141,10 @@ function ENT:Initialize()
 	self.NxtTick = 5
 	self.NextPainSound = CurTime()
 	self:PhysicsInitShadow()
+
+	if not ai_disabled:GetBool() then
+		self:FindTarget()
+	end
 end
 
 
@@ -185,10 +190,6 @@ function ENT:Think()
 		phy:SetAngles(self:GetAngles())
 	end
 
-	-- if self.target and self.target:IsValid() then
-		-- self.loco:Approach( self.target:GetPos(), 1 )
-	-- end
-	
 -- need to slowly drown them in water or else they will just skip happily along the sea floor
 	if self:WaterLevel() >= 3 and self:Health() > 0 then
 		local drown = DamageInfo()
@@ -210,10 +211,16 @@ end
 function ENT:RunBehaviour()
 	while (true) do
 		if CLIENT then return end
+		if ai_disabled:GetBool() then
+			coroutine.wait(0.1)
+			coroutine.yield()
+			continue
+		end
+
 		local target = self.target
 		local selfpos = self:GetPos()
 
-		if IsValid(target) and target:Alive() and (self:GetRangeTo(target) <= (1500 * self.RageLevel) or GAMEMODE.ZombieApocalypse) and !target.TEANoTarget then
+		if IsValid(target) and (target:IsPlayer() and target:Alive() or target:IsNPC() and target:Health() > 0) and (self:GetRangeTo(target) <= (1500 * self.RageLevel) or GAMEMODE.ZombieApocalypse) and not (target:IsFlagSet(FL_NOTARGET) or target.AdminMode) then
 			self.loco:FaceTowards(target:GetPos())
 
 -- check if we are obstructed by props and smash them if we are
@@ -224,39 +231,29 @@ function ENT:RunBehaviour()
 					if v:GetClass() == "prop_flimsy" or v:GetClass() == "prop_strong" or SpecialSpawns[v:GetClass()] then
 						self:AttackProp(v)
 						break
-					elseif v:GetClass() == "prop_door_rotating" and v:GetNoDraw() == false then
+					elseif v:GetClass() == "prop_door_rotating" and not v:GetNoDraw() then
 						self:AttackDoor(v)
 						break
 					else continue end
 				end
 			end
-			
-			if self.NxtTick < 1 then
-				if math.random(1, 500) < 25 then
-					self:EmitSound(table.Random(self.IdleSounds))
-				end
-
-				self.NxtTick = 5
-			else
-				self.NxtTick = self.NxtTick - 1
-			end
-
 
 -- run our first ability
 			if self.ZombieStats["Ability1"] and self:GetRangeTo(target) <= self.ZombieStats["Ability1Range"] then
 
 				if self.Ability1CD <= CurTime() then
-					timer.Simple(self.ZombieStats["Ability1TrigDelay"], function()
-						if !self:IsValid() then return false end
-						local bool = self:SpecialSkill1()
-						if bool == true then self.Ability1CD = CurTime() + self.ZombieStats["Ability1Cooldown"] end		
-					end)
+					if self.CanSpecialSkill1 and self:CanSpecialSkill1() or not self.CanSpecialSkill1 then
+						timer.Simple(self.ZombieStats["Ability1TrigDelay"], function()
+							if !self:IsValid() then return false end
+							self:SpecialSkill1()
+						end)
+						self.Ability1CD = CurTime() + self.ZombieStats["Ability1Cooldown"]
+					end
 				end
 			end
 
 -- check if we have a player within arms reach and bash them if they are
 			if (self:GetRangeTo(target) <= self.ZombieStats["Reach"] * 0.8 && self:CanSeeTarget()) then
-
 				self:AttackPlayer(target)
 
 				self:StartActivity(self.AttackAnim)
@@ -267,54 +264,125 @@ function ENT:RunBehaviour()
 -- we can see a player but we cant reach them so lets go fuck their shit up
 			else
 				local distance = selfpos:Distance(target:GetPos())
-				self:StartActivity(self.RunAnim)
+				if self:GetActivity() != self.RunAnim then
+					self:StartActivity(self.RunAnim)
+				end
 
 				self.loco:SetDesiredSpeed(self.ZombieStats["MoveSpeedRun"] * self:GetTEAZombieSpeedMul())
 
-				local nav = navmesh.GetNearestNavArea(target:GetPos(), false, 10000, false, true, -2)
-				local reachpos
-				if nav then
-					if self.loco:IsAreaTraversable(nav) then
-						reachpos = nav:GetClosestPointOnArea(target:GetPos())
-					end
-				end
-				if reachpos then
-					local result = self:MoveToPos(reachpos or target:GetPos(), {
-						tolerance = self.ZombieStats["Reach"],
-						maxage = 1,
-						repath = 1,
-					})
-				end
+				local tr = util.TraceLine({
+					start = target:GetPos(),
+					endpos = target:GetPos() + Vector(0,0,-200)
+				})
 
+				self:GotoPos(tr.HitPos)
 			end
 
--- failed all above checks, they arent in range so we lose interest and go back to wandering
+-- failed all above checks, they arent in range so we lose interest and go back to wandering (or just standing there waiting to wander around)
 		else
 			self.target = nil
 			self.CanScream = true
-			self:StartActivity(self.WalkAnim)
-			self.loco:SetDesiredSpeed(self.ZombieStats["MoveSpeedWalk"])
-			self:MoveToPos(self:GetPos() + Vector(math.random(-256, 256), math.random(-256, 256), 0), {
-				repath = 3,
-				maxage = 3,
-			})
+			if true then--math.random(10) == 1 -- Not yet.
+				local success
+				for i=1,10 do -- repeat 10 times to find the suitable path for the zombie
+					local pos = self:GetPos() + Vector(math.random(-256, 256), math.random(-256, 256), math.random(-20,20))
+					local nav = navmesh.GetNearestNavArea(pos, false, 500, false, true, -2)
+					local reachpos
+					if nav then
+						if nav:IsUnderwater() then
+							continue -- attempt to find another position to go to
+						end
+						if self.loco:IsAreaTraversable(nav) then
+							reachpos = nav:GetClosestPointOnArea(pos)
+						end
+					end
+					if reachpos then
+						self:StartActivity(self.WalkAnim)
+						self.loco:SetDesiredSpeed(self.ZombieStats["MoveSpeedWalk"])
+						local result = self:MoveToPos(reachpos, {
+							-- repath = 1,
+							maxage = 3,
+						})
+					end
+
+					success = true
+					break
+				end
+			else
+				if self:GetActivity() != (self.IdleAnim or ACT_IDLE) then
+					self:StartActivity(self.IdleAnim or ACT_IDLE)
+				end
+				coroutine.wait(1)
+			end
+			
+			if self.NxtTick < 1 then
+				if math.random(1, 50) < 25 then
+					self:EmitSound(table.Random(self.IdleSounds))
+				end
+
+				self.NxtTick = 5
+			else
+				self.NxtTick = self.NxtTick - 1
+			end
+
 
 -- find ourselves a new target
 			if (!self.target) then
-				for k, v in pairs(player.GetAll()) do
-					if (v:Alive() and (self:GetRangeTo(v) <= (1200 * self.RageLevel) or GAMEMODE.ZombieApocalypse) and !v.TEANoTarget) then
-						self.target = v
-						if self.CanScream == true then
-							self:EmitSound(table.Random(self.AlertSounds), 90, math.random(90, 110))
-							self.CanScream = false
-						end
-						break
-					end
-				end
+				self:FindTarget()
 			end
 
 		end
 		coroutine.yield()
+	end
+end
+
+function ENT:FindTarget()
+	local targets = {}
+	for _, ent in pairs(ents.FindInSphere(self:GetPos(), 1200 * self.RageLevel)) do
+		if ent:IsNPC() and ent:Health() > 0 or ent:IsPlayer() and ent:Alive() and not (ent:IsFlagSet(FL_NOTARGET) or ent.AdminMode) then
+			targets[ent] = self:GetRangeTo(ent)
+		end
+	end
+	if GAMEMODE.ZombieApocalypse then
+		for _, ent in pairs(player.GetAll()) do
+			if ent:Alive() and not (ent:IsFlagSet(FL_NOTARGET) or ent.AdminMode) and not targets[ent] then
+				targets[ent] = self:GetRangeTo(ent)
+			end
+		end
+	end
+
+	table.sort(targets, function(a,b) return a < b end)
+
+	for ent,_ in SortedPairsByValue(targets) do
+		self.target = ent
+		if self.CanScream then
+			self:EmitSound(table.Random(self.AlertSounds), 90, math.random(90, 110))
+			self.CanScream = false
+		end
+
+		break
+	end
+
+end
+
+function ENT:GotoPos(pos)
+	local target = self.target
+	local nav = navmesh.GetNearestNavArea(pos, false, 2000, false, true, -2)
+	local reachpos
+	if nav then
+		if self.loco:IsAreaTraversable(nav) then
+			reachpos = nav:GetClosestPointOnArea(target:GetPos())
+		end
+	end
+	if self:CanSeeTarget() and self:GetRangeTo(target) < 800 or not nav then
+		self.loco:FaceTowards(pos)
+		self.loco:Approach(pos, 1)
+	elseif reachpos then
+		local result = self:MoveToPos(reachpos or target:GetPos(), {
+			tolerance = self.ZombieStats["Reach"],
+			maxage = self:GetRangeTo(target) >= 1500 and 2 or 1,
+			repath = self:GetRangeTo(target) >= 1500 and 2 or 1,
+		})
 	end
 end
 
@@ -344,7 +412,7 @@ function ENT:OnInjured(damageInfo)
 	if !attacker:IsValid() then return end
 	local range = self:GetRangeTo(attacker)
 	if attacker:IsPlayer() then
-		self.target = attacker
+		self:FindTarget()
 	end
 	if self.RageLevel <= 2 then
 		self.RageLevel = 2
@@ -358,8 +426,8 @@ function ENT:OnInjuredAlt(dmginfo)
 end
 
 
-function ENT:AttackPlayer(ply)
-	if !ply:IsValid() or !self:IsValid() then return false end
+function ENT:AttackPlayer(target)
+	if !target:IsValid() or !self:IsValid() then return false end
 	self:EmitSound(table.Random(self.AttackSounds), 100, math.random(95, 105))
 
 	-- swing those claws baby
@@ -371,16 +439,16 @@ function ENT:AttackPlayer(ply)
 	self:DelayedCallback(self.ZombieStats["StrikeDelay"], function()
 	if !self:IsValid() or self:Health() < 1 then return end
 
-		if (IsValid(ply) and self:GetRangeTo(ply) <= self.ZombieStats["Reach"]) then
-			self:ApplyPlayerDamage(ply, self.ZombieStats["Damage"], -self.ZombieStats["Force"], self.ZombieStats["Infection"])
+		if (IsValid(target) and self:GetRangeTo(target) <= self.ZombieStats["Reach"]) then
+			self:ApplyPlayerDamage(target, self.ZombieStats["Damage"], -self.ZombieStats["Force"], self.ZombieStats["Infection"])
 		end
 	end)
 
 	-- check if we killed the guy and find a new target if we did
 	self:DelayedCallback(self.ZombieStats["StrikeDelay"] * 1.2, function()
-	if (IsValid(ply) and !ply:Alive()) then
-		self.target = nil
-	end
+		if target:IsValid() and (target:IsPlayer() and !target:Alive() or target:IsNPC() and target:Health() <= 0) then
+			self.target = nil
+		end
 	end)
 
 	return false
@@ -393,6 +461,7 @@ function ENT:AttackProp(target)
 	self:EmitSound(table.Random(self.AttackSounds), 90, math.random(85, 95))
 	
 	self:StartActivity(self.AttackAnim)
+	self:SetPlaybackRate(self.ZombieStats["StrikeAnimSpeed"] or 1)
 
 	coroutine.wait(self.ZombieStats["StrikeDelay"])
 	self:EmitSound(self.Miss)
@@ -419,6 +488,7 @@ function ENT:AttackDoor(target)
 	self:EmitSound(table.Random(self.AttackSounds), 90, math.random(85, 95))
 
 	self:StartActivity(self.AttackAnim)
+	self:SetPlaybackRate(self.ZombieStats["StrikeAnimSpeed"] or 1)
 	coroutine.wait(self.ZombieStats["StrikeDelay"])
 	if target:GetNoDraw() then
 		coroutine.wait(self.ZombieStats["AfterStrikeDelay"])
@@ -484,23 +554,43 @@ end
 
 
 function ENT:ApplyPlayerDamage(ply, damage, hitforce, infection)
-	if !ply:Alive() then return end
+	if !ply:IsValid() or !ply:IsPlayer() and ply:Health() <= 0 or ply:IsPlayer() and !ply:Alive() then return end
 	local damageInfo = DamageInfo()
 	local dmg1 = tonumber(damage)
 
 	damageInfo:SetAttacker(self)
-	damageInfo:SetDamage(GAMEMODE:CalcPlayerDamage(ply, dmg1))
+	damageInfo:SetDamage(ply:IsPlayer() and GAMEMODE:CalcPlayerDamage(ply, dmg1) or dmg1)
 	damageInfo:SetDamageType(DMG_CLUB)
 
-	local force = ply:GetAimVector() * hitforce
+	local distancevector = self:GetPos() - ply:GetPos()
+	local force = (distancevector / distancevector:Length()) * hitforce
 	force.z = 32
 	damageInfo:SetDamageForce(force)
 
 	ply:TakeDamageInfo(damageInfo)
 	ply:EmitSound(self.Hit, 100, math.random(80, 110))
-	ply:ViewPunch(VectorRand():Angle() * 0.05)
 	ply:SetVelocity(force)
-	if math.random(0, 100) > (100 - infection * (1 - (0.04 * ply.StatImmunity))) then
-		ply:AddInfection(math.random(60,300))
+	if ply:IsPlayer() then
+		ply:ViewPunch(VectorRand():Angle() * 0.05)
+		if math.random(0, 100) > (100 - infection * (1 - (0.04 * ply.StatImmunity))) then
+			ply:AddInfection(math.random(60,300))
+		end
 	end
+end
+
+function ENT:OnStuck()
+	local pos = self:GetPos() + self:GetAngles():Forward()*-90 + Vector(0,0,32)
+
+	local nav = navmesh.GetNearestNavArea(tr.HitPos, false, 300, false, true, -2)
+	local reachpos
+	if nav then
+		if self.loco:IsAreaTraversable(nav) then
+			reachpos = nav:GetClosestPointOnArea(pos)
+		end
+	end
+
+	self:SetPos(reachpos or pos)
+	self:DropToFloor()
+
+	self.loco:ClearStuck()
 end

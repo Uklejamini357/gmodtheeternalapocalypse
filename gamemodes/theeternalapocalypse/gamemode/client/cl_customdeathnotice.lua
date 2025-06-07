@@ -67,7 +67,7 @@ end
 local function CheckLocalPlayerDeath(victim, attacker, dmg, dmgtype, msgoverride)
 	local suicidetable = {"Suicide"}
 
-	local killedbyplayer = {"Killed by %s"}--[[{"You were killed by %s.",
+	local killedbyplayer = {"Killed by %s. They had %d health remaining."}--[[{"You were killed by %s.",
 		"%s has killed You.",
 		"You were dominated by %s."}
 ]]	
@@ -98,7 +98,7 @@ local function CheckLocalPlayerDeath(victim, attacker, dmg, dmgtype, msgoverride
 		if attacker == LocalPlayer() then
 			GAMEMODE.DeathMessage = table.Random(suicidetable)
 		elseif IsValid(attacker) and attacker:IsPlayer() then
-			GAMEMODE.DeathMessage = Format(table.Random(killedbyplayer), attacker:Name())
+			GAMEMODE.DeathMessage = Format(table.Random(killedbyplayer), attacker:Name(), attacker:Health())
 		elseif GAMEMODE.Config["ZombieClasses"][attacker] then
 			GAMEMODE.DeathMessage = Format(table.Random(killedbyzombie), CheckAttacker(attacker))
 		elseif GAMEMODE.Config["BossClasses"][attacker] then

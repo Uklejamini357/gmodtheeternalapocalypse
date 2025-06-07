@@ -35,10 +35,11 @@ SWEP.Secondary.Ammo			= "none"
 local SwingSound = Sound("weapons/slam/throw.wav")
 local HitSound = Sound("Flesh.ImpactHard")
 
-SWEP.PassiveMode = false
-
 function SWEP:Initialize()
 	self:SetHoldType( "fist" )
+	self.PassiveMode = false
+	self.PassiveModeTime = CurTime()
+	self.PassiveModeVMDown = 0
 
 end
 
@@ -67,12 +68,16 @@ function SWEP:PrimaryAttack()
 	local ct = CurTime()
 	local owner = self:GetOwner()
 
-	if owner:KeyDown(IN_USE) then
-		self:SetNextPrimaryFire( ct + 0.8 )
-		self:SetNextSecondaryFire( ct + 0.8 )
+	self.PassiveModeTime = CurTime() + 3
+
+	if self.PassiveMode then
+		self:SetNextPrimaryFire( ct + 0.4 )
+		self:SetNextSecondaryFire( ct + 0.4 )
 		if ( IsFirstTimePredicted() ) then
 			self.PassiveMode = !self.PassiveMode
 		end
+
+		self.PassiveModeTime = CurTime() + 3
 
 	else
 		if self.PassiveMode then return false end
@@ -82,7 +87,7 @@ function SWEP:PrimaryAttack()
 	local anim = "fists_right" 
 
 	if math.random(1,2) == 1 then
-	anim = "fists_left"
+		anim = "fists_left"
 	end
 
 	if ( self:GetCombo() >= 2 ) then
@@ -329,6 +334,14 @@ function SWEP:Think()
 		self:SetCombo( 0 )
 		end
 	end
+
+	if not self.PassiveMode and (not self.PassiveModeTime or self.PassiveModeTime < CurTime()) then
+		self.PassiveMode = true
+	end
+
+	if self.PassiveModeVMDown and CLIENT then
+		self.PassiveModeVMDown = math.Approach(self.PassiveModeVMDown, self.PassiveMode and 24 or 0, FrameTime()*96)
+	end
 end
 
 function SWEP:DrawHUD()
@@ -353,9 +366,7 @@ end
 end
 
 function SWEP:GetViewModelPosition( pos, ang )
- 	if self.PassiveMode then
-	ang:RotateAroundAxis( ang:Right(), -16 )
-	end
+	ang:RotateAroundAxis( ang:Right(), -(self.PassiveModeVMDown or 0))
  
 	return pos, ang
  

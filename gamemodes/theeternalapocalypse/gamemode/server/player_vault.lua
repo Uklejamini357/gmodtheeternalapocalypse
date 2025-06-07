@@ -25,45 +25,6 @@ function GM:CalculateRemainingVaultWeight(ply, weight)
 end
 
 
-function GM:LoadPlayerVault(ply)
-	local LoadedData
-	if self.Config["FileSystem"] == "Legacy" then
-		if file.Exists(self.DataFolder.."/players/".. string.lower(string.gsub( ply:SteamID(), ":", "_").."/vault.txt"), "DATA") then
-			LoadedData = file.Read(self.DataFolder.."/players/".. string.lower(string.gsub( ply:SteamID(), ":", "_").."/vault.txt"), "DATA")
-		end
-	elseif self.Config["FileSystem"] == "PData" then
-		LoadedData = ply:GetPData("ate_playervault")
-	else
-		print("Bruh, did you try to setup incorrectly? Set your damned filesystem option to a proper setting in sh_config.lua")
-	end
-
-	if LoadedData then 
-		local formatted = util.JSONToTable(LoadedData)
-		ply.Vault = formatted
-	else
-		ply.Vault = table.Copy(self.Config["NewbieVault"])
-	end
-
-	timer.Simple(1, function() gamemode.Call("SendVault", ply) end)
-	timer.Simple(2, function() gamemode.Call("SavePlayerVault", ply) end)
-end
-
-
-function GM:SavePlayerVault(ply)
-	if !ply.AllowSave and not self.DatabaseSaving then return end
-
-	if self.Config["FileSystem"] == "Legacy" then
-		local data = util.TableToJSON(ply.Vault)
-		file.Write(self.DataFolder.."/players/"..string.lower(string.gsub(ply:SteamID(), ":", "_").."/vault.txt"), data)
-	elseif self.Config["FileSystem"] == "PData" then
-		local formatted = util.TableToJSON(ply.Vault)
-		ply:SetPData("ate_playervault", formatted)
-	else
-		print("Bruh, did you try to setup incorrectly? Set your damned filesystem option to a proper setting in sh_config.lua")
-	end
-	print("✓ ".. ply:Nick() .." vault saved")
-end
-
 
 function GM:AddToVault(ply, str, amt)
 	if !ply:IsValid() then return end
@@ -72,7 +33,7 @@ function GM:AddToVault(ply, str, amt)
 	amt = math.floor(amt or 1)
 
 	local item = self.ItemsList[str]
-	local weight = item["Weight"] * amt
+	local weight = item.Weight * amt
 	if (self:CalculateVaultWeight(ply) + weight) > self.Config["VaultSize"] then
 		ply:SystemMessage(translate.ClientFormat(ply, "notenoughspacevault", self.Config["VaultSize"], gamemode.Call("CalculateRemainingVaultWeight", ply, weight)), Color(255,205,205,255), true)
 		return false
@@ -98,7 +59,7 @@ function GM:WithdrawFromVault(ply, str, amt)
 	amt = math.floor(amt or 1)
 	
 	local item = self.ItemsList[str]
-	local weight = item["Weight"] * amt
+	local weight = item.Weight * amt
 /*
 	if ((ply:CalculateWeight() + weight) > (ply:CalculateMaxWeight())) then
 		ply:SystemMessage(Format("You don't have enough space for that! Need %skg more space!", gamemode.Call("CalculateRemainingInventoryWeight", ply, weight)), Color(255,205,205,255), true)
@@ -106,7 +67,7 @@ function GM:WithdrawFromVault(ply, str, amt)
 	end
 */
 	ply.Vault[str] = ply.Vault[str] - amt
-	if ply.Vault[str] < amt then ply.Vault[str] = nil end
+	if ply.Vault[str] <= 0 then ply.Vault[str] = nil end
 
 	gamemode.Call("SystemGiveItem", ply, str, amt)
 end

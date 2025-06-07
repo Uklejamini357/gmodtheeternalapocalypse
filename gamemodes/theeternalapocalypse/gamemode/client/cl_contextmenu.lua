@@ -139,32 +139,37 @@ function GM:CMenu()
 			surface.DrawOutlinedRect(140, 115, 180, 25)
 */
 			local infection = math.Round(self:GetInfectionLevel(), 2)
+			local effective = infection--math.Round(self:GetEffectiveInfectionLevel(), 2)
 			local text,color
 
-			if infection >= 200 then
+			if effective >= 200 then
 				text,color = "Chaotic", Color(91,31,31)
-			elseif infection >= 150 then
+			elseif effective >= 150 then
 				text,color = "Nightmare", Color(127,31,31)
-			elseif infection >= 125 then
+			elseif effective >= 125 then
 				text,color = "Horror", Color(191,31,31)
-			elseif infection >= 100 then
+			elseif effective >= 100 then
 				text,color = "Maximal", Color(255,0,0)
-			elseif infection >= 90 then
+			elseif effective >= 90 then
 				text,color = "Infected", Color(255,63,63)
-			elseif infection >= 75 then
+			elseif effective >= 75 then
 				text,color = "Very hard", Color(255,127,127)
-			elseif infection >= 55 then
+			elseif effective >= 55 then
 				text,color = "Hard", Color(191,127,127)
-			elseif infection >= 25 then
+			elseif effective >= 25 then
 				text,color = "Normal", Color(191,191,127)
-			elseif infection >= 10 then
+			elseif effective >= 10 then
 				text,color = "Average", Color(127,255,127)
 			else
 				text,color = "Easy", Color(127,255,255)
 			end
 
 
-			draw.SimpleText(Format("Infection level: %s%%", infection), "TargetID", scw - 590, sch / 2 - 145, color, 0, 0)
+			if effective == infection then
+				draw.SimpleText(Format("Infection level: %s%%", infection), "TargetID", scw - 590, sch / 2 - 145, color, 0, 0)
+			else
+				draw.SimpleText(Format("Infection level: %s%% (Effective: %s%%)", infection, effective), "TargetID", scw - 590, sch / 2 - 145, color, 0, 0)
+			end
 
 			draw.SimpleText(Format("Difficulty level: %s", text), "TargetIDSmall", scw - 590, sch / 2 - 120, color, 0, 0)
 			draw.SimpleText(Format("Zombies take: %s%% damage", math.Round(1 / self:GetInfectionMul()*100, 2)), "TargetIDSmall", scw - 590, sch / 2 - 105, color, 0, 0)

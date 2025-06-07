@@ -431,10 +431,7 @@ end
 function GM:PlayerDisconnected(ply)
 	self:SystemBroadcast(Format("%s has left the server", ply:Name()), Color(255,255,155,255), false)
 
-	self:SavePlayer(ply)
-	self:SavePlayerInventory(ply)
-	self:SavePlayerVault(ply)
-	self:SavePlayerPerks(ply)
+	gamemode.Call("SavePlayer", ply)
 	for k,v in pairs(ents.GetAll()) do
 		if v:GetNWEntity("owner") == ply then v:Remove() end
 		if v.BossMonster and v.DamagedBy[ply] then v.DamagedBy[ply] = nil end
@@ -539,11 +536,8 @@ function GM:OnReloaded()
 end
 
 function GM:ShutDown()
-	for k, v in pairs(player.GetAll()) do
-		self:SavePlayer(v)
-		self:SavePlayerInventory(v)
-		self:SavePlayerVault(v)
-		self:SavePlayerPerks(v)
+	for _, ply in pairs(player.GetAll()) do
+		gamemode.Call("SavePlayer", ply)
 	end
 	print("WARNING! WARNING!! THE OBJECT IS GONE!!")
 	self:SaveServerData()
@@ -823,7 +817,7 @@ function GM:PlayerInitialSpawn(ply, transition)
 	self.BaseClass:PlayerInitialSpawn(ply)
 	ply:AllowFlashlight(true)
 	
-	-------- Normal Stats --------
+	-------- Survival Stats --------
 	ply.SurvivalTime = CurTime()
 	ply.Stamina = 100
 	ply.Hunger = 10000
@@ -833,34 +827,24 @@ function GM:PlayerInitialSpawn(ply, transition)
 	ply.Battery = 100
 	ply.Oxygen = 100
 	ply.HPRegen = 0
-	ply.ChosenModel = "models/player/kleiner.mdl"
-	ply.Inventory = {}
-	ply.Vault = {}
-	ply.UnlockedPerks = {}
-	ply.XP = 0
 	ply.Money = 0
 	ply.Bounty = 0
+	ply.CharactersData = {}
+	----------------
+	
+	-------- Progression Stats --------
+	ply.XP = 0
 	ply.Level = 1
 	ply.Prestige = 0
 	ply.StatPoints = 0
 	ply.PerkPoints = 0
-	ply.PropCount = 0
-	ply.ArmorAttachments = {}
-	ply.InvitedTo = {} -- stores faction invites
-	ply.Achievements = {} -- stores gained achievements
-	ply.AchProgress = {}
-	ply.TaskCooldowns = {}
-	ply.SelectedProp = "models/props_debris/wood_board04a.mdl"
-	ply:SetPvPGuarded(0)
-	ply.Territory = "none"
-	ply.EquippedArmor = "none"
+	----------------
+	
+	-------- Statistics --------
 	ply.BestSurvivalTime = 0
 	ply.ZKills = 0
 	ply.playerskilled = 0
 	ply.playerdeaths = 0
-	ply.CurrentTask = ""
-	ply.CurrentTaskProgress = 0
-	ply.CharactersData = {}
 	----------------
 	
 	-------- Mastery Stats --------
@@ -870,7 +854,24 @@ function GM:PlayerInitialSpawn(ply, transition)
 	ply.MasteryPvPLevel = 0
 	----------------
 	
-	-------- Special Stats --------
+	-------- Other Stats --------
+	ply.PropCount = 0
+	ply.SelectedProp = "models/props_debris/wood_board04a.mdl"
+	ply.ChosenModel = "models/player/kleiner.mdl"
+	ply.Territory = "none"
+	ply.EquippedArmor = "none"
+	ply.CurrentTask = ""
+	ply.CurrentTaskProgress = 0
+
+	ply.Inventory = {}
+	ply.Vault = {}
+	ply.UnlockedPerks = {}
+	ply.ArmorAttachments = {}
+	ply.InvitedTo = {}
+	ply.Achievements = {}
+	ply.AchProgress = {}
+	ply.TaskCooldowns = {}
+
 	ply.SlowDown = 0
 	ply.CanUseFlashlight = true
 	ply.SpawnProtected = false
@@ -922,18 +923,11 @@ function GM:PlayerInitialSpawn(ply, transition)
 
 	print(Format("Loading datafiles for %s...\n", ply:Nick()))
 	gamemode.Call("LoadPlayer", ply)
-	gamemode.Call("LoadPlayerInventory", ply)
-	gamemode.Call("LoadPlayerVault", ply)
-	gamemode.Call("LoadPlayerPerks", ply)
 
+	ply:SetPvPGuarded(0)
 	ply:SetNWBool("pvp", false)
 	ply:SetNWString("ArmorType", "none")
 	ply:SetTeam(TEAM_LONER)
-
-	net.Start("RecvFactions")
-	net.WriteTable(Factions)
-	net.Send(ply)
-	self:NetUpdateStatistics(ply)
 
 	ForceEquipArmor(ply, ply.EquippedArmor)
 end
@@ -1038,7 +1032,14 @@ function GM:PlayerSpawn(ply)
 	end
 
 	gamemode.Call("RecalcPlayerSpeed", ply)
-	timer.Simple(3, function()
+
+	for i=1,20 do -- There is some kind of annoying-ass inf speed in my gmod instance, so meh. Let it be like it is for now
+		timer.Simple(engine.TickInterval()*i, function()
+			gamemode.Call("RecalcPlayerSpeed", ply)
+		end)
+	end
+
+	timer.Simple(1, function()
 		gamemode.Call("RecalcPlayerSpeed", ply)
 	end)
 

@@ -171,8 +171,8 @@ function MT_ENTITY:ProcessNPCDamage(dmginfo)
 			if !inflictor:IsValid() then inflictor = attacker end
 		end
 	
-		local damagewepmul = inflictor.DamageVsZombiesMul or GAMEMODE.WeaponDamageVsZombiesMul[inflictor:GetClass()]
-		if damagewepmul then
+		local damagewepmul = inflictor and inflictor:IsValid() and (inflictor.DamageVsZombiesMul or GAMEMODE.WeaponDamageVsZombiesMul[inflictor:GetClass()]) or 1
+		if damagewepmul and isnumber(damagewepmul) then
 			dmginfo:ScaleDamage(damagewepmul)
 		end
 

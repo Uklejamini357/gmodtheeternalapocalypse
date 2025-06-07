@@ -6,7 +6,7 @@ ENT.Category = "TEA Zombies"
 ENT.Author = "Uklejamini"
 ENT.Purpose = "Can teleport if taken too much damage"
 
-list.Set("NPC", "npc_tea_lork", {
+list.Set("NPC", "npc_tea_lord", {
 	Name = ENT.PrintName,
 	Class = "npc_tea_lord",
 	Category = ENT.Category

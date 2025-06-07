@@ -41,87 +41,6 @@ concommand.Add("refresh_inventory", function(ply)
 end)
 
 
-function GM:LoadPlayerInventory(ply)
-	if !ply:IsValid() or !ply:IsPlayer() then Error("The Eternal Apocalypse: Tried to load a player inventory file that doesn't exist!") return end
-	ply.Inventory = {}
-
-	local LoadedData
-	local InvalidData
-	if self.Config["FileSystem"] == "Legacy" then
-		if (file.Exists(self.DataFolder.."/players/"..string.lower(string.gsub(ply:SteamID(), ":", "_")).."/inventory.txt", "DATA")) then
-			LoadedData = file.Read(self.DataFolder.."/players/"..string.lower(string.gsub( ply:SteamID(), ":", "_").."/inventory.txt"), "DATA")
-		end
-		if (file.Exists(self.DataFolder.."/players/"..string.lower(string.gsub(ply:SteamID(), ":", "_")).."/invalid_inventory.txt", "DATA")) then
-			InvalidData = file.Read(self.DataFolder.."/players/"..string.lower(string.gsub( ply:SteamID(), ":", "_").."/invalid_inventory.txt"), "DATA")
-		end
-	elseif self.Config["FileSystem"] == "PData" then
-		LoadedData = ply:GetPData("tea_playerinventory")
-		InvalidData = ply:GetPData("tea_invalidinventory")
-	else
-		print("Bruh, did you try to setup incorrectly? Set your damned filesystem option to a proper setting in sh_config.lua")
-	end
-
-	if LoadedData then 
-		local formatted = util.JSONToTable(LoadedData)
-		local invaliditems = {}
-		if InvalidData then
-			invaliditems = util.JSONToTable(InvalidData) --save invalid items just in case
-		end
-		for k,v in pairs(formatted) do
-			if !self.ItemsList[k] then
-				invaliditems[k] = formatted[k]
-				formatted[k] = nil
-			end
-		end
-		for k,v in pairs(invaliditems) do
-			if self.ItemsList[k] then
-				formatted[k] = invaliditems[k]
-				invaliditems[k] = nil
-			end
-		end
-		if self:GetDebug() >= DEBUGGING_ADVANCED then
-			print("Loading Inventory\n\n")
-			PrintTable(formatted)
-			print("\nInvalid Items:")
-			PrintTable(invaliditems)
-		end
-		ply.Inventory = formatted
-		ply.InvalidInventory = invaliditems
-	else
-		ply.Inventory = table.Copy(self.Config["NewbieGear"])
-	end
-
-	timer.Simple(1, function()
-		GAMEMODE:SendInventory(ply)
-	end)
-end
-
-
-function GM:SavePlayerInventory(ply)
-	if !ply:IsValid() then return end
-	if !ply.AllowSave and not self.DatabaseSaving then return end
-
-	if self.Config["FileSystem"] == "Legacy" then
-		local data = util.TableToJSON(ply.Inventory)
-		local invaliddata = util.TableToJSON(ply.InvalidInventory)
-		file.Write(self.DataFolder.."/players/"..string.lower(string.gsub(ply:SteamID(), ":", "_")).."/inventory.txt", data)
-		file.Write(self.DataFolder.."/players/"..string.lower(string.gsub(ply:SteamID(), ":", "_")).."/invalid_inventory.txt", invaliddata)
-		if self:GetDebug() >= DEBUGGING_NORMAL then
-			print(Format("✓ %s inventory saved", ply:Nick()))
-		end
-	elseif self.Config["FileSystem"] == "PData" then
-		local formatted = util.TableToJSON(ply.Inventory)
-		local invaliddata = util.TableToJSON(ply.InvalidInventory)
-		ply:SetPData("tea_playerinventory", formatted)
-		ply:SetPData("tea_invalidinventory", invaliddata)
-		if self:GetDebug() >= DEBUGGING_NORMAL then
-			print(Format("✓ %s inventory saved", ply:Nick()))
-		end
-	else
-		print("Bruh, did you try to setup incorrectly? Set your damned filesystem option to a proper setting in sh_config.lua")
-	end
-end
-
 function GM:SaveTimer()
 	local i = 0
 	if not self.DatabaseSaving then
@@ -136,10 +55,7 @@ Set ConVar 'tea_server_dbsaving' to 1 in order to enable database saving.
 			timer.Simple(i, function()
 				if !self.DatabaseSaving then return end
 				if !ply:IsValid() then return end
-				self:SavePlayer(ply)
-				self:SavePlayerInventory(ply)
-				self:SavePlayerVault(ply)
-				self:SavePlayerPerks(ply)
+				gamemode.Call("SavePlayer", ply)
 			end)
 			i = i + 0.5
 		end

@@ -202,7 +202,7 @@ function GM:StartCommand(ply, cmd)
 	local keys = cmd:GetButtons()
 	cmd:ClearButtons()
 
-	if (ply.Stamina or MyStamina) > 30 and !ply:GetCanSprint() then
+	if (ply.Stamina or MyStamina) > 20 and !ply:GetCanSprint() then
 		ply:SetCanSprint(true)
 	end
 
@@ -287,16 +287,21 @@ function GM:GetInfectionLevel(bypass)
 	return tonumber(GetGlobalFloat("tea_infectionlevel", 0))
 end
 
+function GM:GetEffectiveInfectionLevel(bypass)
+	if not bypass and !self.InfectionLevelEnabled then return 0 end
+	return tonumber(GetGlobalFloat("tea_infectionlevel", 0))
+end
+
 function GM:SetInfectionLevel(value, bypass)
 	if value and self.InfectionLevelEnabled then
 		return SetGlobalFloat("tea_infectionlevel", value)
 	end
 end
 
-function GM:GetInfectionMul(value, bypass)
+function GM:GetInfectionMul(value, bypass, effective)
 	if not bypass and !self.InfectionLevelEnabled then return 0 end
 	value = value or 1
-	return tonumber(1-value + (1 + (self:GetInfectionLevel() * 0.01)) * value)
+	return tonumber(1-value + (1 + ((effective and self:GetEffectiveInfectionLevel() or self:GetInfectionLevel()) * 0.01)) * value)
 --	return tonumber((1 * value) + (self:GetInfectionLevel() * (0.01 / value)))
 end
 

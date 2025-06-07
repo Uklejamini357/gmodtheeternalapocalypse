@@ -105,6 +105,8 @@ function ENT:GetTEAZombieSpeedMul()
 	return math.min(self:GetEliteVariant() == VARIANT_ENRAGED and 1.6 or 1, 2 - (self:Health() / self:GetMaxHealth())) * math.Clamp(GAMEMODE:GetInfectionMul(0.5)-0.25, 1, 1.25) * GAMEMODE.ZombieSpeedMultiplier * self.SpeedBuff
 end
 
+local ai_disabled = GetConVar("ai_disabled")
+
 function ENT:Initialize()
 	if CLIENT then return end
 	self:SetModel("models/sin/quadralex.mdl")
@@ -135,6 +137,9 @@ function ENT:Initialize()
 		end
 	end)
 
+	if not ai_disabled:GetBool() then
+		self:FindTarget()
+	end
 end
 
 function ENT:TimedEvent(time, callback)
@@ -146,17 +151,25 @@ function ENT:TimedEvent(time, callback)
 end
 
 function ENT:Think()
-if !IsValid(self) then return end
+	if !IsValid(self) then return end
+	if ai_disabled:GetBool() then return end
 
 end
 
 function ENT:RunBehaviour()
-	while (true) do
+	while true do
 		if CLIENT then return end
+		if ai_disabled:GetBool() then
+			coroutine.wait(0.1)
+			coroutine.yield()
+			continue
+		end
+
 		local target = self.target
 		local selfpos = self:GetPos()
+		local cantarget = IsValid(target) and target:Alive() and not (target:IsFlagSet(FL_NOTARGET) or target.AdminMode)
 
-		if (IsValid(target) and target:Alive() and !target.TEANoTarget) then
+		if cantarget then
 			local data = {}
 			data.start = self:GetPos()
 			data.endpos = self:GetPos() + self:GetForward()*128
@@ -175,7 +188,7 @@ function ENT:RunBehaviour()
 			end
 		end
 
-		if (IsValid(target) and target:Alive() and (self:GetRangeTo(target) <= (2500 * self.RageLevel) or GAMEMODE.ZombieApocalypse) and !target.TEANoTarget) then
+		if (cantarget and (self:GetRangeTo(target) <= (2500 * self.RageLevel) or GAMEMODE.ZombieApocalypse)) then
 			self.loco:FaceTowards(target:GetPos())
 
 			if self.NxtTick < 1 then
@@ -344,7 +357,7 @@ function ENT:RunBehaviour()
 
 			if (!self.target) then
 				for k, v in pairs(player.GetAll()) do
-					if (v:Alive() and (self:GetRangeTo(v) <= (2500 * self.RageLevel) or GAMEMODE.ZombieApocalypse) and !v.TEANoTarget) then
+					if (v:Alive() and (self:GetRangeTo(v) <= (2500 * self.RageLevel) or GAMEMODE.ZombieApocalypse) and not (v:IsFlagSet(FL_NOTARGET) or v.AdminMode)) then
 --						self:AlertNearby(v)
 						self.target = v
 --						self:PlaySequenceAndWait("wave_smg1", 0.9)
@@ -372,6 +385,57 @@ function ENT:RunBehaviour()
 
 		end
 		coroutine.yield()
+	end
+end
+
+function ENT:FindTarget()
+	local targets = {}
+	for _, ent in pairs(ents.FindInSphere(self:GetPos(), 1200 * self.RageLevel)) do
+		if ent:IsNPC() and ent:Health() > 0 or ent:IsPlayer() and ent:Alive() and not (ent:IsFlagSet(FL_NOTARGET) or ent.AdminMode) then
+			targets[ent] = self:GetRangeTo(ent)
+		end
+	end
+	if GAMEMODE.ZombieApocalypse then
+		for _, ent in pairs(player.GetAll()) do
+			if ent:Alive() and not (ent:IsFlagSet(FL_NOTARGET) or ent.AdminMode) and not targets[ent] then
+				targets[ent] = self:GetRangeTo(ent)
+			end
+		end
+	end
+
+	table.sort(targets, function(a,b) return a < b end)
+
+	for ent,_ in SortedPairsByValue(targets) do
+		self.target = ent
+		if self.CanScream then
+			self:EmitSound("npc/ichthyosaur/attack_growl1.wav", 100, 100)
+			self.CanScream = false
+		end
+
+		break
+	end
+
+end
+
+function ENT:GotoPos(pos)
+	local target = self.target
+	local nav = navmesh.GetNearestNavArea(pos, false, 2000, false, true, -2)
+	local reachpos
+	if nav then
+		if self.loco:IsAreaTraversable(nav) then
+			reachpos = nav:GetClosestPointOnArea(target:GetPos())
+		end
+	end
+	if self:CanSeeTarget() and self:GetRangeTo(target) < 800 or not nav then
+		self.loco:FaceTowards(pos)
+		self.loco:Approach(pos, 1)
+	elseif reachpos then
+		local result = self:MoveToPos(reachpos or target:GetPos(), {
+			tolerance = self.ZombieStats["Reach"],
+			maxage = self:GetRangeTo(target) >= 1500 and 2 or 1,
+			repath = self:GetRangeTo(target) >= 1500 and 2 or 1,
+			draw = true
+		})
 	end
 end
 
