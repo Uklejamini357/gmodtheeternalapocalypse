@@ -463,12 +463,12 @@ function GM:Import_Player_Saves_From_0_11_3a_And_Below(ply)
 
 	if not confirmation then
 		MsgC(Color(255,0,0), "You have activated the saves importing script.")
+		MsgC(Color(255,0,0), "This function is available only for superadmins and server operators.")
 		MsgC(Color(255,0,0), "When importing player saves, be sure you make a backup them...")
 		MsgC(Color(255,0,0), "...as you might not know what can go wrong and can cause you to lose saves!")
 		MsgC(Color(255,0,0), "Once you begin, all online players will have their auto saves disabled.")
 		MsgC(Color(255,0,0), "REMEMBER: This works on saves from 0.11.3a, but it has not been confirmed if it will also work for older versions.")
 		MsgC(Color(255,0,0), "YOU HAVE BEEN WARNED! I am not responsible for any data loss! After running the command you acknowledge that you are held responsible for any data loss.")
-		MsgC(Color(255,0,0), "")
 		MsgC(Color(255,0,0), "You have 1 minute to confirm. Run the command again to proceed.")
 
 		timer.Create("confirmation", 60, 1, function()
