@@ -5,6 +5,8 @@ ENT.PrintName = "Shambler Zombie"
 ENT.Category = "TEA Zombies"
 ENT.Purpose = "A zombie that attack you and can infect"
 ENT.Author = "Uklejamini"
+ENT.Spawnable = true
+ENT.AdminOnly = true
 
 list.Set("NPC", "npc_tea_basic", {
 	Name = ENT.PrintName,
@@ -20,8 +22,8 @@ function ENT:SetUpStats()
 	self.RunAnim = ACT_WALK
 	self.IdleAnim = ACT_RESET
 
-	self.FlinchAnim = (ACT_FLINCH_PHYSICS)
-	self.FallAnim = (ACT_IDLE_ON_FIRE)
+	self.FlinchAnim = ACT_FLINCH_PHYSICS
+	self.FallAnim = ACT_IDLE_ON_FIRE
 
 
 	self.ZombieStats = {
@@ -36,8 +38,8 @@ function ENT:SetUpStats()
 		["AfterStrikeDelay"] = 1, -- how long should the zombie wait after a strike lands until reverting to its behaviour cycle
 
 		["Health"] = 145, -- self explanatory
-		["MoveSpeedWalk"] = 50, -- zombies move speed when idly wandering around
-		["MoveSpeedRun"] = 65, -- zombies move speed when moving towards a target
+		["MoveSpeedWalk"] = 60, -- zombies move speed when idly wandering around
+		["MoveSpeedRun"] = 83, -- zombies move speed when moving towards a target
 		["VisionRange"] = 1200, -- how far is the zombies standard sight range in source units, this will be tripled when they are frenzied
 		["LoseTargetRange"] = 1500, -- how far must the target be from the zombie before it will lose interest and revert to wandering, this will be tripled when the zombie is frenzied
 
@@ -96,8 +98,8 @@ function ENT:SetUpStats()
 end
 
 function ENT:CanSeeTarget()
-	
 	if !self:IsValid() then return false end
+
 	if self.target then
 		local tracedata = {}
 		tracedata.start = self:GetPos() + self:OBBCenter()
@@ -189,7 +191,7 @@ function ENT:Think()
 		phy:SetPos(self:GetPos())
 		phy:SetAngles(self:GetAngles())
 	end
-
+	
 -- need to slowly drown them in water or else they will just skip happily along the sea floor
 	if self:WaterLevel() >= 3 and self:Health() > 0 then
 		local drown = DamageInfo()
@@ -219,8 +221,9 @@ function ENT:RunBehaviour()
 
 		local target = self.target
 		local selfpos = self:GetPos()
+		local cantarget = IsValid(target) and (target:IsPlayer() and target:Alive() or target:IsNPC() and target:Health() > 0) and not (target:IsFlagSet(FL_NOTARGET) or target.AdminMode)
 
-		if IsValid(target) and (target:IsPlayer() and target:Alive() or target:IsNPC() and target:Health() > 0) and (self:GetRangeTo(target) <= (1500 * self.RageLevel) or GAMEMODE.ZombieApocalypse) and not (target:IsFlagSet(FL_NOTARGET) or target.AdminMode) then
+		if cantarget and (self:GetRangeTo(target) <= (1500 * self.RageLevel) or GAMEMODE.ZombieApocalypse) then
 			self.loco:FaceTowards(target:GetPos())
 
 -- check if we are obstructed by props and smash them if we are
@@ -238,6 +241,7 @@ function ENT:RunBehaviour()
 				end
 			end
 
+
 -- run our first ability
 			if self.ZombieStats["Ability1"] and self:GetRangeTo(target) <= self.ZombieStats["Ability1Range"] then
 
@@ -254,6 +258,7 @@ function ENT:RunBehaviour()
 
 -- check if we have a player within arms reach and bash them if they are
 			if (self:GetRangeTo(target) <= self.ZombieStats["Reach"] * 0.8 && self:CanSeeTarget()) then
+
 				self:AttackPlayer(target)
 
 				self:StartActivity(self.AttackAnim)
@@ -324,7 +329,6 @@ function ENT:RunBehaviour()
 			else
 				self.NxtTick = self.NxtTick - 1
 			end
-
 
 -- find ourselves a new target
 			if (!self.target) then
@@ -581,7 +585,7 @@ end
 function ENT:OnStuck()
 	local pos = self:GetPos() + self:GetAngles():Forward()*-90 + Vector(0,0,32)
 
-	local nav = navmesh.GetNearestNavArea(tr.HitPos, false, 300, false, true, -2)
+	local nav = navmesh.GetNearestNavArea(pos, false, 300, false, true, -2)
 	local reachpos
 	if nav then
 		if self.loco:IsAreaTraversable(nav) then

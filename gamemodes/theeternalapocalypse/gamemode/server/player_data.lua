@@ -407,7 +407,6 @@ function GM:XPBonus(ply)
 end
 
 local count,maxcount = 0, 0
-local confirmation
 local importing
 function GM:Import_Player_Saves_From_0_11_3a_And_Below(ply)
 	if IsValid(ply) and not ply:IsSuperAdmin() then return end
@@ -460,8 +459,10 @@ function GM:Import_Player_Saves_From_0_11_3a_And_Below(ply)
 		end
 		return
 	end
+	
+	local id = IsValid(ply) and ply:EntIndex() or 0
 
-	if not confirmation then
+	if not timer.Exists("TEA.ImportSavesConfirmation_"..id) then
 		MsgC(Color(255,0,0), "You have activated the saves importing script.")
 		MsgC(Color(255,0,0), "This function is available only for superadmins and server operators.")
 		MsgC(Color(255,0,0), "When importing player saves, be sure you make a backup them...")
@@ -471,19 +472,18 @@ function GM:Import_Player_Saves_From_0_11_3a_And_Below(ply)
 		MsgC(Color(255,0,0), "YOU HAVE BEEN WARNED! I am not responsible for any data loss! After running the command you acknowledge that you are held responsible for any data loss.")
 		MsgC(Color(255,0,0), "You have 1 minute to confirm. Run the command again to proceed.")
 
-		timer.Create("confirmation", 60, 1, function()
+		timer.Create("TEA.ImportSavesConfirmation_"..id, 60, 1, function()
 			MsgC(Color(255,0,0), "Timed out.")
 			confirmation = false
 		end)
 
 		confirmation = true
 		return
+	else
+		timer.Remove("TEA.ImportSavesConfirmation_"..id)
 	end
 
 	importing = true
-	if timer.Exists("confirmation") then
-		timer.Remove("confirmation")
-	end
 
 
 	local timecounttotal = CurTime()
@@ -526,7 +526,12 @@ function GM:Import_Player_Saves_From_0_11_3a_And_Below(ply)
 
 						for k, v in pairs(DataPieces) do
 							local TheLine = string.Explode(";", v)
-							data[TheLine[1]] = tonumber(TheLine[2]) or TheLine[2]
+							local id, var = TheLine[1], TheLine[2]
+							data[id] = tonumber(var) or var
+
+							if id == "TaskCooldowns" or id == "LastSessionInfo" then
+								data[id] = util.JSONToTable(var)
+							end
 						end
 					elseif v == "inventory.txt" then
 						data["Inventory"] = util.JSONToTable(file.Read(self.DataFolder.."/players/"..string.lower(string.gsub( dir, ":", "_").."/inventory.txt"), "DATA"))
@@ -569,7 +574,7 @@ function GM:Import_Player_Saves_From_0_11_3a_And_Below(ply)
 
 				if maxcount == count then
 					MsgC(Color(255,0,0), "All old saves have been imported!")
-					MsgC(Color(255,0,0), "Note: You might not need to restart.")
+					MsgC(Color(255,0,0), "Note: You might need to restart the map.")
 				end
 			end)
 		end
@@ -894,8 +899,4 @@ function GM:GetPlayerCharacters(ply)
 
 	return tbl
 end
-
-
-
-
 
