@@ -91,7 +91,7 @@ end
 
 
 function ENT:SpecialSkill1()
-	if !IsValid(self.target) or !self:CanSeeTarget() or self.Ability1CD > CurTime() then return false end
+	if !IsValid(self.target) or !self:CanSeeTarget() then return false end
 
 	local tracedata = {}
 	tracedata.start = self:GetPos() + Vector(0, 0, 40)

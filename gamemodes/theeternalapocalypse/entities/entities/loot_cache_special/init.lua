@@ -26,7 +26,6 @@ function ENT:Use( activator, caller )
 	local name = self.LootType
 	local item = GAMEMODE.ItemsList[name]
 	local itemweight = item["Weight"]
-	local itemname = GAMEMODE:GetItemName(name, caller)
 
 	local qty = self.LootQuantity or GAMEMODE.LootTable3[name]["Qty"]
 
@@ -37,8 +36,12 @@ function ENT:Use( activator, caller )
 	gamemode.Call("SystemGiveItem", caller, name, qty)
 	gamemode.Call("GiveTaskProgress", caller, "loot_finder", 1)
 
-	caller:SendChat("You picked up a rare cache containing [ "..qty.."x "..itemname.." ]")
-	GAMEMODE:SystemBroadcast(caller:Nick().." has found a rare cache containing "..qty.."x "..itemname.."!", Color(255,255,255,255), true)
+	caller:SendChat("You picked up a rare cache containing [ "..qty.."x "..GAMEMODE:GetItemName(name, ply).." ]")
+	-- caller:SendChat(translate.ClientFormat(caller, "you_picked_up_a_lootcache_rare", qty, itemname))
+	for _,ply in pairs(player.GetAll()) do
+		ply:SystemMessage(caller:Nick().." has found a rare cache containing "..qty.."x "..GAMEMODE:GetItemName(name, ply).."!", Color(255,255,255,255), true)
+		-- ply:SystemMessage(translate.ClientFormat(ply, "player_found_lootcache_rare", caller:Nick(), qty, itemname), Color(255,255,255), true)
+	end
 	GAMEMODE:SendInventory(caller)
 	caller:EmitSound("items/ammopickup.wav", 100, 100)
 	self:Remove()
