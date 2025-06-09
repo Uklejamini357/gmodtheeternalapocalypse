@@ -159,7 +159,7 @@ GM.Config = {
 }
 
 if file.Exists("sfs.lua","LUA") and not sfs then
-	include("sfs.lua")
+	sfs = include("sfs.lua")
 end
 
 if not sfs and GM.Config["SFS"] then
