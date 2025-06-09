@@ -52,7 +52,7 @@ function GM:LoadPlayer(ply, id)
 	end
 
 	if (file.Exists(filedir_ply, "DATA")) then
-		local method = self.Config.SFS and sfs.encode or util.JSONToTable
+		local method = self.Config.SFS and sfs.decode or util.JSONToTable
 		local tbl = method(file.Read(filedir_ply, "DATA"))
 
 		PrintTable(tbl)
