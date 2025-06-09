@@ -190,7 +190,7 @@ function GM:SavePlayer(ply, force)
 		print("✓ ".. ply:Nick() .." profile saved")
 	end
 
-	local method = self.Config.SFS and sfs.encode or util.TableTOJSON
+	local method = self.Config.SFS and sfs.encode or util.TableToJSON
 	if self.Config["FileSystem"] == "Legacy" then
 		file.Write(plyfile, method(Data, true))
 	elseif self.Config["FileSystem"] == "PData" then
