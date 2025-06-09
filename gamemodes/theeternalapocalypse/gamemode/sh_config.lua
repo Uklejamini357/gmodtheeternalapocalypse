@@ -151,6 +151,10 @@ GM.Config = {
 	-- Use the pdata system if you are having issues with text file saving/loading or if you prefer everything to be in the sql file.
 	-- No there isn't support for MySQL and there proably won't be unless you code it yourself.
 	["FileSystem"] = "Legacy",
+
+	-- false = JSON
+	-- true = SFS(https://github.com/Srlion/sfs)
+	["SFS"] = false,
 	
 }
 
