@@ -158,6 +158,15 @@ GM.Config = {
 	
 }
 
+if file.Exists("sfs.lua","LUA") and not sfs then
+	include("sfs.lua")
+end
+
+if not sfs and GM.Config["SFS"] then
+	ErrorNoHalt([[[ERROR] https://github.com/Srlion/sfs is required]])
+	GM.Config["SFS"] = false
+end
+
 
 -----------------------------SKILLS CONFIG-----------------------------
 
