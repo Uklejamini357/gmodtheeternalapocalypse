@@ -52,7 +52,8 @@ function GM:LoadPlayer(ply, id)
 	end
 
 	if (file.Exists(filedir_ply, "DATA")) then
-		local tbl = util.JSONToTable(file.Read(filedir_ply, "DATA"))
+		local method = self.Config.SFS and sfs.encode or util.JSONToTable
+		local tbl = method(file.Read(filedir_ply, "DATA"))
 
 		PrintTable(tbl)
 		for var,value in pairs(tbl) do
@@ -192,9 +193,9 @@ function GM:SavePlayer(ply, force)
 
 	local method = self.Config.SFS and sfs.encode or util.TableToJSON
 	if self.Config["FileSystem"] == "Legacy" then
-		file.Write(plyfile, method(Data, true))
+		file.Write(plyfile, method(Data, self.Config.SFS and 50000 or true))
 	elseif self.Config["FileSystem"] == "PData" then
-		ply:SetPData("tea_playerdata", method(Data))
+		ply:SetPData("tea_playerdata", method(Data,self.Config.SFS and 50000 or false))
 	else
 		print("Bruh, did you try to setup incorrectly? Set your damned filesystem option to a proper setting in sh_config.lua")
 		return false
