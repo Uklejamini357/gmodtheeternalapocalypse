@@ -275,9 +275,9 @@ function GM:InvMenu()
 		local armorstr = me:GetNWString("ArmorType") or "none"
 		local armortype = GAMEMODE.ItemsList[armorstr]
 
-		local prot, protdef = me:GetArmorProtection(false)*100, me:GetArmorProtection(true)*100
-		local env_prot, env_protdef = me:GetArmorEnvProtection(false)*100, me:GetArmorEnvProtection(true)*100
-		local armorcarryweight = me:GetArmorCarryWeight()
+		local prot, protdef = math.Round(me:GetArmorProtection(false)*100, 1), math.Round(me:GetArmorProtection(true)*100, 1)
+		local env_prot, env_protdef = math.Round(me:GetArmorEnvProtection(false)*100, 1), math.Round(me:GetArmorEnvProtection(true)*100, 1)
+		local armorcarryweight = math.Round(me:GetArmorCarryWeight(), 2)
 		if armorstr and armortype then
 			draw.SimpleText(translate.Format("cur_armor", GAMEMODE:GetItemName(armorstr)), "TEA.HUDFontSmall", panel:GetWide() - 255, 235, Color(255,255,255,255))
 			draw.SimpleText(translate.Format("armorprot", prot, protdef), "TEA.HUDFontSmall", panel:GetWide() - 255, 250, Color(205,255,205,255))

@@ -55,7 +55,7 @@ function ENT:Use(ply, caller)
 		self:SetADOpeningPlayer(ply)
 		self:SetADOpeningStatus(true)
 
-		ply:SendChat(translate.Format("opening_airdrop", 30))
+		ply:SendChat(translate.ClientFormat(ply, "opening_airdrop", 30))
 	elseif self:GetADOpenedStatus() then
 		GAMEMODE:OpenContainer(self, ply)
 		self.nxtuse = CurTime() + 0.5
