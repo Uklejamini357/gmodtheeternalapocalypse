@@ -507,11 +507,11 @@ function SWEP:ShootBulletInformation()
 
 	if self.Weapon:GetDTBool(3) then
 		CurrentDamage = self.Primary.Damage * self.data.Damage * DamageMul:GetFloat()
-		CurrentRecoil = self.Primary.Recoil * self.data.Recoil * RecoilMul:GetFloat() * math.max(0.2, 1 - (owner.StatGunslinger or Perks and Perks.Gunslinger or 0) * 0.03)
+		CurrentRecoil = self.Primary.Recoil * self.data.Recoil * RecoilMul:GetFloat() * math.max(0.2, 1 - (owner.StatGunslinger or 0) * 0.03)
 		CurrentCone = self.Primary.Cone * self.data.Cone
 	else
 		CurrentDamage = self.Primary.Damage * DamageMul:GetFloat()
-		CurrentRecoil = self.Primary.Recoil * RecoilMul:GetFloat() * math.max(0.2, 1 - (owner.StatGunslinger or Perks and Perks.Gunslinger or 0) * 0.03)
+		CurrentRecoil = self.Primary.Recoil * RecoilMul:GetFloat() * math.max(0.2, 1 - (owner.StatGunslinger or 0) * 0.03)
 		CurrentCone = self.Primary.Cone
 	end
 
@@ -899,7 +899,7 @@ function SWEP:RicochetCallback(bouncenum, attacker, tr, dmginfo)
 		return 
 	end
 
-	if (self.Ricochet == false) then return {damage = true, effects = DoDefaultEffect} end
+	if not (self.Ricochet) then return {damage = true, effects = DoDefaultEffect} end
 	
 	if (bouncenum > self.MaxRicochet) then return end
 	

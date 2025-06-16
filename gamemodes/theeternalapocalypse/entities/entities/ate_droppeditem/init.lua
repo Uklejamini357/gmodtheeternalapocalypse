@@ -5,21 +5,27 @@ include("shared.lua")
 
 --Called when the SENT is spawned
 function ENT:Initialize()
---	self.Entity:SetModel( "models/Items/HealthKit.mdl" )
- 	self.Entity:PhysicsInit(SOLID_VPHYSICS)
-	self.Entity:SetMoveType(MOVETYPE_VPHYSICS)
-	self.Entity:SetCollisionGroup(COLLISION_GROUP_PASSABLE_DOOR) -- don't let the player collide with the dropped item
-	self.Entity:SetSolid(SOLID_VPHYSICS)
- 	self.Entity:SetColor(Color(255, 255, 255, 255))
-	self.Entity:SetUseType(SIMPLE_USE)
+	self.CreatedTime = CurTime()
+
+	--	self:SetModel( "models/Items/HealthKit.mdl" )
+ 	self:PhysicsInit(SOLID_VPHYSICS)
+	self:SetMoveType(MOVETYPE_VPHYSICS)
+	self:SetCollisionGroup(COLLISION_GROUP_PASSABLE_DOOR) -- don't let the player collide with the dropped item
+	self:SetSolid(SOLID_VPHYSICS)
+ 	self:SetColor(Color(255, 255, 255, 255))
+	self:SetUseType(SIMPLE_USE)
 --	self:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
 
-	timer.Simple(3600, function() if self:IsValid() then self:Remove() end end )
-	
-	local PhysAwake = self.Entity:GetPhysicsObject()
-	if ( PhysAwake:IsValid() ) then
+	local PhysAwake = self:GetPhysicsObject()
+	if PhysAwake:IsValid() then
 		PhysAwake:Wake()
-	end 
+	end
+end
+
+function ENT:Think()
+	if SERVER and self.CreatedTime + 3600 < CurTime() then
+		self:Remove()
+	end
 end
 
 function ENT:SpawnFunction(userid, tr)

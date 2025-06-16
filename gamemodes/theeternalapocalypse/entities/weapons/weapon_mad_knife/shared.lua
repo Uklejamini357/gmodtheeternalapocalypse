@@ -213,7 +213,7 @@ function SWEP:SecondaryAttack()
 		local knife = ents.Create("ent_mad_knife")
 		knife:SetAngles(self.Owner:EyeAngles())
 
-//		if (self:GetIronsights() == false) then
+//		if not self:GetIronsights() then
 			local pos = self.Owner:GetShootPos()
 				pos = pos + self.Owner:GetForward() * 5
 				pos = pos + self.Owner:GetRight() * 9

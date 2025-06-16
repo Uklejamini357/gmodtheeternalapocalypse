@@ -1,3 +1,27 @@
+function GM:OnPlayerHitGround(ply, inWater, onFloater, speed)
+	if not SERVER then return end
+
+	if speed > 150 then
+		local mul = math.sqrt(speed/10)
+		ply:ViewPunch(Angle(math.Rand(0.9,1)*mul, 0, math.Rand(-0.3, 0.3)*mul))
+	end
+end
+
+function GM:OnPlayerJump(ply, speed)
+	ply:ViewPunch(Angle(-math.Rand(2, 2.2), 0, math.Rand(-0.2, 0.2)))
+	if SERVER and !ply.StatsPaused then
+		ply.Stamina = math.Clamp(ply.Stamina - (6 * (1 - (ply.StatEndurance * 0.045))), 0, 100)
+	end
+end
+
+function GM:PlayerSwitchWeapon(ply, old, new)
+	if (ply:IsSleeping() or ply:IsUsingItem()) and new:GetClass() ~= "tea_fists" then return true end
+
+	return false
+end
+
+
+
 local meta = FindMetaTable("Player")
 
 -- 0 = no pvp guard, 1 = pvp guarded, 2 = pvp forced
@@ -144,15 +168,15 @@ function meta:CalculateMaxWeight()
 
 	local baseweight = GAMEMODE.Config["MaxCarryWeight"]
 	local perksweight = (self:HasPerk("weightboost") and 1.5 or 0) + (self:HasPerk("weightboost2") and 2.5 or 0) + (self:HasPerk("weightboost3") and 3.5 or 0)
-	if SERVER then
+	-- if SERVER then
 		if self.StatsPaused then return math.huge end
 
 		return baseweight + perksweight + ((self.StatStrength or 0) * 1.53) + (self:GetNWString("ArmorType") ~= "none" and armortype["ArmorStats"]["carryweight"] or 0)
-	else
-		local skillsweight = (Perks.Strength or 0) * 1.53
-		local additionalarmorweight = armorstr ~= "none" and armortype["ArmorStats"]["carryweight"] or 0
-		return math.Round(baseweight + perksweight + skillsweight + additionalarmorweight, 2)
-	end
+	-- else
+		-- local skillsweight = (Perks.Strength or 0) * 1.53
+		-- local additionalarmorweight = armorstr ~= "none" and armortype["ArmorStats"]["carryweight"] or 0
+		-- return math.Round(baseweight + perksweight + skillsweight + additionalarmorweight, 2)
+	-- end
 end
 
 function meta:CalculateMaxWalkWeight()
@@ -175,6 +199,14 @@ end
 
 function meta:GetCanSprint()
 	return self:GetNWBool("cansprint", true)
+end
+
+function meta:GetEnduranceStaminaDrainMul()
+	return 1 - self.StatEndurance*0.045
+end
+
+function meta:GetEnduranceStaminaJumpDrainMul()
+	return 1 - self.StatEndurance*0.045
 end
 
 function meta:SkillsReset()
@@ -203,6 +235,87 @@ function meta:SkillsReset()
 	GAMEMODE:NetUpdatePerks(self)
 	return true
 end
+
+function meta:SetIsSleeping(arg)
+	return self:SetNWBool("TEA.IsSleeping", arg)
+end
+
+function meta:IsSleeping()
+	return self:GetNWBool("TEA.IsSleeping")
+end
+
+function meta:IsUsingItem()
+	return self.UsingItemTime + self.UsingItemDuration >= CurTime()
+end
+
+function meta:IsDying()
+	return (self.Thirst <= 0 or self.Hunger <= 0 or self.Fatigue >= 10000 and self.Stamina <= 0 or self.Infection >= 10000)
+end
+
+function meta:GetArmorProtection(defense)
+	local armorvalue = 0
+	local plyarmor = self:GetNWString("ArmorType")
+
+	if plyarmor and plyarmor != "none" then
+		local armortype = GAMEMODE.ItemsList[plyarmor]
+		armorvalue = tonumber((armortype["ArmorStats"].reduction) / 100)
+	end
+
+	if defense then
+		armorvalue = armorvalue + (self.StatDefense*0.015) *  (1 - armorvalue)
+	end
+
+	return armorvalue
+end
+
+function meta:GetArmorEnvProtection(defense)
+	local armorvalue = 0
+	local plyarmor = self:GetNWString("ArmorType")
+
+	if plyarmor and plyarmor != "none" then
+		local armortype = GAMEMODE.ItemsList[plyarmor]
+		armorvalue = tonumber((armortype["ArmorStats"].env_reduction) / 100)
+	end
+
+	if defense then
+		armorvalue = armorvalue + (self.StatDefense*0.01) *  (1 - armorvalue)
+	end
+
+	return armorvalue
+end
+
+function meta:GetArmorDamageMultiplier()
+	return 1 - self:GetArmorProtection(true)
+end
+
+function meta:GetArmorEnvDamageMultiplier()
+	return 1 - self:GetArmorEnvProtection(true)
+end
+
+function meta:GetArmorSpeedMultiplier()
+	local speedmul = 1
+	local armorstr = self:GetNWString("ArmorType") or "none"
+	local armortype = GAMEMODE.ItemsList[armorstr]
+	if armortype["ArmorStats"]["speedloss_percent"] then
+		speedmul = 100 - armortype["ArmorStats"]["speedloss_percent"]
+	end
+
+	return speedmul
+end
+
+function meta:GetArmorCarryWeight()
+	local weightbonus = 0
+	local armorstr = self:GetNWString("ArmorType") or "none"
+	local armortype = GAMEMODE.ItemsList[armorstr]
+
+	if armortype["ArmorStats"].carryweight then
+		weightbonus = armortype["ArmorStats"].carryweight
+	end
+
+	return weightbonus
+end
+
+
 
 -- maybe i should also do it for entity meta table
 local meta_entity = FindMetaTable("Entity")

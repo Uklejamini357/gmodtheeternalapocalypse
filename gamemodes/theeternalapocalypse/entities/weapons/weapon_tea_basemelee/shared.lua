@@ -929,7 +929,7 @@ function SWEP:RicochetCallback(bouncenum, attacker, tr, dmginfo)
 		return 
 	end
 
-	if (self.Ricochet == false) then return {damage = true, effects = DoDefaultEffect} end
+	if not (self.Ricochet) then return {damage = true, effects = DoDefaultEffect} end
 	
 	if (bouncenum > self.MaxRicochet) then return end
 	

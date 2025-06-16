@@ -42,16 +42,16 @@ function ENT:SetUpStats()
 		["StrikeDelay"] = 0.25,
 		["AfterStrikeDelay"] = 0.35,
 
-	["Health"] = 110,
-	["MoveSpeedWalk"] = 55,
-	["MoveSpeedRun"] = 198,
-	["VisionRange"] = 1200,
-	["LoseTargetRange"] = 1500,
+		["Health"] = 110,
+		["MoveSpeedWalk"] = 55,
+		["MoveSpeedRun"] = 185,
+		["VisionRange"] = 1200,
+		["LoseTargetRange"] = 1500,
 
-	["Ability1"] = true,
-	["Ability1Range"] = 500,
-	["Ability1Cooldown"] = 10,
-	["Ability1TrigDelay"] = 0.5,
+		["Ability1"] = true,
+		["Ability1Range"] = 500,
+		["Ability1Cooldown"] = 10,
+		["Ability1TrigDelay"] = 0.5,
 
 	}
 

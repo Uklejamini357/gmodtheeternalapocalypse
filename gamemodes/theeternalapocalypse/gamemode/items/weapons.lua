@@ -9,7 +9,7 @@ GM:CreateItem(itemid, {
     Rarity = rarity,
     Category = category,
     UseFunc = function(ply) return false end,
-    DropFunc = function(ply) return true end
+    DropFunc = function(ply, item) return true end
 
 -- Additional variables if needed
     IsSecret = false,
@@ -27,8 +27,7 @@ local i = GM:CreateItem("weapon_tea_noobcannon", {
     Supply = -1, -- -1 stock means the traders will never sell this item (Comment: yea we get it)
     Rarity = 1,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_noobcannon") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_noobcannon") UseFunc_StripWeapon(ply, "weapon_tea_noobcannon", drop) return drop end
+    WeaponType = "weapon_tea_noobcannon",
 })
 
 i = GM:CreateItem("weapon_tea_pigsticker", {
@@ -38,8 +37,7 @@ i = GM:CreateItem("weapon_tea_pigsticker", {
     Supply = 0,
     Rarity = 2,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_pigsticker") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_pigsticker") UseFunc_StripWeapon(ply, "weapon_tea_pigsticker", drop) return drop end
+    WeaponType = "weapon_tea_pigsticker",
 })
 
 i = GM:CreateItem("weapon_tea_axe", {
@@ -49,8 +47,7 @@ i = GM:CreateItem("weapon_tea_axe", {
     Supply = 0,
     Rarity = 3,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_axe") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_axe") UseFunc_StripWeapon(ply, "weapon_tea_axe", drop) return drop end
+    WeaponType = "weapon_tea_axe",
 })
 
 i = GM:CreateItem("weapon_tea_wrench", {
@@ -60,8 +57,7 @@ i = GM:CreateItem("weapon_tea_wrench", {
     Supply = 0,
     Rarity = 2,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_wrench") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_wrench") UseFunc_StripWeapon(ply, "weapon_tea_wrench", drop) return drop end
+    WeaponType = "weapon_tea_wrench",
 })
 
 i = GM:CreateItem("weapon_tea_repair", {
@@ -71,8 +67,7 @@ i = GM:CreateItem("weapon_tea_repair", {
     Supply = 0,
     Rarity = 3,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_repair") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_repair") UseFunc_StripWeapon(ply, "weapon_tea_repair", drop) return drop end
+    WeaponType = "weapon_tea_repair",
 })
 
 i = GM:CreateItem("weapon_tea_scrapsword", {
@@ -82,8 +77,7 @@ i = GM:CreateItem("weapon_tea_scrapsword", {
     Supply = 0,
     Rarity = 3,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_scrapsword") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_scrapsword") UseFunc_StripWeapon(ply, "weapon_tea_scrapsword", drop) return drop end
+    WeaponType = "weapon_tea_scrapsword",
 })
 
 i = GM:CreateItem("weapon_tea_g20", {
@@ -93,8 +87,7 @@ i = GM:CreateItem("weapon_tea_g20", {
     Supply = 0,
     Rarity = 2,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_g20") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_g20") UseFunc_StripWeapon(ply, "weapon_tea_g20", drop) return drop end
+    WeaponType = "weapon_tea_g20",
 })
 
 i = GM:CreateItem("weapon_tea_57", {
@@ -104,8 +97,7 @@ i = GM:CreateItem("weapon_tea_57", {
     Supply = 0,
     Rarity = 2,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_57") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_57") UseFunc_StripWeapon(ply, "weapon_tea_57", drop) return drop end
+    WeaponType = "weapon_tea_57",
 })
 
 i = GM:CreateItem("weapon_tea_u45", {
@@ -115,8 +107,7 @@ i = GM:CreateItem("weapon_tea_u45", {
     Supply = 0,
     Rarity = 2,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_u45") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_u45") UseFunc_StripWeapon(ply, "weapon_tea_u45", drop) return drop end
+    WeaponType = "weapon_tea_u45",
 })
 
 i = GM:CreateItem("weapon_tea_warren50", {
@@ -126,8 +117,7 @@ i = GM:CreateItem("weapon_tea_warren50", {
     Supply = 0,
     Rarity = 2,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_warren50") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_warren50") UseFunc_StripWeapon(ply, "weapon_tea_warren50", drop) return drop end
+    WeaponType = "weapon_tea_warren50",
 })
 
 i = GM:CreateItem("weapon_tea_python", {
@@ -137,8 +127,7 @@ i = GM:CreateItem("weapon_tea_python", {
     Supply = 0,
     Rarity = 2,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_python") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_python") UseFunc_StripWeapon(ply, "weapon_tea_python", drop) return drop end
+    WeaponType = "weapon_tea_python",
 })
 
 i = GM:CreateItem("weapon_tea_dual", {
@@ -148,8 +137,7 @@ i = GM:CreateItem("weapon_tea_dual", {
     Supply = -1,
     Rarity = 4,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_dual") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_dual") UseFunc_StripWeapon(ply, "weapon_tea_dual", drop) return drop end
+    WeaponType = "weapon_tea_dual",
 })
 
 i = GM:CreateItem("weapon_tea_satan", {
@@ -159,8 +147,7 @@ i = GM:CreateItem("weapon_tea_satan", {
     Supply = -1,
     Rarity = 4,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_satan") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_satan") UseFunc_StripWeapon(ply, "weapon_tea_satan", drop) return drop end
+    WeaponType = "weapon_tea_satan",
 })
 
 i = GM:CreateItem("weapon_tea_mp11", {
@@ -170,8 +157,7 @@ i = GM:CreateItem("weapon_tea_mp11", {
     Supply = 0,
     Rarity = 2,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_mp11") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_mp11") UseFunc_StripWeapon(ply, "weapon_tea_mp11", drop) return drop end
+    WeaponType = "weapon_tea_mp11",
 })
 
 i = GM:CreateItem("weapon_tea_rg900", {
@@ -181,8 +167,7 @@ i = GM:CreateItem("weapon_tea_rg900", {
     Supply = 0,
     Rarity = 2,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_rg900") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_rg900") UseFunc_StripWeapon(ply, "weapon_tea_rg900", drop) return drop end
+    WeaponType = "weapon_tea_rg900",
 })
 
 i = GM:CreateItem("weapon_tea_k5a", {
@@ -192,8 +177,7 @@ i = GM:CreateItem("weapon_tea_k5a", {
     Supply = 0,
     Rarity = 2,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_k5a") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_k5a") UseFunc_StripWeapon(ply, "weapon_tea_k5a", drop) return drop end
+    WeaponType = "weapon_tea_k5a",
 })
 
 i = GM:CreateItem("weapon_tea_stinger", {
@@ -203,8 +187,7 @@ i = GM:CreateItem("weapon_tea_stinger", {
     Supply = 0,
     Rarity = 2,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_stinger") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_stinger") UseFunc_StripWeapon(ply, "weapon_tea_stinger", drop) return drop end
+    WeaponType = "weapon_tea_stinger",
 })
 
 i = GM:CreateItem("weapon_tea_bosch", {
@@ -214,8 +197,7 @@ i = GM:CreateItem("weapon_tea_bosch", {
     Supply = 0,
     Rarity = 3,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_bosch") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_bosch") UseFunc_StripWeapon(ply, "weapon_tea_bosch", drop) return drop end
+    WeaponType = "weapon_tea_bosch",
 })
 
 i = GM:CreateItem("weapon_tea_k8", {
@@ -225,8 +207,7 @@ i = GM:CreateItem("weapon_tea_k8", {
     Supply = 0,
     Rarity = 3,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_k8") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_k8") UseFunc_StripWeapon(ply, "weapon_tea_k8", drop) return drop end
+    WeaponType = "weapon_tea_k8",
 })
 
 i = GM:CreateItem("weapon_tea_k8c", {
@@ -236,8 +217,7 @@ i = GM:CreateItem("weapon_tea_k8c", {
     Supply = -1,
     Rarity = 4,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_k8c") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_k8c") UseFunc_StripWeapon(ply, "weapon_tea_k8c", drop) return drop end
+    WeaponType = "weapon_tea_k8c",
 })
 
 i = GM:CreateItem("weapon_tea_shredder", {
@@ -247,8 +227,7 @@ i = GM:CreateItem("weapon_tea_shredder", {
     Supply = -1,
     Rarity = 4,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_shredder") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_shredder") UseFunc_StripWeapon(ply, "weapon_tea_shredder", drop) return drop end
+    WeaponType = "weapon_tea_shredder",
 })
 
 i = GM:CreateItem("weapon_tea_enforcer", {
@@ -258,8 +237,7 @@ i = GM:CreateItem("weapon_tea_enforcer", {
     Supply = 0,
     Rarity = 2,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_enforcer") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_enforcer") UseFunc_StripWeapon(ply, "weapon_tea_enforcer", drop) return drop end
+    WeaponType = "weapon_tea_enforcer",
 })
 
 i = GM:CreateItem("weapon_tea_sweeper", {
@@ -269,8 +247,7 @@ i = GM:CreateItem("weapon_tea_sweeper", {
     Supply = 0,
     Rarity = 2,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_sweeper") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_sweeper") UseFunc_StripWeapon(ply, "weapon_tea_sweeper", drop) return drop end
+    WeaponType = "weapon_tea_sweeper",
 })
 
 i = GM:CreateItem("weapon_tea_ranger", {
@@ -280,8 +257,7 @@ i = GM:CreateItem("weapon_tea_ranger", {
     Supply = 0,
     Rarity = 2,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_ranger") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_ranger") UseFunc_StripWeapon(ply, "weapon_tea_ranger", drop) return drop end
+    WeaponType = "weapon_tea_ranger",
 })
 
 i = GM:CreateItem("weapon_tea_fusil", {
@@ -291,8 +267,7 @@ i = GM:CreateItem("weapon_tea_fusil", {
     Supply = 0,
     Rarity = 2,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_fusil") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_fusil") UseFunc_StripWeapon(ply, "weapon_tea_fusil", drop) return drop end
+    WeaponType = "weapon_tea_fusil",
 })
 
 i = GM:CreateItem("weapon_tea_stugcommando", {
@@ -302,8 +277,7 @@ i = GM:CreateItem("weapon_tea_stugcommando", {
     Supply = 0,
     Rarity = 2,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_stugcommando") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_stugcommando") UseFunc_StripWeapon(ply, "weapon_tea_stugcommando", drop) return drop end
+    WeaponType = "weapon_tea_stugcommando",
 })
 
 i = GM:CreateItem("weapon_tea_krukov", {
@@ -313,8 +287,7 @@ i = GM:CreateItem("weapon_tea_krukov", {
     Supply = 0,
     Rarity = 2,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_krukov") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_krukov") UseFunc_StripWeapon(ply, "weapon_tea_krukov", drop) return drop end
+    WeaponType = "weapon_tea_krukov",
 })
 
 i = GM:CreateItem("weapon_tea_krukov_uniq", {
@@ -324,8 +297,7 @@ i = GM:CreateItem("weapon_tea_krukov_uniq", {
     Supply = 0,
     Rarity = 8,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_krukov_uniq") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_krukov_uniq") UseFunc_StripWeapon(ply, "weapon_tea_krukov_uniq", drop) return drop end
+    WeaponType = "weapon_tea_krukov_uniq",
 })
 
 i = GM:CreateItem("weapon_tea_l303", {
@@ -335,8 +307,7 @@ i = GM:CreateItem("weapon_tea_l303", {
     Supply = -1,
     Rarity = 3,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_l303") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_l303") UseFunc_StripWeapon(ply, "weapon_tea_l303", drop) return drop end
+    WeaponType = "weapon_tea_l303",
 })
 
 i = GM:CreateItem("weapon_tea_scar", {
@@ -346,8 +317,7 @@ i = GM:CreateItem("weapon_tea_scar", {
     Supply = -1,
     Rarity = 6,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_scar") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_scar") UseFunc_StripWeapon(ply, "weapon_tea_scar", drop) return drop end
+    WeaponType = "weapon_tea_scar",
 })
 
 i = GM:CreateItem("weapon_tea_lmg", {
@@ -357,8 +327,7 @@ i = GM:CreateItem("weapon_tea_lmg", {
     Supply = 0,
     Rarity = 5,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_lmg") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_lmg") UseFunc_StripWeapon(ply, "weapon_tea_lmg", drop) return drop end
+    WeaponType = "weapon_tea_lmg",
 })
 
 i = GM:CreateItem("weapon_tea_antelope", {
@@ -368,8 +337,7 @@ i = GM:CreateItem("weapon_tea_antelope", {
     Supply = 0,
     Rarity = 2,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_antelope") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_antelope") UseFunc_StripWeapon(ply, "weapon_tea_antelope", drop) return drop end
+    WeaponType = "weapon_tea_antelope",
 })
 
 i = GM:CreateItem("weapon_tea_scimitar", {
@@ -379,8 +347,7 @@ i = GM:CreateItem("weapon_tea_scimitar", {
     Supply = 0,
     Rarity = 2,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_scimitar") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_scimitar") UseFunc_StripWeapon(ply, "weapon_tea_scimitar", drop) return drop end
+    WeaponType = "weapon_tea_scimitar",
 })
 
 i = GM:CreateItem("weapon_tea_blackhawk", {
@@ -390,8 +357,7 @@ i = GM:CreateItem("weapon_tea_blackhawk", {
     Supply = -1,
     Rarity = 4,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_blackhawk") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_blackhawk") UseFunc_StripWeapon(ply, "weapon_tea_blackhawk", drop) return drop end
+    WeaponType = "weapon_tea_blackhawk",
 })
 
 i = GM:CreateItem("weapon_tea_punisher", {
@@ -401,8 +367,7 @@ i = GM:CreateItem("weapon_tea_punisher", {
     Supply = 5,
     Rarity = 7,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_punisher") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_punisher") UseFunc_StripWeapon(ply, "weapon_tea_punisher", drop) return drop end
+    WeaponType = "weapon_tea_punisher",
 })
 
 i = GM:CreateItem("weapon_tea_scrapcrossbow", {
@@ -412,8 +377,7 @@ i = GM:CreateItem("weapon_tea_scrapcrossbow", {
     Supply = -1,
     Rarity = 4,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_scrapcrossbow") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_scrapcrossbow") UseFunc_StripWeapon(ply, "weapon_tea_scrapcrossbow", drop) return drop end
+    WeaponType = "weapon_tea_scrapcrossbow",
 })
 
 i = GM:CreateItem("weapon_tea_winchester", {
@@ -423,8 +387,7 @@ i = GM:CreateItem("weapon_tea_winchester", {
     Supply = -1,
     Rarity = 5,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_winchester") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_winchester") UseFunc_StripWeapon(ply, "weapon_tea_winchester", drop) return drop end
+    WeaponType = "weapon_tea_winchester",
 })
 
 i = GM:CreateItem("weapon_tea_perrin", {
@@ -434,8 +397,7 @@ i = GM:CreateItem("weapon_tea_perrin", {
     Supply = -1,
     Rarity = 5,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_perrin") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_perrin") UseFunc_StripWeapon(ply, "weapon_tea_perrin", drop) return drop end
+    WeaponType = "weapon_tea_perrin",
 })
 
 i = GM:CreateItem("weapon_tea_dammerung", {
@@ -445,8 +407,7 @@ i = GM:CreateItem("weapon_tea_dammerung", {
     Supply = -1,
     Rarity = 6,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_dammerung") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_dammerung") UseFunc_StripWeapon(ply, "weapon_tea_dammerung", drop) return drop end
+    WeaponType = "weapon_tea_dammerung",
 })
 
 i = GM:CreateItem("weapon_tea_rpg", {
@@ -456,8 +417,7 @@ i = GM:CreateItem("weapon_tea_rpg", {
     Supply = 0,
     Rarity = 5,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_rpg") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_rpg") UseFunc_StripWeapon(ply, "weapon_tea_rpg", drop) return drop end
+    WeaponType = "weapon_tea_rpg",
 })
 
 i = GM:CreateItem("weapon_tea_fuckinator", {
@@ -467,8 +427,7 @@ i = GM:CreateItem("weapon_tea_fuckinator", {
     Supply = -1,
     Rarity = 7,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_fuckinator") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_fuckinator") UseFunc_StripWeapon(ply, "weapon_tea_fuckinator", drop) return drop end
+    WeaponType = "weapon_tea_fuckinator",
 })
 
 i = GM:CreateItem("weapon_tea_germanator", {
@@ -478,8 +437,7 @@ i = GM:CreateItem("weapon_tea_germanator", {
     Supply = -1,
     Rarity = 5,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_germanator") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_germanator") UseFunc_StripWeapon(ply, "weapon_tea_germanator", drop) return drop end
+    WeaponType = "weapon_tea_germanator",
 })
 
 i = GM:CreateItem("weapon_tea_807", {
@@ -489,8 +447,7 @@ i = GM:CreateItem("weapon_tea_807", {
     Supply = -1,
     Rarity = 5,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_807") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_807") UseFunc_StripWeapon(ply, "weapon_tea_807", drop) return drop end
+    WeaponType = "weapon_tea_807",
 })
 
 i = GM:CreateItem("weapon_tea_crowbar", {
@@ -500,8 +457,7 @@ i = GM:CreateItem("weapon_tea_crowbar", {
     Supply = -1,
     Rarity = 9,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_crowbar") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_crowbar") UseFunc_StripWeapon(ply, "weapon_tea_crowbar", drop) return drop end
+    WeaponType = "weapon_tea_crowbar",
 })
 
 
@@ -517,7 +473,6 @@ i = GM:CreateItem("item_pistolammo", {
     Rarity = 1,
     Category = ITEMCATEGORY_AMMO,
     UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 100, "Pistol") return bool end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_pistolammo") return drop end
 })
 
 i = GM:CreateItem("item_magammo", {
@@ -528,7 +483,6 @@ i = GM:CreateItem("item_magammo", {
     Rarity = 2,
     Category = ITEMCATEGORY_AMMO,
     UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 50, "357") return bool end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_magammo") return drop end
 })
 
 i = GM:CreateItem("item_buckshotammo", {
@@ -539,7 +493,6 @@ i = GM:CreateItem("item_buckshotammo", {
     Rarity = 2,
     Category = ITEMCATEGORY_AMMO,
     UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 50, "Buckshot") return bool end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_buckshotammo") return drop end
 })
 
 i = GM:CreateItem("item_rifleammo", {
@@ -550,7 +503,6 @@ i = GM:CreateItem("item_rifleammo", {
     Rarity = 2,
     Category = ITEMCATEGORY_AMMO,
     UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 100, "ammo_rifle") return bool end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_rifleammo") return drop end
 })
 
 i = GM:CreateItem("item_sniperammo", {
@@ -561,7 +513,6 @@ i = GM:CreateItem("item_sniperammo", {
     Rarity = 2,
     Category = ITEMCATEGORY_AMMO,
     UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 50, "ammo_sniper") return bool end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_sniperammo") return drop end
 })
 
 i = GM:CreateItem("item_minigunammo", {
@@ -572,7 +523,6 @@ i = GM:CreateItem("item_minigunammo", {
     Rarity = 4,
     Category = ITEMCATEGORY_AMMO,
     UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 100, "ammo_minigun") return bool end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_minigunammo") return drop end
 })
 
 i = GM:CreateItem("item_ar2pulseammo", {
@@ -583,7 +533,6 @@ i = GM:CreateItem("item_ar2pulseammo", {
     Rarity = 2,
     Category = ITEMCATEGORY_AMMO,
     UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 100, "ammo_ar2_pulseammo") return bool end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_ar2pulseammo") return drop end
 })
 
 i = GM:CreateItem("item_crossbowbolt", {
@@ -594,7 +543,6 @@ i = GM:CreateItem("item_crossbowbolt", {
     Rarity = 2,
     Category = ITEMCATEGORY_AMMO,
     UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 6, "XBowBolt") return bool end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_crossbowbolt") return drop end
 })
 
 i = GM:CreateItem("item_crossbowbolt_crate", {
@@ -605,7 +553,6 @@ i = GM:CreateItem("item_crossbowbolt_crate", {
     Rarity = 3,
     Category = ITEMCATEGORY_AMMO,
     UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 25, "XBowBolt") return bool end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_crossbowbolt_crate") return drop end
 })
 
 i = GM:CreateItem("item_deadly_crossbowbolt", {
@@ -616,7 +563,6 @@ i = GM:CreateItem("item_deadly_crossbowbolt", {
     Rarity = 4,
     Category = ITEMCATEGORY_AMMO,
     UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 25, "ammo_deadlybolt") return bool end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_deadly_crossbowbolt") return drop end
 })
 
 i = GM:CreateItem("item_rocketammo", {
@@ -627,7 +573,6 @@ i = GM:CreateItem("item_rocketammo", {
     Rarity = 3,
     Category = ITEMCATEGORY_AMMO,
     UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 1, "RPG_Round") return bool end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_rocketammo") return drop end
 })
 
 
@@ -641,8 +586,7 @@ i = GM:CreateItem("weapon_tea_falcon", {
     Supply = 0,
     Rarity = 3,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_falcon") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_falcon") UseFunc_StripWeapon(ply, "weapon_tea_falcon", drop) return drop end
+    WeaponType = "weapon_tea_falcon",
 })
 
 i = GM:CreateItem("weapon_tea_spas", {
@@ -652,8 +596,7 @@ i = GM:CreateItem("weapon_tea_spas", {
     Supply = 0,
     Rarity = 4,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_spas") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_spas") UseFunc_StripWeapon(ply, "weapon_tea_spas", drop) return drop end
+    WeaponType = "weapon_tea_spas",
 })
 
 i = GM:CreateItem("weapon_tea_lbr", {
@@ -663,8 +606,7 @@ i = GM:CreateItem("weapon_tea_lbr", {
     Supply = 0,
     Rarity = 5,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_lbr") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_lbr") UseFunc_StripWeapon(ply, "weapon_tea_lbr", drop) return drop end
+    WeaponType = "weapon_tea_lbr",
 })
 
 i = GM:CreateItem("weapon_tea_aug", {
@@ -674,8 +616,7 @@ i = GM:CreateItem("weapon_tea_aug", {
     Supply = 0,
     Rarity = 6,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_aug") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_aug") UseFunc_StripWeapon(ply, "weapon_tea_aug", drop) return drop end,
+    WeaponType = "weapon_tea_aug",
 })
 
 i = GM:CreateItem("weapon_tea_awm", {
@@ -685,8 +626,7 @@ i = GM:CreateItem("weapon_tea_awm", {
     Supply = 0,
     Rarity = 6,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_awm") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_awm") UseFunc_StripWeapon(ply, "weapon_tea_awm", drop) return drop end,
+    WeaponType = "weapon_tea_awm",
 })
 
 
@@ -701,8 +641,7 @@ i = GM:CreateItem("weapon_tea_plasmalauncher", {
     Supply = -1,
     Rarity = 11,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) ply:SendChat("You could gladly use that weapon, but the ENTITY CLASS FOR THIS DOESN'T EXIST!!!\n(at least for now)") /*UseFunc_EquipGun(ply, "weapon_tea_plasmalauncher")*/ return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_plasmalauncher") UseFunc_StripWeapon(ply, "weapon_tea_plasmalauncher", drop) return drop end,
+    UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "error_weapon_class_inexistant")) /*UseFunc_EquipGun(ply, "weapon_tea_plasmalauncher")*/ return false end,
     IsSecret = true
 })
 
@@ -713,8 +652,7 @@ i = GM:CreateItem("weapon_tea_minigun", {
     Supply = -1,
     Rarity = 6,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_minigun") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_minigun") UseFunc_StripWeapon(ply, "weapon_tea_minigun", drop) return drop end
+    WeaponType = "weapon_tea_minigun",
 })
 
 i = GM:CreateItem("weapon_tea_ar2", {
@@ -724,8 +662,7 @@ i = GM:CreateItem("weapon_tea_ar2", {
     Supply = -1,
     Rarity = 6,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_ar2") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_ar2") UseFunc_StripWeapon(ply, "weapon_tea_ar2", drop) return drop end
+    WeaponType = "weapon_tea_ar2",
 })
 
 i = GM:CreateItem("weapon_tea_combinepistol", {
@@ -735,8 +672,7 @@ i = GM:CreateItem("weapon_tea_combinepistol", {
     Supply = -1,
     Rarity = 5,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_combinepistol") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_combinepistol") UseFunc_StripWeapon(ply, "weapon_tea_combinepistol", drop) return drop end
+    WeaponType = "weapon_tea_combinepistol",
 })
 
 i = GM:CreateItem("weapon_tea_grenade_pipe", {
@@ -746,8 +682,7 @@ i = GM:CreateItem("weapon_tea_grenade_pipe", {
     Supply = 0,
     Rarity = 2,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) local bool = UseFunc_EquipNade(ply, "weapon_tea_grenade_pipe", "nade_pipebombs") return bool end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_grenade_pipe") UseFunc_StripWeapon(ply, "weapon_tea_grenade_pipe", drop) return drop end,
+    WeaponType = "weapon_tea_grenade_pipe",
     IsGrenade = true
 })
 
@@ -758,8 +693,7 @@ i = GM:CreateItem("weapon_tea_grenade_flare", {
     Supply = 0,
     Rarity = 2,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) local bool = UseFunc_EquipNade(ply, "weapon_tea_grenade_flare", "nade_flares") return bool end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_grenade_flare") UseFunc_StripWeapon(ply, "weapon_tea_grenade_flare", drop) return drop end,
+    WeaponType = "weapon_tea_grenade_flare",
     IsGrenade = true
 })
 
@@ -770,8 +704,7 @@ i = GM:CreateItem("weapon_tea_grenade_frag", {
     Supply = -1,
     Rarity = 3,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) local bool = UseFunc_EquipNade(ply, "weapon_tea_grenade_frag", "Grenade") return bool end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_grenade_frag") UseFunc_StripWeapon(ply, "weapon_tea_grenade_frag", drop) return drop end,
+    WeaponType = "weapon_tea_grenade_frag",
     IsGrenade = true
 })
 
@@ -783,8 +716,7 @@ i = GM:CreateItem("weapon_tea_grenade_molotov", {
     Supply = 0,
     Rarity = 2,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) local bool = UseFunc_EquipNade(ply, "weapon_tea_grenade_molotov", "nade_molotov") return bool end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_grenade_molotov") UseFunc_StripWeapon(ply, "weapon_tea_grenade_molotov", drop) return drop end,
+    WeaponType = "weapon_tea_grenade_molotov",
     IsGrenade = true
 })
 */
@@ -799,8 +731,7 @@ i = GM:CreateItem("weapon_tea_amex", {
     Supply = 0,
     Rarity = 4,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_amex") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_amex") UseFunc_StripWeapon(ply, "weapon_tea_amex", drop) return drop end,
+    WeaponType = "weapon_tea_amex",
 })
 
 i = GM:CreateItem("weapon_tea_mars", {
@@ -810,8 +741,7 @@ i = GM:CreateItem("weapon_tea_mars", {
     Supply = -1,
     Rarity = 5,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_mars") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_mars") UseFunc_StripWeapon(ply, "weapon_tea_mars", drop) return drop end,
+    WeaponType = "weapon_tea_mars",
 })
 
 i = GM:CreateItem("weapon_tea_dragunov", {
@@ -821,8 +751,7 @@ i = GM:CreateItem("weapon_tea_dragunov", {
     Supply = 0,
     Rarity = 5,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_dragunov") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_dragunov") UseFunc_StripWeapon(ply, "weapon_tea_dragunov", drop) return drop end,
+    WeaponType = "weapon_tea_dragunov",
 })
 
 i = GM:CreateItem("weapon_tea_boomstick", {
@@ -832,8 +761,7 @@ i = GM:CreateItem("weapon_tea_boomstick", {
     Supply = 0,
     Rarity = 3,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_boomstick") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_boomstick") UseFunc_StripWeapon(ply, "weapon_tea_boomstick", drop) return drop end,
+    WeaponType = "weapon_tea_boomstick",
 })
 
 
@@ -848,9 +776,8 @@ i = GM:CreateItem("weapon_tea_deadly_axe", {
     Supply = 1,
     Rarity = 5,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_deadly_axe") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_deadly_axe") UseFunc_StripWeapon(ply, "weapon_tea_deadly_axe", drop) return drop end,
-    ModelColor = Color(255, 127, 127) -- not working bruh I need to make it work
+    WeaponType = "weapon_tea_deadly_axe",
+    ModelColor = Color(255, 127, 127) -- doesn't seem to work :/
 })
 
 i = GM:CreateItem("weapon_tea_deadly_scrapcrossbow", {
@@ -860,8 +787,7 @@ i = GM:CreateItem("weapon_tea_deadly_scrapcrossbow", {
     Supply = 1,
     Rarity = 8,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_deadly_scrapcrossbow") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_deadly_scrapcrossbow") UseFunc_StripWeapon(ply, "weapon_tea_deadly_scrapcrossbow", drop) return drop end
+    WeaponType = "weapon_tea_deadly_scrapcrossbow",
 })
 
 i = GM:CreateItem("weapon_tea_deadly_minigun", {
@@ -871,7 +797,6 @@ i = GM:CreateItem("weapon_tea_deadly_minigun", {
     Supply = 1,
     Rarity = 9,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "weapon_tea_deadly_minigun") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "weapon_tea_deadly_minigun") UseFunc_StripWeapon(ply, "weapon_tea_deadly_minigun", drop) return drop end
+    WeaponType = "weapon_tea_deadly_minigun",
 })
 

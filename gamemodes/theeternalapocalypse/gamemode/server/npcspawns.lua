@@ -165,12 +165,12 @@ function GM:SpawnRandomBoss(pos, ang, plycountoverride, nonotify)
 			v.BroadCast(nonotify)
 			timer.Simple(tonumber(v.SpawnDelay), function()
 				self:SystemBroadcast(v.AnnounceMessage, Color(255,105,105), false)
-				for k, v in pairs(player.GetAll()) do BroadcastLua([[if GetConVar("tea_cl_soundboss"):GetInt() >= 1 then RunConsoleCommand("playgamesound", "music/stingers/hl1_stinger_song8.mp3") end]]) end
+				BroadcastLua([[if GetConVar("tea_cl_soundboss"):GetInt() >= 1 then RunConsoleCommand("playgamesound", "music/stingers/hl1_stinger_song8.mp3") end]])
 
 				local elitechance = math.Rand(0, 100)
 				local elite = elitechance ~= 0 and elitechance <= self:GetEliteVariantSpawnChance(true)
 				local ent = self:CreateZombie(k, pos, ang, v.XPReward, v.MoneyReward, v.InfectionRate, true)
-	
+
 				if elite and v.AllowEliteVariants then
 					local elite_variant = 8--math.random(8)
 					local mult,xp,cash,inf = 1,1,1,1
@@ -184,7 +184,7 @@ function GM:SpawnRandomBoss(pos, ang, plycountoverride, nonotify)
 						ent:SetColor(Color(64,128,255))
 						mult,xp,cash,inf = 1.4,1.35,1.3,1
 					elseif elite_variant == VARIANT_REFLECTOR then
-						ent:SetColor(Color(64,128,255))
+						ent:SetColor(Color(255,128,0))
 						mult,xp,cash,inf = 1.25,1.15,1.2,1
 					elseif elite_variant == VARIANT_INFECTIVE then
 						ent:SetColor(Color(255,128,128))
@@ -249,7 +249,7 @@ function GM:SpawnZombies()
 				if v:IsPlayer() then inplyrange = true end
 			end
 
-			if inplyrange == false or inzedrange == false then continue end
+			if not inplyrange or not inzedrange then continue end
 			if self:ZombieCount() >= self.MaxZombies then break end
 
 			self:SpawnRandomZombie(pos + Vector(0, 0, 10), ang)
@@ -388,7 +388,7 @@ function GM:NPCReward(ent)
 					gamemode.Call("GiveTaskProgress", pl, "boss_hunter", 1)
 				end
 
-				pl:PrintMessage(HUD_PRINTTALK, Format("Damage dealt to boss: %s (%s%% damage)", math.Round(v), math.Round((v * 100) / ent:GetMaxHealth())))
+				pl:PrintTranslatedMessage(HUD_PRINTTALK, "damage_dealt_to_boss", math.Round(v), math.Round((v * 100) / ent:GetMaxHealth()))
 			end
 
 			if table.Count(ent.DamagedBy) > 0 then
@@ -458,7 +458,7 @@ function GM:Payout(ply, xp, cash)
 
 	if ply.MaxLevelTime < CurTime() and tonumber(ply.Level) >= ply:GetMaxLevel() then
 		ply.MaxLevelTime = CurTime() + 120
-		ply:SendChat("You have reached max level, consider prestiging.")
+		ply:SendChat(translate.ClientGet(ply, "max_level_reached"))
 	end
 
 	self:NetUpdatePeriodicStats(ply)

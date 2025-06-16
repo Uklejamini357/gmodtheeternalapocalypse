@@ -35,7 +35,7 @@ function ENT:Use(activator, caller)
 
 	activator:EmitSound("npc/barnacle/barnacle_gulp2.wav")
 	activator:SystemMessage("NOW HOLD ON, I NEED TO MAKE A PANEL OF THIS!", Color(205,255,205,255), false)
-	activator:SendUseDelay(2)
+	activator:SendUseDelay(2, "")
 	self.UseTimer = CurTime() + 5
 end 
 

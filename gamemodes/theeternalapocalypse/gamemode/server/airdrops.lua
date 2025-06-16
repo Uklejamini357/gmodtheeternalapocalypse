@@ -29,7 +29,7 @@ function GM:AddAirdropSpawn(ply, cmd, args)
 	if !tr.HitSky then ply:SystemMessage("You can only place airdrop spawns in areas that are visible to the skybox!", Color(255,205,205,255), true) return end
 	local hitp = tr.HitPos - Vector(0, 0, 80)
 
-	if (DropData == "") then
+	if DropData == "" then
 		NewData = tostring(hitp) ..";".. tostring(ply:GetAngles())
 	else
 		NewData = DropData .."\n".. tostring(hitp) .. ";".. tostring(ply:GetAngles())

@@ -109,38 +109,38 @@ function ENT:SpecialSkill1()
 end
 
 function ENT:AttackPlayer(ply)
-if !ply:IsValid() or !self:IsValid() then return false end
-self:EmitSound(table.Random(self.AttackSounds), 100, math.random(95, 105))
-self:SetMaterial("")
+	if !ply:IsValid() or !self:IsValid() then return false end
+	self:EmitSound(table.Random(self.AttackSounds), 100, math.random(95, 105))
+	self:SetMaterial("")
 
--- swing those claws
-self:DelayedCallback(self.ZombieStats["StrikeDelay"] * 0.75, function()
-	self:EmitSound("npc/vort/claw_swing"..math.random(1, 2)..".wav")
-end)
+	-- swing those claws
+	self:DelayedCallback(self.ZombieStats["StrikeDelay"] * 0.75, function()
+		self:EmitSound("npc/vort/claw_swing"..math.random(1, 2)..".wav")
+	end)
 
--- actually apply the damage
-self:DelayedCallback(self.ZombieStats["StrikeDelay"], function()
-if !self:IsValid() or self:Health() < 1 then return end
-					
-	if (IsValid(ply) and self:GetRangeTo(ply) <= self.ZombieStats["Reach"] * 1.3) then
-		self:ApplyPlayerDamage(ply, self.ZombieStats["Damage"], -self.ZombieStats["Force"], self.ZombieStats["Infection"])
-		ply:SlowPlayerDown(0.3, 5)
+	-- actually apply the damage
+	self:DelayedCallback(self.ZombieStats["StrikeDelay"], function()
+	if !self:IsValid() or self:Health() < 1 then return end
 
-		net.Start("WraithBlind")
-		net.WriteInt(251, 10)
-		net.Send(ply)
-	end
-end)
+		if (IsValid(ply) and self:GetRangeTo(ply) <= self.ZombieStats["Reach"] * 1.3) then
+			self:ApplyPlayerDamage(ply, self.ZombieStats["Damage"], -self.ZombieStats["Force"], self.ZombieStats["Infection"])
+			ply:SlowPlayerDown(0.15, 5)
+
+			net.Start("WraithBlind")
+			net.WriteInt(251, 10)
+			net.Send(ply)
+		end
+	end)
 
 
-self:DelayedCallback(self.ZombieStats["StrikeDelay"] * 1.2, function()
-if (IsValid(ply) and !ply:Alive()) then
-	self.target = nil
-end
-end)
+	self:DelayedCallback(self.ZombieStats["StrikeDelay"] * 1.2, function()
+		if (IsValid(ply) and !ply:Alive()) then
+			self.target = nil
+		end
+	end)
 
-self:DelayedCallback(1, function()
-self:SetMaterial("models/effects/vol_lightmask01")
+	self:DelayedCallback(1, function()
+	self:SetMaterial("models/effects/vol_lightmask01")
 end)
 
 return false

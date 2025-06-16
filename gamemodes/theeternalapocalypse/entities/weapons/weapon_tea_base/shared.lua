@@ -620,11 +620,11 @@ function SWEP:ShootBulletInformation()
 
 	if self:GetDTBool(3) then
 		CurrentDamage = self.Primary.Damage * self.data.Damage
-		CurrentRecoil = self.Primary.Recoil * self.data.Recoil * math.max(0.4, 1 - (owner.StatGunslinger or Perks and Perks.Gunslinger or 0) * 0.03)
+		CurrentRecoil = self.Primary.Recoil * self.data.Recoil * math.max(0.4, 1 - (owner.StatGunslinger or 0) * 0.03)
 		CurrentCone = self.Primary.Cone * self.data.Cone
 	else
 		CurrentDamage = self.Primary.Damage
-		CurrentRecoil = self.Primary.Recoil * math.max(0.4, 1 - (owner.StatGunslinger or Perks and Perks.Gunslinger or 0) * 0.03)
+		CurrentRecoil = self.Primary.Recoil * math.max(0.4, 1 - (owner.StatGunslinger or 0) * 0.03)
 		CurrentCone = self.Primary.Cone
 	end
 
@@ -1067,7 +1067,7 @@ return false -- ricochet is disabled in ZW cos its an unnecessary waste of proce
 		return 
 	end
 
-	if (self.Ricochet == false) then return {damage = true, effects = DoDefaultEffect} end
+	if not (self.Ricochet) then return {damage = true, effects = DoDefaultEffect} end
 	
 	if (bouncenum > self.MaxRicochet) then return end
 	

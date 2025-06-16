@@ -55,7 +55,7 @@ function SWEP:DrawHUD()
         local y2 = screenpos2.y
         surface.SetTextColor(250, 250, 150, 225)
         surface.SetTextPos(x2 - 342, y2 - 52)
-        surface.SetFont("TargetID")
+        surface.SetFont("TEA.HUDFont")
         surface.DrawText("Left Click: Spawn Prop")
         surface.SetTextPos(x2 - 342, y2 - 32)
         surface.SetTextPos(x2 - 342, y2 - 124)
@@ -105,7 +105,7 @@ function SWEP:Reload()
     if ent and ent:IsValid() and (ent:GetClass() == "prop_flimsy" or ent:GetClass() == "prop_strong") and (self:GetNextPrimaryFire() <= CurTime()) then
         GAMEMODE:DestroyProp(self:GetOwner(), ent)
         self:SetNextPrimaryFire(CurTime() + 2.08)
-    elseif ent and ent:IsValid() and SpecialSpawns[ent:GetClass()] and (self:GetNextPrimaryFire() <= CurTime()) then
+    elseif ent and ent:IsValid() and GAMEMODE.SpecialStructureSpawns[ent:GetClass()] and (self:GetNextPrimaryFire() <= CurTime()) then
         GAMEMODE:DestroyStructure(self:GetOwner(), ent)
         self:SetNextPrimaryFire(CurTime() + 2.08)
     end
@@ -159,12 +159,12 @@ end
 
 function SWEP:IsSelectedStructure()
     local ply = self:GetOwner()
-    return SpecialSpawns[ply.SelectedProp]
+    return GAMEMODE.SpecialStructureSpawns[ply.SelectedProp]
 end
 
 function SWEP:GetSelectedStructureModel()
     local ply = self:GetOwner()
-    return SpecialSpawns[ply.SelectedProp].Model
+    return GAMEMODE.SpecialStructureSpawns[ply.SelectedProp].Model
 end
 
 function SWEP:PrimaryAttack()
@@ -179,7 +179,7 @@ function SWEP:PrimaryAttack()
             trace.filter = ply
             local tr = util.TraceLine(trace)
             local check = function(class)
-                return class == "prop_flimsy" or class == "prop_strong" or SpecialSpawns[class]
+                return class == "prop_flimsy" or class == "prop_strong" or GAMEMODE.SpecialStructureSpawns[class]
             end
             if IsValid(tr.Entity) and check(tr.Entity:GetClass()) and not tr.Entity.IsBuilt then
                 self:SetDraggedEnt(tr.Entity)

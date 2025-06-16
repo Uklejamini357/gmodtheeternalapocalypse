@@ -51,7 +51,7 @@ function GM:MakeMoneyPrinterPanel(ent)
 	end
 
 	local cash = vgui.Create("DLabel", PrinterPanel)
-	cash:SetFont("TargetID")
+	cash:SetFont("TEA.HUDFont")
 	cash:SetPos(100, 190)
 	cash:SetText("Printer money: "..ent:)
 	cash:SetColor(Color(155,255,155,255))

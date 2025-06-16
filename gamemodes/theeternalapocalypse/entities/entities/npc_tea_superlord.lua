@@ -123,10 +123,11 @@ function ENT:ApplyPlayerDamage(ply, damage, hitforce, infection)
 	local dmg1 = tonumber(damage)
 
 	damageInfo:SetAttacker(self)
-	damageInfo:SetDamage(GAMEMODE:CalcPlayerDamage(ply, dmg1))
+	damageInfo:SetDamage(dmg1 * target:GetArmorDamageMultiplier())
 	damageInfo:SetDamageType(DMG_CLUB)
 
-	local force = ply:GetAimVector() * hitforce
+	local distancevector = self:GetPos() - ply:GetPos()
+	local force = (distancevector / distancevector:Length()) * hitforce
 	force.z = 300
 	damageInfo:SetDamageForce(force)
 

@@ -102,6 +102,7 @@ GM.ServerRules = {
 
 GM.Config = {
 	-- Save debug logs once per every while?
+	-- Debug Logs don't log much at the moment, unnfortunately.
 	-- Logs will be found found in garrysmod/data/theeternalapocalypse/logs and can be sent to the developer to find and fix bugs in the gamemode
 	-- NOTE: Also Logs, who uses admin commands.
 	-- Will add separate logging system in future
@@ -138,7 +139,7 @@ GM.Config = {
 	["MaxCarryWeight"] = 36.72,
 
 	-- vault size in kg
-	["VaultSize"] = 175,
+	["VaultSize"] = 200,
 
 	-- remember that the speed skill increases your walk speed by 3.5 for each level, so at 140 walkspeed players can reach a possible maximum of 175 walk speed
 	["WalkSpeed"] = 155,
@@ -149,9 +150,11 @@ GM.Config = {
 	-- legacy saves player data as text files under garrysmod/data/theeternalapocalypse/profiles/(players steamid)/
 	-- Pdata saves their data to the servers sql file (garrysmod/sv.db)
 	-- Use the pdata system if you are having issues with text file saving/loading or if you prefer everything to be in the sql file.
-	-- No there isn't support for MySQL and there proably won't be unless you code it yourself.
+	-- No there isn't support for MySQL and there proably won't be unless you code it yourself. (Hmm.. Now that I think about it, I might consider doing that)
 	["FileSystem"] = "Legacy",
 
+	-- Srlion's Fast Binary Serializer
+	-- SFS Serializer allows for a much more efficient saving method, at the cost of being unable to edit player data files directly.
 	-- false = JSON
 	-- true = SFS(https://github.com/Srlion/sfs)
 	["SFS"] = false,
@@ -647,7 +650,7 @@ GM.PerksList = {
 
 	["enduring_endurance"] = {
 		Name = "Enduring Endurance",
-		Description = "Stamina regeneration is doubled and stamina drain is decreased when your stamina is below 25%",
+		Description = "Stamina regeneration is multiplied by 1.5x when your stamina is below 25%",
 		Cost = 1,
 		PrestigeReq = 3,
 	},

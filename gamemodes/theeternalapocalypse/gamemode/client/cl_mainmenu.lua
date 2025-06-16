@@ -1,4 +1,3 @@
-local Close
 local ambsound
 local playmmsound = false
 local sound_choice = 1
@@ -6,6 +5,22 @@ local sound_choices = {
 	{"main_menu_sound/menu.ogg", 158},
 	{"main_menu_sound/menu_alt.ogg", 184},
 }
+
+local function Close()
+	local snd = ambsound
+	-- snd:ChangeVolume(0.01, 3)
+	if playmmsound then
+		snd:FadeOut(3)
+		timer.Create("TheEternalApocalypse.StartMenu.StopSound", 3, 1, function()
+			if snd then
+				snd:Stop()
+			end
+		end)
+	end
+
+	gui.EnableScreenClicker(false)
+end
+
 
 net.Receive("tea_player_ready_spawn", function()
 	local wasready = net.ReadBool()
@@ -15,6 +30,29 @@ net.Receive("tea_player_ready_spawn", function()
 	end
 
 	Close()
+
+	if !GAMEMODE.DisableTips then
+		timer.Simple(1, function()
+			local notbound = "[NOT BOUND]"
+			local score = string.upper(input.LookupBinding("+showscores")) or notbound
+			local qmenu = string.upper(input.LookupBinding("+menu")) or notbound
+			local cmenu = string.upper(input.LookupBinding("+menu_context")) or notbound
+			local f1 = string.upper(input.LookupBinding("gm_showhelp")) or notbound
+			local f2 = string.upper(input.LookupBinding("gm_showteam")) or notbound
+			local f3 = string.upper(input.LookupBinding("gm_showspare1")) or notbound
+			local f4 = string.upper(input.LookupBinding("gm_showspare2")) or notbound
+
+			chat.AddText(Color(255,255,155), "---- Helpful gamemode commands ----")
+			chat.AddText(Color(255,255,155), score..": Open scoreboard and factions")
+			chat.AddText(Color(255,255,155), qmenu..": Open your inventory")
+			chat.AddText(Color(255,255,155), "- PROTIP: Use your weapon to equip it!")
+			chat.AddText(Color(255,255,155), cmenu..": Open context menu")
+			chat.AddText(Color(255,255,155), f1..": Help and Documentation")
+			chat.AddText(Color(255,255,155), f2..": Admin Panel")
+			chat.AddText(Color(255,255,155), f3..": [Nothing, yet]")
+			chat.AddText(Color(255,255,155), f4..": Options")
+		end)
+	end
 end)
 
 net.Receive("tea_player_sendcharacters", function()
@@ -32,7 +70,7 @@ local function ReadyCharacters()
 			print("no")
 		end
 
-		local txt = EasyLabel(win, "Character #"..i, "TargetIDSmall", COLOR_WHITE)
+		local txt = EasyLabel(win, "Character #"..i, "TEA.HUDFontSmall", COLOR_WHITE)
 		txt:SetPos(2, 3)
 	end
 end
@@ -43,21 +81,6 @@ function GM:LoadMainMenu()
 	self.MainMenuPanel = vgui.Create("DPanel")
 	self.MainMenuPanel:SetSize(ScrW(), ScrH())
 	self.MainMenuPanel:MakePopup()
-
-	function Close()
-		local snd = ambsound
-		-- snd:ChangeVolume(0.01, 3)
-		if playmmsound then
-			snd:FadeOut(3)
-			timer.Create("TheEternalApocalypse.StartMenu.StopSound", 3, 1, function()
-				if snd then
-					snd:Stop()
-				end
-			end)
-		end
-
-		gui.EnableScreenClicker(false)
-	end
 
 	local _timer = 10
 	local soundvol = 1
@@ -95,7 +118,7 @@ function GM:LoadMainMenu()
 			time >= self.CreationTime + 240 and "\"Inactivity warning! Please move!\"" or
 			time >= self.CreationTime + 150 and "..." or
 			time >= self.CreationTime + 100 and "you there?" or
-			time >= self.CreationTime + 60 and "uh" or "", "TargetIDSmall", ScrW() / 2, ScrH()-60, Color(255,255,255,255), TEXT_ALIGN_CENTER
+			time >= self.CreationTime + 60 and "uh" or "", "TEA.HUDFontSmall", ScrW() / 2, ScrH()-60, Color(255,255,255,255), TEXT_ALIGN_CENTER
 		)
 */		
 	end
@@ -196,7 +219,7 @@ function GM:LoadMainMenu()
 		button:SetText(translate.Get("play"))
 	end
 	button:SetTextColor(Color(255,255,255))
-	button:SetFont("TargetIDSmall")
+	button:SetFont("TEA.HUDFontSmall")
 	button.DoClick = function(self)
 		net.Start("tea_player_ready_spawn")
 		net.SendToServer()
@@ -210,7 +233,7 @@ function GM:LoadMainMenu()
 		button:SetSize(120, 25)
 		button:SetText("Help")
 		button:SetTextColor(Color(255,255,205))
-		button:SetFont("TargetIDSmall")
+		button:SetFont("TEA.HUDFontSmall")
 		button.DoClick = function(self)
 			gamemode.Call("HelpMenu")
 		end
@@ -221,7 +244,7 @@ function GM:LoadMainMenu()
 		button:SetSize(120, 25)
 		button:SetText(translate.Get("disconnect"))
 		button:SetTextColor(Color(255,205,205))
-		button:SetFont("TargetIDSmall")
+		button:SetFont("TEA.HUDFontSmall")
 		button.DoClick = function(self)
 			RunConsoleCommand("disconnect")
 		end
@@ -245,7 +268,7 @@ function GM:LoadMainMenu()
 	createcharacter:SetSize(250, 40)
 	createcharacter:SetPos(ScrW() / 2 - 125, ScrH() / 2 + 400)
 	createcharacter:SetText("Create new character")
-	createcharacter:SetFont("TargetID")
+	createcharacter:SetFont("TEA.HUDFont")
 	createcharacter.Paint = function() end
 	createcharacter.DoClick = function()
 		print("no")
@@ -283,8 +306,8 @@ hook.Add("DrawOverlay", "TEA_DrawOverlay", function()
 	cam.Start2D()
 	surface.SetDrawColor(0, 0, 0, 255)
 	surface.DrawRect(0, 0, ScrW(), ScrH())
-	draw.DrawText(translate.Get("loading"), "TargetID", ScrW()/2, ScrH()/3, Color(255,255,255), TEXT_ALIGN_CENTER)
---	draw.DrawText(randomtip, "TargetIDSmall", ScrW()/2, ScrH()/1.5, Color(255,255,255), TEXT_ALIGN_CENTER)
---	draw.DrawText(randomtip2, "TargetIDSmall", ScrW()/2, ScrH()/1.5 + 60, Color(255,255,255), TEXT_ALIGN_CENTER)
+	draw.DrawText(translate.Get("loading"), "TEA.HUDFont", ScrW()/2, ScrH()/3, Color(255,255,255), TEXT_ALIGN_CENTER)
+--	draw.DrawText(randomtip, "TEA.HUDFontSmall", ScrW()/2, ScrH()/1.5, Color(255,255,255), TEXT_ALIGN_CENTER)
+--	draw.DrawText(randomtip2, "TEA.HUDFontSmall", ScrW()/2, ScrH()/1.5 + 60, Color(255,255,255), TEXT_ALIGN_CENTER)
 	cam.End2D()
 end)

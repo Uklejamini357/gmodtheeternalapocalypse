@@ -55,7 +55,10 @@ function GM:LoadPlayer(ply, id)
 		local method = self.Config.SFS and sfs.decode or util.JSONToTable
 		local tbl = method(file.Read(filedir_ply, "DATA"))
 
-		PrintTable(tbl)
+		if self:GetDebug() >= DEBUGGING_NORMAL then
+			PrintTable(tbl)
+		end
+
 		for var,value in pairs(tbl) do
 			ply[var] = value
 			-- if TheLine[1] == "PerkPoints" then
@@ -387,29 +390,6 @@ function GM:SavePlayerVault(ply)
 	print("✓ ".. ply:Nick() .." vault saved")
 end
 
---Bonus multipliers for various supporters (and the dev)
-function GM:XPBonus(ply)
-	if !ply:IsValid() then return 0 end
-	local xpmul = 1
-	if ply:HasPerk("xpboost") then
-		xpmul = xpmul + 0.1
-	end
-	if ply:HasPerk("xpboost2") then
-		xpmul = xpmul + 0.15
-	end
-	
-	if self.BonusPerksEnabled then
-		if ply:SteamID64() == "76561198274314803" then
-			xpmul = xpmul * 1.25
-		elseif ply:SteamID64() == "76561198028288732" then
-			xpmul = xpmul * 1.15
-		elseif ply:SteamID64() == "76561198112950441" then
-			xpmul = xpmul * 1.05
-		end
-	end
-	return xpmul
-end
-
 local count,maxcount = 0, 0
 local importing
 function GM:Import_Player_Saves_From_0_11_3a_And_Below(ply)
@@ -510,7 +490,7 @@ function GM:Import_Player_Saves_From_0_11_3a_And_Below(ply)
 	if not demo then
 		for _,pl in pairs(player.GetAll()) do
 			pl.NoDataSave = true
-			pl:PrintMessage(3, "Due to data being imported, your data will no longer be automatically saved. This will occur only once. We apologize for any inconvenience.")
+			pl:PrintTranslatedMessage(3, "data_import_player_warning_savedisabled")
 		end
 	end
 
@@ -589,6 +569,29 @@ concommand.Add("tea_sv_performplayerdataimport", function(ply)
 end)
 
 
+--Bonus multipliers for various supporters (and the dev)
+function GM:XPBonus(ply)
+	if !ply:IsValid() then return 0 end
+	local xpmul = 1
+	if ply:HasPerk("xpboost") then
+		xpmul = xpmul + 0.1
+	end
+	if ply:HasPerk("xpboost2") then
+		xpmul = xpmul + 0.15
+	end
+	
+	if self.BonusPerksEnabled then
+		if ply:SteamID64() == "76561198274314803" then
+			xpmul = xpmul * 1.25
+		elseif ply:SteamID64() == "76561198028288732" then
+			xpmul = xpmul * 1.15
+		elseif ply:SteamID64() == "76561198112950441" then
+			xpmul = xpmul * 1.05
+		end
+	end
+	return xpmul
+end
+
 function GM:CashBonus(ply)
 	if !ply:IsValid() then return 0 end
 	local cashmul = 1
@@ -642,16 +645,16 @@ function GM:GainLevel(ply)
 
 	if tonumber(ply.Level) >= ply:GetMaxLevel() then
 		ply.MaxLevelTime = CurTime() + 120
-		ply:SendChat("You have reached max level, consider prestiging.")
+		ply:SendChat(translate.ClientGet(ply, "max_level_reached"))
 	end
 end
 
 net.Receive("Prestige", function(length, ply)
-	if !ply:Alive() then ply:SendChat("Must be alive in order to prestige!") return end
+	if !ply:Alive() then ply:SendChat(translate.ClientGet(ply, "must_be_alive_to_prestige")) return end
 	if tonumber(ply.Level) >= ply:GetMaxLevel() then
 		gamemode.Call("GainPrestige", ply)
 	else
-		ply:SystemMessage("You must be at least level ".. ply:GetMaxLevel() .." to prestige!", Color(255,155,155), true)
+		ply:SystemMessage(translate.ClientFormat(ply, "must_be_at_least_lvl_to_prestige", ply:GetMaxLevel()), Color(255,155,155), true)
 		ply:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
 	end
 end)
@@ -837,6 +840,32 @@ function meta:LoadLastSession()
 
 		self.LastSessionInfo = nil
 	end
+end
+
+function meta:ArmorEquip(item)
+	if item == "none" then return end
+	self.EquippedArmor = tostring(item)
+	self:SetNWString("ArmorType", tostring(item))
+	self:OnEquippedArmor(item)
+end
+
+function meta:ArmorUnequip()
+	local item = self.EquippedArmor
+	self.EquippedArmor = "none"
+	self:SetNWString("ArmorType", "none")
+	gamemode.Call("RecalcPlayerModel", self)
+	gamemode.Call("RecalcPlayerSpeed", self)
+	self:OnUnequippedArmor(item)
+end
+
+function meta:OnEquippedArmor(item)
+	self:SystemMessage("You equipped "..GAMEMODE:GetItemName(item, self)..".", Color(205,255,205,255), false)
+	gamemode.Call("RecalcPlayerModel", self)
+	gamemode.Call("RecalcPlayerSpeed", self)
+end
+
+function meta:OnUnequippedArmor(item)
+	self:SystemMessage(Format("You unequipped %s.", GAMEMODE:GetItemName(item, self)), Color(205,255,205,255), false)
 end
 
 

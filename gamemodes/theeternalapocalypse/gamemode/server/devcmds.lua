@@ -202,144 +202,6 @@ concommand.Add("tea_dev_refillstats", function(ply, cmd, args)
 	gamemode.Call("DevCmds_RefillStats", ply, cmd, args)
 end, nil, "Refills your Stamina, Hungeer, Thirst, Fatigue and Infection.")
 
-function GM:DevCmds_GivePerk(ply, cmd, args)
-	if !ply:IsValid() then return false end
-
-	if !TEADevCheck(ply) then 
-		ply:SystemMessage(translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
-		ply:ConCommand("playgamesound buttons/button8.wav")
-		return
-	end
-	
-	local statname = args[1]
-	local addqty = tonumber(args[2])
-	if !statname then
-		ply:PrintMessage(2, "Usage:\nArgument #1: Perk Name\nInclude only stat name, do not include Stat before stat name! (Examples: Agility, Speed or Strength)\n \nList:")
-		for k,v in ipairs(self.StatsListServer) do ply:PrintMessage(2, v) end
-	return end
-	if !addqty then return end
-	local stat = "Stat"..statname
-	if statname == "Points" then --when they manage to increase their skill points with this command while it's supposed to increase their skill level
-		ply:SystemMessage("You can't increase your Skill Points with this command! Use tea_dev_giveskillpoints instead!", Color(255,205,205,255), true)
-		ply:ConCommand("playgamesound buttons/button8.wav")
-		return
-	end
-
-	ply[stat] = ply[stat] + addqty
-	ply:SystemMessage("You increased your "..statname.." Skill for "..addqty.." point(s)!", Color(155,255,155,255), true)
-
-	ply:SetMaxHealth(GAMEMODE:CalcMaxHealth(ply))
-	ply:SetMaxArmor(GAMEMODE:CalcMaxArmor(ply))
-	ply:SetJumpPower(GAMEMODE:CalcJumpPower(ply))
-	gamemode.Call("RecalcPlayerSpeed", ply)
-	gamemode.Call("FullyUpdatePlayer", ply)
-end
-concommand.Add("tea_dev_giveperk", function(ply, cmd, args)
-	gamemode.Call("DevCmds_GivePerk", ply, cmd, args)
-end)
-
-function GM:DevCmds_GiveStat(ply, cmd, args)
-	if !ply:IsValid() then return false end
-	if !TEADevCheck(ply) then 
-		ply:SystemMessage(translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
-		ply:ConCommand("playgamesound buttons/button8.wav")
-		return
-	end
-	
-	local statname = args[1] 
-	local addqty = tonumber(args[2])
-	if !statname then
-		ply:PrintMessage(2, "Usage:\nArgument #1: Stat Name\nInclude only (periodic) stats!\n \nList:")
-		for k,v in ipairs(GAMEMODE.StatsListServer2) do ply:PrintMessage(2, v) end
-	return end
-	if !addqty then return end
-/*	if string.lower(statname) == "StatAgility" then
-		ply:SystemMessage("You can't set your Perk Values with this command! Use tea_dev_setperk instead!", Color(255,205,205,255), true)
-		ply:ConCommand("playgamesound buttons/button8.wav")
-		return
-	end
-*/
-
-	ply:SystemMessage("You gave yourself "..statname.." values for "..addqty.."!", Color(155,255,155,255), true)
-
-    ply[statname] = ply[statname] + addqty
-
-	gamemode.Call("RecalcPlayerSpeed", ply)
-	gamemode.Call("FullyUpdatePlayer", ply)
-end
-concommand.Add("tea_dev_givestat", function(ply, cmd, args)
-	gamemode.Call("DevCmds_GiveStat", ply, cmd, args)
-end)
-
-function GM:DevCmds_SetPerk(ply, cmd, args)
-	if !ply:IsValid() then return false end
-
-	if !TEADevCheck(ply) then 
-		ply:SystemMessage(translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
-		ply:ConCommand("playgamesound buttons/button8.wav")
-		return
-	end
-	
-	local statname = args[1] 
-	local setqty = tonumber(args[2])
-	if !statname then
-		ply:PrintMessage(2, "Usage:\nArgument #1: Perk Name\nInclude only stat name, do not include Stat before stat name! (Examples: Agility, Speed or Strength)\n \nList:")
-		for k,v in ipairs(GAMEMODE.StatsListServer) do ply:PrintMessage(2, v) end
-	return end
-	if !setqty then return end
-	local stat = "Stat"..statname
-	if statname == "Points" then
-		ply:SystemMessage("You can't set your Skill Points with this command! Use tea_dev_setskillpoints instead!", Color(255,205,205,255), true)
-		ply:ConCommand("playgamesound buttons/button8.wav")
-		return
-	end
-
-	ply[stat] = setqty
-	ply:SystemMessage("You set your "..statname.." Skill value to "..setqty.."!", Color(155,255,155,255), true)
-
-	ply:SetMaxHealth(GAMEMODE:CalcMaxHealth(ply))
-	ply:SetMaxArmor(GAMEMODE:CalcMaxArmor(ply))
-	ply:SetJumpPower(GAMEMODE:CalcJumpPower(ply))
-	gamemode.Call("RecalcPlayerSpeed", ply)
-	gamemode.Call("FullyUpdatePlayer", ply)
-end
-concommand.Add("tea_dev_setperk", function(ply, cmd, args)
-	gamemode.Call("DevCmds_SetPerk", ply, cmd, args)
-end)
-
-
-function GM:DevCmds_SetStat(ply, cmd, args)
-	if !ply:IsValid() then return false end
-	if !TEADevCheck(ply) then 
-		ply:SystemMessage(translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
-		ply:ConCommand("playgamesound buttons/button8.wav")
-		return
-	end
-	
-	local statname = args[1] 
-	local setqty = tonumber(args[2])
-	if !statname then
-		ply:PrintMessage(2, "Usage:\nArgument #1: Stat Name\nInclude only (periodic) stats!\n \nList:")
-		for k,v in ipairs(self.StatsListServer2) do ply:PrintMessage(2, v) end
-	return end
-	if !setqty then return end
-/*	if string.lower(statname) == "StatAgility" then
-		ply:SystemMessage("You can't set your Perk Values with this command! Use tea_dev_setperk instead!", Color(255,205,205,255), true)
-		ply:ConCommand("playgamesound buttons/button8.wav")
-		return
-	end*/
-
-	ply:SystemMessage("You set your "..statname.." value to "..setqty.."!", Color(155,255,155,255), true)
-
-    ply[statname] = setqty
-
-	gamemode.Call("RecalcPlayerSpeed", ply)
-	gamemode.Call("FullyUpdatePlayer", ply)
-end
-concommand.Add("tea_dev_setstat", function(ply, cmd, args)
-	gamemode.Call("DevCmds_SetStat", ply, cmd, args)
-end)
-
 function GM:DevCmds_PauseStats(ply, cmd)
     if !ply:IsValid() then return false end
 	if !TEADevCheck(ply) then 
@@ -370,10 +232,10 @@ function GM:DevCmds_ForceEquipArmor(ply, cmd, args)
 	local item = GAMEMODE.ItemsList[name]
 
 	if !item then
-		UseFunc_RemoveArmor(ply)
+		ply:ArmorUnequip()
 		ply:SystemMessage("You removed equipped armor for yourself!", Color(155,255,155,255), true)
 	else
-		ForceEquipArmor(ply, name)
+		ply:ArmorEquip(name)
 		ply:SystemMessage("You equipped armor '"..GAMEMODE:GetItemName(name, ply).."' for yourself!", Color(155,255,155,255), true)
 	end
 end

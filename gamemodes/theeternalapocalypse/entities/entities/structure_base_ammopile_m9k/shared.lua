@@ -50,22 +50,23 @@ function ENT:Use(activator, caller)
 
 	local ammos = {
 		["Pistol"] = 200,
-		["Buckshot"] = 200,
-		["ammo_rifle"] = 200,
-		["357"] = 200,
-		["ammo_sniper"] = 100,
+		["Buckshot"] = 100,
+		["357"] = 100,
 		["SMG1"] = 200,
+		["ammo_rifle"] = 250,
+		["ammo_sniper"] = 100,
 	}
 
 	for k,v in pairs(ammos) do
-		if activator:GetAmmoCount(k) < v then
-			activator:SetAmmo(v, k)
+		local ammocount = activator:GetAmmoCount(k)
+		if ammocount < v then
+			activator:GiveAmmo(v-ammocount, k)
 		end
 	end
 
 	activator:EmitSound("items/ammopickup.wav")
 	activator:SystemMessage("You refilled your ammo!", Color(205,255,205,255), true)
-	self.UseTimer = CurTime() + 40
+	self.UseTimer = CurTime() + 15
 end
 
 function ENT:FinishBuild()

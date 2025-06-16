@@ -44,7 +44,7 @@ function ENT:SetUpStats()
 
         ["Health"] = 6150,
         ["MoveSpeedWalk"] = 45,
-        ["MoveSpeedRun"] = 45,
+        ["MoveSpeedRun"] = 55,
         ["VisionRange"] = 1200,
         ["LoseTargetRange"] = 1500,
 

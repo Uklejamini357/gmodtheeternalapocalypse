@@ -5,8 +5,8 @@ ENT.PrintName = "Shambler Zombie"
 ENT.Category = "TEA Zombies"
 ENT.Purpose = "A zombie that attack you and can infect"
 ENT.Author = "Uklejamini"
-ENT.Spawnable = true
-ENT.AdminOnly = true
+ENT.Spawnable = false
+ENT.AdminOnly = false
 
 list.Set("NPC", "npc_tea_basic", {
 	Name = ENT.PrintName,
@@ -231,7 +231,7 @@ function ENT:RunBehaviour()
 
 			for k,v in pairs(breakshit) do
 				if v:IsValid() then
-					if v:GetClass() == "prop_flimsy" or v:GetClass() == "prop_strong" or SpecialSpawns[v:GetClass()] then
+					if v:GetClass() == "prop_flimsy" or v:GetClass() == "prop_strong" or GAMEMODE.SpecialStructureSpawns[v:GetClass()] then
 						self:AttackProp(v)
 						break
 					elseif v:GetClass() == "prop_door_rotating" and not v:GetNoDraw() then
@@ -563,7 +563,7 @@ function ENT:ApplyPlayerDamage(ply, damage, hitforce, infection)
 	local dmg1 = tonumber(damage)
 
 	damageInfo:SetAttacker(self)
-	damageInfo:SetDamage(ply:IsPlayer() and GAMEMODE:CalcPlayerDamage(ply, dmg1) or dmg1)
+	damageInfo:SetDamage(ply:IsPlayer() and ply:GetArmorDamageMultiplier() or dmg1)
 	damageInfo:SetDamageType(DMG_CLUB)
 
 	local distancevector = self:GetPos() - ply:GetPos()

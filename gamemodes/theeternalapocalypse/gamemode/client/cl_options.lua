@@ -3,7 +3,9 @@ local pSVOptions
 
 local function CreateCheckLabel(panel, list, text, cvar)
 	check = vgui.Create("DCheckBoxLabel", panel)
+	check:SetFont("TEA.HUDFontSmaller")
 	check:SetText(text)
+	check:SetTextColor(color_white)
 	check:SetConVar(cvar)
 	check:SizeToContents()
 	list:AddItem(check)
@@ -54,7 +56,7 @@ function GM:MakeOptions()
 
 	local y = 8
 
-	local label = EasyLabel(pan, "Options", "TargetID", color_white)
+	local label = EasyLabel(pan, "Options", "TEA.HUDFont", color_white)
 	label:SetPos(wide * 0.5 - label:GetWide() * 0.5, y)
 	y = y + label:GetTall() + 8
 
@@ -118,7 +120,7 @@ function GM:MakeOptions()
 	slider = CreateSlider(pan, list, "Damage number lifetime", "tea_cl_damagenumber_lifetime")
 	slider:SetDecimals(2)
 
-	list:AddItem(EasyLabel(pan, "HUD Style", "Arial_2", color_white))
+	list:AddItem(EasyLabel(pan, "HUD Style", "TEA.HUDFontSmall", color_white))
 	local dropdown = vgui.Create("DComboBox", pan)
 	dropdown:SetMouseInputEnabled(true)
 	dropdown:AddChoice("Classic HUD Style")
@@ -132,7 +134,7 @@ function GM:MakeOptions()
 	dropdown:SetTextColor(color_black)
 	list:AddItem(dropdown)
 
-	list:AddItem(EasyLabel(pan, "Death sound", "Arial_2", color_white))
+	list:AddItem(EasyLabel(pan, "Death sound", "TEA.HUDFontSmall", color_white))
 	local textentry = vgui.Create("DTextEntry", pan)
 	textentry:SetConVar("tea_cl_deathsound")
 	textentry:SetToolTip("The following sound is played on death\nTip: Use string '*#' at the start of a string to play the sound as music")
@@ -143,7 +145,7 @@ function GM:MakeOptions()
 
 		local button = vgui.Create("DButton", pan)
 		button:SetText("Server Options")
-		button:SetFont("TargetIDSmall")
+		button:SetFont("TEA.HUDFontSmall")
 		button.DoClick = function()
 			MakeServerOptions()
 			pan:SetVisible(false)
@@ -195,7 +197,7 @@ function MakeServerOptions()
 
 	local y = 8
 
-	local label = EasyLabel(pan, "Server Options", "TargetID", color_white)
+	local label = EasyLabel(pan, "Server Options", "TEA.HUDFont", color_white)
 	label:SetPos(wide * 0.5 - label:GetWide() * 0.5, y)
 	y = y + label:GetTall() + 8
 
@@ -323,7 +325,7 @@ function MakeServerOptions()
 
 	local button = vgui.Create("DButton", pan)
 	button:SetText("Client Options")
-	button:SetFont("TargetIDSmall")
+	button:SetFont("TEA.HUDFontSmall")
 	button.DoClick = function()
 		pSVOptions:SetVisible(false)
 		gamemode.Call("MakeOptions")

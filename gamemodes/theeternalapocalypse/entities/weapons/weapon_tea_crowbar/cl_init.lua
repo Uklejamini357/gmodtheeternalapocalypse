@@ -41,7 +41,7 @@ function SWEP:DrawHUD()
 		end
 	end
 
-	if not (cl_crosshair_t:GetBool() == false) or (LocalPlayer():InVehicle()) then
+	if (cl_crosshair_t:GetBool()) or (LocalPlayer():InVehicle()) then
 		if self.IronCrosshair or !self.Weapon:GetDTBool(1) then
 			surface.SetDrawColor(255, 255, 255, 255)
 			surface.DrawRect(x-1, y-1, 2, 2)

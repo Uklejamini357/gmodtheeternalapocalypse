@@ -2,39 +2,32 @@ ENT.Type 			= "anim"
 ENT.Base 			= "base_gmodentity"
 ENT.PrintName			= "Ammo Pile"
 ENT.Author			= "LegendofRobbo"
-/*
- function ENT:SetupDataTables()
- 	self:NetworkVar( "Float", 0, "Integrity" )
- end
-*/
 
 ENT.Spawnable			= false
 ENT.AdminOnly			= false
 
 
-function ENT:SpawnFunction(ply, tr) -- spawnfunction isnt actually used within zombified world but i left it here for debug purposes (alright)
+function ENT:SpawnFunction(ply, tr)
 return false
 end
 
 function ENT:Initialize()
-	local selfent = self.Entity
 	self.IsBuilt = false
 	self.UseTimer = CurTime()
 	self.BuildLevel = 0
 	self.integrity = 1000
 	self.maxinteg = 1000
-	self.Entity:PhysicsInit( SOLID_VPHYSICS )
-	self.Entity:SetMoveType( MOVETYPE_VPHYSICS )
-	self.Entity:SetSolid( SOLID_VPHYSICS )
-	self.Entity:SetUseType( 3 )
---	self:SetModel("models/props_c17/light_cagelight02_on.mdl")
+	self:PhysicsInit(SOLID_VPHYSICS)
+	self:SetMoveType(MOVETYPE_VPHYSICS)
+	self:SetSolid(SOLID_VPHYSICS)
+	self:SetUseType(3)
 
 	self:SetMaterial("models/wireframe")
 	self:SetCollisionGroup( COLLISION_GROUP_WORLD )
 	self:SetColor(Color(105, 105, 105, 100))
 
 
-	local phys = self.Entity:GetPhysicsObject()
+	local phys = self:GetPhysicsObject()
 	if (phys:IsValid()) then
 		phys:Wake()
 	end	
@@ -50,22 +43,23 @@ function ENT:Use(activator, caller)
 
 	local ammos = {
 		["Pistol"] = 200,
-		["Buckshot"] = 200,
-		["ammo_rifle"] = 200,
-		["357"] = 200,
-		["ammo_sniper"] = 100,
+		["Buckshot"] = 100,
+		["357"] = 100,
 		["SMG1"] = 200,
+		["ammo_rifle"] = 250,
+		["ammo_sniper"] = 100,
 	}
 
 	for k,v in pairs(ammos) do
-		if activator:GetAmmoCount(k) < v then
-			activator:SetAmmo(v, k)
+		local ammocount = activator:GetAmmoCount(k)
+		if ammocount < v then
+			activator:GiveAmmo(v-ammocount, k)
 		end
 	end
 
 	activator:EmitSound("items/ammopickup.wav")
 	activator:SystemMessage("You refilled your ammo!", Color(205,255,205,255), true)
-	self.UseTimer = CurTime() + 40
+	self.UseTimer = CurTime() + 30
 end
 
 function ENT:FinishBuild()
@@ -94,7 +88,7 @@ function ENT:OnTakeDamage( dmg )
 
 	if attacker:IsPlayer() and attacker:IsValid() and attacker:Team() == 1 and attacker:GetNWBool("pvp") != true and self:GetNWEntity("owner") != attacker then -- this should stop little shitters from wrecking your base while not in pvp mode
 		attacker:SystemMessage("You cannot damage other players props unless you have PvP mode enabled!", Color(255,205,205,255), true)
-	return false 
+		return false 
 	end
 
 
@@ -105,27 +99,27 @@ function ENT:OnTakeDamage( dmg )
 		self.integrity = (self.integrity - damage)
 	end
 
-		local shit = math.floor(self.maxinteg / 500)
-		local swag
-		if shit == 1 then swag = math.Clamp(self.integrity / 2 , 0, 255)
-		elseif shit == 2 then swag = math.Clamp(self.integrity / 4 , 0, 255)
-		else
-		swag = math.Clamp(self.integrity / 6 , 0, 255)
+	local shit = math.floor(self.maxinteg / 500)
+	local swag
+	if shit == 1 then swag = math.Clamp(self.integrity / 2 , 0, 255)
+	elseif shit == 2 then swag = math.Clamp(self.integrity / 4 , 0, 255)
+	else
+	swag = math.Clamp(self.integrity / 6 , 0, 255)
+	end
+
+	self:SetColor(Color(swag + 5,swag + 5,swag + 5,255))
+
+	if self.integrity - damage < 0 or !self.IsBuilt then
+		if attacker:IsPlayer() and self.IsBuilt then
+			GAMEMODE:Payout(attacker, 850, 1000)
+		elseif attacker:IsPlayer() and !self.IsBuilt then
+			attacker:SystemMessage("nice try", Color(255,230,230,255), false)
 		end
 
-		self:SetColor(Color(swag + 5,swag + 5,swag + 5,255))
-
-		if self.integrity - damage < 0 or !self.IsBuilt then
-			if attacker:IsPlayer() and self.IsBuilt then
-				GAMEMODE:Payout(attacker, 850, 1000)
-			elseif attacker:IsPlayer() and !self.IsBuilt then
-				attacker:SystemMessage("nice try", Color(255,230,230,255), false)
-			end
-
-			self:BreakPanel()
-			self.Entity:EmitSound("physics/metal/metal_box_break2.wav", 80, 100)              
-			self.Entity:Remove()
-		end
+		self:BreakPanel()
+		self:EmitSound("physics/metal/metal_box_break2.wav", 80, 100)              
+		self:Remove()
+	end
 end
 
 

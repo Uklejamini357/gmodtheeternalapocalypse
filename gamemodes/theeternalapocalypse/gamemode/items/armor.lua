@@ -8,8 +8,8 @@ GM:CreateItem(itemid, {
     Supply = supply,
     Rarity = rarity,
     Category = ITEMCATEGORY_ARMOR,
-	UseFunc = function(ply) UseFunc_EquipArmor(ply, itemid) end,
-	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, itemid) return drop end,
+	UseFunc = function(ply, _, item) UseFunc_EquipArmor(ply, itemid) end,
+	DropFunc = function(ply, _, item) local drop = UseFunc_DropArmor(ply, itemid) return drop end,
 
 	-- armor only values
 	ArmorStats = {
@@ -37,9 +37,7 @@ GM:CreateItem("item_armor_jacket_leather", {
 	Supply = 0,
 	Rarity = 2,
 	Category = ITEMCATEGORY_ARMOR,
-	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_jacket_leather") end,
-	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_jacket_leather") return drop end,
-
+	
 	ArmorStats = {
 		reduction = 5,
 		env_reduction = 2.5,
@@ -58,9 +56,7 @@ GM:CreateItem("item_armor_chainmail", {
 	Supply = 0,
 	Rarity = 2,
 	Category = ITEMCATEGORY_ARMOR,
-	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_chainmail") end,
-	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_chainmail") return drop end,
-
+	
 	ArmorStats = {
 		reduction = 7.5,
 		env_reduction = 2.5,
@@ -79,8 +75,6 @@ GM:CreateItem("item_armor_jacket_bandit", {
 	Supply = 0,
 	Rarity = 3,
 	Category = ITEMCATEGORY_ARMOR,
-	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_jacket_bandit") end,
-	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_jacket_bandit") return drop end,
 	ArmorStats = {
 		reduction = 8,
 		env_reduction = 3.5,
@@ -99,8 +93,6 @@ GM:CreateItem("item_armor_scrap", {
 	Supply = 0,
 	Rarity = 3,
 	Category = ITEMCATEGORY_ARMOR,
-	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_scrap") end,
-	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_scrap") return drop end,
 	ArmorStats = {
 		reduction = 12.5,
 		env_reduction = 2.5,
@@ -119,8 +111,6 @@ GM:CreateItem("item_armor_trenchcoat_brown", {
 	Supply = 0,
 	Rarity = 3,
 	Category = ITEMCATEGORY_ARMOR,
-	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_trenchcoat_brown") end,
-	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_trenchcoat_brown") return drop end,
 	ArmorStats = {
 		reduction = 10,
 		env_reduction = 5,
@@ -139,8 +129,6 @@ GM:CreateItem("item_armor_trenchcoat_black", {
 	Supply = 0,
 	Rarity = 4,
 	Category = ITEMCATEGORY_ARMOR,
-	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_trenchcoat_black") end,
-	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_trenchcoat_black") return drop end,
 	ArmorStats = {
 		reduction = 15,
 		env_reduction = 6.25,
@@ -159,8 +147,6 @@ GM:CreateItem("item_armor_mercenary_guerilla", {
 	Supply = 0,
 	Rarity = 4,
 	Category = ITEMCATEGORY_ARMOR,
-	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_mercenary_guerilla") end,
-	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_mercenary_guerilla") return drop end,
 	ArmorStats = {
 		reduction = 16.25,
 		env_reduction = 7.5,
@@ -179,8 +165,6 @@ GM:CreateItem("item_armor_mercenary_arctic", {
 	Supply = 0,
 	Rarity = 5,
 	Category = ITEMCATEGORY_ARMOR,
-	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_mercenary_arctic") end,
-	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_mercenary_arctic") return drop end,
 	ArmorStats = {
 		reduction = 16.25,
 		env_reduction = 8.75,
@@ -199,8 +183,6 @@ GM:CreateItem("item_armor_mercenary_leet", {
 	Supply = 0,
 	Rarity = 4,
 	Category = ITEMCATEGORY_ARMOR,
-	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_mercenary_leet") end,
-	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_mercenary_leet") return drop end,
 	ArmorStats = {
 		reduction = 15,
 		env_reduction = 5,
@@ -219,8 +201,6 @@ GM:CreateItem("item_armor_mercenary_phoenix", {
 	Supply = 0,
 	Rarity = 5,
 	Category = ITEMCATEGORY_ARMOR,
-	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_mercenary_phoenix") end,
-	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_mercenary_phoenix") return drop end,
 	ArmorStats = {
 		reduction = 20,
 		env_reduction = 10,
@@ -239,8 +219,6 @@ GM:CreateItem("item_armor_police_gasmask", {
 	Supply = 0,
 	Rarity = 5,
 	Category = ITEMCATEGORY_ARMOR,
-	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_police_gasmask") end,
-	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_police_gasmask") return drop end,
 	ArmorStats = {
 		reduction = 22.5,
 		env_reduction = 15,
@@ -259,8 +237,6 @@ GM:CreateItem("item_armor_police_riot", {
 	Supply = 0,
 	Rarity = 5,
 	Category = ITEMCATEGORY_ARMOR,
-	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_police_riot") end,
-	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_police_riot") return drop end,
 	ArmorStats = {
 		reduction = 25,
 		env_reduction = 10,
@@ -279,8 +255,6 @@ GM:CreateItem("item_armor_police_swat", {
 	Supply = 0,
 	Rarity = 5,
 	Category = ITEMCATEGORY_ARMOR,
-	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_police_swat") end,
-	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_police_swat") return drop end,
 	ArmorStats = {
 		reduction = 23.75,
 		env_reduction = 12.5,
@@ -299,8 +273,6 @@ GM:CreateItem("item_armor_police_urban", {
 	Supply = 0,
 	Rarity = 5,
 	Category = ITEMCATEGORY_ARMOR,
-	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_police_urban") end,
-	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_police_urban") return drop end,
 	ArmorStats = {
 		reduction = 27.5,
 		env_reduction = 12.5,
@@ -319,8 +291,6 @@ GM:CreateItem("item_armor_sunrise", {
 	Supply = 0,
 	Rarity = 5,
 	Category = ITEMCATEGORY_ARMOR,
-	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_sunrise") end,
-	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_sunrise") return drop end,
 	ArmorStats = {
 		reduction = 30,
 		env_reduction = 20,
@@ -339,8 +309,6 @@ GM:CreateItem("item_armor_sunrise_dolg", {
 	Supply = 0,
 	Rarity = 6,
 	Category = ITEMCATEGORY_ARMOR,
-	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_sunrise_dolg") end,
-	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_sunrise_dolg") return drop end,
 	ArmorStats = {
 		reduction = 37.5,
 		env_reduction = 20,
@@ -359,8 +327,6 @@ GM:CreateItem("item_armor_sunrise_svoboda", {
 	Supply = 0,
 	Rarity = 6,
 	Category = ITEMCATEGORY_ARMOR,
-	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_sunrise_svoboda") end,
-	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_sunrise_svoboda") return drop end,
 	ArmorStats = {
 		reduction = 30,
 		env_reduction = 20,
@@ -379,8 +345,6 @@ GM:CreateItem("item_armor_sunrise_monolith", {
 	Supply = 3,
 	Rarity = 6,
 	Category = ITEMCATEGORY_ARMOR,
-	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_sunrise_monolith") end,
-	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_sunrise_monolith") return drop end,
 	ArmorStats = {
 		reduction = 35,
 		env_reduction = 20,
@@ -399,8 +363,6 @@ GM:CreateItem("item_armor_military_green", {
 	Supply = 0,
 	Rarity = 6,
 	Category = ITEMCATEGORY_ARMOR,
-	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_military_green") end,
-	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_military_green") return drop end,
 	ArmorStats = {
 		reduction = 45,
 		env_reduction = 25,
@@ -419,8 +381,6 @@ GM:CreateItem("item_armor_military_black", {
 	Supply = 0,
 	Rarity = 7,
 	Category = ITEMCATEGORY_ARMOR,
-	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_military_black") end,
-	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_military_black") return drop end,
 	ArmorStats = {
 		reduction = 50,
 		env_reduction = 27.5,
@@ -439,8 +399,6 @@ GM:CreateItem("item_armor_exo", {
 	Supply = 0,
 	Rarity = 7,
 	Category = ITEMCATEGORY_ARMOR,
-	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_exo") end,
-	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_exo") return drop end,
 	ArmorStats = {
 		reduction = 60,
 		env_reduction = 25,
@@ -459,8 +417,6 @@ GM:CreateItem("item_armor_exo_merc", {
 	Supply = 0,
 	Rarity = 8,
 	Category = ITEMCATEGORY_ARMOR,
-	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_exo_merc") end,
-	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_exo_merc") return drop end,
 	ArmorStats = {
 		reduction = 57.5,
 		env_reduction = 25,
@@ -479,8 +435,6 @@ GM:CreateItem("item_armor_exo_dolg", {
 	Supply = 0,
 	Rarity = 8,
 	Category = ITEMCATEGORY_ARMOR,
-	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_exo_dolg") end,
-	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_exo_dolg") return drop end,
 	ArmorStats = {
 		reduction = 65,
 		env_reduction = 25,
@@ -499,8 +453,6 @@ GM:CreateItem("item_armor_exo_svoboda", {
 	Supply = 0,
 	Rarity = 7,
 	Category = ITEMCATEGORY_ARMOR,
-	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_exo_svoboda") end,
-	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_exo_svoboda") return drop end,
 	ArmorStats = {
 		reduction = 55,
 		env_reduction = 25,
@@ -519,8 +471,6 @@ GM:CreateItem("item_armor_exo_monolith", {
 	Supply = 0,
 	Rarity = 8,
 	Category = ITEMCATEGORY_ARMOR,
-	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_exo_monolith") end,
-	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_exo_monolith") return drop end,
 	ArmorStats = {
 		reduction = 62.5,
 		env_reduction = 30,
@@ -539,8 +489,6 @@ GM:CreateItem("item_armor_cs2_goggles", {
 	Supply = 0,
 	Rarity = 9,
 	Category = ITEMCATEGORY_ARMOR,
-	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_cs2_goggles") end,
-	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_cs2_goggles") return drop end,
 	ArmorStats = {
 		reduction = 40,
 		env_reduction = 35,
@@ -564,8 +512,6 @@ GM:CreateItem("item_armor_beril5m", {
 	Supply = 0,
 	Rarity = 6,
 	Category = ITEMCATEGORY_ARMOR,
-	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_beril5m") end,
-	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_beril5m") return drop end,
 	ArmorStats = {
 		reduction = 40,
 		env_reduction = 15,
@@ -580,15 +526,13 @@ GM:CreateItem("item_armor_beril5m", {
 
 GM:CreateItem("item_armor_merc_sunrise", {
 	Name = "Mercenary Sunrise Armor",
-	Description = "",
+	Description = "Mercenary Sunrise Armor, made by the mercenaries which have been inspired by the stalkers armor, became popular in use by the mercenaries.\nHas a decent protection from the cuts and bullets, as well as from the environmental hazards.",
 	Cost = 65000,
 	Model = "models/stalkertnb/sunrise_merc.mdl",
 	Weight = 6.7,
 	Supply = 0,
 	Rarity = 6,
 	Category = ITEMCATEGORY_ARMOR,
-	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_merc_sunrise") end,
-	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_merc_sunrise") return drop end,
 	ArmorStats = {
 		reduction = 35,
 		env_reduction = 25,
@@ -609,8 +553,6 @@ GM:CreateItem("item_armor_army_seva", {
 	Supply = 0,
 	Rarity = 7,
 	Category = ITEMCATEGORY_ARMOR,
-	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_army_seva") end,
-	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_army_seva") return drop end,
 	ArmorStats = {
 		reduction = 45,
 		env_reduction = 60,
@@ -632,8 +574,6 @@ GM:CreateItem("item_armor_stalker_seva", {
 	Supply = 0,
 	Rarity = 7,
 	Category = ITEMCATEGORY_ARMOR,
-	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_stalker_seva") end,
-	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_stalker_seva") return drop end,
 	ArmorStats = {
 		reduction = 45,
 		env_reduction = 60,
@@ -655,8 +595,6 @@ GM:CreateItem("item_armor_svoboda_seva", {
 	Supply = 0,
 	Rarity = 7,
 	Category = ITEMCATEGORY_ARMOR,
-	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_svoboda_seva") end,
-	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_svoboda_seva") return drop end,
 	ArmorStats = {
 		reduction = 45,
 		env_reduction = 60,
@@ -678,8 +616,6 @@ GM:CreateItem("item_armor_dolg_seva", {
 	Supply = 0,
 	Rarity = 7,
 	Category = ITEMCATEGORY_ARMOR,
-	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_dolg_seva") end,
-	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_dolg_seva") return drop end,
 	ArmorStats = {
 		reduction = 45,
 		env_reduction = 60,
@@ -701,8 +637,6 @@ GM:CreateItem("item_armor_monolith_seva_heavy", {
 	Supply = 0,
 	Rarity = 7,
 	Category = ITEMCATEGORY_ARMOR,
-	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_monolith_seva_heavy") end,
-	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_monolith_seva_heavy") return drop end,
 	ArmorStats = {
 		reduction = 45,
 		env_reduction = 60,
@@ -724,8 +658,6 @@ GM:CreateItem("item_armor_exo_dolg_heavy", {
 	Supply = 0,
 	Rarity = 8,
 	Category = ITEMCATEGORY_ARMOR,
-	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_exo_dolg_heavy") end,
-	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_exo_dolg_heavy") return drop end,
 	ArmorStats = {
 		reduction = 70,
 		env_reduction = 40,
@@ -746,8 +678,6 @@ GM:CreateItem("item_armor_rad_svoboda", {
 	Supply = 0,
 	Rarity = 8,
 	Category = ITEMCATEGORY_ARMOR,
-	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_rad_svoboda") end,
-	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_rad_svoboda") return drop end,
 	ArmorStats = {
 		reduction = 50,
 		env_reduction = 35,
@@ -768,8 +698,6 @@ GM:CreateItem("item_armor_rad_monolith_boss", {
 	Supply = 0,
 	Rarity = 8,
 	Category = ITEMCATEGORY_ARMOR,
-	UseFunc = function(ply) UseFunc_EquipArmor(ply, "item_armor_rad_monolith_boss") end,
-	DropFunc = function(ply) local drop = UseFunc_DropArmor(ply, "item_armor_rad_monolith_boss") return drop end,
 	ArmorStats = {
 		reduction = 60,
 		env_reduction = 45,

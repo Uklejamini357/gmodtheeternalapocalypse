@@ -67,11 +67,11 @@ function GM:CMenu()
 
 			local name = wep.PrintName or wep:GetClass()
 			local y = 145
-			draw.DrawText(translate.Format("wep_name", language.GetPhrase(name)), "TargetID", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+			draw.DrawText(translate.Format("wep_name", language.GetPhrase(name)), "TEA.HUDFont", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 		
 			if name ~= wep:GetClass() then
 				y = y - 20
-				draw.DrawText(translate.Format("wep_class", wep:GetClass()), "TargetID", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+				draw.DrawText(translate.Format("wep_class", wep:GetClass()), "TEA.HUDFont", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 			end
 			y = y - 25
 
@@ -83,27 +83,27 @@ function GM:CMenu()
 				local usemulshots = wep_prim.NumShots and wep_prim.NumShots ~= 0 and wep_prim.NumShots ~= 1
 				draw.DrawText(Format("Damage: %s (Max DPS: %s)",
 					usemulshots and wep_prim.Damage.." x ".. wep_prim.NumShots or wep_prim.Damage, math.Round((usemulshots and wep_prim.Damage * wep_prim.NumShots or wep_prim.Damage or 0) / (delay), 2)
-				), "TargetIDSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+				), "TEA.HUDFontSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 				y = y - 15
 
-				draw.DrawText(Format("Attack Delay: %s", delay), "TargetIDSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+				draw.DrawText(Format("Attack Delay: %s", delay), "TEA.HUDFontSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 				y = y - 15
 				if wep_prim.ClipSize ~= -1 then
-					draw.DrawText(Format("Clip size: %s", wep_prim.ClipSize), "TargetIDSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+					draw.DrawText(Format("Clip size: %s", wep_prim.ClipSize), "TEA.HUDFontSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 					y = y - 15
 				end
-				draw.DrawText(Format("Recoil: %s", wep_prim.Recoil), "TargetIDSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+				draw.DrawText(Format("Recoil: %s", wep_prim.Recoil), "TEA.HUDFontSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 				y = y - 15
 				if wep.HitDistance then
-					draw.DrawText(Format("Hit distance: %s", wep.HitDistance), "TargetIDSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+					draw.DrawText(Format("Hit distance: %s", wep.HitDistance), "TEA.HUDFontSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 				y = y - 15
 				end
-				draw.DrawText(Format("Is automatic: %s", wep_prim.Automatic), "TargetIDSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+				draw.DrawText(Format("Is automatic: %s", wep_prim.Automatic), "TEA.HUDFontSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 				y = y - 15
 
 				local dmgvszms = wep.DamageVsZombiesMul or self.WeaponDamageVsZombiesMul[class]
 				if dmgvszms then
-					draw.DrawText(Format("Damage against zombies: %sx", dmgvszms), "TargetIDSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+					draw.DrawText(Format("Damage against zombies: %sx", dmgvszms), "TEA.HUDFontSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 					y = y - 15
 				end
 			end
@@ -119,10 +119,10 @@ function GM:CMenu()
 			surface.SetDrawColor(150, 150, 0, 105)
 			surface.DrawOutlinedRect(scw/2 - 160, 150, 320, 100)
 
-			draw.DrawText(Format("Current Task: %s", tasktbl.Name), "TargetIDSmall", scw/2 - 155, y2, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+			draw.DrawText(Format("Current Task: %s", tasktbl.Name), "TEA.HUDFontSmall", scw/2 - 155, y2, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 			y2 = y2 + 15
 
-			draw.DrawText(Format("Progress: %s/%s", self.CurrentTaskProgress, tasktbl.ReqProgress), "TargetIDSmall", scw/2 - 155, y2, LocalPlayer():HasCompletedTask() and Color(155,255,155) or color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+			draw.DrawText(Format("Progress: %s/%s", self.CurrentTaskProgress, tasktbl.ReqProgress), "TEA.HUDFontSmall", scw/2 - 155, y2, LocalPlayer():HasCompletedTask() and Color(155,255,155) or color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 			y2 = y2 + 15
 
 		end
@@ -166,27 +166,27 @@ function GM:CMenu()
 
 
 			if effective == infection then
-				draw.SimpleText(Format("Infection level: %s%%", infection), "TargetID", scw - 590, sch / 2 - 145, color, 0, 0)
+				draw.SimpleText(Format("Infection level: %s%%", infection), "TEA.HUDFont", scw - 590, sch / 2 - 145, color, 0, 0)
 			else
-				draw.SimpleText(Format("Infection level: %s%% (Effective: %s%%)", infection, effective), "TargetID", scw - 590, sch / 2 - 145, color, 0, 0)
+				draw.SimpleText(Format("Infection level: %s%% (Effective: %s%%)", infection, effective), "TEA.HUDFont", scw - 590, sch / 2 - 145, color, 0, 0)
 			end
 
-			draw.SimpleText(Format("Difficulty level: %s", text), "TargetIDSmall", scw - 590, sch / 2 - 120, color, 0, 0)
-			draw.SimpleText(Format("Zombies take: %s%% damage", math.Round(1 / self:GetInfectionMul()*100, 2)), "TargetIDSmall", scw - 590, sch / 2 - 105, color, 0, 0)
-			draw.SimpleText(Format("Zombies deal: %s%% damage", math.Round(self:GetInfectionMul(0.5)*100, 2)), "TargetIDSmall", scw - 590, sch / 2 - 90, color, 0, 0)
-			draw.SimpleText(Format("Zombie cash reward: %s%%", math.Round(self:GetInfectionMul(0.5)*100, 2)), "TargetIDSmall", scw - 590, sch / 2 - 75, color, 0, 0)
-			draw.SimpleText(Format("Zombie xp reward: %s%%", math.Round(self:GetInfectionMul()*100, 2)), "TargetIDSmall", scw - 590, sch / 2 - 60, color, 0, 0)
-			draw.SimpleText(Format("Zombie speed: %s%%", math.Round(math.Clamp(self:GetInfectionMul(0.5)-0.25, 1, 1.25)*100, 2)), "TargetIDSmall", scw - 590, sch / 2 - 45, color, 0, 0)
-			draw.SimpleText(Format("Elite variant spawn chance: %s%%", math.Round(self:GetEliteVariantSpawnChance(false), 2)), "TargetIDSmall", scw - 590, sch / 2 - 25, color, 0, 0)
-			draw.SimpleText(Format("Elite variant Boss spawn chance: %s%%", math.Round(self:GetEliteVariantSpawnChance(true), 2)), "TargetIDSmall", scw - 590, sch / 2 - 10, color, 0, 0)
+			draw.SimpleText(Format("Difficulty level: %s", text), "TEA.HUDFontSmall", scw - 590, sch / 2 - 120, color, 0, 0)
+			draw.SimpleText(Format("Zombies take: %s%% damage", math.Round(1 / self:GetInfectionMul()*100, 2)), "TEA.HUDFontSmall", scw - 590, sch / 2 - 105, color, 0, 0)
+			draw.SimpleText(Format("Zombies deal: %s%% damage", math.Round(self:GetInfectionMul(0.5)*100, 2)), "TEA.HUDFontSmall", scw - 590, sch / 2 - 90, color, 0, 0)
+			draw.SimpleText(Format("Zombie cash reward: %s%%", math.Round(self:GetInfectionMul(0.5)*100, 2)), "TEA.HUDFontSmall", scw - 590, sch / 2 - 75, color, 0, 0)
+			draw.SimpleText(Format("Zombie xp reward: %s%%", math.Round(self:GetInfectionMul()*100, 2)), "TEA.HUDFontSmall", scw - 590, sch / 2 - 60, color, 0, 0)
+			draw.SimpleText(Format("Zombie speed: %s%%", math.Round(math.Clamp(self:GetInfectionMul(0.5)-0.25, 1, 1.25)*100, 2)), "TEA.HUDFontSmall", scw - 590, sch / 2 - 45, color, 0, 0)
+			draw.SimpleText(Format("Elite variant spawn chance: %s%%", math.Round(self:GetEliteVariantSpawnChance(false), 2)), "TEA.HUDFontSmall", scw - 590, sch / 2 - 25, color, 0, 0)
+			draw.SimpleText(Format("Elite variant Boss spawn chance: %s%%", math.Round(self:GetEliteVariantSpawnChance(true), 2)), "TEA.HUDFontSmall", scw - 590, sch / 2 - 10, color, 0, 0)
 			
 			
-			draw.SimpleText("Infection Level gain decreases at 50% and 75%.", "TargetIDSmall", scw - 590, sch / 2 + 95, Color(225,225,225), 0, 0)
-			draw.SimpleText("Above 100% the gain decreases even further.", "TargetIDSmall", scw - 590, sch / 2 + 110, Color(225,225,225), 0, 0)
+			draw.SimpleText("Infection Level gain decreases at 50% and 75%.", "TEA.HUDFontSmall", scw - 590, sch / 2 + 95, Color(225,225,225), 0, 0)
+			draw.SimpleText("Above 100% the gain decreases even further.", "TEA.HUDFontSmall", scw - 590, sch / 2 + 110, Color(225,225,225), 0, 0)
 			draw.SimpleText(Format("Infection Level gain from killing zombies: %s%%", math.Round((self:GetInfectionLevel() >= 100 and 0.25/(self:GetInfectionMul()-1) or
 				self:GetInfectionLevel() >= 75 and 0.5 or
 				self:GetInfectionLevel() >= 50 and 0.75 or
-			1.00)*100, 2)), "TargetIDSmall", scw - 590, sch / 2 + 130, Color(255,155,155), 0, 0)
+			1.00)*100, 2)), "TEA.HUDFontSmall", scw - 590, sch / 2 + 130, Color(255,155,155), 0, 0)
 		end
 
 		surface.DrawCircle(panel:GetWide() / 2, panel:GetTall() / 2, 150, Color(100, 100, 100, 205))
@@ -219,7 +219,7 @@ function GM:CMenu()
 		surface.SetDrawColor(50, 150, 150, 205)
 		surface.DrawRect(0, 0, dynprogress * panel:GetWide(), panel:GetTall())
 
-		draw.SimpleText(string.format("%s%%", math.Round(dynprogress * 100, 2)), "TargetID", dynprogress * panel:GetWide() * 0.5, panel:GetTall() * 0.5, Color(80, 255, 255, 205), dynprogress > 0.5 and TEXT_ALIGN_CENTER or TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+		draw.SimpleText(string.format("%s%%", math.Round(dynprogress * 100, 2)), "TEA.HUDFont", dynprogress * panel:GetWide() * 0.5, panel:GetTall() * 0.5, Color(80, 255, 255, 205), dynprogress > 0.5 and TEXT_ALIGN_CENTER or TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 	end
 
 
@@ -381,7 +381,7 @@ function GM:ConfirmPropDestroy()
 	end
 
 	local derptext = vgui.Create("DLabel", ConfirmFrame)
-	derptext:SetFont("TargetIDSmall")
+	derptext:SetFont("TEA.HUDFontSmall")
 	derptext:SetColor(Color(205,205,205,255))
 	derptext:SetText("Are you sure?\nThis will delete all your active props and\nyou will not be refunded for them!\nIf you want to be refunded you will need\nto salvage your props by pressing R with\nbuild tool")
 	derptext:SizeToContents()
@@ -423,7 +423,7 @@ function GM:WantToPrestige()
 	end
 
 	local prestigetext = vgui.Create("DLabel", pframe)
-	prestigetext:SetFont("TargetIDSmall")
+	prestigetext:SetFont("TEA.HUDFontSmall")
 	prestigetext:SetColor(Color(205,205,205,255))
 	prestigetext:SetWrap(true)
 	prestigetext:SetText("Prestiging allows you to gain more levels depending on your Prestige level.\nYou will also be given some cash and a perk point if you prestige.\nYou need to be at least level "..LocalPlayer():GetMaxLevel().." ("..self.MaxLevel.." plus "..self.LevelsPerPrestige.." depending on prestige) in order to prestige.")
@@ -431,7 +431,7 @@ function GM:WantToPrestige()
 	prestigetext:SetPos(10,30)
 
 	local prestigetext2 = vgui.Create("DLabel", pframe)
-	prestigetext2:SetFont("TargetIDSmall")
+	prestigetext2:SetFont("TEA.HUDFontSmall")
 	prestigetext2:SetColor(Color(205,205,205,255))
 	prestigetext2:SetWrap(true)
 	prestigetext2:SetText(Format("You may %sprestige.", MyLvl >= LocalPlayer():GetMaxLevel() and "" or "not "))
@@ -475,7 +475,7 @@ function GM:WantToPrestige()
 			shouldprestige = true
 		else
 			pframe:Remove()
-			chat.AddText(Color(255,255,255,255), "[System] ", Color(255,155,155,255), "You must be at least level "..levelrequiredforprestige.." to prestige!")
+			chat.AddText(Color(255,255,255,255), "[System] ", Color(255,155,155,255), translate.Format("must_be_at_least_level_x_to_prestige", levelrequiredforprestige))
 			surface.PlaySound("buttons/button10.wav")
 		end
 	end
@@ -501,14 +501,14 @@ function GM:DropGoldMenu()
 	end
 
 	local derptext = vgui.Create("DLabel", AdarFrame)
-	derptext:SetFont("TargetIDSmall")
+	derptext:SetFont("TEA.HUDFontSmall")
 	derptext:SetColor(Color(205,205,205,255))
 	derptext:SetText("How much cash do you want to drop?")
 	derptext:SizeToContents()
 	derptext:SetPos(10, 30)
 
 	local derptext2 = vgui.Create("DLabel", AdarFrame)
-	derptext2:SetFont("TargetIDSmall")
+	derptext2:SetFont("TEA.HUDFontSmall")
 	derptext2:SetColor(Color(205,255,205,255))
 	derptext2:SetText("Cash: "..math.floor(MyMoney))
 	derptext2:SizeToContents()
@@ -556,21 +556,21 @@ function GM:Emotes()
 	end
 
 	local derptext = vgui.Create("DLabel", EmoteFrame)
-	derptext:SetFont("TargetIDSmall")
+	derptext:SetFont("TEA.HUDFontSmall")
 	derptext:SetColor(Color(205,205,205,255))
 	derptext:SetText("Expressive Emotes")
 	derptext:SizeToContents()
 	derptext:SetPos(10, 20)
 
 	local derptext = vgui.Create("DLabel", EmoteFrame)
-	derptext:SetFont("TargetIDSmall")
+	derptext:SetFont("TEA.HUDFontSmall")
 	derptext:SetColor(Color(205,205,205,255))
 	derptext:SetText("Goofy Emotes")
 	derptext:SizeToContents()
 	derptext:SetPos(160, 20)
 
 	local derptext = vgui.Create("DLabel", EmoteFrame)
-	derptext:SetFont("TargetIDSmall")
+	derptext:SetFont("TEA.HUDFontSmall")
 	derptext:SetColor(Color(205,205,205,255))
 	derptext:SetText("RP Emotes")
 	derptext:SizeToContents()

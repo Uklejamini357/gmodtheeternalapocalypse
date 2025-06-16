@@ -9,7 +9,7 @@ GM:CreateItem(itemid, {
     Rarity = rarity,
     Category = category,
     UseFunc = function(ply) return false end,
-    DropFunc = function(ply) return true end
+    DropFunc = function(ply, _, item) return true end
 
 -- Additional variables if needed
     IsSecret = false,
@@ -25,7 +25,6 @@ i = GM:CreateItem("item_junk_tin", {
     Rarity = RARITY_TRASH,
     Category = ITEMCATEGORY_JUNK,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_tin") return drop end
 })
 
 i = GM:CreateItem("item_junk_boot", {
@@ -36,7 +35,6 @@ i = GM:CreateItem("item_junk_boot", {
     Rarity = RARITY_TRASH,
     Category = ITEMCATEGORY_JUNK,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_boot") return drop end
 })
 
 i = GM:CreateItem("item_junk_paper", {
@@ -47,7 +45,6 @@ i = GM:CreateItem("item_junk_paper", {
     Rarity = RARITY_TRASH,
     Category = ITEMCATEGORY_JUNK,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_paper") return drop end
 })
 
 i = GM:CreateItem("item_junk_keyboard", {
@@ -58,7 +55,6 @@ i = GM:CreateItem("item_junk_keyboard", {
     Rarity = RARITY_TRASH,
     Category = ITEMCATEGORY_JUNK,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_keyboard") return drop end
 })
 
 i = GM:CreateItem("item_junk_gardenpot", {
@@ -69,7 +65,6 @@ i = GM:CreateItem("item_junk_gardenpot", {
     Rarity = RARITY_TRASH,
     Category = ITEMCATEGORY_JUNK,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_gardenpot") return drop end
 })
 
 i = GM:CreateItem("item_junk_paint", {
@@ -80,7 +75,6 @@ i = GM:CreateItem("item_junk_paint", {
     Rarity = RARITY_TRASH,
     Category = ITEMCATEGORY_JUNK,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_paint") return drop end
 })
 
 i = GM:CreateItem("item_junk_doll", {
@@ -91,7 +85,6 @@ i = GM:CreateItem("item_junk_doll", {
     Rarity = RARITY_TRASH,
     Category = ITEMCATEGORY_JUNK,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_doll") return drop end
 })
 
 i = GM:CreateItem("item_junk_pot", {
@@ -102,7 +95,6 @@ i = GM:CreateItem("item_junk_pot", {
     Rarity = RARITY_TRASH,
     Category = ITEMCATEGORY_JUNK,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_pot") return drop end
 })
 
 i = GM:CreateItem("item_junk_hula", {
@@ -113,7 +105,6 @@ i = GM:CreateItem("item_junk_hula", {
     Rarity = RARITY_TRASH,
     Category = ITEMCATEGORY_JUNK,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_hula") return drop end
 })
 
 i = GM:CreateItem("item_junk_nailbox", {
@@ -124,7 +115,6 @@ i = GM:CreateItem("item_junk_nailbox", {
     Rarity = RARITY_TRASH,
     Category = ITEMCATEGORY_JUNK,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_nailbox") return drop end
 })
 
 i = GM:CreateItem("item_junk_twig", {
@@ -135,5 +125,4 @@ i = GM:CreateItem("item_junk_twig", {
     Rarity = RARITY_TRASH,
     Category = ITEMCATEGORY_JUNK,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_junk_twig") return drop end
 })

@@ -41,7 +41,7 @@ end)
 
 function GM:AddTrader(ply, cmd, args)
 	if !SuperAdminCheck(ply) then 
-		self:SystemMessage(ply, translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205,255), true)
+		self:SystemMessage(ply, translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205), true)
 		ply:ConCommand("playgamesound buttons/button8.wav")
 		return
 	end
@@ -68,7 +68,7 @@ end)
 
 function GM:ClearTraders(ply, cmd, args)
 	if !SuperAdminCheck(ply) then
-		self:SystemMessage(ply, translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205,255), true)
+		self:SystemMessage(ply, translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205), true)
 		ply:ConCommand("playgamesound buttons/button8.wav")
 		return
 	end
@@ -86,7 +86,7 @@ end)
 
 function GM:RefreshTraders(ply, cmd, args)
 	if !SuperAdminCheck(ply) then 
-		self:SystemMessage(ply, translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205,255), true)
+		self:SystemMessage(ply, translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205), true)
 		ply:ConCommand("playgamesound buttons/button8.wav")
 		return
 	end

@@ -28,7 +28,7 @@ function GM:CraftItem(ply, str)
 
 	if HaveItems == RequiredItems then
 		local crafttime = tonumber(self.CraftableList[str]["CraftTime"])
-		ply:SendUseDelay(crafttime)
+		ply:SendUseDelay(crafttime, "Crafting an item")
 		timer.Create("ItemCrafting_"..ply:EntIndex(), crafttime, 1, function()
 			if not ply:Alive() then return end
 			for k,v in pairs(self.CraftableList[str]["Requirements"]) do
@@ -45,13 +45,13 @@ function GM:CraftItem(ply, str)
 			ply:EmitSound("items/itempickup.wav")
 
 			gamemode.Call("SendInventory", ply)
-			ply:SendChat("Successfully crafted an item! Gained "..xp.." XP")
+			ply:SendChat(translate.ClientFormat(ply, "item_craft_successful", xp))
 		end)
 	else
-		ply:SystemMessage("You don't have the required items to craft this!", Color(255,205,205), true)
-		ply:SystemMessage("You need:", Color(255,205,205), false)
+		ply:SystemMessage(translate.ClientGet(ply, "item_craft_insufficient_materials"), Color(255,205,205), true)
+		ply:SystemMessage(translate.ClientGet(ply, "item_craft_you_need"), Color(255,205,205), false)
 		for k,v in pairs(self.CraftableList[str]["Requirements"]) do
-			ply:SystemMessage("	"..v.."x "..GAMEMODE:GetItemName(k), Color(255,230,230), false)
+			ply:SystemMessage("	"..v.."x "..GAMEMODE:GetItemName(k, ply), Color(255,230,230), false)
 		end
 	end
 end
@@ -85,7 +85,7 @@ function GM:CraftSpecialItem(ply, str)
 
 	if HaveItems == RequiredItems then
 		local crafttime = tonumber(self.CraftableSpecialList[str]["CraftTime"])
-		ply:SendUseDelay(crafttime)
+		ply:SendUseDelay(crafttime, "Crafting an item")
 		timer.Create("ItemCrafting_"..ply:EntIndex(), crafttime, 1, function()
 			if not ply:Alive() then return end
 			for k,v in pairs(self.CraftableSpecialList[str]["Requirements"]) do
@@ -102,13 +102,13 @@ function GM:CraftSpecialItem(ply, str)
 			ply:EmitSound("items/itempickup.wav")
 
 			gamemode.Call("SendInventory", ply)
-			ply:SendChat("Successfully crafted an item! Gained "..xp.." XP")
+			ply:SendChat(translate.ClientFormat(ply, "item_craft_successful", xp))
 		end)
 	else
-		ply:SystemMessage("You don't have the required items to craft this!", Color(255,205,205), true)
-		ply:SystemMessage("You need:", Color(255,205,205), false)
+		ply:SystemMessage(translate.ClientGet(ply, "item_craft_insufficient_materials"), Color(255,205,205), true)
+		ply:SystemMessage(translate.ClientGet(ply, "item_craft_you_need"), Color(255,205,205), false)
 		for k,v in pairs(self.CraftableSpecialList[str]["Requirements"]) do
-			ply:SystemMessage("	"..v.."x "..GAMEMODE:GetItemName(k), Color(255,230,230), false)
+			ply:SystemMessage("	"..v.."x "..GAMEMODE:GetItemName(k, ply), Color(255,230,230), false)
 		end
 	end
 end

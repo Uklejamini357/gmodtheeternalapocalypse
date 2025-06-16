@@ -99,15 +99,15 @@ function SWEP:DrawHUD()
 	end
 	end
 
-	if not (cl_crosshair_t:GetBool() == false) or (LocalPlayer():InVehicle()) then
+	if cl_crosshair_t:GetBool() or LocalPlayer():InVehicle() then
 
-	if self.IronCrosshair or !self.Weapon:GetDTBool(1) then
-	surface.SetDrawColor(255, 255, 255, 255)
-	surface.DrawRect(x-1, y-1, 2, 2)
-	surface.DrawRect(x-1, y + gap, 2, 20)
-	surface.DrawRect(x-1, y - (gap + 20), 2, 20)
-	surface.DrawRect(x + gap, y-1, 20, 2)
-	surface.DrawRect(x - (gap + 20), y-1, 20, 2)
+		if self.IronCrosshair or !self.Weapon:GetDTBool(1) then
+		surface.SetDrawColor(255, 255, 255, 255)
+		surface.DrawRect(x-1, y-1, 2, 2)
+		surface.DrawRect(x-1, y + gap, 2, 20)
+		surface.DrawRect(x-1, y - (gap + 20), 2, 20)
+		surface.DrawRect(x + gap, y-1, 20, 2)
+		surface.DrawRect(x - (gap + 20), y-1, 20, 2)
 	end
 --	surface.DrawCircle( x, y, gap, Color(200, 200, 250, 255) )
 --	surface.DrawCircle( x, y, gap - 2, Color(50, 50, 50, 255) )
@@ -148,7 +148,7 @@ end
 	
 */
 
-	if DrawHitmarkers:GetBool() == false or !LocalPlayer():Alive() then alpha = 0 return end
+	if not DrawHitmarkers:GetBool() or !LocalPlayer():Alive() then alpha = 0 return end
 	
 	alpha = math.Approach( alpha, 0, 3 )
 	
@@ -240,13 +240,13 @@ function SWEP:DrawFuelHUD()
 		surface.SetDrawColor(255, 255, 255, 255)
 		surface.DrawPoly(poly)
 		
-		surface.SetFont("TargetIDSmall")
+		surface.SetFont("TEA.HUDFontSmall")
 		
 		txt = math.Round(self.BaseClass.FuelData.Percent) .. "%"
 		
 		r, n = surface.GetTextSize(txt)
 		
-		draw.SimpleTextOutlined(txt, "TargetIDSmall", poly[2].x - w * 0.5, y - n, self.BaseClass.FuelData.Color, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 1, self.BaseClass.FuelData.Shadow)
+		draw.SimpleTextOutlined(txt, "TEA.HUDFontSmall", poly[2].x - w * 0.5, y - n, self.BaseClass.FuelData.Color, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 1, self.BaseClass.FuelData.Shadow)
 	end
 end
 
@@ -280,7 +280,7 @@ end
    Desc: Draws the weapon info box.
 ---------------------------------------------------------*/
 function SWEP:PrintWeaponInfo(x, y, alpha)
-	if self.DrawWeaponInfoBox == false then return end
+	if not self.DrawWeaponInfoBox then return end
 	if self.InfoMarkup == nil then
 		local str
 		local title_color = "<color = 130, 0, 0, 255>"

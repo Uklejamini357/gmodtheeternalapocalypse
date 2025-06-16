@@ -104,26 +104,6 @@ function GM:CalcJumpPower(ply)
 	return 160 + (2 * (ply.StatAgility or 0)) + (ply:HasPerk("jumppowerboost") and 10 or 0) --(tonumber(ply.Prestige or 0) >= 4 and 10 or 0)
 end
 
-function GM:OnPlayerHitGround(ply, inWater, onFloater, speed)
-    if speed > (450 + (2 * ply.StatAgility)) then
-		ply:ViewPunch(Angle(math.random(5, 6), 0, math.random(-0.3, 0.3)))
---        ply:ViewPunch(Angle(5, 0, 0))
-		if !ply.StatsPaused then
-			ply.Stamina = math.Clamp(ply.Stamina - (10 * (1 - (ply.StatAgility * 0.01) - (ply.StatEndurance * 0.045))), 0, 100)
-		end
-    elseif speed > (300 + (2 * ply.StatAgility)) then
-		ply:ViewPunch(Angle(math.random(2, 2.4), 0, math.random(-0.25, 0.25)))
-		if !ply.StatsPaused then
-			ply.Stamina = math.Clamp(ply.Stamina - (7 * (1 - (ply.StatAgility * 0.01) - (ply.StatEndurance * 0.045))), 0, 100)
-		end
-    elseif speed > (140 + (2 * ply.StatAgility)) then
-		ply:ViewPunch(Angle(math.random(1, 1.2), 0, math.random(-0.2, 0.2)))
-		if !ply.StatsPaused then
-			ply.Stamina = math.Clamp(ply.Stamina - (5.5 * (1 - (ply.StatAgility * 0.01) - (ply.StatEndurance * 0.045))), 0, 100)
-		end
-    end
-end
-
 local NextTick = 0
 
 function GM:Think()
@@ -214,7 +194,7 @@ function GM:Think()
 			self:SetInfectionLevel(averagelevelprogress*10+averageprestige*5)
 		end
 
-		if self.NextSave + 240 < ct then
+		if self.NextSave + 300 < ct then
 			self.NextSave = ct
 			gamemode.Call("SaveTimer")
 		end
@@ -226,7 +206,7 @@ function GM:Think()
 			local noregen_infection = 5000
 			if (ply.Thirst >= noregen_thirst and ply.Hunger >= noregen_hunger and ply.Fatigue <= noregen_fatigue and ply.Infection <= noregen_infection) then
 				if ply.HPRegen and ply:Health() < ply:GetMaxHealth() then
-					ply.HPRegen = math.Clamp(ply.HPRegen + 0.11*(1 + ply.StatMedSkill * 0.075), 0, ply:GetMaxHealth())
+					ply.HPRegen = math.Clamp(ply.HPRegen + 0.11*(1 + ply.StatMedSkill * 0.075)*(ply:IsSleeping() and 10 or 1), 0, ply:GetMaxHealth())
 				elseif !ply.HPRegen or ply.HPRegen > 0 then
 					ply.HPRegen = 0
 				end
@@ -252,23 +232,62 @@ function GM:Think()
 				self:NetUpdateStats(ply)
 				ply.NextTick = RealTime() + 1
 			end
+
 			continue
 		end
 
-		local hunger = ply.Hunger or 10000
-		local thirst = ply.Thirst or 10000
-		local fatig = ply.Fatigue or 0
-		local infection = ply.Infection or 0
-		local battery = ply.Battery or 0
-	
-		local endurance = ((ply.StatEndurance or 0) / 500)
-	
+		local sleeping = ply:IsSleeping()
+
 		-- hunger, thirst, fatigue, infection
-		ply.Hunger = math.Clamp(hunger - (5*ft / (1 + (ply.StatSurvivor * 0.045))), 0, 10000)
-		ply.Thirst = math.Clamp(thirst - (6*ft / (1 + (ply.StatSurvivor * 0.045))), 0, 10000)
-		ply.Fatigue = math.Clamp(fatig + (3.2*ft / (1 + (ply.StatSurvivor * 0.045))), 0, 10000)
-	
-		if (ply.Thirst <= 0 or ply.Hunger <= 0 or ply.Fatigue >= 10000 or ply.Infection >= 10000) then
+		ply.Hunger = math.Clamp(ply.Hunger - (5*ft / (1 + (ply.StatSurvivor * 0.045)))*(sleeping and 20 or 1), 0, 10000)
+		ply.Thirst = math.Clamp(ply.Thirst - (6*ft / (1 + (ply.StatSurvivor * 0.045)))*(sleeping and 20 or 1), 0, 10000)
+		ply.Fatigue = math.Clamp(ply.Fatigue + (sleeping and -200*ft or 3.2*ft / (1 + (ply.StatSurvivor * 0.045))), 0, 10000)
+
+		--random chance of getting infected per tick is very rare, but has chance if survived for more than 10 minutes, can decrease chance of this happening by increasing immunity skill level
+		if self.RandomPlayerInfection then
+			local infectionchance = math.random(1, math.max(50000, 2000000 + (100000 * ply.StatImmunity) - (ct - ply.SurvivalTime)))
+			if (infectionchance == 1 and math.floor(ct - ply.SurvivalTime) >= 900) and ply.Infection <= 0 and ply:Alive() then
+				ply:SendChat(translate.ClientGet(ply, "plcaughtinfection"))
+			end
+		end
+
+		if (ply.Infection > 0 or infectionchance and infectionchance == 1) then
+			ply.Infection = math.Clamp(ply.Infection + (16*ft * (1 - (ply.StatImmunity * 0.04)))*(sleeping and 8 or 1), 0, 10000)
+		end
+
+		if sleeping then
+			local wakeupcause = 0
+
+			if ply.Thirst < 500 then
+				wakeupcause = 1
+			elseif ply.Hunger < 500 then
+				wakeupcause = 2
+			elseif ply.Infection > 9000 then
+				wakeupcause = 3
+			elseif ply.Fatigue < 1 then
+				wakeupcause = 4
+			end
+
+			if wakeupcause ~= 0 then
+				ply:WakeUp()
+
+				ply:SendChat(
+					wakeupcause == 1 and "You wake up with a very strong feeling of dehydration." or
+					wakeupcause == 2 and "You wake up with a very strong feeling of imminent starvation." or
+					wakeupcause == 3 and "You wake up with a strong feeling of dying from infection." or
+					"You wake up feeling rested!"
+				)
+			end
+		end
+
+		if not (sleeping or ply:IsUsingItem()) then
+			if ply.UsingItemSwitchWeapon and ply:GetWeapon(ply.UsingItemSwitchWeapon):IsValid() then
+				ply:SelectWeapon(ply.UsingItemSwitchWeapon)
+				ply.UsingItemSwitchWeapon = nil
+			end
+		end
+
+		if ply:IsDying() then
 			if !timer.Exists("DyingFromStats_"..ply:EntIndex()) then
 				timer.Create("DyingFromStats_"..ply:EntIndex(), 30, 1, function()
 					if ply:Alive() then
@@ -318,17 +337,7 @@ function GM:Think()
 				ply.CanUseFlashlight = true
 			end
 		end
-	
-		--random chance of getting infected per tick is very rare, but has chance if survived for more than 10 minutes, can decrease chance of this happening by increasing immunity skill level
-/*		-- Disabled. If you want to, you can enable it back again.
-		local infectionchance = math.random(1, 2000000 + (100000 * ply.StatImmunity) - (ct - ply.SurvivalTime))
-		if (infectionchance <= 1 and math.floor(ct - ply.SurvivalTime) >= 600) and ply.Infection <= 0 and ply:Alive() then
---			ply:SendChat(translate.ClientGet(ply, "plcaughtinfection"))
-		end
-*/
-		if (ply.Infection > 0 or infectionchance and infectionchance <= 1 and math.floor(ct - ply.SurvivalTime) >= 900) then
-			ply.Infection = math.Clamp(ply.Infection + (16*ft * (1 - (ply.StatImmunity * 0.04))), 0, 10000)
-		end
+
 
 
 		local oxygendrainmul = 1
@@ -348,18 +357,21 @@ function GM:Think()
 				if ply.DrownDamage >= 1 and not ply:HasGodMode() then
 					ply:SetHealth(ply:Health() - math.floor(ply.DrownDamage))
 					if ply:Health() < 1 then
-						local d = DamageInfo()
-						d:SetDamage(1)
-						d:SetDamageType(DMG_DROWN)
-						d:SetAttacker(ply)
-						d:SetInflictor(ply)
-						ply:TakeDamageInfo(d)
+							ply.CauseOfDeath = "Drowned"
+							ply.DeathMessage = "drowned"
+
+
+							local d = DamageInfo()
+							d:SetDamage(1)
+							d:SetDamageType(DMG_DROWN)
+							d:SetAttacker(ply)
+							d:SetInflictor(ply)
+							ply:TakeDamageInfo(d)
 					end
 					ply.DrownDamage = ply.DrownDamage - math.floor(ply.DrownDamage)
 				end
 			else
 				ply.Oxygen = math.Clamp(ply.Oxygen - 6*ft*oxygendrainmul, 0, 100)
-				-- ply.Stamina = math.Clamp(ply.Stamina - ((0.093 / staminaperk) - endurance), 0, 100)
 			end
 		else
 			ply.Oxygen = math.Clamp(ply.Oxygen + 12*ft*oxygendrainmul, 0, 100)
@@ -368,47 +380,31 @@ function GM:Think()
 
 
 		local PlayerIsMoving = ply:GetPlayerMoving()
-		if ply:GetMoveType() != MOVETYPE_NOCLIP or ply:InVehicle() then
-	
-	/*		if ply:OnGround() and ply:KeyPressed(IN_JUMP) then
-			ply.Stamina = ply.Stamina - 5
-		end
-	*/ -- Trying to find function that drains stamina on jumping, but this one doesn't really work
-	
-			local staminaperk = ply:HasPerk("enduring_endurance") and ply.Stamina < 25 and 2 or 1
+		if ply:GetMoveType() != MOVETYPE_NOCLIP or ply:InVehicle() then	
+			local endurance_mul = 1 / (1 + ply.StatEndurance*0.028)
+			local fatigabove70 = ply.Fatigue > 7000
+			local fatigabove90 = ply.Fatigue > 9000
+			local fatigabove99 = ply.Fatigue > 9900
 
-			if !ply:InVehicle() and (ply:IsSprinting() and PlayerIsMoving and not ply:Crouching()) then
-				ply.Stamina = math.Clamp(ply.Stamina - ((5.03*ft / staminaperk) - endurance), 0, 100)
-			elseif !ply:InVehicle() and PlayerIsMoving and ply:Crouching() then
-				ply.Stamina = math.Clamp(ply.Stamina + (0.73*ft + endurance) * staminaperk, 0, 100)
-			elseif !ply:InVehicle() and PlayerIsMoving then
-				ply.Stamina = math.Clamp(ply.Stamina + (0.55*ft + endurance) * staminaperk, 0, 100)
-			elseif ply:InVehicle() or ply:Crouching() then
-				ply.Stamina = math.Clamp(ply.Stamina + (2.86*ft + endurance) * staminaperk, 0, 100)
-			else
-				ply.Stamina = math.Clamp(ply.Stamina + (3.13*ft + endurance) * staminaperk, 0, 100)
+			if ply.Fatigue < 9900 then
+				ply.Stamina = ply.Stamina + 3.13*ft * (ply:HasPerk("enduring_endurance") and ply.Stamina < 25 and 1.3 or 1) * (fatigabove99 and 0 or fatigabove90 and 0.4 or fatigabove70 and 0.8 or 1) * (ply:WaterLevel() == 3 and 2/3 or 1)
+			elseif ply.Fatigue >= 10000 then
+				ply.Stamina = ply.Stamina - 2*ft
 			end
-		
-			-- if ply.Stamina > 30 then
-			-- 	ply.sprintrecharge = false
-			-- end
 
-			-- if (ply:IsSprinting() and PlayerIsMoving and ply.Stamina <= 0) then
-			-- 	-- ply:ConCommand("-speed")
-			-- 	ply.sprintrecharge = true
-			-- end
-
-			-- if (ply:IsSprinting() and PlayerIsMoving and ply.sprintrecharge and ply.Stamina <= 30) then
-			-- 	ply:ConCommand("-speed")
-			-- end
-		end
-/*	
-		if tonumber(ply.Stamina) > 0 or ply:WaterLevel() != 3 then
-			if timer.Exists("DrownTimer"..ply:EntIndex()) then
-				timer.Destroy("DrownTimer"..ply:EntIndex())
+			if !ply:InVehicle() then
+				if (ply:IsSprinting() and PlayerIsMoving and not ply:Crouching()) then
+					ply.Stamina = ply.Stamina - 8*ft*endurance_mul
+				elseif PlayerIsMoving and ply:Crouching() then
+					ply.Stamina = ply.Stamina - 2.7*ft*endurance_mul
+				elseif PlayerIsMoving then
+					ply.Stamina = ply.Stamina - 3*ft*endurance_mul
+				end
 			end
+
+			ply.Stamina = math.Clamp(ply.Stamina, 0, 100)
 		end
-*/
+
 		if (ply.NextTick or 0) < RealTime() then
 			self:NetUpdateStats(ply)
 			ply.NextTick = RealTime() + 1
@@ -786,13 +782,13 @@ function GM:PlayerShouldTakeDamage(ply, attacker)
 			return false
 		end
 
-		if ply:Alive() and attacker:Team() == TEAM_LONER and attacker:GetNWBool("pvp") == false and GAMEMODE.VoluntaryPvP then
+		if ply:Alive() and attacker:Team() == TEAM_LONER and not attacker:GetNWBool("pvp") and GAMEMODE.VoluntaryPvP then
 			if !timer.Exists("NoPvPMsgAntiSpamTimer"..attacker:EntIndex()) then
 				attacker:SystemMessage("Your PvP is not enabled!", Color(255,205,205), true)
 				timer.Create("NoPvPMsgAntiSpamTimer"..attacker:EntIndex(), 0.5, 1, function() end)
 			end
 			return false
-		elseif ply:Alive() and ply:Team() == TEAM_LONER and ply:GetNWBool("pvp") == false and GAMEMODE.VoluntaryPvP then
+		elseif ply:Alive() and ply:Team() == TEAM_LONER and not ply:GetNWBool("pvp") and GAMEMODE.VoluntaryPvP then
 			if !timer.Exists("NoPvPMsgAntiSpamTimer"..attacker:EntIndex()) then
 				attacker:SystemMessage("You can't attack loners unless they have PvP enabled!", Color(255,205,205), true)
 				timer.Create("NoPvPMsgAntiSpamTimer"..attacker:EntIndex(), 0.5, 1, function() end)
@@ -813,6 +809,28 @@ function GM:PlayerShouldTakeDamage(ply, attacker)
 	return true
 end
 
+function GM:HandlePlayerArmorReduction(ply, dmginfo)
+	-- If no armor, or special damage types, bypass armor 
+	if ply:Armor() <= 0 or bit.band(dmginfo:GetDamageType(), DMG_FALL + DMG_DROWN + DMG_POISON + DMG_RADIATION) ~= 0 then return end
+
+	local flBonus = 0.5 -- Each Point of Armor is worth 1/x points of health
+	local flRatio = 0.25 -- Armor Takes 75% of the damage
+
+	local flNew = dmginfo:GetDamage() * flRatio
+	local flArmor = (dmginfo:GetDamage() - flNew) * flBonus
+
+	-- Does this use more armor than we have?
+	if flArmor > ply:Armor() then
+		flArmor = ply:Armor() / flBonus
+		flNew = dmginfo:GetDamage() - flArmor
+		ply:SetArmor(0)
+	else
+		ply:SetArmor(ply:Armor() - flArmor)
+	end
+
+	dmginfo:SetDamage( flNew )
+end
+
 function GM:PlayerInitialSpawn(ply, transition)
 	self.BaseClass:PlayerInitialSpawn(ply)
 	ply:AllowFlashlight(true)
@@ -826,10 +844,11 @@ function GM:PlayerInitialSpawn(ply, transition)
 	ply.Infection = 0
 	ply.Battery = 100
 	ply.Oxygen = 100
-	ply.HPRegen = 0
+
+	ply.Radiation = 0
+
 	ply.Money = 0
 	ply.Bounty = 0
-	ply.CharactersData = {}
 	----------------
 	
 	-------- Progression Stats --------
@@ -871,19 +890,12 @@ function GM:PlayerInitialSpawn(ply, transition)
 	ply.Achievements = {}
 	ply.AchProgress = {}
 	ply.TaskCooldowns = {}
+	ply.CharactersData = {}
 
+	ply.HPRegen = 0
 	ply.SlowDown = 0
-	ply.CanUseFlashlight = true
-	ply.SpawnProtected = false
-	ply.DropCashCDcount = 0
-	ply.StatsPaused = false
-	ply.TEANoTarget = false
-	ply.CanUseItem = true
-	ply.MeleeDamageDealt = 0
-	ply.StatsReset = 0
-	ply.InvalidInventory = {} -- saves invalid items here
-	ply.MaxLevelTime = 0
 	ply.ZombieKillStreak = 0
+	ply.MeleeDamageDealt = 0
 	ply.LastStunTime = 0
 	ply.PoisonDamage = 0
 	ply.DrownDamage = 0
@@ -891,10 +903,25 @@ function GM:PlayerInitialSpawn(ply, transition)
 	ply.BloodLustMeleeHealCap = 0
 	ply.BloodLustLastMeleeHit = 0
 
+	ply.CanUseFlashlight = true
+	ply.SpawnProtected = false
+	ply.DropCashCDcount = 0
+	ply.StatsPaused = false
+	ply.TEANoTarget = false
+	ply.CanUseItem = true
+	ply.StatsReset = 0
+	ply.InvalidInventory = {} -- saves invalid items here
+	ply.MaxLevelTime = 0
+
 	ply.PvPNoToggle = 0
 	ply.PvPAntiMsg = 0 -- prevents spamming messages if player attacks with pvp off or something else
 	ply.PvPAntiMsgProp = 0 -- same as above but for props
 	ply.HitSoundEffect = 0
+	ply.UsingItemDuration = 0
+	ply.UsingItemTime = 0
+	ply.UsingItemActive = false
+	ply.UsingItemCanMove = true
+	ply.UsingItemSwitchWeapon = ""
 	----------------
 
 	-------- Other --------
@@ -929,7 +956,7 @@ function GM:PlayerInitialSpawn(ply, transition)
 	ply:SetNWString("ArmorType", "none")
 	ply:SetTeam(TEAM_LONER)
 
-	ForceEquipArmor(ply, ply.EquippedArmor)
+	ply:ArmorEquip(ply.EquippedArmor)
 end
 
 function GM:PlayerPostThink(ply)
@@ -1099,8 +1126,7 @@ function GM:PlayerLoadout(ply)
 end
 
 function GM:PlayerUse(ply, ent) --why is that here??
-	if not ent then return end
-	if not ent:IsValid() then return end
+	if not (ent and ent:IsValid()) then return end
 	return true
 end
 
@@ -1112,7 +1138,11 @@ end
 
 function GM:PlayerNoClip(ply, on)
 	if AdminCheck(ply) then
-		PrintMessage(HUD_PRINTCONSOLE, translate.Format(on and "x_turned_on_noclip" or "x_turned_off_noclip", ply:Name()))
+		if game.IsDedicated() then
+			print(translate.Format(on and "x_turned_on_noclip" or "x_turned_off_noclip", ply:Name()))
+		end
+		PrintTranslatedMessage(HUD_PRINTCONSOLE, on and "x_turned_on_noclip" or "x_turned_off_noclip", ply:Name())
+
 		return true
 	end
 
@@ -1130,6 +1160,11 @@ function GM:RecalcPlayerModel(ply)
 
 	if type(ply.ChosenModelColor) == "string" then ply.ChosenModelColor = Vector(ply.ChosenModelColor) end
 	ply:SetPlayerColor(ply.ChosenModelColor)
+
+	if ply:IsAdmin() and ply.EquippedArmor == "none" then
+		ply:SetModel(player_manager.TranslatePlayerModel(ply:GetInfo("cl_playermodel")))
+		return false
+	end
 
 	if !self.ItemsList[ply.EquippedArmor] or self.ItemsList[ply.EquippedArmor]["ArmorStats"]["allowmodels"] == nil then
 		if !table.HasValue(self.DefaultModels, ply.ChosenModel) then

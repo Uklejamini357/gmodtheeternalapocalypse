@@ -132,14 +132,14 @@ function GM:AdminMenu()
 	end
 
 	local text1 = vgui.Create("DLabel", AdminCmds)
-	text1:SetFont("TargetIDSmall")
+	text1:SetFont("TEA.HUDFontSmall")
 	text1:SetColor(Color(205,205,205,255))
 	text1:SetText("Zombies")
 	text1:SizeToContents()
 	text1:SetPos(20, 20)
 
 	local text2 = vgui.Create("DLabel", AdminCmds)
-	text2:SetFont("TargetIDSmall")
+	text2:SetFont("TEA.HUDFontSmall")
 	text2:SetColor(Color(205,205,205,255))
 	text2:SetText("Spawn Boss/Airdrop")
 	text2:SizeToContents()
@@ -210,7 +210,7 @@ function GM:AdminMenu()
 	end
 	
 	local stext1 = vgui.Create("DLabel", SAdminCmds)
-	stext1:SetFont("TargetIDSmall")
+	stext1:SetFont("TEA.HUDFontSmall")
 	stext1:SetColor(Color(205,205,205,255))
 	stext1:SetText("Airdrop Spawns")
 	stext1:SizeToContents()
@@ -247,7 +247,7 @@ function GM:AdminMenu()
 	end
 	
 	local stext2 = vgui.Create("DLabel", SAdminCmds)
-	stext2:SetFont("TargetIDSmall")
+	stext2:SetFont("TEA.HUDFontSmall")
 	stext2:SetColor(Color(205,205,205,255))
 	stext2:SetText("Loot Spawns")
 	stext2:SizeToContents()
@@ -284,7 +284,7 @@ function GM:AdminMenu()
 	end
 
 	local stext3 = vgui.Create("DLabel", SAdminCmds)
-	stext3:SetFont("TargetIDSmall")
+	stext3:SetFont("TEA.HUDFontSmall")
 	stext3:SetColor(Color(205,205,205,255))
 	stext3:SetText("Player Spawnpoints")
 	stext3:SizeToContents()
@@ -321,7 +321,7 @@ function GM:AdminMenu()
 	end
 
 	local stext4 = vgui.Create("DLabel", SAdminCmds)
-	stext4:SetFont("TargetIDSmall")
+	stext4:SetFont("TEA.HUDFontSmall")
 	stext4:SetColor(Color(205,205,205,255))
 	stext4:SetText("Trader Spawns")
 	stext4:SizeToContents()
@@ -358,7 +358,7 @@ function GM:AdminMenu()
 	end
 
 	local stext5 = vgui.Create("DLabel", SAdminCmds)
-	stext5:SetFont("TargetIDSmall")
+	stext5:SetFont("TEA.HUDFontSmall")
 	stext5:SetColor(Color(205,205,205,255))
 	stext5:SetText("Zombie Spawns")
 	stext5:SizeToContents()
@@ -395,7 +395,7 @@ function GM:AdminMenu()
 	end
 	
 	local stext6 = vgui.Create("DLabel", SAdminCmds)
-	stext6:SetFont("TargetIDSmall")
+	stext6:SetFont("TEA.HUDFontSmall")
 	stext6:SetColor(Color(205,205,205,255))
 	stext6:SetText("Misc")
 	stext6:SizeToContents()
@@ -446,10 +446,11 @@ function GM:AdminMenu()
 		end
 	end
 
+	--[[
 	local CheckWeight = vgui.Create("DLabel", SpawnMenu)
 	CheckWeight:SetPos(400, 5)
 	CheckWeight:SetColor(Color(205,205,205,255))
-	CheckWeight:SetFont("TargetIDSmall")
+	CheckWeight:SetFont("TEA.HUDFontSmall")
 	CheckWeight:SetText(translate.Format("inv_weight", LocalPlayer():CalculateWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWalkWeight(), WEIGHT_UNIT))
 	CheckWeight:SizeToContents()
 	CheckWeight.Think = function(this)
@@ -459,56 +460,21 @@ function GM:AdminMenu()
 		this:SizeToContents()
 		this:SetTextColor(LocalPlayer():CalculateWeight() >= LocalPlayer():CalculateMaxWalkWeight() and Color(255,0,0) or LocalPlayer():CalculateWeight() >= LocalPlayer():CalculateMaxWeight() and Color(255,255,0) or Color(255,255,255))
 	end
+	]]
 	local tall = 635
 	local wide = 890
 
-	local SpawnMenuAmmo = vgui.Create("DPanelList")
-	SpawnMenuAmmo:SetTall(tall)
-	SpawnMenuAmmo:SetWide(wide)
-	SpawnMenuAmmo:SetPos(5, 25)
-	SpawnMenuAmmo:EnableVerticalScrollbar(true)
-	SpawnMenuAmmo:EnableHorizontal(true)
-	SpawnMenuAmmo:SetSpacing(10)
+	local buypanel = {}
+	for i=1,7 do
+		buypanel[i] = vgui.Create("DPanelList")
+		buypanel[i]:SetTall(tall)
+		buypanel[i]:SetWide(wide)
+		buypanel[i]:SetPos(5, 25)
+		buypanel[i]:EnableVerticalScrollbar(true)
+		buypanel[i]:EnableHorizontal(true)
+		buypanel[i]:SetSpacing(10)
+	end
 
-	local SpawnMenuSupplies = vgui.Create("DPanelList")
-	SpawnMenuSupplies:SetTall(tall)
-	SpawnMenuSupplies:SetWide(wide)
-	SpawnMenuSupplies:SetPos(5, 25)
-	SpawnMenuSupplies:EnableVerticalScrollbar(true)
-	SpawnMenuSupplies:EnableHorizontal(true)
-	SpawnMenuSupplies:SetSpacing(10)
-
-	local SpawnMenuGuns = vgui.Create("DPanelList")
-	SpawnMenuGuns:SetTall(tall)
-	SpawnMenuGuns:SetWide(wide)
-	SpawnMenuGuns:SetPos(5, 25)
-	SpawnMenuGuns:EnableVerticalScrollbar(true)
-	SpawnMenuGuns:EnableHorizontal(true)
-	SpawnMenuGuns:SetSpacing(10)
-
-	local SpawnMenuArmor = vgui.Create("DPanelList")
-	SpawnMenuArmor:SetTall(tall)
-	SpawnMenuArmor:SetWide(wide)
-	SpawnMenuArmor:SetPos(5, 25)
-	SpawnMenuArmor:EnableVerticalScrollbar(true)
-	SpawnMenuArmor:EnableHorizontal(true)
-	SpawnMenuArmor:SetSpacing(10)
-
-	local SpawnMenuJunk = vgui.Create("DPanelList")
-	SpawnMenuJunk:SetTall(tall)
-	SpawnMenuJunk:SetWide(wide)
-	SpawnMenuJunk:SetPos(5, 25)
-	SpawnMenuJunk:EnableVerticalScrollbar(true)
-	SpawnMenuJunk:EnableHorizontal(true)
-	SpawnMenuJunk:SetSpacing(10)
-
-	local SpawnMenuMisc = vgui.Create("DPanelList")
-	SpawnMenuMisc:SetTall(tall)
-	SpawnMenuMisc:SetWide(wide)
-	SpawnMenuMisc:SetPos(5, 25)
-	SpawnMenuMisc:EnableVerticalScrollbar(true)
-	SpawnMenuMisc:EnableHorizontal(true)
-	SpawnMenuMisc:SetSpacing(10)
 
 	local function RefreshItemList(cat, parent)
 		for k,v in SortedPairsByMemberValue(GAMEMODE.ItemsList, "Cost") do
@@ -552,14 +518,14 @@ function GM:AdminMenu()
 			ItemName:SetText(GAMEMODE:GetItemName(k))
 		
 			local ItemCost = vgui.Create("DLabel", ItemBackground)
-			ItemCost:SetFont("TargetIDSmall")
+			ItemCost:SetFont("TEA.HUDFontSmall")
 			ItemCost:SetPos(80, 25)
 			ItemCost:SetSize(170, 15)
 			ItemCost:SetColor(Color(155,255,155,255))
 			ItemCost:SetText("Cost: ".. math.floor(v.Cost))
 
 			local ItemWeight = vgui.Create("DLabel", ItemBackground)
-			ItemWeight:SetFont("TargetIDSmall")
+			ItemWeight:SetFont("TEA.HUDFontSmall")
 			ItemWeight:SetPos(80, 42)
 			ItemWeight:SetSize(170, 15)
 			ItemWeight:SetColor(Color(155,155,255,255))
@@ -640,21 +606,19 @@ function GM:AdminMenu()
 			end
 		end
 	end
-	RefreshItemList(ITEMCATEGORY_AMMO, SpawnMenuAmmo)
-	RefreshItemList(ITEMCATEGORY_SUPPLIES, SpawnMenuSupplies)
-	RefreshItemList(ITEMCATEGORY_WEAPONS, SpawnMenuGuns)
-	RefreshItemList(ITEMCATEGORY_ARMOR, SpawnMenuArmor)
-	RefreshItemList(ITEMCATEGORY_JUNK, SpawnMenuJunk)
-	RefreshItemList(ITEMCATEGORY_MISCELLANEOUS, SpawnMenuMisc)
+	for i=1,7 do
+		RefreshItemList(i, buypanel[i])
+	end
 
 	RefreshPanel()
 
-	SpawnMenuProperties:AddSheet(translate.Get("items_category_1"), SpawnMenuAmmo, "icon16/ammo_three.png", false, false, translate.Get("items_category_1_d"))
-	SpawnMenuProperties:AddSheet(translate.Get("items_category_2"), SpawnMenuSupplies, "icon16/box.png", false, false, translate.Get("items_category_2_d"))
-	SpawnMenuProperties:AddSheet(translate.Get("items_category_3"), SpawnMenuGuns, "icon16/gun.png", false, false, translate.Get("items_category_3_d"))
-	SpawnMenuProperties:AddSheet(translate.Get("items_category_4"), SpawnMenuArmor, "icon16/shield.png", false, false, translate.Get("items_category_4_d"))
-	SpawnMenuProperties:AddSheet(translate.Get("items_category_5"), SpawnMenuJunk, "icon16/bin.png", false, false, translate.Get("items_category_5_d"))
-	SpawnMenuProperties:AddSheet(translate.Get("items_category_6"), SpawnMenuMisc, "icon16/basket.png", false, false, translate.Get("items_category_6_d"))
+	SpawnMenuProperties:AddSheet(translate.Get("items_category_1"), buypanel[1], "icon16/ammo_three.png", false, false, translate.Get("items_category_1_d"))
+	SpawnMenuProperties:AddSheet(translate.Get("items_category_2"), buypanel[2], "icon16/box.png", false, false, translate.Get("items_category_2_d"))
+	SpawnMenuProperties:AddSheet(translate.Get("items_category_3"), buypanel[3], "icon16/gun.png", false, false, translate.Get("items_category_3_d"))
+	SpawnMenuProperties:AddSheet(translate.Get("items_category_4"), buypanel[4], "icon16/shield.png", false, false, translate.Get("items_category_4_d"))
+	SpawnMenuProperties:AddSheet(translate.Get("items_category_5"), buypanel[5], "icon16/bin.png", false, false, translate.Get("items_category_5_d"))
+	SpawnMenuProperties:AddSheet(translate.Get("items_category_6"), buypanel[6], "icon16/basket.png", false, false, translate.Get("items_category_6_d"))
+	SpawnMenuProperties:AddSheet(translate.Get("items_category_7"), buypanel[7], "icon16/basket.png", false, false, translate.Get("items_category_7_d"))
 
 	PropertySheet:AddSheet(translate.Get("admin_panel_tab_1"), PlayerList, "icon16/shield.png", false, false, translate.Get("admin_panel_tab_1_d"))
 	PropertySheet:AddSheet(translate.Get("admin_panel_tab_2"), AdminCmds, "icon16/shield.png", false, false, translate.Get("admin_panel_tab_2_d"))

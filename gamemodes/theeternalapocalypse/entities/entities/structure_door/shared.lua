@@ -164,7 +164,7 @@ end
 
 		self:SetColor(Color(swag +5,swag+5,swag+5,255))
 
-		if self.integrity - damage < 0 or self.IsBuilt == false then
+		if self.integrity - damage < 0 or not self.IsBuilt then
 			self:BreakPanel()
 --			self.Entity:EmitSound("physics/wood/wood_plank_break"..math.random(1,2)..".wav", 100, 100)
 			self.Entity:EmitSound("physics/metal/metal_box_break2.wav", 80, 100)              

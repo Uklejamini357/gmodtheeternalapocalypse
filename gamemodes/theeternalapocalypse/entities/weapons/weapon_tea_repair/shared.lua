@@ -188,7 +188,7 @@ function SWEP:DealDamage( anim )
 		tr.Entity:TakeDamageInfo( dmginfo )
 	end
 
-	if tr.Entity:IsValid() && SpecialSpawns[tr.Entity:GetClass()] then
+	if tr.Entity:IsValid() && GAMEMODE.SpecialStructureSpawns[tr.Entity:GetClass()] then
 		if tr.Entity.IsBuilt then
 			local hp = tr.Entity.integrity
 			local maxhp = tr.Entity.maxinteg

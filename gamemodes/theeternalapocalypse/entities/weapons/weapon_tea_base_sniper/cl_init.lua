@@ -82,7 +82,7 @@ function SWEP:DrawHUD()
 		end
 	end
 
-	if (self.Weapon:GetDTBool(1) and not self.Weapon:GetNetworkedBool("Suppressor")) or (cl_crosshair_t:GetBool() == false) or (LocalPlayer():InVehicle()) then return end
+	if (self.Weapon:GetDTBool(1) and not self.Weapon:GetNetworkedBool("Suppressor")) or not (cl_crosshair_t:GetBool()) or (LocalPlayer():InVehicle()) then return end
 	
 	local hitpos = util.TraceLine ({
 		start = LocalPlayer():GetShootPos(),

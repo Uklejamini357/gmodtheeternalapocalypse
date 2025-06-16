@@ -30,11 +30,11 @@ function MT_PLAYER:ProcessPlayerDamage(dmginfo)
 	local env_classes = {"trigger_hurt", "point_hurt", "entityflame", "env_fire"}
 	
 	if attacker:IsPlayer() then
-		dmginfo:SetDamage(GAMEMODE:CalcPlayerDamage(self, dmginfo:GetDamage()))
+		dmginfo:SetDamage(dmginfo:GetDamage() * ply:GetArmorDamageMultiplier())
 	elseif env_classes[dmginfo:GetAttacker():GetClass()] then
-		dmginfo:SetDamage(GAMEMODE:CalcEnvDamage(self, dmginfo:GetDamage()))
+		dmginfo:SetDamage(dmginfo:GetDamage() * ply:GetArmorEnvDamageMultiplier())
 	elseif bit.band(dmginfo:GetDamageType(), DMG_BULLET) ~= 0 then
-		dmginfo:SetDamage(GAMEMODE:CalcPlayerDamage(self, dmginfo:GetDamage()))
+		dmginfo:SetDamage(dmginfo:GetDamage() * ply:GetArmorDamageMultiplier())
 	end
 
 	if dmginfo:GetDamageType() == DMG_CRUSH and attackerclass == "obj_bigrock" then
@@ -348,6 +348,10 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 		MsgN("[Death Log] "..ply:Nick().." was killed by "..attacker:Nick().." using "..attacker:GetActiveWeapon():GetClass())
 	end
 
+	if ply:IsSleeping() then
+		ply:WakeUp()
+	end
+
 	ply.Bounty = keptbounty or 0
 	ply:SetNWInt("PlyBounty", ply.Bounty)
 
@@ -519,63 +523,6 @@ function FormatSteamID(SteamID)
 	str = string.gsub(str,"_","")
 	
 	return str
-end
-
--- calculate damage with modifier of armor protection + defense skill
-function GM:CalcPlayerDamage(ply, dmg)
-	local newdmg = tonumber(dmg)
-	local armorvalue = 0
-	local plyarmor = ply:GetNWString("ArmorType")
-
-	if plyarmor and plyarmor != "none" then
-		local armortype = GAMEMODE.ItemsList[plyarmor]
-		armorvalue = tonumber((armortype["ArmorStats"]["reduction"]) / 100)
-	end
-		
-	local defencebonus = 0.015 * ply.StatDefense
-	local armorbonus = armorvalue
-	newdmg = newdmg * (1 - (defencebonus + armorbonus))
-	return math.max(0, newdmg)
-end
-
--- calculate damage with modifier of armor environmental protection + defense skill
-function GM:CalcEnvDamage(ply, dmg)
-	local newdmg = tonumber(dmg)
-	local armorvalue = 0
-	local plyarmor = ply:GetNWString("ArmorType")
-
-	if plyarmor and plyarmor != "none" then
-		local armortype = GAMEMODE.ItemsList[plyarmor]
-		armorvalue = tonumber((armortype["ArmorStats"]["env_reduction"]) / 100)
-	end
-		
-	local defencebonus = 0.01 * ply.StatDefense
-	local armorbonus = armorvalue
-	newdmg = newdmg * (1 - (defencebonus + armorbonus))
-	return math.max(0, newdmg)
-end
-
--- calculate damage with modifier of armor protection only
-function GM:CalcArmorDamage(ply, dmg)
-	local newdmg = tonumber(dmg)
-	local armorvalue = 0
-	local plyarmor = ply:GetNWString("ArmorType")
-
-	if plyarmor and plyarmor != "none" then
-		local armortype = GAMEMODE.ItemsList[plyarmor]
-		armorvalue = tonumber((armortype["ArmorStats"]["reduction"]) / 100)
-	end
-
-	newdmg = newdmg * (1 - armorvalue)
-	return math.max(0, newdmg)
-end
-
--- calculate damage with modifier of defense skill only
-function GM:CalcDefenseDamage(ply, dmg)
-	local newdmg = tonumber(dmg)
-	newdmg = newdmg * ( 1 - (ply.StatDefense * 0.015))
-	
-	return math.max(0, newdmg)
 end
 
 

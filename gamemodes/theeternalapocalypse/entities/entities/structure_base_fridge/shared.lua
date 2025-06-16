@@ -83,8 +83,11 @@ function ENT:Use(activator, caller)
 	activator.Thirst = 10000
 
 	activator:EmitSound("npc/barnacle/barnacle_gulp2.wav")
-	activator:SystemMessage("That was delicious!", Color(205,255,205,255), false)
-	activator:SendUseDelay(2)
+	activator:SendUseDelay(2, "Replenishing hunger and fridge")
+	timer.Simple(2, function()
+		if not (activator:IsValid() or activator:Alive()) then return end
+		activator:SystemMessage("That was delicious!", Color(205,255,205,255), false)
+	end)
 	self.UseTimer = CurTime() + 5
 
 end 

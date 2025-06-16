@@ -2,7 +2,7 @@
 function GM:OnConVarChanged(cvar, old, new)
 	if SERVER then
 		if tonumber(old) ~= tonumber(new) then
-			PrintMessage(HUD_PRINTTALK, Format("ConVar '%s' value is changed from '%s' to '%s'", cvar, old, new))
+			PrintTranslatedMessage(HUD_PRINTTALK, "cvar_value_changed", cvar, old, new)
 		end
 		print(Format("ConVar '%s' value is changed from '%s' to '%s'", cvar, old, new))
 	end

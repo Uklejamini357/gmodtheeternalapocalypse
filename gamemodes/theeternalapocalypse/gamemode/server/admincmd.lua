@@ -36,8 +36,6 @@ function GM:AdminCmds_GiveItem(ply, cmd, args)
 		ply:ConCommand("playgamesound buttons/button8.wav")
 	return false end
 
-	-- if (ply:CalculateWeight() + (item.Weight * addqty)) > (ply:CalculateMaxWeight()) then ply:SendChat("You don't have any inventory space left for this item! (Need "..-ply:CalculateMaxWeight() + ply:CalculateWeight() + (addqty * item["Weight"]).."kg more space)") return false end
-
 	gamemode.Call("SystemGiveItem", ply, name, addqty)
 
 	self:DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.."x "..GAMEMODE:GetItemName(name))
@@ -457,7 +455,7 @@ function GM:AdminCmds_ToggleAdminMode(ply)
 		ply:SetEyeAngles(ang)
 		ply:SetMaterial("models/shadertest/shader3")
 		ply:GodEnable()
-		ply:PrintMessage(3, "Enabled Admin Mode!")
+		ply:PrintTranslatedMessage(3, "admin_mode_enabled")
 	else -- Disable
 		ply.AdminMode = nil
 
@@ -469,7 +467,7 @@ function GM:AdminCmds_ToggleAdminMode(ply)
 		ply:Spawn()
 		ply:LoadLastSession()
 		ply:GodDisable()
-		ply:PrintMessage(3, "Disabled Admin Mode!")
+		ply:PrintTranslatedMessage(3, "admin_mode_disabled")
 	end
 end
 concommand.Add("tea_sadmin_adminmode", function(ply, cmd, args)

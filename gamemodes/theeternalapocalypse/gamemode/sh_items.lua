@@ -56,136 +56,13 @@ local misccostmul = 1
 function UseFunc_Sleep(ply, bheal)
 	if !SERVER then return false end
 	if !ply:IsValid() or !ply:Alive() then return false end
-	if ply.Fatigue <= 2000 then ply:SendChat("You are not tired") return false end
-	if ply.Hunger <= 3000 then ply:SendChat("You are hungry, you should eat something.") return false end
-	if ply.Thirst <= 3000 then ply:SendChat("You are thirsty, you should drink something.") return false end
-	if ply.Infection >= 8000 then ply:SendChat("You are infected, find a cure.") return false end
-	ply:SendChat("You are now asleep")
-	umsg.Start("DrawSleepOverlay", ply)
-	umsg.End()
-	ply.Fatigue = 0
-	ply:Freeze(true)
-	timer.Create("IsSleeping_"..ply:EntIndex(), 25, 1, function() ply:Freeze(false) end)
+	if not ply:CheckCanSleep() then return end
+	
+	ply:GoSleep()
+
 	if bheal then
 		ply:SetHealth(ply:GetMaxHealth())
 	end
-end
-
-
-function UseFunc_DropItem(ply, item)
-	if !SERVER then return false end
-	if !ply:IsValid() or !GAMEMODE.ItemsList[item] or !ply:Alive() then return false end
-
-	local vStart = ply:GetShootPos()
-	local vForward = ply:GetAimVector()
-	local trace = {}
-	trace.start = vStart
-	trace.endpos = vStart + (vForward * 70)
-	trace.filter = ply
-	local tr = util.TraceLine(trace)
-	local ent = ents.Create("ate_droppeditem")
-	ent:SetPos(tr.HitPos)
-	ent:SetAngles(Angle(0, 0, 0))
-	ent:SetModel(GAMEMODE.ItemsList[item].Model)
-	ent:SetNWString("ItemClass", item)
-	ent:Spawn()
-	ent:Activate()
-
-	return true
-end
-
--- same as drop item but we don't want to set the dropped item to a playermodel do we? (absolutely yes.)
-function UseFunc_DropArmor(ply, item)
-	if !SERVER then return false end
-	if !ply:IsValid() or !GAMEMODE.ItemsList[item] or !ply:Alive() then return false end
-	if !timer.Exists("Plywantstodropequippedarmor"..ply:EntIndex()) and ply:GetNWString("ArmorType") == item then
-		ply:SendChat("WARNING! You are about to drop an armor that you have it equipped, drop the same armor again within 10 seconds to confirm.")
-		timer.Create("Plywantstodropequippedarmor"..ply:EntIndex(), 10, 1, function() end)
-		return false
-	end
-
-	local vStart = ply:GetShootPos()
-	local vForward = ply:GetAimVector()
-	local trace = {}
-	trace.start = vStart
-	trace.endpos = vStart + (vForward * 70)
-	trace.filter = ply
-	local tr = util.TraceLine(trace)
-	local ent = ents.Create("ate_droppeditem")
-	ent:SetPos(tr.HitPos)
-	ent:SetAngles(Angle(0, 0, 0))
-	ent:SetModel("models/props/cs_office/cardboard_box01.mdl")
-	ent:SetNWString("ItemClass", item)
-	ent:Spawn()
-	ent:Activate()
-
-	if ply.EquippedArmor == tostring(item) then
-		UseFunc_RemoveArmor(ply, item)
-	end
-
-	return true
-end
-
-
-function UseFunc_EquipArmor(ply, item)
-	if !SERVER then return false end
-	if !ply:IsValid() or !GAMEMODE.ItemsList[item] or !ply:Alive() then return false end
-
-	if !timer.Exists("plywantstoremovearmor"..ply:EntIndex().."_"..item) and ply.EquippedArmor == item then
-		timer.Create("plywantstoremovearmor"..ply:EntIndex().."_"..item, 10, 1, function() end)
-		ply:SendChat("Unequip "..GAMEMODE:GetItemName(item, ply).."? Use the same armor again to confirm.")
-		return false
-	elseif timer.Exists("plywantstoremovearmor"..ply:EntIndex().."_"..item) and ply.EquippedArmor == item then
-		ply:SendUseDelay(3)
-		ply:EmitSound("npc/combine_soldier/zipline_hitground2.wav")
-		timer.Simple(3, function()
-			if !ply:IsValid() or !ply:Alive() then return false end
-			ply:SystemMessage(Format("You unequipped %s.", GAMEMODE:GetItemName(item, ply)), Color(205,255,205,255), false)
-			UseFunc_RemoveArmor(ply, item)
-		end)
-		return false
-	end
-
-	ply:SendUseDelay(3)
-	ply:EmitSound("npc/combine_soldier/zipline_hitground1.wav")
-
-	timer.Create("Isplyequippingarmor"..ply:EntIndex(), 3, 1, function() end)
-	timer.Create("Isplyequippingarmor"..ply:EntIndex().."_"..item, 3, 1, function()
-		if !ply:IsValid() or !ply:Alive() then return false end
-		ply:SystemMessage("You equipped "..GAMEMODE:GetItemName(item, ply)..". Use the same armor again to unequip.", Color(205,255,205,255), false)
-		ply.EquippedArmor = tostring(item)
-		ply:SetNWString("ArmorType", tostring(item))
-		gamemode.Call("RecalcPlayerModel", ply)
-		gamemode.Call("RecalcPlayerSpeed", ply)
-	end)
-
-	return false
-end
-
-function ForceEquipArmor(ply, item) --Same as Equip armor, but we don't want to have cooldown from moving nor make noise of equipping armor when spawning right?
-	if !SERVER then return false end
-	if !ply:IsValid() or !GAMEMODE.ItemsList[item] then return false end
-	
-	local used = GAMEMODE.ItemsList[item]
-	
-	ply.EquippedArmor = tostring(item)
-	ply:SetNWString("ArmorType", tostring(item))
-	gamemode.Call("RecalcPlayerModel", ply)
-	gamemode.Call("RecalcPlayerSpeed", ply)
-
-	return false	
-end
-
-function UseFunc_RemoveArmor(ply, item)
-	if !SERVER then return false end
-	if !ply:IsValid() then return false end
-	local used = GAMEMODE.ItemsList[item]
-
-	ply.EquippedArmor = "none"
-	ply:SetNWString("ArmorType", "none")
-	gamemode.Call("RecalcPlayerModel", ply)
-	gamemode.Call("RecalcPlayerSpeed", ply)
-	return false
 end
 
 function UseFunc_DeployBed(ply)
@@ -235,28 +112,6 @@ function UseFunc_DropEntity(ply, ent)
 end
 
 
-function UseFunc_EquipGun(ply, gun)
-	if !SERVER then return false end
-	if !ply:IsValid() or !ply:Alive() then return false end
-	if ply:GetActiveWeapon() != gun then
-		ply:Give(gun, true)
-		ply:SelectWeapon(gun)
-	end
-	return false
-end
-
-function UseFunc_EquipNade(ply, gun, nadetype)
-	if !SERVER then return false end
-	if !ply:IsValid() or !ply:Alive() then return false end
-	ply:GiveAmmo(1, nadetype)
-	ply:Give(gun, true)
-
-	if ply:GetActiveWeapon() != gun then
-		ply:SelectWeapon(gun)
-	end
-	return true
-end
-
 function UseFunc_GiveAmmo(ply, amount, type)
 	if !SERVER then return false end
 	if !ply:IsValid() or !ply:Alive() then return false end
@@ -285,15 +140,12 @@ function UseFunc_Heal(ply, targetply, usetime, hp, infection, snd)
 		targetply:SetHealth(math.Clamp(targetply:Health() + healedhp, 0, targetply:GetMaxHealth()))
 		targetply.Infection = math.Clamp(targetply.Infection - (infection * 100), 0, 10000)
 		targetply:EmitSound(snd, 100, 100)
-		ply:SendUseDelay(usetime)
+		ply:SendUseDelay(usetime, "Healing...")
 		if ply ~= targetply then
 			ply.XP = ply.XP + math.floor(healedhp)
 			ply:SendChat(translate.ClientFormat(ply, "healed_x_for_y", targetply:Nick(), healedhp, math.floor(healedhp*1.5)))
 			gamemode.Call("GiveTaskProgress", ply, "medical_attention", 1)
 		end
-		timer.Create("Isplyusingitem"..ply:EntIndex(), usetime, 1, function()
-			timer.Destroy("Isplyusingitem"..ply:EntIndex())
-		end)
 		return true
 	else
 		return false -- return false. do not use the item.
@@ -304,11 +156,10 @@ function UseFunc_HealInfection(ply, usetime, infection, snd)
 	if !SERVER then return false end
 	if !ply:IsValid() then return false end
 	if ply:Alive() then
-		if ply.Infection < 1 then ply:SendChat("You are feeling well, why would you use antidote now?") return false end
+		if ply.Infection < 1 then ply:SendChat(translate.ClientGet(ply, "antidote_usage_not_infected")) return false end
 		ply.Infection = math.Clamp(ply.Infection - (infection * 100), 0, 10000)
 		ply:EmitSound(snd, 100, 100)
-		ply:SendUseDelay(usetime)
-		timer.Create("Isplyusingitem"..ply:EntIndex(), usetime, 1, function() end)
+		ply:SendUseDelay(usetime, "Healing infection...")
 		return true
 	else
 		ply:SendChat(translate.ClientGet(ply, "you_could_have_healed_before_died"))
@@ -329,8 +180,7 @@ function UseFunc_Armor(ply, usetime, battery, armor, snd)
 		ply.Battery = math.Clamp(ply.Battery + battery, 0, 100 + (armortype and armorstr and armortype["ArmorStats"]["battery"] or 0))
 		ply:SetArmor(math.Clamp(ply:Armor() + (armor * (1 + (ply.StatEngineer * 0.02))), 0, ply:GetMaxArmor()))
 		ply:EmitSound(snd, 100, 100)
-		ply:SendUseDelay(usetime)
-		timer.Create("Isplyusingitem"..ply:EntIndex(), usetime, 1, function() end)
+		ply:SendUseDelay(usetime, "Reinforcing armor...")
 		return true
 	else
 		ply:SendChat(translate.ClientGet(ply, "could_have_used_armor_before_died"))
@@ -348,11 +198,11 @@ function UseFunc_Eat(ply, usetime, health, hunger, thirst, stamina, fatigue, snd
 		ply.Stamina = math.Clamp(ply.Stamina + stamina, 0, 100)
 		ply.Fatigue = math.Clamp(ply.Fatigue + (fatigue * 100), 0, 10000)
 		ply:EmitSound(snd, 100, 100)
-		ply:SendUseDelay(usetime)
-		timer.Create("Isplyusingitem"..ply:EntIndex(), usetime, 1, function() end)
+		ply:SendUseDelay(usetime, "Eating food...")
 		return true
 	else
-		ply:SendChat("You can't eat when you're dead") -- if they try to call this function when they are dead
+		-- if they try to call this function when they are dead
+		ply:SendChat(translate.ClientGet(ply, table.Random({"cant_eat_if_dead1", "cant_eat_if_dead2", "cant_eat_if_dead3", "cant_eat_if_dead4"})))
 		return false
 	end
 end
@@ -360,7 +210,10 @@ end
 function UseFunc_Drink(ply, usetime, health, hunger, thirst, stamina, fatigue, snd)
 	if !SERVER then return false end
 	if !ply:IsValid() then return false end
-	if ply:WaterLevel() == 3 then ply:SendChat("It is impossible to drink when you are underwater. Get out of the water if you want to drink.") return false end
+	if ply:WaterLevel() == 3 then
+		ply:SendChat(translate.ClientGet(ply, "cant_drink_underwater"))
+		return false
+	end
 	if ply:Alive() then
 		ply:SetHealth(math.Clamp(ply:Health() + health, 0, ply:GetMaxHealth()))
 		ply.Hunger = math.Clamp(ply.Hunger + (hunger * 100), 0, 10000)
@@ -368,8 +221,7 @@ function UseFunc_Drink(ply, usetime, health, hunger, thirst, stamina, fatigue, s
 		ply.Stamina = math.Clamp(ply.Stamina + stamina, 0, 100)
 		ply.Fatigue = math.Clamp(ply.Fatigue + (fatigue * 100), 0, 10000)
 		ply:EmitSound(snd, 100, 100)
-		ply:SendUseDelay(usetime)
-		timer.Create("Isplyusingitem"..ply:EntIndex(), usetime, 1, function() end)
+		ply:SendUseDelay(usetime, "Drinking...")
 		return true
 	else
 		return false
@@ -378,10 +230,6 @@ end
 
 function UseFunc_Respec(ply)
 	if !ply:IsValid() or !ply:Alive() then return false end
-	if ply.StatsReset and tonumber(ply.StatsReset) > os.time() then
-		ply:SendChat(Format("Can't use this item! Wait for %d more seconds!", ply.StatsReset - os.time()))
-		return false
-	end
 
 	local reset, callback = ply:SkillsReset()
 	if not reset then
@@ -392,27 +240,9 @@ function UseFunc_Respec(ply)
 	end
 
 	ply:EmitSound("npc/barnacle/barnacle_gulp2.wav")
-
-	ply.StatsReset = os.time() + 86400
 	ply:SystemMessage(translate.ClientGet(ply, "itemusedskillsreset"), Color(255,255,205,255), true)
 
 	return reset
-end
-
-function UseFunc_StripWeapon(ply, class, drop) -- use false to strip weapon but not to give ammo unless gamemode function is ok
-	if !SERVER then return false end
-	if !ply:IsValid() or !ply:Alive() then return false end
-	if ply.Inventory[class] < 2 and drop then -- i have no idea if this should be true or false, but i think it should be
-		local wep = ply:GetWeapon(class)
-		if IsValid(wep) and wep:IsWeapon() then
-			local clip1 = tonumber(wep:Clip1()) or 0
-			local clip2 = tonumber(wep:Clip2()) or 0
-			if clip1 > 0 then ply:GiveAmmo(clip1, wep:GetPrimaryAmmoType()) end
-			if clip2 > 0 then ply:GiveAmmo(clip2, wep:GetSecondaryAmmoType()) end
-		end
-		ply:StripWeapon(class)
-	end
-	return true
 end
 
 

@@ -188,8 +188,8 @@ function SWEP:DealDamage( anim )
 		tr.Entity:TakeDamageInfo( dmginfo )
 	end
 
-	if tr.Entity:IsValid() && (tr.Entity:GetClass() == "prop_flimsy" or tr.Entity:GetClass() == "prop_strong" or SpecialSpawns[tr.Entity:GetClass()]) then
-		if tr.Entity.IsBuilt == false then
+	if tr.Entity:IsValid() && (tr.Entity:GetClass() == "prop_flimsy" or tr.Entity:GetClass() == "prop_strong" or GAMEMODE.SpecialStructureSpawns[tr.Entity:GetClass()]) then
+		if not tr.Entity.IsBuilt then
 
 			local mins, maxs = tr.Entity:LocalToWorld(tr.Entity:OBBMins( )), tr.Entity:LocalToWorld(tr.Entity:OBBMaxs( ))
 			local cube = ents.FindInBox( mins, maxs )
@@ -201,13 +201,15 @@ function SWEP:DealDamage( anim )
 			local ownerhasperk = self:GetOwner():HasPerk("speedy_hands")
 			local buildlvl = (tr.Entity.BuildLevel or 0) + (ownerhasperk and 1.5 or 1)
 			tr.Entity.BuildLevel = buildlvl
-			if (tr.Entity:GetClass() == "prop_flimsy" and buildlvl >= (3 + (FLIMSYPROPS[tr.Entity:GetModel()]["TOUGHNESS"] or 0))) or (tr.Entity:GetClass() == "prop_strong" and buildlvl >= 5 + (TOUGHPROPS[tr.Entity:GetModel()]["TOUGHNESS"] or 0)) or (SpecialSpawns[tr.Entity:GetClass()] and buildlvl >= 7) then
+			if (tr.Entity:GetClass() == "prop_flimsy" and buildlvl >= (3 + (GAMEMODE.FlimsyProps[tr.Entity:GetModel()].Toughness or 0))) or
+			(tr.Entity:GetClass() == "prop_strong" and buildlvl >= 5 + (GAMEMODE.ToughProps[tr.Entity:GetModel()].Toughness or 0)) or
+			(GAMEMODE.SpecialStructureSpawns[tr.Entity:GetClass()] and buildlvl >= 7) then
 				tr.Entity:FinishBuild()
 			end
 
 			tr.Entity:EmitSound("weapons/crowbar/crowbar_impact"..math.random(1,2)..".wav")
 		else
-			if SpecialSpawns[tr.Entity:GetClass()] then return end
+			if GAMEMODE.SpecialStructureSpawns[tr.Entity:GetClass()] then return end
 
 			local hp = tr.Entity:GetStructureHealth()
 			local maxhp = tr.Entity:GetStructureMaxHealth()

@@ -3,8 +3,8 @@ GM.AltName	= "After The End Reborn"
 GM.Author	= "Uklejamini"
 GM.Email	= "[You may not view this information.]"
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.11.3b"
-GM.DateVer	= "07.06.2025" -- Follows the DD.MM.YYYY format.
+GM.Version	= "Pre-0.11.4"
+GM.DateVer	= "16.06.2025" -- Follows the DD.MM.YYYY format.
 
 DeriveGamemode("sandbox")
 
@@ -219,7 +219,19 @@ function GM:StartCommand(ply, cmd)
 			keys = keys - IN_JUMP
 		end
 	end
+
+	if (ply:IsUsingItem() and not ply.UsingItemCanMove) or ply:IsSleeping() then
+		cmd:ClearButtons()
+		cmd:ClearMovement()
+
+
+		return true
+	end
+
 	cmd:SetButtons(keys)
+end
+
+function GM:Move(ply, mv)
 end
 
 function util.ToMinutesSeconds(seconds)

@@ -36,7 +36,7 @@ end
 		cam.IgnoreZ( true )
 		cam.Start3D2D(ent:GetPos()+ent:GetUp()*80, Angle(0, me:EyeAngles().yaw - 90, 90), 0.18)
 		draw.SimpleTextOutlined( "Trader", "DermaLarge", 0, 0, Color( 155, 205, 155, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 1, Color(0, 0, 0, 255))
-		draw.SimpleTextOutlined( "Press E to trade!", "TargetIDSmall", 0, 25, Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 1, Color(0, 0, 0, 255))
+		draw.SimpleTextOutlined( "Press E to trade!", "TEA.HUDFontSmall", 0, 25, Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 1, Color(0, 0, 0, 255))
 		cam.End3D2D()
 
 	end

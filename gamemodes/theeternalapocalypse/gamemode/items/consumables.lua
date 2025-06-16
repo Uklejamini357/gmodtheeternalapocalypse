@@ -9,7 +9,7 @@ GM:CreateItem(itemid, {
     Rarity = rarity,
     Category = category,
     UseFunc = function(ply, targetply) return UseFunc_Heal(ply, targetply, usetime, health, infection, playsound) end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_bandage") return drop end,
+    DropFunc = function(ply, _, item) local drop = UseFunc_DropItem(ply, "item_bandage") return drop end,
 
 -- Additional variables if needed
     IsSecret = false,
@@ -26,8 +26,12 @@ local i = GM:CreateItem("item_bandage", {
 	Supply = 0,
 	Rarity = 2,
 	Category = ITEMCATEGORY_SUPPLIES,
+
+    UseTime = 3,
+    Health = 11,
+    UseSound = "theeternalapocalypse/items/inv_bandages.ogg",
+
 	UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 11, 0, "theeternalapocalypse/items/inv_bandages.ogg") return healing end,
-	DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_bandage") return drop end,
     CanUseOnOthers = true
 })
 
@@ -38,8 +42,13 @@ i = GM:CreateItem("item_medkit", {
     Supply = 30,
     Rarity = 3,
     Category = ITEMCATEGORY_SUPPLIES,
+
+    UseTime = 3,
+    Health = 45,
+    Infection = -5,
+    UseSound = "theeternalapocalypse/items/inv_aptecka.ogg",
+
     UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 45, 5, "theeternalapocalypse/items/inv_aptecka.ogg") return healing end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_medkit") return drop end,
     CanUseOnOthers = true
 })
 
@@ -50,8 +59,13 @@ i = GM:CreateItem("item_armymedkit", {
     Supply = 10,
     Rarity = 4,
     Category = ITEMCATEGORY_SUPPLIES,
+
+    UseTime = 3,
+    Health = 70,
+    Infection = -20,
+    UseSound = "theeternalapocalypse/items/inv_aptecka.ogg",
+
     UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 70, 20, "theeternalapocalypse/items/inv_aptecka.ogg") return healing end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_armymedkit") return drop end,
     CanUseOnOthers = true
 })
 
@@ -62,8 +76,13 @@ i = GM:CreateItem("item_scientificmedkit", {
     Supply = 8,
     Rarity = 4,
     Category = ITEMCATEGORY_SUPPLIES,
+
+    UseTime = 3,
+    Health = 100,
+    Infection = -60,
+    UseSound = "theeternalapocalypse/items/inv_aptecka.ogg",
+
     UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 100, 60, "theeternalapocalypse/items/inv_aptecka.ogg") return healing end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_scientificmedkit") return drop end,
     CanUseOnOthers = true
 })
 
@@ -74,6 +93,12 @@ i = GM:CreateItem("item_medbag_enhanced", {
     Supply = 3,
     Rarity = 6,
     Category = ITEMCATEGORY_SUPPLIES,
+
+    UseTime = 5,
+    Health = 150,
+    Infection = -100,
+    UseSound = "theeternalapocalypse/items/inv_medbag.ogg",
+
     UseFunc = function(ply, targetply)
         local healing = UseFunc_Heal(ply, targetply, 5, 150, 100, "theeternalapocalypse/items/inv_medbag.ogg")
         if healing then
@@ -124,8 +149,7 @@ i = GM:CreateItem("item_medbag_enhanced", {
         end
         return healing
     end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_medbag_enhanced") return drop end,
-    CanUseOnOthers = true
+      CanUseOnOthers = true
 })
 
 GM:CreateItem("item_antidote", {
@@ -135,8 +159,12 @@ GM:CreateItem("item_antidote", {
     Supply = 12,
     Rarity = 3,
     Category = ITEMCATEGORY_SUPPLIES,
+
+    UseTime = 3,
+    Infection = -40,
+    UseSound = "items/medshot4.wav",
+
     UseFunc = function(ply) local healing = UseFunc_HealInfection(ply, 3, 40, "items/medshot4.wav") return healing end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_antidote") return drop end,
 })
 
 GM:CreateItem("item_egg", {
@@ -146,8 +174,13 @@ GM:CreateItem("item_egg", {
     Supply = 0,
     Rarity = 0,
     Category = ITEMCATEGORY_SUPPLIES,
+
+    UseTime = 1,
+    Hunger = 4,
+    Thirst = -1,
+    UseSound = "npc/barnacle/barnacle_gulp2.wav",
+
     UseFunc = function(ply) local food = UseFunc_Eat(ply, 1, 0, 4, -1, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_egg") return drop end
 })
 
 GM:CreateItem("item_milk", {
@@ -157,8 +190,14 @@ GM:CreateItem("item_milk", {
     Supply = 20,
     Rarity = 1,
     Category = ITEMCATEGORY_SUPPLIES,
+
+    UseTime = 4,
+    Hunger = 3,
+    Thirst = 20,
+    UseSound = "npc/barnacle/barnacle_gulp2.wav",
+
+
     UseFunc = function(ply) local food = UseFunc_Drink(ply, 4, 0, 3, 20, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_milk") return drop end
 })
 
 GM:CreateItem("item_soda", {
@@ -168,8 +207,16 @@ GM:CreateItem("item_soda", {
     Supply = 0,
     Rarity = 1,
     Category = ITEMCATEGORY_SUPPLIES,
+
+    UseTime = 3,
+    Health = 1,
+    Hunger = 3,
+    Thirst = 35,
+    Stamina = 5,
+    Fatigue = -0.5,
+    UseSound = "theeternalapocalypse/items/inv_drink_can2.ogg",
+
     UseFunc = function(ply) local food = UseFunc_Drink(ply, 3, 1, 3, 35, 5, -0.5, "theeternalapocalypse/items/inv_drink_can2.ogg") return food end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_soda") return drop end
 })
 
 GM:CreateItem("item_waterbottle", {
@@ -179,8 +226,16 @@ GM:CreateItem("item_waterbottle", {
     Supply = 0,
     Rarity = 2,
     Category = ITEMCATEGORY_SUPPLIES,
+
+    UseTime = 5,
+    Health = 1,
+    Hunger = 4,
+    Thirst = 80,
+    Stamina = 5,
+    Fatigue = -1,
+    UseSound = "theeternalapocalypse/items/inv_water.ogg",
+
     UseFunc = function(ply) local food = UseFunc_Drink(ply, 5, 1, 4, 80, 5, -1, "theeternalapocalypse/items/inv_water.ogg") return food end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_waterbottle") return drop end
 })
 
 GM:CreateItem("item_energydrink", {
@@ -190,8 +245,16 @@ GM:CreateItem("item_energydrink", {
     Supply = 0,
     Rarity = 2,
     Category = ITEMCATEGORY_SUPPLIES,
+
+    UseTime = 4,
+    Health = 1,
+    Hunger = 2,
+    Thirst = 30,
+    Stamina = 55,
+    Fatigue = -6,
+    UseSound = "theeternalapocalypse/items/inv_drink_can.ogg",
+
     UseFunc = function(ply) local food = UseFunc_Drink(ply, 4, 1, 2, 30, 55, -6, "theeternalapocalypse/items/inv_drink_can.ogg") return food end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_energydrink") return drop end
 })
 
 GM:CreateItem("item_energydrink_nonstop", {
@@ -201,8 +264,16 @@ GM:CreateItem("item_energydrink_nonstop", {
     Supply = 0,
     Rarity = 2,
     Category = ITEMCATEGORY_SUPPLIES,
+
+    UseTime = 4,
+    Health = 2,
+    Hunger = 3,
+    Thirst = 32,
+    Stamina = 85,
+    Fatigue = -8,
+    UseSound = "theeternalapocalypse/items/inv_drink_can.ogg",
+
     UseFunc = function(ply) local food = UseFunc_Drink(ply, 4, 2, 3, 32, 85, -8, "theeternalapocalypse/items/inv_drink_can.ogg") return food end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_energydrink_nonstop") return drop end
 })
 
 GM:CreateItem("item_beerbottle", {
@@ -212,8 +283,16 @@ GM:CreateItem("item_beerbottle", {
     Supply = 10,
     Rarity = 3,
     Category = ITEMCATEGORY_SUPPLIES,
+
+    UseTime = 5,
+    Health = 1,
+    Hunger = 9,
+    Thirst = 5,
+    Stamina = -15,
+    Fatigue = 10,
+    UseSound = "npc/barnacle/barnacle_gulp2.wav",
+
     UseFunc = function(ply) local food = UseFunc_Drink(ply, 5, 1, 9, 5, -15, 10, "npc/barnacle/barnacle_gulp2.wav") return food end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_beerbottle") return drop end
 })
 
 GM:CreateItem("item_tinnedfood", {
@@ -223,8 +302,16 @@ GM:CreateItem("item_tinnedfood", {
     Supply = 30,
     Rarity = 2,
     Category = ITEMCATEGORY_SUPPLIES,
+
+    UseTime = 2,
+    Health = 3,
+    Hunger = 20,
+    Thirst = -10,
+    Stamina = 0,
+    Fatigue = 0,
+    UseSound = "npc/barnacle/barnacle_gulp2.wav",
+
     UseFunc = function(ply) local food = UseFunc_Eat(ply, 2, 3, 20, -10, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_tinnedfood") return drop end
 })
 
 GM:CreateItem("item_potato", {
@@ -234,8 +321,16 @@ GM:CreateItem("item_potato", {
     Supply = 20,
     Rarity = 1,
     Category = ITEMCATEGORY_SUPPLIES,
+
+    UseTime = 2,
+    Health = 2,
+    Hunger = 22,
+    Thirst = -8,
+    Stamina = 0,
+    Fatigue = 0,
+    UseSound = "npc/barnacle/barnacle_gulp2.wav",
+
     UseFunc = function(ply) local food = UseFunc_Eat(ply, 2, 2, 22, -8, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_potato") return drop end
 })
 
 GM:CreateItem("item_traderfood", {
@@ -245,8 +340,16 @@ GM:CreateItem("item_traderfood", {
     Supply = 5,
     Rarity = 2,
     Category = ITEMCATEGORY_SUPPLIES,
+
+    UseTime = 5,
+    Health = 4,
+    Hunger = 47,
+    Thirst = -15,
+    Stamina = 0,
+    Fatigue = 0,
+    UseSound = "npc/barnacle/barnacle_gulp2.wav",
+
     UseFunc = function(ply) local food = UseFunc_Eat(ply, 5, 4, 47, -15, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_traderfood") return drop end
 })
 
 GM:CreateItem("item_trout", {
@@ -256,8 +359,16 @@ GM:CreateItem("item_trout", {
     Supply = 2,
     Rarity = 3,
     Category = ITEMCATEGORY_SUPPLIES,
+
+    UseTime = 6,
+    Health = 5,
+    Hunger = 65,
+    Thirst = -4,
+    Stamina = 0,
+    Fatigue = 0,
+    UseSound = "npc/barnacle/barnacle_gulp2.wav",
+
     UseFunc = function(ply) local food = UseFunc_Eat(ply, 6, 5, 65, -4, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_trout") return drop end
 })
 
 GM:CreateItem("item_melon", {
@@ -267,8 +378,16 @@ GM:CreateItem("item_melon", {
     Supply = 3,
     Rarity = 3,
     Category = ITEMCATEGORY_SUPPLIES,
+
+    UseTime = 7,
+    Health = 7,
+    Hunger = 85,
+    Thirst = 20,
+    Stamina = 3,
+    Fatigue = 0,
+    UseSound = "npc/barnacle/barnacle_gulp2.wav",
+
     UseFunc = function(ply) local food = UseFunc_Eat(ply, 7, 7, 85, 20, 3, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_melon") return drop end,
 })
 
 GM:CreateItem("item_burger", {
@@ -278,12 +397,28 @@ GM:CreateItem("item_burger", {
     Supply = -1,
     Rarity = 7,
     Category = ITEMCATEGORY_SUPPLIES,
+
+    UseTime = 5,
+    Health = 30,
+    Hunger = 100,
+    Thirst = 15,
+    Stamina = 90,
+    Fatigue = -15,
+    UseSound = "vo/npc/male01/yeah02.wav",
+
     UseFunc = function(ply) local food = UseFunc_Eat(ply, 5, 30, 100, 15, 90, -15, "vo/npc/male01/yeah02.wav") return food end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_burger") return drop end,
     OnSell = function(ply, amt)
         ply:PrintMessage(3, "bruh did you really SELL THE BURGER WHAT IS WRONG WITH YOU?!?!?")
         timer.Simple(math.Rand(60,180), function()
-            if ply:IsValid() and ply:Alive() then ply:Kill() end
+            if ply:IsValid() and ply:Alive() then
+                ply.CauseOfDeath = "Death Unknown"
+                ply.DeathMessage = "has died mysteriously"
+                ply:Kill()
+                local rag = ply:GetRagdollEntity()
+                if rag and rag:IsValid() then
+                    rag:Dissolve()
+                end
+            end
         end)
     end
 })
@@ -295,8 +430,16 @@ GM:CreateItem("item_hotdog", {
     Supply = -1,
     Rarity = 6,
     Category = ITEMCATEGORY_SUPPLIES,
+
+    UseTime = 5,
+    Health = 20,
+    Hunger = 80,
+    Thirst = 10,
+    Stamina = 40,
+    Fatigue = -15,
+    UseSound = "vo/npc/male01/nice.wav",
+
     UseFunc = function(ply) local food = UseFunc_Eat(ply, 5, 20, 80, 10, 40, -15, "vo/npc/male01/nice.wav") return food end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_hotdog") return drop end
 })
 
 GM:CreateItem("item_donut", {
@@ -306,8 +449,16 @@ GM:CreateItem("item_donut", {
     Supply = 5,
     Rarity = 2,
     Category = ITEMCATEGORY_SUPPLIES,
+
+    UseTime = 3,
+    Health = 2,
+    Hunger = 25,
+    Thirst = -7,
+    Stamina = 5,
+    Fatigue = -1,
+    UseSound = "npc/barnacle/barnacle_gulp2.wav",
+
     UseFunc = function(ply) local food = UseFunc_Eat(ply, 3, 2, 25, -7, 5, -1, "npc/barnacle/barnacle_gulp2.wav") return food end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_donut") return drop end,
 })
 
 GM:CreateItem("item_bed", {
@@ -329,7 +480,6 @@ GM:CreateItem("item_sleepingbag", {
     Rarity = 5,
     Category = ITEMCATEGORY_SUPPLIES,
     UseFunc = function(ply) UseFunc_Sleep(ply, false) return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_sleepingbag") return drop end,
 })
 
 GM:CreateItem("item_amnesiapills", {
@@ -340,7 +490,6 @@ GM:CreateItem("item_amnesiapills", {
     Rarity = 2,
     Category = ITEMCATEGORY_SUPPLIES,
     UseFunc = function(ply) local bool = UseFunc_Respec(ply) return bool end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_amnesiapills") return drop end
 })
 
 GM:CreateItem("item_armorbattery", {
@@ -350,8 +499,13 @@ GM:CreateItem("item_armorbattery", {
     Supply = 6,
     Rarity = 4,
     Category = ITEMCATEGORY_SUPPLIES,
+
+    UseTime = 2,
+    Battery = 50,
+    Armor = 15,
+    UseSound = "items/battery_pickup.wav",
+
     UseFunc = function(ply) local armor = UseFunc_Armor(ply, 2, 50, 15, "items/battery_pickup.wav") return armor end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_armorbattery") return drop end,
 })
 
 GM:CreateItem("item_armorkevlar", {
@@ -361,8 +515,13 @@ GM:CreateItem("item_armorkevlar", {
     Supply = 3,
     Rarity = 5,
     Category = ITEMCATEGORY_SUPPLIES,
+
+    UseTime = 4,
+    Battery = 0,
+    Armor = 35,
+    UseSound = "npc/combine_soldier/zipline_hitground2.wav",
+
     UseFunc = function(ply) local armor = UseFunc_Armor(ply, 4, 0, 35, "npc/combine_soldier/zipline_hitground2.wav") return armor end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_armorkevlar") return drop end,
 })
 
 -- S.T.A.L.K.E.R.
@@ -376,8 +535,16 @@ GM:CreateItem("item_stalker_beans", {
     Supply = -1,
     Rarity = 3,
     Category = ITEMCATEGORY_SUPPLIES,
+
+    UseTime = 5,
+    Health = 1,
+    Hunger = 68,
+    Thirst = -15,
+    Stamina = 0,
+    Fatigue = -3,
+    UseSound = "sound",
+
     UseFunc = function(ply) local food = UseFunc_Eat(ply, 5, 1, 68, -15, 0, -3, "sound") return food end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_stalker_beans") return drop end
 })
 
 GM:CreateItem("item_stalker_bread", {
@@ -389,8 +556,16 @@ GM:CreateItem("item_stalker_bread", {
     Supply = -1,
     Rarity = 2,
     Category = ITEMCATEGORY_SUPPLIES,
+
+    UseTime = 3.6,
+    Health = 1,
+    Hunger = 35,
+    Thirst = -10,
+    Stamina = 0,
+    Fatigue = -3,
+    UseSound = "sound",
+
     UseFunc = function(ply) local food = UseFunc_Eat(ply, 3.6, 1, 35, -10, 0, -3, "sound") return food end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_stalker_bread") return drop end
 })
 
 GM:CreateItem("item_stalker_stimpack", {
@@ -402,8 +577,13 @@ GM:CreateItem("item_stalker_stimpack", {
     Supply = -1,
     Rarity = 3,
     Category = ITEMCATEGORY_SUPPLIES,
+
+    UseTime = 1.6,
+    Health = 40,
+    Infection = 0,
+    UseSound = "sound",
+
     UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 1.6, 40, 0, "theeternalapocalypse/items/inv_stimpack.ogg") return healing end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_stalker_stimpack") return drop end,
     CanUseOnOthers = true
 })
 
@@ -416,8 +596,13 @@ GM:CreateItem("item_stalker_stimpack_army", {
     Supply = -1,
     Rarity = 3,
     Category = ITEMCATEGORY_SUPPLIES,
+
+    UseTime = 1.6,
+    Health = 70,
+    Infection = 0,
+    UseSound = "sound",
+
     UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 1.6, 70, 0, "theeternalapocalypse/items/inv_stimpack.ogg") return healing end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_stalker_stimpack_army") return drop end,
     CanUseOnOthers = true
 })
 
@@ -430,8 +615,13 @@ GM:CreateItem("item_stalker_stimpack_scientific", {
     Supply = -1,
     Rarity = 3,
     Category = ITEMCATEGORY_SUPPLIES,
+
+    UseTime = 1.6,
+    Health = 105,
+    Infection = -30,
+    UseSound = "sound",
+
     UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 1.6, 105, 30, "theeternalapocalypse/items/inv_stimpack.ogg") return healing end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_stalker_stimpack_scientific") return drop end,
     CanUseOnOthers = true
 })
 
@@ -444,8 +634,37 @@ GM:CreateItem("item_stalker_beer", {
     Supply = -1,
     Rarity = 3,
     Category = ITEMCATEGORY_SUPPLIES,
-    UseFunc = function(ply, targetply) local drink = UseFunc_Drink(ply, 5, 0, 3, 25, 0, 3, "sound") return drink end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_stalker_beer") return drop end,
-    CanUseOnOthers = true
+
+    UseTime = 5,
+    Health = 0,
+    Hunger = 3,
+    Thirst = 25,
+    Stamina = 0,
+    Fatigue = 3,
+    UseSound = "sound",
+
+    UseFunc = function(ply, targetply) local drink = UseFunc_Drink(ply, 5, 0, 3, 25, 0, 3, "theeternalapocalypse/items/inv_drink_flask_beer.ogg") return drink end,
+})
+
+
+GM:CreateItem("item_stalker_kolbasa", {
+    Name = "Kolbasa",
+    Description = "WIP",
+    Cost = 180,
+    Model = "models/wick/wrbstalker/anomaly/items/wick_dev_kolbasa.mdl",
+    Weight = 0.34,
+    Supply = -1,
+    Rarity = 3,
+    Category = ITEMCATEGORY_SUPPLIES,
+
+    UseTime = 5,
+    Health = 0,
+    Hunger = 3,
+    Thirst = 25,
+    Stamina = 0,
+    Fatigue = 3,
+    UseSound = "sound",
+
+    UseFunc = function(ply, targetply) local drink = UseFunc_Eat(ply, 5, 0, 3, 25, 0, 3, "sound") return drink end,
 })
 

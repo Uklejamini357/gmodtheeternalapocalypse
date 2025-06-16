@@ -9,7 +9,7 @@ GM:CreateItem(itemid, { -- It's necessary to use the Entity Classname here for t
     Rarity = rarity,
     Category = ITEMCATEGORY_WEAPONS,
     UseFunc = function(ply) UseFunc_EquipGun(ply, itemid) return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, itemid) UseFunc_StripWeapon(ply, itemid, drop)
+    DropFunc = function(ply, _, item) local drop = UseFunc_DropItem(ply, itemid) UseFunc_StripWeapon(ply, itemid, drop)
 
 -- Additional variables if needed
     IsSecret = false,
@@ -28,7 +28,6 @@ i = GM:CreateItem("item_m9k_smgammo", {
     Rarity = 2,
     Category = ITEMCATEGORY_AMMO,
     UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 100, "SMG1") return bool end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_m9k_smgammo") return drop end
 })
 
 i = GM:CreateItem("item_m9k_assaultammo", {
@@ -39,7 +38,6 @@ i = GM:CreateItem("item_m9k_assaultammo", {
     Rarity = 2,
     Category = ITEMCATEGORY_AMMO,
     UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 100, "AR2") return bool end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_m9k_assaultammo") return drop end
 })
 
 i = GM:CreateItem("item_m9k_sniperammo", {
@@ -50,7 +48,6 @@ i = GM:CreateItem("item_m9k_sniperammo", {
     Rarity = 2,
     Category = ITEMCATEGORY_AMMO,
     UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 50, "SniperPenetratedRound") return bool end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_m9k_sniperammo") return drop end
 })
 
 
@@ -63,8 +60,7 @@ GM:CreateItem("m9k_coltpython", {
     Supply = 0,
     Rarity = 3,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_coltpython") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_coltpython") UseFunc_StripWeapon(ply, "m9k_coltpython", drop) return drop end
+    WeaponType = "m9k_coltpython"
 })
 
 GM:CreateItem("m9k_glock", {
@@ -74,8 +70,7 @@ GM:CreateItem("m9k_glock", {
     Supply = 0,
     Rarity = 4,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_glock") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_glock") UseFunc_StripWeapon(ply, "m9k_glock", drop) return drop end
+    WeaponType = "m9k_glock"
 })
 
 GM:CreateItem("m9k_hk45", {
@@ -85,8 +80,7 @@ GM:CreateItem("m9k_hk45", {
     Supply = 0,
     Rarity = 3,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_hk45") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_hk45") UseFunc_StripWeapon(ply, "m9k_hk45", drop) return drop end
+    WeaponType = "m9k_hk45"
 })
 
 GM:CreateItem("m9k_m92beretta", {
@@ -96,8 +90,7 @@ GM:CreateItem("m9k_m92beretta", {
     Supply = 0,
     Rarity = 3,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_m92beretta") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_m92beretta") UseFunc_StripWeapon(ply, "m9k_m92beretta", drop) return drop end
+    WeaponType = "m9k_m92beretta"
 })
 
 GM:CreateItem("m9k_luger", {
@@ -107,8 +100,7 @@ GM:CreateItem("m9k_luger", {
     Supply = 0,
     Rarity = 3,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_luger") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_luger") UseFunc_StripWeapon(ply, "m9k_luger", drop) return drop end
+    WeaponType = "m9k_luger"
 })
 
 GM:CreateItem("m9k_ragingbull", {
@@ -118,8 +110,7 @@ GM:CreateItem("m9k_ragingbull", {
     Supply = 0,
     Rarity = 4,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_ragingbull") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_ragingbull") UseFunc_StripWeapon(ply, "m9k_ragingbull", drop) return drop end
+    WeaponType = "m9k_ragingbull"
 })
 
 GM:CreateItem("m9k_scoped_taurus", {
@@ -129,8 +120,7 @@ GM:CreateItem("m9k_scoped_taurus", {
     Supply = 0,
     Rarity = 4,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_scoped_taurus") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_scoped_taurus") UseFunc_StripWeapon(ply, "m9k_scoped_taurus", drop) return drop end
+    WeaponType = "m9k_scoped_taurus"
 })
 
 GM:CreateItem("m9k_remington1858", {
@@ -140,8 +130,7 @@ GM:CreateItem("m9k_remington1858", {
     Supply = 0,
     Rarity = 3,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_remington1858") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_remington1858") UseFunc_StripWeapon(ply, "m9k_remington1858", drop) return drop end
+    WeaponType = "m9k_remington1858"
 })
 
 GM:CreateItem("m9k_model3russian", {
@@ -151,8 +140,7 @@ GM:CreateItem("m9k_model3russian", {
     Supply = 0,
     Rarity = 3,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_model3russian") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_model3russian") UseFunc_StripWeapon(ply, "m9k_model3russian", drop) return drop end
+    WeaponType = "m9k_model3russian"
 })
 
 GM:CreateItem("m9k_model500", {
@@ -162,8 +150,7 @@ GM:CreateItem("m9k_model500", {
     Supply = -1,
     Rarity = 4,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_model500") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_model500") UseFunc_StripWeapon(ply, "m9k_model500", drop) return drop end
+    WeaponType = "m9k_model500"
 })
 
 GM:CreateItem("m9k_model627", {
@@ -173,8 +160,7 @@ GM:CreateItem("m9k_model627", {
     Supply = 1,
     Rarity = 4,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_model627") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_model627") UseFunc_StripWeapon(ply, "m9k_model627", drop) return drop end
+    WeaponType = "m9k_model627"
 })
 
 GM:CreateItem("m9k_sig_p229r", {
@@ -184,8 +170,7 @@ GM:CreateItem("m9k_sig_p229r", {
     Supply = 0,
     Rarity = 3,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_sig_p229r") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_sig_p229r") UseFunc_StripWeapon(ply, "m9k_sig_p229r", drop) return drop end
+    WeaponType = "m9k_sig_p229r"
 })
 
 
@@ -199,8 +184,7 @@ GM:CreateItem("m9k_acr", {
     Supply = 0,
     Rarity = 6,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_acr") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_acr") UseFunc_StripWeapon(ply, "m9k_acr", drop) return drop end
+    WeaponType = "m9k_acr"
 })
 
 GM:CreateItem("m9k_ak47", {
@@ -210,8 +194,7 @@ GM:CreateItem("m9k_ak47", {
     Supply = -1,
     Rarity = 6,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_ak47") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_ak47") UseFunc_StripWeapon(ply, "m9k_ak47", drop) return drop end
+    WeaponType = "m9k_ak47"
 })
 
 GM:CreateItem("m9k_ak74", {
@@ -221,8 +204,7 @@ GM:CreateItem("m9k_ak74", {
     Supply = 0,
     Rarity = 6,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_ak74") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_ak74") UseFunc_StripWeapon(ply, "m9k_ak74", drop) return drop end
+    WeaponType = "m9k_ak74"
 })
 
 GM:CreateItem("m9k_amd65", {
@@ -232,8 +214,7 @@ GM:CreateItem("m9k_amd65", {
     Supply = 0,
     Rarity = 6,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_amd65") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_amd65") UseFunc_StripWeapon(ply, "m9k_amd65", drop) return drop end
+    WeaponType = "m9k_amd65"
 })
 
 GM:CreateItem("m9k_an94", {
@@ -243,8 +224,7 @@ GM:CreateItem("m9k_an94", {
     Supply = -1,
     Rarity = 7,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_an94") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_an94") UseFunc_StripWeapon(ply, "m9k_an94", drop) return drop end
+    WeaponType = "m9k_an94"
 })
 
 GM:CreateItem("m9k_val", {
@@ -254,8 +234,7 @@ GM:CreateItem("m9k_val", {
     Supply = -1,
     Rarity = 6,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_val") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_val") UseFunc_StripWeapon(ply, "m9k_val", drop) return drop end
+    WeaponType = "m9k_val"
 })
 
 GM:CreateItem("m9k_f2000", {
@@ -265,8 +244,7 @@ GM:CreateItem("m9k_f2000", {
     Supply = -1,
     Rarity = 6,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_f2000") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_f2000") UseFunc_StripWeapon(ply, "m9k_f2000", drop) return drop end
+    WeaponType = "m9k_f2000"
 })
 
 GM:CreateItem("m9k_fal", {
@@ -276,8 +254,7 @@ GM:CreateItem("m9k_fal", {
     Supply = -1,
     Rarity = 5,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_fal") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_fal") UseFunc_StripWeapon(ply, "m9k_fal", drop) return drop end
+    WeaponType = "m9k_fal"
 })
 
 GM:CreateItem("m9k_g36", {
@@ -287,8 +264,7 @@ GM:CreateItem("m9k_g36", {
     Supply = -1,
     Rarity = 5,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_g36") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_g36") UseFunc_StripWeapon(ply, "m9k_g36", drop) return drop end
+    WeaponType = "m9k_g36"
 })
 
 GM:CreateItem("m9k_m416", {
@@ -298,8 +274,7 @@ GM:CreateItem("m9k_m416", {
     Supply = -1,
     Rarity = 5,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_m416") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_m416") UseFunc_StripWeapon(ply, "m9k_m416", drop) return drop end
+    WeaponType = "m9k_m416"
 })
 
 GM:CreateItem("m9k_g3a3", {
@@ -309,8 +284,7 @@ GM:CreateItem("m9k_g3a3", {
     Supply = -1,
     Rarity = 6,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_g3a3") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_g3a3") UseFunc_StripWeapon(ply, "m9k_g3a3", drop) return drop end
+    WeaponType = "m9k_g3a3"
 })
 
 GM:CreateItem("m9k_l85", {
@@ -320,8 +294,7 @@ GM:CreateItem("m9k_l85", {
     Supply = -1,
     Rarity = 6,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_l85") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_l85") UseFunc_StripWeapon(ply, "m9k_l85", drop) return drop end
+    WeaponType = "m9k_l85"
 })
 
 GM:CreateItem("m9k_m16a4_acog", {
@@ -331,8 +304,7 @@ GM:CreateItem("m9k_m16a4_acog", {
     Supply = -1,
     Rarity = 6,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_m16a4_acog") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_m16a4_acog") UseFunc_StripWeapon(ply, "m9k_m16a4_acog", drop) return drop end
+    WeaponType = "m9k_m16a4_acog"
 })
 
 GM:CreateItem("m9k_vikhr", {
@@ -342,8 +314,7 @@ GM:CreateItem("m9k_vikhr", {
     Supply = -1,
     Rarity = 5,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_vikhr") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_vikhr") UseFunc_StripWeapon(ply, "m9k_vikhr", drop) return drop end
+    WeaponType = "m9k_vikhr"
 })
 
 GM:CreateItem("m9k_auga3", {
@@ -353,8 +324,7 @@ GM:CreateItem("m9k_auga3", {
     Supply = -1,
     Rarity = 5,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_auga3") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_auga3") UseFunc_StripWeapon(ply, "m9k_auga3", drop) return drop end
+    WeaponType = "m9k_auga3"
 })
 
 GM:CreateItem("m9k_tar21", {
@@ -364,8 +334,7 @@ GM:CreateItem("m9k_tar21", {
     Supply = -1,
     Rarity = 5,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_tar21") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_tar21") UseFunc_StripWeapon(ply, "m9k_tar21", drop) return drop end
+    WeaponType = "m9k_tar21"
 })
 
 
@@ -379,8 +348,7 @@ GM:CreateItem("m9k_ares_shrike", {
     Supply = -1,
     Rarity = 7,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_ares_shrike") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_ares_shrike") UseFunc_StripWeapon(ply, "m9k_ares_shrike", drop) return drop end
+    WeaponType = "m9k_ares_shrike"
 })
 
 GM:CreateItem("m9k_fg42", {
@@ -390,8 +358,7 @@ GM:CreateItem("m9k_fg42", {
     Supply = 0,
     Rarity = 6,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_fg42") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_fg42") UseFunc_StripWeapon(ply, "m9k_fg42", drop) return drop end
+    WeaponType = "m9k_fg42"
 })
 
 GM:CreateItem("m9k_m1918bar", {
@@ -401,8 +368,7 @@ GM:CreateItem("m9k_m1918bar", {
     Supply = -1,
     Rarity = 6,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_m1918bar") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_m1918bar") UseFunc_StripWeapon(ply, "m9k_m1918bar", drop) return drop end
+    WeaponType = "m9k_m1918bar"
 })
 
 GM:CreateItem("m9k_m60", {
@@ -412,8 +378,7 @@ GM:CreateItem("m9k_m60", {
     Supply = 1,
     Rarity = 8,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_m60") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_m60") UseFunc_StripWeapon(ply, "m9k_m60", drop) return drop end
+    WeaponType = "m9k_m60"
 })
 
 GM:CreateItem("m9k_pkm", {
@@ -423,8 +388,7 @@ GM:CreateItem("m9k_pkm", {
     Supply = -1,
     Rarity = 7,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_pkm") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_pkm") UseFunc_StripWeapon(ply, "m9k_pkm", drop) return drop end
+    WeaponType = "m9k_pkm"
 })
 
 
@@ -438,8 +402,7 @@ GM:CreateItem("m9k_m3", {
     Supply = -1,
     Rarity = 5,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_m3") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_m3") UseFunc_StripWeapon(ply, "m9k_m3", drop) return drop end
+    WeaponType = "m9k_m3"
 })
 
 GM:CreateItem("m9k_browningauto5", {
@@ -449,8 +412,7 @@ GM:CreateItem("m9k_browningauto5", {
     Supply = -1,
     Rarity = 6,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_browningauto5") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_browningauto5") UseFunc_StripWeapon(ply, "m9k_browningauto5", drop) return drop end
+    WeaponType = "m9k_browningauto5"
 })
 
 GM:CreateItem("m9k_ithacam37", {
@@ -460,8 +422,7 @@ GM:CreateItem("m9k_ithacam37", {
     Supply = -1,
     Rarity = 6,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_ithacam37") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_ithacam37") UseFunc_StripWeapon(ply, "m9k_ithacam37", drop) return drop end
+    WeaponType = "m9k_ithacam37"
 })
 
 GM:CreateItem("m9k_mossberg590", {
@@ -471,8 +432,7 @@ GM:CreateItem("m9k_mossberg590", {
     Supply = -1,
     Rarity = 5,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_mossberg590") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_mossberg590") UseFunc_StripWeapon(ply, "m9k_mossberg590", drop) return drop end
+    WeaponType = "m9k_mossberg590"
 })
 
 GM:CreateItem("m9k_jackhammer", {
@@ -482,8 +442,7 @@ GM:CreateItem("m9k_jackhammer", {
     Supply = -1,
     Rarity = 6,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_jackhammer") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_jackhammer") UseFunc_StripWeapon(ply, "m9k_jackhammer", drop) return drop end
+    WeaponType = "m9k_jackhammer"
 })
 
 GM:CreateItem("m9k_spas12", {
@@ -493,8 +452,7 @@ GM:CreateItem("m9k_spas12", {
     Supply = -1,
     Rarity = 7,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_spas12") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_spas12") UseFunc_StripWeapon(ply, "m9k_spas12", drop) return drop end
+    WeaponType = "m9k_spas12"
 })
 
 GM:CreateItem("m9k_striker12", {
@@ -504,8 +462,7 @@ GM:CreateItem("m9k_striker12", {
     Supply = -1,
     Rarity = 7,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_striker12") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_striker12") UseFunc_StripWeapon(ply, "m9k_striker12", drop) return drop end
+    WeaponType = "m9k_striker12"
 })
 
 GM:CreateItem("m9k_1897winchester", {
@@ -515,8 +472,7 @@ GM:CreateItem("m9k_1897winchester", {
     Supply = -1,
     Rarity = 5,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_1897winchester") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_1897winchester") UseFunc_StripWeapon(ply, "m9k_1897winchester", drop) return drop end
+    WeaponType = "m9k_1897winchester"
 })
 
 GM:CreateItem("m9k_1887winchester", {
@@ -526,8 +482,7 @@ GM:CreateItem("m9k_1887winchester", {
     Supply = 1,
     Rarity = 5,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_1887winchester") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_1887winchester") UseFunc_StripWeapon(ply, "m9k_1887winchester", drop) return drop end
+    WeaponType = "m9k_1887winchester"
 })
 
 
@@ -541,8 +496,7 @@ GM:CreateItem("m9k_barret_m82", {
     Supply = -1,
     Rarity = 8,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_barret_m82") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_barret_m82") UseFunc_StripWeapon(ply, "m9k_barret_m82", drop) return drop end
+    WeaponType = "m9k_barret_m82"
 })
 
 GM:CreateItem("m9k_m98b", {
@@ -552,8 +506,7 @@ GM:CreateItem("m9k_m98b", {
     Supply = -1,
     Rarity = 6,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_m98b") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_m98b") UseFunc_StripWeapon(ply, "m9k_m98b", drop) return drop end
+    WeaponType = "m9k_m98b"
 })
 
 GM:CreateItem("m9k_svu", {
@@ -563,8 +516,7 @@ GM:CreateItem("m9k_svu", {
     Supply = -1,
     Rarity = 6,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_svu") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_svu") UseFunc_StripWeapon(ply, "m9k_svu", drop) return drop end
+    WeaponType = "m9k_svu"
 })
 
 GM:CreateItem("m9k_sl8", {
@@ -574,8 +526,7 @@ GM:CreateItem("m9k_sl8", {
     Supply = -1,
     Rarity = 6,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_sl8") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_sl8") UseFunc_StripWeapon(ply, "m9k_sl8", drop) return drop end
+    WeaponType = "m9k_sl8"
 })
 
 GM:CreateItem("m9k_intervention", {
@@ -585,8 +536,7 @@ GM:CreateItem("m9k_intervention", {
     Supply = 0,
     Rarity = 6,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_intervention") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_intervention") UseFunc_StripWeapon(ply, "m9k_intervention", drop) return drop end
+    WeaponType = "m9k_intervention"
 })
 
 GM:CreateItem("m9k_m24", {
@@ -596,8 +546,7 @@ GM:CreateItem("m9k_m24", {
     Supply = -1,
     Rarity = 6,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_m24") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_m24") UseFunc_StripWeapon(ply, "m9k_m24", drop) return drop end
+    WeaponType = "m9k_m24"
 })
 
 GM:CreateItem("m9k_psg1", {
@@ -607,8 +556,7 @@ GM:CreateItem("m9k_psg1", {
     Supply = -1,
     Rarity = 7,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_psg1") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_psg1") UseFunc_StripWeapon(ply, "m9k_psg1", drop) return drop end
+    WeaponType = "m9k_psg1"
 })
 
 GM:CreateItem("m9k_remington7615p", {
@@ -618,8 +566,7 @@ GM:CreateItem("m9k_remington7615p", {
     Supply = -1,
     Rarity = 3,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_remington7615p") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_remington7615p") UseFunc_StripWeapon(ply, "m9k_remington7615p", drop) return drop end
+    WeaponType = "m9k_remington7615p"
 })
 
 GM:CreateItem("m9k_svt40", {
@@ -629,8 +576,7 @@ GM:CreateItem("m9k_svt40", {
     Supply = -1,
     Rarity = 5,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_svt40") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_svt40") UseFunc_StripWeapon(ply, "m9k_svt40", drop) return drop end
+    WeaponType = "m9k_svt40"
 })
 
 GM:CreateItem("m9k_contender", {
@@ -640,8 +586,7 @@ GM:CreateItem("m9k_contender", {
     Supply = -1,
     Rarity = 4,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_contender") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_contender") UseFunc_StripWeapon(ply, "m9k_contender", drop) return drop end
+    WeaponType = "m9k_contender"
 })
 
 GM:CreateItem("m9k_honeybadger", {
@@ -651,8 +596,7 @@ GM:CreateItem("m9k_honeybadger", {
     Supply = -1,
     Rarity = 6,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_honeybadger") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_honeybadger") UseFunc_StripWeapon(ply, "m9k_honeybadger", drop) return drop end
+    WeaponType = "m9k_honeybadger"
 })
 
 
@@ -666,8 +610,7 @@ GM:CreateItem("m9k_mp5", {
     Supply = -1,
     Rarity = 5,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_mp5") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_mp5") UseFunc_StripWeapon(ply, "m9k_mp5", drop) return drop end
+    WeaponType = "m9k_mp5"
 })
 
 GM:CreateItem("m9k_mp7", {
@@ -677,8 +620,7 @@ GM:CreateItem("m9k_mp7", {
     Supply = -1,
     Rarity = 6,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_mp7") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_mp7") UseFunc_StripWeapon(ply, "m9k_mp7", drop) return drop end
+    WeaponType = "m9k_mp7"
 })
 
 GM:CreateItem("m9k_ump45", {
@@ -688,8 +630,7 @@ GM:CreateItem("m9k_ump45", {
     Supply = 1,
     Rarity = 5,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_ump45") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_ump45") UseFunc_StripWeapon(ply, "m9k_ump45", drop) return drop end
+    WeaponType = "m9k_ump45"
 })
 
 GM:CreateItem("m9k_kac_pdw", {
@@ -699,8 +640,7 @@ GM:CreateItem("m9k_kac_pdw", {
     Supply = -1,
     Rarity = 6,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_kac_pdw") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_kac_pdw") UseFunc_StripWeapon(ply, "m9k_kac_pdw", drop) return drop end
+    WeaponType = "m9k_kac_pdw"
 })
 
 GM:CreateItem("m9k_vector", {
@@ -710,8 +650,7 @@ GM:CreateItem("m9k_vector", {
     Supply = -1,
     Rarity = 6,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_vector") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_vector") UseFunc_StripWeapon(ply, "m9k_vector", drop) return drop end
+    WeaponType = "m9k_vector"
 })
 
 GM:CreateItem("m9k_magpulpdr", {
@@ -721,8 +660,7 @@ GM:CreateItem("m9k_magpulpdr", {
     Supply = -1,
     Rarity = 6,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_magpulpdr") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_magpulpdr") UseFunc_StripWeapon(ply, "m9k_magpulpdr", drop) return drop end
+    WeaponType = "m9k_magpulpdr"
 })
 
 GM:CreateItem("m9k_mp5sd", {
@@ -732,8 +670,7 @@ GM:CreateItem("m9k_mp5sd", {
     Supply = -1,
     Rarity = 6,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_mp5sd") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_mp5sd") UseFunc_StripWeapon(ply, "m9k_mp5sd", drop) return drop end
+    WeaponType = "m9k_mp5sd"
 })
 
 GM:CreateItem("m9k_mp9", {
@@ -743,8 +680,7 @@ GM:CreateItem("m9k_mp9", {
     Supply = -1,
     Rarity = 6,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_mp9") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_mp9") UseFunc_StripWeapon(ply, "m9k_mp9", drop) return drop end
+    WeaponType = "m9k_mp9"
 })
 
 GM:CreateItem("m9k_tec9", {
@@ -754,8 +690,7 @@ GM:CreateItem("m9k_tec9", {
     Supply = -1,
     Rarity = 5,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_tec9") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_tec9") UseFunc_StripWeapon(ply, "m9k_tec9", drop) return drop end
+    WeaponType = "m9k_tec9"
 })
 
 GM:CreateItem("m9k_thompson", {
@@ -765,8 +700,7 @@ GM:CreateItem("m9k_thompson", {
     Supply = -1,
     Rarity = 6,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_thompson") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_thompson") UseFunc_StripWeapon(ply, "m9k_thompson", drop) return drop end
+    WeaponType = "m9k_thompson"
 })
 
 GM:CreateItem("m9k_uzi", {
@@ -776,6 +710,5 @@ GM:CreateItem("m9k_uzi", {
     Supply = -1,
     Rarity = 5,
     Category = ITEMCATEGORY_WEAPONS,
-    UseFunc = function(ply) UseFunc_EquipGun(ply, "m9k_uzi") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "m9k_uzi") UseFunc_StripWeapon(ply, "m9k_uzi", drop) return drop end
+    WeaponType = "m9k_uzi"
 })

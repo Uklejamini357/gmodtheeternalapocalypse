@@ -188,7 +188,7 @@ function SWEP:SecondaryAttack()
 			self:SetNextSecondaryFire(CurTime() + 0.5)
 		else
 			if !entity:IsPlayer() and !entity:IsNPC() then
-				owner:SendChat("I can't pick this up!")
+				owner:SendChat(translate.ClientGet(owner, "i_cant_pick_this_up"))
 			end
 			self:SetNextSecondaryFire(CurTime() + 0.5)
 		end

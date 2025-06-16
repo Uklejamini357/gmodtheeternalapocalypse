@@ -45,23 +45,23 @@ function GM:DestroyProp(ply, ent)
 
 	local ptype
 	local checktable
-	if FLIMSYPROPS[ent:GetModel()] then ptype = 1
-	elseif TOUGHPROPS[ent:GetModel()] then ptype = 2
+	if self.FlimsyProps[ent:GetModel()] then ptype = 1
+	elseif self.ToughProps[ent:GetModel()] then ptype = 2
 	else return false end
 
-	if ptype == 1 then checktable = FLIMSYPROPS
-	elseif ptype == 2 then checktable = TOUGHPROPS
+	if ptype == 1 then checktable = self.FlimsyProps
+	elseif ptype == 2 then checktable = self.ToughProps
 	else return false end
 
 	if owner != ply then ply:SystemMessage("You don't own this prop!", Color(255,205,205,255), true) return false end
 
 	local salvagedelay = ply:HasPerk("speedy_hands") and 1 or 2
-	ply:SendUseDelay(salvagedelay)
+	ply:SendUseDelay(salvagedelay, "Salvaging prop", nil, false, true)
 
 	timer.Simple(salvagedelay, function()
 		if !ply:IsValid() or !ply:Alive() or !ent:IsValid() then return false end
 
-		local refund = checktable[ent:GetModel()]["COST"]
+		local refund = checktable[ent:GetModel()].Cost
 		if refund == nil then return false end
 		refund = refund * 0.45
 		if self.PropCostEnabled then
@@ -77,18 +77,18 @@ end
 
 function GM:DestroyStructure(ply, ent)
 	if !ply:IsValid() or !ply:Alive() then return false end
-	if !ent:IsValid() or !SpecialSpawns[ent:GetClass()] then return false end
+	if !ent:IsValid() or !self.SpecialStructureSpawns[ent:GetClass()] then return false end
 	local owner = ent:GetNWEntity("owner")
 	if !owner:IsValid() or !owner:Alive() then return false end
 
 	if owner != ply then ply:SystemMessage("You don't own this structure!", Color(255,205,205,255), true) return false end
 
 	local salvagedelay = ply:HasPerk("speedy_hands") and 1 or 2
-	ply:SendUseDelay(salvagedelay)
+	ply:SendUseDelay(salvagedelay, "Salvaing a structure")
 	timer.Simple(salvagedelay, function()
 		if !ply:IsValid() or !ply:Alive() or !ent:IsValid() then return false end
 
-		local refund = SpecialSpawns[ent:GetClass()]["Cost"]
+		local refund = self.SpecialStructureSpawns[ent:GetClass()]["Cost"]
 		if refund == nil then return false end
 		refund = refund * 0.5
 		if self.FactionStructureCostEnabled then
@@ -118,7 +118,7 @@ end
 
 function GM:MakeProp(ply, model, pos, ang)
 	if !ply:IsValid() or !ply:Alive() then return false end
-	if SpecialSpawns[model] then GAMEMODE:MakeStructure(ply, model, pos, ang) return false end -- if the model is a structure then break out of this function and run the create structure function instead
+	if self.SpecialStructureSpawns[model] then self:MakeStructure(ply, model, pos, ang) return false end -- if the model is a structure then break out of this function and run the create structure function instead
 
 	if gamemode.Call("CheckBases", ply, pos) then
 		ply:SystemMessage("You cannot spawn props this close to an opposing faction base!", Color(255,205,205,255), true)
@@ -127,18 +127,18 @@ function GM:MakeProp(ply, model, pos, ang)
 
 	local ptype
 	local checktable
-	if FLIMSYPROPS[model] then ptype = 1
-	elseif TOUGHPROPS[model] then ptype = 2
+	if self.FlimsyProps[model] then ptype = 1
+	elseif self.ToughProps[model] then ptype = 2
 	else return false end
 
-	if ptype == 1 then checktable = FLIMSYPROPS
-	elseif ptype == 2 then checktable = TOUGHPROPS
+	if ptype == 1 then checktable = self.FlimsyProps
+	elseif ptype == 2 then checktable = self.ToughProps
 	else return false end
 
 	if ptype == 2 and ply:Team() == TEAM_LONER then ply:SystemMessage("You must be in a faction to spawn strong props!", Color(255,205,205,255), true) return false end
 
 	local cash = tonumber(ply.Money)
-	local pcost = checktable[model]["COST"]
+	local pcost = checktable[model].Cost
 	local discount = 1 - (ply.StatEngineer * 0.02)
 
 	if cash < (pcost * discount) and self.PropCostEnabled then ply:SystemMessage("Unable to spawn prop due to insufficient Gold!", Color(255,205,205,255), true) return false end
@@ -152,7 +152,7 @@ function GM:MakeProp(ply, model, pos, ang)
 	end
 
 	if gamemode.Call("CountProps", ply) >= self.MaxProps then 
-		ply:SendChat("You cannot have more than "..self.MaxProps.." prop(s)!")
+		ply:SendChat(translate.ClientFormat(ply, "cannot_have_more_than_x_props", self.MaxProps))
 		return false
 	end
 
@@ -168,8 +168,8 @@ function GM:MakeProp(ply, model, pos, ang)
 		local phys = prop:GetPhysicsObject()
 		phys:Wake()
 		phys:EnableMotion(false)
-		prop:SetNWInt("ate_maxintegrity", 500 * (checktable[model]["TOUGHNESS"] or 1))
-		prop:SetNWInt("ate_integrity", 500 * (checktable[model]["TOUGHNESS"] or 1))
+		prop:SetNWInt("ate_maxintegrity", 500 * (checktable[model].Toughness or 1))
+		prop:SetNWInt("ate_integrity", 500 * (checktable[model].Toughness or 1))
 		prop:SetNWEntity("owner", ply)
 		if self.PropCostEnabled then
 			ply.Money = tonumber(ply.Money) - (pcost * discount)
@@ -186,8 +186,8 @@ function GM:MakeProp(ply, model, pos, ang)
 		local phys = prop:GetPhysicsObject()
 		phys:Wake()
 		phys:EnableMotion(false)
-		prop:SetNWInt("ate_maxintegrity", 500 * (checktable[model]["TOUGHNESS"] or 1))
-		prop:SetNWInt("ate_integrity", 500 * (checktable[model]["TOUGHNESS"] or 1))
+		prop:SetNWInt("ate_maxintegrity", 500 * (checktable[model].Toughness or 1))
+		prop:SetNWInt("ate_integrity", 500 * (checktable[model].Toughness or 1))
 		prop:SetNWEntity("owner", ply)
 		if self.PropCostEnabled then
 			ply.Money = tonumber(ply.Money) - (pcost * discount)
@@ -200,17 +200,17 @@ end
 
 function GM:MakeStructure(ply, struc, pos, ang)
 	if !ply:IsValid() or !ply:Alive() then return false end
-	if !SpecialSpawns[struc] then ply:SystemMessage("Invalid Structure! Tell a developer because something bugged", Color(255,205,205,255), true) return false end
+	if !self.SpecialStructureSpawns[struc] then ply:SystemMessage("Invalid Structure! Tell a developer because something bugged", Color(255,205,205,255), true) return false end
 	if ply:Team() == 1 then ply:SystemMessage("You must be in a faction to place structures!", Color(255,205,205,255), true) return false end
 	if gamemode.Call("CheckBases", ply, pos) then ply:SystemMessage("You cannot spawn structures this close to an opposing faction base!", Color(255,205,205,255), true) return false end
 
 	local cash = tonumber(ply.Money)
-	local pcost = SpecialSpawns[struc]["Cost"]
+	local pcost = self.SpecialStructureSpawns[struc]["Cost"]
 
 	if (cash < pcost) and self.FactionStructureCostEnabled then ply:SystemMessage("Unable to create structure: insufficient Gold!", Color(255,205,205,255), true) return false end
 
-	if gamemode.Call("CountStructures", ply, struc) >= SpecialSpawns[struc]["Max"] then 
-		ply:SystemMessage("You cannot have more than "..SpecialSpawns[struc]["Max"].." "..SpecialSpawns[struc]["Name"].."s", Color(255,205,205,255), true)
+	if gamemode.Call("CountStructures", ply, struc) >= self.SpecialStructureSpawns[struc]["Max"] then 
+		ply:SystemMessage("You cannot have more than "..self.SpecialStructureSpawns[struc]["Max"].." "..self.SpecialStructureSpawns[struc]["Name"].."s", Color(255,205,205,255), true)
 		return false
 	end
 
@@ -226,7 +226,7 @@ function GM:MakeStructure(ply, struc, pos, ang)
 	end
 
 	local prop = ents.Create(struc)
-	prop:SetModel(SpecialSpawns[struc]["Model"])
+	prop:SetModel(self.SpecialStructureSpawns[struc]["Model"])
 	prop:SetPos(pos)
 	prop:SetAngles(ang)
 	prop:Spawn()
@@ -246,7 +246,7 @@ function GM:MakeStructure(ply, struc, pos, ang)
 end
 
 function GM:ClearFactionStructures(ply)
-	for k, v in pairs(SpecialSpawns) do
+	for k, v in pairs(self.SpecialStructureSpawns) do
 		for k, v in pairs(ents.FindByClass(k)) do
 			if v:GetNWEntity("owner") == ply then v:Remove() end
 		end

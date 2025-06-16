@@ -9,7 +9,7 @@ GM:CreateItem(itemid, {
     Rarity = rarity,
     Category = category,
     UseFunc = function(ply) return false end,
-    DropFunc = function(ply) return true end
+    DropFunc = function(ply, item) return true end
 
 -- Additional variables if needed
     IsSecret = false,
@@ -28,7 +28,6 @@ local i = GM:CreateItem("item_radio", {
     Rarity = 2,
     Category = ITEMCATEGORY_MISCELLANEOUS,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousesellable")) return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_radio") return drop end
 })
 
 i = GM:CreateItem("item_scrap", {
@@ -39,7 +38,6 @@ i = GM:CreateItem("item_scrap", {
     Rarity = 2,
     Category = ITEMCATEGORY_MISCELLANEOUS,
     UseFunc = function(ply) local armor = UseFunc_Armor(ply, 3, 0, 10, "npc/combine_soldier/zipline_hitground2.wav") return armor end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_scrap") return drop end
 })
 
 i = GM:CreateItem("item_chems", {
@@ -50,7 +48,6 @@ i = GM:CreateItem("item_chems", {
     Rarity = 3,
     Category = ITEMCATEGORY_MISCELLANEOUS,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousesellable")) return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_chems") return drop end
 })
 
 i = GM:CreateItem("item_tv", {
@@ -61,7 +58,6 @@ i = GM:CreateItem("item_tv", {
     Rarity = 3,
     Category = ITEMCATEGORY_MISCELLANEOUS,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousesellable")) return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_tv") return drop end
 })
 
 i = GM:CreateItem("item_beer", {
@@ -72,7 +68,6 @@ i = GM:CreateItem("item_beer", {
     Rarity = 3,
     Category = ITEMCATEGORY_MISCELLANEOUS,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousesellable")) return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_beer") return drop end
 })
 
 i = GM:CreateItem("item_hamradio", {
@@ -83,7 +78,6 @@ i = GM:CreateItem("item_hamradio", {
     Rarity = 3,
     Category = ITEMCATEGORY_MISCELLANEOUS,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousesellable")) return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_hamradio") return drop end
 })
 
 i = GM:CreateItem("item_computer", {
@@ -94,7 +88,6 @@ i = GM:CreateItem("item_computer", {
     Rarity = 4,
     Category = ITEMCATEGORY_MISCELLANEOUS,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousesellable")) return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_computer") return drop end
 })
 
 i = GM:CreateItem("item_blueprint_sawbow", {
@@ -105,7 +98,6 @@ i = GM:CreateItem("item_blueprint_sawbow", {
     Rarity = 11,
     Category = ITEMCATEGORY_MISCELLANEOUS,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouseweapon")) return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_blueprint_sawbow") return drop end
 })
 
 i = GM:CreateItem("item_blueprint_railgun", {
@@ -116,7 +108,6 @@ i = GM:CreateItem("item_blueprint_railgun", {
     Rarity = 11,
     Category = ITEMCATEGORY_MISCELLANEOUS,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouseweapon")) return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_blueprint_railgun") return drop end
 })
 
 
@@ -131,7 +122,6 @@ i = GM:CreateItem("item_craft_fueltank", {
     Rarity = 11,
     Category = ITEMCATEGORY_MISCELLANEOUS,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousevehicle")) return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_craft_fueltank") return drop end
 })
 
 i = GM:CreateItem("item_craft_wheel", {
@@ -142,7 +132,6 @@ i = GM:CreateItem("item_craft_wheel", {
     Rarity = 11,
     Category = ITEMCATEGORY_MISCELLANEOUS,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousevehicle")) return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_craft_wheel") return drop end
 })
 
 i = GM:CreateItem("item_craft_oil", {
@@ -153,7 +142,6 @@ i = GM:CreateItem("item_craft_oil", {
     Rarity = 11,
     Category = ITEMCATEGORY_MISCELLANEOUS,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousevehicle")) return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_craft_oil") return drop end
 })
 
 i = GM:CreateItem("item_craft_battery", {
@@ -164,7 +152,6 @@ i = GM:CreateItem("item_craft_battery", {
     Rarity = 11,
     Category = ITEMCATEGORY_MISCELLANEOUS,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousecraftable")) return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_craft_battery") return drop end
 })
 
 i = GM:CreateItem("item_craft_ecb", {
@@ -175,7 +162,6 @@ i = GM:CreateItem("item_craft_ecb", {
     Rarity = 11,
     Category = ITEMCATEGORY_MISCELLANEOUS,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousecraftable")) return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_craft_ecb") return drop end
 })
 
 i = GM:CreateItem("item_craft_engine_small", {
@@ -186,7 +172,6 @@ i = GM:CreateItem("item_craft_engine_small", {
     Rarity = 11,
     Category = ITEMCATEGORY_MISCELLANEOUS,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousevehicle")) return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_craft_engine_small") return drop end
 })
 
 i = GM:CreateItem("item_craft_engine_large", {
@@ -197,7 +182,6 @@ i = GM:CreateItem("item_craft_engine_large", {
     Rarity = 11,
     Category = ITEMCATEGORY_MISCELLANEOUS,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousevehicle")) return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_craft_engine_large") return drop end
 })
 
 
@@ -214,8 +198,41 @@ i = GM:CreateItem("item_propane", {
     Rarity = RARITY_UNOBTAINABLE,
     Category = ITEMCATEGORY_MISCELLANEOUS,
     UseFunc = function(ply) local drop = UseFunc_DropEntity(ply, "prop_tea_propane") return drop end,
-    DropFunc = function(ply) local drop = UseFunc_DropEntity(ply, "prop_tea_propane") return drop end
+    DropFunc = function(ply, item) local drop = UseFunc_DropEntity(ply, "prop_tea_propane") return drop end
 })
+
+-- Other Sellables
+
+i = GM:CreateItem("item_toolkit_1", {
+    Cost = 6000,
+    Model = "models/wick/wrbstalker/anomaly/items/wick_box_toolkit_1.mdl",
+    Weight = 1,
+    Supply = -1,
+    Rarity = 2,
+    Category = ITEMCATEGORY_MISCELLANEOUS,
+    UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousesellable")) return false end,
+})
+
+i = GM:CreateItem("item_toolkit_2", {
+    Cost = 8000,
+    Model = "models/wick/wrbstalker/anomaly/items/wick_box_toolkit_2.mdl",
+    Weight = 1,
+    Supply = -1,
+    Rarity = 2,
+    Category = ITEMCATEGORY_MISCELLANEOUS,
+    UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousesellable")) return false end,
+})
+
+i = GM:CreateItem("item_toolkit_3", {
+    Cost = 10000,
+    Model = "models/wick/wrbstalker/anomaly/items/wick_box_toolkit_3.mdl",
+    Weight = 1,
+    Supply = -1,
+    Rarity = 2,
+    Category = ITEMCATEGORY_MISCELLANEOUS,
+    UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousesellable")) return false end,
+})
+
 
 
 -- Misc
@@ -238,7 +255,6 @@ i = GM:CreateItem("item_boss_shard", {
         GAMEMODE:SystemBroadcast(random, Color(115,205,205), false)
         GAMEMODE:SpawnBoss(#player.GetAll() + 8, true)
     return true end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_boss_shard") return drop end
 })
 
 i = GM:CreateItem("item_difficulty_shard", {
@@ -250,7 +266,7 @@ i = GM:CreateItem("item_difficulty_shard", {
     Category = ITEMCATEGORY_MISCELLANEOUS,
     UseFunc = function(ply)
         if GAMEMODE.InfectionLevelIncreaseType ~= 1 then
-            PrintMessage(3, "Item is unusable currently at the moment due to config setting (GAMEMODE.InfectionLevelIncreaseType need to be 1)")
+            ply:PrintTranslatedMessage(3, "difficulty_shard_not_usable")
             return false
         end
         local random = table.Random({
@@ -263,7 +279,6 @@ i = GM:CreateItem("item_difficulty_shard", {
         GAMEMODE:SystemBroadcast(random.." ("..GAMEMODE:GetInfectionLevel().."% -> "..set.."%)", Color(115,205,205), false)
         GAMEMODE:SetInfectionLevel(set)
     return true end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_difficulty_shard") return drop end
 })
 
 i = GM:CreateItem("item_oxygentank", {
@@ -277,10 +292,9 @@ i = GM:CreateItem("item_oxygentank", {
     Category = ITEMCATEGORY_MISCELLANEOUS,
     UseFunc = function(ply)
         ply.Oxygen = 100
-        ply:SendChat("Oxygen refilled.")
+        ply:SendChat(translate.ClientGet(ply, "oxygen_refilled"))
         return true
     end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_oxygentank") return drop end
 })
 
 i = GM:CreateItem("item_money", {
@@ -290,8 +304,8 @@ i = GM:CreateItem("item_money", {
     Supply = -1,
     Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_MISCELLANEOUS,
-    UseFunc = function(ply) ply:SendChat("Added "..ply.Inventory["item_money"].."$ to account") ply.Money = ply.Money + ply.Inventory["item_money"] ply.Inventory["item_money"] = nil return false end,
-    DropFunc = function(ply) ply:SendChat("You may not drop this item.") --[[local drop = UseFunc_DropItem(ply, "item_money") return drop]] return false end
+    UseFunc = function(ply) ply:SendChat(translate.ClientFormat(ply, "added_x_moneys_to_account", ply.Inventory["item_money"])) ply.Money = ply.Money + ply.Inventory["item_money"] ply.Inventory["item_money"] = nil return false end,
+    CantDropItem = function(ply, item) ply:SendChat(translate.ClientGet(ply, "you_may_not_drop_this_item")) return true end,
 })
 
 i = GM:CreateItem("item_moneyprinter", {
@@ -303,6 +317,5 @@ i = GM:CreateItem("item_moneyprinter", {
     Supply = -1,
     Rarity = 6,
     Category = ITEMCATEGORY_MISCELLANEOUS,
-    UseFunc = function(ply) ply:SendChat("You cannot use this yet.") return false end,
-    DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_moneyprinter") return drop end
+    UseFunc = function(ply) ply:SendChat(translate.ClientGet("you_cant_use_this_yet")) return false end,
 })

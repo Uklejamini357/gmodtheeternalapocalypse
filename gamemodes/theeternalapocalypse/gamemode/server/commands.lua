@@ -8,11 +8,10 @@ function GM:TogglePVP(ply)
 	ply:SystemMessage("Toggling PvP in 5 seconds...", Color(205,205,255,255), true)
 	ply:EmitSound("npc/attack_helicopter/aheli_mine_drop1.wav", 100, 100)
 
-	local nerds = ents.FindInSphere(ply:GetPos(), 800)
-	if ply:GetNWBool("pvp") == false then
-		for _, v in pairs(nerds) do
-			if !v:IsPlayer() then continue end
-			if v == ply then continue end
+	local nearby = ents.FindInSphere(ply:GetPos(), 800)
+	if not ply:GetNWBool("pvp") then
+		for _, v in pairs(nearby) do
+			if !v:IsPlayer() or v == ply then continue end
 			v:SystemMessage(translate.ClientFormat(v, "pvp_proxy_warn", ply:Nick()), Color(255,105,105,255), false)
 		end
 	end

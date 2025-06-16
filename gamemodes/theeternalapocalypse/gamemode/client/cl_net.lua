@@ -67,7 +67,7 @@ net.Receive("tea_taskassign", function(len)
 
 	GAMEMODE.CurrentTask = task
 
-	chat.AddText(Color(255,255,255), "You assigned new task: ", Color(255,255,127), taskl.Name, Color(255,255,255), ", complete the task for the reward!")
+	chat.AddText(Color(255,255,255), translate.Get("you_assigned_new_task1"), Color(255,255,127), taskl.Name, Color(255,255,255), translate.Get("you_assigned_new_task2"))
 end)
 
 net.Receive("tea_taskprogress", function(len)
@@ -78,7 +78,7 @@ net.Receive("tea_taskprogress", function(len)
 
 	GAMEMODE.CurrentTaskProgress = value
 
-	chat.AddText(Color(255,255,255), "Task progress for ", Color(255,255,127), taskl.Name, Color(255,255,255), ": ", Color(255,255,63), value.." / "..taskl.ReqProgress)
+	-- chat.AddText(Color(255,255,255), "Task progress ", Color(255,255,127), taskl.Name, Color(255,255,255), ": ", Color(255,255,63), value.." / "..taskl.ReqProgress)
 end)
 
 net.Receive("tea_taskcomplete", function(len)
@@ -86,7 +86,7 @@ net.Receive("tea_taskcomplete", function(len)
 
 	local taskl = GAMEMODE.Tasks[task]
 
-	chat.AddText(Color(255,255,255), "You have completed a task ", Color(255,255,127), taskl.Name, Color(255,255,255), ", go to task dealer to claim the reward!")
+	chat.AddText(Color(255,255,255), translate.Get("task_complete1"), Color(255,255,127), taskl.Name, Color(255,255,255), translate.Get("task_complete2"))
 end)
 
 net.Receive("tea_taskfinish", function(len)
@@ -97,7 +97,7 @@ net.Receive("tea_taskfinish", function(len)
 	GAMEMODE.CurrentTask = ""
 	GAMEMODE.CurrentTaskProgress = nil
 
-	chat.AddText(Color(255,255,255), "You have finished a task ", Color(255,255,127), taskl.Name, Color(255,255,255), "!")
+	chat.AddText(Color(255,255,255), translate.Get("task_finished1"), Color(255,255,127), taskl.Name, Color(255,255,255), "!")
 end)
 
 net.Receive("tea_taskcancel", function(len)
@@ -108,7 +108,7 @@ net.Receive("tea_taskcancel", function(len)
 	GAMEMODE.CurrentTask = ""
 	GAMEMODE.CurrentTaskProgress = nil
 
-	chat.AddText(Color(255,255,255), "You cancelled task ", Color(255,255,127), taskl.Name, Color(255,255,255), ", you have ", Color(255,127,127), "1", Color(255,255,255), " hour cooldown before taking in new task and ", Color(255,127,127), taskl.CancelCooldown / TIME_HOUR, Color(255,255,255), " hour cooldown before taking this task again!")
+	chat.AddText(Color(255,255,255), translate.Get("task_cancelled1"), Color(255,255,127), taskl.Name, Color(255,255,255), translate.Get("task_cancelled2"), Color(255,127,127), taskl.CancelCooldown / TIME_HOUR, Color(255,255,255), translate.Get("task_cancelled3"))
 end)
 
 net.Receive("tea_taskstatsupdate", function(len)
@@ -131,4 +131,17 @@ net.Receive("tea_admin_sendspawns", function(len)
 
 	GAMEMODE.Spawns = GAMEMODE.Spawns or {}
 	GAMEMODE.Spawns[typ] = tbl
+end)
+
+net.Receive("tea_itemuse", function()
+	local pl = LocalPlayer()
+	local duration = net.ReadFloat()
+	local text = net.ReadString()
+	local shouldtranslate = net.ReadBool()
+	local canmove = net.ReadBool()
+
+	pl.UsingItemText = shouldtranslate and translate.Get(text) or text
+	pl.UsingItemDuration = duration
+	pl.UsingItemTime = CurTime()
+	pl.UsingItemCanMove = canmove
 end)

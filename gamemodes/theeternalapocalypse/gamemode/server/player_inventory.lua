@@ -68,8 +68,6 @@ function GM:SystemGiveItem(ply, str, qty)
 	qty = tonumber(qty) or 1
 
 	local item = self.ItemsList[str]
-	-- dont need to pester them with notifications from a system function, just return false
-	-- if ((ply:CalculateWeight() + (qty * item["Weight"])) > (ply:CalculateMaxWeight())) then ply:SendChat(Format("You don't have any inventory space left for this item! (Need %skg more space)", GAMEMODE:CalculateRemainingInventoryWeight(ply, qty * item["Weight"]))) return false end
 
 	if ply.Inventory[str] then
 		ply.Inventory[str] = ply.Inventory[str] + qty
@@ -92,7 +90,7 @@ function GM:SystemRemoveItem(ply, str, strip, amt)
 	if !ply.Inventory[str] then return end
 
 	if strip then
-		UseFunc_StripWeapon(ply, str, strip)
+		ply:InvStripWeapon(str)
 	end
 	ply.Inventory[str] = ply.Inventory[str] - amt
 	if ply.Inventory[str] < 1 then ply.Inventory[str] = nil end
@@ -107,49 +105,144 @@ end)
 
 
 function GM:UseItem(ply, item, use, targetply)
-	local str = GAMEMODE.ItemsList[item]
+	local ref = GAMEMODE.ItemsList[item]
 	local ftoggle
 	if use then ftoggle = "UseFunc" else ftoggle = "DropFunc" end
 	if !targetply or !targetply:IsValid() then targetply = ply end
 
-	if !ply.CanUseItem then return false end -- cancel the function if they are spamming net messages
-	if !str then ply:SendChat(translate.ClientGet(ply, "itemnonexistant")) return false end -- if the item doenst exist
-	if timer.Exists("IsSleeping_"..ply:EntIndex()) then ply:SendChat(translate.ClientGet(ply, "itemnousesleeping")) return false end
-	if timer.Exists("Isplyusingitem"..ply:EntIndex()) then ply:SendChat(translate.ClientGet(ply, "itemnousecooldown")) return false end
-	if timer.Exists("Isplyequippingarmor"..ply:EntIndex()) then ply:SendChat(translate.ClientGet(ply, "itemnousearmor")) return false end
-	if timer.Exists("ItemCrafting_"..ply:EntIndex()) then ply:SystemMessage(translate.ClientGet(ply, "itemnousecrafting"), Color(255,205,205), false) return false end
-
-	local ref = str
+	if ply.LastItemAction and ply.LastItemAction + 0.2 > CurTime() then return false end -- cancel the function if they are spamming net messages
+	if !ply:Alive() then return false end
+	if !ref then ply:SendChat(translate.ClientGet(ply, "itemnonexistant")) return false end -- if the item doenst exist
+	if ply:IsSleeping() then ply:SendChat(translate.ClientGet(ply, "itemnousesleeping")) return false end
+	if ply:IsUsingItem() then ply:SendChat(translate.ClientGet(ply, "itemnousecooldown")) return false end
 
 	if ply.Inventory[item] then
 		if ply.Inventory[item] > 0 then
-			local func = ref[ftoggle](ply, targetply)
-			if func == true then
-				GAMEMODE:SystemRemoveItem(ply, item, false) -- leave this as false otherwise grenades are unusable
-				timer.Simple(0.25, function() if ply:IsValid() then ply.CanUseItem = true end end)
-				ply.CanUseItem = false
-			end
-			self:SendInventory(ply)
-			/*
 			if ftoggle == "UseFunc" then
-				local func = true
-				if ref.CanUse then
-					ref.CanUse(ply)
-				end
-				if func == true then
-					GAMEMODE:SystemRemoveItem(ply, item, false) -- leave this as false otherwise grenades are unusable
+				if ref.UseFunc then
+					local func = ref.UseFunc(ply, targetply, item)
+					if func then
+						GAMEMODE:SystemRemoveItem(ply, item, false) -- leave this as false otherwise grenades are unusable
+					end
+				else
+					local shouldremove
+					if ref.WeaponType then
+						local gun = ref.WeaponType
+						if ref.IsGrenade then
+							local wep = ply:GetWeapon(gun)
+							if not wep:IsValid() then
+								wep = ply:Give(gun, true)
+							end
+							ply:GiveAmmo(1, wep:GetPrimaryAmmoType())
+
+							if ply:GetActiveWeapon() != gun then
+								ply:SelectWeapon(gun)
+							end
+
+							shouldremove = true
+						else
+							local wep = ply:GetWeapon(gun)
+							if not wep:IsValid() then
+								wep = ply:Give(gun, true)
+							end
+							ply:SelectWeapon(gun)
+						end
+					elseif ref.ArmorStats then
+						if ply.EquippedArmor == item then
+							ply:SendUseDelay(3, "Unequipping Armor...")
+							ply:EmitSound("npc/combine_soldier/zipline_hitground2.wav")
+							timer.Simple(3, function()
+								if !ply:IsValid() or !ply:Alive() then return false end
+								ply:ArmorUnequip()
+							end)
+						else
+							ply:SendUseDelay(3, "Equipping Armor...")
+							ply:EmitSound("npc/combine_soldier/zipline_hitground1.wav")
+
+							timer.Create("Isplyequippingarmor"..ply:EntIndex().."_"..item, 3, 1, function()
+								if !ply:IsValid() or !ply:Alive() then return false end
+								ply:ArmorEquip(item)
+							end)
+						end
+					end
+
+					if ref.Health then
+						ply:SetHealth(math.min(ply:GetMaxHealth(), ply:Health() + ref.Health))
+					end
 
 					if ref.Thirst then
-						ply.Thirst = ply.Thirst + ref.Thirst
+						ply.Thirst = ply.Thirst + ref.Thirst*100
+					end
+
+					if ref.Hunger then
+						ply.Hunger = ply.Hunger + ref.Hunger*100
 					end
 					
-					timer.Simple(0.25, function() if ply:IsValid() then ply.CanUseItem = true end end)
-					ply.CanUseItem = false
-				end
-				self:SendInventory(ply)
-			end
+					if ref.Fatigue then
+						ply.Fatigue = ply.Fatigue + ref.Fatigue*100
+					end
 
-			*/
+					if ref.Infection then
+						ply.Infection = ply.Infection + ref.Infection*100
+					end
+
+					if ref.UseSound then
+						ply:EmitSound(ref.UseSound)
+					end
+
+					if shouldremove and not ref.Reusable then
+						GAMEMODE:SystemRemoveItem(ply, item, false)
+					end
+
+				end
+				ply.LastItemAction = CurTime()
+			elseif ftoggle == "DropFunc" and not (isfunction(ref.CantDropItem) and ref.CantDropItem(ply, item) or not isfunction(ref.CantDropItem) and ref.CantDropItem) then -- Most items use the same exact function, so why not it here instead of putting the same thing everywhere?
+				if ref.DropFunc then
+					local func = ref.DropFunc(ply, item)
+					if func then
+						GAMEMODE:SystemRemoveItem(ply, item, true)
+					end
+				else
+					local armor = ref.Category == ITEMCATEGORY_ARMOR
+					if armor and !timer.Exists("Plywantstodropequippedarmor"..ply:EntIndex()) and ply:GetNWString("ArmorType") == item then
+						ply:SendChat(translate.ClientFormat(ply, "warning_about_to_drop_equipped_armor", 10))
+						timer.Create("Plywantstodropequippedarmor"..ply:EntIndex(), 10, 1, function() end)
+						return false
+					end
+
+					GAMEMODE:SystemRemoveItem(ply, item, false)
+
+					local vStart, vForward = ply:GetShootPos(), ply:GetAimVector()
+					local tr = util.TraceLine({
+						start = vStart,
+						endpos = vStart + vForward * 70,
+						filter = ply
+					})
+					local ent = ents.Create("ate_droppeditem")
+					ent:SetPos(tr.HitPos)
+					ent:SetAngles(Angle(0, ply:EyeAngles().yaw, 0))
+					ent:SetModel(armor and "models/props/cs_office/cardboard_box01.mdl" or GAMEMODE.ItemsList[item].Model)
+					ent:SetNWString("ItemClass", item)
+					ent:Spawn()
+					ent:Activate()
+
+					if armor and ply.EquippedArmor == tostring(item) then
+						ply:ArmorUnequip()
+					end
+
+					ply:InvStripWeapon(item)
+				end
+
+
+
+				if ref.OnItemDropped then
+					ref.OnItemDropped(ply, item)
+				end
+				
+				ply.LastItemAction = CurTime()
+			end
+			self:SendInventory(ply)
+
 		else
 			ply:SendChat(translate.ClientGet(ply, "hasnoitem"))
 		end
@@ -179,7 +272,7 @@ net.Receive("BuyItem", function(length, ply)
 	if ply:IsValid() and ply:Alive() and ply:IsPvPGuarded() then -- if they aren't pvp guarded then they aren't near a trader and are therefore trying to hack
 		ply:BuyItem(str)
 	elseif !ply:IsPvPGuarded() then
-		ply:SystemMessage("no.", Color(255,205,205,255), true)
+		ply:SystemMessage(translate.ClientGet(ply, "antihack_roast_hack_buy_nonpvpguarded"), Color(255,205,205,255), true)
 	end
 end)
 
@@ -192,11 +285,15 @@ function meta:BuyItem(str)
 	local stockcheck = GAMEMODE.ItemsList[str]["Supply"]
 	local buyprice = item["Cost"] * (1 - (self.StatBarter * 0.015))
 
-	if stockcheck <= -1 then self:SendChat("Bruh, did you just try to buy stuff that trader doesn't even sell? You should play the gamemode like it was meant to be played.") return end -- people may try to hack and send faked netmessages to buy stuff the trader isnt meant to sell
+	if stockcheck <= -1 then
+		self:SendChat(translate.ClientGet(self, "antihack_roast_hack_buy"))
+		print(self:Nick().." ("..self:SteamID()..") attempted to buy an item that trader doesn't sell!")
+		return
+	end
 
 	local cash = tonumber(self.Money)
 
-	if (cash < buyprice) then self:SendChat("You cannot afford that!") return false end
+	if (cash < buyprice) then self:SendChat(translate.ClientGet(self, "cannot_afford_that")) return false end
 	-- if ((self:CalculateWeight() + item["Weight"]) > self:CalculateMaxWeight()) then self:SendChat(translate.ClientFormat(self, "notenoughspace", GAMEMODE:CalculateRemainingInventoryWeight(self, item["Weight"]))) return false end
 
 	GAMEMODE:SystemGiveItem(self, str)
@@ -216,7 +313,10 @@ net.Receive("SellItem", function(len, ply)
 	local amt = net.ReadUInt(32)
 
 	if !GAMEMODE.ItemsList[str] then ply:SendChat(translate.ClientGet(ply, "itemnonexistant")) return false end -- if the item doenst exist
-	if timer.Exists("Isplyequippingarmor"..ply:EntIndex().."_"..str) then ply:SystemMessage("Bruh, did you try to sell armor that you were equipping it? You lil' bitch, there will be consequences. Play the gamemode like it was meant to be played.", Color(255,155,155,255), true) return false end
+	if timer.Exists("Isplyequippingarmor"..ply:EntIndex().."_"..str) then
+		ply:SystemMessage(translate.ClientGet(ply, "antihack_roast_hack_sell_equipping_armor"), Color(255,155,155,255), true)
+		return false
+	end
 	if amt < 1 or !ply.Inventory[str] or ply.Inventory[str] < amt then return end
 
 	local item = GAMEMODE.ItemsList[str]
@@ -235,7 +335,7 @@ net.Receive("SellItem", function(len, ply)
 	end
 
 	if ply.EquippedArmor == str and !ply.Inventory[str] then
-		UseFunc_RemoveArmor(ply, str)
+		ply:ArmorUnequip()
 	end
 
 	ply:PrintTranslatedMessage(HUD_PRINTCONSOLE, "tr_itemsold", GAMEMODE:GetItemName(str, ply), amt, sellprice, GAMEMODE.Config["Currency"])
@@ -261,3 +361,17 @@ net.Receive("UseGun", function(length, ply)
 		ply:SendChat(translate.ClientGet(ply, "hasnoitem"))
 	end
 end)
+
+function meta:InvStripWeapon(item)
+	local wep = self:GetWeapon(item)
+	local itemtbl = GAMEMODE.ItemsList[item]
+	if wep and wep:IsValid() and (not self.Inventory[item] or self.Inventory[item] < 2) and not itemtbl.IsGrenade then
+		if IsValid(wep) and wep:IsWeapon() then
+			local clip1 = tonumber(wep:Clip1()) or 0
+			local clip2 = tonumber(wep:Clip2()) or 0
+			if clip1 > 0 then self:GiveAmmo(clip1, wep:GetPrimaryAmmoType()) end
+			if clip2 > 0 then self:GiveAmmo(clip2, wep:GetSecondaryAmmoType()) end
+		end
+		self:StripWeapon(item)
+	end
+end

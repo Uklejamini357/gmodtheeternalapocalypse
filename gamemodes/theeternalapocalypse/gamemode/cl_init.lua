@@ -43,7 +43,7 @@ function ChooseProp(mdl)
 end
 
 function ChooseStructure( struc )
-	SelectedProp = SpecialSpawns[struc]["Model"]
+	SelectedProp = GAMEMODE.SpecialStructureSpawns[struc].Model
 	net.Start("ChangeProp")
 	net.WriteString(struc)
 	net.SendToServer()
@@ -77,19 +77,24 @@ end
 function GM:Think()
 	local me = LocalPlayer()
 	if !me:IsValid() then return end
-	local function FrameCalc(number) -- there's a function because possibly when having low framerate, these value updates are less frequent...
-		local n = number * (math.max(1 / 66.6, FrameTime()) * 66.6)
-		return n
-	end
+	local frametime = RealFrameTime()
 
 	if me:Alive() then
 		self.LastAliveTime = CurTime()
 	end
 
+	if me:IsSleeping() then
+		self.SleepVisionAffect = math.Approach(self.SleepVisionAffect, 1, 0.5*frametime)
+	elseif me:Alive() then
+		self.SleepVisionAffect = math.Approach(self.SleepVisionAffect, 0, 0.8*frametime)
+	else
+		self.SleepVisionAffect = 0
+	end
+
 	if self.WraithAlpha > 220 then
-		self.WraithAlpha = self.WraithAlpha - (RealFrameTime() * 4.95)
+		self.WraithAlpha = self.WraithAlpha - (frametime * 4.95)
 	elseif self.WraithAlpha > 0 then
-		self.WraithAlpha = self.WraithAlpha - (RealFrameTime() * 30)
+		self.WraithAlpha = self.WraithAlpha - (frametime * 30)
 	end
 
 	if self.DeathSoundEffectEnabled and death_sound_current and death_sound_current:IsPlaying() then
@@ -106,17 +111,17 @@ function GM:Think()
 	end
 
 	if me:Alive() then
-		death_sound_volume = death_sound_volume - FrameCalc(death_sound_volume_s)
-		self.tea_screenfadeout = math.Clamp(self.tea_screenfadeout - FrameCalc(3 * 1.175), 0, 255)
-		self.tea_deathtext_a = math.Clamp(self.tea_deathtext_a - FrameCalc(5 * 1.175), 0, 255)
-		self.tea_survivalstats_a = math.Clamp(self.tea_survivalstats_a - FrameCalc(5 * 1.175), 0, 255)
+		death_sound_volume = death_sound_volume - frametime*death_sound_volume_s
+		self.tea_screenfadeout = math.Clamp(self.tea_screenfadeout - frametime * (3 * 1.175), 0, 255)
+		self.tea_deathtext_a = math.Clamp(self.tea_deathtext_a - frametime * (5 * 1.175), 0, 255)
+		self.tea_survivalstats_a = math.Clamp(self.tea_survivalstats_a - frametime * (5 * 1.175), 0, 255)
 	else
-		self.tea_screenfadeout = self.tea_screenfadeout + FrameCalc(2.5 * 1.175)
+		self.tea_screenfadeout = self.tea_screenfadeout + frametime * (2.5 * 1.175)
 		if 0 < tonumber(self.tea_screenfadeout) - 300 then
-			self.tea_deathtext_a = self.tea_deathtext_a + FrameCalc(2 * 1.175)
+			self.tea_deathtext_a = self.tea_deathtext_a + frametime * (2 * 1.175)
 		end
 		if 0 < tonumber(self.tea_screenfadeout) - 620 then
-			self.tea_survivalstats_a = self.tea_survivalstats_a + FrameCalc(2 * 1.175)
+			self.tea_survivalstats_a = self.tea_survivalstats_a + frametime * (2 * 1.175)
 		end
 	end
 
@@ -142,8 +147,8 @@ function GM:Think()
 				{Color(0, 223, 255), translate.Get("Tip15")},
 				{Color(31, 223, 223), translate.Get("Tip16")},
 				{Color(31, 223, 223), translate.Get("Tip17")},
-				{Color(63, 255, 191), "Press ESCAPE button while having trader panel open to quickly close it!"},
-				{Color(91, 111, 159), "Keep an eye on infection level. Zombies become more dangerous, but more rewarding as it goes up..."},
+				{Color(63, 255, 191), translate.Get("Tip18")},
+				{Color(91, 111, 159), translate.Get("Tip19")},
 			}
 
 			local tip = table.Random(tea_Tips)
@@ -162,41 +167,25 @@ end
 
 function GM:SetupFonts()
 	CreateLegacyFont("DefaultFontSmall", "tahoma", 11, 0, false, false, false, 0, 0, 0)
-	CreateLegacyFont("AmmoText", "arial", 30, 700, true, false, false, 0, 0, 0)
+	-- CreateLegacyFont("AmmoText", "arial", 30, 700, true, false, false, 0, 0, 0)
 	CreateLegacyFont("QtyFont", "Trebuchet MS", 24, 500, true, false, false, 0, 0, 0)
 	CreateLegacyFont("DeathScreenFont", "Trebuchet MS", 56, 600, true, false, false, 0, 0, 0)
 	CreateLegacyFont("DeathScreenFont_2", "Trebuchet MS", 28, 300, true, false, false, 0, 0, 0)
 	CreateLegacyFont("DeathScreenFont_3", "Trebuchet MS", 32, 450, false, false, false, 0, 0, 0)
-	CreateLegacyFont("OtherText", "Trebuchet MS", 15, 700, true, false, false, 0, 0, 0)
+	-- CreateLegacyFont("OtherText", "Trebuchet MS", 15, 700, true, false, false, 0, 0, 0)
 	CreateLegacyFont("DamageFloaterFont", "Trebuchet MS", 144, 650, false, false, false, 0, 0, 6)
 	CreateLegacyFont("CSSTextFont", "csd", 38, 400, true, false, false, 0, 0, 0)
 
 	local font = "tahoma"
-	local weight = 600
-	local antialias = false
+	local antialias = true
 
-	-- These are not used.
-/*
-	CreateLegacyFont("TEAHUDFontLargest", font, 40, weight, antialias, false, false, 0, 0, 0)
-	CreateLegacyFont("TEAHUDFontLarger", font, 32, weight, antialias, false, false, 0, 0, 0)
-	CreateLegacyFont("TEAHUDFontLarge", font, 28, weight, antialias, false, false, 0, 0, 0)
-	CreateLegacyFont("TEAHUDFont", font, 24, weight, antialias, false, false, 0, 0, 0)
-	CreateLegacyFont("TEAHUDFontSmall", font, 22, weight, antialias, false, false, 0, 0, 0)
-	CreateLegacyFont("TEAHUDFontSmaller", font, 20, weight, antialias, false, false, 0, 0, 0)
-	CreateLegacyFont("TEAHUDFontSmallest", font, 18, weight, antialias, false, false, 0, 0, 0)
-	CreateLegacyFont("TEAHUDFontTiny", font, 16, weight, antialias, false, false, 0, 0, 0)
-	CreateLegacyFont("TEAHUDFontTinier", font, 14, weight, antialias, false, false, 0, 0, 0)
-	CreateLegacyFont("TEAHUDFontTiniest", font, 12, weight, antialias, false, false, 0, 0, 0)
-*/
-
-
-	surface.CreateFont( "Arial_2", {
-		font = "Arial",
-		size = 14,
-		weight = 400,
+	surface.CreateFont( "TargetIDTiny", {
+		font = "Trebuchet MS",
+		size = 16,
+		weight = 600,
 		blursize = 0,
 		scanlines = 0,
-		antialias = true,
+		antialias = antialias,
 		underline = false,
 		italic = false,
 		strikeout = false,
@@ -206,14 +195,48 @@ function GM:SetupFonts()
 		additive = false,
 		outline = false,
 	} )
-	
-	surface.CreateFont( "TargetIDTiny", {
-		font = "Trebuchet MS",
-		size = 17,
+
+	surface.CreateFont("TEA.HUDFont", {
+		font = font,
+		size = 20,
 		weight = 600,
 		blursize = 0,
 		scanlines = 0,
-		antialias = true,
+		antialias = antialias,
+		underline = false,
+		italic = false,
+		strikeout = false,
+		symbol = false,
+		rotary = false,
+		shadow = false,
+		additive = false,
+		outline = true,
+	} )
+
+	surface.CreateFont("TEA.HUDFontSmall", {
+		font = font,
+		size = 14,
+		weight = 600,
+		blursize = 0,
+		scanlines = 0,
+		antialias = antialias,
+		underline = false,
+		italic = false,
+		strikeout = false,
+		symbol = false,
+		rotary = false,
+		shadow = false,
+		additive = false,
+		outline = false,
+	} )
+
+	surface.CreateFont("TEA.HUDFontSmaller", {
+		font = font,
+		size = 12,
+		weight = 600,
+		blursize = 0,
+		scanlines = 0,
+		antialias = antialias,
 		underline = false,
 		italic = false,
 		strikeout = false,
@@ -262,7 +285,6 @@ function GM:Initialize()
 	InventoryItems = {}
 	InventoryWeapons = {}
 	Perks = {}
-	Perksdesc = {}
 
 	self.WraithAlpha = 0
 	self.tea_screenfadeout = 0
@@ -271,6 +293,7 @@ function GM:Initialize()
 	self.NextTip = RealTime() + 360
 	self.DeathMessage = ""
 	self.LastAliveTime = 0
+	self.SleepVisionAffect = 0
 
 	self.MyLastSurvivalStats = {}
 	self.MyLastSurvivalStats.SurvivalTime = 0
@@ -291,6 +314,8 @@ function GM:InitPostEntity()
 
 	me.LifeZKills = 0
 	me.LifePlayerKills = 0
+	me.UsingItemTime = 0
+	me.UsingItemDuration = 0
 
 	self.HasInitialized = true
 	self:LoadMainMenu()
@@ -484,6 +509,27 @@ function GM:KeyRelease(pl, key)
 		if IsValid(PropsFrame) then
 			PropsFrame:Close()
 		end
+	end
+end
+
+function GM:InputMouseApply(cmd, x, y, ang)
+	local ply = LocalPlayer()
+	if ply:IsValid() and (ply:IsUsingItem() and not ply.UsingItemCanMove or ply:IsSleeping()) then
+		cmd:SetMouseX(0)
+		cmd:SetMouseY(0)
+		
+		return true
+	end
+end
+
+local ang
+function GM:CreateMove(cmd)
+	local ply = LocalPlayer()
+
+	if (ply:IsUsingItem() and not ply.UsingItemCanMove) or ply:IsSleeping() and ang then
+		cmd:SetViewAngles(ang)
+	else
+		ang = cmd:GetViewAngles()
 	end
 end
 

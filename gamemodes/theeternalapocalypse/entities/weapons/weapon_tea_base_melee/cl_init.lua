@@ -52,7 +52,7 @@ function SWEP:DrawHUD()
 	self:SecondDrawHUD()
 	self:DrawFuelHUD()
 
-	if (self.Weapon:GetDTBool(1)) or (cl_crosshair_t:GetBool() == false) or (LocalPlayer():InVehicle()) then return end
+	if (self.Weapon:GetDTBool(1)) or not (cl_crosshair_t:GetBool()) or (LocalPlayer():InVehicle()) then return end
 
 	local hitpos = util.TraceLine ({
 		start = LocalPlayer():GetShootPos(),
@@ -174,13 +174,13 @@ function SWEP:DrawFuelHUD()
 		surface.SetDrawColor(255, 255, 255, 255)
 		surface.DrawPoly(poly)
 		
-		surface.SetFont("TargetIDSmall")
+		surface.SetFont("TEA.HUDFontSmall")
 		
 		txt = math.Round(self.BaseClass.FuelData.Percent) .. "%"
 		
 		r, n = surface.GetTextSize(txt)
 		
-		draw.SimpleTextOutlined(txt, "TargetIDSmall", poly[2].x - w * 0.5, y - n, self.BaseClass.FuelData.Color, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 1, self.BaseClass.FuelData.Shadow)
+		draw.SimpleTextOutlined(txt, "TEA.HUDFontSmall", poly[2].x - w * 0.5, y - n, self.BaseClass.FuelData.Color, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 1, self.BaseClass.FuelData.Shadow)
 	end
 end
 
@@ -215,7 +215,7 @@ end
 ---------------------------------------------------------*/
 function SWEP:PrintWeaponInfo(x, y, alpha)
 
-	if (self.DrawWeaponInfoBox == false) then return end
+	if not (self.DrawWeaponInfoBox) then return end
 
 	if (self.InfoMarkup == nil) then
 		local str

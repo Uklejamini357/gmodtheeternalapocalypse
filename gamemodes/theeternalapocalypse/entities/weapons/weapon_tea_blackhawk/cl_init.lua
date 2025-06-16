@@ -181,11 +181,11 @@ function SWEP:DrawHUD()
 		local trace = LocalPlayer():GetEyeTrace()
 		local dist = math.floor((LocalPlayer():GetPos():Distance(trace.HitPos)) * 0.02)
 		if !trace.HitSky then
-		draw.SimpleText( "Rng: "..tostring(dist).."m", "TargetIDSmall", (ScrW() / 2 - 190), (ScrH() / 2 + 100), Color(150, 255, 150, 255) )
+		draw.SimpleText( "Rng: "..tostring(dist).."m", "TEA.HUDFontSmall", (ScrW() / 2 - 190), (ScrH() / 2 + 100), Color(150, 255, 150, 255) )
 		end
-		draw.SimpleText( "Mag: "..self:Clip1(), "TargetIDSmall", (ScrW() / 2 - 190), (ScrH() / 2 - 120), Color(150, 255, 150, 255) )
-		draw.SimpleText( "Zoom: 5x", "TargetIDSmall", (ScrW() / 2 + 135), (ScrH() / 2 + 100), Color(150, 255, 150, 255) )
-		draw.SimpleText( "Bri: 500lu", "TargetIDSmall", (ScrW() / 2 + 130), (ScrH() / 2 - 120), Color(150, 255, 150, 255) )
+		draw.SimpleText( "Mag: "..self:Clip1(), "TEA.HUDFontSmall", (ScrW() / 2 - 190), (ScrH() / 2 - 120), Color(150, 255, 150, 255) )
+		draw.SimpleText( "Zoom: 5x", "TEA.HUDFontSmall", (ScrW() / 2 + 135), (ScrH() / 2 + 100), Color(150, 255, 150, 255) )
+		draw.SimpleText( "Bri: 500lu", "TEA.HUDFontSmall", (ScrW() / 2 + 130), (ScrH() / 2 - 120), Color(150, 255, 150, 255) )
 	/*
 			// Draw the crosshair
 			if not (self.RedDot) then
@@ -217,7 +217,7 @@ function SWEP:DrawHUD()
 		end
 	end
 
-	if (self.Weapon:GetDTBool(1) and not self.Weapon:GetNetworkedBool("Suppressor")) or (cl_crosshair_t:GetBool() == false) or (LocalPlayer():InVehicle()) then return end
+	if (self.Weapon:GetDTBool(1) and not self.Weapon:GetNetworkedBool("Suppressor")) or not (cl_crosshair_t:GetBool()) or (LocalPlayer():InVehicle()) then return end
 	
 	local hitpos = util.TraceLine ({
 		start = LocalPlayer():GetShootPos(),

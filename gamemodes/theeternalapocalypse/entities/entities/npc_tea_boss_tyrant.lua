@@ -91,7 +91,7 @@ function ENT:HasLOS()
 		tracedata.endpos = self.target:GetPos() + Vector(0, 0, 40)
 		tracedata.filter = self
 		local trace = util.TraceLine(tracedata)
-		if trace.HitWorld == false then
+		if not trace.HitWorld then
 			return true
 		else 
 			return false
@@ -199,7 +199,7 @@ function ENT:RunBehaviour()
 				self:AttackProp(breakshit)
 				for k,v in pairs(breakshit) do
 					if v:IsValid() then
-						if v:GetClass() == "prop_door_rotating" and v:GetNoDraw() == false then
+						if v:GetClass() == "prop_door_rotating" and not v:GetNoDraw() then
 							self:AttackDoor(v)
 						else continue end
 					end
@@ -236,7 +236,7 @@ function ENT:RunBehaviour()
 						if v:IsPlayer() and v:Alive() and v:IsOnGround() then 
 							local damageInfo = DamageInfo()
 							damageInfo:SetAttacker(self)
-							damageInfo:SetDamage(GAMEMODE:CalcDefenseDamage(v, self.IsEnraged and 65 or 50))
+							damageInfo:SetDamage((self.IsEnraged and 65 or 50) * v:GetArmorDamageMultiplier())
 							damageInfo:SetDamageType(DMG_CLUB)
 
 							v:TakeDamageInfo(damageInfo)
@@ -292,8 +292,7 @@ function ENT:RunBehaviour()
 					if (IsValid(target) and self:GetRangeTo(target) <= 155) and target:Alive() then
 						local damageInfo = DamageInfo()
 						damageInfo:SetAttacker(self)
-						damageInfo:SetDamage(GAMEMODE:CalcPlayerDamage(target, self.IsEnraged and math.random(45, 70) or math.random(40, 55)))
---						damageInfo:SetDamage(self.IsEnraged and math.random(50,75) or (math.random(40, 60)) * (1 - (target.StatDefense * 0.015)))
+						damageInfo:SetDamage((self.IsEnraged and math.random(45, 70) or math.random(40, 55)) * target:GetArmorDamageMultiplier())
 						damageInfo:SetDamageType(DMG_CLUB)
 
 						local force = target:GetAimVector() * -600
@@ -526,7 +525,7 @@ function ENT:AttackProp(targetprops)
 --	local entstoattack = ents.FindInSphere(self:GetPos() + self:GetAngles():Up() * 55, 35)
 	for _,v in pairs(targetprops) do
 	
-		if v:IsValid() and (v:GetClass() == "prop_flimsy" or v:GetClass() == "prop_strong" or SpecialSpawns[v:GetClass()]) then
+		if v:IsValid() and (v:GetClass() == "prop_flimsy" or v:GetClass() == "prop_strong" or GAMEMODE.SpecialStructureSpawns[v:GetClass()]) then
 			/*
 			if SERVER then
 			

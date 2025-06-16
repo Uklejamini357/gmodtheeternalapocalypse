@@ -55,7 +55,7 @@ if target != nil then
 	tracedata.endpos = target:GetPos() + Vector(0, 0, 35)
 	tracedata.filter = self
 	local trace = util.TraceLine(tracedata)
-	if trace.HitWorld == false then
+	if not trace.HitWorld then
 		return true
 	else 
 	return false

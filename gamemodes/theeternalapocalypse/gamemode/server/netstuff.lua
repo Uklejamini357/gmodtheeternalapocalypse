@@ -29,7 +29,7 @@ util.AddNetworkString("CraftItem") -- see server/crafting.lua
 util.AddNetworkString("CraftSpecialItem") -- see server/crafting.lua
 util.AddNetworkString("SystemMessage")
 util.AddNetworkString("RadioMessage")
-util.AddNetworkString("UseDelay") -- delays on using items
+util.AddNetworkString("tea_itemuse") -- delays on using items
 
 util.AddNetworkString("RecvFactions") -- see factions.lua and cl_scoreboard.lua
 util.AddNetworkString("CreateFaction") -- see factions.lua for below until WraithBlind
@@ -77,7 +77,6 @@ function GM:NetUpdateStats(ply)
 	net.WriteFloat(math.Round(ply.Infection))
 	net.WriteFloat(ply.SurvivalTime)
 	net.WriteFloat(math.Round(ply.Battery))
-	net.WriteFloat(math.Round(ply.Oxygen))
 	net.Send(ply)
 end
 
@@ -223,33 +222,33 @@ net.Receive("ChangeModel", function(len, ply)
 	ply.NxtModelChange = CurTime() + 60
 	local success = gamemode.Call("RecalcPlayerModel", ply)
 	if success then
-		ply:PrintMessage(3, "Your playermodel has been changed!")
+		ply:PrintTranslatedMessage(3, "playermodel_changed")
 	end
 end)
 
 
 net.Receive("UpgradePerk", function(len, ply)
 	local perk = net.ReadString()
-	local amount = net.ReadUInt(16)
+	local amount = math.max(1, net.ReadUInt(16))
 
 	local perk2 = "Stat"..perk
 	local skill = GAMEMODE.StatConfigs[perk]
 	local curskillamt = tonumber(ply[perk2])
 	local mul = 1--(skill.Cost or 1) * (curskillamt >= skill.Max and 2 or 1)
 	local max = skill.Max + (ply:HasPerk("empowered_skills") and skill.PerkMaxIncrease or 0)
-	amt = math.min(amount, ply.StatPoints, max - curskillamt)
+	amt = math.min(amount, math.max(1, ply.StatPoints), max - curskillamt)
 	local new = curskillamt + amt
 	local cost = (amt * mul) + math.max(0, new - math.max(curskillamt, skill.Max))
 	amt = math.min(amt, math.floor(ply.StatPoints-(cost-amt)), max - curskillamt)
 
 	if tonumber(ply.StatPoints) < cost then
-		ply:SendChat("You need skill points to upgrade skill!")
+		ply:SendChat(translate.ClientGet(ply, "you_need_sp_to_upgrade_skill"))
 		return false
 	end
 
 	if amt < mul then return end
 	if max < curskillamt and (tonumber(curskillamt) >= max) then
-		ply:SendChat("You have reached the maximum number of points for this skill")
+		ply:SendChat(translate.ClientGet(ply, "reached_max_skill_level"))
 		return false
 	end
 
@@ -322,17 +321,17 @@ net.Receive("tea_perksunlock", function(len, pl)
 	local cost = GAMEMODE.PerksList[perk].Cost
 
 	if pl.UnlockedPerks[perk] then
-		pl:SendChat("You have already unlocked this perk!")
+		pl:SendChat(translate.ClientGet(pl, "perk_already_unlocked"))
 		return false
 	end
 
 	if tonumber(pl.PerkPoints) < cost then
-		pl:SendChat("You need "..cost.." to unlock this perk!")
+		pl:SendChat(translate.ClientFormat(pl, "perk_need_points_to_unlock", cost))
 		return false
 	end
 
 	if tonumber(pl.Prestige) < perkl.PrestigeReq then
-		pl:SendChat("You need to have prestige "..perkl.PrestigeReq.." to unlock this perk!")
+		pl:SendChat(translate.ClientFormat(pl, "perk_need_prestige_to_unlock", perkl.PrestigeReq))
 		return false
 	end
 
@@ -348,7 +347,7 @@ net.Receive("tea_perksunlock", function(len, pl)
 	pl:SetMaxArmor(GAMEMODE:CalcMaxArmor(pl))
 	pl:SetJumpPower(GAMEMODE:CalcJumpPower(pl))
 --	if GAMEMODE:GetDebug() >= DEBUGGING_ADVANCED then print(pl:Nick().." used "..amt * mul.." skill point(s) on "..perk.." skill ("..tonumber(pl.StatPoints).." skill points remaining)") end
-	pl:SendChat("You unlocked perk: "..perkl.Name)
+	pl:SendChat(translate.ClientFormat(pl, "perk_unlocked", perkl.Name))
 	GAMEMODE:RecalcPlayerSpeed(pl)
 	GAMEMODE:SendPlayerPerksUnlocked(pl)
 	GAMEMODE:NetUpdatePeriodicStats(pl)
@@ -470,15 +469,69 @@ end
 local meta = FindMetaTable("Player")
 if not meta then return end
 
-function meta:SendUseDelay(delay)
-	if !self:IsValid() or !self:Alive() then return end
-	net.Start("UseDelay")
+function meta:SendUseDelay(delay, text, shouldtranslate, canmove, noforceholsterweapon)
+	if !self:IsValid() or !self:Alive() or (tonumber(delay) or 0) < 0 then return end
+	self.UsingItemDuration = delay
+	self.UsingItemTime = CurTime()
+	self.UsingItemCanMove = canmove
+
+	if not noforceholsterweapon then
+		self:ActivityForceHolsterWeapon()
+	end
+
+	net.Start("tea_itemuse")
 	net.WriteFloat(delay)
+	net.WriteString(text)
+	net.WriteBool(shouldtranslate)
+	net.WriteBool(canmove)
 	net.Send(self)
 end
 
 function meta:NWSendStamina()
 	net.Start("tea_updatestamina")
 	net.WriteFloat(self.Stamina)
+	net.WriteFloat(math.Round(self.Oxygen))
 	net.Send(self)
+end
+
+function meta:GoSleep()
+	if not self:CheckCanSleep() then return end
+	self:SetIsSleeping(true)
+
+	self:ActivityForceHolsterWeapon()
+	self:SendChat(translate.ClientGet(self, "sleep_now_sleeping"))
+	self:SetNoDraw(true)
+	self:CreateRagdoll()
+end
+
+function meta:WakeUp()
+	if not self:IsSleeping() then return end
+	self:SetIsSleeping(false)
+
+	self:SetNoDraw(false)
+	if self:Alive() then
+		self:GetRagdollEntity():Remove()
+	end
+end
+
+function meta:CheckCanSleep()
+	if not self:Alive() or self:IsSleeping() then return false end
+	if self.Fatigue <= 2000 then self:SendChat(translate.Get("sleep_not_tired")) return false end
+	if self.Hunger <= 3000 then self:SendChat(translate.Get("sleep_hungry")) return false end
+	if self.Thirst <= 3000 then self:SendChat(translate.Get("sleep_thirsty")) return false end
+	if self.Infection >= 8000 then self:SendChat(translate.Get("sleep_infected")) return false end
+
+	return true
+end
+
+function meta:ActivityForceHolsterWeapon()
+	local activewep = self:GetActiveWeapon()
+	if not self:GetWeapon("tea_fists"):IsValid() then
+		self:Give("tea_fists")
+	end
+	self:SelectWeapon("tea_fists")
+
+	if activewep:IsValid() then
+		self.UsingItemSwitchWeapon = activewep:GetClass()
+	end
 end

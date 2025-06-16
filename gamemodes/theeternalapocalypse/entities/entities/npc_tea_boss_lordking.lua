@@ -94,7 +94,7 @@ function ENT:HasLOS()
 		tracedata.endpos = self.target:GetPos() + Vector(0, 0, 40)
 		tracedata.filter = self
 		local trace = util.TraceLine(tracedata)
-		if trace.HitWorld == false then
+		if not trace.HitWorld then
 			return true
 		else 
 			return false
@@ -245,7 +245,7 @@ function ENT:RunBehaviour()
 				self:AttackProp(breakshit)
 				for k,v in pairs(breakshit) do
 					if v:IsValid() then
-						if v:GetClass() == "prop_door_rotating" and v:GetNoDraw() == false then
+						if v:GetClass() == "prop_door_rotating" and not v:GetNoDraw() then
 							self:AttackDoor(v)
 						else continue end
 					end
@@ -268,7 +268,7 @@ function ENT:RunBehaviour()
 					if (IsValid(target) and self:GetRangeTo(target) <= 105) and target:Alive() then
 						local damageInfo = DamageInfo()
 						damageInfo:SetAttacker(self)
-						damageInfo:SetDamage(GAMEMODE:CalcPlayerDamage(target, self.IsEnraged and math.random(65, 75) or math.random(50, 55)))
+						damageInfo:SetDamage((self.IsEnraged and math.random(65, 75) or math.random(50, 55)) * target:GetArmorDamageMultiplier())
 						damageInfo:SetDamageType(DMG_CLUB)
 
 						local distancevector = target:GetPos() - self:GetPos()
@@ -491,7 +491,7 @@ function ENT:AttackProp(targetprops)
 --	local entstoattack = ents.FindInSphere(self:GetPos() + self:GetAngles():Up() * 55, 35)
 	for _,v in pairs(targetprops) do
 	
-		if v:IsValid() and (v:GetClass() == "prop_flimsy" or v:GetClass() == "prop_strong" or SpecialSpawns[v:GetClass()]) then
+		if v:IsValid() and (v:GetClass() == "prop_flimsy" or v:GetClass() == "prop_strong" or GAMEMODE.SpecialStructureSpawns[v:GetClass()]) then
 
 			self:EmitSound(table.Random(self.AttackSounds), 110, math.random(90, 120))
 			self:StartActivity(self.AttackAnim)

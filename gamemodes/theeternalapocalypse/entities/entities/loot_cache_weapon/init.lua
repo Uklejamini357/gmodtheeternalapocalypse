@@ -37,7 +37,7 @@ function ENT:Use( activator, caller )
 	gamemode.Call("SystemGiveItem", caller, name, qty )
 	gamemode.Call("GiveTaskProgress", caller, "loot_finder", 1)
 
-	caller:SendChat("You picked up a loot cache containing [ "..qty.."x "..itemname.." ]")
+	caller:SendChat(translate.ClientFormat(client, "you_picked_up_a_lootcache", qty, itemname))
 	GAMEMODE:SendInventory(caller)
 	caller:EmitSound("items/ammopickup.wav", 100, 100)
 	self:Remove()

@@ -22,20 +22,20 @@ function GM:FactionMenu()
 
 	local title = vgui.Create("DLabel", FactionFrame)
 	title:SetPos(25,10)
-	title:SetFont( "TargetID" )
+	title:SetFont( "TEA.HUDFont" )
 	title:SetText("Create a faction")
 	title:SizeToContents()
 
 	local desc = vgui.Create("DLabel", FactionFrame)
 	desc:SetPos(25,30)
---	desc:SetFont( "TargetIDSmall" )
+--	desc:SetFont( "TEA.HUDFontSmall" )
 	desc:SetText("Note: creating a faction makes it so members of other factions can PVP you at all times.\nOn the upside it allows you to build using strong props (which cannot be damaged by most guns) and place \nfaction structures such as fridges, ammo crates, generators, storage vaults etc. \nWarning: Creating a faction will also cost some money. Your faction name cannot contain more than \n20 characters.")
 	desc:SetTextColor(Color(250, 225, 200, 255))
 	desc:SizeToContents()
 
 	local tnamelabel = vgui.Create("DLabel", FactionFrame)
 	tnamelabel:SetPos(25,100)
-	tnamelabel:SetFont( "TargetIDSmall" )
+	tnamelabel:SetFont( "TEA.HUDFontSmall" )
 	tnamelabel:SetText("Faction Name:")
 	tnamelabel:SizeToContents()
 	
@@ -46,7 +46,7 @@ function GM:FactionMenu()
 
 	local tnamelabel = vgui.Create("DLabel", FactionFrame)
 	tnamelabel:SetPos(25,160)
-	tnamelabel:SetFont( "TargetIDSmall" )
+	tnamelabel:SetFont( "TEA.HUDFontSmall" )
 	tnamelabel:SetText("Faction Colour:")
 	tnamelabel:SizeToContents()
 
@@ -66,7 +66,7 @@ function GM:FactionMenu()
 	local createbutton = vgui.Create("DButton", FactionFrame)
 	createbutton:SetSize( 550, 30 )
 	createbutton:SetPos( 25, 390 )
-	createbutton:SetFont("TargetIDSmall")
+	createbutton:SetFont("TEA.HUDFontSmall")
 	createbutton:SetText("Create my faction!")
 	createbutton:SetTextColor(Color(255, 255, 255, 255))
 	createbutton.Paint = function(panel)
@@ -91,7 +91,10 @@ end)
 
 function GM:ManageMenu()
 	if IsValid(ManageFrame) then ManageFrame:Remove() end
-	if LocalPlayer():Team() == 1 then chat.AddText(Color(255,255,255,255), "[System] ", Color(255,205,205,255), "You are not in a faction!") return false end
+	if LocalPlayer():Team() == 1 then
+		chat.AddText(Color(255,255,255,255), "[System] ", Color(255,205,205,255), translate.Get("not_in_faction"))
+		return false
+	end
 
 	ManageFrame = vgui.Create( "DFrame" )
 	ManageFrame:SetSize( 600, 500 )
@@ -114,14 +117,14 @@ function GM:ManageMenu()
 
 	local txt = vgui.Create( "DLabel", ManageFrame )
 	txt:SetPos( 10, 28 )
-	txt:SetFont( "TargetIDSmall" )
+	txt:SetFont( "TEA.HUDFontSmall" )
 	txt:SetColor( Color(255,255,255,255) )
 	txt:SetText( "Members of your faction:" )
 	txt:SizeToContents()
 
 	local txt2 = vgui.Create( "DLabel", ManageFrame )
 	txt2:SetPos( 380, 28 )
-	txt2:SetFont( "TargetIDSmall" )
+	txt2:SetFont( "TEA.HUDFontSmall" )
 	txt2:SetColor( Color(255,255,255,255) )
 	txt2:SetText("Invite to faction:")
 	txt2:SizeToContents()
@@ -199,7 +202,7 @@ function GM:ManageMenu()
 
 		local plyname = vgui.Create( "DLabel", plypanel )
 		plyname:SetPos( 12, 8 )
-		plyname:SetFont( "TargetIDSmall" )
+		plyname:SetFont( "TEA.HUDFontSmall" )
 		plyname:SetColor( Color(255,255,255,255) )
 		plyname:SetText( v:Nick())
 		plyname:SizeToContents()
@@ -232,7 +235,7 @@ function GM:ManageMenu()
 
 	local plyname = vgui.Create( "DLabel", plypanel )
 	plyname:SetPos( 12, 8 )
-	plyname:SetFont( "TargetIDSmall" )
+	plyname:SetFont( "TEA.HUDFontSmall" )
 	plyname:SetColor( Color(255,255,255,255) )
 	plyname:SetText( v:Nick())
 	plyname:SizeToContents()

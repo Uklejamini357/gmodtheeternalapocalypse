@@ -66,7 +66,7 @@ function GM:OpenTraderMenu()
 	end
 
 	local cash = vgui.Create("DLabel", TraderMenu)
-	cash:SetFont("TargetID")
+	cash:SetFont("TEA.HUDFont")
 	cash:SetPos(100, 190)
 	cash:SetText("My Wallet: "..math.floor(MyMoney).."\nMy bounty: "..math.floor(MyBounty))
 	cash:SetColor(Color(155,255,155,255))
@@ -95,6 +95,8 @@ end
 
 function GM:TraderMenu()
 	if IsValid(TraderFrame) then TraderFrame:Remove() end
+	local ply = LocalPlayer()
+
 	TraderFrame = vgui.Create("DFrame")
 	TraderFrame:SetSize(1000, 700)
 	TraderFrame:Center()
@@ -205,7 +207,7 @@ function GM:TraderMenu()
 	Specials:SetPos(5, 25)
 	
 	local LWeight = vgui.Create("DLabel", TraderFrame)
-	LWeight:SetFont("TargetIDSmall")
+	LWeight:SetFont("TEA.HUDFontSmall")
 	LWeight:SetPos(10, TraderFrame:GetTall() - 42)
 	LWeight:SetSize(350, 25)
 	LWeight:SetColor(Color(255,255,255,255))
@@ -218,7 +220,7 @@ function GM:TraderMenu()
 	end
 
 	local LMoney = vgui.Create("DLabel", TraderFrame)
-	LMoney:SetFont("TargetID")
+	LMoney:SetFont("TEA.HUDFont")
 	LMoney:SetPos(400, TraderFrame:GetTall() - 38)
 	LMoney:SetColor(Color(155,255,155,255))
 	LMoney:SetText("My Wallet: "..math.floor(MyMoney))
@@ -249,7 +251,7 @@ function GM:TraderMenu()
 */
 
 	LVaultWeight = vgui.Create("DLabel", TraderFrame)
-	LVaultWeight:SetFont("TargetIDSmall")
+	LVaultWeight:SetFont("TEA.HUDFontSmall")
 	LVaultWeight:SetColor(Color(255,255,255,255))
 	LVaultWeight:SetText("Vault Capacity: "..LocalPlayer():CalculateVaultWeight().."kg / "..GAMEMODE.Config["VaultSize"].."kg")
 	LVaultWeight:SizeToContents()
@@ -321,21 +323,21 @@ function GM:TraderMenu()
 			ItemName:SetText(GAMEMODE:GetItemName(k))
 
 			local ItemCost = vgui.Create("DLabel", ItemBackground)
-			ItemCost:SetFont("TargetIDSmall")
+			ItemCost:SetFont("TEA.HUDFontSmall")
 			ItemCost:SetPos(80, 25)
 			ItemCost:SetSize(170, 15)
 			ItemCost:SetColor(Color(155,255,155,255))
-			ItemCost:SetText("Cost: ".. math.floor((v.Cost * (1 - ((Perks.Barter or 0) * 0.015)))))
+			ItemCost:SetText("Cost: ".. math.floor((v.Cost * (1 - ((ply.StatBarter or 0) * 0.015)))))
 
 			local ItemWeight = vgui.Create("DLabel", ItemBackground)
-			ItemWeight:SetFont("TargetIDSmall")
+			ItemWeight:SetFont("TEA.HUDFontSmall")
 			ItemWeight:SetPos(80, 42)
 			ItemWeight:SetSize(170, 15)
 			ItemWeight:SetColor(Color(155,155,255,255))
 			ItemWeight:SetText("Weight: ".. v.Weight.."kg")
 
 			local ItemSupply = vgui.Create("DLabel", ItemBackground)
-			ItemSupply:SetFont("TargetIDSmall")
+			ItemSupply:SetFont("TEA.HUDFontSmall")
 			ItemSupply:SetPos(80, 58)
 			ItemSupply:SetText(v.Supply == 0 and "Supply: Unlimited" or v.Supply == -1 and "Supply: None" or "Supply: ".. v.Supply.." / "..v.Supply)
 			ItemSupply:SetSize(170, 15)
@@ -380,7 +382,7 @@ function GM:TraderMenu()
 		SellPanel:Clear()
 		for k, v in SortedPairsByMemberValue(LocalInventory, "Weight", true) do
 			if !GAMEMODE.ItemsList[k] then continue end -- ignore invalid shit
-			local icost = ((GAMEMODE.ItemsList[k]["Cost"] or 0) * (0.2 + ((Perks.Barter or 0) * 0.005))) or 0
+			local icost = ((GAMEMODE.ItemsList[k]["Cost"] or 0) * (0.2 + ((ply.StatBarter or 0) * 0.005))) or 0
 --			if icost < 1 then continue end -- dont sell items that are not worth anything
 
 			local raretbl = gamemode.Call("CheckItemRarity", v.Rarity)
@@ -409,7 +411,7 @@ function GM:TraderMenu()
 
 			local ItemName = vgui.Create("DLabel", ItemBackground)
 			ItemName:SetPos(80, 10)
-			ItemName:SetFont("TargetIDSmall")
+			ItemName:SetFont("TEA.HUDFontSmall")
 			ItemName:SetTextColor(raretbl.col)
 			if raretbl.keeprefresh then
 				ItemName.Think = function()
@@ -423,7 +425,7 @@ function GM:TraderMenu()
 			if icost > 1 then
 				local ItemCost = vgui.Create("DLabel", ItemBackground)
 				ItemCost:SetPos(170, 43)
-				ItemCost:SetFont("TargetIDSmall")
+				ItemCost:SetFont("TEA.HUDFontSmall")
 				ItemCost:SetColor(Color(155,255,155,255))
 				ItemCost:SetText(tostring(math.floor(icost)))
 				ItemCost:SizeToContents()
@@ -562,7 +564,7 @@ function GM:TraderMenu()
 
 			local ItemName = vgui.Create("DLabel", ItemBackground)
 			ItemName:SetPos(80, 10)
-			ItemName:SetFont("TargetIDSmall")
+			ItemName:SetFont("TEA.HUDFontSmall")
 			ItemName:SetTextColor(raretbl.col)
 			if raretbl.keeprefresh then
 				ItemName.Think = function()
