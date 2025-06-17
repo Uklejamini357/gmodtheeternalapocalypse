@@ -576,7 +576,7 @@ function ENT:ApplyPlayerDamage(ply, damage, hitforce, infection)
 	ply:SetVelocity(force)
 	if ply:IsPlayer() then
 		ply:ViewPunch(VectorRand():Angle() * 0.05)
-		if math.random(0, 100) > (100 - infection * (1 - (0.04 * ply.StatImmunity))) then
+		if math.random(0, 100) < infection then
 			ply:AddInfection(math.random(60,300))
 		end
 	end

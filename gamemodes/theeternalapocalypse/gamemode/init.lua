@@ -23,7 +23,6 @@ AddCSLuaFile("client/cl_customdeathnotice.lua")
 AddCSLuaFile("client/cl_spawnmenu.lua")
 AddCSLuaFile("client/cl_tradermenu.lua")
 AddCSLuaFile("client/cl_tasksmenu.lua")
-AddCSLuaFile("client/cl_dermahooks.lua")
 AddCSLuaFile("client/cl_lootmenu.lua")
 AddCSLuaFile("client/cl_adminmenu.lua")
 AddCSLuaFile("client/cl_statsmenu.lua")
@@ -51,7 +50,6 @@ include("server/admincmd.lua") -- admin commands
 include("server/devcmds.lua") -- commands for dev, do not edit unless using for good purposes
 include("server/netstuff.lua") -- just some network functions
 include("server/server_util.lua")
-include("server/config.lua")
 include("server/commands.lua") -- Drop cash, toggle pvp and such other commands
 include("server/player_data.lua") -- Data management for players
 include("server/player_inventory.lua") -- Player Inventory management for players
@@ -206,7 +204,7 @@ function GM:Think()
 			local noregen_infection = 5000
 			if (ply.Thirst >= noregen_thirst and ply.Hunger >= noregen_hunger and ply.Fatigue <= noregen_fatigue and ply.Infection <= noregen_infection) then
 				if ply.HPRegen and ply:Health() < ply:GetMaxHealth() then
-					ply.HPRegen = math.Clamp(ply.HPRegen + 0.11*(1 + ply.StatMedSkill * 0.075)*(ply:IsSleeping() and 10 or 1), 0, ply:GetMaxHealth())
+					ply.HPRegen = math.Clamp(ply.HPRegen + 0.11*(1 + ply.StatMedSkill * 0.08)*(ply:IsSleeping() and 10 or 1), 0, ply:GetMaxHealth())
 				elseif !ply.HPRegen or ply.HPRegen > 0 then
 					ply.HPRegen = 0
 				end
@@ -245,14 +243,14 @@ function GM:Think()
 
 		--random chance of getting infected per tick is very rare, but has chance if survived for more than 10 minutes, can decrease chance of this happening by increasing immunity skill level
 		if self.RandomPlayerInfection then
-			local infectionchance = math.random(1, math.max(50000, 2000000 + (100000 * ply.StatImmunity) - (ct - ply.SurvivalTime)))
+			local infectionchance = math.random(1, math.max(50000, 2000000 - (ct - ply.SurvivalTime)))
 			if (infectionchance == 1 and math.floor(ct - ply.SurvivalTime) >= 900) and ply.Infection <= 0 and ply:Alive() then
 				ply:SendChat(translate.ClientGet(ply, "plcaughtinfection"))
 			end
 		end
 
 		if (ply.Infection > 0 or infectionchance and infectionchance == 1) then
-			ply.Infection = math.Clamp(ply.Infection + (16*ft * (1 - (ply.StatImmunity * 0.04)))*(sleeping and 8 or 1), 0, 10000)
+			ply.Infection = math.Clamp(ply.Infection + (16*ft * (1 - ply.StatImmunity * 0.035))*(sleeping and 8 or 1), 0, 10000)
 		end
 
 		if sleeping then
@@ -354,6 +352,10 @@ function GM:Think()
 		local oxygendrainmul = 1
 		if armortype and armortype.ArmorStats and armortype.ArmorStats.oxygen_capacity then
 			oxygendrainmul = 1 / armortype.ArmorStats.oxygen_capacity
+		end
+		
+		if ply.StatEndurance and ply.StatEndurance > 0 then
+			oxygendrainmul = oxygendrainmul / (1 + ply.StatEndurance*0.02)
 		end
 		
 		-- print(armortype)
@@ -1218,7 +1220,7 @@ function GM:RecalcPlayerSpeed(ply)
 	local armorspeedmul = 1
 	local walkspeed = self.Config["WalkSpeed"]
 	local runspeed = self.Config["RunSpeed"]
-	local walkspeedbonus = ply.StatSpeed * 3.5
+	local walkspeedbonus = ply.StatSpeed * 3
 	local runspeedbonus = ply.StatSpeed * 7
 	local plyarmor = ply:GetNWString("ArmorType")
 	local slowdown = tonumber(ply.SlowDown or 0)

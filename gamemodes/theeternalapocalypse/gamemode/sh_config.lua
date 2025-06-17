@@ -650,7 +650,7 @@ GM.PerksList = {
 
 	["enduring_endurance"] = {
 		Name = "Enduring Endurance",
-		Description = "Stamina regeneration is multiplied by 1.5x when your stamina is below 25%",
+		Description = "Stamina regeneration is multiplied by 1.3x when your stamina is below 25%",
 		Cost = 1,
 		PrestigeReq = 3,
 	},

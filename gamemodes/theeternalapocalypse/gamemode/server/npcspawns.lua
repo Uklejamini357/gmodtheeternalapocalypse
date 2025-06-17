@@ -343,8 +343,8 @@ function GM:NPCReward(ent)
 	if !ent.TEA_DeadNPC and (ent:IsNextBot() or ent:IsNPC()) and (ent.XPReward and ent.MoneyReward) then
 		if !isboss and attacker and attacker:IsValid() then
 			local hasbountyhunter = attacker:HasPerk("bountyhunter")
-			local xp = ent.XPReward * self.XPGainMul * GAMEMODE:GetInfectionMul() * math.Round(1 + (attacker.StatKnowledge * 0.025), 3)
-			local cash = ent.MoneyReward * self.CashGainMul * (0.5 + (GAMEMODE:GetInfectionMul() * 0.5)) * (self:CashBonus(attacker) or 1) * math.Round(1 + (attacker.StatSalvage * 0.025), 3)
+			local xp = ent.XPReward * self.XPGainMul * GAMEMODE:GetInfectionMul() * math.Round(1 + (attacker.StatKnowledge * 0.03), 3)
+			local cash = ent.MoneyReward * self.CashGainMul * (0.5 + (GAMEMODE:GetInfectionMul() * 0.5)) * (self:CashBonus(attacker) or 1) * math.Round(1 + (attacker.StatSalvage * 0.03), 3)
 			GAMEMODE:Payout(attacker,
 				xp * (hasbountyhunter and (isvariant and 1.1 or 1) or 1),
 				cash * (hasbountyhunter and (isvariant and 1.15 or 1) or 1)
@@ -464,42 +464,6 @@ function GM:Payout(ply, xp, cash)
 	self:NetUpdatePeriodicStats(ply)
 	return TXPGain, TMoneyGain
 end
-
--- doesn't work for some reason, so leave it
-/*
-function ZombieDealDamage(ply, zed, dmgmin, dmgmax, force, infection)
-	local damageInfo = DamageInfo()
-	local dmg1 = math.random(dmgmin, dmgmax)
-
-	local armorvalue = 0
-	local plyarmor = ply:GetNWString("ArmorType")
-
-	if plyarmor and plyarmor != "none" then
-		local armortype = ItemsList[plyarmor]
-		armorvalue = tonumber((armortype["ArmorStats"]["reduction"]) / 100)
-	end
-
-	local armorbonus = dmg1 * armorvalue
-	local defencebonus = dmg1 * (0.015 * ply.StatDefense)
-	local dmg2 = dmg1 - (defencebonus + armorbonus)
-
-	damageInfo:SetAttacker(zed)
-	damageInfo:SetDamage(dmg2)
-	damageInfo:SetDamageType(DMG_CLUB)
-
-	local force = ply:GetAimVector() * force
-	force.z = 32
-	damageInfo:SetDamageForce(force)
-
-	ply:TakeDamageInfo(damageInfo)
-	ply:EmitSound("npc/zombie/zombie_hit.wav", 100, math.random(80, 110))
-	ply:ViewPunch(VectorRand():Angle() * 0.05)
-	ply:SetVelocity(force)
-	if math.random(0, 100) > (100 - (infection * (1 - (0.04 * ply.StatImmunity)))) then
-		ply:AddInfection(math.random(60,300))
-	end
-end
-*/
 
 function GM:TestZombies(ply, cmd, args)
 	if !ply:IsValid() then return end

@@ -262,7 +262,7 @@ function meta:GetArmorProtection(defense)
 	end
 
 	if defense then
-		armorvalue = armorvalue + (self.StatDefense*0.015) *  (1 - armorvalue)
+		armorvalue = armorvalue + (self.StatDefense*0.02) *  (1 - armorvalue)
 	end
 
 	return armorvalue
@@ -278,7 +278,7 @@ function meta:GetArmorEnvProtection(defense)
 	end
 
 	if defense then
-		armorvalue = armorvalue + (self.StatDefense*0.01) *  (1 - armorvalue)
+		armorvalue = armorvalue + (self.StatDefense*0.015) *  (1 - armorvalue)
 	end
 
 	return armorvalue
