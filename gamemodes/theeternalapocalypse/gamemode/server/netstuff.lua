@@ -520,6 +520,7 @@ function meta:CheckCanSleep()
 	if self.Hunger <= 3000 then self:SendChat(translate.Get("sleep_hungry")) return false end
 	if self.Thirst <= 3000 then self:SendChat(translate.Get("sleep_thirsty")) return false end
 	if self.Infection >= 8000 then self:SendChat(translate.Get("sleep_infected")) return false end
+	if self:WaterLevel() >= 2 then self:SendChat("You literally cannot sleep if you are in water right now.") return false end
 
 	return true
 end

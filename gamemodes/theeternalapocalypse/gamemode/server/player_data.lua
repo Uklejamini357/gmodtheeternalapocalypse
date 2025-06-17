@@ -59,13 +59,14 @@ function GM:LoadPlayer(ply, id)
 			PrintTable(tbl)
 		end
 
+		local perkpoints
+
 		for var,value in pairs(tbl) do
 			ply[var] = value
-			-- if TheLine[1] == "PerkPoints" then
-			-- 	perkpoints = true
-			-- elseif TheLine[1] == "TaskCooldowns" or TheLine[1] == "LastSessionInfo" then
-			-- 	ply[TheLine[1]] = util.JSONToTable(TheLine[2])
-			-- end
+
+			if var == "PerkPoints" then
+				perkpoints = true
+			end
 		end
 
 		if !perkpoints then
@@ -871,7 +872,7 @@ end
 
 function GM:GetPlayerCharacters(ply)
 	if !self.PlayerCharactersTest then return end
-		local tbl = {}
+	local tbl = {}
 	for i=1,3 do
 		
 		local t = {}

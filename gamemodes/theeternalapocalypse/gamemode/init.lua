@@ -264,8 +264,10 @@ function GM:Think()
 				wakeupcause = 2
 			elseif ply.Infection > 9000 then
 				wakeupcause = 3
-			elseif ply.Fatigue < 1 then
+			elseif ply:WaterLevel() >= 2 then
 				wakeupcause = 4
+			elseif ply.Fatigue < 1 then
+				wakeupcause = 5
 			end
 
 			if wakeupcause ~= 0 then
@@ -275,6 +277,7 @@ function GM:Think()
 					wakeupcause == 1 and "You wake up with a very strong feeling of dehydration." or
 					wakeupcause == 2 and "You wake up with a very strong feeling of imminent starvation." or
 					wakeupcause == 3 and "You wake up with a strong feeling of dying from infection." or
+					wakeupcause == 4 and "You wake up as you fell into the water. Wtf were you thinking?!" or
 					"You wake up feeling rested!"
 				)
 			end
@@ -387,14 +390,14 @@ function GM:Think()
 			local fatigabove99 = ply.Fatigue > 9900
 
 			if ply.Fatigue < 9900 then
-				ply.Stamina = ply.Stamina + 3.13*ft * (ply:HasPerk("enduring_endurance") and ply.Stamina < 25 and 1.3 or 1) * (fatigabove99 and 0 or fatigabove90 and 0.4 or fatigabove70 and 0.8 or 1) * (ply:WaterLevel() == 3 and 2/3 or 1)
+				ply.Stamina = ply.Stamina + 3.04*ft * (ply:HasPerk("enduring_endurance") and ply.Stamina < 25 and 1.3 or 1) * (fatigabove99 and 0 or fatigabove90 and 0.4 or fatigabove70 and 0.8 or 1) * (ply:WaterLevel() == 3 and 2/3 or 1)
 			elseif ply.Fatigue >= 10000 then
 				ply.Stamina = ply.Stamina - 2*ft
 			end
 
 			if !ply:InVehicle() then
 				if (ply:IsSprinting() and PlayerIsMoving and not ply:Crouching()) then
-					ply.Stamina = ply.Stamina - 8*ft*endurance_mul
+					ply.Stamina = ply.Stamina - 6*ft*endurance_mul
 				elseif PlayerIsMoving and ply:Crouching() then
 					ply.Stamina = ply.Stamina - 2.7*ft*endurance_mul
 				elseif PlayerIsMoving then
@@ -697,6 +700,12 @@ function GM:EntityTakeDamage(ent, dmginfo)
 	if ent:IsPlayer() and not gamemode.Call("PlayerShouldTakeDamage", ent, dmginfo:GetAttacker()) then return end
 	if ent.ProcessPlayerDamage and not ent:ProcessPlayerDamage(dmginfo) then return end
 	if (ent:IsNPC() or ent:IsNextBot()) and not ent:ProcessNPCDamage(dmginfo) then return end
+
+	if ent:IsPlayer() and ent:Alive() and dmginfo:GetDamage() > 1 and ent:IsSleeping() then
+		ent:WakeUp()
+
+		ent:SendChat("You wake up as you feel someone is killing you!")
+	end
 
 	local attacker = dmginfo:GetAttacker()
 
