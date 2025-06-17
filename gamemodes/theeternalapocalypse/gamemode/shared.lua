@@ -4,7 +4,7 @@ GM.Author	= "Uklejamini"
 GM.Email	= "[You may not view this information.]"
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
 GM.Version	= "Pre-0.11.4"
-GM.DateVer	= "16.06.2025" -- Follows the DD.MM.YYYY format.
+GM.DateVer	= "17.06.2025" -- Follows the DD.MM.YYYY format.
 
 DeriveGamemode("sandbox")
 

@@ -264,7 +264,7 @@ function GM:Think()
 				wakeupcause = 2
 			elseif ply.Infection > 9000 then
 				wakeupcause = 3
-			elseif ply:WaterLevel() >= 2 then
+			elseif ply:WaterLevel() >= 1 then
 				wakeupcause = 4
 			elseif ply.Fatigue < 1 then
 				wakeupcause = 5
@@ -291,36 +291,44 @@ function GM:Think()
 		end
 
 		if ply:IsDying() then
-			if !timer.Exists("DyingFromStats_"..ply:EntIndex()) then
-				timer.Create("DyingFromStats_"..ply:EntIndex(), 30, 1, function()
-					if ply:Alive() then
-						if ply.Hunger <= 0 then
+			if ply:Alive() and not ply:HasGodMode() then
+				local dmg = ply.StatsDyingDamage or 0
+				local hungerdying = ply.Hunger <= 0
+				local thirstdying = ply.Thirst <= 0
+				local fatiguedying = ply.Fatigue >= 10000
+				local infectiondying = ply.Infection >= 10000
+
+				if hungerdying then dmg = dmg + 2*ft end
+				if thirstdying then dmg = dmg + 2*ft end
+				if fatiguedying then dmg = dmg + 2*ft end
+				if infectiondying then dmg = dmg + 2*ft end
+				dmg = dmg + 1*ft
+
+				ply.StatsDyingDamage = dmg
+				if dmg >= 1 then
+					if ply:Health() > 1 then
+						ply:SetHealth(ply:Health() - math.floor(dmg))
+						ply.StatsDyingDamage = dmg - math.floor(dmg)
+					else
+						if infectiondying then
+							ply.CauseOfDeath = "Infection"
+							ply.DeathMessage = table.Random({"has succumbed to a zombie infection", "died to an infection"})
+						elseif fatiguedying then
+							ply.CauseOfDeath = "Fatigue"
+							ply.DeathMessage = "could not find a place to sleep"
+						elseif thirstdying then
+							ply.CauseOfDeath = "Thirst"
+							ply.DeathMessage = "died from thirst"
+						elseif hungerdying then
 							ply.CauseOfDeath = "Hunger"
 							ply.DeathMessage = "has starved to death"
 						end
-						if ply.Thirst <= 0 then
-							ply.CauseOfDeath = "Thirst"
-							ply.DeathMessage = "died from thirst"
-						end
-						if ply.Fatigue >= 10000 then
-							ply.CauseOfDeath = "Fatigue"
-							ply.DeathMessage = "could not find a place to sleep"
-						end
-						if ply.Infection >= 10000 then
-							ply.CauseOfDeath = "Infection"
-							ply.DeathMessage = table.Random({"has succumbed to a zombie infection", "died to an infection"})
-						end
-						ply:Kill()
 
-						-- ply.CauseOfDeath = nil
-						-- ply.DeathMessage = nil
+						ply:Kill()
 					end
-				end)
+				end
 			end
-		else
-			if timer.Exists("DyingFromStats_"..ply:EntIndex()) then
-				timer.Destroy("DyingFromStats_"..ply:EntIndex())
-			end
+
 		end
 	
 		local armorstr = ply:GetNWString("ArmorType") or "none"
@@ -908,9 +916,11 @@ function GM:PlayerInitialSpawn(ply, transition)
 	ply.LastStunTime = 0
 	ply.PoisonDamage = 0
 	ply.DrownDamage = 0
+	ply.StatsDyingDamage = 0
 	ply.BloodLustMeleeHeal = 0
 	ply.BloodLustMeleeHealCap = 0
 	ply.BloodLustLastMeleeHit = 0
+	ply.NextSleepDelay = 0
 
 	ply.CanUseFlashlight = true
 	ply.SpawnProtected = false

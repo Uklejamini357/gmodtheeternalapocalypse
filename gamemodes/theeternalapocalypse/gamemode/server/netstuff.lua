@@ -507,6 +507,7 @@ end
 function meta:WakeUp()
 	if not self:IsSleeping() then return end
 	self:SetIsSleeping(false)
+	self.NextSleepDelay = CurTime() + 10
 
 	self:SetNoDraw(false)
 	if self:Alive() then
@@ -520,7 +521,8 @@ function meta:CheckCanSleep()
 	if self.Hunger <= 3000 then self:SendChat(translate.Get("sleep_hungry")) return false end
 	if self.Thirst <= 3000 then self:SendChat(translate.Get("sleep_thirsty")) return false end
 	if self.Infection >= 8000 then self:SendChat(translate.Get("sleep_infected")) return false end
-	if self:WaterLevel() >= 2 then self:SendChat("You literally cannot sleep if you are in water right now.") return false end
+	if self:WaterLevel() >= 1 then self:SendChat("You literally cannot sleep if you are in water right now.") return false end
+	if self.NextSleepDelay and self.NextSleepDelay > CurTime() then self:SendChat("You can't sleep right now. Try again in "..math.ceil(self.NextSleepDelay - CurTime()).." seconds!") return false end
 
 	return true
 end
