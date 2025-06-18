@@ -308,7 +308,7 @@ function meta:GetArmorCarryWeight()
 	local armorstr = self:GetNWString("ArmorType") or "none"
 	local armortype = GAMEMODE.ItemsList[armorstr]
 
-	if armortype["ArmorStats"].carryweight then
+	if armortype and armortype["ArmorStats"].carryweight then
 		weightbonus = armortype["ArmorStats"].carryweight
 	end
 

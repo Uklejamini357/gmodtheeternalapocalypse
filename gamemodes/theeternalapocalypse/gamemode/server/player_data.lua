@@ -27,10 +27,8 @@ function GM:SetStartingVariables(ply)
 	ply.MasteryPvPXP = 0
 	ply.MasteryPvPLevel = 0
 
-	for k, v in pairs(self.StatsListServer) do
-		local TheStatPieces = string.Explode(";", v)
-		local TheStatName = TheStatPieces[1]
-		ply[TheStatName] = 0
+	for k, v in pairs(self.StatConfigs) do
+		ply[k] = 0
 	end
 end
 
