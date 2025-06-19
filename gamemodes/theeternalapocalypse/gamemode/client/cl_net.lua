@@ -55,8 +55,7 @@ end)
 
 net.Receive("tea_survivalstatsupdate", function(len)
 	local me = LocalPlayer()
-	me.LifeZKills = net.ReadFloat()
-	me.LifePlayerKills = net.ReadFloat()
+	me.LifeStats = net.ReadTable()
 end)
 
 
@@ -144,4 +143,56 @@ net.Receive("tea_itemuse", function()
 	pl.UsingItemDuration = duration
 	pl.UsingItemTime = CurTime()
 	pl.UsingItemCanMove = canmove
+end)
+
+net.Receive("UpdateStatistics", function(length)
+	local pl = LocalPlayer()
+
+	if not pl.Statistics then pl.Statistics = {} end
+	for stat, value in pairs(net.ReadTable()) do
+		pl.Statistics[stat] = value
+	end
+
+	MyMMeleexp = net.ReadFloat()
+	MyMMeleelvl = net.ReadFloat()
+	MyMPvpxp = net.ReadFloat()
+	MyMPvplvl = net.ReadFloat()
+end)
+
+net.Receive("UpdatePerks", function(length)
+	local me = LocalPlayer()
+	me.StatDefense = net.ReadFloat()
+	me.StatGunslinger = net.ReadFloat()
+	me.StatSpeed = net.ReadFloat()
+	me.StatVitality = net.ReadFloat()
+	me.StatKnowledge = net.ReadFloat()
+	me.StatMedSkill = net.ReadFloat()
+	me.StatStrength = net.ReadFloat()
+	me.StatEndurance = net.ReadFloat()
+	me.StatSalvage = net.ReadFloat()
+	me.StatBarter = net.ReadFloat()
+	me.StatEngineer = net.ReadFloat()
+	me.StatImmunity = net.ReadFloat()
+	me.StatSurvivor = net.ReadFloat()
+	me.StatAgility = net.ReadFloat()
+	me.StatScavenging = net.ReadFloat()
+end)
+
+
+net.Receive("RecvFactions", function(length, client)
+	local data = net.ReadTable()
+
+	table.Empty(LocalFactions)
+
+	-- put the loner faction back in since it can never be deleted
+	LocalFactions["Loner"] = {
+		["index"] = TEAM_LONER,
+		["color"] = Color(100, 50, 50, 255),
+		["public"] = true,
+		["leader"] = nil
+	}
+	table.Merge(LocalFactions, data)
+	for k, v in pairs(LocalFactions) do
+		team.SetUp(v.index, k, v.color, v.public)
+	end
 end)

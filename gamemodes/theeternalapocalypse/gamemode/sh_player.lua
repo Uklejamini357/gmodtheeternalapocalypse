@@ -14,6 +14,14 @@ function GM:OnPlayerJump(ply, speed)
 	end
 end
 
+function GM:PlayerSwitchFlashlight(ply, on)
+	if ply.Battery <= 0 and not on then return true end
+	if ply.Battery < 10 and on then return false end
+	if (ply:IsSleeping() or ply:IsUsingItem()) then return false end
+
+	return true
+end
+
 function GM:PlayerSwitchWeapon(ply, old, new)
 	if (ply:IsSleeping() or ply:IsUsingItem()) and new:GetClass() ~= "tea_fists" then return true end
 
@@ -262,7 +270,7 @@ function meta:GetArmorProtection(defense)
 	end
 
 	if defense then
-		armorvalue = armorvalue + (self.StatDefense*0.02) *  (1 - armorvalue)
+		armorvalue = armorvalue + (self.StatDefense*0.02) * (1 - armorvalue)
 	end
 
 	return armorvalue
@@ -316,6 +324,31 @@ function meta:GetArmorCarryWeight()
 end
 
 
+function meta:AddStatisticPoints(var, value)
+	if not self.Statistics[var] then self.Statistics[var] = 0 end
+	self.Statistics[var] = self.Statistics[var] + value
+end
+
+function meta:SetStatisticPoint(var, value)
+	self.Statistics[var] = value
+end
+
+function meta:GetStatisticPoints(var, value)
+	return self.Statistics[var] or 0
+end
+
+function meta:AddLifeStatisticPoints(var, value)
+	if not self.LifeStats[var] then self.LifeStats[var] = 0 end
+	self.LifeStats[var] = self.LifeStats[var] + value
+end
+
+function meta:SetLifeStatisticPoint(var, value)
+	self.LifeStats[var] = value
+end
+
+function meta:GetLifeStatisticPoints(var, value)
+	return self.LifeStats[var] or 0
+end
 
 -- maybe i should also do it for entity meta table
 local meta_entity = FindMetaTable("Entity")

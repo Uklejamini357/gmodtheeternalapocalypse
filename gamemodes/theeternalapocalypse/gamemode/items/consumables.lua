@@ -24,11 +24,14 @@ local i = GM:CreateItem("item_bandage", {
 	Model = "models/wick/wrbstalker/anomaly/items/wick_dev_bandage.mdl",
 	Weight = 0.06,
 	Supply = 0,
-	Rarity = 2,
-	Category = ITEMCATEGORY_SUPPLIES,
+	Rarity = RARITY_COMMON,
+    Category = ITEMCATEGORY_SUPPLIES,
+	ItemType = ITEMTYPE_MED,
 
-    UseTime = 3,
-    Health = 11,
+    ConsumableStats = {
+        UseTime = 3,
+        Health = 11,
+    },
     UseSound = "theeternalapocalypse/items/inv_bandages.ogg",
 
 	UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 11, 0, "theeternalapocalypse/items/inv_bandages.ogg") return healing end,
@@ -40,12 +43,15 @@ i = GM:CreateItem("item_medkit", {
     Model = "models/wick/wrbstalker/anomaly/items/wick_dev_aptechka_low.mdl",
     Weight = 0.5,
     Supply = 30,
-    Rarity = 3,
+    Rarity = RARITY_UNCOMMON,
     Category = ITEMCATEGORY_SUPPLIES,
+	ItemType = ITEMTYPE_MED,
 
-    UseTime = 3,
-    Health = 45,
-    Infection = -5,
+    ConsumableStats = {
+        UseTime = 3,
+        Health = 45,
+        Infection = -5,
+    },
     UseSound = "theeternalapocalypse/items/inv_aptecka.ogg",
 
     UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 45, 5, "theeternalapocalypse/items/inv_aptecka.ogg") return healing end,
@@ -57,12 +63,15 @@ i = GM:CreateItem("item_armymedkit", {
     Model = "models/wick/wrbstalker/anomaly/items/wick_dev_aptechka_high.mdl",
     Weight = 0.6,
     Supply = 10,
-    Rarity = 4,
+    Rarity = RARITY_RARE,
     Category = ITEMCATEGORY_SUPPLIES,
+	ItemType = ITEMTYPE_MED,
 
-    UseTime = 3,
-    Health = 70,
-    Infection = -20,
+    ConsumableStats = {
+        UseTime = 3,
+        Health = 70,
+        Infection = -20,
+    },
     UseSound = "theeternalapocalypse/items/inv_aptecka.ogg",
 
     UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 70, 20, "theeternalapocalypse/items/inv_aptecka.ogg") return healing end,
@@ -74,12 +83,15 @@ i = GM:CreateItem("item_scientificmedkit", {
     Model = "models/wick/wrbstalker/anomaly/items/wick_dev_aptechka_mid.mdl",
     Weight = 0.5,
     Supply = 8,
-    Rarity = 4,
+    Rarity = RARITY_RARE,
     Category = ITEMCATEGORY_SUPPLIES,
+	ItemType = ITEMTYPE_MED,
 
-    UseTime = 3,
-    Health = 100,
-    Infection = -60,
+    ConsumableStats = {
+        UseTime = 3,
+        Health = 100,
+        Infection = -60,
+    },
     UseSound = "theeternalapocalypse/items/inv_aptecka.ogg",
 
     UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 100, 60, "theeternalapocalypse/items/inv_aptecka.ogg") return healing end,
@@ -91,28 +103,26 @@ i = GM:CreateItem("item_medbag_enhanced", {
     Model = "models/wick/wrbstalker/anomaly/items/wick_dev_med_bag.mdl",
     Weight = 1.4,
     Supply = 3,
-    Rarity = 6,
+    Rarity = RARITY_EPIC,
     Category = ITEMCATEGORY_SUPPLIES,
+	ItemType = ITEMTYPE_MED,
 
-    UseTime = 5,
-    Health = 150,
-    Infection = -100,
-    UseSound = "theeternalapocalypse/items/inv_medbag.ogg",
-
-    UseFunc = function(ply, targetply)
-        local healing = UseFunc_Heal(ply, targetply, 5, 150, 100, "theeternalapocalypse/items/inv_medbag.ogg")
-        if healing then
+    ConsumableStats = {
+        UseTime = 5,
+        Health = 150,
+        Infection = -100,
+        AdditionalFunc = function(ply, targetply)
             local entindex = targetply:EntIndex()
             hook.Add("EntityTakeDamage", "TEA.EntityTakeDamage.MedicBagEnhancedEffect_Player"..entindex, function(ent, dmginfo)
                 local directdmg = bit.band(DMG_DIRECT, dmginfo:GetDamageType()) ~= 0
-    
+
                 if ent == targetply and not directdmg then
                     dmginfo:ScaleDamage(0.7)
                 end
             end)
-    
+
             local identifier = "TEA.EntityTakeDamage.MedicBagEnhancedEffect"..entindex
-    
+
             hook.Add("DoPlayerDeath", "TEA.DoPlayerDeath.MedicBagEnhancedEffect_Player"..entindex, function(pl, attacker, dmginfo)
                 if pl ~= targetply then return end
                 hook.Remove("DoPlayerDeath", "TEA.DoPlayerDeath.MedicBagEnhancedEffect_Player"..entindex)
@@ -120,16 +130,16 @@ i = GM:CreateItem("item_medbag_enhanced", {
                 if timer.Exists(identifier) then
                     timer.Remove(identifier)
                 end
-    
+
                 if targetply:IsValid() then
                     targetply:PrintMessage(3, "You died, the effect is no longer present!")
                 end
             end)
-    
+
             if timer.Exists(identifier) then
                 local old = timer.TimeLeft(identifier)
                 local new = math.min(150, old + 60)
-    
+
                 timer.Adjust(identifier, new, 1)
                 if targetply:IsValid() then
                     targetply:PrintMessage(3, "The effect has been prolonged by "..math.Round(new - old , 2).." seconds, remaining: "..math.Round(new, 2).."s")
@@ -147,9 +157,11 @@ i = GM:CreateItem("item_medbag_enhanced", {
                 end
             end
         end
-        return healing
-    end,
-      CanUseOnOthers = true
+    },
+    UseSound = "theeternalapocalypse/items/inv_medbag.ogg",
+
+    CanUseOnOthers = true,
+    AddDesc = "+30% damage resistance for 60 seconds (Effect can be prolonged, max 150 seconds)",
 })
 
 GM:CreateItem("item_antidote", {
@@ -157,11 +169,14 @@ GM:CreateItem("item_antidote", {
     Model = "models/wick/wrbstalker/cop/newmodels/items/wick_antidot.mdl",
     Weight = 0.08,
     Supply = 12,
-    Rarity = 3,
+    Rarity = RARITY_UNCOMMON,
     Category = ITEMCATEGORY_SUPPLIES,
+	ItemType = ITEMTYPE_MED,
 
-    UseTime = 3,
-    Infection = -40,
+    ConsumableStats = {
+        UseTime = 3,
+        Infection = -40,
+    },
     UseSound = "items/medshot4.wav",
 
     UseFunc = function(ply) local healing = UseFunc_HealInfection(ply, 3, 40, "items/medshot4.wav") return healing end,
@@ -172,12 +187,15 @@ GM:CreateItem("item_egg", {
     Model = "models/props_phx/misc/egg.mdl",
     Weight = 0.08,
     Supply = 0,
-    Rarity = 0,
+    Rarity = RARITY_TRASH,
     Category = ITEMCATEGORY_SUPPLIES,
+	ItemType = ITEMTYPE_FOOD,
 
-    UseTime = 1,
-    Hunger = 4,
-    Thirst = -1,
+    ConsumableStats = {
+        UseTime = 1,
+        Hunger = 4,
+        Thirst = -1,
+    },
     UseSound = "npc/barnacle/barnacle_gulp2.wav",
 
     UseFunc = function(ply) local food = UseFunc_Eat(ply, 1, 0, 4, -1, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
@@ -188,12 +206,15 @@ GM:CreateItem("item_milk", {
     Model = "models/props_junk/garbage_milkcarton002a.mdl",
     Weight = 1.05,
     Supply = 20,
-    Rarity = 1,
+    Rarity = RARITY_JUNK,
     Category = ITEMCATEGORY_SUPPLIES,
+	ItemType = ITEMTYPE_DRINK,
 
-    UseTime = 4,
-    Hunger = 3,
-    Thirst = 20,
+    ConsumableStats = {
+        UseTime = 4,
+        Hunger = 3,
+        Thirst = 20,
+    },
     UseSound = "npc/barnacle/barnacle_gulp2.wav",
 
 
@@ -205,15 +226,18 @@ GM:CreateItem("item_soda", {
     Model = "models/props_junk/PopCan01a.mdl",
     Weight = 0.33,
     Supply = 0,
-    Rarity = 1,
+    Rarity = RARITY_JUNK,
     Category = ITEMCATEGORY_SUPPLIES,
+	ItemType = ITEMTYPE_DRINK,
 
-    UseTime = 3,
-    Health = 1,
-    Hunger = 3,
-    Thirst = 35,
-    Stamina = 5,
-    Fatigue = -0.5,
+    ConsumableStats = {
+        UseTime = 3,
+        Health = 1,
+        Hunger = 3,
+        Thirst = 35,
+        Stamina = 5,
+        Fatigue = -0.5,
+    },
     UseSound = "theeternalapocalypse/items/inv_drink_can2.ogg",
 
     UseFunc = function(ply) local food = UseFunc_Drink(ply, 3, 1, 3, 35, 5, -0.5, "theeternalapocalypse/items/inv_drink_can2.ogg") return food end,
@@ -224,15 +248,18 @@ GM:CreateItem("item_waterbottle", {
     Model = "models/wick/wrbstalker/anomaly/items/wick_dev_mineral_water.mdl",
     Weight = 0.58,
     Supply = 0,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_SUPPLIES,
+	ItemType = ITEMTYPE_DRINK,
 
-    UseTime = 5,
-    Health = 1,
-    Hunger = 4,
-    Thirst = 80,
-    Stamina = 5,
-    Fatigue = -1,
+    ConsumableStats = {
+        UseTime = 5,
+        Health = 1,
+        Hunger = 4,
+        Thirst = 80,
+        Stamina = 5,
+        Fatigue = -1,
+    },
     UseSound = "theeternalapocalypse/items/inv_water.ogg",
 
     UseFunc = function(ply) local food = UseFunc_Drink(ply, 5, 1, 4, 80, 5, -1, "theeternalapocalypse/items/inv_water.ogg") return food end,
@@ -243,15 +270,18 @@ GM:CreateItem("item_energydrink", {
     Model = "models/wick/wrbstalker/anomaly/items/wick_dev_drink_stalker.mdl",
     Weight = 0.36,
     Supply = 0,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_SUPPLIES,
+	ItemType = ITEMTYPE_DRINK,
 
-    UseTime = 4,
-    Health = 1,
-    Hunger = 2,
-    Thirst = 30,
-    Stamina = 55,
-    Fatigue = -6,
+    ConsumableStats = {
+        UseTime = 4,
+        Health = 1,
+        Hunger = 2,
+        Thirst = 30,
+        Stamina = 55,
+        Fatigue = -6,
+    },
     UseSound = "theeternalapocalypse/items/inv_drink_can.ogg",
 
     UseFunc = function(ply) local food = UseFunc_Drink(ply, 4, 1, 2, 30, 55, -6, "theeternalapocalypse/items/inv_drink_can.ogg") return food end,
@@ -262,15 +292,18 @@ GM:CreateItem("item_energydrink_nonstop", {
     Model = "models/wick/wrbstalker/cop/newmodels/items/wick_nonstop.mdl",
     Weight = 0.38,
     Supply = 0,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_SUPPLIES,
+	ItemType = ITEMTYPE_DRINK,
 
-    UseTime = 4,
-    Health = 2,
-    Hunger = 3,
-    Thirst = 32,
-    Stamina = 85,
-    Fatigue = -8,
+    ConsumableStats = {
+        UseTime = 4,
+        Health = 2,
+        Hunger = 3,
+        Thirst = 32,
+        Stamina = 85,
+        Fatigue = -8,
+    },
     UseSound = "theeternalapocalypse/items/inv_drink_can.ogg",
 
     UseFunc = function(ply) local food = UseFunc_Drink(ply, 4, 2, 3, 32, 85, -8, "theeternalapocalypse/items/inv_drink_can.ogg") return food end,
@@ -281,15 +314,18 @@ GM:CreateItem("item_beerbottle", {
     Model = "models/props_junk/garbage_glassbottle003a.mdl",
     Weight = 0.8,
     Supply = 10,
-    Rarity = 3,
+    Rarity = RARITY_UNCOMMON,
     Category = ITEMCATEGORY_SUPPLIES,
+	ItemType = ITEMTYPE_DRINK,
 
-    UseTime = 5,
-    Health = 1,
-    Hunger = 9,
-    Thirst = 5,
-    Stamina = -15,
-    Fatigue = 10,
+    ConsumableStats = {
+        UseTime = 5,
+        Health = 1,
+        Hunger = 9,
+        Thirst = 5,
+        Stamina = -15,
+        Fatigue = 10,
+    },
     UseSound = "npc/barnacle/barnacle_gulp2.wav",
 
     UseFunc = function(ply) local food = UseFunc_Drink(ply, 5, 1, 9, 5, -15, 10, "npc/barnacle/barnacle_gulp2.wav") return food end,
@@ -300,15 +336,18 @@ GM:CreateItem("item_tinnedfood", {
     Model = "models/props_junk/garbage_metalcan001a.mdl",
     Weight = 0.4,
     Supply = 30,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_SUPPLIES,
+	ItemType = ITEMTYPE_ARMORATT,
 
-    UseTime = 2,
-    Health = 3,
-    Hunger = 20,
-    Thirst = -10,
-    Stamina = 0,
-    Fatigue = 0,
+    ConsumableStats = {
+        UseTime = 2,
+        Health = 3,
+        Hunger = 20,
+        Thirst = -10,
+        Stamina = 0,
+        Fatigue = 0,
+    },
     UseSound = "npc/barnacle/barnacle_gulp2.wav",
 
     UseFunc = function(ply) local food = UseFunc_Eat(ply, 2, 3, 20, -10, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
@@ -319,15 +358,18 @@ GM:CreateItem("item_potato", {
     Model = "models/props_phx/misc/potato.mdl",
     Weight = 0.2,
     Supply = 20,
-    Rarity = 1,
+    Rarity = RARITY_JUNK,
     Category = ITEMCATEGORY_SUPPLIES,
+	ItemType = ITEMTYPE_ARMORATT,
 
-    UseTime = 2,
-    Health = 2,
-    Hunger = 22,
-    Thirst = -8,
-    Stamina = 0,
-    Fatigue = 0,
+    ConsumableStats = {
+        UseTime = 2,
+        Health = 2,
+        Hunger = 22,
+        Thirst = -8,
+        Stamina = 0,
+        Fatigue = 0,
+    },
     UseSound = "npc/barnacle/barnacle_gulp2.wav",
 
     UseFunc = function(ply) local food = UseFunc_Eat(ply, 2, 2, 22, -8, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
@@ -338,15 +380,18 @@ GM:CreateItem("item_traderfood", {
     Model = "models/props_junk/garbage_takeoutcarton001a.mdl",
     Weight = 0.6,
     Supply = 5,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_SUPPLIES,
+	ItemType = ITEMTYPE_ARMORATT,
 
-    UseTime = 5,
-    Health = 4,
-    Hunger = 47,
-    Thirst = -15,
-    Stamina = 0,
-    Fatigue = 0,
+    ConsumableStats = {
+        UseTime = 5,
+        Health = 4,
+        Hunger = 47,
+        Thirst = -15,
+        Stamina = 0,
+        Fatigue = 0,
+    },
     UseSound = "npc/barnacle/barnacle_gulp2.wav",
 
     UseFunc = function(ply) local food = UseFunc_Eat(ply, 5, 4, 47, -15, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
@@ -357,15 +402,18 @@ GM:CreateItem("item_trout", {
     Model = "models/props/CS_militia/fishriver01.mdl",
     Weight = 0.75,
     Supply = 2,
-    Rarity = 3,
+    Rarity = RARITY_UNCOMMON,
     Category = ITEMCATEGORY_SUPPLIES,
+	ItemType = ITEMTYPE_ARMORATT,
 
-    UseTime = 6,
-    Health = 5,
-    Hunger = 65,
-    Thirst = -4,
-    Stamina = 0,
-    Fatigue = 0,
+    ConsumableStats = {
+        UseTime = 6,
+        Health = 5,
+        Hunger = 65,
+        Thirst = -4,
+        Stamina = 0,
+        Fatigue = 0,
+    },
     UseSound = "npc/barnacle/barnacle_gulp2.wav",
 
     UseFunc = function(ply) local food = UseFunc_Eat(ply, 6, 5, 65, -4, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
@@ -376,15 +424,18 @@ GM:CreateItem("item_melon", {
     Model = "models/props_junk/watermelon01.mdl",
     Weight = 2,
     Supply = 3,
-    Rarity = 3,
+    Rarity = RARITY_UNCOMMON,
     Category = ITEMCATEGORY_SUPPLIES,
+	ItemType = ITEMTYPE_ARMORATT,
 
-    UseTime = 7,
-    Health = 7,
-    Hunger = 85,
-    Thirst = 20,
-    Stamina = 3,
-    Fatigue = 0,
+    ConsumableStats = {
+        UseTime = 7,
+        Health = 7,
+        Hunger = 85,
+        Thirst = 20,
+        Stamina = 3,
+        Fatigue = 0,
+    },
     UseSound = "npc/barnacle/barnacle_gulp2.wav",
 
     UseFunc = function(ply) local food = UseFunc_Eat(ply, 7, 7, 85, 20, 3, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
@@ -395,15 +446,18 @@ GM:CreateItem("item_burger", {
     Model = "models/food/burger.mdl",
     Weight = 0.4,
     Supply = -1,
-    Rarity = 7,
+    Rarity = RARITY_MYTHIC,
     Category = ITEMCATEGORY_SUPPLIES,
+	ItemType = ITEMTYPE_ARMORATT,
 
-    UseTime = 5,
-    Health = 30,
-    Hunger = 100,
-    Thirst = 15,
-    Stamina = 90,
-    Fatigue = -15,
+    ConsumableStats = {
+        UseTime = 5,
+        Health = 30,
+        Hunger = 100,
+        Thirst = 15,
+        Stamina = 90,
+        Fatigue = -15,
+    },
     UseSound = "vo/npc/male01/yeah02.wav",
 
     UseFunc = function(ply) local food = UseFunc_Eat(ply, 5, 30, 100, 15, 90, -15, "vo/npc/male01/yeah02.wav") return food end,
@@ -428,15 +482,18 @@ GM:CreateItem("item_hotdog", {
     Model = "models/food/hotdog.mdl",
     Weight = 0.35,
     Supply = -1,
-    Rarity = 6,
+    Rarity = RARITY_EPIC,
     Category = ITEMCATEGORY_SUPPLIES,
+	ItemType = ITEMTYPE_ARMORATT,
 
-    UseTime = 5,
-    Health = 20,
-    Hunger = 80,
-    Thirst = 10,
-    Stamina = 40,
-    Fatigue = -15,
+    ConsumableStats = {
+        UseTime = 5,
+        Health = 20,
+        Hunger = 80,
+        Thirst = 10,
+        Stamina = 40,
+        Fatigue = -15,
+    },
     UseSound = "vo/npc/male01/nice.wav",
 
     UseFunc = function(ply) local food = UseFunc_Eat(ply, 5, 20, 80, 10, 40, -15, "vo/npc/male01/nice.wav") return food end,
@@ -447,15 +504,18 @@ GM:CreateItem("item_donut", {
     Model = "models/noesis/donut.mdl",
     Weight = 0.2,
     Supply = 5,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_SUPPLIES,
+	ItemType = ITEMTYPE_ARMORATT,
 
-    UseTime = 3,
-    Health = 2,
-    Hunger = 25,
-    Thirst = -7,
-    Stamina = 5,
-    Fatigue = -1,
+    ConsumableStats = {
+        UseTime = 3,
+        Health = 2,
+        Hunger = 25,
+        Thirst = -7,
+        Stamina = 5,
+        Fatigue = -1,
+    },
     UseSound = "npc/barnacle/barnacle_gulp2.wav",
 
     UseFunc = function(ply) local food = UseFunc_Eat(ply, 3, 2, 25, -7, 5, -1, "npc/barnacle/barnacle_gulp2.wav") return food end,
@@ -466,8 +526,9 @@ GM:CreateItem("item_bed", {
     Model = "models/props/de_inferno/bed.mdl",
     Weight = 4.5,
     Supply = 0,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_SUPPLIES,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply) local bool = UseFunc_DeployBed(ply, 1) return bool end,
     DropFunc = function(ply) local bool = UseFunc_DeployBed(ply, 1) return bool end,
 })
@@ -477,8 +538,9 @@ GM:CreateItem("item_sleepingbag", {
     Model = "models/wick/wrbstalker/anomaly/items/dez_item_sleepbag.mdl",
     Weight = 2.2,
     Supply = 0,
-    Rarity = 5,
+    Rarity = RARITY_SUPERRARE,
     Category = ITEMCATEGORY_SUPPLIES,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply) UseFunc_Sleep(ply, false) return false end,
 })
 
@@ -487,8 +549,9 @@ GM:CreateItem("item_amnesiapills", {
     Model = "models/props_lab/jar01b.mdl",
     Weight = 0.1,
     Supply = 0,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_SUPPLIES,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply) local bool = UseFunc_Respec(ply) return bool end,
 })
 
@@ -497,12 +560,15 @@ GM:CreateItem("item_armorbattery", {
     Model = "models/Items/battery.mdl",
     Weight = 0.35,
     Supply = 6,
-    Rarity = 4,
+    Rarity = RARITY_RARE,
     Category = ITEMCATEGORY_SUPPLIES,
+	ItemType = ITEMTYPE_OTHER,
 
-    UseTime = 2,
-    Battery = 50,
-    Armor = 15,
+    ConsumableStats = {
+        UseTime = 2,
+        Battery = 50,
+        Armor = 15,
+    },
     UseSound = "items/battery_pickup.wav",
 
     UseFunc = function(ply) local armor = UseFunc_Armor(ply, 2, 50, 15, "items/battery_pickup.wav") return armor end,
@@ -513,12 +579,15 @@ GM:CreateItem("item_armorkevlar", {
     Model = "models/wick/wrbstalker/anomaly/items/dez_kevlar.mdl",
     Weight = 1.13,
     Supply = 3,
-    Rarity = 5,
+    Rarity = RARITY_SUPERRARE,
     Category = ITEMCATEGORY_SUPPLIES,
+	ItemType = ITEMTYPE_OTHER,
 
-    UseTime = 4,
-    Battery = 0,
-    Armor = 35,
+    ConsumableStats = {
+        UseTime = 4,
+        Battery = 0,
+        Armor = 35,
+    },
     UseSound = "npc/combine_soldier/zipline_hitground2.wav",
 
     UseFunc = function(ply) local armor = UseFunc_Armor(ply, 4, 0, 35, "npc/combine_soldier/zipline_hitground2.wav") return armor end,
@@ -533,15 +602,18 @@ GM:CreateItem("item_stalker_beans", {
     Model = "models/wick/wrbstalker/anomaly/items/wick_dev_beans.mdl",
     Weight = 0.62,
     Supply = -1,
-    Rarity = 3,
+    Rarity = RARITY_UNCOMMON,
     Category = ITEMCATEGORY_SUPPLIES,
+	ItemType = ITEMTYPE_FOOD,
 
-    UseTime = 5,
-    Health = 1,
-    Hunger = 68,
-    Thirst = -15,
-    Stamina = 0,
-    Fatigue = -3,
+    ConsumableStats = {
+        UseTime = 5,
+        Health = 1,
+        Hunger = 68,
+        Thirst = -15,
+        Stamina = 0,
+        Fatigue = -3,
+    },
     UseSound = "sound",
 
     UseFunc = function(ply) local food = UseFunc_Eat(ply, 5, 1, 68, -15, 0, -3, "sound") return food end,
@@ -554,15 +626,18 @@ GM:CreateItem("item_stalker_bread", {
     Model = "models/wick/wrbstalker/anomaly/items/wick_dev_bred.mdl",
     Weight = 0.38,
     Supply = -1,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_SUPPLIES,
+	ItemType = ITEMTYPE_FOOD,
 
-    UseTime = 3.6,
-    Health = 1,
-    Hunger = 35,
-    Thirst = -10,
-    Stamina = 0,
-    Fatigue = -3,
+    ConsumableStats = {
+        UseTime = 3.6,
+        Health = 1,
+        Hunger = 35,
+        Thirst = -10,
+        Stamina = 0,
+        Fatigue = -3,
+    },
     UseSound = "sound",
 
     UseFunc = function(ply) local food = UseFunc_Eat(ply, 3.6, 1, 35, -10, 0, -3, "sound") return food end,
@@ -575,12 +650,15 @@ GM:CreateItem("item_stalker_stimpack", {
     Model = "models/wick/wrbstalker/anomaly/items/dez_stim1.mdl",
     Weight = 0.22,
     Supply = -1,
-    Rarity = 3,
+    Rarity = RARITY_UNCOMMON,
     Category = ITEMCATEGORY_SUPPLIES,
+	ItemType = ITEMTYPE_MED,
 
-    UseTime = 1.6,
-    Health = 40,
-    Infection = 0,
+    ConsumableStats = {
+        UseTime = 1.6,
+        Health = 40,
+        Infection = 0,
+    },
     UseSound = "sound",
 
     UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 1.6, 40, 0, "theeternalapocalypse/items/inv_stimpack.ogg") return healing end,
@@ -594,12 +672,15 @@ GM:CreateItem("item_stalker_stimpack_army", {
     Model = "models/wick/wrbstalker/anomaly/items/dez_stim2.mdl",
     Weight = 0.26,
     Supply = -1,
-    Rarity = 3,
+    Rarity = RARITY_UNCOMMON,
     Category = ITEMCATEGORY_SUPPLIES,
+	ItemType = ITEMTYPE_MED,
 
-    UseTime = 1.6,
-    Health = 70,
-    Infection = 0,
+    ConsumableStats = {
+        UseTime = 1.6,
+        Health = 70,
+        Infection = 0,
+    },
     UseSound = "sound",
 
     UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 1.6, 70, 0, "theeternalapocalypse/items/inv_stimpack.ogg") return healing end,
@@ -613,12 +694,15 @@ GM:CreateItem("item_stalker_stimpack_scientific", {
     Model = "models/wick/wrbstalker/anomaly/items/dez_stim3.mdl",
     Weight = 0.32,
     Supply = -1,
-    Rarity = 3,
+    Rarity = RARITY_UNCOMMON,
     Category = ITEMCATEGORY_SUPPLIES,
+	ItemType = ITEMTYPE_MED,
 
-    UseTime = 1.6,
-    Health = 105,
-    Infection = -30,
+    ConsumableStats = {
+        UseTime = 1.6,
+        Health = 105,
+        Infection = -30,
+    },
     UseSound = "sound",
 
     UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 1.6, 105, 30, "theeternalapocalypse/items/inv_stimpack.ogg") return healing end,
@@ -632,15 +716,18 @@ GM:CreateItem("item_stalker_beer", {
     Model = "models/wick/wrbstalker/anomaly/items/wick_dev_beer.mdl",
     Weight = 0.66,
     Supply = -1,
-    Rarity = 3,
+    Rarity = RARITY_UNCOMMON,
     Category = ITEMCATEGORY_SUPPLIES,
+	ItemType = ITEMTYPE_DRINK,
 
-    UseTime = 5,
-    Health = 0,
-    Hunger = 3,
-    Thirst = 25,
-    Stamina = 0,
-    Fatigue = 3,
+    ConsumableStats = {
+        UseTime = 5,
+        Health = 0,
+        Hunger = 3,
+        Thirst = 25,
+        Stamina = 0,
+        Fatigue = 3,
+    },
     UseSound = "sound",
 
     UseFunc = function(ply, targetply) local drink = UseFunc_Drink(ply, 5, 0, 3, 25, 0, 3, "theeternalapocalypse/items/inv_drink_flask_beer.ogg") return drink end,
@@ -654,15 +741,18 @@ GM:CreateItem("item_stalker_kolbasa", {
     Model = "models/wick/wrbstalker/anomaly/items/wick_dev_kolbasa.mdl",
     Weight = 0.34,
     Supply = -1,
-    Rarity = 3,
+    Rarity = RARITY_UNCOMMON,
     Category = ITEMCATEGORY_SUPPLIES,
+	ItemType = ITEMTYPE_FOOD,
 
-    UseTime = 5,
-    Health = 0,
-    Hunger = 3,
-    Thirst = 25,
-    Stamina = 0,
-    Fatigue = 3,
+    ConsumableStats = {
+        UseTime = 5,
+        Health = 0,
+        Hunger = 3,
+        Thirst = 25,
+        Stamina = 0,
+        Fatigue = 3,
+    },
     UseSound = "sound",
 
     UseFunc = function(ply, targetply) local drink = UseFunc_Eat(ply, 5, 0, 3, 25, 0, 3, "sound") return drink end,

@@ -33,8 +33,9 @@ GM:CreateItem("item_armor_attachment_kevlar", {
 	Model = "models/error.mdl", -- Placeholder.
 	Weight = 2.5,
 	Supply = -1,
-	Rarity = 8,
+	Rarity = RARITY_LEGENDARY,
 	Category = ITEMCATEGORY_ARMORATT,
+	ItemType = ITEMTYPE_ARMORATT,
 	UseFunc = function(ply) return false end, -- Not yet.
 	
 	AttachmentStats = {
@@ -52,8 +53,9 @@ GM:CreateItem("item_backpack_1", {
 	Model = "models/wick/wrbstalker/anomaly/items/dez_sumka1.mdl",
 	Weight = 0.62,
 	Supply = -1,
-	Rarity = 8,
+	Rarity = RARITY_LEGENDARY,
 	Category = ITEMCATEGORY_ARMORATT,
+	ItemType = ITEMTYPE_ARMORATT,
 	UseFunc = function(ply) return false end,
 	
 	BackpackStats = {
@@ -67,8 +69,9 @@ GM:CreateItem("item_backpack_2", {
 	Model = "models/wick/wrbstalker/anomaly/items/dez_sumka2.mdl",
 	Weight = 0.9,
 	Supply = -1,
-	Rarity = 8,
+	Rarity = RARITY_LEGENDARY,
 	Category = ITEMCATEGORY_ARMORATT,
+	ItemType = ITEMTYPE_ARMORATT,
 	UseFunc = function(ply) return false end,
 	
 	BackpackStats = {
@@ -82,8 +85,9 @@ GM:CreateItem("item_backpack_3", {
 	Model = "models/wick/wrbstalker/anomaly/items/dez_sumka3.mdl",
 	Weight = 1.16,
 	Supply = -1,
-	Rarity = 8,
+	Rarity = RARITY_LEGENDARY,
 	Category = ITEMCATEGORY_ARMORATT,
+	ItemType = ITEMTYPE_ARMORATT,
 	UseFunc = function(ply) return false end,
 	
 	BackpackStats = {
@@ -97,8 +101,9 @@ GM:CreateItem("item_backpack_4", {
 	Model = "models/wick/wrbstalker/anomaly/items/dez_sumka4.mdl",
 	Weight = 1.48,
 	Supply = -1,
-	Rarity = 8,
+	Rarity = RARITY_LEGENDARY,
 	Category = ITEMCATEGORY_ARMORATT,
+	ItemType = ITEMTYPE_ARMORATT,
 	UseFunc = function(ply) return false end,
 	
 	BackpackStats = {
@@ -112,8 +117,9 @@ GM:CreateItem("item_backpack_5", {
 	Model = "models/wick/wrbstalker/anomaly/items/dez_sumka5.mdl",
 	Weight = 1.8,
 	Supply = -1,
-	Rarity = 8,
+	Rarity = RARITY_LEGENDARY,
 	Category = ITEMCATEGORY_ARMORATT,
+	ItemType = ITEMTYPE_ARMORATT,
 	UseFunc = function(ply) return false end,
 	
 	BackpackStats = {
@@ -127,8 +133,9 @@ GM:CreateItem("item_backpack_6", {
 	Model = "models/wick/wrbstalker/anomaly/items/dez_sumka6.mdl",
 	Weight = 0.56,
 	Supply = -1,
-	Rarity = 8,
+	Rarity = RARITY_LEGENDARY,
 	Category = ITEMCATEGORY_ARMORATT,
+	ItemType = ITEMTYPE_ARMORATT,
 	UseFunc = function(ply) return false end,
 	
 	BackpackStats = {
@@ -142,8 +149,9 @@ GM:CreateItem("item_backpack_7", {
 	Model = "models/wick/wrbstalker/anomaly/items/dez_sumka7.mdl",
 	Weight = 2.5,
 	Supply = -1,
-	Rarity = 8,
+	Rarity = RARITY_LEGENDARY,
 	Category = ITEMCATEGORY_ARMORATT,
+	ItemType = ITEMTYPE_ARMORATT,
 	UseFunc = function(ply) return false end,
 	
 	BackpackStats = {

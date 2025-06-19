@@ -1,5 +1,6 @@
 -------- STATISTICS --------
 
+
 local TargetStats = {}
 TargetStats.Nick = 0
 TargetStats.BestSurvivalTime = 0
@@ -15,29 +16,16 @@ local RefreshStats = function()
 end
 
 net.Receive("UpdateTargetStats", function(length)
-    local t1 = net.ReadString()
-    local t2 = net.ReadFloat()
-    local t3 = net.ReadFloat()
-    local t4 = net.ReadFloat()
-    local t5 = net.ReadFloat()
-    local t6 = net.ReadFloat()
-    local t7 = net.ReadFloat()
-    local t8 = net.ReadFloat()
-    local t9 = net.ReadFloat()
-    local t10 = net.ReadFloat()
-    local t11 = net.ReadFloat()
-
-    TargetStats.Nick = t1
-    TargetStats.BestSurvivalTime = t2
-    TargetStats.ZKills = t3
-    TargetStats.PlyKills = t4
-    TargetStats.PlyDeaths = t5
-    TargetStats.MMeleeXP = t6
-    TargetStats.MMeleeLvl = t7
-    TargetStats.MMeleeReqXP = t8
-    TargetStats.MPvPXP = t9
-    TargetStats.MPvPLvl = t10
-    TargetStats.MPvPReqXP = t11
+    TargetStats.Nick = net.ReadString()
+    for stat,value in pairs(net.ReadTable()) do
+        TargetStats[stat] = value
+    end
+    TargetStats.MMeleeXP = net.ReadFloat()
+    TargetStats.MMeleeLvl = net.ReadFloat()
+    TargetStats.MMeleeReqXP = net.ReadFloat()
+    TargetStats.MPvPXP = net.ReadFloat()
+    TargetStats.MPvPLvl = net.ReadFloat()
+    TargetStats.MPvPReqXP = net.ReadFloat()
 
     RefreshStats()
 end)

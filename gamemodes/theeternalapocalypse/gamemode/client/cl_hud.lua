@@ -829,8 +829,8 @@ function GM:PostDrawHUD()
 
 			draw.DrawText(Format(bsurvtime < survtime and "Survival Time: %s (Previous Best: %s, +%s)" or "Survival Time: %s", util.ToMinutesSeconds(survtime), util.ToMinutesSeconds(bsurvtime), util.ToMinutesSeconds(survtime - bsurvtime)),
 			"TEA.HUDFontSmall", ScrW() / 2, ScrH() / 2 + 20, Color(230,230,230,a), TEXT_ALIGN_CENTER)
-			draw.DrawText(Format("Zombies killed: %d", self.MyLastSurvivalStats.ZombiesKilled), "TEA.HUDFontSmall", ScrW() / 2, ScrH() / 2 + 44, Color(230,230,230,a), TEXT_ALIGN_CENTER)
-			draw.DrawText(Format("Players killed: %d", self.MyLastSurvivalStats.PlayersKilled), "TEA.HUDFontSmall", ScrW() / 2, ScrH() / 2 + 68, Color(230,230,230,a), TEXT_ALIGN_CENTER)
+			draw.DrawText(Format("Zombies killed: %d", self.MyLastSurvivalStats.ZombieKills), "TEA.HUDFontSmall", ScrW() / 2, ScrH() / 2 + 44, Color(230,230,230,a), TEXT_ALIGN_CENTER)
+			draw.DrawText(Format("Players killed: %d", self.MyLastSurvivalStats.PlayerKills), "TEA.HUDFontSmall", ScrW() / 2, ScrH() / 2 + 68, Color(230,230,230,a), TEXT_ALIGN_CENTER)
 		else
 			local a = 205
 
@@ -842,8 +842,8 @@ function GM:PostDrawHUD()
 
 			draw.DrawText(Format(bsurvtime < survtime and "Survival Time: %s (Previous Best: %s, +%s)" or "Survival Time: %s", util.ToMinutesSeconds(survtime), util.ToMinutesSeconds(bsurvtime), util.ToMinutesSeconds(survtime - bsurvtime)),
 			"DeathScreenFont_2", ScrW() / 2, ScrH() / 2 + 20, Color(230,230,230,a), TEXT_ALIGN_CENTER)
-			draw.DrawText(Format("Zombies killed: %d", self.MyLastSurvivalStats.ZombiesKilled), "DeathScreenFont_2", ScrW() / 2, ScrH() / 2 + 44, Color(230,230,230,a), TEXT_ALIGN_CENTER)
-			draw.DrawText(Format("Players killed: %d", self.MyLastSurvivalStats.PlayersKilled), "DeathScreenFont_2", ScrW() / 2, ScrH() / 2 + 68, Color(230,230,230,a), TEXT_ALIGN_CENTER)
+			draw.DrawText(Format("Zombies killed: %d", self.MyLastSurvivalStats.ZombieKills), "DeathScreenFont_2", ScrW() / 2, ScrH() / 2 + 44, Color(230,230,230,a), TEXT_ALIGN_CENTER)
+			draw.DrawText(Format("Players killed: %d", self.MyLastSurvivalStats.PlayerKills), "DeathScreenFont_2", ScrW() / 2, ScrH() / 2 + 68, Color(230,230,230,a), TEXT_ALIGN_CENTER)
 		end
 
 

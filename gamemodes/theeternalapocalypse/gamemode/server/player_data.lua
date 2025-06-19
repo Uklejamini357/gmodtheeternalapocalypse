@@ -4,10 +4,6 @@ function GM:SetStartingVariables(ply)
 	ply.XP = 0 
 	ply.Level = 1
 	ply.Prestige = 0
-	ply.playerskilled = 0
-	ply.playerdeaths = 0
-	ply.ZKills = 0
-	ply.BestSurvivalTime = 0
 	ply.StatPoints = 0
 	ply.PerkPoints = 0
 	ply.EquippedArmor = "none"
@@ -17,6 +13,12 @@ function GM:SetStartingVariables(ply)
 	ply.CurrentTaskProgress = 0
 	ply.TaskCooldowns = {}
 	ply.LastSessionInfo = nil
+	ply.Statistics = {
+		BestSurvivalTime = 0,
+		ZombieKills = 0,
+		PlayersKilled = 0,
+		Deaths = 0,
+	}
 
 	ply.Inventory = table.Copy(self.Config["NewbieGear"])
 	ply.Vault = table.Copy(self.Config["NewbieVault"])
@@ -27,9 +29,31 @@ function GM:SetStartingVariables(ply)
 	ply.MasteryPvPXP = 0
 	ply.MasteryPvPLevel = 0
 
-	for k, v in pairs(self.StatConfigs) do
-		ply[k] = 0
+	for statname, _ in pairs(self.StatConfigs) do
+		ply["Stat"..statname] = 0
 	end
+end
+
+function GM:CorrectPlayerDataFromPreviousVersions(ply, prevdata)
+	if ply.Statistics["ZKills"] then
+		ply.Statistics["ZombieKills"] = ply.Statistics["ZKills"]
+		ply.Statistics["ZKills"] = nil
+	end
+
+	if ply.Statistics["playerskilled"] then
+		ply.Statistics["PlayersKilled"] = ply.Statistics["playerskilled"]
+		ply.Statistics["playerskilled"] = nil
+	end
+
+	if ply.Statistics["playerdeaths"] then
+		ply.Statistics["Deaths"] = ply.Statistics["playerdeaths"]
+		ply.Statistics["playerskilled"] = nil
+	end
+
+	if !prevdata.perkpoints then
+		ply.PerkPoints = ply.Prestige
+	end
+
 end
 
 function GM:LoadPlayer(ply, id)
@@ -57,19 +81,21 @@ function GM:LoadPlayer(ply, id)
 			PrintTable(tbl)
 		end
 
-		local perkpoints
+		local prevdata = {}
 
 		for var,value in pairs(tbl) do
-			ply[var] = value
-
 			if var == "PerkPoints" then
-				perkpoints = true
+				prevdata.perkpoints = true
+			end
+
+			if var == "BestSurvivalTime" or var == "ZKills" or var == "playerskilled" or var == "playerdeaths" then
+				ply.Statistics[var] = value
+			else
+				ply[var] = value
 			end
 		end
 
-		if !perkpoints then
-			ply.PerkPoints = ply.Prestige
-		end
+		self:CorrectPlayerDataFromPreviousVersions(ply, prevdata)
 
 		ply:SetNWInt("PlyLevel", ply.Level)
 		ply:SetNWInt("PlyPrestige", ply.Prestige)
@@ -103,11 +129,7 @@ function GM:SavePlayer(ply, force)
 	end
 
 	local Data = {}
-	Data["BestSurvivalTime"] = ply.BestSurvivalTime
-	Data["ZKills"] = ply.ZKills
 	Data["XP"] = ply.XP
-	Data["playerskilled"] = ply.playerskilled
-	Data["playerdeaths"] = ply.playerdeaths
 	Data["Level"] = ply.Level
 	Data["Prestige"] = ply.Prestige
 	Data["Money"] = ply.Money
@@ -131,6 +153,8 @@ function GM:SavePlayer(ply, force)
 	Data["Vault"] = ply.Vault
 	Data["UnlockedPerks"] = ply.UnlockedPerks
 
+	Data["Statistics"] = ply.Statistics
+
 	if ply:Alive() or ply.LastSessionInfo then
 		local lastsessioninfo = {}
 		if ply:Alive() then
@@ -146,12 +170,11 @@ function GM:SavePlayer(ply, force)
 			lastsessioninfo["battery"] = ply.Battery
 			lastsessioninfo["hpregen"] = ply.HPRegen
 			lastsessioninfo["survivaltime"] = CurTime() - ply.SurvivalTime
-			lastsessioninfo["zombiekills"] = ply.LifeZKills
-			lastsessioninfo["playerkills"] = ply.LifePlayerKills
 			lastsessioninfo["lastmap"] = game.GetMap()
 			lastsessioninfo["lastpos"] = ply:GetPos()
 			lastsessioninfo["lastang"] = ply:EyeAngles()
-			
+			lastsessioninfo["LifeStats"] = ply.LifeStats
+
 			lastsessioninfo["weapons"] = {}
 			for k,v in pairs(ply:GetWeapons()) do
 				table.insert(lastsessioninfo["weapons"], {v:GetClass(), v:Clip1(), v:Clip2()})
@@ -716,8 +739,10 @@ function GM:PrepareStats(ply)
 	ply.IsAlive = true
 
 	-------- Survival Stats --------
-	ply.LifeZKills = 0
-	ply.LifePlayerKills = 0
+	ply.LifeStats = {
+		ZombieKills = 0,
+		PlayerKills = 0
+	}
 	----------------
 
 
@@ -797,12 +822,8 @@ function meta:LoadLastSession()
 			self.SurvivalTime = CurTime() - self.LastSessionInfo["survivaltime"]
 		end
 
-		if self.LastSessionInfo["zombiekills"] then
-			self.LifeZKills = self.LastSessionInfo["zombiekills"]
-		end
-
-		if self.LastSessionInfo["playerkills"] then
-			self.LifePlayerKills = self.LastSessionInfo["playerkills"]
+		if self.LastSessionInfo["LifeStats"] then
+			self.LifeStats = self.LastSessionInfo["LifeStats"]
 		end
 
 		local lastmap = self.LastSessionInfo["lastmap"]
@@ -868,6 +889,7 @@ function meta:OnUnequippedArmor(item)
 end
 
 
+
 function GM:GetPlayerCharacters(ply)
 	if !self.PlayerCharactersTest then return end
 	local tbl = {}
@@ -917,12 +939,6 @@ function GM:GetPlayerCharacters(ply)
 			ply.MasteryMeleeLevel = 0
 			ply.MasteryPvPXP = 0
 			ply.MasteryPvPLevel = 0
-	
-			for k, v in pairs(self.StatsListServer) do
-				local TheStatPieces = string.Explode(";", v)
-				local TheStatName = TheStatPieces[1]
-				ply[TheStatName] = 0
-			end
 	*/
 		end
 

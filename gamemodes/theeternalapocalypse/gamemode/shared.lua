@@ -380,6 +380,12 @@ function GM:GetItemDescription(id, ply) -- ply is for the server
 	end
 ]]
 
+	desc = desc.."\n"
+	local itemtype = item.ItemType
+	if itemtype and self.ItemTypes[itemtype] then
+		desc = desc.."\nItem type: "..self.ItemTypes[itemtype]
+	end
+
 	local armorstats = item.ArmorStats
 	if armorstats then
 		if armorstats.reduction then
@@ -405,6 +411,49 @@ function GM:GetItemDescription(id, ply) -- ply is for the server
 		if armorstats.carryweight then
 			desc = desc.."\n"..Format("Max Carry Weight: +%skg", armorstats.carryweight)
 		end
+	end
+
+	local consum = item.ConsumableStats
+	if consum then
+		if consum.UseTime then
+			desc = desc.."\nUse Time: "..consum.UseTime.."s"
+		end
+		desc = desc.."\n"
+
+		desc = desc.."\nOn usage:"
+
+		if consum.Health then
+			local medskill
+			if ply and ply:IsValid() and ply.StatMedSkill ~= 0 then
+				medskill = (consum.Health > 0 and "+"..math.Round(consum.Health * ply.StatMedSkill) or math.Round(consum.Health * ply.StatMedSkill))
+			end
+
+			desc = desc.."\nHealth: "..(consum.Health > 0 and "+"..consum.Health or consum.Health).."%"..(medskill and "(MedSkill: "..medskill.."% Health)" or "")
+		end
+
+		if consum.Infection then
+			desc = desc.."\nInfection: "..(consum.Infection > 0 and "+"..consum.Infection or consum.Infection).."%"
+		end
+		
+		if consum.Stamina then
+			desc = desc.."\nStamina: "..(consum.Stamina > 0 and "+"..consum.Stamina or consum.Stamina).."%"
+		end
+
+		if consum.Thirst then
+			desc = desc.."\nThirst: "..(consum.Thirst > 0 and "+"..consum.Thirst or consum.Thirst).."%"
+		end
+
+		if consum.Hunger then
+			desc = desc.."\nHunger: "..(consum.Hunger > 0 and "+"..consum.Hunger or consum.Hunger).."%"
+		end
+
+		if consum.Fatigue then
+			desc = desc.."\nFatigue: "..(consum.Fatigue > 0 and "+"..consum.Fatigue or consum.Fatigue).."%"
+		end
+	end
+
+	if item.AddDesc then
+		desc = desc.."\n"..item.AddDesc
 	end
 
 	return desc

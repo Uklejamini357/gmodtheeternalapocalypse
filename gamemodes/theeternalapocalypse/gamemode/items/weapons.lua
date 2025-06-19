@@ -25,8 +25,9 @@ local i = GM:CreateItem("weapon_tea_noobcannon", {
     Model = "models/weapons/w_pist_glock18.mdl",
     Weight = 1.1,
     Supply = -1, -- -1 stock means the traders will never sell this item (Comment: yea we get it)
-    Rarity = 1,
+    Rarity = RARITY_JUNK,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_noobcannon",
 })
 
@@ -35,8 +36,9 @@ i = GM:CreateItem("weapon_tea_pigsticker", {
     Model = "models/weapons/w_knife_ct.mdl",
     Weight = 0.38,
     Supply = 0,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_pigsticker",
 })
 
@@ -45,8 +47,9 @@ i = GM:CreateItem("weapon_tea_axe", {
     Model = "models/props/CS_militia/axe.mdl",
     Weight = 1.73,
     Supply = 0,
-    Rarity = 3,
+    Rarity = RARITY_UNCOMMON,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_axe",
 })
 
@@ -55,8 +58,9 @@ i = GM:CreateItem("weapon_tea_wrench", {
     Model = "models/props_c17/tools_wrench01a.mdl",
     Weight = 0.47,
     Supply = 0,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_wrench",
 })
 
@@ -65,8 +69,9 @@ i = GM:CreateItem("weapon_tea_repair", {
     Model = "models/props_c17/tools_wrench01a.mdl",
     Weight = 0.58,
     Supply = 0,
-    Rarity = 3,
+    Rarity = RARITY_UNCOMMON,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_repair",
 })
 
@@ -75,8 +80,9 @@ i = GM:CreateItem("weapon_tea_scrapsword", {
     Model = "models/props_c17/TrapPropeller_Blade.mdl",
     Weight = 5.3,
     Supply = 0,
-    Rarity = 3,
+    Rarity = RARITY_UNCOMMON,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_scrapsword",
 })
 
@@ -85,8 +91,9 @@ i = GM:CreateItem("weapon_tea_g20", {
     Model = "models/weapons/w_pist_glock18.mdl",
     Weight = 1.18,
     Supply = 0,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_g20",
 })
 
@@ -95,8 +102,9 @@ i = GM:CreateItem("weapon_tea_57", {
     Model = "models/weapons/w_pist_fiveseven.mdl",
     Weight = 0.82,
     Supply = 0,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_57",
 })
 
@@ -105,8 +113,9 @@ i = GM:CreateItem("weapon_tea_u45", {
     Model = "models/weapons/w_pist_usp.mdl",
     Weight = 1.1,
     Supply = 0,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_u45",
 })
 
@@ -115,8 +124,9 @@ i = GM:CreateItem("weapon_tea_warren50", {
     Model = "models/weapons/w_pist_deagle.mdl",
     Weight = 1.73,
     Supply = 0,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_warren50",
 })
 
@@ -125,8 +135,9 @@ i = GM:CreateItem("weapon_tea_python", {
     Model = "models/weapons/w_357.mdl",
     Weight = 1.18,
     Supply = 0,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_python",
 })
 
@@ -135,8 +146,9 @@ i = GM:CreateItem("weapon_tea_dual", {
     Model = "models/weapons/w_pist_elite.mdl",
     Weight = 2.72,
     Supply = -1,
-    Rarity = 4,
+    Rarity = RARITY_RARE,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_dual",
 })
 
@@ -145,8 +157,9 @@ i = GM:CreateItem("weapon_tea_satan", {
     Model = "models/weapons/w_m29_satan.mdl",
     Weight = 3.14,
     Supply = -1,
-    Rarity = 4,
+    Rarity = RARITY_RARE,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_satan",
 })
 
@@ -155,8 +168,9 @@ i = GM:CreateItem("weapon_tea_mp11", {
     Model = "models/weapons/w_smg_mac10.mdl",
     Weight = 2.85,
     Supply = 0,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_mp11",
 })
 
@@ -165,8 +179,9 @@ i = GM:CreateItem("weapon_tea_rg900", {
     Model = "models/weapons/w_smg_tmp.mdl",
     Weight = 2.9,
     Supply = 0,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_rg900",
 })
 
@@ -175,8 +190,9 @@ i = GM:CreateItem("weapon_tea_k5a", {
     Model = "models/weapons/w_smg_mp5.mdl",
     Weight = 3,
     Supply = 0,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_k5a",
 })
 
@@ -185,8 +201,9 @@ i = GM:CreateItem("weapon_tea_stinger", {
     Model = "models/weapons/w_smg1.mdl",
     Weight = 3.85,
     Supply = 0,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_stinger",
 })
 
@@ -195,8 +212,9 @@ i = GM:CreateItem("weapon_tea_bosch", {
     Model = "models/weapons/w_sten.mdl",
     Weight = 3.45,
     Supply = 0,
-    Rarity = 3,
+    Rarity = RARITY_UNCOMMON,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_bosch",
 })
 
@@ -205,8 +223,9 @@ i = GM:CreateItem("weapon_tea_k8", {
     Model = "models/weapons/w_smg_ump45.mdl",
     Weight = 3.12,
     Supply = 0,
-    Rarity = 3,
+    Rarity = RARITY_UNCOMMON,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_k8",
 })
 
@@ -215,8 +234,9 @@ i = GM:CreateItem("weapon_tea_k8c", {
     Model = "models/weapons/w_hk_usc.mdl",
     Weight = 3.15,
     Supply = -1,
-    Rarity = 4,
+    Rarity = RARITY_RARE,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_k8c",
 })
 
@@ -225,8 +245,9 @@ i = GM:CreateItem("weapon_tea_shredder", {
     Model = "models/weapons/w_smg_p90.mdl",
     Weight = 3,
     Supply = -1,
-    Rarity = 4,
+    Rarity = RARITY_RARE,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_shredder",
 })
 
@@ -235,8 +256,9 @@ i = GM:CreateItem("weapon_tea_enforcer", {
     Model = "models/weapons/w_shot_m3super90.mdl",
     Weight = 3.6,
     Supply = 0,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_enforcer",
 })
 
@@ -245,8 +267,9 @@ i = GM:CreateItem("weapon_tea_sweeper", {
     Model = "models/weapons/w_shot_xm1014.mdl",
     Weight = 3.8,
     Supply = 0,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_sweeper",
 })
 
@@ -255,8 +278,9 @@ i = GM:CreateItem("weapon_tea_ranger", {
     Model = "models/weapons/w_rif_m4a1.mdl",
     Weight = 4.2,
     Supply = 0,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_ranger",
 })
 
@@ -265,8 +289,9 @@ i = GM:CreateItem("weapon_tea_fusil", {
     Model = "models/weapons/w_rif_famas.mdl",
     Weight = 4,
     Supply = 0,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_fusil",
 })
 
@@ -275,8 +300,9 @@ i = GM:CreateItem("weapon_tea_stugcommando", {
     Model = "models/weapons/w_rif_sg552.mdl",
     Weight = 4.45,
     Supply = 0,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_stugcommando",
 })
 
@@ -285,8 +311,9 @@ i = GM:CreateItem("weapon_tea_krukov", {
     Model = "models/weapons/w_rif_ak47.mdl",
     Weight = 3.76,
     Supply = 0,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_krukov",
 })
 
@@ -295,8 +322,9 @@ i = GM:CreateItem("weapon_tea_krukov_uniq", {
     Model = "models/weapons/w_rif_ak47.mdl",
     Weight = 4.46,
     Supply = 0,
-    Rarity = 8,
+    Rarity = RARITY_LEGENDARY,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_krukov_uniq",
 })
 
@@ -305,8 +333,9 @@ i = GM:CreateItem("weapon_tea_l303", {
     Model = "models/weapons/w_rif_galil.mdl",
     Weight = 5.35,
     Supply = -1,
-    Rarity = 3,
+    Rarity = RARITY_UNCOMMON,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_l303",
 })
 
@@ -315,8 +344,9 @@ i = GM:CreateItem("weapon_tea_scar", {
     Model = "models/weapons/w_fn_scar_h.mdl",
     Weight = 4.6,
     Supply = -1,
-    Rarity = 6,
+    Rarity = RARITY_EPIC,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_scar",
 })
 
@@ -325,8 +355,9 @@ i = GM:CreateItem("weapon_tea_lmg", {
     Model = "models/weapons/w_mach_m249para.mdl",
     Weight = 7.5,
     Supply = 0,
-    Rarity = 5,
+    Rarity = RARITY_SUPERRARE,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_lmg",
 })
 
@@ -335,8 +366,9 @@ i = GM:CreateItem("weapon_tea_antelope", {
     Model = "models/weapons/w_snip_scout.mdl",
     Weight = 5.25,
     Supply = 0,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_antelope",
 })
 
@@ -345,8 +377,9 @@ i = GM:CreateItem("weapon_tea_scimitar", {
     Model = "models/weapons/w_snip_g3sg1.mdl",
     Weight = 5.4,
     Supply = 0,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_scimitar",
 })
 
@@ -355,8 +388,9 @@ i = GM:CreateItem("weapon_tea_blackhawk", {
     Model = "models/weapons/w_snip_sg550.mdl",
     Weight = 6.35,
     Supply = -1,
-    Rarity = 4,
+    Rarity = RARITY_RARE,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_blackhawk",
 })
 
@@ -365,8 +399,9 @@ i = GM:CreateItem("weapon_tea_punisher", {
     Model = "models/weapons/w_acc_int_aw50.mdl",
     Weight = 7.95,
     Supply = 5,
-    Rarity = 7,
+    Rarity = RARITY_MYTHIC,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_punisher",
 })
 
@@ -375,8 +410,9 @@ i = GM:CreateItem("weapon_tea_scrapcrossbow", {
     Model = "models/weapons/w_crossbow.mdl",
     Weight = 8,
     Supply = -1,
-    Rarity = 4,
+    Rarity = RARITY_RARE,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_scrapcrossbow",
 })
 
@@ -385,8 +421,9 @@ i = GM:CreateItem("weapon_tea_winchester", {
     Model = "models/weapons/w_winchester_1873.mdl",
     Weight = 5.32,
     Supply = -1,
-    Rarity = 5,
+    Rarity = RARITY_SUPERRARE,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_winchester",
 })
 
@@ -395,8 +432,9 @@ i = GM:CreateItem("weapon_tea_perrin", {
     Model = "models/weapons/w_pp19_bizon.mdl",
     Weight = 3.72,
     Supply = -1,
-    Rarity = 5,
+    Rarity = RARITY_SUPERRARE,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_perrin",
 })
 
@@ -405,8 +443,9 @@ i = GM:CreateItem("weapon_tea_dammerung", {
     Model = "models/weapons/w_usas_12.mdl",
     Weight = 6.72,
     Supply = -1,
-    Rarity = 6,
+    Rarity = RARITY_EPIC,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_dammerung",
 })
 
@@ -415,8 +454,9 @@ i = GM:CreateItem("weapon_tea_rpg", {
     Model = "models/weapons/w_rocket_launcher.mdl",
     Weight = 7.2,
     Supply = 0,
-    Rarity = 5,
+    Rarity = RARITY_SUPERRARE,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_rpg",
 })
 
@@ -425,8 +465,9 @@ i = GM:CreateItem("weapon_tea_fuckinator", {
     Model = "models/weapons/w_pist_p228.mdl",
     Weight = 8.74,
     Supply = -1,
-    Rarity = 7,
+    Rarity = RARITY_MYTHIC,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_fuckinator",
 })
 
@@ -435,8 +476,9 @@ i = GM:CreateItem("weapon_tea_germanator", {
     Model = "models/weapons/w_mp40smg.mdl",
     Weight = 3.34,
     Supply = -1,
-    Rarity = 5,
+    Rarity = RARITY_SUPERRARE,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_germanator",
 })
 
@@ -445,8 +487,9 @@ i = GM:CreateItem("weapon_tea_807", {
     Model = "models/weapons/w_remington_870_tact.mdl",
     Weight = 3.82,
     Supply = -1,
-    Rarity = 5,
+    Rarity = RARITY_SUPERRARE,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_807",
 })
 
@@ -455,8 +498,9 @@ i = GM:CreateItem("weapon_tea_crowbar", {
     Model = "models/weapons/w_crowbar.mdl",
     Weight = 6.17,
     Supply = -1,
-    Rarity = 9,
+    Rarity = RARITY_GODLY,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_crowbar",
 })
 
@@ -470,8 +514,9 @@ i = GM:CreateItem("item_pistolammo", {
     Model = "models/wick/wrbstalker/anomaly/items/wick_ammo_9x18_fmj.mdl",
     Weight = 1,
     Supply = 0,
-    Rarity = 1,
+    Rarity = RARITY_JUNK,
     Category = ITEMCATEGORY_AMMO,
+    ItemType = ITEMTYPE_AMMO,
     UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 100, "Pistol") return bool end,
 })
 
@@ -480,8 +525,9 @@ i = GM:CreateItem("item_magammo", {
     Model = "models/wick/wrbstalker/anomaly/items/wick_ammo_357_jhp.mdl",
     Weight = 1,
     Supply = 0,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_AMMO,
+    ItemType = ITEMTYPE_AMMO,
     UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 50, "357") return bool end,
 })
 
@@ -490,8 +536,9 @@ i = GM:CreateItem("item_buckshotammo", {
     Model = "models/wick/wrbstalker/anomaly/items/wick_ammo_12x70_buck_2.mdl",
     Weight = 1,
     Supply = 0,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_AMMO,
+    ItemType = ITEMTYPE_AMMO,
     UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 50, "Buckshot") return bool end,
 })
 
@@ -500,8 +547,9 @@ i = GM:CreateItem("item_rifleammo", {
     Model = "models/wick/wrbstalker/anomaly/items/wick_ammo_762x39_fmj.mdl",
     Weight = 1,
     Supply = 0,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_AMMO,
+    ItemType = ITEMTYPE_AMMO,
     UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 100, "ammo_rifle") return bool end,
 })
 
@@ -510,8 +558,9 @@ i = GM:CreateItem("item_sniperammo", {
     Model = "models/wick/wrbstalker/anomaly/items/wick_ammo_762x51_fmj.mdl",
     Weight = 1,
     Supply = 0,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_AMMO,
+    ItemType = ITEMTYPE_AMMO,
     UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 50, "ammo_sniper") return bool end,
 })
 
@@ -520,8 +569,9 @@ i = GM:CreateItem("item_minigunammo", {
     Model = "models/wick/wrbstalker/anomaly/items/wick_ammo_792x33_ap.mdl", -- I'll find the right model for this soon, hopefully.
     Weight = 1,
     Supply = 0,
-    Rarity = 4,
+    Rarity = RARITY_RARE,
     Category = ITEMCATEGORY_AMMO,
+    ItemType = ITEMTYPE_AMMO,
     UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 100, "ammo_minigun") return bool end,
 })
 
@@ -530,8 +580,9 @@ i = GM:CreateItem("item_ar2pulseammo", {
     Model = "models/Items/combine_rifle_cartridge01.mdl",
     Weight = 1,
     Supply = 10,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_AMMO,
+    ItemType = ITEMTYPE_AMMO,
     UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 100, "ammo_ar2_pulseammo") return bool end,
 })
 
@@ -540,8 +591,9 @@ i = GM:CreateItem("item_crossbowbolt", {
     Model = "models/Items/CrossbowRounds.mdl",
     Weight = 0.3,
     Supply = 0,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_AMMO,
+    ItemType = ITEMTYPE_AMMO,
     UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 6, "XBowBolt") return bool end,
 })
 
@@ -550,8 +602,9 @@ i = GM:CreateItem("item_crossbowbolt_crate", {
     Model = "models/Items/item_item_crate.mdl",
     Weight = 1.5,
     Supply = 0,
-    Rarity = 3,
+    Rarity = RARITY_UNCOMMON,
     Category = ITEMCATEGORY_AMMO,
+    ItemType = ITEMTYPE_AMMO,
     UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 25, "XBowBolt") return bool end,
 })
 
@@ -560,8 +613,9 @@ i = GM:CreateItem("item_deadly_crossbowbolt", {
     Model = "models/Items/CrossbowRounds.mdl",
     Weight = 0.8,
     Supply = 0,
-    Rarity = 4,
+    Rarity = RARITY_RARE,
     Category = ITEMCATEGORY_AMMO,
+    ItemType = ITEMTYPE_AMMO,
     UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 25, "ammo_deadlybolt") return bool end,
 })
 
@@ -570,8 +624,9 @@ i = GM:CreateItem("item_rocketammo", {
     Model = "models/weapons/w_missile_closed.mdl",
     Weight = 1.74,
     Supply = 0,
-    Rarity = 3,
+    Rarity = RARITY_UNCOMMON,
     Category = ITEMCATEGORY_AMMO,
+    ItemType = ITEMTYPE_AMMO,
     UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 1, "RPG_Round") return bool end,
 })
 
@@ -584,8 +639,9 @@ i = GM:CreateItem("weapon_tea_falcon", {
     Model = "models/weapons/s_dmgf_co1911.mdl",
     Weight = 1.4,
     Supply = 0,
-    Rarity = 3,
+    Rarity = RARITY_UNCOMMON,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_falcon",
 })
 
@@ -594,8 +650,9 @@ i = GM:CreateItem("weapon_tea_spas", {
     Model = "models/weapons/w_shotgun.mdl",
     Weight = 3.6,
     Supply = 0,
-    Rarity = 4,
+    Rarity = RARITY_RARE,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_spas",
 })
 
@@ -604,8 +661,9 @@ i = GM:CreateItem("weapon_tea_lbr", {
     Model = "models/weapons/w_snip_m14sp.mdl",
     Weight = 3.8,
     Supply = 0,
-    Rarity = 5,
+    Rarity = RARITY_SUPERRARE,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_lbr",
 })
 
@@ -614,8 +672,9 @@ i = GM:CreateItem("weapon_tea_aug", {
     Model = "models/weapons/w_rif_aug.mdl",
     Weight = 5.15,
     Supply = 0,
-    Rarity = 6,
+    Rarity = RARITY_EPIC,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_aug",
 })
 
@@ -624,8 +683,9 @@ i = GM:CreateItem("weapon_tea_awm", {
     Model = "models/weapons/w_snip_awp.mdl",
     Weight = 7.65,
     Supply = 0,
-    Rarity = 6,
+    Rarity = RARITY_EPIC,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_awm",
 })
 
@@ -639,8 +699,9 @@ i = GM:CreateItem("weapon_tea_plasmalauncher", {
     Model = "models/weapons/w_physics.mdl",
     Weight = 20,
     Supply = -1,
-    Rarity = 11,
+    Rarity = RARITY_UNOBTAINABLE,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "error_weapon_class_inexistant")) /*UseFunc_EquipGun(ply, "weapon_tea_plasmalauncher")*/ return false end,
     IsSecret = true
 })
@@ -650,8 +711,9 @@ i = GM:CreateItem("weapon_tea_minigun", {
     Model = "models/weapons/w_m134_minigun.mdl",
     Weight = 16.96,
     Supply = -1,
-    Rarity = 6,
+    Rarity = RARITY_EPIC,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_minigun",
 })
 
@@ -660,8 +722,9 @@ i = GM:CreateItem("weapon_tea_ar2", {
     Model = "models/weapons/w_irifle.mdl",
     Weight = 5.28,
     Supply = -1,
-    Rarity = 6,
+    Rarity = RARITY_EPIC,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_ar2",
 })
 
@@ -670,8 +733,9 @@ i = GM:CreateItem("weapon_tea_combinepistol", {
     Model = "models/weapons/w_cmbhgp.mdl",
     Weight = 2.28,
     Supply = -1,
-    Rarity = 5,
+    Rarity = RARITY_SUPERRARE,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_combinepistol",
 })
 
@@ -680,8 +744,9 @@ i = GM:CreateItem("weapon_tea_grenade_pipe", {
     Model = "models/props_lab/pipesystem03a.mdl",
     Weight = 0.34,
     Supply = 0,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_grenade_pipe",
     IsGrenade = true
 })
@@ -691,8 +756,9 @@ i = GM:CreateItem("weapon_tea_grenade_flare", {
     Model = "models/props_lab/pipesystem03a.mdl",
     Weight = 0.4,
     Supply = 0,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_grenade_flare",
     IsGrenade = true
 })
@@ -702,8 +768,9 @@ i = GM:CreateItem("weapon_tea_grenade_frag", {
     Model = "models/weapons/w_eq_fraggrenade.mdl",
     Weight = 0.63,
     Supply = -1,
-    Rarity = 3,
+    Rarity = RARITY_UNCOMMON,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_grenade_frag",
     IsGrenade = true
 })
@@ -714,8 +781,9 @@ i = GM:CreateItem("weapon_tea_grenade_molotov", {
     Model = "models/props_junk/garbage_glassbottle003a.mdl",
     Weight = 0.35,
     Supply = 0,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_grenade_molotov",
     IsGrenade = true
 })
@@ -729,8 +797,9 @@ i = GM:CreateItem("weapon_tea_amex", {
     Model = "models/weapons/w_rif_xamas.mdl",
     Weight = 5.75,
     Supply = 0,
-    Rarity = 4,
+    Rarity = RARITY_RARE,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_amex",
 })
 
@@ -739,8 +808,9 @@ i = GM:CreateItem("weapon_tea_mars", {
     Model = "models/weapons/w_rif_tavor.mdl",
     Weight = 7.92,
     Supply = -1,
-    Rarity = 5,
+    Rarity = RARITY_SUPERRARE,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_mars",
 })
 
@@ -749,8 +819,9 @@ i = GM:CreateItem("weapon_tea_dragunov", {
     Model = "models/weapons/w_svd_dragunov.mdl",
     Weight = 6.3,
     Supply = 0,
-    Rarity = 5,
+    Rarity = RARITY_SUPERRARE,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_dragunov",
 })
 
@@ -759,8 +830,9 @@ i = GM:CreateItem("weapon_tea_boomstick", {
     Model = "models/weapons/w_double_barrel_shotgun.mdl",
     Weight = 3.2,
     Supply = 0,
-    Rarity = 3,
+    Rarity = RARITY_UNCOMMON,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_boomstick",
 })
 
@@ -774,8 +846,9 @@ i = GM:CreateItem("weapon_tea_deadly_axe", {
     Model = "models/props/CS_militia/axe.mdl",
     Weight = 3.26,
     Supply = 1,
-    Rarity = 5,
+    Rarity = RARITY_SUPERRARE,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_deadly_axe",
     ModelColor = Color(255, 127, 127) -- doesn't seem to work :/
 })
@@ -785,8 +858,9 @@ i = GM:CreateItem("weapon_tea_deadly_scrapcrossbow", {
     Model = "models/weapons/w_crossbow.mdl",
     Weight = 13.65,
     Supply = 1,
-    Rarity = 8,
+    Rarity = RARITY_LEGENDARY,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_deadly_scrapcrossbow",
 })
 
@@ -795,8 +869,9 @@ i = GM:CreateItem("weapon_tea_deadly_minigun", {
     Model = "models/weapons/w_m134_minigun.mdl",
     Weight = 28.52,
     Supply = 1,
-    Rarity = 9,
+    Rarity = RARITY_GODLY,
     Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_deadly_minigun",
 })
 

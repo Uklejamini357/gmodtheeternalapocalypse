@@ -33,6 +33,7 @@ AddCSLuaFile("client/cl_changelogs.lua")
 AddCSLuaFile("client/cl_deathscreen.lua")
 AddCSLuaFile("client/cl_mainmenu.lua")
 AddCSLuaFile("client/cl_perksmenu.lua")
+AddCSLuaFile("client/cl_tooltip.lua")
 
 AddCSLuaFile("client/cl_net.lua")
 AddCSLuaFile("cl_killicons.lua")
@@ -334,17 +335,11 @@ function GM:Think()
 		if ply:FlashlightIsOn() then
 			if ply.Battery <= 0 then
 				ply:Flashlight(false)
-				ply:AllowFlashlight(false)
-				ply.CanUseFlashlight = false
 			else
 				ply.Battery = math.Clamp(ply.Battery - 1*ft, 0, 100 + (armorstr and armortype and armortype["ArmorStats"]["battery"] or 0))
 			end
 		else
 			ply.Battery = math.Clamp(ply.Battery + 1.35*ft, 0, 100 + (armorstr and armortype and armortype["ArmorStats"]["battery"] or 0))
-			if ply.Battery >= 10 then
-				ply:AllowFlashlight(true)
-				ply.CanUseFlashlight = true
-			end
 		end
 
 
@@ -443,7 +438,7 @@ function GM:PlayerDisconnected(ply)
 	gamemode.Call("SavePlayer", ply)
 	for k,v in pairs(ents.GetAll()) do
 		if v:GetNWEntity("owner") == ply then v:Remove() end
-		if v.BossMonster and v.DamagedBy[ply] then v.DamagedBy[ply] = nil end
+		if v.DamagedBy and v.DamagedBy[ply] then v.DamagedBy[ply] = nil end
 	end
 
 	if ply:Team() ~= TEAM_LONER then
@@ -741,12 +736,13 @@ function GM:EntityTakeDamage(ent, dmginfo)
 				ent.LastAttacker = nil	-- after some time when the target last received damage from the attacker, we claim that the last target's attacker is no more
 			end)
 		else
-			if !ent.DamagedBy[attacker] then 
-				ent.DamagedBy[attacker] = math.Clamp(dmginfo:GetDamage(), 0, ent:Health())
-			else
-				ent.DamagedBy[attacker] = math.max(ent.DamagedBy[attacker] + math.Clamp(dmginfo:GetDamage(), 0, ent:Health()), 0)
-			end
 			self.NextInfectionDecrease = math.max(self.NextInfectionDecrease, CurTime() + 6)
+		end
+
+		if !ent.DamagedBy[attacker] then 
+			ent.DamagedBy[attacker] = math.Clamp(dmginfo:GetDamage(), 0, ent:Health())
+		else
+			ent.DamagedBy[attacker] = math.max(ent.DamagedBy[attacker] + math.Clamp(dmginfo:GetDamage(), 0, ent:Health()), 0)
 		end
 	end
 
@@ -879,10 +875,25 @@ function GM:PlayerInitialSpawn(ply, transition)
 	----------------
 	
 	-------- Statistics --------
-	ply.BestSurvivalTime = 0
-	ply.ZKills = 0
-	ply.playerskilled = 0
-	ply.playerdeaths = 0
+	ply.Statistics = {
+		BestSurvivalTime = 0,
+		
+		ZombieKills = 0,
+		ZombieKillAssists = 0,
+		ZombieDamageToZombies = 0,
+		
+		PlayersKilled = 0,
+
+		Deaths = 0,
+		DeathsByThirst = 0,
+		DeathsByHunger = 0,
+		DeathsByFatigue = 0,
+		DeathsByInfection = 0,
+		DeathsByZombies = 0,
+		DeathsByPlayers = 0,
+		DeathsBySuicide = 0,
+	}
+	ply.LifeStats = {}
 	----------------
 	
 	-------- Mastery Stats --------
@@ -950,13 +961,7 @@ function GM:PlayerInitialSpawn(ply, transition)
 	for statname, _ in pairs(self.StatConfigs) do
 		ply["Stat"..statname] = 0
 	end
-/*
-	for k, v in pairs(self.StatsListServer) do
-		local TheStatPieces = string.Explode(";", v)
-		local TheStatName = TheStatPieces[1]
-		ply[TheStatName] = 0
-	end
-*/
+
 	for k,v in pairs(self.Achievements) do
 		ply.Achievements[k] = 0
 		ply.AchProgress[k] = 0

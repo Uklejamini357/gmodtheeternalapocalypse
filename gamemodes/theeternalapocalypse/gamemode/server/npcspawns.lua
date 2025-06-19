@@ -56,9 +56,8 @@ function GM:CreateZombie(class, pos, ang, xp, cash, infectionrate, isboss)
 	ent.InfectionRate = infectionrate
 	ent.IsZombie = true
 	ent.BossMonster = isboss
-	if isboss then
-		ent.DamagedBy = {}
-	end
+	ent.DamagedBy = {}
+
 	ent:Spawn()
 	ent:SetHealth(ent:Health() * self.ZombieHealthMultiplier)
 	ent:SetMaxHealth(ent:GetMaxHealth() * self.ZombieHealthMultiplier)
@@ -337,44 +336,53 @@ end
 function GM:NPCReward(ent)
 	local ct = CurTime()
 
-	local attacker = ent.LastAttacker
 	local isvariant = ent:GetEliteVariant() ~= 0
 	local isboss = ent.BossMonster and ent.DamagedBy
-	if !ent.TEA_DeadNPC and (ent:IsNextBot() or ent:IsNPC()) and (ent.XPReward and ent.MoneyReward) then
-		if !isboss and attacker and attacker:IsValid() then
-			local hasbountyhunter = attacker:HasPerk("bountyhunter")
-			local xp = ent.XPReward * self.XPGainMul * GAMEMODE:GetInfectionMul() * math.Round(1 + (attacker.StatKnowledge * 0.03), 3)
-			local cash = ent.MoneyReward * self.CashGainMul * (0.5 + (GAMEMODE:GetInfectionMul() * 0.5)) * (self:CashBonus(attacker) or 1) * math.Round(1 + (attacker.StatSalvage * 0.03), 3)
-			GAMEMODE:Payout(attacker,
-				xp * (hasbountyhunter and (isvariant and 1.1 or 1) or 1),
-				cash * (hasbountyhunter and (isvariant and 1.15 or 1) or 1)
-			)
-			attacker.ZKills = attacker.ZKills + 1
-			attacker.LifeZKills = attacker.LifeZKills + 1
-			gamemode.Call("GiveTaskProgress", attacker, "zombie_killer", 1)
+	local attackers = ent.DamagedBy
+	local killer = ent.LastAttacker
+	if !ent.TEA_DeadNPC and (ent:IsNextBot() or ent:IsNPC()) and (ent.XPReward and ent.MoneyReward) and attackers then
+		if !isboss and killer and killer:IsValid() then
+			for attacker, dmg in pairs(attackers) do
+				local hasbountyhunter = attacker:HasPerk("bountyhunter")
+				local xp = ent.XPReward * self.XPGainMul * GAMEMODE:GetInfectionMul() * math.Round(1 + (attacker.StatKnowledge * 0.03), 3)
+				local cash = ent.MoneyReward * self.CashGainMul * (0.5 + (GAMEMODE:GetInfectionMul() * 0.5)) * (self:CashBonus(attacker) or 1) * math.Round(1 + (attacker.StatSalvage * 0.03), 3)
+				GAMEMODE:Payout(attacker,
+					xp * (hasbountyhunter and (isvariant and 1.1 or 1) or 1) * tonumber(math.min(dmg, ent:GetMaxHealth()) / ent:GetMaxHealth()),
+					cash * (hasbountyhunter and (isvariant and 1.15 or 1) or 1) * tonumber(math.min(dmg, ent:GetMaxHealth()) / ent:GetMaxHealth())
+				)
+
+				if attacker ~= killer then
+					killer:AddStatisticPoints("ZombieKillAssists", 1)
+				end
+
+				self:SendPlayerSurvivalStats(attacker)
+				self:NetUpdateStatistics(attacker)
+			end
+			killer:AddStatisticPoints("ZombieKills", 1)
+			killer:AddLifeStatisticPoints("ZombieKills", 1)
+
+			gamemode.Call("GiveTaskProgress", killer, "zombie_killer", 1)
 			if isvariant then
-				gamemode.Call("GiveTaskProgress", attacker, "elite_problem", 1)
+				gamemode.Call("GiveTaskProgress", killer, "elite_problem", 1)
 			end
 
-			self:SendPlayerSurvivalStats(attacker)
-			self:NetUpdateStatistics(attacker)
-			local addinfection = ((ent.InfectionRate or 0) * math.min(3, 1 + (attacker.ZombieKillStreak * 0.04))) / (1 + ((player.GetCount() - 1) * (7 / 9))) * self.InfectionLevelGainMul
+			local addinfection = ((ent.InfectionRate or 0) * math.min(3, 1 + (killer.ZombieKillStreak * 0.04))) / (1 + ((player.GetCount() - 1) * (7 / 9))) * self.InfectionLevelGainMul
 			addinfection = addinfection * (self:GetInfectionLevel() > 100 and 0.25/(self:GetInfectionMul()-1) or self:GetInfectionLevel() > 75 and 0.5 or self:GetInfectionLevel() > 50 and 0.75 or 1)
 
 			self:SetInfectionLevel(self:GetInfectionLevel() + addinfection)
 			self.NextInfectionDecrease = math.max(self.NextInfectionDecrease, ct + 25)
 			self.InfectionDecreasedTimes = 0
-			attacker.ZombieKillStreak = attacker.ZombieKillStreak + 1
-			timer.Create("TEA_InfectionStreak_1_"..attacker:EntIndex(), 7, 1, function()
-				if !attacker:IsValid() then return end
-				attacker.ZombieKillStreak = math.floor(attacker.ZombieKillStreak / 3)
+			killer.ZombieKillStreak = killer.ZombieKillStreak + 1
+			timer.Create("TEA_InfectionStreak_1_"..killer:EntIndex(), 7, 1, function()
+				if !killer:IsValid() then return end
+				killer.ZombieKillStreak = math.floor(killer.ZombieKillStreak / 3)
 			end)
-			timer.Create("TEA_InfectionStreak_2_"..attacker:EntIndex(), 17.5, 1, function()
-				if !attacker:IsValid() then return end
-				attacker.ZombieKillStreak = 0
+			timer.Create("TEA_InfectionStreak_2_"..killer:EntIndex(), 17.5, 1, function()
+				if !killer:IsValid() then return end
+				killer.ZombieKillStreak = 0
 			end)
 		elseif isboss then
-			for pl, v in pairs(ent.DamagedBy) do
+			for pl, v in pairs(attackers) do
 				if !pl:IsValid() or !pl:IsPlayer() then continue end
 				local hasbountyhunter = pl:HasPerk("bountyhunter")
 				local payxp = tonumber(math.min(v, ent:GetMaxHealth()) * ent.XPReward / ent:GetMaxHealth())
@@ -391,14 +399,14 @@ function GM:NPCReward(ent)
 				pl:PrintTranslatedMessage(HUD_PRINTTALK, "damage_dealt_to_boss", math.Round(v), math.Round((v * 100) / ent:GetMaxHealth()))
 			end
 
-			if table.Count(ent.DamagedBy) > 0 then
-				self.NextInfectionDecrease = math.max(self.NextInfectionDecrease, ct + 70 + table.Count(ent.DamagedBy) * 5)
+			if table.Count(attackers) > 0 then
+				self.NextInfectionDecrease = math.max(self.NextInfectionDecrease, ct + 70 + table.Count(attackers) * 5)
 				self:SetInfectionLevel(self:GetInfectionLevel() + ((ent.InfectionRate or 0) * self.InfectionLevelGainMul * math.max(1, 0.5 + #player.GetAll()*0.2)))
 			end
 
 			local boss_killer
 			local boss_damage = 0
-			for ply, dmg in pairs(ent.DamagedBy) do
+			for ply, dmg in pairs(attackers) do
 				if dmg > boss_damage then
 					boss_killer = ply
 					boss_damage = dmg
@@ -410,14 +418,14 @@ function GM:NPCReward(ent)
 			end
 			ent.TEA_MostDamageByPlayer = boss_damage
 			
-			if table.Count(ent.DamagedBy) > 0 then
+			if table.Count(attackers) > 0 then
 				if self:GetDebug() >= DEBUGGING_NORMAL then
 					print("BOSS DEFEATED:\n")
-					PrintTable(ent.DamagedBy)
+					PrintTable(attackers)
 				end
 
 				net.Start("BossKilled")
-				net.WriteTable(ent.DamagedBy)
+				net.WriteTable(attackers)
 				net.Broadcast()
 			end
 		end

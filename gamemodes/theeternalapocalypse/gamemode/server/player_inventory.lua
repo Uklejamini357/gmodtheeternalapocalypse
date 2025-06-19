@@ -116,136 +116,161 @@ function GM:UseItem(ply, item, use, targetply)
 	if ply:IsSleeping() then ply:SendChat(translate.ClientGet(ply, "itemnousesleeping")) return false end
 	if ply:IsUsingItem() then ply:SendChat(translate.ClientGet(ply, "itemnousecooldown")) return false end
 
-	if ply.Inventory[item] then
-		if ply.Inventory[item] > 0 then
-			if ftoggle == "UseFunc" then
-				if ref.UseFunc then
-					local func = ref.UseFunc(ply, targetply, item)
-					if func then
-						GAMEMODE:SystemRemoveItem(ply, item, false) -- leave this as false otherwise grenades are unusable
-					end
-				else
-					local shouldremove
-					if ref.WeaponType then
-						local gun = ref.WeaponType
-						if ref.IsGrenade then
-							local wep = ply:GetWeapon(gun)
-							if not wep:IsValid() then
-								wep = ply:Give(gun, true)
-							end
-							ply:GiveAmmo(1, wep:GetPrimaryAmmoType())
+	if ply.Inventory[item] and ply.Inventory[item] > 0 then
+		if ftoggle == "UseFunc" then
+			if ref.UseFunc then
+				local func = ref.UseFunc(ply, targetply, item)
+				if func then
+					GAMEMODE:SystemRemoveItem(ply, item, false) -- leave this as false otherwise grenades are unusable
+				end
+			else
+				local itemtype = ref.ItemType
+				local shouldremove
+				if ref.WeaponType then
+					local gun = ref.WeaponType
+					if ref.IsGrenade then
+						local wep = ply:GetWeapon(gun)
+						if not wep:IsValid() then
+							wep = ply:Give(gun, true)
+						end
+						ply:GiveAmmo(1, wep:GetPrimaryAmmoType())
 
-							if ply:GetActiveWeapon() != gun then
-								ply:SelectWeapon(gun)
-							end
-
-							shouldremove = true
-						else
-							local wep = ply:GetWeapon(gun)
-							if not wep:IsValid() then
-								wep = ply:Give(gun, true)
-							end
+						if ply:GetActiveWeapon() != gun then
 							ply:SelectWeapon(gun)
 						end
-					elseif ref.ArmorStats then
-						if ply.EquippedArmor == item then
-							ply:SendUseDelay(3, "Unequipping Armor...")
-							ply:EmitSound("npc/combine_soldier/zipline_hitground2.wav")
-							timer.Simple(3, function()
-								if !ply:IsValid() or !ply:Alive() then return false end
-								ply:ArmorUnequip()
-							end)
-						else
-							ply:SendUseDelay(3, "Equipping Armor...")
-							ply:EmitSound("npc/combine_soldier/zipline_hitground1.wav")
 
-							timer.Create("Isplyequippingarmor"..ply:EntIndex().."_"..item, 3, 1, function()
-								if !ply:IsValid() or !ply:Alive() then return false end
-								ply:ArmorEquip(item)
-							end)
+						shouldremove = true
+					else
+						local wep = ply:GetWeapon(gun)
+						if not wep:IsValid() then
+							wep = ply:Give(gun, true)
 						end
+						ply:SelectWeapon(gun)
 					end
+				elseif ref.ArmorStats then
+					if ply.EquippedArmor == item then
+						ply:SendUseDelay(3, "Unequipping Armor...")
+						ply:EmitSound("npc/combine_soldier/zipline_hitground2.wav")
+						timer.Simple(3, function()
+							if !ply:IsValid() or !ply:Alive() then return false end
+							ply:ArmorUnequip()
+						end)
+					else
+						ply:SendUseDelay(3, "Equipping Armor...")
+						ply:EmitSound("npc/combine_soldier/zipline_hitground1.wav")
 
-					if ref.Health then
-						ply:SetHealth(math.min(ply:GetMaxHealth(), ply:Health() + ref.Health))
+						timer.Create("Isplyequippingarmor"..ply:EntIndex().."_"..item, 3, 1, function()
+							if !ply:IsValid() or !ply:Alive() then return false end
+							ply:ArmorEquip(item)
+						end)
 					end
-
-					if ref.Thirst then
-						ply.Thirst = ply.Thirst + ref.Thirst*100
-					end
-
-					if ref.Hunger then
-						ply.Hunger = ply.Hunger + ref.Hunger*100
-					end
-					
-					if ref.Fatigue then
-						ply.Fatigue = ply.Fatigue + ref.Fatigue*100
-					end
-
-					if ref.Infection then
-						ply.Infection = ply.Infection + ref.Infection*100
-					end
-
-					if ref.UseSound then
-						ply:EmitSound(ref.UseSound)
-					end
-
-					if shouldremove and not ref.Reusable then
-						GAMEMODE:SystemRemoveItem(ply, item, false)
-					end
-
 				end
-				ply.LastItemAction = CurTime()
-			elseif ftoggle == "DropFunc" and not (isfunction(ref.CantDropItem) and ref.CantDropItem(ply, item) or not isfunction(ref.CantDropItem) and ref.CantDropItem) then -- Most items use the same exact function, so why not it here instead of putting the same thing everywhere?
-				if ref.DropFunc then
-					local func = ref.DropFunc(ply, item)
-					if func then
-						GAMEMODE:SystemRemoveItem(ply, item, true)
-					end
-				else
-					local armor = ref.Category == ITEMCATEGORY_ARMOR
-					if armor and !timer.Exists("Plywantstodropequippedarmor"..ply:EntIndex()) and ply:GetNWString("ArmorType") == item then
-						ply:SendChat(translate.ClientFormat(ply, "warning_about_to_drop_equipped_armor", 10))
-						timer.Create("Plywantstodropequippedarmor"..ply:EntIndex(), 10, 1, function() end)
-						return false
+
+				local consum = ref.ConsumableStats
+				if consum then
+					shouldremove = true
+
+					if consum.UseTime then
+						local str = {
+							[ITEMTYPE_MED] = "Healing...",
+							[ITEMTYPE_MEDANTIDOTE] = "Healing Infection...",
+							[ITEMTYPE_ARMOR] = "Reinforcing armor...",
+							[ITEMTYPE_FOOD] = "Eating food...",
+							[ITEMTYPE_DRINK] = "Drinking...",
+						}
+						ply:SendUseDelay(consum.UseTime, str[itemtype] or "Using an item")
+						--[[
+						"Healing..."
+						"Healing infection..."
+						"Reinforcing armor..."
+						"Eating food..."
+						"Drinking..."
+						]]
 					end
 
+					if consum.Health then
+						ply:SetHealth(math.min(ply:GetMaxHealth(), ply:Health() + consum.Health))
+					end
+
+					if consum.Armor then
+						ply:SetArmor(math.min(ply:GetMaxArmor(), ply:Armor() + consum.Armor))
+					end
+
+					if consum.Infection then
+						ply.Infection = ply.Infection + consum.Infection*100
+					end
+
+					if consum.Stamina then
+						ply.Stamina = ply.Stamina + consum.Stamina
+					end
+
+					if consum.Thirst then
+						ply.Thirst = ply.Thirst + consum.Thirst*100
+					end
+
+					if consum.Hunger then
+						ply.Hunger = ply.Hunger + consum.Hunger*100
+					end
+
+					if consum.Fatigue then
+						ply.Fatigue = ply.Fatigue + consum.Fatigue*100
+					end
+				end
+
+				if ref.UseSound then
+					ply:EmitSound(ref.UseSound, 100, 100)
+				end
+
+				if shouldremove and not ref.Reusable then
 					GAMEMODE:SystemRemoveItem(ply, item, false)
-
-					local vStart, vForward = ply:GetShootPos(), ply:GetAimVector()
-					local tr = util.TraceLine({
-						start = vStart,
-						endpos = vStart + vForward * 70,
-						filter = ply
-					})
-					local ent = ents.Create("ate_droppeditem")
-					ent:SetPos(tr.HitPos)
-					ent:SetAngles(Angle(0, ply:EyeAngles().yaw, 0))
-					ent:SetModel(armor and "models/props/cs_office/cardboard_box01.mdl" or GAMEMODE.ItemsList[item].Model)
-					ent:SetNWString("ItemClass", item)
-					ent:Spawn()
-					ent:Activate()
-
-					if armor and ply.EquippedArmor == tostring(item) then
-						ply:ArmorUnequip()
-					end
-
-					ply:InvStripWeapon(item)
 				end
-
-
-
-				if ref.OnItemDropped then
-					ref.OnItemDropped(ply, item)
-				end
-				
-				ply.LastItemAction = CurTime()
 			end
-			self:SendInventory(ply)
 
-		else
-			ply:SendChat(translate.ClientGet(ply, "hasnoitem"))
+			ply.LastItemAction = CurTime()
+		elseif ftoggle == "DropFunc" and not (isfunction(ref.CantDropItem) and ref.CantDropItem(ply, item) or not isfunction(ref.CantDropItem) and ref.CantDropItem) then -- Most items use the same exact function, so why not it here instead of putting the same thing everywhere?
+			if ref.DropFunc then
+				local func = ref.DropFunc(ply, item)
+				if func then
+					GAMEMODE:SystemRemoveItem(ply, item, true)
+				end
+			else
+				local armor = ref.Category == ITEMCATEGORY_ARMOR
+				if armor and !timer.Exists("Plywantstodropequippedarmor"..ply:EntIndex()) and ply:GetNWString("ArmorType") == item then
+					ply:SendChat(translate.ClientFormat(ply, "warning_about_to_drop_equipped_armor", 10))
+					timer.Create("Plywantstodropequippedarmor"..ply:EntIndex(), 10, 1, function() end)
+					return false
+				end
+
+				GAMEMODE:SystemRemoveItem(ply, item, false)
+
+				local vStart, vForward = ply:GetShootPos(), ply:GetAimVector()
+				local tr = util.TraceLine({
+					start = vStart,
+					endpos = vStart + vForward * 70,
+					filter = ply
+				})
+				local ent = ents.Create("ate_droppeditem")
+				ent:SetPos(tr.HitPos)
+				ent:SetAngles(Angle(0, ply:EyeAngles().yaw, 0))
+				ent:SetModel(armor and "models/props/cs_office/cardboard_box01.mdl" or GAMEMODE.ItemsList[item].Model)
+				ent:SetNWString("ItemClass", item)
+				ent:Spawn()
+				ent:Activate()
+
+				if armor and ply.EquippedArmor == tostring(item) then
+					ply:ArmorUnequip()
+				end
+
+				ply:InvStripWeapon(item)
+			end
+
+			if ref.OnItemDropped then
+				ref.OnItemDropped(ply, item)
+			end
+			
+			ply.LastItemAction = CurTime()
 		end
+		self:SendInventory(ply)
 	else
 		ply:SendChat(translate.ClientGet(ply, "hasnoitem"))
 	end

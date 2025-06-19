@@ -293,17 +293,12 @@ concommand.Add("tea_dev_forcesaveplayer", function(ply, cmd, args)
 	gamemode.Call("DevCmds_ForceSavePlayer", ply, cmd, args)
 end, nil, "Forces a save function upon player, even with tea_server_dbsaving convar disabled")
 
+concommand.Add("tea_devgamemodetool_removeitemusefunc", function(ply, cmd)
+	if not ply:IsValid() then return end
+	if not ply:IsListenServerHost() then ply:PrintMessage(2, "Unknown command: "..cmd) return end
 
-/*
-Cash
-Level
-Prestige
-XP
-Bounty
-StatPoints
-Stamina
-Hunger
-Thirst
-Fatigue
-Infection
-*/
+	for _,item in pairs(GAMEMODE.ItemsList) do
+		item.UseFunc = nil
+	end
+	ply:PrintMessage(3, "Action complete.")
+end)

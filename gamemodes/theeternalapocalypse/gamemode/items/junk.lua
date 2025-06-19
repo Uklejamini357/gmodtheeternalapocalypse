@@ -24,6 +24,7 @@ i = GM:CreateItem("item_junk_tin", {
     Supply = -1,
     Rarity = RARITY_TRASH,
     Category = ITEMCATEGORY_JUNK,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
 })
 
@@ -34,6 +35,7 @@ i = GM:CreateItem("item_junk_boot", {
     Supply = -1,
     Rarity = RARITY_TRASH,
     Category = ITEMCATEGORY_JUNK,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
 })
 
@@ -44,6 +46,7 @@ i = GM:CreateItem("item_junk_paper", {
     Supply = -1,
     Rarity = RARITY_TRASH,
     Category = ITEMCATEGORY_JUNK,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
 })
 
@@ -54,6 +57,7 @@ i = GM:CreateItem("item_junk_keyboard", {
     Supply = -1,
     Rarity = RARITY_TRASH,
     Category = ITEMCATEGORY_JUNK,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
 })
 
@@ -64,6 +68,7 @@ i = GM:CreateItem("item_junk_gardenpot", {
     Supply = -1,
     Rarity = RARITY_TRASH,
     Category = ITEMCATEGORY_JUNK,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
 })
 
@@ -74,6 +79,7 @@ i = GM:CreateItem("item_junk_paint", {
     Supply = -1,
     Rarity = RARITY_TRASH,
     Category = ITEMCATEGORY_JUNK,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
 })
 
@@ -84,6 +90,7 @@ i = GM:CreateItem("item_junk_doll", {
     Supply = -1,
     Rarity = RARITY_TRASH,
     Category = ITEMCATEGORY_JUNK,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
 })
 
@@ -94,6 +101,7 @@ i = GM:CreateItem("item_junk_pot", {
     Supply = -1,
     Rarity = RARITY_TRASH,
     Category = ITEMCATEGORY_JUNK,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
 })
 
@@ -104,6 +112,7 @@ i = GM:CreateItem("item_junk_hula", {
     Supply = -1,
     Rarity = RARITY_TRASH,
     Category = ITEMCATEGORY_JUNK,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
 })
 
@@ -114,6 +123,7 @@ i = GM:CreateItem("item_junk_nailbox", {
     Supply = -1,
     Rarity = RARITY_TRASH,
     Category = ITEMCATEGORY_JUNK,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
 })
 
@@ -124,5 +134,6 @@ i = GM:CreateItem("item_junk_twig", {
     Supply = -1,
     Rarity = RARITY_TRASH,
     Category = ITEMCATEGORY_JUNK,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
 })

@@ -1,6 +1,7 @@
 /*
 
 --[[ -- Use this function template for adding new items!
+
 GM:CreateItem(itemid, { -- what the item will be called within the games code as a string, can be anything as long as you don't use the same name twice
     	Name = name,            -- Name for the item. Unused.
 		Description = desc,		-- Description for the item. Unused.
@@ -11,8 +12,10 @@ GM:CreateItem(itemid, { -- what the item will be called within the games code as
 -- (Stock limits don't work, will try to fix/add one) Putting 0 means unlimited stock, Putting -1 as stock will make it so the item isn't sold by traders
 		Rarity = rarity,        -- 0 = trash, 1 = junk, 2 = common, 3 = uncommon, 4 = rare, 5 = super rare, 6 = epic, 7 = mythic, 8 = legendary, 9 = godly, 10 = event, 11 = unobtainable, any other = uncategorized
 		Category = category,    -- 1 = supplies, 2 = ammunition, 3 = weapons, 4 = armor, any other = ignored by trader
-		UseFunc = function(ply, targetply) return UseFunc_Heal(ply, targetply, usetime, health, infection, playsound) end,  -- the function to call when the player uses the item from their inventory, you will need lua skillz here
-		DropFunc = function(ply) local drop = UseFunc_DropItem(ply, "item_bandage") return drop end,                        -- the function to call when the player drops the item, just like usefunc, you need to know lua here
+
+		-- These are no longer required. However if you want to make it have a custom function, you might need some lua skills here.
+		UseFunc = function(ply, targetply, item) return UseFunc_Heal(ply, targetply, usetime, health, infection, playsound) end,  -- the function to call when the player uses the item from their inventory
+		DropFunc = function(ply, item) local drop = UseFunc_DropItem(ply, item) return drop end,                        -- the function to call when the player drops the item, just like usefunc, you need to know lua here
 
 -- Additional variables, they are not required however still can be useful
     	IsGrenade = false,						-- if the item is grenade then it will confirm that it's grenade (this is used when selling items, not to remove grenade from inventory when selling). Not needed when an item is not a grenade.

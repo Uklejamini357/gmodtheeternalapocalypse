@@ -30,11 +30,11 @@ function MT_PLAYER:ProcessPlayerDamage(dmginfo)
 	local env_classes = {"trigger_hurt", "point_hurt", "entityflame", "env_fire"}
 	
 	if attacker:IsPlayer() then
-		dmginfo:SetDamage(dmginfo:GetDamage() * ply:GetArmorDamageMultiplier())
+		dmginfo:SetDamage(dmginfo:GetDamage() * self:GetArmorDamageMultiplier())
 	elseif env_classes[dmginfo:GetAttacker():GetClass()] then
-		dmginfo:SetDamage(dmginfo:GetDamage() * ply:GetArmorEnvDamageMultiplier())
+		dmginfo:SetDamage(dmginfo:GetDamage() * self:GetArmorEnvDamageMultiplier())
 	elseif bit.band(dmginfo:GetDamageType(), DMG_BULLET) ~= 0 then
-		dmginfo:SetDamage(dmginfo:GetDamage() * ply:GetArmorDamageMultiplier())
+		dmginfo:SetDamage(dmginfo:GetDamage() * self:GetArmorDamageMultiplier())
 	end
 
 	if dmginfo:GetDamageType() == DMG_CRUSH and attackerclass == "obj_bigrock" then
@@ -365,9 +365,9 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 	--ply:SendLua("DeathSC()")
 	timer.Destroy("IsSleeping_"..ply:EntIndex())
 	ply:AddDeaths(1)
-	ply.playerdeaths = ply.playerdeaths + 1
+	ply:AddStatisticPoints("Deaths", 1)
 
-	ply.BestSurvivalTime = math.floor(math.max(ply.BestSurvivalTime, survived))
+	ply:SetStatisticPoint("BestSurvivalTime", math.floor(math.max(ply:GetStatisticPoints("BestSurvivalTime"), survived)))
 	ply.SurvivalTime = CurTime()
 	timer.Simple(0, function()
 		self:NetUpdateStatistics(ply)
@@ -388,8 +388,8 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 
 	else*/if attacker:IsPlayer() and attacker != ply then
 		attacker:AddFrags(1) 
-		attacker.playerskilled = attacker.playerskilled + 1
-		attacker.LifePlayerKills = attacker.LifePlayerKills + 1
+		attacker:AddStatisticPoints("PlayersKilled", 1)
+		attacker:AddLifeStatisticPoints("PlayerKills", 1)
 		self:SendPlayerSurvivalStats(attacker)
 
 		local lvl = math.min(60, ply.Level)
@@ -512,17 +512,6 @@ function GM:PlayerTraceAttack(ply, dmginfo, dir, trace)
 	util.Decal("Blood", trace.HitPos + trace.HitNormal, trace.HitPos - trace.HitNormal)
 
 	return self.BaseClass:PlayerTraceAttack(ply, dmginfo, dir, trace)
-end
-
-function FormatSteamID(SteamID)
-	SteamID = SteamID or "STEAM_0:0:0"
-
-	local str
-	str = string.gsub(SteamID,"STEAM","")
-	str = string.gsub(str,":","")
-	str = string.gsub(str,"_","")
-	
-	return str
 end
 
 

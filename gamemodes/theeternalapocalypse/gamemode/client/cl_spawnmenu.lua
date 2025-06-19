@@ -27,13 +27,13 @@ end
 local function DoInvPanel()
 	if !pInvPanel:IsValid() then return end
 
-	local me = LocalPlayer()
+	local ply = LocalPlayer()
 	for k, v in SortedPairsByMemberValue(LocalInventory, "Weight", true) do
 		local item = GAMEMODE.ItemsList[k]
 		local item_name = GAMEMODE:GetItemName(k)
 		local raretbl = gamemode.Call("CheckItemRarity", v.Rarity)
 
-		local itPanel = vgui.Create("DPanel")
+		local itPanel = vgui.Create("DPanel", pInvPanel)
 		itPanel:SetPos(5, 5)
 		itPanel:SetSize(345, 65)
 		itPanel.Paint = function(panel) -- Paint function
@@ -99,12 +99,14 @@ local function DoInvPanel()
 		end
 		itAction.OnMousePressed = function(this, mc)
 			if mc == MOUSE_LEFT or mc == MOUSE_RIGHT then
-				if input.IsShiftDown() then
-					UseItem(me, k)
-					return true
-				elseif input.IsControlDown() then
-					DropItem(k)
-					return true
+				if mc == MOUSE_LEFT then
+					if input.IsShiftDown() then
+						UseItem(me, k)
+						return true
+					elseif input.IsControlDown() then
+						DropItem(k)
+						return true
+					end
 				end
 
 
@@ -114,7 +116,7 @@ local function DoInvPanel()
 						UseItem(me, k)
 					end)
 					parent:SetIcon("icon16/accept.png")
-					for _,ply in pairs(ents.FindInSphere(me:GetPos(), 500)) do
+					for _,ply in pairs(ents.FindInSphere(ply:GetPos(), 500)) do
 						if ply:IsPlayer() and ply ~= me then
 							sub:AddOption(ply:Nick(), function()
 								UseItem(ply, k)
@@ -250,7 +252,7 @@ function GM:InvMenu()
 		return
 	end
 
-	local me = LocalPlayer()
+	local ply = LocalPlayer()
 	local wide, tall = 1000, 700
 
 	pInvPanel = vgui.Create("DFrame")
@@ -272,17 +274,17 @@ function GM:InvMenu()
 		surface.SetDrawColor(0, 0, 0 ,155)
 		surface.DrawRect(panel:GetWide() - 260, 25, 250, 205)
 		surface.DrawRect(panel:GetWide() - 260, 230, 250, 100)
-		local armorstr = me:GetNWString("ArmorType") or "none"
+		local armorstr = ply:GetNWString("ArmorType") or "none"
 		local armortype = GAMEMODE.ItemsList[armorstr]
 
-		local prot, protdef = math.Round(me:GetArmorProtection(false)*100, 1), math.Round(me:GetArmorProtection(true)*100, 1)
-		local env_prot, env_protdef = math.Round(me:GetArmorEnvProtection(false)*100, 1), math.Round(me:GetArmorEnvProtection(true)*100, 1)
-		local armorcarryweight = math.Round(me:GetArmorCarryWeight(), 2)
+		local prot, protdef = math.Round(ply:GetArmorProtection(false)*100, 1), math.Round(ply:GetArmorProtection(true)*100, 1)
+		local env_prot, env_protdef = math.Round(ply:GetArmorEnvProtection(false)*100, 1), math.Round(ply:GetArmorEnvProtection(true)*100, 1)
+		local armorcarryweight = math.Round(ply:GetArmorCarryWeight(), 2)
 		if armorstr and armortype then
 			draw.SimpleText(translate.Format("cur_armor", GAMEMODE:GetItemName(armorstr)), "TEA.HUDFontSmall", panel:GetWide() - 255, 235, Color(255,255,255,255))
 			draw.SimpleText(translate.Format("armorprot", prot, protdef), "TEA.HUDFontSmall", panel:GetWide() - 255, 250, Color(205,255,205,255))
 			draw.SimpleText(translate.Format("armor_envprot", env_prot, env_protdef), "TEA.HUDFontSmall", panel:GetWide() - 255, 265, Color(255,230,255,255))
-			draw.SimpleText(translate.Get("armorspeed")..": "..me:GetArmorSpeedMultiplier().."%", "TEA.HUDFontSmall", panel:GetWide() - 255, 280, Color(205,205,255,255))
+			draw.SimpleText(translate.Get("armorspeed")..": "..ply:GetArmorSpeedMultiplier().."%", "TEA.HUDFontSmall", panel:GetWide() - 255, 280, Color(205,205,255,255))
 			draw.SimpleText(armorcarryweight >= 0 and translate.Format("armormaxweight", "+", armorcarryweight) or translate.Format("armormaxweight", "", armorcarryweight), "TEA.HUDFontSmall", panel:GetWide() - 255, 295, Color(255,255,175,255))
 		else
 			draw.SimpleText(translate.Get("noarmor"), "TEA.HUDFontSmall", panel:GetWide() - 255, 235, Color(255,255,255,255))
@@ -338,11 +340,11 @@ function GM:InvMenu()
 	InvWeightText:SizeToContents()
 	InvWeightText:SetPos(5, 5)
 	InvWeightText.Think = function(this)
-		local changetxt = translate.Format("inv_weight", me:CalculateWeight(), WEIGHT_UNIT, me:CalculateMaxWeight(), WEIGHT_UNIT, me:CalculateMaxWalkWeight(), WEIGHT_UNIT)
+		local changetxt = translate.Format("inv_weight", ply:CalculateWeight(), WEIGHT_UNIT, ply:CalculateMaxWeight(), WEIGHT_UNIT, ply:CalculateMaxWalkWeight(), WEIGHT_UNIT)
 		if changetxt == this:GetText() then return end
 		this:SetText(changetxt)
 		this:SizeToContents()
-		this:SetTextColor(me:CalculateWeight() >= me:CalculateMaxWalkWeight() and Color(255,0,0) or me:CalculateWeight() >= me:CalculateMaxWeight() and Color(255,255,0) or Color(255,255,255))
+		this:SetTextColor(ply:CalculateWeight() >= ply:CalculateMaxWalkWeight() and Color(255,0,0) or ply:CalculateWeight() >= ply:CalculateMaxWeight() and Color(255,255,0) or Color(255,255,255))
 	end
 	InvWeightText:Think()
 --	InvWeightText:SetFont()
@@ -481,19 +483,20 @@ function GM:InvMenu()
 		draw.RoundedBox(2, 0, 0, w, h, Color(0, 0, 0, 100))
 		surface.SetDrawColor(150, 150, 0 ,255)
 		surface.DrawOutlinedRect(0, 0, w, h)
+		local stats = ply.Statistics
 
 		draw.SimpleText(translate.Format("timesurvived", util.ToMinutesSeconds(CurTime() - MySurvivaltime)), "TEA.HUDFont", 15, 10, Color(255,255,255,255))
 		draw.SimpleText(translate.Format("besttimesurvived", util.ToMinutesSeconds(MyBestsurvtime)), "TEA.HUDFont", 15, 35, Color(255,255,255,255))
-		draw.SimpleText("Zombies Killed in Total: "..MyZmbskilled, "TEA.HUDFont", 15, 60, Color(255,255,255,255))
-		draw.SimpleText("Players killed in Total: "..MyPlyskilled, "TEA.HUDFont", 15, 85, Color(255,255,255,255))
-		draw.SimpleText("Your Deaths in Total: "..MyPlydeaths, "TEA.HUDFont", 15, 110, Color(255,255,255,255))
+		draw.SimpleText("Zombies Killed in Total: "..stats.ZombieKills, "TEA.HUDFont", 15, 60, Color(255,255,255,255))
+		draw.SimpleText("Players killed in Total: "..stats.PlayersKilled, "TEA.HUDFont", 15, 85, Color(255,255,255,255))
+		draw.SimpleText("Your Deaths in Total: "..stats.Deaths, "TEA.HUDFont", 15, 110, Color(255,255,255,255))
 
 		surface.SetDrawColor(0, 0, 0 ,255)
 		surface.DrawOutlinedRect(15, 165, 200, 8)
 		surface.SetDrawColor(50,0,0,75)
 		surface.DrawRect(15, 165, 200, 8)
 
-		local bar1 = math.Clamp( 200 * (MyMMeleexp / me:GetReqMasteryMeleeXP()), 0, 200)
+		local bar1 = math.Clamp( 200 * (MyMMeleexp / ply:GetReqMasteryMeleeXP()), 0, 200)
 		surface.SetDrawColor(150,0,0,160)
 		surface.DrawRect(15, 165, bar1, 8)
 
@@ -502,7 +505,7 @@ function GM:InvMenu()
 		surface.SetDrawColor(50,0,0,75)
 		surface.DrawRect(15, 210, 200, 8)
 
-		local bar2 = math.Clamp( 200 * (MyMPvpxp / me:GetReqMasteryPvPXP()), 0, 200)
+		local bar2 = math.Clamp( 200 * (MyMPvpxp / ply:GetReqMasteryPvPXP()), 0, 200)
 		surface.SetDrawColor(150,0,0,160)
 		surface.DrawRect(15, 210, bar2, 8 )
 	end
@@ -510,26 +513,26 @@ function GM:InvMenu()
 	local sttext1 = vgui.Create("DLabel", StatisticsForm)
 	sttext1:SetFont("TEA.HUDFont")
 	sttext1:SetTextColor(Color(205,205,205,255))
-	sttext1:SetText("Mastery Melee XP: ".. math.floor(MyMMeleexp) .."/".. me:GetReqMasteryMeleeXP().." (Level "..math.floor(MyMMeleelvl)..")")
+	sttext1:SetText("Mastery Melee XP: ".. math.floor(MyMMeleexp) .."/".. ply:GetReqMasteryMeleeXP().." (Level "..math.floor(MyMMeleelvl)..")")
 	sttext1:SetToolTip("Increases melee damage by 0.5% per level, increases when doing melee damage to zombies. \nGain rate is DECREASED when damaging players with melee weapons.")
 	sttext1:SetMouseInputEnabled(true)
 	sttext1:SizeToContents()
 	sttext1:SetPos(15, 140)
 	sttext1.Think = function(panel)
-		panel:SetText("Mastery Melee XP: ".. math.floor(MyMMeleexp) .."/".. me:GetReqMasteryMeleeXP().." (Level "..math.floor(MyMMeleelvl)..")")
+		panel:SetText("Mastery Melee XP: ".. math.floor(MyMMeleexp) .."/".. ply:GetReqMasteryMeleeXP().." (Level "..math.floor(MyMMeleelvl)..")")
 		panel:SizeToContents()
 	end
 
 	local sttext2 = vgui.Create("DLabel", StatisticsForm)
 	sttext2:SetFont("TEA.HUDFont")
 	sttext2:SetTextColor(Color(205,205,205,255))
-	sttext2:SetText("Mastery PvP XP: ".. math.floor(MyMPvpxp) .."/".. me:GetReqMasteryPvPXP().." (Level "..math.floor(MyMPvplvl)..")")
+	sttext2:SetText("Mastery PvP XP: ".. math.floor(MyMPvpxp) .."/".. ply:GetReqMasteryPvPXP().." (Level "..math.floor(MyMPvplvl)..")")
 	sttext2:SetToolTip("Gained from killing players. (no other benefits other than money gain on level up)\nGain rate increased when they have higher level and prestige.")
 	sttext2:SetMouseInputEnabled(true)
 	sttext2:SizeToContents()
 	sttext2:SetPos(15, 185)
 	sttext2.Think = function(panel)
-		panel:SetText("Mastery PvP XP: ".. math.floor(MyMPvpxp) .."/".. me:GetReqMasteryPvPXP().." (Level "..math.floor(MyMPvplvl)..")")
+		panel:SetText("Mastery PvP XP: ".. math.floor(MyMPvpxp) .."/".. ply:GetReqMasteryPvPXP().." (Level "..math.floor(MyMPvplvl)..")")
 		panel:SizeToContents()
 	end
 
@@ -577,7 +580,7 @@ function GM:InvMenu()
 	local mInfo = vgui.Create("DModelPanel", pInvPanel)
 	mInfo:SetSize(200, 200)
 	mInfo:SetPos(pInvPanel:GetWide() - 240, 25)
-	mInfo:SetModel(me:GetModel())
+	mInfo:SetModel(ply:GetModel())
 	mInfo:SetAnimSpeed(1)
 	mInfo:SetAnimated(true)
 	mInfo:SetAmbientLight(Color(50, 50, 50))
@@ -615,7 +618,7 @@ function GM:InvMenu()
 			local descr = translate.Format("skill_descr", GAMEMODE:GetSkillDescription(k), v.Cost, v.Max, v.PerkMaxIncrease or 0)
 			local LabelDefense = vgui.Create("DLabel")
 			LabelDefense:SetPos(50, 50)
-			LabelDefense:SetText(translate.Get(k)..": "..me["Stat"..k])
+			LabelDefense:SetText(translate.Get(k)..": "..ply["Stat"..k])
 			LabelDefense:SetToolTip(descr)
 			LabelDefense:SizeToContents()
 			invStats:AddItem(LabelDefense)
@@ -655,9 +658,9 @@ function GM:InvMenu()
 			end
 			Button.Paint = function(panel)
 				draw.RoundedBox(0, 0, 0, panel:GetWide(), panel:GetTall(), Color(30, 30, 30, 50))
-				draw.RoundedBox(0, 0, 0, me["Stat"..k] * 225 / v.Max, panel:GetTall(), Color(100, 100, 0, 150))
-				if me["Stat"..k] > v.Max and v.PerkMaxIncrease then -- Empowered Skills
-					draw.RoundedBox(0, 0, 0, (me["Stat"..k]-v.Max) * 225 / (v.PerkMaxIncrease), panel:GetTall(), Color(200, 0, 0, 150))
+				draw.RoundedBox(0, 0, 0, ply["Stat"..k] * 225 / v.Max, panel:GetTall(), Color(100, 100, 0, 150))
+				if ply["Stat"..k] > v.Max and v.PerkMaxIncrease then -- Empowered Skills
+					draw.RoundedBox(0, 0, 0, (ply["Stat"..k]-v.Max) * 225 / (v.PerkMaxIncrease), panel:GetTall(), Color(200, 0, 0, 150))
 				end
 				surface.SetDrawColor(100, 100, 0 ,255)
 				surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())

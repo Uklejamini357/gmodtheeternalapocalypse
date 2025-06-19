@@ -21,6 +21,7 @@ include("client/cl_options.lua")
 include("client/cl_changelogs.lua")
 include("client/cl_mainmenu.lua")
 include("client/cl_perksmenu.lua")
+include("client/cl_tooltip.lua")
 
 include("client/cl_net.lua")
 include("cl_killicons.lua")
@@ -69,8 +70,9 @@ function GM:LocalPlayerDeath(attacker)
 
 	self.MyLastSurvivalStats.SurvivalTime = CurTime() - MySurvivaltime
 	self.MyLastSurvivalStats.BestSurvivalTime = MyBestsurvtime
-	self.MyLastSurvivalStats.ZombiesKilled = me.LifeZKills
-	self.MyLastSurvivalStats.PlayersKilled = me.LifePlayerKills
+	for k,v in pairs(me.LifeStats) do
+		self.MyLastSurvivalStats[k] = v
+	end
 end
 
 function GM:Think()
@@ -297,8 +299,8 @@ function GM:Initialize()
 	self.MyLastSurvivalStats = {}
 	self.MyLastSurvivalStats.SurvivalTime = 0
 	self.MyLastSurvivalStats.BestSurvivalTime = 0
-	self.MyLastSurvivalStats.PlayersKilled = 0
-	self.MyLastSurvivalStats.ZombiesKilled = 0
+	self.MyLastSurvivalStats.PlayerKills = 0
+	self.MyLastSurvivalStats.ZombieKills = 0
 	
 	RunConsoleCommand("refresh_inventory")
 end

@@ -115,10 +115,7 @@ end
 
 function GM:NetUpdateStatistics(ply)
 	net.Start("UpdateStatistics")
-	net.WriteFloat(ply.BestSurvivalTime)
-	net.WriteFloat(ply.ZKills)
-	net.WriteFloat(ply.playerskilled)
-	net.WriteFloat(ply.playerdeaths)
+	net.WriteTable(ply.Statistics)
 	net.WriteFloat(ply.MasteryMeleeXP)
 	net.WriteFloat(ply.MasteryMeleeLevel)
 	net.WriteFloat(ply.MasteryPvPXP)
@@ -129,10 +126,7 @@ end
 function GM:NetUpdatePlayerStatistics(ply, target)
 	net.Start("UpdateTargetStats")
 	net.WriteString(target:Nick())
-	net.WriteFloat(target.BestSurvivalTime)
-	net.WriteFloat(target.ZKills)
-	net.WriteFloat(target.playerskilled)
-	net.WriteFloat(target.playerdeaths)
+	net.WriteTable(target.Statistics)
 	net.WriteFloat(target.MasteryMeleeXP)
 	net.WriteFloat(target.MasteryMeleeLevel)
 	net.WriteFloat(target:GetReqMasteryMeleeXP())
@@ -144,8 +138,7 @@ end
 
 function GM:SendPlayerSurvivalStats(ply)
 	net.Start("tea_survivalstatsupdate")
-	net.WriteFloat(ply.LifeZKills)
-	net.WriteFloat(ply.LifePlayerKills)
+	net.WriteTable(ply.LifeStats)
 	net.Send(ply)
 end
 

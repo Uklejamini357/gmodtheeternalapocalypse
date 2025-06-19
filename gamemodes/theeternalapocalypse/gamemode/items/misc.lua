@@ -25,8 +25,9 @@ local i = GM:CreateItem("item_radio", {
     Model = "models/wick/wrbstalker/anomaly/items/dez_radio.mdl",
     Weight = 1,
     Supply = -1,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_MISCELLANEOUS,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousesellable")) return false end,
 })
 
@@ -35,8 +36,9 @@ i = GM:CreateItem("item_scrap", {
     Model = "models/Gibs/helicopter_brokenpiece_02.mdl",
     Weight = 1,
     Supply = -1,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_MISCELLANEOUS,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply) local armor = UseFunc_Armor(ply, 3, 0, 10, "npc/combine_soldier/zipline_hitground2.wav") return armor end,
 })
 
@@ -45,8 +47,9 @@ i = GM:CreateItem("item_chems", {
     Model = "models/props_junk/plasticbucket001a.mdl",
     Weight = 1.5,
     Supply = -1,
-    Rarity = 3,
+    Rarity = RARITY_UNCOMMON,
     Category = ITEMCATEGORY_MISCELLANEOUS,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousesellable")) return false end,
 })
 
@@ -55,8 +58,9 @@ i = GM:CreateItem("item_tv", {
     Model = "models/props_c17/tv_monitor01.mdl",
     Weight = 2,
     Supply = -1,
-    Rarity = 3,
+    Rarity = RARITY_UNCOMMON,
     Category = ITEMCATEGORY_MISCELLANEOUS,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousesellable")) return false end,
 })
 
@@ -65,8 +69,9 @@ i = GM:CreateItem("item_beer", {
     Model = "models/props/CS_militia/caseofbeer01.mdl",
     Weight = 5,
     Supply = -1,
-    Rarity = 3,
+    Rarity = RARITY_UNCOMMON,
     Category = ITEMCATEGORY_MISCELLANEOUS,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousesellable")) return false end,
 })
 
@@ -75,8 +80,9 @@ i = GM:CreateItem("item_hamradio", {
     Model = "models/props_lab/citizenradio.mdl",
     Weight = 2.5,
     Supply = -1,
-    Rarity = 3,
+    Rarity = RARITY_UNCOMMON,
     Category = ITEMCATEGORY_MISCELLANEOUS,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousesellable")) return false end,
 })
 
@@ -85,8 +91,9 @@ i = GM:CreateItem("item_computer", {
     Model = "models/props_lab/harddrive02.mdl",
     Weight = 4,
     Supply = -1,
-    Rarity = 4,
+    Rarity = RARITY_RARE,
     Category = ITEMCATEGORY_MISCELLANEOUS,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousesellable")) return false end,
 })
 
@@ -95,8 +102,9 @@ i = GM:CreateItem("item_blueprint_sawbow", {
     Model = "models/props_lab/clipboard.mdl",
     Weight = 0.25,
     Supply = -1,
-    Rarity = 11,
+    Rarity = RARITY_UNOBTAINABLE,
     Category = ITEMCATEGORY_MISCELLANEOUS,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouseweapon")) return false end,
 })
 
@@ -105,8 +113,9 @@ i = GM:CreateItem("item_blueprint_railgun", {
     Model = "models/props_lab/clipboard.mdl",
     Weight = 0.25,
     Supply = -1,
-    Rarity = 11,
+    Rarity = RARITY_UNOBTAINABLE,
     Category = ITEMCATEGORY_MISCELLANEOUS,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouseweapon")) return false end,
 })
 
@@ -119,8 +128,9 @@ i = GM:CreateItem("item_craft_fueltank", {
     Model = "models/props_junk/metalgascan.mdl",
     Weight = 0.25,
     Supply = -1,
-    Rarity = 11,
+    Rarity = RARITY_UNOBTAINABLE,
     Category = ITEMCATEGORY_MISCELLANEOUS,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousevehicle")) return false end,
 })
 
@@ -129,8 +139,9 @@ i = GM:CreateItem("item_craft_wheel", {
     Model = "models/props_vehicles/carparts_wheel01a.mdl",
     Weight = 1.5,
     Supply = -1,
-    Rarity = 11,
+    Rarity = RARITY_UNOBTAINABLE,
     Category = ITEMCATEGORY_MISCELLANEOUS,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousevehicle")) return false end,
 })
 
@@ -139,8 +150,9 @@ i = GM:CreateItem("item_craft_oil", {
     Model = "models/props_junk/garbage_plasticbottle001a.mdl",
     Weight = 1,
     Supply = -1,
-    Rarity = 11,
+    Rarity = RARITY_UNOBTAINABLE,
     Category = ITEMCATEGORY_MISCELLANEOUS,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousevehicle")) return false end,
 })
 
@@ -149,8 +161,9 @@ i = GM:CreateItem("item_craft_battery", {
     Model = "models/Items/car_battery01.mdl",
     Weight = 0.6,
     Supply = -1,
-    Rarity = 11,
+    Rarity = RARITY_UNOBTAINABLE,
     Category = ITEMCATEGORY_MISCELLANEOUS,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousecraftable")) return false end,
 })
 
@@ -159,8 +172,9 @@ i = GM:CreateItem("item_craft_ecb", {
     Model = "models/props_lab/reciever01b.mdl",
     Weight = 0.35,
     Supply = -1,
-    Rarity = 11,
+    Rarity = RARITY_UNOBTAINABLE,
     Category = ITEMCATEGORY_MISCELLANEOUS,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousecraftable")) return false end,
 })
 
@@ -169,8 +183,9 @@ i = GM:CreateItem("item_craft_engine_small", {
     Model = "models/gibs/airboat_broken_engine.mdl",
     Weight = 3,
     Supply = -1,
-    Rarity = 11,
+    Rarity = RARITY_UNOBTAINABLE,
     Category = ITEMCATEGORY_MISCELLANEOUS,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousevehicle")) return false end,
 })
 
@@ -179,8 +194,9 @@ i = GM:CreateItem("item_craft_engine_large", {
     Model = "models/props_c17/TrapPropeller_Engine.mdl",
     Weight = 5,
     Supply = -1,
-    Rarity = 11,
+    Rarity = RARITY_UNOBTAINABLE,
     Category = ITEMCATEGORY_MISCELLANEOUS,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousevehicle")) return false end,
 })
 
@@ -197,6 +213,7 @@ i = GM:CreateItem("item_propane", {
     Supply = -1,
     Rarity = RARITY_UNOBTAINABLE,
     Category = ITEMCATEGORY_MISCELLANEOUS,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply) local drop = UseFunc_DropEntity(ply, "prop_tea_propane") return drop end,
     DropFunc = function(ply, item) local drop = UseFunc_DropEntity(ply, "prop_tea_propane") return drop end
 })
@@ -208,8 +225,9 @@ i = GM:CreateItem("item_toolkit_1", {
     Model = "models/wick/wrbstalker/anomaly/items/wick_box_toolkit_1.mdl",
     Weight = 1,
     Supply = -1,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_MISCELLANEOUS,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousesellable")) return false end,
 })
 
@@ -218,8 +236,9 @@ i = GM:CreateItem("item_toolkit_2", {
     Model = "models/wick/wrbstalker/anomaly/items/wick_box_toolkit_2.mdl",
     Weight = 1,
     Supply = -1,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_MISCELLANEOUS,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousesellable")) return false end,
 })
 
@@ -228,8 +247,9 @@ i = GM:CreateItem("item_toolkit_3", {
     Model = "models/wick/wrbstalker/anomaly/items/wick_box_toolkit_3.mdl",
     Weight = 1,
     Supply = -1,
-    Rarity = 2,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_MISCELLANEOUS,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnousesellable")) return false end,
 })
 
@@ -245,6 +265,7 @@ i = GM:CreateItem("item_boss_shard", {
     Supply = -1,
     Rarity = RARITY_EVENT,
     Category = ITEMCATEGORY_MISCELLANEOUS,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply)
         local random = table.Random({
             "This is going to be a terrible time...",
@@ -264,6 +285,7 @@ i = GM:CreateItem("item_difficulty_shard", {
     Supply = -1,
     Rarity = RARITY_EVENT,
     Category = ITEMCATEGORY_MISCELLANEOUS,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply)
         if GAMEMODE.InfectionLevelIncreaseType ~= 1 then
             ply:PrintTranslatedMessage(3, "difficulty_shard_not_usable")
@@ -290,6 +312,7 @@ i = GM:CreateItem("item_oxygentank", {
     Supply = 5,
     Rarity = RARITY_UNCOMMON,
     Category = ITEMCATEGORY_MISCELLANEOUS,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply)
         ply.Oxygen = 100
         ply:SendChat(translate.ClientGet(ply, "oxygen_refilled"))
@@ -304,6 +327,7 @@ i = GM:CreateItem("item_money", {
     Supply = -1,
     Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_MISCELLANEOUS,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply) ply:SendChat(translate.ClientFormat(ply, "added_x_moneys_to_account", ply.Inventory["item_money"])) ply.Money = ply.Money + ply.Inventory["item_money"] ply.Inventory["item_money"] = nil return false end,
     CantDropItem = function(ply, item) ply:SendChat(translate.ClientGet(ply, "you_may_not_drop_this_item")) return true end,
 })
@@ -315,7 +339,8 @@ i = GM:CreateItem("item_moneyprinter", {
     Model = "models/props_c17/consolebox01a.mdl",
     Weight = 5,
     Supply = -1,
-    Rarity = 6,
+    Rarity = RARITY_EPIC,
     Category = ITEMCATEGORY_MISCELLANEOUS,
+	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet("you_cant_use_this_yet")) return false end,
 })
