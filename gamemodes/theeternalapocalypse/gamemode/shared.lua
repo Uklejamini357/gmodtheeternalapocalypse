@@ -1,10 +1,29 @@
 GM.Name		= "The Eternal Apocalypse" -- The Eternol Apocalypse
 GM.AltName	= "After The End Reborn"
 GM.Author	= "Uklejamini"
-GM.Email	= "[You may not view this information.]"
+GM.Email	= ""
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
 GM.Version	= "Pre-0.11.4"
-GM.DateVer	= "17.06.2025" -- Follows the DD.MM.YYYY format.
+GM.DateVer	= "09.07.2025" -- Follows the DD.MM.YYYY format.
+GM.Credits = {
+	-- Assets
+	{"GSC Game World",			"For all the S.T.A.L.K.E.R. content",										""},
+	{"WickedRabbit",			"For porting the STALKER assets to gmod (and credits to his contributors)",	"https://steamcommunity.com/sharedfiles/filedetails/?id=2438451886"},
+	{"Comrade Communist",		"S.T.A.L.K.E.R. sounds",													"https://steamcommunity.com/sharedfiles/filedetails/?id=1680884607"},
+
+	-- Supporters
+	{"LegendOfRobbo",			"After The End creator",													""}, -- 2015
+	{"Commander Shepard",		"For hosting AtE (ZsRPG) back in the days",									""}, -- 2017-2020
+
+	-- Contributors
+	{"CLuaRainBob",				"T.E.A. Contributor",														""}, -- Reworked build tool, Added SFS save method
+
+	-- Translators
+	{"BlueBerryy",				"Russian Translator",														""},
+
+	-- Other
+	{"Anyone else I forgot",	"Various contributions",													""},
+}
 
 DeriveGamemode("sandbox")
 

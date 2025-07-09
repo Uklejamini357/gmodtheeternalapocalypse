@@ -142,48 +142,61 @@ function GM:CMenu()
 			local effective = infection--math.Round(self:GetEffectiveInfectionLevel(), 2)
 			local text,color
 
-			if effective >= 200 then
-				text,color = "Chaotic", Color(91,31,31)
+			if effective >= 250 then
+				local count = math.floor(((effective-200)/50)^0.75)
+				local mul = math.Clamp(1.5 - (CurTime()*(5 + count)/10)%1, 0.5, 1.5)
+				text,color = "Chaos+"..count, Color(127*mul,31*mul,31*mul)
+			elseif effective >= 200 then
+				text,color = "Chaos", Color(127,31,31)
 			elseif effective >= 150 then
-				text,color = "Nightmare", Color(127,31,31)
+				text,color = "Nightmare", Color(159,31,31)
 			elseif effective >= 125 then
 				text,color = "Horror", Color(191,31,31)
-			elseif effective >= 100 then
-				text,color = "Maximal", Color(255,0,0)
+			elseif effective > 100 then
+				text,color = "Over-Infected", Color(223,31,31)
 			elseif effective >= 90 then
+				text,color = "Maximal", Color(255,0,0)
+			elseif effective >= 80 then
 				text,color = "Infected", Color(255,63,63)
-			elseif effective >= 75 then
-				text,color = "Very hard", Color(255,127,127)
-			elseif effective >= 55 then
-				text,color = "Hard", Color(191,127,127)
-			elseif effective >= 25 then
-				text,color = "Normal", Color(191,191,127)
-			elseif effective >= 10 then
-				text,color = "Average", Color(127,255,127)
+			elseif effective >= 60 then
+				text,color = "High", Color(255,127,127)
+			elseif effective >= 40 then
+				text,color = "Medium", Color(191,191,127)
+			elseif effective >= 20 then
+				text,color = "Low", Color(127,255,191)
+			elseif effective > 0 then
+				text,color = "Very Low", Color(127,255,239)
 			else
-				text,color = "Easy", Color(127,255,255)
+				text,color = "None", Color(127,255,255)
 			end
 
 
 			if effective == infection then
-				draw.SimpleText(Format("Infection level: %s%%", infection), "TEA.HUDFont", scw - 590, sch / 2 - 145, color, 0, 0)
+				draw.SimpleText(Format("Infection level: %s%% (%s)", infection, text), "TEA.HUDFont", scw - 590, sch / 2 - 145, color, 0, 0)
 			else
 				draw.SimpleText(Format("Infection level: %s%% (Effective: %s%%)", infection, effective), "TEA.HUDFont", scw - 590, sch / 2 - 145, color, 0, 0)
 			end
 
-			draw.SimpleText(Format("Difficulty level: %s", text), "TEA.HUDFontSmall", scw - 590, sch / 2 - 120, color, 0, 0)
-			draw.SimpleText(Format("Zombies take: %s%% damage", math.Round(1 / self:GetInfectionMul()*100, 2)), "TEA.HUDFontSmall", scw - 590, sch / 2 - 105, color, 0, 0)
-			draw.SimpleText(Format("Zombies deal: %s%% damage", math.Round(self:GetInfectionMul(0.5)*100, 2)), "TEA.HUDFontSmall", scw - 590, sch / 2 - 90, color, 0, 0)
-			draw.SimpleText(Format("Zombie cash reward: %s%%", math.Round(self:GetInfectionMul(0.5)*100, 2)), "TEA.HUDFontSmall", scw - 590, sch / 2 - 75, color, 0, 0)
-			draw.SimpleText(Format("Zombie xp reward: %s%%", math.Round(self:GetInfectionMul()*100, 2)), "TEA.HUDFontSmall", scw - 590, sch / 2 - 60, color, 0, 0)
-			draw.SimpleText(Format("Zombie speed: %s%%", math.Round(math.Clamp(self:GetInfectionMul(0.5)-0.25, 1, 1.25)*100, 2)), "TEA.HUDFontSmall", scw - 590, sch / 2 - 45, color, 0, 0)
-			draw.SimpleText(Format("Elite variant spawn chance: %s%%", math.Round(self:GetEliteVariantSpawnChance(false), 2)), "TEA.HUDFontSmall", scw - 590, sch / 2 - 25, color, 0, 0)
-			draw.SimpleText(Format("Elite variant Boss spawn chance: %s%%", math.Round(self:GetEliteVariantSpawnChance(true), 2)), "TEA.HUDFontSmall", scw - 590, sch / 2 - 10, color, 0, 0)
+			local y = sch / 2 - 120
+			local dmgtakeperc = math.Round(1 / self:GetInfectionMul()*100, 2)
+			draw.SimpleText(Format("Zombies take: %s%% damage", (dmgtakeperc < 0.1 and "<0.1" or dmgtakeperc)), "TEA.HUDFontSmall", scw - 590, y, color, 0, 0)
+			y = y + 15
+			draw.SimpleText(Format("Zombies deal: %s%% damage", math.Round(self:GetInfectionMul(0.5)*100, 2)), "TEA.HUDFontSmall", scw - 590, y, color, 0, 0)
+			y = y + 15
+			draw.SimpleText(Format("Zombie cash reward: %s%%", math.Round(self:GetInfectionMul(0.5)*100, 2)), "TEA.HUDFontSmall", scw - 590, y, color, 0, 0)
+			y = y + 15
+			draw.SimpleText(Format("Zombie xp reward: %s%%", math.Round(self:GetInfectionMul()*100, 2)), "TEA.HUDFontSmall", scw - 590, y, color, 0, 0)
+			y = y + 15
+			draw.SimpleText(Format("Zombie speed: %s%%", math.Round(math.Clamp(self:GetInfectionMul(0.5)-0.25, 1, 1.25)*100, 2)), "TEA.HUDFontSmall", scw - 590, y, color, 0, 0)
+			y = y + 20
+			draw.SimpleText(Format("Elite variant spawn chance: %s%%", math.Round(self:GetEliteVariantSpawnChance(false), 2)), "TEA.HUDFontSmall", scw - 590, y, color, 0, 0)
+			y = y + 15
+			draw.SimpleText(Format("Elite variant Boss spawn chance: %s%%", math.Round(self:GetEliteVariantSpawnChance(true), 2)), "TEA.HUDFontSmall", scw - 590, y, color, 0, 0)
 			
 			
 			draw.SimpleText("Infection Level gain decreases at 50% and 75%.", "TEA.HUDFontSmall", scw - 590, sch / 2 + 95, Color(225,225,225), 0, 0)
 			draw.SimpleText("Above 100% the gain decreases even further.", "TEA.HUDFontSmall", scw - 590, sch / 2 + 110, Color(225,225,225), 0, 0)
-			draw.SimpleText(Format("Infection Level gain from killing zombies: %s%%", math.Round((self:GetInfectionLevel() >= 100 and 0.25/(self:GetInfectionMul()-1) or
+			draw.SimpleText(Format("Infection Level gain from killing zombies: %s%%", math.Round((self:GetInfectionLevel() >= 100 and 0.4/(self:GetInfectionMul()-1) or
 				self:GetInfectionLevel() >= 75 and 0.5 or
 				self:GetInfectionLevel() >= 50 and 0.75 or
 			1.00)*100, 2)), "TEA.HUDFontSmall", scw - 590, sch / 2 + 130, Color(255,155,155), 0, 0)

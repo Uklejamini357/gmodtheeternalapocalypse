@@ -367,7 +367,7 @@ function GM:NPCReward(ent)
 			end
 
 			local addinfection = ((ent.InfectionRate or 0) * math.min(3, 1 + (killer.ZombieKillStreak * 0.04))) / (1 + ((player.GetCount() - 1) * (7 / 9))) * self.InfectionLevelGainMul
-			addinfection = addinfection * (self:GetInfectionLevel() > 100 and 0.25/(self:GetInfectionMul()-1) or self:GetInfectionLevel() > 75 and 0.5 or self:GetInfectionLevel() > 50 and 0.75 or 1)
+			addinfection = addinfection * (self:GetInfectionLevel() > 100 and 0.4/(self:GetInfectionMul()-1) or self:GetInfectionLevel() > 75 and 0.5 or self:GetInfectionLevel() > 50 and 0.75 or 1)
 
 			self:SetInfectionLevel(self:GetInfectionLevel() + addinfection)
 			self.NextInfectionDecrease = math.max(self.NextInfectionDecrease, ct + 25)

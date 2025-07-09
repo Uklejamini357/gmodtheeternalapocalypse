@@ -1,0 +1,174 @@
+# GAMEPLAY DIFFICULTY
+
+
+
+
+Gameplay difficulty adjusts certain factors such as zombie strength and rewards.
+Depending on the difficulty, there are also additional changes.
+
+Basic: Low Zombie health, damage, XP and cash rewards (80%, 75%, 85%, 85% respectively).
+- Additional stat changes:
+== Stamina Regen 108%
+== Thirst, Hunger, Fatigue and Infection progress at 80% rate.
+- Note: Best for new/low skilled players.
+
+(Default)
+Normal: Normal zombie health, damage and rewards.
+- Note: Recommended for players who have learned how to play this gamemode in general.
+
+Advanced: Increased Zombie health, damage, XP and cash rewards. (115%, 120%, 120%, 110% respectively)
+- Note: Recommended for significantly skilled players.
+
+Challenging: Higher Zombie health, damage, XP and cash rewards. (140%, 150%, 130%, 120% respectively)
+- Additional stat changes:
+== Stamina Regen 96%
+- Note: Recommended for advanced players. New players probably won't survive this...
+
+Ultimate: Greater Zombie health, damage, XP and cash rewards. (160%, 175%, 160%, 140%)
+- Additional stat changes:
+== Stamina Regen 93%
+== Thirst, Hunger, Fatigue and Infection progress at 125% rate
+- Note: Recommended for highly skilled players and veterans.
+
+Hell: Harsh Zombie health and damage, but greatly increased XP and cash rewards. (200%, 225%, 200%, 175% respectively)
+- Additional stat changes:
+== Stamina Regen 88%
+== Thirst, Hunger, Fatigue progress at 150% rate
+== Infection progresses at 250% rate
+== Carry weight 0.9x
+== Infection also damages you by 1hp per second after it reaches 50%.
+- Note: Only for those who have mastered the gameplay of this gamemode.
+
+Impossible: Extremely high Zombie health and damage, but a lot more XP and cash rewards. (500%, 300%, 400%, 350% respectively)
+- Additional stat changes:
+== Stamina Regen 75%
+== Thirst, Hunger, Fatigue progress at 250% rate
+== Infection progresses at 666% rate
+== Carry weight 0.75x
+== Infection also damages you by 1hp per second after it reaches 10%, can reach up to 3 dps after reaching 50%..
+- Note: Only for the best of the best! No one's able to survive this hell...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# ECONOMY DIFFICULTY
+
+
+
+
+Economic difficulty spices up the game and strategic thinking by adjusting item buy/sell prices to match the difficulty it belongs to.
+Depending on the economy difficulty, you will also gain more XP gain from killing zombies.
+^ By default, this feature is enabled. If you are a server owner, you are freely able to disable this through code/server convar.
+
+Economic difficulty list:
+-# (#1: item buy price mul, #2: item sell price mul, #3: xp gain mul, respectively, in %)
+- Easy: 85%, 110%, 95%
+- Standard: 100%, 100%, 100% (default)
+- Difficult: 120%, 85%, 105%
+- Complex: 150%, 75%, 110%
+- Harsh: 200%, 60%, 120%
+- Hellish: 250%, 50%, 130%
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# INFLATION DIFFICULTY
+
+RECOMMENDED FOR ADVANCED PLAYERS ONLY.
+Inflation is a factor adding significant economic difficulty by dynamically increasing costs of item prices bought from/sold to traders
+
+Increases the cost of items bought from traders and increases selling costs as well.
+Cycles every 28 days, by default. (Counts the days passed after the value was initially setup on the server)
+After the amount of days pass by around 60%, inflation starts to decrease until it hits the max days. Inflation starts at days passed by 5%.
+Counts hours too. (For reference, an hour is 1/24 days)
+
+Selection of inflation difficulties:
+-# (max buy price, max sell price in %, respectively)
+– None (Inflation disabled)
+– Low (104%, 101%)
+– Medium (108%, 102%)
+– Normal (115%, 105%)
+– Intermediate (125%, 108%)
+– High (140%, 115%)
+– Very High (155%, 120%)
+– World Crisis (190%, 125%)
+
+Note that this feature has a great impact on economic difficulty, depending on the settings.

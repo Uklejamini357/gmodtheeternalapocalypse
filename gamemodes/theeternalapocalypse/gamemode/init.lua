@@ -511,6 +511,7 @@ function GM:InitPostEntity()
 end
 
 function GM:MapReInit()
+	/*
 	--Don't disable this function below, unless you want to have some fun of course
 	for k, v in pairs(ents.FindByClass("npc_*")) do v:Remove() end
 	for k, v in pairs(ents.FindByClass("weapon_*")) do v:Remove() end
@@ -519,6 +520,7 @@ function GM:MapReInit()
 		if v:Health() != 0 then continue end
 		self:SetupProp(v)
 	end --i'm looking forward for new function to scale props health with their size (or their weight)
+	*/
 	for k, v in pairs(ents.FindByClass("prop_door_rotating")) do
 		v.doorhealth = tonumber(self.Config["DoorHealth"])
 	end
@@ -739,10 +741,12 @@ function GM:EntityTakeDamage(ent, dmginfo)
 			self.NextInfectionDecrease = math.max(self.NextInfectionDecrease, CurTime() + 6)
 		end
 
-		if !ent.DamagedBy[attacker] then 
-			ent.DamagedBy[attacker] = math.Clamp(dmginfo:GetDamage(), 0, ent:Health())
-		else
-			ent.DamagedBy[attacker] = math.max(ent.DamagedBy[attacker] + math.Clamp(dmginfo:GetDamage(), 0, ent:Health()), 0)
+		if ent.DamagedBy then
+			if !ent.DamagedBy[attacker] then 
+				ent.DamagedBy[attacker] = math.Clamp(dmginfo:GetDamage(), 0, ent:Health())
+			else
+				ent.DamagedBy[attacker] = math.max(ent.DamagedBy[attacker] + math.Clamp(dmginfo:GetDamage(), 0, ent:Health()), 0)
+			end
 		end
 	end
 

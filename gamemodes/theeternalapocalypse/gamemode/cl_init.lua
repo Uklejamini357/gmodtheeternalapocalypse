@@ -313,6 +313,9 @@ function GM:InitPostEntity()
 
 	death_sound_current = CreateSound(me, Sound(self.DeathSound))
 
+	if not me.Statistics then
+		me.Statistics = {}
+	end
 	me.LifeZKills = 0
 	me.LifePlayerKills = 0
 	me.UsingItemTime = 0

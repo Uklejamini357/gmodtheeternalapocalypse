@@ -1,5 +1,6 @@
 -------- GAMEMODE CONFIG --------
 
+-- Do not change it, unless you know what are doing. Changing this will manage server and player data from another folder
 GM.DataFolder = "theeternalapocalypse"
 
 -- self explanatory. to edit xp requirement for levels go to shared.lua and edit function GetReqXP. Default: 40
@@ -98,6 +99,30 @@ GM.ServerRules = {
 
 }
 
+
+/* These don't work yet sorry
+
+-- Look in difficulties.txt for reference
+
+--[[Adjust overall gameplay difficulty. Higher difficulty means higher zombie HP and damage along with increased XP and money gain too)
+Note: Some difficulties may also change certain stats. --]]
+GM.GameplayDifficulty = DIFFICULTY_GAMEPLAY_NORMAL
+
+--[[
+Make economy more difficult (The higher the difficulty, the higher buy prices and lower sell prices) --
+Also grants more XP if another variable is enabled.
+---]]
+GM.EconomyDifficulty = DIFFICULTY_ECONOMY_STANDARD
+
+--[[
+Make economy more difficult (The higher the difficulty, the higher buy prices and lower sell prices) --
+---]]
+GM.EconomyInflationMode = DIFFICULTY_GAMEPLAY_OFF
+
+-- If enabled, Higher economy difficulty will grant more XP from zombies. Set it to false to disable this setting.
+GM.EconomyDifficultyAffectsXPGain = true
+*/
+
 -------- CONFIG --------
 
 GM.Config = {
@@ -169,109 +194,6 @@ if not sfs and GM.Config["SFS"] then
 	ErrorNoHalt([[[ERROR] https://github.com/Srlion/sfs is required]])
 	GM.Config["SFS"] = false
 end
-
-
------------------------------SKILLS CONFIG-----------------------------
-
-
-GM.StatConfigs = {
-	-- Keep this at max of 10!
-	["Agility"] = {
-		Max = 10,
-		Cost = 1,
-		PerkMaxIncrease = 5, -- Max amount that can be applied for this skill is increased by this amount when having a perk "Empowered Skills"
-	},
-
-	-- Keep this at max of 10!
-	["Barter"] = {
-		Max = 10,
-		Cost = 1,
-	},
-
-	-- Keep this at max of 10!
-	["Defense"] = {
-		Max = 10,
-		Cost = 1,
-	},
-
-	-- Keep this at max of 10!
-	["Endurance"] = {
-		Max = 10,
-		Cost = 1,
-		PerkMaxIncrease = 5,
-	},
-
-	-- Keep this at max of 10!
-	["Engineer"] = {
-		Max = 10,
-		Cost = 1,
-		PerkMaxIncrease = 10,
-	},
-
-	["Gunslinger"] = {
-		Max = 10,
-		Cost = 1,
-		PerkMaxIncrease = 10,
-	},
-
-	-- Keep this at max of 10!
-	["Immunity"] = {
-		Max = 10,
-		Cost = 1,
-		PerkMaxIncrease = 5,
-	},
-
-	["Knowledge"] = {
-		Max = 10,
-		Cost = 1,
-		PerkMaxIncrease = 10,
-	},
-
-	["MedSkill"] = {
-		Max = 10,
-		Cost = 1,
-		PerkMaxIncrease = 10,
-	},
-
-	["Salvage"] = {
-		Max = 10,
-		Cost = 1,
-		PerkMaxIncrease = 10,
-	},
-
-	-- Keep this at max of 10!
-	["Scavenging"] = {
-		Max = 10,
-		Cost = 1,
-		PerkMaxIncrease = 10,
-	},
-
-	-- Keep this at max of 10!
-	["Speed"] = {
-		Max = 10,
-		Cost = 1,
-		PerkMaxIncrease = 5,
-	},
-
-	["Strength"] = {
-		Max = 10,
-		Cost = 1,
-		PerkMaxIncrease = 5,
-	},
-
-	-- Keep this at max of 10!
-	["Survivor"] = {
-		Max = 10,
-		Cost = 1,
-		PerkMaxIncrease = 5,
-	},
-
-	["Vitality"] = {
-		Max = 10,
-		Cost = 1,
-		PerkMaxIncrease = 10,
-	},
-}
 
 
 -----------------------------ZOMBIE CLASSES-----------------------------
@@ -503,6 +425,109 @@ GM.Config["Vehicles"] = {
 			["item_craft_oil"] = 2,
 			["item_scrap"] = 5,
 		},
+	},
+}
+
+
+-----------------------------SKILLS CONFIG-----------------------------
+
+
+GM.StatConfigs = {
+	-- Keep this at max of 10!
+	["Agility"] = {
+		Max = 10,
+		Cost = 1,
+		PerkMaxIncrease = 5, -- Max amount that can be applied for this skill is increased by this amount when having a perk "Empowered Skills"
+	},
+
+	-- Keep this at max of 10!
+	["Barter"] = {
+		Max = 10,
+		Cost = 1,
+	},
+
+	-- Keep this at max of 10!
+	["Defense"] = {
+		Max = 10,
+		Cost = 1,
+	},
+
+	-- Keep this at max of 10!
+	["Endurance"] = {
+		Max = 10,
+		Cost = 1,
+		PerkMaxIncrease = 5,
+	},
+
+	-- Keep this at max of 10!
+	["Engineer"] = {
+		Max = 10,
+		Cost = 1,
+		PerkMaxIncrease = 10,
+	},
+
+	["Gunslinger"] = {
+		Max = 10,
+		Cost = 1,
+		PerkMaxIncrease = 10,
+	},
+
+	-- Keep this at max of 10!
+	["Immunity"] = {
+		Max = 10,
+		Cost = 1,
+		PerkMaxIncrease = 5,
+	},
+
+	["Knowledge"] = {
+		Max = 10,
+		Cost = 1,
+		PerkMaxIncrease = 10,
+	},
+
+	["MedSkill"] = {
+		Max = 10,
+		Cost = 1,
+		PerkMaxIncrease = 10,
+	},
+
+	["Salvage"] = {
+		Max = 10,
+		Cost = 1,
+		PerkMaxIncrease = 10,
+	},
+
+	-- Keep this at max of 10!
+	["Scavenging"] = {
+		Max = 10,
+		Cost = 1,
+		PerkMaxIncrease = 10,
+	},
+
+	-- Keep this at max of 10!
+	["Speed"] = {
+		Max = 10,
+		Cost = 1,
+		PerkMaxIncrease = 5,
+	},
+
+	["Strength"] = {
+		Max = 10,
+		Cost = 1,
+		PerkMaxIncrease = 5,
+	},
+
+	-- Keep this at max of 10!
+	["Survivor"] = {
+		Max = 10,
+		Cost = 1,
+		PerkMaxIncrease = 5,
+	},
+
+	["Vitality"] = {
+		Max = 10,
+		Cost = 1,
+		PerkMaxIncrease = 10,
 	},
 }
 

@@ -148,6 +148,7 @@ end)
 net.Receive("UpdateStatistics", function(length)
 	local pl = LocalPlayer()
 
+	if not pl:IsValid() then return end
 	if not pl.Statistics then pl.Statistics = {} end
 	for stat, value in pairs(net.ReadTable()) do
 		pl.Statistics[stat] = value

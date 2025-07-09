@@ -172,28 +172,22 @@ function GM:UseItem(ply, item, use, targetply)
 
 					if consum.UseTime then
 						local str = {
-							[ITEMTYPE_MED] = "Healing...",
+							[ITEMTYPE_MED] = "Healing "..(targetply and targetply:Nick() or "").."...",
 							[ITEMTYPE_MEDANTIDOTE] = "Healing Infection...",
 							[ITEMTYPE_ARMOR] = "Reinforcing armor...",
 							[ITEMTYPE_FOOD] = "Eating food...",
 							[ITEMTYPE_DRINK] = "Drinking...",
 						}
+
 						ply:SendUseDelay(consum.UseTime, str[itemtype] or "Using an item")
-						--[[
-						"Healing..."
-						"Healing infection..."
-						"Reinforcing armor..."
-						"Eating food..."
-						"Drinking..."
-						]]
 					end
 
 					if consum.Health then
-						ply:SetHealth(math.min(ply:GetMaxHealth(), ply:Health() + consum.Health))
+						ply:SetHealth(math.min(ply:GetMaxHealth(), ply:Health() + consum.Health*(1 + ply.StatMedSkill*0.025)))
 					end
 
 					if consum.Armor then
-						ply:SetArmor(math.min(ply:GetMaxArmor(), ply:Armor() + consum.Armor))
+						ply:SetArmor(math.min(ply:GetMaxArmor(), ply:Armor() + consum.Armor*(1 + ply.StatEngineer*0.02)))
 					end
 
 					if consum.Infection then

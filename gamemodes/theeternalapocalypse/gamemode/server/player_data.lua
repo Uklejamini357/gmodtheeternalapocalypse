@@ -112,8 +112,6 @@ function GM:LoadPlayer(ply, id)
 		self:SavePlayer(ply)
 
 	end
-	self:NetUpdatePeriodicStats(ply)
-	self:NetUpdateStatistics(ply)
 
 	return true
 end
@@ -207,10 +205,6 @@ function GM:SavePlayer(ply, force)
 
 
 	self:DebugLog("Saving player data: "..ply:Nick().." ("..ply:SteamID().."), Level: "..tostring(ply.Level)..", Cash: $"..tostring(ply.Money)..", XP Total: "..tostring(ply.XP)..", Armor Equipped: "..tostring(ply.EquippedArmor))
-	
-	self:NetUpdatePeriodicStats(ply) --see server/netstuff.lua
-	self:NetUpdatePerks(ply)
-	self:NetUpdateStatistics(ply)
 	
 	if self:GetDebug() >= DEBUGGING_NORMAL then
 		print("✓ ".. ply:Nick() .." profile saved")
