@@ -107,7 +107,7 @@ end
 
 function SWEP:PrimaryAttack()
 	local stamina = self:GetOwner():HasPerk("speedy_hands") and self.StaminaNeeded * 0.75 or self.StaminaNeeded
-	if (CLIENT and MyStamina < stamina) or (SERVER and self.Owner.Stamina < stamina) then return end
+	if self.Owner.Stamina < stamina then return end
 	self.Weapon:SendWeaponAnim(ACT_VM_MISSCENTER)
 
 	timer.Simple( 0.2, function()

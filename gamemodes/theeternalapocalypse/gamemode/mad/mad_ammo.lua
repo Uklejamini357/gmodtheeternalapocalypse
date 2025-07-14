@@ -52,10 +52,21 @@ game.AddAmmoType( {
     force = 2000,
     minsplash = 10,
     maxsplash = 5
-   } )
+} )
 
 game.AddAmmoType( {
     name = "ammo_sniper",
+    dmgtype = DMG_BULLET,
+    tracer = TRACER_NONE,
+    plydmg = 0,
+    npcdmg = 0,
+    force = 2000,
+    minsplash = 10,
+    maxsplash = 5
+} )
+
+game.AddAmmoType( {
+    name = "ammo_plasmabomb",
     dmgtype = DMG_BULLET,
     tracer = TRACER_NONE,
     plydmg = 0,

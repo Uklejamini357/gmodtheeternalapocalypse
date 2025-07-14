@@ -52,28 +52,28 @@ end
 /*---------------------------------------------------------
    Name: SWEP:Grenade()
 ---------------------------------------------------------*/
-SWEP.Force = 4000
+SWEP.Force = 10000
 
 function SWEP:Grenade()
 
 	if (CLIENT) then return end
 
-	local grenade = ents.Create("ent_mad_plasmaround")
-		grenade:SetOwner(self.Owner)
+	local grenade = ents.Create("ent_tea_plasmaround")
+	grenade:SetOwner(self.Owner)
 		
-		if not (self.Weapon:GetNetworkedBool("Ironsights")) then
-			local pos = self.Owner:GetShootPos()
-				pos = pos + self.Owner:GetForward() * 5
-				pos = pos + self.Owner:GetRight() * 9
-				pos = pos + self.Owner:GetUp() * -7
-			grenade:SetPos(pos)	
-		else
-			grenade:SetPos(self.Owner:EyePos() + (self.Owner:GetAimVector()))
-		end
+	if not (self.Weapon:GetNetworkedBool("Ironsights")) then
+		local pos = self.Owner:GetShootPos()
+			pos = pos + self.Owner:GetForward() * 5
+			pos = pos + self.Owner:GetRight() * 9
+			pos = pos + self.Owner:GetUp() * -7
+		grenade:SetPos(pos)	
+	else
+		grenade:SetPos(self.Owner:EyePos() + (self.Owner:GetAimVector()))
+	end
 		
-		grenade:SetAngles(self.Owner:GetAngles())
-		grenade:Spawn()
-		grenade:Activate()
+	grenade:SetAngles(self.Owner:GetAngles())
+	grenade:Spawn()
+	grenade:Activate()
 
 	local phys = grenade:GetPhysicsObject()
 	phys:ApplyForceCenter(self.Owner:GetAimVector() * self.Force + Vector(0, 0, 200))

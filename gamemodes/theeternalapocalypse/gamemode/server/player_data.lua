@@ -726,7 +726,7 @@ function GM:PrepareStats(ply)
 	ply.Fatigue = 0
 	ply.Infection = 0
 	ply.Oxygen = 100
-	ply.Battery = 100 + (armorstr and armortype and armortype["ArmorStats"]["battery"] or 0)
+	ply.Battery = ply:GetMaxBattery()
 	ply.HPRegen = 0
 	ply.SurvivalTime = CurTime()
 	ply.SlowDown = 0

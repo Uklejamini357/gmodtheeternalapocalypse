@@ -10,7 +10,7 @@ end
 function GM:OnPlayerJump(ply, speed)
 	ply:ViewPunch(Angle(-math.Rand(2, 2.2), 0, math.Rand(-0.2, 0.2)))
 	if SERVER and !ply.StatsPaused then
-		ply.Stamina = math.Clamp(ply.Stamina - (6 * (1 - (ply.StatEndurance * 0.045))), 0, 100)
+		ply.Stamina = math.Clamp(ply.Stamina - (6 * (1 - (ply.StatEndurance * 0.045)))*ply:GetStaminaDrainWeightMul(), 0, 100)
 	end
 end
 
@@ -157,10 +157,10 @@ end
 function meta:CalculateWeight()
 	local totalweight = 0
 	if SERVER then
-		for k, v in pairs(self.Inventory) do
-			local ref = GAMEMODE.ItemsList[k]
-			if !ref then ErrorNoHalt("CalculateWeight error on "..self:Nick().."! They must have a corrupt inventory (file) or something\n") continue end
-			totalweight = totalweight + (ref.Weight * v)
+		if not self.LastCalculateWeightCount and (not self.LastCalculateWeightUpdate or self.LastCalculateWeightUpdate + 5 < CurTime()) then
+			totalweight = self:RecalculateCurrentWeight()
+		else
+			totalweight = self.LastCalculateWeightCount
 		end
 	else
 		for k, v in pairs(LocalInventory) do
@@ -185,6 +185,22 @@ function meta:CalculateMaxWeight()
 		-- local additionalarmorweight = armorstr ~= "none" and armortype["ArmorStats"]["carryweight"] or 0
 		-- return math.Round(baseweight + perksweight + skillsweight + additionalarmorweight, 2)
 	-- end
+end
+
+function meta:RecalculateCurrentWeight()
+	local totalweight = 0
+
+	for k, v in pairs(self.Inventory) do
+		local ref = GAMEMODE.ItemsList[k]
+		if !ref then ErrorNoHalt("CalculateWeight error on "..self:Nick().."! They must have a corrupt inventory (file) or something\n") continue end
+		totalweight = totalweight + (ref.Weight * v)
+	end
+
+	self.LastCalculateWeightUpdate = CurTime()
+	self.LastCalculateWeightCount = totalweight
+
+	-- print(totalweight)
+	return totalweight
 end
 
 function meta:CalculateMaxWalkWeight()
@@ -323,6 +339,17 @@ function meta:GetArmorCarryWeight()
 	return weightbonus
 end
 
+function meta:GetStaminaDrainWeightMul()
+	local mul = 1
+	local weight = self:CalculateWeight()
+
+	mul = mul + weight*0.01
+	if weight < 10 then
+		mul = mul * 0.9
+	end
+	return mul
+end
+
 
 function meta:AddStatisticPoints(var, value)
 	if not self.Statistics[var] then self.Statistics[var] = 0 end
@@ -348,6 +375,13 @@ end
 
 function meta:GetLifeStatisticPoints(var, value)
 	return self.LifeStats[var] or 0
+end
+
+function meta:GetMaxBattery()
+	local armorstr = self:GetNWString("ArmorType") or "none"
+	local armortype = GAMEMODE.ItemsList[armorstr]
+
+	return 100 + (armorstr and armortype and armortype["ArmorStats"]["battery"] or 0)
 end
 
 -- maybe i should also do it for entity meta table

@@ -108,7 +108,7 @@ function SWEP:EntityFaceBack(ent)
 end
 
 function SWEP:PrimaryAttack()
-	if (CLIENT and MyStamina < self.StaminaNeeded) or (SERVER and self.Owner.Stamina < self.StaminaNeeded) then return end
+	if self.Owner.Stamina < self.StaminaNeeded then return end
 	self.Weapon:SendWeaponAnim(ACT_VM_MISSCENTER)
 
 	timer.Simple( 0.2, function()

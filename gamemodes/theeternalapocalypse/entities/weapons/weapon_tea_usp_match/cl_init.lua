@@ -1,6 +1,6 @@
 include('shared.lua')
 
-SWEP.PrintName			= "9MM HK USP MATCH"	
+SWEP.PrintName			= "9mm Pistol"	
 SWEP.Slot				= 1
 SWEP.SlotPos			= 1
 

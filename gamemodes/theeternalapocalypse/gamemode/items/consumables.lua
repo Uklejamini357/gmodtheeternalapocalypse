@@ -338,7 +338,7 @@ GM:CreateItem("item_tinnedfood", {
     Supply = 30,
     Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_SUPPLIES,
-	ItemType = ITEMTYPE_ARMORATT,
+	ItemType = ITEMTYPE_FOOD,
 
     ConsumableStats = {
         UseTime = 2,
@@ -360,7 +360,7 @@ GM:CreateItem("item_potato", {
     Supply = 20,
     Rarity = RARITY_JUNK,
     Category = ITEMCATEGORY_SUPPLIES,
-	ItemType = ITEMTYPE_ARMORATT,
+	ItemType = ITEMTYPE_FOOD,
 
     ConsumableStats = {
         UseTime = 2,
@@ -382,7 +382,7 @@ GM:CreateItem("item_traderfood", {
     Supply = 5,
     Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_SUPPLIES,
-	ItemType = ITEMTYPE_ARMORATT,
+	ItemType = ITEMTYPE_FOOD,
 
     ConsumableStats = {
         UseTime = 5,
@@ -404,7 +404,7 @@ GM:CreateItem("item_trout", {
     Supply = 2,
     Rarity = RARITY_UNCOMMON,
     Category = ITEMCATEGORY_SUPPLIES,
-	ItemType = ITEMTYPE_ARMORATT,
+	ItemType = ITEMTYPE_FOOD,
 
     ConsumableStats = {
         UseTime = 6,
@@ -426,7 +426,7 @@ GM:CreateItem("item_melon", {
     Supply = 3,
     Rarity = RARITY_UNCOMMON,
     Category = ITEMCATEGORY_SUPPLIES,
-	ItemType = ITEMTYPE_ARMORATT,
+	ItemType = ITEMTYPE_FOOD,
 
     ConsumableStats = {
         UseTime = 7,
@@ -448,7 +448,7 @@ GM:CreateItem("item_burger", {
     Supply = -1,
     Rarity = RARITY_MYTHIC,
     Category = ITEMCATEGORY_SUPPLIES,
-	ItemType = ITEMTYPE_ARMORATT,
+	ItemType = ITEMTYPE_FOOD,
 
     ConsumableStats = {
         UseTime = 5,
@@ -484,7 +484,7 @@ GM:CreateItem("item_hotdog", {
     Supply = -1,
     Rarity = RARITY_EPIC,
     Category = ITEMCATEGORY_SUPPLIES,
-	ItemType = ITEMTYPE_ARMORATT,
+	ItemType = ITEMTYPE_FOOD,
 
     ConsumableStats = {
         UseTime = 5,
@@ -506,7 +506,7 @@ GM:CreateItem("item_donut", {
     Supply = 5,
     Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_SUPPLIES,
-	ItemType = ITEMTYPE_ARMORATT,
+	ItemType = ITEMTYPE_FOOD,
 
     ConsumableStats = {
         UseTime = 3,
@@ -658,10 +658,11 @@ GM:CreateItem("item_stalker_stimpack", {
         UseTime = 1.6,
         Health = 40,
         Infection = 0,
+        FastUsable = true,
     },
     UseSound = "sound",
 
-    UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 1.6, 40, 0, "theeternalapocalypse/items/inv_stimpack.ogg") return healing end,
+    -- UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 1.6, 40, 0, "theeternalapocalypse/items/inv_stimpack.ogg") return healing end,
     CanUseOnOthers = true
 })
 
@@ -680,10 +681,11 @@ GM:CreateItem("item_stalker_stimpack_army", {
         UseTime = 1.6,
         Health = 70,
         Infection = 0,
+        FastUsable = true,
     },
     UseSound = "sound",
 
-    UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 1.6, 70, 0, "theeternalapocalypse/items/inv_stimpack.ogg") return healing end,
+    -- UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 1.6, 70, 0, "theeternalapocalypse/items/inv_stimpack.ogg") return healing end,
     CanUseOnOthers = true
 })
 
@@ -702,10 +704,11 @@ GM:CreateItem("item_stalker_stimpack_scientific", {
         UseTime = 1.6,
         Health = 105,
         Infection = -30,
+        FastUsable = true,
     },
     UseSound = "sound",
 
-    UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 1.6, 105, 30, "theeternalapocalypse/items/inv_stimpack.ogg") return healing end,
+    -- UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 1.6, 105, 30, "theeternalapocalypse/items/inv_stimpack.ogg") return healing end,
     CanUseOnOthers = true
 })
 

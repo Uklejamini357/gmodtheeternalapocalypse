@@ -133,7 +133,7 @@ function SWEP:PrimaryAttack()
 		return
 	end
 	
-	if ((CLIENT and MyStamina < self.StaminaNeeded) or (SERVER and self.Owner.Stamina < self.StaminaNeeded)) then return end
+	if self.Owner.Stamina < self.StaminaNeeded then return end
 
 	self.Weapon:SendWeaponAnim(ACT_VM_IDLE)
 	local Animation = self.Owner:GetViewModel()
@@ -176,7 +176,7 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:SecondaryAttack()
-	if self.Weapon:GetNetworkedBool("Holsted") or self.Owner:KeyDown(IN_SPEED) or ((CLIENT and MyStamina < self.StaminaNeeded2) or (SERVER and self.Owner.Stamina < self.StaminaNeeded2)) then return end
+	if self.Weapon:GetNetworkedBool("Holsted") or self.Owner:KeyDown(IN_SPEED) or self.Owner.Stamina < self.StaminaNeeded2 then return end
 
 	if (not self.Owner:IsNPC() and self.Owner:KeyDown(IN_USE)) then
 		bHolsted = !self.Weapon:GetDTBool(0)

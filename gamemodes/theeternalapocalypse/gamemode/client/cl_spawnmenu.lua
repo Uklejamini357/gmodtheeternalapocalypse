@@ -477,19 +477,15 @@ function GM:InvMenu()
 
 ---------------Statistics Form------------------
 
+	local y = 10
+
 	local StatisticsForm = vgui.Create("DPanel", InvSheet1)
 	StatisticsForm:SetSize(675, 700)
 	StatisticsForm.Paint = function(panel, w, h)
 		draw.RoundedBox(2, 0, 0, w, h, Color(0, 0, 0, 100))
 		surface.SetDrawColor(150, 150, 0 ,255)
 		surface.DrawOutlinedRect(0, 0, w, h)
-		local stats = ply.Statistics
 
-		draw.SimpleText(translate.Format("timesurvived", util.ToMinutesSeconds(CurTime() - MySurvivaltime)), "TEA.HUDFont", 15, 10, Color(255,255,255,255))
-		draw.SimpleText(translate.Format("besttimesurvived", util.ToMinutesSeconds(MyBestsurvtime)), "TEA.HUDFont", 15, 35, Color(255,255,255,255))
-		draw.SimpleText("Zombies Killed in Total: "..stats.ZombieKills, "TEA.HUDFont", 15, 60, Color(255,255,255,255))
-		draw.SimpleText("Players killed in Total: "..stats.PlayersKilled, "TEA.HUDFont", 15, 85, Color(255,255,255,255))
-		draw.SimpleText("Your Deaths in Total: "..stats.Deaths, "TEA.HUDFont", 15, 110, Color(255,255,255,255))
 
 		surface.SetDrawColor(0, 0, 0 ,255)
 		surface.DrawOutlinedRect(15, 165, 200, 8)
@@ -510,28 +506,96 @@ function GM:InvMenu()
 		surface.DrawRect(15, 210, bar2, 8 )
 	end
 
-	local sttext1 = vgui.Create("DLabel", StatisticsForm)
-	sttext1:SetFont("TEA.HUDFont")
-	sttext1:SetTextColor(Color(205,205,205,255))
-	sttext1:SetText("Mastery Melee XP: ".. math.floor(MyMMeleexp) .."/".. ply:GetReqMasteryMeleeXP().." (Level "..math.floor(MyMMeleelvl)..")")
-	sttext1:SetToolTip("Increases melee damage by 0.5% per level, increases when doing melee damage to zombies. \nGain rate is DECREASED when damaging players with melee weapons.")
-	sttext1:SetMouseInputEnabled(true)
-	sttext1:SizeToContents()
-	sttext1:SetPos(15, 140)
-	sttext1.Think = function(panel)
+	local texts = {}
+	local stats = ply.Statistics
+
+	texts.SurvivalTime = vgui.Create("DLabel", StatisticsForm)
+	texts.SurvivalTime:SetFont("TEA.HUDFont")
+	texts.SurvivalTime:SetTextColor(Color(255,255,255))
+	texts.SurvivalTime:SetText(translate.Format("timesurvived", util.ToMinutesSeconds(CurTime() - MySurvivaltime)))
+	texts.SurvivalTime:SetMouseInputEnabled(true)
+	texts.SurvivalTime:SizeToContents()
+	texts.SurvivalTime:SetPos(15, y)
+	texts.SurvivalTime.Think = function(panel)
+		panel:SetText(translate.Format("timesurvived", util.ToMinutesSeconds(CurTime() - MySurvivaltime)))
+		panel:SizeToContents()
+	end
+	y = y + 25
+
+	texts.BestSurvivalTime = vgui.Create("DLabel", StatisticsForm)
+	texts.BestSurvivalTime:SetFont("TEA.HUDFont")
+	texts.BestSurvivalTime:SetTextColor(Color(255,255,255))
+	texts.BestSurvivalTime:SetText(translate.Format("besttimesurvived", util.ToMinutesSeconds(ply.Statistics.BestSurvivalTime)))
+	texts.BestSurvivalTime:SetMouseInputEnabled(true)
+	texts.BestSurvivalTime:SizeToContents()
+	texts.BestSurvivalTime:SetPos(15, y)
+	texts.BestSurvivalTime.Think = function(panel)
+		panel:SetText(translate.Format("besttimesurvived", util.ToMinutesSeconds(ply.Statistics.BestSurvivalTime)))
+		panel:SizeToContents()
+	end
+	y = y + 25
+
+	texts.ZombieKills = vgui.Create("DLabel", StatisticsForm)
+	texts.ZombieKills:SetFont("TEA.HUDFont")
+	texts.ZombieKills:SetTextColor(Color(255,255,255))
+	texts.ZombieKills:SetText("Zombies Killed in Total: "..stats.ZombieKills)
+	texts.ZombieKills:SetMouseInputEnabled(true)
+	texts.ZombieKills:SizeToContents()
+	texts.ZombieKills:SetPos(15, y)
+	texts.ZombieKills.Think = function(panel)
+		panel:SetText("Zombies Killed in Total: "..stats.ZombieKills)
+		panel:SizeToContents()
+	end
+	y = y + 25
+
+	texts.PlayerKills = vgui.Create("DLabel", StatisticsForm)
+	texts.PlayerKills:SetFont("TEA.HUDFont")
+	texts.PlayerKills:SetTextColor(Color(255,255,255))
+	texts.PlayerKills:SetText("Players killed in Total: "..stats.PlayersKilled)
+	texts.PlayerKills:SetMouseInputEnabled(true)
+	texts.PlayerKills:SizeToContents()
+	texts.PlayerKills:SetPos(15, y)
+	texts.PlayerKills.Think = function(panel)
+		panel:SetText("Players killed in Total: "..stats.PlayersKilled)
+		panel:SizeToContents()
+	end
+	y = y + 25
+
+	texts.TotalDeaths = vgui.Create("DLabel", StatisticsForm)
+	texts.TotalDeaths:SetFont("TEA.HUDFont")
+	texts.TotalDeaths:SetTextColor(Color(255,255,255))
+	texts.TotalDeaths:SetText("Your Deaths in Total: "..stats.Deaths)
+	texts.TotalDeaths:SetMouseInputEnabled(true)
+	texts.TotalDeaths:SizeToContents()
+	texts.TotalDeaths:SetPos(15, y)
+	texts.TotalDeaths.Think = function(panel)
+		panel:SetText("Your Deaths in Total: "..stats.Deaths)
+		panel:SizeToContents()
+	end
+	y = y + 25
+
+	texts.MasteryMeleeXP = vgui.Create("DLabel", StatisticsForm)
+	texts.MasteryMeleeXP:SetFont("TEA.HUDFont")
+	texts.MasteryMeleeXP:SetTextColor(Color(205,205,205))
+	texts.MasteryMeleeXP:SetText("Mastery Melee XP: ".. math.floor(MyMMeleexp) .."/".. ply:GetReqMasteryMeleeXP().." (Level "..math.floor(MyMMeleelvl)..")")
+	texts.MasteryMeleeXP:SetToolTip("Increases melee damage by 0.5% per level, increases when doing melee damage to zombies. \nGain rate is DECREASED when damaging players with melee weapons.")
+	texts.MasteryMeleeXP:SetMouseInputEnabled(true)
+	texts.MasteryMeleeXP:SizeToContents()
+	texts.MasteryMeleeXP:SetPos(15, 140)
+	texts.MasteryMeleeXP.Think = function(panel)
 		panel:SetText("Mastery Melee XP: ".. math.floor(MyMMeleexp) .."/".. ply:GetReqMasteryMeleeXP().." (Level "..math.floor(MyMMeleelvl)..")")
 		panel:SizeToContents()
 	end
 
-	local sttext2 = vgui.Create("DLabel", StatisticsForm)
-	sttext2:SetFont("TEA.HUDFont")
-	sttext2:SetTextColor(Color(205,205,205,255))
-	sttext2:SetText("Mastery PvP XP: ".. math.floor(MyMPvpxp) .."/".. ply:GetReqMasteryPvPXP().." (Level "..math.floor(MyMPvplvl)..")")
-	sttext2:SetToolTip("Gained from killing players. (no other benefits other than money gain on level up)\nGain rate increased when they have higher level and prestige.")
-	sttext2:SetMouseInputEnabled(true)
-	sttext2:SizeToContents()
-	sttext2:SetPos(15, 185)
-	sttext2.Think = function(panel)
+	texts.MasteryPVPXP = vgui.Create("DLabel", StatisticsForm)
+	texts.MasteryPVPXP:SetFont("TEA.HUDFont")
+	texts.MasteryPVPXP:SetTextColor(Color(205,205,205))
+	texts.MasteryPVPXP:SetText("Mastery PvP XP: ".. math.floor(MyMPvpxp) .."/".. ply:GetReqMasteryPvPXP().." (Level "..math.floor(MyMPvplvl)..")")
+	texts.MasteryPVPXP:SetToolTip("Gained from killing players. (no other benefits other than money gain on level up)\nGain rate increased when they have higher level and prestige.")
+	texts.MasteryPVPXP:SetMouseInputEnabled(true)
+	texts.MasteryPVPXP:SizeToContents()
+	texts.MasteryPVPXP:SetPos(15, 185)
+	texts.MasteryPVPXP.Think = function(panel)
 		panel:SetText("Mastery PvP XP: ".. math.floor(MyMPvpxp) .."/".. ply:GetReqMasteryPvPXP().." (Level "..math.floor(MyMPvplvl)..")")
 		panel:SizeToContents()
 	end

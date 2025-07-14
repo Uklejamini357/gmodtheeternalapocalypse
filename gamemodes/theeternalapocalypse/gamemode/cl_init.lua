@@ -69,7 +69,7 @@ function GM:LocalPlayerDeath(attacker)
 	self.tea_survivalstats_a = 0
 
 	self.MyLastSurvivalStats.SurvivalTime = CurTime() - MySurvivaltime
-	self.MyLastSurvivalStats.BestSurvivalTime = MyBestsurvtime
+	self.MyLastSurvivalStats.BestSurvivalTime = me.Statistics.BestSurvivalTime
 	for k,v in pairs(me.LifeStats) do
 		self.MyLastSurvivalStats[k] = v
 	end
@@ -258,20 +258,6 @@ function GM:Initialize()
 
 	self:SetupFonts()
 
-	MyStamina = 0
-	MyHunger = 0
-	MyThirst = 0
-	MyFatigue = 0
-	MyInfection = 0
-	MySurvivaltime = 0
-	MyBattery = 0
-	MyLvl = 0
-	MyPrestige = 0
-	MyMoney = 0
-	MyXP = 0
-	MySP = 0
-	MyBounty = 0
-
 	MyBestsurvtime = 0
 	MyZmbskilled = 0
 	MyPlyskilled = 0
@@ -310,21 +296,38 @@ function GM:InitPostEntity()
 	net.SendToServer()
 
 	local me = LocalPlayer()
-
+	self:InitializeLocalPlayer()
 	death_sound_current = CreateSound(me, Sound(self.DeathSound))
-
-	if not me.Statistics then
-		me.Statistics = {}
-	end
-	me.LifeZKills = 0
-	me.LifePlayerKills = 0
-	me.UsingItemTime = 0
-	me.UsingItemDuration = 0
 
 	self.HasInitialized = true
 	self:LoadMainMenu()
 end
 
+function GM:InitializeLocalPlayer()
+	local pl = LocalPlayer()
+	pl.Stamina = 0
+	pl.Oxygen = 0
+	pl.Hunger = 0
+	pl.Thirst = 0
+	pl.Fatigue = 0
+	pl.Infection = 0
+	MySurvivaltime = 0
+	pl.Battery = 0
+	MyLvl = 0
+	MyPrestige = 0
+	MyMoney = 0
+	MyXP = 0
+	MySP = 0
+	MyBounty = 0
+
+	if not pl.Statistics then
+		pl.Statistics = {}
+	end
+	pl.LifeZKills = 0
+	pl.LifePlayerKills = 0
+	pl.UsingItemTime = 0
+	pl.UsingItemDuration = 0
+end
 
 function GM:OnReloaded()
 	timer.Simple(1, function()

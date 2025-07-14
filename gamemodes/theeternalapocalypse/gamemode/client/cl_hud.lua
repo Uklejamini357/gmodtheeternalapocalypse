@@ -6,18 +6,23 @@ local Spawn = 0
 
 
 net.Receive("tea_updatestamina", function(len) -- this net message is received once per frame
-	MyStamina = net.ReadFloat()
-	MyOxygen = net.ReadFloat()
+	local pl = LocalPlayer()
+
+	if not pl:IsValid() then return end
+	pl.Stamina = net.ReadFloat()
+	pl.Oxygen = net.ReadFloat()
 end)
 
 net.Receive("UpdateStats", function(len) -- this net message is received once every second
+	local pl = LocalPlayer()
 
-	MyHunger = net.ReadFloat()
-	MyThirst = net.ReadFloat()
-	MyFatigue = net.ReadFloat()
-	MyInfection = net.ReadFloat()
+	if not pl:IsValid() then return end
+	pl.Hunger = net.ReadFloat()
+	pl.Thirst = net.ReadFloat()
+	pl.Fatigue = net.ReadFloat()
+	pl.Infection = net.ReadFloat()
 	MySurvivaltime = net.ReadFloat()
-	MyBattery = net.ReadFloat()
+	pl.Battery = net.ReadFloat()
 end)
 
 net.Receive("UpdatePeriodicStats", function(len) -- this net message is only received when one of these values need to be updated
@@ -196,12 +201,14 @@ end
 function GM:DrawVitals()
 	local me = LocalPlayer()
 	if !me:IsValid() or !me:Alive() or !self.HUDEnabled or GetConVar("cl_drawhud"):GetInt() < 1 or me:GetObserverMode() ~= OBS_MODE_NONE then return end
+	local scrw = ScrW()
+	local scrh = ScrH()
+
 	local Health = me:Health()
 	local MaxHealth = me:GetMaxHealth()
 	local Armor = me:Armor()
 	local MaxArmor = me:GetMaxArmor()
-	local scrw = ScrW()
-	local scrh = ScrH()
+
 	local SWEP = {}
 	local weapon = me:GetActiveWeapon()
 	if weapon != NULL then
@@ -213,34 +220,36 @@ function GM:DrawVitals()
 		SWEP.MaxAmmoType = me:GetAmmoCount(weapon:GetPrimaryAmmoType())
 		SWEP.MaxAmmoType2 = me:GetAmmoCount(weapon:GetSecondaryAmmoType())
 	end
+
+	local cansprint = me:GetCanSprint()
 --	local HealthTexture = surface.GetTextureID("gui/silkicons/heart")
 --	local ArmorTexture = surface.GetTextureID("gui/silkicons/shield")
 	local DGradientCenter = surface.GetTextureID("gui/center_gradient")
 
 	local glow = math.abs(math.sin(CurTime() * 1.7) * 255)
 /*
-	if MyHunger < 1000 then
+	if me.Hunger < 1000 then
 		draw.SimpleText(translate.Get("hunger_low"), "TEA.HUDFont", 21, scrh - 360, Color(255, glow, glow, hunger_a), 0, 1)
 		hunger_a = math.Approach(hunger_a, 255, 3)
 	else
 		hunger_a = math.Approach(hunger_a, 0, 3)
 	end
 
-	if MyThirst < 1000 then
+	if me.Thirst < 1000 then
 		draw.SimpleText(translate.Get("thirst_low"), "TEA.HUDFont", 21, scrh - 340, Color(255, glow, glow, thirst_a), 0, 1)
 		thirst_a = math.Approach(thirst_a, 255, 3)
 	else
 		thirst_a = math.Approach(thirst_a, 0, 3)
 	end
 
-	if MyFatigue > 9000 then
+	if me.Fatigue > 9000 then
 		draw.SimpleText(translate.Get("fatigue_high"), "TEA.HUDFont", 21, scrh - 320, Color(255, glow, glow, fatigue_a), 0, 1)
 		fatigue_a = math.Approach(fatigue_a, 255, 3)
 	else
 		fatigue_a = math.Approach(fatigue_a, 0, 3)
 	end
 
-	if MyInfection > 9000 then
+	if me.Infection > 9000 then
 		draw.SimpleText(translate.Get("infection_high"), "TEA.HUDFont", 21, scrh - 300, Color(255, glow, glow, infection_a), 0, 1)
 		infection_a = math.Approach(infection_a, 255, 3)
 	else
@@ -250,22 +259,22 @@ function GM:DrawVitals()
 
 	local y = 300
 
-	if MyInfection > 9000 then
+	if me.Infection > 9000 then
 		draw.SimpleText(translate.Get("infection_high"), "TEA.HUDFont", 21, scrh - y, Color(255, glow, glow, 230), 0, 1)
 		y = y + 20
 	end
 
-	if MyFatigue > 9000 then
+	if me.Fatigue > 9000 then
 		draw.SimpleText(translate.Get("fatigue_high"), "TEA.HUDFont", 21, scrh - y, Color(255, glow, glow, 230), 0, 1)
 		y = y + 20
 	end
 
-	if MyThirst < 1000 then
+	if me.Thirst < 1000 then
 		draw.SimpleText(translate.Get("thirst_low"), "TEA.HUDFont", 21, scrh - y, Color(255, glow, glow, 230), 0, 1)
 		y = y + 20
 	end
 
-	if MyHunger < 1000 then
+	if me.Hunger < 1000 then
 		draw.SimpleText(translate.Get("hunger_low"), "TEA.HUDFont", 21, scrh - y, Color(255, glow, glow, 230), 0, 1)
 	end
 
@@ -351,46 +360,46 @@ function GM:DrawVitals()
 		surface.DrawOutlinedRect(200, scrh - 200, 180, 190)
 
 -------------- Stamina --------------
-		draw.SimpleText(translate.Format("stamina", math.Round(MyStamina, self.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 210, scrh - 186, Color(205, 255, 205, 255), 0, 1)
-		draw.RoundedBox(2, 210, scrh - 176, 160, 15, Color(50, 50, 0, 100))
-		if MyStamina > 0 then
-			local staminabarclamp = math.Clamp(MyStamina * 1.6, 0, 160)
-			draw.RoundedBox(4, 210, scrh - 176, staminabarclamp, 15, Color(100, 150, 0, 160))
-			draw.RoundedBox(4, 210, scrh - 176, staminabarclamp, 8, Color(100, 150, 0, 160))
+		draw.SimpleText(translate.Format("stamina", math.Round(me.Stamina, self.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 210, scrh - 186, !cansprint and Color(255, 155, 105) or Color(205, 255, 205), 0, 1)
+		draw.RoundedBox(2, 210, scrh - 176, 160, 15, Color((!cansprint and 200 or 50), 50, 0, 100))
+		if me.Stamina > 0 then
+			local staminabarclamp = math.Clamp(me.Stamina * 1.6, 0, 160)
+			draw.RoundedBox(4, 210, scrh - 176, staminabarclamp, 15, Color(!cansprint and 200 or 100, 150, 0, 160))
+			draw.RoundedBox(4, 210, scrh - 176, staminabarclamp, 8, Color(!cansprint and 200 or 100, 150, 0, 160))
 		end
 
 -------------- Hunger --------------
-		draw.SimpleText(translate.Format("hunger", math.Round(MyHunger / 100, self.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 210, scrh - 150, Color(255, 205, 255, 255), 0, 1)
+		draw.SimpleText(translate.Format("hunger", math.Round(me.Hunger / 100, self.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 210, scrh - 150, Color(255, 205, 255, 255), 0, 1)
 		draw.RoundedBox(2, 210, scrh - 140, 160, 15, Color(50, 0, 50, 100))
-		if (MyHunger / 100) > 0 then
-			local hungerbarclamp = math.Clamp((MyHunger / 100) * 1.6, 0, 160)
+		if (me.Hunger / 100) > 0 then
+			local hungerbarclamp = math.Clamp((me.Hunger / 100) * 1.6, 0, 160)
 			draw.RoundedBox(4, 210, scrh - 140, hungerbarclamp, 15, Color(90, 0, 120, 160))
 			draw.RoundedBox(4, 210, scrh - 140, hungerbarclamp, 8, Color(120, 0, 120, 80))
 		end
 
 -------------- Thirst --------------
-		draw.SimpleText(translate.Format("thirst", math.Round(MyThirst / 100, self.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 210, scrh - 114, Color(155,155,255,255), 0, 1)
+		draw.SimpleText(translate.Format("thirst", math.Round(me.Thirst / 100, self.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 210, scrh - 114, Color(155,155,255,255), 0, 1)
 		draw.RoundedBox(2, 210, scrh - 104, 160, 15, Color(45, 45, 75, 100))
-		if (MyThirst / 100) > 0 then
-			local thirstbarclamp = math.Clamp((MyThirst / 100) * 1.6, 0, 160)
+		if (me.Thirst / 100) > 0 then
+			local thirstbarclamp = math.Clamp((me.Thirst / 100) * 1.6, 0, 160)
 			draw.RoundedBox(4, 210, scrh - 104, thirstbarclamp, 15, Color(155,155,255,255))
 			draw.RoundedBox(4, 210, scrh - 104, thirstbarclamp, 8, Color(155,155,255,255))
 		end
 
 -------------- Fatigue --------------
-		draw.SimpleText(translate.Format("fatigue", math.Round(MyFatigue / 100, self.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 210, scrh - 78, Color(205,205,255,255), 0, 1)
+		draw.SimpleText(translate.Format("fatigue", math.Round(me.Fatigue / 100, self.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 210, scrh - 78, Color(205,205,255,255), 0, 1)
 		draw.RoundedBox(2, 210, scrh - 68, 160, 15, Color(0, 50, 50, 100))
-		if (MyFatigue / 100) > 0 then
-			local fatiguebarclamp = math.Clamp((MyFatigue / 100) * 1.6, 0, 160)
+		if (me.Fatigue / 100) > 0 then
+			local fatiguebarclamp = math.Clamp((me.Fatigue / 100) * 1.6, 0, 160)
 			draw.RoundedBox(4, 210, scrh - 68, fatiguebarclamp, 15, Color(0, 80, 80, 160))
 			draw.RoundedBox(4, 210, scrh - 68, fatiguebarclamp, 8, Color(0, 100, 100, 80))
 		end
 
 -------------- Infection --------------
-		draw.SimpleText(translate.Format("infection", math.Round(MyInfection / 100, self.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 210, scrh - 42, Color(205, 105, 105, 255), 0, 1)
+		draw.SimpleText(translate.Format("infection", math.Round(me.Infection / 100, self.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 210, scrh - 42, Color(205, 105, 105, 255), 0, 1)
 		draw.RoundedBox(2, 210, scrh - 32, 160, 15, Color(80, 0, 0, 100))
-		if (MyInfection / 100) > 0 then
-			local infectionbarclamp = math.Clamp((MyInfection / 100) * 1.6, 0, 160)
+		if (me.Infection / 100) > 0 then
+			local infectionbarclamp = math.Clamp((me.Infection / 100) * 1.6, 0, 160)
 			draw.RoundedBox(4, 210, scrh - 32, infectionbarclamp, 15, Color(250, 0, 0, 160))
 			draw.RoundedBox(4, 210, scrh - 32, infectionbarclamp, 8, Color(50, 0, 0, 100))
 		end
@@ -401,10 +410,10 @@ function GM:DrawVitals()
 		surface.DrawOutlinedRect(140, 30, 180, 45)
 		local armorstr = me:GetNWString("ArmorType") or "none"
 		local armortype = self.ItemsList[armorstr]
-		draw.SimpleText(translate.Format("battery", math.Clamp(MyBattery, 0, math.huge), 100 + (armorstr and armortype and armortype["ArmorStats"]["battery"] or 0)), "TargetIDTiny", 150, 42, Color(5,5,255,255), 0, 1)
+		draw.SimpleText(translate.Format("battery", math.Clamp(MyBattery, 0, math.huge), me:GetMaxBattery()), "TargetIDTiny", 150, 42, Color(5,5,255,255), 0, 1)
 		draw.RoundedBox(2, 150, 52, 160, 15, Color(0, 0, 80, 100))
 		if MyBattery > 0 then
-			local batterybarclamp = math.Clamp((MyBattery * 1.6) / (1 + (armorstr and armortype and armortype["ArmorStats"]["battery"] / 100 or 0)), 0, 160)
+			local batterybarclamp = math.Clamp((MyBattery * 1.6) / (me:GetMaxBattery() / 100), 0, 160)
 			draw.RoundedBox(4, 150, 52, batterybarclamp, 15, Color(0, 0, 250, 160))
 			draw.RoundedBox(4, 150, 52, batterybarclamp, 8, Color(0, 0, 50, 100))
 		end
@@ -473,20 +482,20 @@ function GM:DrawVitals()
 -------------- Stamina -------------- 
 		surface.SetDrawColor(0, 0, 0, 255)
 		surface.DrawOutlinedRect(20, scrh - 140, 200, 8)
-		draw.SimpleText(translate.Format("stamina", math.Round(MyStamina, self.HUDDecimalValues and 1 or 0)), "TEA.HUDFontSmall", 20, scrh - 150, Color(205,205,205,255), 0, 1)
+		draw.SimpleText(translate.Format("stamina", math.Round(me.Stamina, self.HUDDecimalValues and 1 or 0)), "TEA.HUDFontSmall", 20, scrh - 150, Color(205,205,205,255), 0, 1)
 		surface_DrawRectColor(20, scrh - 140, 200, 8, Color(50,50,0,75))
-		if MyStamina > 0 then
-			local staminabarclamp = math.Clamp(MyStamina * 2, 0, 200)
+		if me.Stamina > 0 then
+			local staminabarclamp = math.Clamp(me.Stamina * 2, 0, 200)
 			surface_DrawRectColor(20, scrh - 140, staminabarclamp, 4, Color(250, 200, 0, 160))
 			surface_DrawRectColor(20, scrh - 136, staminabarclamp, 4, Color(220, 170, 0, 160))
 		end
 -------------- Thirst --------------
 		surface.SetDrawColor(0, 0, 0, 255)
 		surface.DrawOutlinedRect(20, scrh - 110, 200, 8)
-		draw.SimpleText(translate.Format("thirst", math.Round(MyThirst / 100, self.HUDDecimalValues and 1 or 0)), "TEA.HUDFontSmall", 20, scrh - 120, Color(205,205,205,255), 0, 1)
+		draw.SimpleText(translate.Format("thirst", math.Round(me.Thirst / 100, self.HUDDecimalValues and 1 or 0)), "TEA.HUDFontSmall", 20, scrh - 120, Color(205,205,205,255), 0, 1)
 		surface_DrawRectColor(20, scrh - 110, 200, 8, Color(50,75,100,75))
-		if MyThirst > 0 then
-			local thirstbarclamp = math.Clamp(MyThirst / 50, 0, 200)
+		if me.Thirst > 0 then
+			local thirstbarclamp = math.Clamp(me.Thirst / 50, 0, 200)
 			surface_DrawRectColor(20, scrh - 110, thirstbarclamp, 4, Color(100,150,200,160))
 			surface_DrawRectColor(20, scrh - 106, thirstbarclamp, 4, Color(90,135,180,160))
 		end
@@ -494,10 +503,10 @@ function GM:DrawVitals()
 -------------- Hunger --------------
 		surface.SetDrawColor(0, 0, 0, 255)
 		surface.DrawOutlinedRect(20, scrh - 80, 200, 8)
-		draw.SimpleText(translate.Format("hunger", math.Round(MyHunger / 100, self.HUDDecimalValues and 1 or 0)), "TEA.HUDFontSmall", 20, scrh - 90, Color(205,205,205,255), 0, 1)
+		draw.SimpleText(translate.Format("hunger", math.Round(me.Hunger / 100, self.HUDDecimalValues and 1 or 0)), "TEA.HUDFontSmall", 20, scrh - 90, Color(205,205,205,255), 0, 1)
 		surface_DrawRectColor(20, scrh - 80, 200, 8, Color(0,50,0,75))
-		if MyHunger > 0 then
-			local hungerbarclamp = math.Clamp(MyHunger / 50, 0, 200)
+		if me.Hunger > 0 then
+			local hungerbarclamp = math.Clamp(me.Hunger / 50, 0, 200)
 			surface_DrawRectColor(20, scrh - 80, hungerbarclamp, 4, Color(0,100,0,160))
 			surface_DrawRectColor(20, scrh - 76, hungerbarclamp, 4, Color(0,100,0,160))
 		end
@@ -505,10 +514,10 @@ function GM:DrawVitals()
 -------------- Fatigue --------------
 		surface.SetDrawColor(0, 0, 0, 255)
 		surface.DrawOutlinedRect(20, scrh - 50, 200, 8)
-		draw.SimpleText(translate.Format("fatigue", math.Round(MyFatigue / 100, self.HUDDecimalValues and 1 or 0)), "TEA.HUDFontSmall", 20, scrh - 60, Color(205,205,205,255), 0, 1)
+		draw.SimpleText(translate.Format("fatigue", math.Round(me.Fatigue / 100, self.HUDDecimalValues and 1 or 0)), "TEA.HUDFontSmall", 20, scrh - 60, Color(205,205,205,255), 0, 1)
 		surface_DrawRectColor(20, scrh - 50, 200, 8, Color(75,75,75,75))
-		if MyFatigue > 0 then
-			local fatiguebarclamp = math.Clamp(MyFatigue / 50, 0, 200)
+		if me.Fatigue > 0 then
+			local fatiguebarclamp = math.Clamp(me.Fatigue / 50, 0, 200)
 			surface_DrawRectColor(20, scrh - 50, fatiguebarclamp, 4, Color(250,250,250,160))
 			surface_DrawRectColor(20, scrh - 46, fatiguebarclamp, 4, Color(200,200,250,160))
 		end
@@ -516,10 +525,10 @@ function GM:DrawVitals()
 -------------- Infection --------------
 		surface.SetDrawColor(0, 0, 0, 255)
 		surface.DrawOutlinedRect(20, scrh - 20, 200, 8)
-		draw.SimpleText(translate.Format("infection", math.Round(MyInfection / 100, self.HUDDecimalValues and 1 or 0)), "TEA.HUDFontSmall", 20, scrh - 30, Color(205,205,205,255), 0, 1)
+		draw.SimpleText(translate.Format("infection", math.Round(me.Infection / 100, self.HUDDecimalValues and 1 or 0)), "TEA.HUDFontSmall", 20, scrh - 30, Color(205,205,205,255), 0, 1)
 		surface_DrawRectColor(20, scrh - 20, 200, 8, Color(75,0,0,75))
-		if MyInfection > 0 then
-			local infectionbarclamp = math.Clamp(MyInfection / 50, 0, 200)
+		if me.Infection > 0 then
+			local infectionbarclamp = math.Clamp(me.Infection / 50, 0, 200)
 			surface_DrawRectColor(20, scrh - 20, infectionbarclamp, 4, Color(200,100,100,160))
 			surface_DrawRectColor(20, scrh - 16, infectionbarclamp, 4, Color(160,80,80,160))
 		end
@@ -529,10 +538,10 @@ function GM:DrawVitals()
 		surface.DrawOutlinedRect(scrw - 250, scrh - 20, 200, 8)
 		local armorstr = me:GetNWString("ArmorType") or "none"
 		local armortype = self.ItemsList[armorstr]
-		draw.SimpleText(translate.Format("battery", math.max(MyBattery, 0), 100 + (armorstr and armortype and armortype["ArmorStats"]["battery"] or 0)), "TEA.HUDFontSmall", scrw - 250, scrh - 30, Color(205,205,205,255), 0, 1)
+		draw.SimpleText(translate.Format("battery", math.max(MyBattery, 0), me:GetMaxBattery()), "TEA.HUDFontSmall", scrw - 250, scrh - 30, Color(205,205,205,255), 0, 1)
 		surface_DrawRectColor(scrw - 250, scrh - 20, 200, 8, Color(0,0,75,75))
 		if MyBattery > 0 then
-			local batterybarclamp = math.Clamp((MyBattery * 2) / (1 + (armorstr and armortype and armortype["ArmorStats"]["battery"] / 100 or 0)), 0, 200)
+			local batterybarclamp = math.Clamp((MyBattery * 2) / (me:GetMaxBattery() / 100), 0, 200)
 			surface_DrawRectColor(scrw - 250, scrh - 20, batterybarclamp, 4, Color(0,0,200,160))
 			surface_DrawRectColor(scrw - 250, scrh - 16, batterybarclamp, 4, Color(0,0,150,160))
 		end
@@ -552,12 +561,12 @@ function GM:DrawVitals()
 
 		surface_DrawRectColor(216, scrh - 108, 192, 100, Color(255,255,255,65))
 		surface_DrawRectColor(scrw - 208, scrh - 108, 192, 100, Color(255,255,255,65))
-		draw.SimpleText(translate.Format("stamina", math.Round(MyStamina, self.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 224, scrh - 100, Color(255,255,255), 0, 1)
-		draw.SimpleText(translate.Format("thirst", math.Round(MyThirst / 100, self.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 224, scrh - 84, Color(255, 205, 255, 255), 0, 1)
-		draw.SimpleText(translate.Format("hunger", math.Round(MyHunger / 100, self.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 224, scrh - 68, Color(155,155,255,255), 0, 1)
-		draw.SimpleText(translate.Format("fatigue", math.Round(MyFatigue / 100, self.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 224, scrh - 52, Color(205,205,255,255), 0, 1)
-		draw.SimpleText(translate.Format("infection", math.Round(MyInfection / 100, self.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 224, scrh - 36, Color(205, 105, 105, 255), 0, 1)
-		draw.SimpleText(translate.Format("battery", math.Clamp(MyBattery, 0, math.huge), 100 + (armorstr and armortype and armortype["ArmorStats"]["battery"] or 0)), "TargetIDTiny", 224, scrh - 20, Color(5,5,255,255), 0, 1)
+		draw.SimpleText(translate.Format("stamina", math.Round(me.Stamina, self.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 224, scrh - 100, Color(255,255,255), 0, 1)
+		draw.SimpleText(translate.Format("thirst", math.Round(me.Thirst / 100, self.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 224, scrh - 84, Color(255, 205, 255, 255), 0, 1)
+		draw.SimpleText(translate.Format("hunger", math.Round(me.Hunger / 100, self.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 224, scrh - 68, Color(155,155,255,255), 0, 1)
+		draw.SimpleText(translate.Format("fatigue", math.Round(me.Fatigue / 100, self.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 224, scrh - 52, Color(205,205,255,255), 0, 1)
+		draw.SimpleText(translate.Format("infection", math.Round(me.Infection / 100, self.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 224, scrh - 36, Color(205, 105, 105, 255), 0, 1)
+		draw.SimpleText(translate.Format("battery", math.Clamp(MyBattery, 0, math.huge), me:GetMaxBattery()), "TargetIDTiny", 224, scrh - 20, Color(5,5,255,255), 0, 1)
 
 	end
 
@@ -579,11 +588,11 @@ function GM:DrawVitals()
 	end
 
 
-	if MyOxygen < 100 then
-		draw.SimpleText(Format("Oxygen: %d%%", math.Round(MyOxygen)), "TargetIDTiny", ScrW()/2, 186, Color(205, 205, 255, 255), TEXT_ALIGN_CENTER, 0)
+	if me.Oxygen < 100 then
+		draw.SimpleText(Format("Oxygen: %d%%", math.Round(me.Oxygen)), "TargetIDTiny", ScrW()/2, 186, Color(205, 205, 255, 255), TEXT_ALIGN_CENTER, 0)
 		draw.RoundedBox(2, 210, scrh - 176, 160, 15, Color(50, 50, 0, 100))
-		if MyStamina > 0 then
-			local staminabarclamp = math.Clamp(MyStamina * 1.6, 0, 160)
+		if me.Stamina > 0 then
+			local staminabarclamp = math.Clamp(me.Stamina * 1.6, 0, 160)
 			draw.RoundedBox(4, 210, scrh - 176, staminabarclamp, 15, Color(100, 150, 0, 160))
 			draw.RoundedBox(4, 210, scrh - 176, staminabarclamp, 8, Color(100, 150, 0, 160))
 		end
@@ -888,7 +897,7 @@ function GM:PostDrawHUD()
 		draw.SimpleText("You are now sleeping.", "TEA.HUDFontSmall", ScrW() / 2, ScrH() / 2 - 20, Color(255,255,255,205), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 		draw.SimpleText("You will not be able to move during your sleep.", "TEA.HUDFontSmall", ScrW() / 2, ScrH() / 2 + 10, Color(255,255,255,205), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 		draw.SimpleText("You might be forced to wake up if you get too thirsty, hungry or the infection is about to kill you.", "TEA.HUDFontSmall", ScrW() / 2, ScrH() / 2 + 40, Color(255,255,255,205), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-		draw.SimpleText("Estimated time until fatigue is replenished: "..math.Round(MyFatigue/200).."s", "TEA.HUDFontSmall", ScrW() / 2, ScrH() / 2 + 80, Color(255,255,255,205), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		draw.SimpleText("Estimated time until fatigue is replenished: "..math.Round(me.Fatigue/200).."s", "TEA.HUDFontSmall", ScrW() / 2, ScrH() / 2 + 80, Color(255,255,255,205), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 	end
 
 	draw.SimpleText(translate.Format("xpgained", XPGained, TotalXPGained), "TEA.HUDFont", ScrW() / 2 + 10, ScrH() / 2, XPColor, 0, 1)
@@ -926,9 +935,9 @@ function GM:RenderScreenspaceEffects()
 	local modify = {}
 	local color = 1
 	local contrast = 1
-	local hp = (((ply:GetMaxHealth() * 0.5) - ply:Health()) * (1 / (ply:GetMaxHealth() * 0.5)))
+	local hp = (((ply:GetMaxHealth() * 0.4) - ply:Health()) * (1 / (ply:GetMaxHealth() * 0.4)))
 	
-	if (ply:Health() < (ply:GetMaxHealth() * 0.5)) then
+	if (ply:Health() < (ply:GetMaxHealth() * 0.4)) then
 		if (ply:Alive()) then
 			color = math.Clamp(color - hp, 0, color)
 		else

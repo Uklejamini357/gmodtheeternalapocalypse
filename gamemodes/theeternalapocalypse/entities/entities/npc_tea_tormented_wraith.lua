@@ -150,8 +150,5 @@ function ENT:OnKilled(damageInfo)
 	local attacker = damageInfo:GetAttacker()
 	self:EmitSound(table.Random(self.DieSounds), 100, math.Rand(90, 100))
 	self:BecomeRagdoll(damageInfo)
-	timer.Simple(0.25, function()
-		self:Remove()
-	end)
 	gamemode.Call("OnNPCKilled", self, damageInfo:GetAttacker(), damageInfo:GetInflictor())
 end

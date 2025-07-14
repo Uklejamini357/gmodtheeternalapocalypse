@@ -180,7 +180,7 @@ function UseFunc_Armor(ply, usetime, battery, armor, snd)
 		end
 		local armorstr = ply:GetNWString("ArmorType") or "none"
 		local armortype = GAMEMODE.ItemsList[armorstr]
-		ply.Battery = math.Clamp(ply.Battery + battery, 0, 100 + (armortype and armorstr and armortype["ArmorStats"]["battery"] or 0))
+		ply.Battery = math.Clamp(ply.Battery + battery, 0, ply:GetMaxBattery())
 		ply:SetArmor(math.Clamp(ply:Armor() + (armor * (1 + (ply.StatEngineer * 0.02))), 0, ply:GetMaxArmor()))
 		ply:EmitSound(snd, 100, 100)
 		ply:SendUseDelay(usetime, "Reinforcing armor...")

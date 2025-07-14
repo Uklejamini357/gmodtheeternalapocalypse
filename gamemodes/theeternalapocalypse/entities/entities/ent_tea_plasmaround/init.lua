@@ -26,14 +26,14 @@ function ENT:Initialize()
 	local phys = self.Entity:GetPhysicsObject()
 	
 	if (phys:IsValid()) then
+		phys:SetMass(10)
 		phys:Wake()
 	end
 
 	self.Timer = CurTime() + 0.075
 	self.Explode = true
 
-	util.SpriteTrail(self.Entity, 0, Color(128, 255, 255, 255), false, 30, 0, 0.5, 1 / ((30 + 0) * 0.5), "trails/laser.vmt")
-//	util.SpriteTrail(self.Entity, 0, Color(155, 155, 155, 155), false, 2, 10, 5, 5 / ((2 + 10) * 0.5), "trails/smoke.vmt")
+	util.SpriteTrail(self.Entity, 0, Color(128, 255, 255, 255), false, 30, 0, 0.5, 1 / (30 * 0.5), "trails/laser.vmt")
 end
 
 /*---------------------------------------------------------
@@ -41,8 +41,10 @@ end
 ---------------------------------------------------------*/
 function ENT:Think()
 
-	if self.Power < 220 then
-		self.Power = self.Power + 5
+	if self.Power > 150 then
+		self.Power = math.min(350, self.Power + 40*FrameTime())
+	else
+		self.Power = self.Power + 80*FrameTime()
 	end
 
 	if self.Timer < CurTime() then
@@ -61,7 +63,10 @@ function ENT:Think()
 	energyball:Spawn()
 	energyball:Activate()
 	energyball:SetParent(self.Entity)
-	energyball:Fire("StartCharge", "2", 0)
+	energyball:Fire("StartCharge", 2.5, 0)
+
+	self:NextThink(CurTime())
+	return true
 end
 
 /*---------------------------------------------------------
@@ -82,13 +87,17 @@ function ENT:Explosion()
 		explo:Activate()
 		explo:Fire("Explode", "", 0)
 */
+
+	self.Entity:EmitSound("ambient/energy/weld1.wav", 80, 125)
+	self.Entity:EmitSound("ambient/energy/ion_cannon_shot2.wav", 90, 75)
+
 	local effectdata = EffectData()
-		effectdata:SetOrigin(self.Entity:GetPos())
-		effectdata:SetScale(self.Power / 10)
+	effectdata:SetOrigin(self.Entity:GetPos())
+	effectdata:SetScale(self.Power / 10)
 	util.Effect("effect_mad_plasmabomb", effectdata)
 
 	local position = self.Entity:GetPos()
-	local damage = self.Power
+	local damage = self.Power * 1.5
 	local radius = self.Power * 2.75
 	local attacker = self.Owner
 	local inflictor = self.Entity
@@ -154,7 +163,5 @@ function ENT:PhysicsCollide(data, physobj)
 	util.Decal("Scorch", data.HitPos + data.HitNormal, data.HitPos - data.HitNormal) 
 
 	self:Explosion()
-	self.Entity:EmitSound("ambient/energy/weld1.wav", 80, 125)
-	self.Entity:EmitSound("ambient/energy/ion_cannon_shot2.wav", 90, 75)
 	self.Entity:Remove()
 end

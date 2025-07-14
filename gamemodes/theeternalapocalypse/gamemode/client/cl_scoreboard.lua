@@ -227,16 +227,16 @@ function GM:CreateScoreboardInv()
 			local pvp = vgui.Create("DPanel", plypanel)
 			pvp:SetSize(wide*0.05, 24)
 			pvp:SetPos(wide*0.85, 7)
-			pvp.Paint = function() -- Paint function
+			pvp.Paint = function(panel, w, h) -- Paint function
 				surface.SetDrawColor(150, 0, 0 ,255)
 				surface.DrawOutlinedRect(1, 1, pvp:GetWide() - 1 , pvp:GetTall() - 1)
 				surface.SetDrawColor(100, 0, 0 ,105)
 				if v:IsValid() then
 					if v:Team() == TEAM_LONER and not v:GetNWBool("pvp") then
-						draw.DrawText(translate.Get("pvp"), "DermaDefault", 12, 5, Color(55,55,55))
+						draw.DrawText(translate.Get("pvp"), "DermaDefault", w*0.5, h*0.25, Color(155,155,155), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 						pvp:SetToolTip(translate.Get("pvp_disabled"))
 					else
-						draw.DrawText(translate.Get("pvp"), "DermaDefault", 12, 5, Color(255,255,255))
+						draw.DrawText(translate.Get("pvp"), "DermaDefault", w*0.5, h*0.25, Color(255,255,255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 						surface.DrawRect(1, 1, pvp:GetWide() - 1 , pvp:GetTall() - 1)
 						pvp:SetToolTip(translate.Get("pvp_enabled"))
 					end

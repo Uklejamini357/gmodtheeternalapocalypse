@@ -221,11 +221,11 @@ function GM:StartCommand(ply, cmd)
 	local keys = cmd:GetButtons()
 	cmd:ClearButtons()
 
-	if (ply.Stamina or MyStamina) > 20 and !ply:GetCanSprint() then
+	if ply.Stamina > 20 and !ply:GetCanSprint() then
 		ply:SetCanSprint(true)
 	end
 
-	if (ply:IsSprinting() and ply:GetPlayerMoving() and (ply.Stamina or MyStamina) <= 0) and ply:GetCanSprint() then
+	if (ply:IsSprinting() and ply:GetPlayerMoving() and ply.Stamina <= 0) and ply:GetCanSprint() then
 		-- ply:ConCommand("-speed")
 		ply:SetCanSprint(false)
 	end
@@ -243,7 +243,6 @@ function GM:StartCommand(ply, cmd)
 		cmd:ClearButtons()
 		cmd:ClearMovement()
 
-
 		return true
 	end
 
@@ -251,6 +250,13 @@ function GM:StartCommand(ply, cmd)
 end
 
 function GM:Move(ply, mv)
+	if ply.Stamina then
+		if ply.Stamina <= 1 then
+			mv:SetMaxSpeed(mv:GetMaxSpeed()*0.75)
+		elseif ply.Stamina <= 10 then
+			mv:SetMaxSpeed(mv:GetMaxSpeed()*0.9)
+		end
+	end
 end
 
 function util.ToMinutesSeconds(seconds)
@@ -434,39 +440,52 @@ function GM:GetItemDescription(id, ply) -- ply is for the server
 
 	local consum = item.ConsumableStats
 	if consum then
-		if consum.UseTime then
+		if consum.UseTime and consum.UseTime > 0 then
 			desc = desc.."\nUse Time: "..consum.UseTime.."s"
 		end
 		desc = desc.."\n"
 
 		desc = desc.."\nOn usage:"
 
-		if consum.Health then
+		if consum.Health and consum.Health ~= 0 then
 			local medskill
-			if ply and ply:IsValid() and ply.StatMedSkill ~= 0 then
-				medskill = (consum.Health > 0 and "+"..math.Round(consum.Health * ply.StatMedSkill) or math.Round(consum.Health * ply.StatMedSkill))
+			if ply and ply:IsValid() and ply.StatMedSSkill ~= 0 then
+				medskill = (consum.Health > 0 and "+"..math.Round(consum.Health * ply.StatMedSkill) or math.Round(consum.Health))
 			end
 
-			desc = desc.."\nHealth: "..(consum.Health > 0 and "+"..consum.Health or consum.Health).."%"..(medskill and "(MedSkill: "..medskill.."% Health)" or "")
+			desc = desc.."\nHealth: "..(consum.Health > 0 and "+"..consum.Health or consum.Health).."%"..(medskill and "(Engineer: "..medskill.."% Health)" or "")
 		end
 
-		if consum.Infection then
+		if consum.Armor and consum.Armor ~= 0 then
+			local engineer
+			if ply and ply:IsValid() and ply.StatEngineer ~= 0 then
+				engineer = (consum.Armor > 0 and "+"..math.Round(consum.Armor * ply.StatEngineer) or math.Round(consum.Armor))
+			end
+
+			desc = desc.."\nArmor: "..(consum.Armor > 0 and "+"..consum.Armor or consum.Armor).."%"..(engineer and "(Engineer: "..engineer.."% Armor)" or "")
+		end
+
+		if consum.Battery and consum.Battery ~= 0 then
+			desc = desc.."\nBattery: "..(consum.Battery > 0 and "+"..consum.Battery or consum.Battery).."%"
+		end
+
+		if consum.Infection and consum.Infection ~= 0 then
 			desc = desc.."\nInfection: "..(consum.Infection > 0 and "+"..consum.Infection or consum.Infection).."%"
 		end
 		
-		if consum.Stamina then
+		if consum.Stamina and consum.Stamina ~= 0 then
 			desc = desc.."\nStamina: "..(consum.Stamina > 0 and "+"..consum.Stamina or consum.Stamina).."%"
 		end
 
-		if consum.Thirst then
+		if consum.Thirst and consum.Thirst ~= 0 then
 			desc = desc.."\nThirst: "..(consum.Thirst > 0 and "+"..consum.Thirst or consum.Thirst).."%"
 		end
 
-		if consum.Hunger then
+		if consum.Hunger and consum.Hunger ~= 0 then
 			desc = desc.."\nHunger: "..(consum.Hunger > 0 and "+"..consum.Hunger or consum.Hunger).."%"
 		end
 
-		if consum.Fatigue then
+		if consum.Fatigue and consum.Fatigue ~= 0 then
 			desc = desc.."\nFatigue: "..(consum.Fatigue > 0 and "+"..consum.Fatigue or consum.Fatigue).."%"
 		end
 	end

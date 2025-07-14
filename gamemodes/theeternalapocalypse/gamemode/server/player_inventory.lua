@@ -74,6 +74,7 @@ function GM:SystemGiveItem(ply, str, qty)
 	else 
 		ply.Inventory[str] = qty
 	end
+	ply:RecalculateCurrentWeight()
 	gamemode.Call("RecalcPlayerSpeed", ply)
 	return true
 end
@@ -94,6 +95,7 @@ function GM:SystemRemoveItem(ply, str, strip, amt)
 	end
 	ply.Inventory[str] = ply.Inventory[str] - amt
 	if ply.Inventory[str] < 1 then ply.Inventory[str] = nil end
+	ply:RecalculateCurrentWeight()
 	gamemode.Call("RecalcPlayerSpeed", ply)
 end
 
@@ -172,22 +174,26 @@ function GM:UseItem(ply, item, use, targetply)
 
 					if consum.UseTime then
 						local str = {
-							[ITEMTYPE_MED] = "Healing "..(targetply and targetply:Nick() or "").."...",
+							[ITEMTYPE_MED] = "Healing "..(targetply and targetply ~= ply and targetply:Nick() or "").."...",
 							[ITEMTYPE_MEDANTIDOTE] = "Healing Infection...",
 							[ITEMTYPE_ARMOR] = "Reinforcing armor...",
 							[ITEMTYPE_FOOD] = "Eating food...",
 							[ITEMTYPE_DRINK] = "Drinking...",
 						}
 
-						ply:SendUseDelay(consum.UseTime, str[itemtype] or "Using an item")
+						ply:SendUseDelay(consum.UseTime, str[itemtype] or "Using an item", nil, consum.FastUsable)
 					end
 
 					if consum.Health then
-						ply:SetHealth(math.min(ply:GetMaxHealth(), ply:Health() + consum.Health*(1 + ply.StatMedSkill*0.025)))
+						ply:SetHealth(math.min(ply:GetMaxHealth(), ply:Health() + consum.Health*(1 + (consum.Health > 0 and ply.StatMedSkill*0.025 or 0))))
 					end
 
 					if consum.Armor then
-						ply:SetArmor(math.min(ply:GetMaxArmor(), ply:Armor() + consum.Armor*(1 + ply.StatEngineer*0.02)))
+						ply:SetArmor(math.min(ply:GetMaxArmor(), ply:Armor() + consum.Armor*(1 + (consum.Armor > 0 and ply.StatEngineer*0.02 or 0))))
+					end
+
+					if consum.Battery then
+						ply.Battery = math.min(ply:GetMaxBattery(), ply.Battery + consum.Battery)
 					end
 
 					if consum.Infection then

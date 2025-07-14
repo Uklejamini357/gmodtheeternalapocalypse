@@ -336,10 +336,10 @@ function GM:Think()
 			if ply.Battery <= 0 then
 				ply:Flashlight(false)
 			else
-				ply.Battery = math.Clamp(ply.Battery - 1*ft, 0, 100 + (armorstr and armortype and armortype["ArmorStats"]["battery"] or 0))
+				ply.Battery = math.Clamp(ply.Battery - 1*ft, 0, ply:GetMaxBattery())
 			end
 		else
-			ply.Battery = math.Clamp(ply.Battery + 1.35*ft, 0, 100 + (armorstr and armortype and armortype["ArmorStats"]["battery"] or 0))
+			ply.Battery = math.Clamp(ply.Battery + 1.35*ft, 0, ply:GetMaxBattery())
 		end
 
 
@@ -390,6 +390,7 @@ function GM:Think()
 		local PlayerIsMoving = ply:GetPlayerMoving()
 		if ply:GetMoveType() != MOVETYPE_NOCLIP or ply:InVehicle() then	
 			local endurance_mul = 1 / (1 + ply.StatEndurance*0.028)
+			local weightpenalty = ply:GetStaminaDrainWeightMul()
 			local fatigabove70 = ply.Fatigue > 7000
 			local fatigabove90 = ply.Fatigue > 9000
 			local fatigabove99 = ply.Fatigue > 9900
@@ -400,13 +401,14 @@ function GM:Think()
 				ply.Stamina = ply.Stamina - 2*ft
 			end
 
+
 			if !ply:InVehicle() then
 				if (ply:IsSprinting() and PlayerIsMoving and not ply:Crouching()) then
-					ply.Stamina = ply.Stamina - 6*ft*endurance_mul
+					ply.Stamina = ply.Stamina - 6*ft*endurance_mul*weightpenalty
 				elseif PlayerIsMoving and ply:Crouching() then
-					ply.Stamina = ply.Stamina - 2.7*ft*endurance_mul
+					ply.Stamina = ply.Stamina - 2.7*ft*endurance_mul*math.sqrt(weightpenalty)
 				elseif PlayerIsMoving then
-					ply.Stamina = ply.Stamina - 3*ft*endurance_mul
+					ply.Stamina = ply.Stamina - 3*ft*endurance_mul*math.sqrt(weightpenalty)
 				end
 			end
 
@@ -690,6 +692,7 @@ end
 
 function GM:DamageFloater(attacker, victim, dmgpos, dmg)
 	if attacker == victim then return end
+	if victim:Health() < 0 then return end
 	if dmgpos == vector_origin then dmgpos = victim:NearestPoint(attacker:EyePos()) end
 
 	net.Start("tea_damagefloater")

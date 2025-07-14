@@ -230,6 +230,45 @@ end
 
 function GM:SpawnZombies()
 	if self:ZombieCount() >= self.MaxZombies then return false end
+	if GetGlobalBool("GM.ZombieSpawnNearPlayer") then
+		local spawned = 0
+		local maxspawns = 5
+
+		while spawned < maxspawns do
+			spawned = spawned + 1
+
+			local ply = table.Random(player.GetAll())
+			local spawnpos
+
+			local canspawn = true
+
+			spawnpos = ply:GetPos() + Vector(
+				math.random(-5000, 5000),
+				math.random(-5000, 5000),
+				math.random(-1000, 1000)
+			)
+
+			local zeds = ents.FindInSphere(spawnpos, 1000)
+			for k, v in pairs(zeds) do
+				if v:IsNextBot() or v:IsNPC() or v:IsPlayer() then canspawn = false break end
+			end
+
+			for i=1,50 do
+				spawnpos.z = spawnpos.z + 100
+				local tr = util.TraceLine({start = spawnpos, endpos = spawnpos + Vector(0,0,-10000)})
+				if tr.Hit then
+					spawnpos.z = tr.HitPos.z
+					break
+				end
+			end
+
+			self:SpawnRandomZombie(spawnpos + Vector(0, 0, 10), Angle(0,math.random(-180,180),0))
+
+		end
+		return true
+	end
+
+
 	if ZombieData ~= "" then
 		local ZombiesList = string.Explode("\n", ZombieData)
 		for k, v in RandomPairs(ZombiesList) do
@@ -549,3 +588,15 @@ end
 concommand.Add("tea_dev_spawnzombie", function(ply, cmd, args)
 	GAMEMODE:SpawnZombie(ply, cmd, args)
 end)
+
+function GM:StartSpawningZombiesNearPlayer()
+	if GetGlobalBool("GM.ZombieSpawnNearPlayer") then return end
+	SetGlobalBool("GM.ZombieSpawnNearPlayer", true)
+	PrintMessage(3, "enabled")
+end
+
+function GM:StopSpawningZombiesNearPlayer()
+	if not GetGlobalBool("GM.ZombieSpawnNearPlayer") then return end
+	SetGlobalBool("GM.ZombieSpawnNearPlayer", false)
+	PrintMessage(3, "disabled")
+end
