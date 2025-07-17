@@ -410,10 +410,10 @@ function GM:DrawVitals()
 		surface.DrawOutlinedRect(140, 30, 180, 45)
 		local armorstr = me:GetNWString("ArmorType") or "none"
 		local armortype = self.ItemsList[armorstr]
-		draw.SimpleText(translate.Format("battery", math.Clamp(MyBattery, 0, math.huge), me:GetMaxBattery()), "TargetIDTiny", 150, 42, Color(5,5,255,255), 0, 1)
+		draw.SimpleText(translate.Format("battery", math.Clamp(me.Battery, 0, math.huge), me:GetMaxBattery()), "TargetIDTiny", 150, 42, Color(5,5,255,255), 0, 1)
 		draw.RoundedBox(2, 150, 52, 160, 15, Color(0, 0, 80, 100))
-		if MyBattery > 0 then
-			local batterybarclamp = math.Clamp((MyBattery * 1.6) / (me:GetMaxBattery() / 100), 0, 160)
+		if me.Battery > 0 then
+			local batterybarclamp = math.Clamp((me.Battery * 1.6) / (me:GetMaxBattery() / 100), 0, 160)
 			draw.RoundedBox(4, 150, 52, batterybarclamp, 15, Color(0, 0, 250, 160))
 			draw.RoundedBox(4, 150, 52, batterybarclamp, 8, Color(0, 0, 50, 100))
 		end
@@ -538,10 +538,10 @@ function GM:DrawVitals()
 		surface.DrawOutlinedRect(scrw - 250, scrh - 20, 200, 8)
 		local armorstr = me:GetNWString("ArmorType") or "none"
 		local armortype = self.ItemsList[armorstr]
-		draw.SimpleText(translate.Format("battery", math.max(MyBattery, 0), me:GetMaxBattery()), "TEA.HUDFontSmall", scrw - 250, scrh - 30, Color(205,205,205,255), 0, 1)
+		draw.SimpleText(translate.Format("battery", math.max(me.Battery, 0), me:GetMaxBattery()), "TEA.HUDFontSmall", scrw - 250, scrh - 30, Color(205,205,205,255), 0, 1)
 		surface_DrawRectColor(scrw - 250, scrh - 20, 200, 8, Color(0,0,75,75))
-		if MyBattery > 0 then
-			local batterybarclamp = math.Clamp((MyBattery * 2) / (me:GetMaxBattery() / 100), 0, 200)
+		if me.Battery > 0 then
+			local batterybarclamp = math.Clamp((me.Battery * 2) / (me:GetMaxBattery() / 100), 0, 200)
 			surface_DrawRectColor(scrw - 250, scrh - 20, batterybarclamp, 4, Color(0,0,200,160))
 			surface_DrawRectColor(scrw - 250, scrh - 16, batterybarclamp, 4, Color(0,0,150,160))
 		end
@@ -566,7 +566,7 @@ function GM:DrawVitals()
 		draw.SimpleText(translate.Format("hunger", math.Round(me.Hunger / 100, self.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 224, scrh - 68, Color(155,155,255,255), 0, 1)
 		draw.SimpleText(translate.Format("fatigue", math.Round(me.Fatigue / 100, self.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 224, scrh - 52, Color(205,205,255,255), 0, 1)
 		draw.SimpleText(translate.Format("infection", math.Round(me.Infection / 100, self.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 224, scrh - 36, Color(205, 105, 105, 255), 0, 1)
-		draw.SimpleText(translate.Format("battery", math.Clamp(MyBattery, 0, math.huge), me:GetMaxBattery()), "TargetIDTiny", 224, scrh - 20, Color(5,5,255,255), 0, 1)
+		draw.SimpleText(translate.Format("battery", math.Clamp(me.Battery, 0, math.huge), me:GetMaxBattery()), "TargetIDTiny", 224, scrh - 20, Color(5,5,255,255), 0, 1)
 
 	end
 
