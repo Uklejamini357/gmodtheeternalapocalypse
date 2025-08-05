@@ -76,6 +76,7 @@ function SWEP:Grenade()
 	grenade:Activate()
 
 	local phys = grenade:GetPhysicsObject()
+	phys:SetVelocity(self.Owner:GetVelocity())
 	phys:ApplyForceCenter(self.Owner:GetAimVector() * self.Force + Vector(0, 0, 200))
 end
 

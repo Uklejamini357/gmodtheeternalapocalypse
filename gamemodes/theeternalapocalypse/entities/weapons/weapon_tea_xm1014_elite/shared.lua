@@ -12,7 +12,7 @@ SWEP.UseHands			= true
 SWEP.Primary.Sound 		= Sound("Weapon_XM1014.Single")
 SWEP.Primary.Recoil		= 1.5
 SWEP.Primary.Damage		= 11
-SWEP.Primary.NumShots		= 6
+SWEP.Primary.NumShots		= 9
 SWEP.Primary.Cone			= 0.08
 SWEP.Primary.Delay 		= 0.25
 

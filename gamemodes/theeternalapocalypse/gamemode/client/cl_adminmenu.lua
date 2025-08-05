@@ -39,8 +39,10 @@ function GM:AdminMenu()
 		return
 	end
 	
+	local wide, tall = 1000, 700
+
 	AdmMenuFrame = vgui.Create("DFrame")
-	AdmMenuFrame:SetSize(1000, 700)
+	AdmMenuFrame:SetSize(wide, tall)
 	AdmMenuFrame:Center()
 	AdmMenuFrame:SetTitle(translate.Get("admin_panel"))
 	AdmMenuFrame:SetDraggable(false)
@@ -461,14 +463,11 @@ function GM:AdminMenu()
 		this:SetTextColor(LocalPlayer():CalculateWeight() >= LocalPlayer():CalculateMaxWalkWeight() and Color(255,0,0) or LocalPlayer():CalculateWeight() >= LocalPlayer():CalculateMaxWeight() and Color(255,255,0) or Color(255,255,255))
 	end
 	]]
-	local tall = 635
-	local wide = 890
 
 	local buypanel = {}
 	for i=1,7 do
 		buypanel[i] = vgui.Create("DPanelList")
-		buypanel[i]:SetTall(tall)
-		buypanel[i]:SetWide(wide)
+		buypanel[i]:SetSize(wide-110, tall-65)
 		buypanel[i]:SetPos(5, 25)
 		buypanel[i]:EnableVerticalScrollbar(true)
 		buypanel[i]:EnableHorizontal(true)

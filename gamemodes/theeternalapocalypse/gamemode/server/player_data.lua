@@ -294,7 +294,7 @@ function GM:LoadPlayerInventory(ply)
 	end)
 end
 
-
+--[[
 function GM:SavePlayerInventory(ply, force)
 	if !ply:IsValid() then return end
 	if not force and (ply.NoDataSave or not self.DatabaseSaving) then return end
@@ -405,7 +405,7 @@ function GM:SavePlayerVault(ply)
 	end
 	print("✓ ".. ply:Nick() .." vault saved")
 end
-
+]]
 local count,maxcount = 0, 0
 local importing
 function GM:Import_Player_Saves_From_0_11_3a_And_Below(ply)
