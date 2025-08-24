@@ -342,14 +342,51 @@ end
 function meta:GetStaminaDrainWeightMul()
 	local mul = 1
 	local weight = self:CalculateWeight()
+	local overload = weight > self:CalculateMaxWeight()
 
 	mul = mul + weight*0.01
 	if weight < 10 then
 		mul = mul * 0.9
 	end
+
+	if overload then
+		mul = mul * 1.2
+	end
+
 	return mul
 end
 
+function meta:GetItemBuyCostMul(item)
+	local itemtbl
+	
+	if isstring(item) then
+		itemtbl = GAMEMODE.ItemsList[item]
+	else
+		itemtbl = item
+	end
+
+	if itemtbl.IgnoreCostModifiers then return 1 end
+
+	local mul = 1 - ((self.StatBarter or 0) * 0.015)
+
+	return mul
+end
+
+function meta:GetItemSellCostMul(item)
+	local itemtbl
+	
+	if isstring(item) then
+		itemtbl = GAMEMODE.ItemsList[item]
+	else
+		itemtbl = item
+	end
+
+	if itemtbl.IgnoreCostModifiers then return 1 end
+
+	local mul = 0.2 + ((self.StatBarter or 0) * 0.005)
+
+	return mul
+end
 
 function meta:AddStatisticPoints(var, value)
 	if not self.Statistics[var] then self.Statistics[var] = 0 end

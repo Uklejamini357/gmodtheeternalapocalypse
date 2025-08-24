@@ -80,9 +80,9 @@ function GM:GetRandomAirdropLoot(plycountoverride)
 	}
 
 	local rng = math.random(0, 100)
-	if rng >= 95 then
+	if rng >= 90 then
 		testinv["SpecialWeapons"] = {1, 1, 1}
-	elseif rng >= 85 then
+	elseif rng >= 80 then
 		testinv["RareWeapons"] = {1, 1, 1}
 	elseif rng >= 45 then
 		testinv["FactionWeapons"] = {1 + math.floor(plycount / 10), 1, 1}
@@ -93,56 +93,71 @@ function GM:GetRandomAirdropLoot(plycountoverride)
 	return testinv
 end
 
-function GM:SpawnAirdrop(plycountoverride)
-	plycountoverride = plycountoverride or #player.GetAll()
-
+function GM:PreSpawnAirdrop(plycountoverride, silent, delay)
 	self:RadioBroadcast(0, "Christmas has come early ladies!", "Shamus", true)
 	self:RadioBroadcast(3, "I've got a little present for y'all to entertain yourselves with!", "Shamus", false)
 	self:RadioBroadcast(11, "Attention survivors! That airdrop crate is fitted with an IFF jammer.", "Watchdog", false)
 	self:RadioBroadcast(16.5, "In addition, if you go near it you'll need to watch your back or risk being shot by other loot hunters!", "Watchdog", false)
+end
+
+function GM:SpawnAirdrop(plycountoverride, silent, delay)
+	local cratedropped = false
+
+	if DropData == "" then return end
+
+	local DropList = string.Explode("\n", DropData)
+	for k, v in RandomPairs(DropList) do
+		if cratedropped then break end
+		local Booty = string.Explode(";", v)
+		local pos = util.StringToType(Booty[1], "Vector")
+		local ang = util.StringToType(Booty[2], "Angle")
+
+		local dropent = ents.Create("airdrop_cache")
+		dropent:SetPos(pos)
+		dropent:SetAngles(ang)
+
+		local loot = self:RollLootTable(self:GetRandomAirdropLoot(plycountoverride))
+		gamemode.Call("MakeLootContainer", dropent, loot)
+
+		dropent:Spawn()
+		dropent:Activate()
+		cratedropped = true
+	end
+
+	for k, v in pairs(player.GetAll()) do
+		v:SendLua("surface.PlaySound(\"ambient/overhead/hel1.wav\")")
+	end
+
+	self:SystemBroadcast("An airdrop crate has appeared!", Color(127,255,255), false)
+
+--		self:SystemBroadcast((count > 1 and count.." airdrop crates have" or "An airdrop crate has").." appeared!", Color(255,255,255,255), false)
+end
+
+function GM:CallAirdrop(plycountoverride, silent, delay)
+	gamemode.Call("PreSpawnAirdrop", plycountoverride, silent, delay)
+
+	timer.Simple(20, function()
+		gamemode.Call("SpawnAirdrops", plycountoverride, silent, delay)
+	end)
+end
+
+function GM:SpawnAirdrops(plycountoverride, silent, delay)
+	plycountoverride = plycountoverride or player.GetCount()
 
 	local count = plycountoverride >= 15 and 3 or plycountoverride >= 8 and 2 or 1
-	timer.Simple(20, function()
-		if count > 1 then
-			self:SystemBroadcast(count.." airdrops have been spotted // First airdrop appears in 10 seconds", Color(191,255,255), false)
-		end
+	if count > 1 then
+		self:SystemBroadcast(count.." airdrops have been spotted // First airdrop appears in 10 seconds", Color(191,255,255), false)
+	end
 
-		for i=1,count do
-			timer.Create("TEA_AIRDROP_TIMER_"..i, count > 1 and 10+(i*60)-60 or 0, 1, function()
-				local cratedropped = false
+	for i=1,count do
+		timer.Create("TEA_AIRDROP_TIMER_"..i, count > 1 and 10+(i*60)-60 or 0, 1, function()
+			gamemode.Call("SpawnAirdrop", plycountoverride, silent, delay)
 
-				if DropData == "" then return end
 
-				local DropList = string.Explode("\n", DropData)
-				for k, v in RandomPairs(DropList) do
-					if cratedropped then break end
-					local Booty = string.Explode(";", v)
-					local pos = util.StringToType(Booty[1], "Vector")
-					local ang = util.StringToType(Booty[2], "Angle")
-
-					local dropent = ents.Create("airdrop_cache")
-					dropent:SetPos(pos)
-					dropent:SetAngles(ang)
-
-					local loot = self:RollLootTable(self:GetRandomAirdropLoot(plycountoverride))
-					gamemode.Call("MakeLootContainer", dropent, loot)
-
-					dropent:Spawn()
-					dropent:Activate()
-					cratedropped = true
-				end
-
-				for k, v in pairs(player.GetAll()) do
-					v:SendLua("surface.PlaySound(\"ambient/overhead/hel1.wav\")")
-				end
-
-				self:SystemBroadcast("An airdrop crate has appeared!", Color(255,127,255), false)
-				if i < count then
-					local last = i+1 >= count
-					self:SystemBroadcast((last and "Last" or "Next").." airdrop appears in 60 seconds"..(last and "" or " ("..count - i.." remaining)"), Color(255,255,127), false)
-				end
-			end)
-		end
---		self:SystemBroadcast((count > 1 and count.." airdrop crates have" or "An airdrop crate has").." appeared!", Color(255,255,255,255), false)
-	end)
+			if count and i < count then
+				local last = i+1 >= count
+				self:SystemBroadcast((last and "Last" or "Next").." airdrop appears in 60 seconds"..(last and "" or " ("..count - i.." remaining)"), Color(255,255,127), false)
+			end
+		end)
+	end
 end

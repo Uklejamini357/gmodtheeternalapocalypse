@@ -13,12 +13,10 @@ function GM:SetStartingVariables(ply)
 	ply.CurrentTaskProgress = 0
 	ply.TaskCooldowns = {}
 	ply.LastSessionInfo = nil
-	ply.Statistics = {
-		BestSurvivalTime = 0,
-		ZombieKills = 0,
-		PlayersKilled = 0,
-		Deaths = 0,
-	}
+	for stat,_ in pairs(ply.Statistics) do
+		ply.Statistics[stat] = 0
+	end
+
 
 	ply.Inventory = table.Copy(self.Config["NewbieGear"])
 	ply.Vault = table.Copy(self.Config["NewbieVault"])

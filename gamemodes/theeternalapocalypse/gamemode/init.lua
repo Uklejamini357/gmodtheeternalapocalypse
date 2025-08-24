@@ -54,7 +54,7 @@ include("server/server_util.lua")
 include("server/commands.lua") -- Drop cash, toggle pvp and such other commands
 include("server/player_data.lua") -- Data management for players
 include("server/player_inventory.lua") -- Player Inventory management for players
-include("server/player_perks.lua") -- Data manage with Perks system
+-- include("server/player_perks.lua") -- Data manage with Perks system
 include("server/player_props.lua") -- Managing with props
 include("server/player_vault.lua") -- And vault
 include("server/npcspawns.lua") -- Zombie spawns
@@ -130,7 +130,7 @@ function GM:Think()
 		if ct > tonumber(self.NextAirdropSpawn) then
 			self.NextAirdropSpawn = ct + tonumber(self.Config["AirdropSpawnRate"]) 
 			if plycount >= self.MinPlayersAirdropRequired then
-				gamemode.Call("SpawnAirdrop")
+				gamemode.Call("CallAirdrop")
 			end
 		end
 
@@ -392,11 +392,10 @@ function GM:Think()
 			local endurance_mul = 1 / (1 + ply.StatEndurance*0.028)
 			local weightpenalty = ply:GetStaminaDrainWeightMul()
 			local fatigabove70 = ply.Fatigue > 7000
-			local fatigabove90 = ply.Fatigue > 9000
 			local fatigabove99 = ply.Fatigue > 9900
 
 			if ply.Fatigue < 9900 then
-				ply.Stamina = ply.Stamina + 3.04*ft * (ply:HasPerk("enduring_endurance") and ply.Stamina < 25 and 1.3 or 1) * (fatigabove99 and 0 or fatigabove90 and 0.4 or fatigabove70 and 0.8 or 1) * (ply:WaterLevel() == 3 and 2/3 or 1)
+				ply.Stamina = ply.Stamina + 3.04*ft * (ply:HasPerk("enduring_endurance") and ply.Stamina < 25 and 1.3 or 1) * (fatigabove99 and 0 or fatigabove70 and 0.8 + ((7000-ply.Fatigue)/10000)*2 or 1) * (ply:WaterLevel() == 3 and 2/3 or 1)
 			elseif ply.Fatigue >= 10000 then
 				ply.Stamina = ply.Stamina - 2*ft
 			end
@@ -404,11 +403,11 @@ function GM:Think()
 
 			if !ply:InVehicle() then
 				if (ply:IsSprinting() and PlayerIsMoving and not ply:Crouching()) then
-					ply.Stamina = ply.Stamina - 5.4*ft*endurance_mul*weightpenalty
+					ply.Stamina = ply.Stamina - 6*ft*endurance_mul*weightpenalty
 				elseif PlayerIsMoving and ply:Crouching() then
-					ply.Stamina = ply.Stamina - 2.43*ft*endurance_mul*math.sqrt(weightpenalty)
+					ply.Stamina = ply.Stamina - 2.4*ft*endurance_mul*math.sqrt(weightpenalty)
 				elseif PlayerIsMoving then
-					ply.Stamina = ply.Stamina - 2.7*ft*endurance_mul*math.sqrt(weightpenalty)
+					ply.Stamina = ply.Stamina - 2.6*ft*endurance_mul*math.sqrt(weightpenalty)
 				end
 			end
 
@@ -735,9 +734,9 @@ function GM:EntityTakeDamage(ent, dmginfo)
 		end
 	end
 
-	if (ent.Type == "nextbot" or ent:IsNPC()) and (!ent.LastAttacker or ent:Health() > 0) and attacker:IsPlayer() then
+	if (ent:IsNextBot() or ent:IsNPC()) and (!ent.LastAttacker or ent:Health() > 0) and attacker:IsPlayer() then
+		ent.LastAttacker = attacker
 		if !ent.BossMonster then
-			ent.LastAttacker = attacker
 			timer.Create("TEAZombieLastAttacker_"..ent:EntIndex(), 15, 1, function()
 				if !ent:IsValid() then return end
 				ent.LastAttacker = nil	-- after some time when the target last received damage from the attacker, we claim that the last target's attacker is no more
@@ -785,43 +784,44 @@ end
 
 function GM:PlayerShouldTakeDamage(ply, attacker)
 	if ply:IsPlayer() and attacker:IsPlayer() and ply != attacker and !ply:IsPvPForced() and ply.Territory != team.GetName(attacker:Team()) then
-		 
+		local handler = "NoPvPMsgAntiSpamTimer"..attacker:EntIndex()
+
 		if ply:Alive() and attacker:IsPlayer() and ply:IsPlayer() and (ply:HasGodMode() or ply.SpawnProtected) then
-			if !timer.Exists("NoPvPMsgAntiSpamTimer"..attacker:EntIndex()) then
+			if !timer.Exists(handler) then
 				attacker:SystemMessage("This target is invulnerable!", Color(255,205,205), true)
-				timer.Create("NoPvPMsgAntiSpamTimer"..attacker:EntIndex(), 0.5, 1, function() end)
+				timer.Create(handler, 0.5, 1, function() end)
 			end
 			return false
 		elseif ply:Alive() and attacker:IsPlayer() and ply:IsPlayer() and attacker:IsPvPGuarded() then
-			if !timer.Exists("NoPvPMsgAntiSpamTimer"..attacker:EntIndex()) then
+			if !timer.Exists(handler) then
 				attacker:SystemMessage("You have PvP guarded! You can't damage other players!", Color(255,205,205), true)
-				timer.Create("NoPvPMsgAntiSpamTimer"..attacker:EntIndex(), 0.5, 1, function() end)
+				timer.Create(handler, 0.5, 1, function() end)
 			end
 			return false
 		elseif ply:Alive() and attacker:IsPlayer() and ply:IsPlayer() and ply:IsPvPGuarded() then
-			if !timer.Exists("NoPvPMsgAntiSpamTimer"..attacker:EntIndex()) then
+			if !timer.Exists(handler) then
 				attacker:SystemMessage("Target has PvP guarded! You can't damage that player!", Color(255,205,205), true)
-				timer.Create("NoPvPMsgAntiSpamTimer"..attacker:EntIndex(), 0.5, 1, function() end)
+				timer.Create(handler, 0.5, 1, function() end)
 			end
 			return false
 		end
 
 		if ply:Alive() and attacker:Team() == TEAM_LONER and not attacker:GetNWBool("pvp") and GAMEMODE.VoluntaryPvP then
-			if !timer.Exists("NoPvPMsgAntiSpamTimer"..attacker:EntIndex()) then
+			if !timer.Exists(handler) then
 				attacker:SystemMessage("Your PvP is not enabled!", Color(255,205,205), true)
-				timer.Create("NoPvPMsgAntiSpamTimer"..attacker:EntIndex(), 0.5, 1, function() end)
+				timer.Create(handler, 0.5, 1, function() end)
 			end
 			return false
 		elseif ply:Alive() and ply:Team() == TEAM_LONER and not ply:GetNWBool("pvp") and GAMEMODE.VoluntaryPvP then
-			if !timer.Exists("NoPvPMsgAntiSpamTimer"..attacker:EntIndex()) then
+			if !timer.Exists(handler) then
 				attacker:SystemMessage("You can't attack loners unless they have PvP enabled!", Color(255,205,205), true)
-				timer.Create("NoPvPMsgAntiSpamTimer"..attacker:EntIndex(), 0.5, 1, function() end)
+				timer.Create(handler, 0.5, 1, function() end)
 			end
 			return false
 		elseif ply:Alive() and (ply:Team() == attacker:Team()) and not (ply:Team() == TEAM_LONER or attacker:Team() == TEAM_LONER) then
-			if !timer.Exists("NoPvPMsgAntiSpamTimer"..attacker:EntIndex()) then
+			if !timer.Exists(handler) then
 				attacker:SystemMessage("You can't attack your factionmates!", Color(255,205,205), true)
-				timer.Create("NoPvPMsgAntiSpamTimer"..attacker:EntIndex(), 0.5, 1, function() end)
+				timer.Create(handler, 0.5, 1, function() end)
 			end
 			return false
 		end
@@ -1193,7 +1193,13 @@ end
 function GM:RecalcPlayerModel(ply)
 	if !ply.ChosenModel then ply.ChosenModel = "models/player/kleiner.mdl" end
 	if !ply.ChosenModelColor then ply.ChosenModelColor = Vector(0.25, 0, 0) end
-	local gmod_hands = ents.FindByClass("gmod_hands")[1]
+	local gmod_hands
+	for _,ent in pairs(ents.FindByClass("gmod_hands")) do -- without this, causes LUA ERRORS if spawning in the first time with armor
+		if ent:GetOwner() == ply then
+			gmod_hands = ent
+			break
+		end
+	end
 
 	if type(ply.ChosenModelColor) == "string" then ply.ChosenModelColor = Vector(ply.ChosenModelColor) end
 	ply:SetPlayerColor(ply.ChosenModelColor)

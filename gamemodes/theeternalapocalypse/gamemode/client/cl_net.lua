@@ -164,21 +164,9 @@ end)
 
 net.Receive("UpdatePerks", function(length)
 	local me = LocalPlayer()
-	me.StatDefense = net.ReadFloat()
-	me.StatGunslinger = net.ReadFloat()
-	me.StatSpeed = net.ReadFloat()
-	me.StatVitality = net.ReadFloat()
-	me.StatKnowledge = net.ReadFloat()
-	me.StatMedSkill = net.ReadFloat()
-	me.StatStrength = net.ReadFloat()
-	me.StatEndurance = net.ReadFloat()
-	me.StatSalvage = net.ReadFloat()
-	me.StatBarter = net.ReadFloat()
-	me.StatEngineer = net.ReadFloat()
-	me.StatImmunity = net.ReadFloat()
-	me.StatSurvivor = net.ReadFloat()
-	me.StatAgility = net.ReadFloat()
-	me.StatScavenging = net.ReadFloat()
+	for statname, _ in SortedPairs(GAMEMODE.StatConfigs) do
+		me["Stat"..statname] = net.ReadUInt(32)
+	end
 end)
 
 

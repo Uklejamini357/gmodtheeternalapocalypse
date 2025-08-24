@@ -229,7 +229,7 @@ function GM:AdminCmds_SpawnAirdrop(ply)
 		return
 	end
 
-	gamemode.Call("SpawnAirdrop")
+	gamemode.Call("CallAirdrop")
 	ply:SystemMessage("Command received, airdrop will arrive soon.", Color(155,255,155,255), true)
 	self:DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has used spawn airdrop command!")
 end

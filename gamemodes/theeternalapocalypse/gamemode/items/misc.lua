@@ -320,6 +320,137 @@ i = GM:CreateItem("item_oxygentank", {
     end,
 })
 
+i = GM:CreateItem("item_airdropradio", {
+    Name = "Airdrop Radio",
+    Description = "Calls an airdrop.",
+    Cost = 30000,
+    Model = "models/wick/wrbstalker/anomaly/items/wick_dev_detector_09.mdl",
+    Weight = 0.7,
+    Supply = -1,
+    Rarity = RARITY_MYTHIC,
+    Category = ITEMCATEGORY_MISCELLANEOUS,
+	ItemType = ITEMTYPE_OTHER,
+    UseFunc = function(ply)
+        GAMEMODE.NextAirdropSpawn = math.max(GAMEMODE.NextAirdropSpawn, CurTime() + math.random(600, 1200))
+
+        local delay = math.Rand(60, 90)
+        timer.Simple(delay, function()
+            gamemode.Call("SpawnAirdrop")
+        end)
+        ply:PrintMessage(3, "Airdrop called, the package will arrive shortly within "..math.Round(delay).." seconds.")
+
+        return true
+    end,
+
+    IgnoreCostModifiers = true,
+})
+
+i = GM:CreateItem("item_bossdetector", {
+    Name = "Boss Detector",
+    Description = "Can detect any nearby boss zombies. On use drains 50% of your battery.\nEffective range: ~350m",
+    Cost = 30000,
+    Model = "models/wick/wrbstalker/anomaly/items/wick_dev_detector_8.mdl",
+    Weight = 0.55,
+    Supply = -1,
+    Rarity = RARITY_MYTHIC,
+    Category = ITEMCATEGORY_MISCELLANEOUS,
+	ItemType = ITEMTYPE_OTHER,
+    UseFunc = function(ply)
+        local timerhandler = "ItemDetectorTimer"..ply:EntIndex()
+        if timer.Exists(timerhandler) then return false end
+        if ply.Battery <= 50 then ply:PrintMessage(3, "Not enough battery!") return false end
+
+        ply.Battery = ply.Battery - 50
+        ply:PrintMessage(3, "Detecting any nearby boss zombies...")
+
+        local boss
+
+        local beep = 0
+        local beepedonce
+        local distance
+        timer.Create(timerhandler, 0.1, 0, function() -- could use hook instead, but eh
+            boss = nil
+            for _,ent in pairs(ents.FindInSphere(ply:GetPos(), 14000)) do
+                if (ent:IsNextBot() or ent:IsNPC()) and ent.BossMonster then
+                    boss = ent
+                    break
+                end
+            end
+
+
+            if !boss or !boss:IsValid() then return end
+            distance = math.max(250, ply:GetPos():Distance(boss:GetPos()))
+            beep = beep + math.min(10, (1e3 * 1/distance)^0.75)*0.5
+            if beep >= 1 then
+                beep = beep - 1
+                beepedonce = true
+                ply:EmitSound("theeternalapocalypse/items/boss_detector_beep.ogg", 50, 100, 0.6, CHAN_AUTO)
+            end
+        end)
+
+        timer.Simple(math.Rand(4,5), function()
+            timer.Remove(timerhandler)
+
+            if distance and beepedonce then
+                ply:PrintMessage(3, "Nearest boss: "..(distance < 1000 and "Very near!" or math.Round(distance, -3)/40 .."m"))
+            else
+                ply:PrintMessage(3, "No bosses found!")
+            end
+        end)
+
+        return false
+    end,
+
+    IgnoreCostModifiers = true,
+})
+
+i = GM:CreateItem("item_airdropdetector", {
+    Name = "Airdrop Detector",
+    Description = "This IFF Jammer detector can detect any dropped airdrop that is left untouched. On use drains 40% of your battery.\nEffective range: ~300m",
+    Cost = 35000,
+    Model = "models/wick/wrbstalker/anomaly/items/wick_dev_detector_8.mdl",
+    Weight = 0.55,
+    Supply = -1,
+    Rarity = RARITY_MYTHIC,
+    Category = ITEMCATEGORY_MISCELLANEOUS,
+	ItemType = ITEMTYPE_OTHER,
+    UseFunc = function(ply)
+        local timerhandler = "ItemDetectorTimer"..ply:EntIndex()
+        if timer.Exists(timerhandler) then return false end
+        if ply.Battery <= 40 then ply:PrintMessage(3, "Not enough battery!") return false end
+
+        ply.Battery = ply.Battery - 40
+        ply:PrintMessage(3, "Detecting any nearby airdrops...")
+
+        ply:EmitSound("theeternalapocalypse/items/airdrop_detector_noise.ogg", 60, 100, 0.6)
+
+        local airdrop
+        local distance
+        timer.Simple(math.Rand(6,7), function()
+            for _,ent in pairs(ents.FindByClass("airdrop_cache")) do
+                distance = ent:GetPos():Distance(ply:GetPos())
+                if distance < 12000 then
+                    airdrop = ent
+                    break
+                end
+            end
+
+            ply:StopSound("theeternalapocalypse/items/airdrop_detector_noise.ogg")
+            ply:EmitSound("theeternalapocalypse/items/airdrop_detector_off.ogg", 60, 100, 0.7)
+
+            if airdrop and airdrop:IsValid() then
+                ply:PrintMessage(3, "Airdrop is "..(distance < 6000 and "quite near!" or "somewhere near!"))
+            else
+                ply:PrintMessage(3, "Couldn't find any nearby airdrops!")
+            end
+        end)
+
+        return false
+    end,
+
+    IgnoreCostModifiers = true,
+})
+
 i = GM:CreateItem("item_money", {
     Cost = 0,
     Model = "models/props/cs_assault/Money.mdl",

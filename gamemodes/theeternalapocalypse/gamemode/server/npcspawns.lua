@@ -387,8 +387,8 @@ function GM:NPCReward(ent)
 				local xp = ent.XPReward * self.XPGainMul * GAMEMODE:GetInfectionMul() * math.Round(1 + (attacker.StatKnowledge * 0.03), 3)
 				local cash = ent.MoneyReward * self.CashGainMul * (0.5 + (GAMEMODE:GetInfectionMul() * 0.5)) * (self:CashBonus(attacker) or 1) * math.Round(1 + (attacker.StatSalvage * 0.03), 3)
 				GAMEMODE:Payout(attacker,
-					xp * (hasbountyhunter and (isvariant and 1.1 or 1) or 1) * tonumber(math.min(dmg, ent:GetMaxHealth()) / ent:GetMaxHealth()),
-					cash * (hasbountyhunter and (isvariant and 1.15 or 1) or 1) * tonumber(math.min(dmg, ent:GetMaxHealth()) / ent:GetMaxHealth())
+					xp * (hasbountyhunter and isvariant and 1.1 or 1) * tonumber(math.min(dmg, ent:GetMaxHealth()) / ent:GetMaxHealth()),
+					cash * (hasbountyhunter and isvariant and 1.15 or 1) * tonumber(math.min(dmg, ent:GetMaxHealth()) / ent:GetMaxHealth())
 				)
 
 				if attacker ~= killer then
@@ -444,8 +444,9 @@ function GM:NPCReward(ent)
 					pl:AddStatisticPoints("BossKillAssists", 1)
 				end
 			end
-			killer:AddStatisticPoints("BossKills", 1)
-
+			if killer and killer:IsValid() then
+				killer:AddStatisticPoints("BossKills", 1)
+			end
 			if table.Count(attackers) > 0 then
 				self.NextInfectionDecrease = math.max(self.NextInfectionDecrease, ct + 70 + table.Count(attackers) * 5)
 				self:SetInfectionLevel(self:GetInfectionLevel() + ((ent.InfectionRate or 0) * self.InfectionLevelGainMul * math.max(1, 0.5 + #player.GetAll()*0.2)))

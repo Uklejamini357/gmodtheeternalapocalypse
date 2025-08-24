@@ -1,3 +1,5 @@
+Wow how long have i left this out of date for
+
 So, how does this work? It's simple: Place The Eternal Apocalypse into your gamemodes folder (garrysmod/gamemodes)
 Also need to rename entire file into theeternalapocalypse
 

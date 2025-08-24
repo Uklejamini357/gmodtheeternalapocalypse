@@ -444,33 +444,28 @@ GM.Config["Vehicles"] = {
 
 
 GM.StatConfigs = {
-	-- Keep this at max of 10!
 	["Agility"] = {
-		Max = 10,
-		Cost = 1,
-		PerkMaxIncrease = 5, -- Max amount that can be applied for this skill is increased by this amount when having a perk "Empowered Skills"
+		Max = 10, -- Max amount of levels that can be 
+		Cost = 1, -- Cost for upgrading this skill (Always doubled if beyond normal limit with Empowered Skills)
+		PerkMaxIncrease = 5, -- Max amount that can be applied for this skill is increased by this amount when having a perk "Empowered Skills" (doesn't need a value if you don't want this to be further upgradable by the perk)
 	},
 
-	-- Keep this at max of 10!
 	["Barter"] = {
 		Max = 10,
 		Cost = 1,
 	},
 
-	-- Keep this at max of 10!
 	["Defense"] = {
 		Max = 10,
 		Cost = 1,
 	},
 
-	-- Keep this at max of 10!
 	["Endurance"] = {
 		Max = 10,
 		Cost = 1,
 		PerkMaxIncrease = 5,
 	},
 
-	-- Keep this at max of 10!
 	["Engineer"] = {
 		Max = 10,
 		Cost = 1,
@@ -483,7 +478,6 @@ GM.StatConfigs = {
 		PerkMaxIncrease = 10,
 	},
 
-	-- Keep this at max of 10!
 	["Immunity"] = {
 		Max = 10,
 		Cost = 1,
@@ -508,14 +502,12 @@ GM.StatConfigs = {
 		PerkMaxIncrease = 10,
 	},
 
-	-- Keep this at max of 10!
 	["Scavenging"] = {
 		Max = 10,
 		Cost = 1,
 		PerkMaxIncrease = 10,
 	},
 
-	-- Keep this at max of 10!
 	["Speed"] = {
 		Max = 10,
 		Cost = 1,
@@ -528,7 +520,6 @@ GM.StatConfigs = {
 		PerkMaxIncrease = 5,
 	},
 
-	-- Keep this at max of 10!
 	["Survivor"] = {
 		Max = 10,
 		Cost = 1,
@@ -779,28 +770,37 @@ GM.DefaultModels = {
 --  Superadmins can use any commands however, admins only have the ate_admin_clearzombies and spawn boss/airdrop command  --
 ----------------------------------------------------------------------------------------------------------------------------
 
--- Add your steamid or your steamid64 here. This must be edited in order to use Dev Commands!
-function TEASVOwnerCheck(ply) -- use either your steamid64 or steamid. example: [[ply:SteamID64() == {your steam id here}]]
+
+-- Uses SteamID64
+local owners = {
+	"76561198274314803",
+}
+
+local devs = {
+	"76561198274314803",
+	"76561198028288732",
+}
+
+function TEASVOwnerCheck(ply)
 	if !ply:IsValid() then return false end
-	if ply:SteamID64() == "76561198274314803" then return true end
-	return false
+	return table.HasValue(owners, ply:SteamID64())
 end
+local TEASVOwnerCheck = TEASVOwnerCheck -- Use local function for below so that it's faster
 
 --Dev Check function will also impact other function checks so be sure you know what you are doing
 function TEADevCheck(ply)
 	if !ply:IsValid() then return false end
-	if ply:SteamID64() == "76561198274314803" or ply:SteamID64() == "76561198028288732" or TEASVOwnerCheck(ply) then return true end
-	return false --check will only work for dev, regardless of players' ranks (unless they're owner)
+	return table.HasValue(devs, ply:SteamID64()) or TEASVOwnerCheck(ply)
 end
+local TEADevCheck = TEADevCheck
 
 function SuperAdminCheck(ply)
 	if !ply:IsValid() then return false end
-	if ply:IsUserGroup("superadmin") or ply:IsSuperAdmin() or TEADevCheck(ply) then return true end
-	return false -- above check failed so they are not superadmin
+	return ply:IsUserGroup("superadmin") or ply:IsSuperAdmin() or TEADevCheck(ply)
 end
+local SuperAdminCheck = SuperAdminCheck
 
 function AdminCheck(ply)
 	if !ply:IsValid() then return false end
-	if ply:IsUserGroup("admin") or ply:IsAdmin() or SuperAdminCheck(ply) then return true end
-	return false
+	return ply:IsUserGroup("admin") or ply:IsAdmin() or SuperAdminCheck(ply)
 end

@@ -57,9 +57,9 @@ function GM:CancelTask(pl, task)
     local taskl = self.Tasks[task]
     if pl.CurrentTask ~= task or !taskl or pl:HasCompletedTask() then return end
 
-	for tasks,_ in pairs(self.Tasks) do
-		pl.TaskCooldowns[tasks] = os.time() + TIME_HOUR -- 1 hour before they can assign new task
-	end
+	-- for tasks,_ in pairs(self.Tasks) do
+	-- 	pl.TaskCooldowns[tasks] = os.time() + TIME_HOUR -- 1 hour before they can assign new task
+	-- end
 	pl.TaskCooldowns[task] = os.time() + taskl.CancelCooldown
     pl.CurrentTask = ""
     pl.CurrentTaskProgress = 0

@@ -1,7 +1,7 @@
 -- This is used when boss is defeated to display who dealed damage to bosses
 
 local BossPanel
-BossDamagedByTable = {}
+local BossDamagedByTable = {}
 
 net.Receive("BossKilled", function(length)
     local bosstable = net.ReadTable()
@@ -51,7 +51,7 @@ function GM:ShowBossPanel()
 		local IBG = vgui.Create("DLabel", BossPanel)
 		IBG:SetFont("TEA.HUDFont")
 		IBG:SetText(text)
-		IBG:SetTextColor(Color(255,255,255,255))
+		IBG:SetTextColor(color_white)
 		IBG:SizeToContents()
 		IBG:SetPos((BossPanel:GetWide() / 2) - (IBG:GetWide() / 2), 10)
 
@@ -64,6 +64,7 @@ function GM:ShowBossPanel()
 			for k, v in SortedPairsByValue(BossDamagedByTable, true) do
 				local DisplayDMG = vgui.Create("DLabel", DMGBG)
 				DisplayDMG:SetText(Format("%s - %d", k.Nick and k:Nick() or "Non-Valid player", math.Round(v)))
+				DisplayDMG:SetTextColor(color_white)
 				DisplayDMG:SetSize(390, 15)
 				DisplayDMG:SetFont("TEA.HUDFontSmall")
 				ListPanel:AddItem(DisplayDMG)
@@ -71,6 +72,7 @@ function GM:ShowBossPanel()
 		else
 			local DisplayDMG = vgui.Create("DLabel", DMGBG)
 			DisplayDMG:SetText(translate.Get("no_one_damaged_boss"))
+			DisplayDMG:SetTextColor(color_white)
 			DisplayDMG:SetSize(390, 15)
 			DisplayDMG:SetFont("TEA.HUDFontSmall")
 			ListPanel:AddItem(DisplayDMG)

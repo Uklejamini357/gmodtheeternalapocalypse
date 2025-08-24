@@ -172,12 +172,12 @@ function GM:TraderMenu()
 	
 	local LWeight = vgui.Create("DLabel", TraderFrame)
 	LWeight:SetFont("TEA.HUDFontSmall")
-	LWeight:SetPos(10, TraderFrame:GetTall() - 42)
-	LWeight:SetSize(350, 25)
 	LWeight:SetColor(Color(255,255,255,255))
-	LWeight:SetText(translate.Format("inv_weight", LocalPlayer():CalculateWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWalkWeight(), WEIGHT_UNIT))
+	LWeight:SetText(translate.Format("inv_weight", ply:CalculateWeight(), WEIGHT_UNIT, ply:CalculateMaxWeight(), WEIGHT_UNIT, ply:CalculateMaxWalkWeight(), WEIGHT_UNIT))
+	LWeight:SizeToContents()
+	LWeight:SetPos(10, TraderFrame:GetTall() - 38)
 	LWeight.Think = function(this)
-		local txt = translate.Format("inv_weight", LocalPlayer():CalculateWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWalkWeight(), WEIGHT_UNIT)
+		local txt = translate.Format("inv_weight", ply:CalculateWeight(), WEIGHT_UNIT, ply:CalculateMaxWeight(), WEIGHT_UNIT, ply:CalculateMaxWalkWeight(), WEIGHT_UNIT)
 		if this:GetText() == txt then return end
 		this:SetText(txt)
 		this:SizeToContents()
@@ -185,7 +185,7 @@ function GM:TraderMenu()
 
 	local LMoney = vgui.Create("DLabel", TraderFrame)
 	LMoney:SetFont("TEA.HUDFont")
-	LMoney:SetPos(400, TraderFrame:GetTall() - 38)
+	LMoney:SetPos(400, TraderFrame:GetTall() - 42)
 	LMoney:SetColor(Color(155,255,155,255))
 	LMoney:SetText("My Wallet: "..math.floor(MyMoney))
 	LMoney:SizeToContents()
@@ -217,11 +217,11 @@ function GM:TraderMenu()
 	LVaultWeight = vgui.Create("DLabel", TraderFrame)
 	LVaultWeight:SetFont("TEA.HUDFontSmall")
 	LVaultWeight:SetColor(Color(255,255,255,255))
-	LVaultWeight:SetText("Vault Capacity: "..LocalPlayer():CalculateVaultWeight().."kg / "..GAMEMODE.Config["VaultSize"].."kg")
+	LVaultWeight:SetText("Vault Capacity: "..ply:CalculateVaultWeight().."kg / "..GAMEMODE.Config["VaultSize"].."kg")
 	LVaultWeight:SizeToContents()
 	LVaultWeight:SetPos(TraderFrame:GetWide() - LVaultWeight:GetWide() - 200, TraderFrame:GetTall() - 38)
 	LVaultWeight.Think = function(this)
-		local txt = "Vault Capacity: "..LocalPlayer():CalculateVaultWeight().."kg / "..GAMEMODE.Config["VaultSize"].."kg"
+		local txt = "Vault Capacity: "..ply:CalculateVaultWeight().."kg / "..GAMEMODE.Config["VaultSize"].."kg"
 		if this:GetText() == txt then return end
 		this:SetText(txt)
 		this:SizeToContents()
@@ -291,7 +291,7 @@ function GM:TraderMenu()
 			ItemCost:SetPos(80, 25)
 			ItemCost:SetSize(170, 15)
 			ItemCost:SetColor(Color(155,255,155,255))
-			ItemCost:SetText("Cost: ".. math.floor((v.Cost * (1 - ((ply.StatBarter or 0) * 0.015)))))
+			ItemCost:SetText("Cost: ".. math.floor((v.Cost * ply:GetItemBuyCostMul(v))))
 
 			local ItemWeight = vgui.Create("DLabel", ItemBackground)
 			ItemWeight:SetFont("TEA.HUDFontSmall")
@@ -308,7 +308,6 @@ function GM:TraderMenu()
 			ItemSupply:SetColor(Color(255,155,155,255))
 
 
---	if v.Supply != -1 then
 			local BuyButton = vgui.Create("DButton", ItemBackground)
 			BuyButton:SetSize(60, 40)
 			BuyButton:SetPos(210, 30)
@@ -325,7 +324,6 @@ function GM:TraderMenu()
 				net.SendToServer()
 			end
 			BuyButton.DoDoubleClick = BuyButton.DoClick
---		end
 			parent:AddItem(ItemBackground)
 		end
 	end
@@ -343,9 +341,9 @@ function GM:TraderMenu()
 		if !IsValid(TraderFrame) then return end
 		SellPanel:Clear()
 		for k, v in SortedPairsByMemberValue(LocalInventory, "Weight", true) do
-			if !GAMEMODE.ItemsList[k] then continue end -- ignore invalid shit
-			local icost = ((GAMEMODE.ItemsList[k]["Cost"] or 0) * (0.2 + ((ply.StatBarter or 0) * 0.005))) or 0
---			if icost < 1 then continue end -- dont sell items that are not worth anything
+			local item = GAMEMODE.ItemsList[k]
+			if !item then continue end
+			local icost = ((item.Cost or 0) * (ply:GetItemSellCostMul(item))) or 0
 
 			local raretbl = gamemode.Call("CheckItemRarity", v.Rarity)
 			local ItemBackground = vgui.Create("DPanel")
@@ -418,11 +416,6 @@ function GM:TraderMenu()
 					net.WriteString(k)
 					net.WriteUInt(amt, 32)
 					net.SendToServer()
-
-					timer.Simple(0.3, function()
-						LWeight:SetText(translate.Format("inv_weight", LocalPlayer():CalculateWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWalkWeight(), WEIGHT_UNIT))
---						LMoney:SetText("My Wallet: "..math.floor(MyMoney))
-					end)
 				end
 
 				EquipButton.DoClick = function()
@@ -431,9 +424,7 @@ function GM:TraderMenu()
 					if v.Qty >= 2 then menu:AddOption("Sell 2x", function() SellItems(2) end) end
 					if v.Qty >= 3 then menu:AddOption("Sell 3x", function() SellItems(3) end) end
 					if v.Qty >= 5 then menu:AddOption("Sell 5x", function() SellItems(5) end) end
-					if v.Qty >= 7 then menu:AddOption("Sell 7x", function() SellItems(7) end) end
 					if v.Qty >= 10 then menu:AddOption("Sell 10x", function() SellItems(10) end) end
-					if v.Qty >= 15 then menu:AddOption("Sell 15x", function() SellItems(15) end) end
 					menu:AddOption("Sell All", function() SellItems(v.Qty) end)
 					menu:Open()
 				end
@@ -459,11 +450,6 @@ function GM:TraderMenu()
 					net.WriteString(k)
 					net.WriteUInt(amt, 32)
 					net.SendToServer()
-
-					timer.Simple(0.4, function()
-						LWeight:SetText(translate.Format("inv_weight", LocalPlayer():CalculateWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWalkWeight(), WEIGHT_UNIT))
---						LMoney:SetText("My Wallet: "..math.floor(MyMoney))
-					end)
 				end
 
 				VaultButton.DoClick = function()
@@ -552,9 +538,6 @@ function GM:TraderMenu()
 				net.WriteString(k)
 				net.WriteUInt(amt, 32)
 				net.SendToServer()
-				timer.Simple(0.4, function()
-					LWeight:SetText(translate.Format("inv_weight", LocalPlayer():CalculateWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWalkWeight(), WEIGHT_UNIT))
-				end)
 			end
 
 			local EquipButton = vgui.Create("DButton", ItemBackground)

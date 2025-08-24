@@ -34,9 +34,10 @@ see server/player_inventory.lua for more info
 
 GM.ItemsList = {}
 function GM:CreateItem(itemid, table)	--name, desc, cost, model, weight, supply, rarity, category, usefunc, dropfunc
-	self.ItemsList[itemid] = table
+	local item = table
+	self.ItemsList[itemid] = item	
 
-	return self.ItemsList[itemid]
+	return item
 end
 
 -- apparently no idea why i removed item.Name and item.Decription because for translate but yea (then it would use item.Name and item.Description if it's valid)

@@ -95,21 +95,9 @@ end
 
 function GM:NetUpdatePerks(ply)
 	net.Start("UpdatePerks")
-	net.WriteFloat(ply.StatDefense)
-	net.WriteFloat(ply.StatGunslinger)
-	net.WriteFloat(ply.StatSpeed)
-	net.WriteFloat(ply.StatVitality)
-	net.WriteFloat(ply.StatKnowledge)
-	net.WriteFloat(ply.StatMedSkill)
-	net.WriteFloat(ply.StatStrength)
-	net.WriteFloat(ply.StatEndurance)
-	net.WriteFloat(ply.StatSalvage)
-	net.WriteFloat(ply.StatBarter)
-	net.WriteFloat(ply.StatEngineer)
-	net.WriteFloat(ply.StatImmunity)
-	net.WriteFloat(ply.StatSurvivor)
-	net.WriteFloat(ply.StatAgility)
-	net.WriteFloat(ply.StatScavenging)
+	for statname, _ in SortedPairs(self.StatConfigs) do
+		net.WriteUInt(ply["Stat"..statname], 32)
+	end
 	net.Send(ply)
 end
 

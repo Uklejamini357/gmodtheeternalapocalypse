@@ -262,7 +262,8 @@ function GM:UseItem(ply, item, use, targetply)
 				end
 			else
 				local armor = ref.Category == ITEMCATEGORY_ARMOR
-				if armor and !timer.Exists("Plywantstodropequippedarmor"..ply:EntIndex()) and ply:GetNWString("ArmorType") == item then
+				local hasmorethan1 = ply.Inventory[item] > 1
+				if armor and !hasmorethan1 and !timer.Exists("Plywantstodropequippedarmor"..ply:EntIndex()) and ply:GetNWString("ArmorType") == item then
 					ply:SendChat(translate.ClientFormat(ply, "warning_about_to_drop_equipped_armor", 10))
 					timer.Create("Plywantstodropequippedarmor"..ply:EntIndex(), 10, 1, function() end)
 					return false
@@ -284,7 +285,11 @@ function GM:UseItem(ply, item, use, targetply)
 				ent:Spawn()
 				ent:Activate()
 
-				if armor and ply.EquippedArmor == tostring(item) then
+				if !hasmorethan1 then
+					if armor and ply.EquippedArmor == tostring(item) then
+						ply:ArmorUnequip()
+					end
+
 					ply:ArmorUnequip()
 				end
 
@@ -335,7 +340,7 @@ function meta:BuyItem(str)
 
 	local item = GAMEMODE.ItemsList[str]
 	local stockcheck = GAMEMODE.ItemsList[str]["Supply"]
-	local buyprice = item["Cost"] * (1 - (self.StatBarter * 0.015))
+	local buyprice = item.Cost * self:GetItemBuyCostMul(item)
 
 	if stockcheck <= -1 then
 		self:SendChat(translate.ClientGet(self, "antihack_roast_hack_buy"))
@@ -349,8 +354,8 @@ function meta:BuyItem(str)
 	-- if ((self:CalculateWeight() + item["Weight"]) > self:CalculateMaxWeight()) then self:SendChat(translate.ClientFormat(self, "notenoughspace", GAMEMODE:CalculateRemainingInventoryWeight(self, item["Weight"]))) return false end
 
 	GAMEMODE:SystemGiveItem(self, str)
+	self.Money = math.floor(self.Money - buyprice)
 	self:PrintTranslatedMessage(HUD_PRINTCONSOLE, "tr_itembought", GAMEMODE:GetItemName(str, self), buyprice, GAMEMODE.Config["Currency"])
-	self.Money = math.floor(self.Money - (item["Cost"] * (1 - (self.StatBarter * 0.015)))) -- reduce buy cost by 1.5% per barter level
 	GAMEMODE:SendInventory(self)
 	self:EmitSound("items/ammopickup.wav", 100, 100)
 	GAMEMODE:NetUpdatePeriodicStats(self)
@@ -373,7 +378,7 @@ net.Receive("SellItem", function(len, ply)
 
 	local item = GAMEMODE.ItemsList[str]
 	local cash = tonumber(ply.Money)
-	local sellprice = item["Cost"] * (0.2 + (ply.StatBarter * 0.005)) * amt
+	local sellprice = item["Cost"] * ply:GetItemSellCostMul(item) * amt
 
 	if ply.Inventory[str] then
 		if item.IsGrenade then

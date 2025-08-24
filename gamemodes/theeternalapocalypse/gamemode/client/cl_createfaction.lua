@@ -28,10 +28,11 @@ function GM:FactionMenu()
 
 	local desc = vgui.Create("DLabel", FactionFrame)
 	desc:SetPos(25,30)
---	desc:SetFont( "TEA.HUDFontSmall" )
-	desc:SetText("Note: creating a faction makes it so members of other factions can PVP you at all times.\nOn the upside it allows you to build using strong props (which cannot be damaged by most guns) and place \nfaction structures such as fridges, ammo crates, generators, storage vaults etc. \nWarning: Creating a faction will also cost some money. Your faction name cannot contain more than \n20 characters.")
+	desc:SetFont( "TEA.HUDFontSmall" )
+	desc:SetSize(550,75)
+	desc:SetText("Note: creating a faction will PVP. On the upside it allows you to build using strong props (cannot be damaged by guns) and place faction structures such as fridges, ammo crates, etc.\nWarning: Creating a faction will also cost some money. Your faction name cannot contain more than 20 characters.")
+	desc:SetWrap(true)
 	desc:SetTextColor(Color(250, 225, 200, 255))
-	desc:SizeToContents()
 
 	local tnamelabel = vgui.Create("DLabel", FactionFrame)
 	tnamelabel:SetPos(25,100)
@@ -91,7 +92,8 @@ end)
 
 function GM:ManageMenu()
 	if IsValid(ManageFrame) then ManageFrame:Remove() end
-	if LocalPlayer():Team() == 1 then
+	local ply = LocalPlayer()
+	if ply:Team() == 1 then
 		chat.AddText(Color(255,255,255,255), "[System] ", Color(255,205,205,255), translate.Get("not_in_faction"))
 		return false
 	end
