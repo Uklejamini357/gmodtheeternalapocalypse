@@ -73,6 +73,10 @@ function GM:MakeOptions()
 
 	local check = CreateCheckLabel(pan, list, "Death Sound Effect", "tea_cl_deathsfx")
 	check = CreateCheckLabel(pan, list, "Display HUD", "tea_cl_hud")
+	check = CreateCheckLabel(pan, list, "Show infection level % on HUD", "tea_cl_hudshowinflvl")
+	check:SetTooltip("Displays above the crosshair")
+	check = CreateCheckLabel(pan, list, "Show infection level text on HUD", "tea_cl_hudshowinflvltext")
+	check:SetTooltip("Must have (tea_cl_hudshowinflvl) Show infection level% on HUD to be enabled")
 	check = CreateCheckLabel(pan, list, "Play boss stinger music", "tea_cl_soundboss")
 	check = CreateCheckLabel(pan, list, "Play hitsounds on dealing damage", "tea_cl_hitsounds")
 	check = CreateCheckLabel(pan, list, "Use decimal values on HUD", "tea_cl_huddec")
@@ -91,6 +95,9 @@ function GM:MakeOptions()
 
 	check = CreateCheckLabel(pan, list, "Draw zombie info", "tea_cl_drawzinfo")
 	check:SetToolTip("Draws zombie information (Name, health and its' purpose (or what it is meant to do))")
+
+	check = CreateCheckLabel(pan, list, "Always show 100% multipliers for infection level", "tea_cl_alwaysshowinflvlmults")
+	check:SetToolTip("Shows 100% multipliers for infection level, only displays in C menu")
 
 	check = CreateCheckLabel(pan, list, "Do not display bounty tip message", "tea_cl_nobountytipmessage")
 	check:SetToolTip("If disabled, the tip about to cash in bounties regularly is shown upon dying.")

@@ -2,6 +2,8 @@ net.Receive("tea_damagefloater", function(length)
 	local damage = net.ReadFloat()
 	local pos = net.ReadVector()
 
+	-- LocalPlayer():EmitSound("buttons/button10.wav", 0, 100, 1)
+
 	if !GAMEMODE.EnableDamageNumbers then return end
 	local effectdata = EffectData()
 	effectdata:SetOrigin(pos)

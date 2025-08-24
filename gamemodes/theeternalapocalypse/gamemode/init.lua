@@ -469,6 +469,7 @@ function GM:Initialize()
 	self.InfectionDecreasedTimes = 0
 	self.NextSave = 0
 	self.DebugLogs = {}
+	self.StatTracker = {}
 
 	ZombieData = ""
 	DropData = ""
@@ -888,8 +889,10 @@ function GM:PlayerInitialSpawn(ply, transition)
 		
 		ZombieKills = 0,
 		ZombieKillAssists = 0,
+		BossKills = 0,
+		BossKillAssists = 0,
 		ZombieDamageToZombies = 0,
-		
+
 		PlayersKilled = 0,
 
 		Deaths = 0,

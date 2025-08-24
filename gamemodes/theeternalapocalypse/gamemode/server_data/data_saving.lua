@@ -5,40 +5,26 @@ function GM:LoadServerData()
     if not file.IsDir(filedir, "DATA") then file.CreateDir(filedir) end
 
     if file.Exists(filedir2, "DATA") then
-        local TheFile = file.Read(filedir2, "DATA")
-        local DataPieces = string.Explode("\n", TheFile)
+		local method = self.Config.SFS and sfs.decode or util.JSONToTable
+		local tbl = method(file.Read(filedir_ply, "DATA"))
  
-        local Output = {}
- 
-        for k, v in pairs(DataPieces) do
-            local TheLine = string.Explode(";", v)
-            local data = TheLine[1]
-            local value = TheLine[2]
-
-            if data == "InfectionLevel" then
-                self:SetInfectionLevel(value, true)
-            end
+        if tbl.InfectionLevel then
+            self:SetInfectionLevel(tbl.InfectionLevel, true)
         end
-
     else
         self:SetInfectionLevel(0, true)
     end
 end
 
 function GM:SaveServerData()
+	if not force and not self.DatabaseSaving then return end
+    local filedir = self.DataFolder.."/server/globaldata.txt"
     local Data = {}
 	Data["InfectionLevel"] = self:GetInfectionLevel()
+	Data["Statistics"] = self.StatTracker
 
-    local StringToWrite = ""
-	for k, v in pairs(Data) do
-		if StringToWrite == "" then
-			StringToWrite = k ..";".. v
-		else
-			StringToWrite = StringToWrite .."\n".. k ..";".. v
-		end
-	end
 
-    local filedir = self.DataFolder.."/server/globaldata.txt"
-	file.Write(filedir, StringToWrite)
+	local method = self.Config.SFS and sfs.encode or util.TableToJSON
+	file.Write(filedir, method(Data, self.Config.SFS and 50000 or true))
 	self:DebugLog("Saved global server data to file: "..filedir)
 end

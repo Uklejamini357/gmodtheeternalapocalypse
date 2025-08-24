@@ -201,13 +201,15 @@ end
 GM.Config["ZombieClasses"] = {
 	["npc_tea_basic"] = {		-- table name must be the entclass name of the zombie, see garrysmod/gamemodes/theeternalapocalypse/entities for entclasses (or you can add other zombie types by yourself)
 		Name = "Shambler Zombie",	-- Name for the zombie, used in death notice/killfeed
-		SpawnChance = 66.75,	-- spawn chance in % (there is a helper function that will tell you how much the current total spawn chance for zombies is)
+		SpawnChance = 66.65,	-- spawn chance in % (there is a helper function that will tell you how much the current total spawn chance for zombies is)
 		XPReward = 48,		-- xp reward for killing this zombie, varies with the convar tea_server_xpreward convar
 		MoneyReward = 22,	-- money reward for killing this zombie, varies with the convar tea_server_moneyreward convar
 		InfectionRate = 0.03,	-- Infection Level increase if the zombie is killed by player (Affected by player count!)
 		AllowEliteVariants = true,	-- Some zombies may not like being as elite variant as it confuses between colors - Only allow some! (By default, it's true)
 		Miniboss = false,	-- If it is true, they are not spawned unless Infection Level is 25% or more, or if the player count is less than 3! Instead, they will be rerolled as a basic zombie.
 		-- (in that case, if minibosses can't spawn then there is slightly higher chance for basics to spawn)
+		Tier = 1,			-- (NYI) Spawn Tier for the zombie. Higher tier zombies are less likely to spawn on tier 1 zombie spawns!
+		-- Meant for higher threat zombies to spawn less frequently in safer areas while higher threat zombies spawn more frequently on areas.
 	},
 
 	["npc_tea_leaper"] = {
@@ -217,6 +219,7 @@ GM.Config["ZombieClasses"] = {
 		MoneyReward = 30,
 		InfectionRate = 0.035,
 		AllowEliteVariants = true,
+		Tier = 1,
 	},
 
 	["npc_tea_wraith"] = {
@@ -226,6 +229,7 @@ GM.Config["ZombieClasses"] = {
 		MoneyReward = 45,
 		InfectionRate = 0.048,
 		AllowEliteVariants = true,
+		Tier = 2,
 	},
 
 	["npc_tea_tank"] = {
@@ -235,6 +239,7 @@ GM.Config["ZombieClasses"] = {
 		MoneyReward = 90,
 		InfectionRate = 0.07,
 		AllowEliteVariants = true,
+		Tier = 2,
 	},
 
 	["npc_tea_puker"] = {
@@ -244,6 +249,7 @@ GM.Config["ZombieClasses"] = {
 		MoneyReward = 105,
 		InfectionRate = 0.062,
 		AllowEliteVariants = true,
+		Tier = 2,
 	},
 
 	["npc_tea_lord"] = {
@@ -253,6 +259,7 @@ GM.Config["ZombieClasses"] = {
 		MoneyReward = 320,
 		InfectionRate = 0.135,
 		AllowEliteVariants = true,
+		Tier = 3,
 	},
 
 	["npc_tea_tormented_wraith"] = {
@@ -262,6 +269,7 @@ GM.Config["ZombieClasses"] = {
 		MoneyReward = 150,
 		InfectionRate = 0.1,
 		AllowEliteVariants = true,
+		Tier = 3,
 	},
 
 	["npc_tea_superlord"] = {
@@ -269,29 +277,32 @@ GM.Config["ZombieClasses"] = {
 		SpawnChance = 0.2,
 		XPReward = 850,
 		MoneyReward = 700,
-		InfectionRate = 0.35,
+		InfectionRate = 1.05,
 		AllowEliteVariants = true,
 		Miniboss = true,
+		Tier = 4,
 	},
 
 	["npc_tea_heavy_tank"] = {
 		Name = "Heavy Tank Zombie",
-		SpawnChance = 0.15,
+		SpawnChance = 0.25,
 		XPReward = 750,
 		MoneyReward = 650,
-		InfectionRate = 0.4,
+		InfectionRate = 0.9,
 		AllowEliteVariants = true,
 		Miniboss = true,
+		Tier = 4,
 	},
 
 	["npc_tea_hunter"] = {
 		Name = "Hunter Zombie",
 		SpawnChance = 0.15,
-		XPReward = 750,
-		MoneyReward = 650,
-		InfectionRate = 0.4,
+		XPReward = 900,
+		MoneyReward = 800,
+		InfectionRate = 1.3,
 		AllowEliteVariants = true,
 		Miniboss = true,
+		Tier = 4,
 	},
 
 }
@@ -313,7 +324,7 @@ GM.Config["BossClasses"] = {
 				GAMEMODE:RadioBroadcast(8, "It is currently inbound for this sector, so you better get inside something solid and make sure you have good amount of ammo.", "Watchdog", false)
 			end
 		end,
-		InfectionRate = 1.85,	-- Infection rate
+		InfectionRate = 4.85,	-- Infection rate
 		AllowEliteVariants = true,	-- Some bosses don't like being elite variants, so we only enable for some of them!
 	},
 	
@@ -331,7 +342,7 @@ GM.Config["BossClasses"] = {
 				GAMEMODE:RadioBroadcast(9, "It will arrive into the area, so prepare a good barricade, multiple layers of barricades and plenty of ammo.", "Watchdog", false)
 			end
 		end,
-		InfectionRate = 2.125,
+		InfectionRate = 5.5,
 		AllowEliteVariants = true,
 	},
 }

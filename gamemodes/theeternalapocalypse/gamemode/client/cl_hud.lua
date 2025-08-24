@@ -198,9 +198,11 @@ local function surface_DrawRectColor(x, y, w, h, col)
 end
 
 
+local cl_drawhud = GetConVar("cl_drawhud")
 function GM:DrawVitals()
 	local me = LocalPlayer()
-	if !me:IsValid() or !me:Alive() or !self.HUDEnabled or GetConVar("cl_drawhud"):GetInt() < 1 or me:GetObserverMode() ~= OBS_MODE_NONE then return end
+	local wep = me:GetActiveWeapon()
+	if !me:IsValid() or !me:Alive() or !self.HUDEnabled or cl_drawhud:GetInt() < 1 or me:GetObserverMode() ~= OBS_MODE_NONE or wep:IsValid() and wep:GetClass() == "gmod_camera" then return end
 	local scrw = ScrW()
 	local scrh = ScrH()
 
@@ -796,6 +798,10 @@ function GM:HUDPaint()
 		self:DrawMiscThings()
 	end
 
+	if self.ShowInfectionLevelHUD then
+		local text, col = self:GetInfectionTextColor(self:GetInfectionLevel())
+		draw.SimpleText(Format("%s%%%s", math.Round(self:GetInfectionLevel(), 2), self.ShowInfectionLevelHUDText and " ("..text..")" or ""), "TEA.HUDFontSmall", ScrW()/2, ScrH()/3.5, col, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+	end
 end
 
 function GM:PostDrawHUD()

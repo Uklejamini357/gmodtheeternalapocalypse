@@ -132,44 +132,10 @@ function GM:CMenu()
 			surface.DrawRect(scw - 600, sch / 2 - 150, 400, 300)
 			surface.SetDrawColor(150, 150, 0, 105)
 			surface.DrawOutlinedRect(scw - 600, sch / 2 - 150, 400, 300)
-/*
-			surface.SetDrawColor(0, 0, 0, 200)
-			surface.DrawRect(140, 115, 180, 25)
-			surface.SetDrawColor(90, 90, 0, 255)
-			surface.DrawOutlinedRect(140, 115, 180, 25)
-*/
+
 			local infection = math.Round(self:GetInfectionLevel(), 2)
 			local effective = infection--math.Round(self:GetEffectiveInfectionLevel(), 2)
-			local text,color
-
-			if effective >= 250 then
-				local count = math.floor(((effective-200)/50)^0.75)
-				local mul = math.Clamp(1.5 - (CurTime()*(5 + count)/10)%1, 0.5, 1.5)
-				text,color = "Chaos+"..count, Color(127*mul,31*mul,31*mul)
-			elseif effective >= 200 then
-				text,color = "Chaos", Color(127,31,31)
-			elseif effective >= 150 then
-				text,color = "Nightmare", Color(159,31,31)
-			elseif effective >= 125 then
-				text,color = "Horror", Color(191,31,31)
-			elseif effective > 100 then
-				text,color = "Over-Infected", Color(223,31,31)
-			elseif effective >= 90 then
-				text,color = "Maximal", Color(255,0,0)
-			elseif effective >= 80 then
-				text,color = "Infected", Color(255,63,63)
-			elseif effective >= 60 then
-				text,color = "High", Color(255,127,127)
-			elseif effective >= 40 then
-				text,color = "Medium", Color(191,191,127)
-			elseif effective >= 20 then
-				text,color = "Low", Color(127,255,191)
-			elseif effective > 0 then
-				text,color = "Very Low", Color(127,255,239)
-			else
-				text,color = "None", Color(127,255,255)
-			end
-
+			local text,color = self:GetInfectionTextColor(effective)
 
 			if effective == infection then
 				draw.SimpleText(Format("Infection level: %s%% (%s)", infection, text), "TEA.HUDFont", scw - 590, sch / 2 - 145, color, 0, 0)
@@ -194,12 +160,47 @@ function GM:CMenu()
 			draw.SimpleText(Format("Elite variant Boss spawn chance: %s%%", math.Round(self:GetEliteVariantSpawnChance(true), 2)), "TEA.HUDFontSmall", scw - 590, y, color, 0, 0)
 			
 			
-			draw.SimpleText("Infection Level gain decreases at 50% and 75%.", "TEA.HUDFontSmall", scw - 590, sch / 2 + 95, Color(225,225,225), 0, 0)
-			draw.SimpleText("Above 100% the gain decreases even further.", "TEA.HUDFontSmall", scw - 590, sch / 2 + 110, Color(225,225,225), 0, 0)
-			draw.SimpleText(Format("Infection Level gain from killing zombies: %s%%", math.Round((self:GetInfectionLevel() >= 100 and 0.4/(self:GetInfectionMul()-1) or
+			y = sch / 2 + 65
+
+--[[
+			Infection Level gain decreases at 50% and 75%.
+			Above 100% the gain decreases even further.
+]]
+			draw.SimpleText("Infection Level gain depends on a few factors.", "TEA.HUDFontSmall", scw - 590, y, Color(225,225,225), 0, 0)
+			y = y + 15
+			draw.SimpleText("Includes: Current Infection level, Player count and config", "TEA.HUDFontSmall", scw - 590, y, Color(225,225,225), 0, 0)
+			y = y + 20
+
+
+			local infectionlevel = self:GetInfectionLevel() >= 100 and 0.4/(self:GetInfectionMul()-1) or
 				self:GetInfectionLevel() >= 75 and 0.5 or
 				self:GetInfectionLevel() >= 50 and 0.75 or
-			1.00)*100, 2)), "TEA.HUDFontSmall", scw - 590, sch / 2 + 130, Color(255,155,155), 0, 0)
+			1.00
+			local plycount = 1 / (1 + ((player.GetCount() - 1) * (2 / 9)))
+			local mul = self.InfectionLevelGainMul
+			local gain = infectionlevel * plycount * mul
+			local alwaysshowmults = self.AlwaysShowInfLvlMults
+			local showmults = alwaysshowmults or infectionlevel ~= 1 or plycount ~= 1 or mul ~= 1
+
+			draw.SimpleText(Format("Infection Level gain: %s%%", math.Round(gain*100, 2)), "TEA.HUDFontSmall", scw - 590, y, Color(255,155,155), 0, 0)
+			y = y + 15
+			if showmults then
+				draw.SimpleText("Multipliers:", "TEA.HUDFontSmall", scw - 590, y, Color(255,225,155), 0, 0)
+				y = y + 15
+				local x = scw - 590
+				if alwaysshowmults or infectionlevel ~= 1 then
+					draw.SimpleText(Format("I. lvl: %s%%", math.Round(infectionlevel*100)), "TEA.HUDFontSmall", x, y, Color(255,225,155), 0, 0)
+					x = x + 125
+				end
+				if alwaysshowmults or plycount ~= 1 then
+					draw.SimpleText(Format("Players: %s%%", math.Round(plycount*100)), "TEA.HUDFontSmall", x, y, Color(255,225,155), 0, 0)
+					x = x + 125
+				end
+				if alwaysshowmults or mul ~= 1 then
+					draw.SimpleText(Format("Config: %s%%", math.Round(mul*100)), "TEA.HUDFontSmall", x, y, Color(255,225,155), 0, 0)
+				end
+			end
+
 		end
 
 		surface.DrawCircle(panel:GetWide() / 2, panel:GetTall() / 2, 150, Color(100, 100, 100, 205))

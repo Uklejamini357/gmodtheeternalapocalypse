@@ -342,6 +342,37 @@ function GM:GetInfectionMul(value, bypass, effective)
 --	return tonumber((1 * value) + (self:GetInfectionLevel() * (0.01 / value)))
 end
 
+function GM:GetInfectionTextColor(infection)
+	if not infection then infection = self:GetInfectionLevel() end
+	if infection >= 250 then
+		local count = math.floor(((infection-200)/50)^0.75)
+		local mul = math.Clamp(1.5 - (CurTime()*(5 + count)/10)%1, 0.5, 1.5)
+		return "Chaos+"..count, Color(127*mul,31*mul,31*mul)
+	elseif infection >= 200 then
+		return "Chaos", Color(127,31,31)
+	elseif infection >= 150 then
+		return "Nightmare", Color(159,31,31)
+	elseif infection >= 125 then
+		return "Horror", Color(191,31,31)
+	elseif infection > 100 then
+		return "Over-Infected", Color(223,31,31)
+	elseif infection >= 90 then
+		return "Maximal", Color(255,0,0)
+	elseif infection >= 80 then
+		return "Infected", Color(255,63,63)
+	elseif infection >= 60 then
+		return "High", Color(255,127,127)
+	elseif infection >= 40 then
+		return "Medium", Color(191,191,127)
+	elseif infection >= 20 then
+		return "Low", Color(127,255,191)
+	elseif infection > 0 then
+		return "Very Low", Color(127,255,239)
+	else
+		return "None", Color(127,255,255)
+	end
+end
+
 function GM:GetEliteVariantSpawnChance(boss)
 	local chance = self:GetCurrentSeasonalEvent() != SEASONAL_EVENT_HALLOWEEN and (boss and 10 or 1) or
 	self:GetCurrentSeasonalEvent() == SEASONAL_EVENT_HALLOWEEN and (boss and 35 or 5)

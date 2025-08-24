@@ -439,7 +439,12 @@ function GM:NPCReward(ent)
 				end
 
 				pl:PrintTranslatedMessage(HUD_PRINTTALK, "damage_dealt_to_boss", math.Round(v), math.Round((v * 100) / ent:GetMaxHealth()))
+
+				if pl ~= killer then
+					pl:AddStatisticPoints("BossKillAssists", 1)
+				end
 			end
+			killer:AddStatisticPoints("BossKills", 1)
 
 			if table.Count(attackers) > 0 then
 				self.NextInfectionDecrease = math.max(self.NextInfectionDecrease, ct + 70 + table.Count(attackers) * 5)

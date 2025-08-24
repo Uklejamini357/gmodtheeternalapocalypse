@@ -235,6 +235,24 @@ if CLIENT then
 		GAMEMODE:OnConVarChanged(cvar, old, new)
 	end, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_cl_drawzinfo")
 
+	GM.AlwaysShowInfLvlMults = CreateClientConVar("tea_cl_alwaysshowinflvlmults", 0, true, false, "Shows 100% multipliers for infection level only in C menu", 0, 1):GetBool()
+	cvars.AddChangeCallback("tea_cl_alwaysshowinflvlmults", function(cvar,old,new)
+		GAMEMODE.AlwaysShowInfLvlMults = tobool(new)
+		GAMEMODE:OnConVarChanged(cvar, old, new)
+	end, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_cl_alwaysshowinflvlmults")
+
+	GM.ShowInfectionLevelHUD = CreateClientConVar("tea_cl_hudshowinflvl", 0, true, false, "Show infection level % on HUD (above the crosshair)", 0, 1):GetBool()
+	cvars.AddChangeCallback("tea_cl_hudshowinflvl", function(cvar,old,new)
+		GAMEMODE.ShowInfectionLevelHUD = tobool(new)
+		GAMEMODE:OnConVarChanged(cvar, old, new)
+	end, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_cl_hudshowinflvl")
+
+	GM.AlwaysShowInfLvlMults = CreateClientConVar("tea_cl_hudshowinflvltext", 0, true, false, "Show infection level text on HUD\n(must have (tea_cl_hudshowinflvl) Show infection level% on HUD to be enabled)", 0, 1):GetBool()
+	cvars.AddChangeCallback("tea_cl_hudshowinflvltext", function(cvar,old,new)
+		GAMEMODE.ShowInfectionLevelHUDText = tobool(new)
+		GAMEMODE:OnConVarChanged(cvar, old, new)
+	end, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_cl_hudshowinflvltext")
+
 	GM.NoDisplayBountyTipMessage = CreateClientConVar("tea_cl_nobountytipmessage", 0, true, true, "Displays bounty tip message when you die with bounty.", 0, 1):GetBool()
 	cvars.AddChangeCallback("tea_cl_nobountytipmessage", function(cvar,old,new)
 		GAMEMODE.NoDisplayBountyTipMessage = tobool(new)

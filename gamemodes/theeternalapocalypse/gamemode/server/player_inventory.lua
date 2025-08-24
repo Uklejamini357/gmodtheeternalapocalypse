@@ -50,6 +50,9 @@ Database saving is disabled! Players will not have their progress saved during t
 Set ConVar 'tea_server_dbsaving' to 1 in order to enable database saving.
 
 ------=== ===------]]) return end
+
+	self:SaveServerData()
+
 	for k, ply in pairs(player.GetAll()) do
 		if ply:IsValid() then
 			timer.Simple(i, function()
@@ -215,23 +218,23 @@ function GM:UseItem(ply, item, use, targetply)
 					end
 
 					if consum.Infection then
-						targetply.Infection = targetply.Infection + consum.Infection*100
+						targetply.Infection = math.max(0, targetply.Infection + consum.Infection*100)
 					end
 
 					if consum.Stamina then
-						targetply.Stamina = targetply.Stamina + consum.Stamina
+						targetply.Stamina = math.max(0, targetply.Stamina + consum.Stamina)
 					end
 
 					if consum.Thirst then
-						targetply.Thirst = targetply.Thirst + consum.Thirst*100
+						targetply.Thirst = math.max(0, targetply.Thirst + consum.Thirst*100)
 					end
 
 					if consum.Hunger then
-						targetply.Hunger = targetply.Hunger + consum.Hunger*100
+						targetply.Hunger = math.max(0, targetply.Hunger + consum.Hunger*100)
 					end
 
 					if consum.Fatigue then
-						targetply.Fatigue = targetply.Fatigue + consum.Fatigue*100
+						targetply.Fatigue = math.max(0, targetply.Fatigue + consum.Fatigue*100)
 					end
 
 					if ply ~= targetply and hp and hp > 0 then

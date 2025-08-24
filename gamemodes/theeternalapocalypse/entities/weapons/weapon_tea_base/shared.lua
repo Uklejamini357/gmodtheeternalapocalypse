@@ -196,7 +196,7 @@ function SWEP:IdleAnimation(time)
 end
 
 function SWEP:PrimaryAttack()
-	if (not self.Owner:IsNPC() and self.Owner:KeyDown(IN_USE)) then
+	if (not self:GetOwner():IsNPC() and self:GetOwner():KeyDown(IN_USE)) then
 		bHolsted = !self:GetDTBool(0)
 		self:SetHolsted(bHolsted)
 
@@ -234,9 +234,9 @@ end
 
 function SWEP:SecondaryAttack()
 
-	if self.Owner:IsNPC() then return end
+	if self:GetOwner():IsNPC() then return end
 
-	if (self.Owner:KeyDown(IN_USE) and (self.Mode)) then
+	if (self:GetOwner():KeyDown(IN_USE) and (self.Mode)) then
 		bMode = !self:GetDTBool(3)
 		self:SetMode(bMode)
 		self:SetIronsights(false)
@@ -247,7 +247,7 @@ function SWEP:SecondaryAttack()
 		return
 	end
 
-	if (!self.IronSightsPos) or (self.Owner:KeyDown(IN_SPEED) or self:GetDTBool(0)) then return end
+	if (!self.IronSightsPos) or (self:GetOwner():KeyDown(IN_SPEED) or self:GetDTBool(0)) then return end
 	
 	bIronsights = !self:GetDTBool(1)
 	self:SetIronsights(bIronsights)
@@ -261,7 +261,7 @@ end
 ---------------------------------------------------------*/
 function SWEP:SetHolsted(b)
 
-	if (self.Owner) then
+	if (self:GetOwner()) then
 		if (b) then
 			self:EmitSound("weapons/universal/iron_in.wav")
 		else
@@ -279,10 +279,10 @@ end
 ---------------------------------------------------------*/
 function SWEP:SetIronsights(b)
 
-	if (self.Owner) then
+	if (self:GetOwner()) then
 		if (b) then
 			if (SERVER) then
-				self.Owner:SetFOV(65, 0.2)
+				self:GetOwner():SetFOV(65, 0.2)
 			end
 
 			if self.AllowIdleAnimation then
@@ -292,17 +292,17 @@ function SWEP:SetIronsights(b)
 					self:SendWeaponAnim(ACT_VM_IDLE)
 				end
 
-				self.Owner:GetViewModel():SetPlaybackRate(0)
+				self:GetOwner():GetViewModel():SetPlaybackRate(0)
 			end
 
 			self:EmitSound("weapons/universal/iron_in.wav")
 		else
 			if (SERVER) then
-				self.Owner:SetFOV(0, 0.2)
+				self:GetOwner():SetFOV(0, 0.2)
 			end
 
 			if self.AllowPlaybackRate and self.AllowIdleAnimation then
-				self.Owner:GetViewModel():SetPlaybackRate(1)
+				self:GetOwner():GetViewModel():SetPlaybackRate(1)
 			end	
 
 			self:EmitSound("weapons/universal/iron_out.wav")
@@ -316,7 +316,7 @@ end
 
 function SWEP:SetMode(b)
 
-	if (self.Owner) then
+	if (self:GetOwner()) then
 		if (b) then
 			if self.Type == 1 then
 				self.Primary.Automatic = self.data.Automatic
@@ -325,15 +325,15 @@ function SWEP:SetMode(b)
 				self:SendWeaponAnim(ACT_VM_ATTACH_SILENCER)
 				self.Primary.Sound = Sound(self.Primary.SuppressorSound)
 
-				if (IsValid(self.Owner) and self.Owner:GetViewModel()) then
-					self:IdleAnimation(self.Owner:GetViewModel():SequenceDuration())
+				if (IsValid(self:GetOwner()) and self:GetOwner():GetViewModel()) then
+					self:IdleAnimation(self:GetOwner():GetViewModel():SequenceDuration())
 				end
 			elseif self.Type == 3 then
 				self:EmitSound("weapons/smg1/switch_burst.wav")
 			end
 
 			if (SERVER) then
-				self.Owner:PrintMessage(HUD_PRINTTALK, self.data.ModeMsg)
+				self:GetOwner():PrintMessage(HUD_PRINTTALK, self.data.ModeMsg)
 			end
 		else
 			if self.Type == 1 then
@@ -343,15 +343,15 @@ function SWEP:SetMode(b)
 				self:SendWeaponAnim(ACT_VM_DETACH_SILENCER)
 				self.Primary.Sound = Sound(self.Primary.NoSuppressorSound)
 
-				if (IsValid(self.Owner) and self.Owner:GetViewModel()) then
-					self:IdleAnimation(self.Owner:GetViewModel():SequenceDuration())
+				if (IsValid(self:GetOwner()) and self:GetOwner():GetViewModel()) then
+					self:IdleAnimation(self:GetOwner():GetViewModel():SequenceDuration())
 				end
 			elseif self.Type == 3 then
 				self:EmitSound("weapons/smg1/switch_single.wav")
 			end
 
 			if (SERVER) then
-				self.Owner:PrintMessage(HUD_PRINTTALK, self.data.NormalMsg)
+				self:GetOwner():PrintMessage(HUD_PRINTTALK, self.data.NormalMsg)
 			end
 		end
 	end
@@ -370,7 +370,7 @@ function SWEP:Reload()
 
 	self:DefaultReload(ACT_VM_RELOAD)
 
-	if (self:Clip1() < self.Primary.ClipSize) and (self.Owner:GetAmmoCount(self.Primary.Ammo) > 0) then
+	if (self:Clip1() < self.Primary.ClipSize) and (self:GetOwner():GetAmmoCount(self.Primary.Ammo) > 0) then
 		self:SetIronsights(false)
 		self:ReloadAnimation()
 	end
@@ -384,8 +384,8 @@ function SWEP:ReloadAnimation()
 		self:DefaultReload(ACT_VM_RELOAD)
 	end
 
-	if (IsValid(self.Owner) and self.Owner:GetViewModel()) then
-		self:IdleAnimation(self.Owner:GetViewModel():SequenceDuration())
+	if (IsValid(self:GetOwner()) and self:GetOwner():GetViewModel()) then
+		self:IdleAnimation(self:GetOwner():GetViewModel():SequenceDuration())
 	end
 end
 
@@ -399,7 +399,7 @@ function SWEP:Think()
 	if self:Clip1() > 0 and self.IdleDelay < CurTime() and self.IdleApply then
 		local WeaponModel = self:GetOwner():GetActiveWeapon():GetClass()
 
-		if self.Owner and self:GetOwner():GetActiveWeapon():GetClass() == WeaponModel and self.Owner:Alive() then
+		if self:GetOwner() and self:GetOwner():GetActiveWeapon():GetClass() == WeaponModel and self:GetOwner():Alive() then
 			if self:GetDTBool(3) and self.Type == 2 then
 				self:SendWeaponAnim(ACT_VM_IDLE_SILENCED)
 			else
@@ -407,9 +407,9 @@ function SWEP:Think()
 			end
 
 			if self.AllowPlaybackRate and not self:GetDTBool(1) then
-				self.Owner:GetViewModel():SetPlaybackRate(1)
+				self:GetOwner():GetViewModel():SetPlaybackRate(1)
 			else
-				self.Owner:GetViewModel():SetPlaybackRate(0)
+				self:GetOwner():GetViewModel():SetPlaybackRate(0)
 			end		
 		end
 
@@ -418,13 +418,13 @@ function SWEP:Think()
 		self.IdleApply = false
 	end
 
-	if self:GetDTBool(1) and self.Owner:KeyDown(IN_SPEED) then
+	if self:GetDTBool(1) and self:GetOwner():KeyDown(IN_SPEED) then
 		self:SetIronsights(false)
 	end
 
-	if self.Owner:KeyDown(IN_SPEED) or self:GetDTBool(0) then
+	if self:GetOwner():KeyDown(IN_SPEED) or self:GetDTBool(0) then
 		if self.Rifle or self.Sniper or self.Shotgun then
-			if self.Owner:KeyDown(IN_DUCK) then
+			if self:GetOwner():KeyDown(IN_DUCK) then
 				self:SetHoldType("normal")
 			else
 				self:SetHoldType("passive")
@@ -465,8 +465,8 @@ function SWEP:Deploy()
 
 	self:DeployAnimation()
 
-	if (IsValid(self.Owner) and self.Owner:GetViewModel()) then
-		self:IdleAnimation(self.Owner:GetViewModel():SequenceDuration())
+	if (IsValid(self:GetOwner()) and self:GetOwner():GetViewModel()) then
+		self:IdleAnimation(self:GetOwner():GetViewModel():SequenceDuration())
 	end
 
 	self:SetNextPrimaryFire(CurTime() + self.DeployDelay + 0.05)
@@ -501,7 +501,7 @@ SWEP.SprayAccuracy 	= 0.2
 function SWEP:CrosshairAccuracy()
 
 	// Is it a constant accuracy weapon or is it a NPC? The NPC doesn't need a crosshair. Fuck him!
-	if (self.ConstantAccuracy) or (self.Owner:IsNPC()) then
+	if (self.ConstantAccuracy) or (self:GetOwner():IsNPC()) then
 		return 1.0
 	end
 	
@@ -509,7 +509,7 @@ function SWEP:CrosshairAccuracy()
 	local Accuracy 		= 1.0
 	local LastShoot 		= self:GetNetworkedFloat("LastShootTime", 0)
 	
-	local Speed 		= self.Owner:GetVelocity():Length()
+	local Speed 		= self:GetOwner():GetVelocity():Length()
 
 	local SpeedClamp = math.Clamp(math.abs(Speed / 705), 0, 1)
 	
@@ -517,7 +517,7 @@ function SWEP:CrosshairAccuracy()
 		Accuracy = Accuracy * self.SprayAccuracy
 	end
 	
-	if (not self.Owner:IsOnGround()) then
+	if (not self:GetOwner():IsOnGround()) then
 		Accuracy = Accuracy * 0.1
 	elseif (Speed > 10) then
 		Accuracy = Accuracy * (((1 - SpeedClamp) + 0.1) / 2)
@@ -553,15 +553,15 @@ function SWEP:ShootBullet(damage, recoil, num_bullets, aimcone)
 	
 	local bullet = {}
 	bullet.Num 		= num_bullets
-	bullet.Src 		= self.Owner:GetShootPos()			// Source
-	bullet.Dir 		= self.Owner:GetAimVector()			// Dir of bullet
+	bullet.Src 		= self:GetOwner():GetShootPos()			// Source
+	bullet.Dir 		= self:GetOwner():GetAimVector()			// Dir of bullet
 	bullet.Spread 	= Vector(aimcone, aimcone, 0)			// Aim Cone
 	bullet.Tracer	= 1							// Show a tracer on every x bullets
 	bullet.TracerName = TracerName
 	bullet.Force	= damage * 0.5					// Amount of force to give to phys objects
 	bullet.Damage	= damage
 	bullet.Callback	= function(attacker, tr, dmginfo) 
-		if not self.Owner:IsNPC() and self.Owner:GetNetworkedInt("Fuel") > 0 then
+		if not self:GetOwner():IsNPC() and self:GetOwner():GetNetworkedInt("Fuel") > 0 then
 			self:ShootFire(attacker, tr, dmginfo) 
 		end
 
@@ -575,10 +575,10 @@ function SWEP:ShootBullet(damage, recoil, num_bullets, aimcone)
 			if SERVER then
 				if self.Sniper == true then
 					net.Start( "HitMarkerSnip" )
-   					net.Send( self.Owner )
+   					net.Send( self:GetOwner() )
    				else
    					net.Start( "HitMarker" )
-   					net.Send( self.Owner )
+   					net.Send( self:GetOwner() )
    				end
    			end
 		end
@@ -590,19 +590,19 @@ function SWEP:ShootBullet(damage, recoil, num_bullets, aimcone)
 --						return self:RicochetCallback_Redirect(attacker, tr, dmginfo) 
 	end
 
-	self.Owner:FireBullets(bullet)
+	self:GetOwner():FireBullets(bullet)
 
 	-- Realistic recoil. Only on snipers and shotguns. Disable for the admin gun because if you put the max damage, you'll fly like you never fly!
 	if SERVER and (self.Sniper or self.Shotgun) then
-		self.Owner:SetVelocity(self.Owner:GetAimVector() * -(damage * num_bullets * 0.4))
+		self:GetOwner():SetVelocity(self:GetOwner():GetAimVector() * -(damage * num_bullets * 0.4))
 	end
 
 	-- Recoil
-	if (not self.Owner:IsNPC()) and ((game.SinglePlayer() and SERVER) or (not game.SinglePlayer() and CLIENT)) then
+	if (not self:GetOwner():IsNPC()) and ((game.SinglePlayer() and SERVER) or (not game.SinglePlayer() and CLIENT)) then
 		if ( IsFirstTimePredicted() ) then
-		local eyeangle 	= self.Owner:EyeAngles()
+		local eyeangle 	= self:GetOwner():EyeAngles()
 		eyeangle.pitch 	= eyeangle.pitch - recoil
-		self.Owner:SetEyeAngles(eyeangle)
+		self:GetOwner():SetEyeAngles(eyeangle)
 		end
 	end
 end
@@ -616,7 +616,7 @@ function SWEP:ShootBulletInformation()
 	local CurrentDamage
 	local CurrentRecoil
 	local CurrentCone
-	local owner = self.Owner
+	local owner = self:GetOwner()
 
 	if self:GetDTBool(3) then
 		CurrentDamage = self.Primary.Damage * self.data.Damage
@@ -829,7 +829,7 @@ end
 ---------------------------------------------------------*/
 function SWEP:ShootFire(attacker, tr, dmginfo)
 
-	self.Owner:SetNetworkedInt("Fuel", math.Clamp(self.Owner:GetNetworkedInt("Fuel") - (math.random(1, 3) / self.Primary.NumShots), 0, 100))
+	self:GetOwner():SetNetworkedInt("Fuel", math.Clamp(self:GetOwner():GetNetworkedInt("Fuel") - (math.random(1, 3) / self.Primary.NumShots), 0, 100))
 
 	local effectdata = EffectData()
 	effectdata:SetOrigin(tr.HitPos)
@@ -874,9 +874,9 @@ end
 ---------------------------------------------------------*/
 function SWEP:ShootAnimation()
 
-	local AllowDryFire = self.Owner:GetActiveWeapon():GetClass() == ("weapon_mad_deagle") 
-				   or self.Owner:GetActiveWeapon():GetClass() == ("weapon_mad_usp") 
-				   or self.Owner:GetActiveWeapon():GetClass() == ("weapon_mad_usp_match")
+	local AllowDryFire = self:GetOwner():GetActiveWeapon():GetClass() == ("weapon_mad_deagle") 
+				   or self:GetOwner():GetActiveWeapon():GetClass() == ("weapon_mad_usp") 
+				   or self:GetOwner():GetActiveWeapon():GetClass() == ("weapon_mad_usp_match")
 
 	if (self:Clip1() <= 0) then
 		if (AllowDryFire) then
@@ -890,9 +890,9 @@ function SWEP:ShootAnimation()
 		else
 			self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
 			if self:GetDTBool(1) then
-			self.Owner:GetViewModel():SetPlaybackRate(self.IronFireAccel)
+			self:GetOwner():GetViewModel():SetPlaybackRate(self.IronFireAccel)
 			else
-			self.Owner:GetViewModel():SetPlaybackRate(1)
+			self:GetOwner():GetViewModel():SetPlaybackRate(1)
 			end 
 		end
 	else
@@ -901,9 +901,9 @@ function SWEP:ShootAnimation()
 		else
 			self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
 			if self:GetDTBool(1) then
-			self.Owner:GetViewModel():SetPlaybackRate(self.IronFireAccel)
+			self:GetOwner():GetViewModel():SetPlaybackRate(self.IronFireAccel)
 			else
-			self.Owner:GetViewModel():SetPlaybackRate(1)
+			self:GetOwner():GetViewModel():SetPlaybackRate(1)
 			end 
 		end
 	end
@@ -980,7 +980,7 @@ function SWEP:BulletPenetrate(bouncenum, attacker, tr, dmginfo, isplayer)
 	trace.endpos 	= tr.HitPos
 	trace.start 	= tr.HitPos + PenetrationDirection
 	trace.mask 		= MASK_SHOT
-	trace.filter 	= {self.Owner}
+	trace.filter 	= {self:GetOwner()}
 	   
 	local trace 	= util.TraceLine(trace) 
 	
@@ -1120,14 +1120,14 @@ end
 function SWEP:CanPrimaryAttack()
 
 	// Clip is empty or you're under water
-	if (self:Clip1() <= 0) or (self.Owner:WaterLevel() > 2) then
+	if (self:Clip1() <= 0) or (self:GetOwner():WaterLevel() > 2) then
 		self:SetNextPrimaryFire(CurTime() + 0.5)
 //		self:EmitSound("Default.ClipEmpty_Pistol")
 		return false
 	end
 
 	// You're sprinting or your weapon is holsted
-	if not self.Owner:IsNPC() and (self.Owner:KeyDown(IN_SPEED) or self:GetDTBool(0) or self.Owner:WaterLevel() > 2) then
+	if not self:GetOwner():IsNPC() and (self:GetOwner():KeyDown(IN_SPEED) or self:GetDTBool(0) or self:GetOwner():WaterLevel() > 2) then
 		self:SetNextPrimaryFire(CurTime() + 0.5)
 		return false
 	end
@@ -1149,7 +1149,7 @@ function SWEP:CanSecondaryAttack()
 	end
 
 	// You're sprinting or your weapon is holsted
-	if not self.Owner:IsNPC() and (self.Owner:KeyDown(IN_SPEED) or self:GetDTBool(0) or self.Owner:WaterLevel() > 2) then
+	if not self:GetOwner():IsNPC() and (self:GetOwner():KeyDown(IN_SPEED) or self:GetDTBool(0) or self:GetOwner():WaterLevel() > 2) then
 		self:SetNextSecondaryFire(CurTime() + 0.5)
 		return false
 	end

@@ -70,17 +70,8 @@ function SWEP:DrawHUD()
 	self:DrawFuelHUD()
 
 
-	local hitpos = util.TraceLine ({
-		start = LocalPlayer():GetShootPos(),
-		endpos = LocalPlayer():GetShootPos() + LocalPlayer():GetAimVector() * 4096,
-		filter = LocalPlayer(),
-		mask = MASK_SHOT
-	}).HitPos
-
-	local screenpos = hitpos:ToScreen()
-	
-	local x = screenpos.x
-	local y = screenpos.y
+	local x = ScrW() / 2
+	local y = ScrH() / 2
 	local gap = ((self.Primary.Cone * 275) + (((self.Primary.Cone * 275) * (ScrH() / 720))) * (1 / self:CrosshairAccuracy())) * 0.5
 	gap = math.Clamp(gap, 5, (ScrH() / 2) - 100)
 
@@ -245,7 +236,7 @@ function SWEP:DrawFuelHUD()
 		txt = math.Round(self.BaseClass.FuelData.Percent) .. "%"
 		
 		r, n = surface.GetTextSize(txt)
-		
+
 		draw.SimpleTextOutlined(txt, "TEA.HUDFontSmall", poly[2].x - w * 0.5, y - n, self.BaseClass.FuelData.Color, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 1, self.BaseClass.FuelData.Shadow)
 	end
 end
@@ -283,7 +274,7 @@ function SWEP:PrintWeaponInfo(x, y, alpha)
 	if not self.DrawWeaponInfoBox then return end
 	if self.InfoMarkup == nil then
 		local str
-		local title_color = "<color = 130, 0, 0, 255>"
+		local title_color = "<color = 215, 0, 0, 255>"
 		local text_color = "<color = 255, 255, 255, 200>"
 		
 		str = "<font=HudSelectionText>"
@@ -296,12 +287,9 @@ function SWEP:PrintWeaponInfo(x, y, alpha)
 		self.InfoMarkup = markup.Parse(str, 250)
 	end
 
-	alpha = 180
+	alpha = alpha * 0.8
 	
 	surface.SetDrawColor(0, 0, 0, alpha)
-	surface.SetTexture(self.SpeechBubbleLid)
-	
-	surface.DrawTexturedRect(x, y - 69.5, 128, 64) 
 	draw.RoundedBox(8, x - 5, y - 6, 260, self.InfoMarkup:GetHeight() + 18, Color(0, 0, 0, alpha))
 	
 	self.InfoMarkup:Draw(x + 5, y + 5, nil, nil, alpha)
@@ -313,31 +301,21 @@ end
 ---------------------------------------------------------*/
 local IRONSIGHT_TIME = 0.2
 
+SWEP.DashDelta = 0
+
+local ironsightoffset = Vector(0,0,0)
+
 function SWEP:GetViewModelPosition(pos, ang)
 
 	local bIron = self.Weapon:GetDTBool(1)	
 	
-	local DashDelta = 0
-	
-	if (self.Owner:KeyDown(IN_SPEED) or self.Weapon:GetDTBool(0)) then
-		if (!self.DashStartTime) then
-			self.DashStartTime = CurTime()
-		end
-		
-		DashDelta = math.Clamp(((CurTime() - self.DashStartTime) / 0.1) ^ 1.2, 0, 1)
+	if self:GetOwner():IsSprinting() then
+		self.DashDelta = math.Clamp(self.DashDelta + (1 - self.DashDelta) * FrameTime() * 3.5,0,1)
 	else
-		if (self.DashStartTime) then
-			self.DashEndTime = CurTime()
-		end
-	
-		if (self.DashEndTime) then
-			DashDelta = math.Clamp(((CurTime() - self.DashEndTime) / 0.1) ^ 1.2, 0, 1)
-			DashDelta = 1 - DashDelta
-			if (DashDelta == 0) then self.DashEndTime = nil end
-		end
-	
-		self.DashStartTime = nil
+		self.DashDelta = math.Clamp(self.DashDelta * (1 - FrameTime() * 3.5),0,1)
 	end
+
+	local DashDelta = self.DashDelta
 	
 	if DashDelta then
 		local Down = ang:Up() * -1
@@ -412,7 +390,8 @@ function SWEP:GetViewModelPosition(pos, ang)
 	
 	pos = pos + self.IronSightsPos.x * Right * Mul
 	pos = pos + self.IronSightsPos.y * Forward * Mul
-	pos = pos + self.IronSightsPos.z * Up * Mul
+	pos = pos + self.IronSightsPos.z * Up * Mul 
+	pos = pos + ironsightoffset
 	
 	return pos, ang
 end
@@ -420,6 +399,17 @@ end
 function SWEP:AdjustMouseSensitivity()
 
 	return nil
+end
+
+SWEP.FOVMul = 1
+function SWEP:TranslateFOV(fov)
+	local bIron = self.Weapon:GetDTBool(1)	
+	if bIron then 
+		self.FOVMul = math.Clamp(self.FOVMul + (0.65 - self.FOVMul) * FrameTime() * (1 / IRONSIGHT_TIME),0,1)
+	else
+		self.FOVMul = math.Clamp(self.FOVMul + (1 - self.FOVMul) * FrameTime() * (1 / IRONSIGHT_TIME),0,1)
+	end
+	return fov * self.FOVMul
 end
 
 function SWEP:GetTracerOrigin()
