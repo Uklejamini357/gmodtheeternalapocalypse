@@ -23,9 +23,13 @@ function ENT:Initialize()
 end
 
 function ENT:Think()
-	if SERVER and self.CreatedTime + 3600 < CurTime() then
+	if self.CreatedTime and self.CreatedTime + 3600 < CurTime() then
 		self:Remove()
+		return
 	end
+
+	self:NextThink(CurTime() + 1)
+	return true
 end
 
 function ENT:SpawnFunction(userid, tr)

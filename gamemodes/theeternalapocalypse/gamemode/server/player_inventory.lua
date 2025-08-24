@@ -108,13 +108,13 @@ end)
 
 function GM:UseItem(ply, item, use, targetply)
 	local ref = GAMEMODE.ItemsList[item]
+	if !ref then return false end
 	local ftoggle
 	if use then ftoggle = "UseFunc" else ftoggle = "DropFunc" end
-	if !targetply or !targetply:IsValid() then targetply = ply end
+	if !targetply or !targetply:IsValid() or !ref.CanUseOnOthers then targetply = ply end
 
 	if ply.LastItemAction and ply.LastItemAction + 0.2 > CurTime() then return false end -- cancel the function if they are spamming net messages
 	if !ply:Alive() then return false end
-	if !ref then ply:SendChat(translate.ClientGet(ply, "itemnonexistant")) return false end -- if the item doenst exist
 	if ply:IsSleeping() then ply:SendChat(translate.ClientGet(ply, "itemnousesleeping")) return false end
 	if ply:IsUsingItem() then ply:SendChat(translate.ClientGet(ply, "itemnousecooldown")) return false end
 
@@ -170,6 +170,21 @@ function GM:UseItem(ply, item, use, targetply)
 
 				local consum = ref.ConsumableStats
 				if consum then
+					if ref.CanUseOnOthers and ref.ItemType == ITEMTYPE_MED then
+						if ply ~= targetply then
+							if targetply:Health() >= targetply:GetMaxHealth() and targetply.Infection < 1 then
+								ply:SendChat(translate.ClientGet(ply, "this_player_has_no_injuries"))
+								return false
+							end
+						else
+							if ply:Health() >= ply:GetMaxHealth() and ply.Infection < 1 then
+								ply:SendChat(translate.ClientGet(ply, "you_are_perfectly_fine"))
+								return false
+							end
+						end
+					end
+
+
 					shouldremove = true
 
 					if consum.UseTime then
@@ -184,36 +199,45 @@ function GM:UseItem(ply, item, use, targetply)
 						ply:SendUseDelay(consum.UseTime, str[itemtype] or "Using an item", nil, consum.FastUsable)
 					end
 
+					local hp
+
 					if consum.Health then
-						ply:SetHealth(math.min(ply:GetMaxHealth(), ply:Health() + consum.Health*(1 + (consum.Health > 0 and ply.StatMedSkill*0.025 or 0))))
+						hp = math.min(targetply:GetMaxHealth() - targetply:Health(), consum.Health * (1 + (ply.StatMedSkill * 0.025)))
+						targetply:SetHealth(math.Clamp(targetply:Health() + hp, 0, targetply:GetMaxHealth()))
 					end
 
 					if consum.Armor then
-						ply:SetArmor(math.min(ply:GetMaxArmor(), ply:Armor() + consum.Armor*(1 + (consum.Armor > 0 and ply.StatEngineer*0.02 or 0))))
+						targetply:SetArmor(math.min(targetply:GetMaxArmor(), targetply:Armor() + consum.Armor*(1 + (consum.Armor > 0 and ply.StatEngineer*0.02 or 0))))
 					end
 
 					if consum.Battery then
-						ply.Battery = math.min(ply:GetMaxBattery(), ply.Battery + consum.Battery)
+						targetply.Battery = math.min(targetply:GetMaxBattery(), targetply.Battery + consum.Battery)
 					end
 
 					if consum.Infection then
-						ply.Infection = ply.Infection + consum.Infection*100
+						targetply.Infection = targetply.Infection + consum.Infection*100
 					end
 
 					if consum.Stamina then
-						ply.Stamina = ply.Stamina + consum.Stamina
+						targetply.Stamina = targetply.Stamina + consum.Stamina
 					end
 
 					if consum.Thirst then
-						ply.Thirst = ply.Thirst + consum.Thirst*100
+						targetply.Thirst = targetply.Thirst + consum.Thirst*100
 					end
 
 					if consum.Hunger then
-						ply.Hunger = ply.Hunger + consum.Hunger*100
+						targetply.Hunger = targetply.Hunger + consum.Hunger*100
 					end
 
 					if consum.Fatigue then
-						ply.Fatigue = ply.Fatigue + consum.Fatigue*100
+						targetply.Fatigue = targetply.Fatigue + consum.Fatigue*100
+					end
+
+					if ply ~= targetply and hp and hp > 0 then
+						ply.XP = ply.XP + math.floor(hp)
+						ply:SendChat(translate.ClientFormat(ply, "healed_x_for_y", targetply:Nick(), hp, math.floor(hp*1.5)))
+						gamemode.Call("GiveTaskProgress", ply, "medical_attention", 1)
 					end
 				end
 

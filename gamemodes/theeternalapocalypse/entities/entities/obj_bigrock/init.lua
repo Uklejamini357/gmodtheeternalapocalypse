@@ -20,7 +20,8 @@ function ENT:Initialize()
 	self.bounce = 0
 
 	local phys = self:GetPhysicsObject()
-	if(phys:IsValid()) then
+	if phys:IsValid() then
+		phys:SetMass(60)
 		phys:Wake()
 		phys:SetBuoyancyRatio(0)
 	end

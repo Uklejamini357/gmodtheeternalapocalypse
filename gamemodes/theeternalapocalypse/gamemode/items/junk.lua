@@ -137,3 +137,16 @@ i = GM:CreateItem("item_junk_twig", {
 	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
 })
+
+
+
+i = GM:CreateItem("item_resources_wood", {
+    Cost = 0,
+    Model = "models/props_foliage/tree_slice_chunk02.mdl",
+    Weight = 0.1,
+    Supply = -1,
+    Rarity = RARITY_TRASH,
+    Category = ITEMCATEGORY_JUNK,
+	ItemType = ITEMTYPE_OTHER,
+    UseFunc = function(ply) ply:SendChat(translate.ClientGet(ply, "itemnouse")) return false end,
+})

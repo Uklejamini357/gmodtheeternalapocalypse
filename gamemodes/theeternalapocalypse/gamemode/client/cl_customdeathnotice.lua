@@ -114,7 +114,7 @@ local function CheckLocalPlayerDeath(victim, attacker, dmg, dmgtype, msgoverride
 		elseif attacker == "worldspawn" then
 			GAMEMODE.DeathMessage = table.Random(killedbyother)
 		else
-			GAMEMODE.DeathMessage = language.GetPhrase(attacker)
+			GAMEMODE.DeathMessage = "killed by "..language.GetPhrase(attacker)
 		end
 	end
 end
@@ -226,7 +226,6 @@ net.Receive( "PlayerKilledNPC", RecvPlayerKilledNPC )
 
 local function RecvNPCKilledNPC()
 /*
-
 	local victimtype	= net.ReadString()
 	local victim = CheckAttacker(victimtype)
 	local inflictor	= net.ReadString()
@@ -238,7 +237,6 @@ local function RecvNPCKilledNPC()
 
 	GAMEMODE:AddDeathNotice( attacker, -1, inflictor, victim, -1, dmg, dmgtype, msgoverride )
 */
-
 end
 net.Receive( "NPCKilledNPC", RecvNPCKilledNPC )
 
@@ -302,6 +300,13 @@ function GM:AddDeathNotice( Victim, team1, Inflictor, Attacker, team2, dmg, dmgt
 		Death.icon = "suicide"
 	end
 	
+	if Death.right and not Death.left then
+		Death.displaytext = Format("Death: %s%s %s", Death.right, Death.pteam2, Death.SMessage)
+	elseif Death.left then
+		Death.displaytext = Format("Death: %s%s %s by %s%s", Death.right, Death.pteam2, Death.Message, Death.left, Death.pteam1)
+	end
+	MsgC(Color(255,190,50), Death.displaytext.."\n")
+	
 	table.insert( Deaths, Death )
 end
 
@@ -320,12 +325,9 @@ local function DrawDeath(x, y, death, tea_cl_deathnoticetime)
 
 	surface.SetFont("ChatFont")
 	-- Draw KILLER
-	if death.right and not death.left then
-		text = Format("Death: %s%s %s", death.right, death.pteam2, death.SMessage)
-		textsize = surface.GetTextSize(text)
-		draw.SimpleText(text, "ChatFont", x - (w / 2) + math.Clamp(350 + textsize - ((1.5 * textsize) * ((RealTime()) - death.Time)), 250, 350 + textsize), y, Color(255,75,75,alpha), TEXT_ALIGN_RIGHT)
-	elseif (death.left) then
-		text = Format("Death: %s%s %s by %s%s", death.right, death.pteam2, death.Message, death.left, death.pteam1)
+
+	if death.displaytext then
+		text = death.displaytext
 		textsize = surface.GetTextSize(text)
 		draw.SimpleText(text, "ChatFont", x - (w / 2) + math.Clamp(350 + textsize - ((1.5 * textsize) * ((RealTime()) - death.Time)), 250, 350 + textsize), y, Color(255,75,75,alpha), TEXT_ALIGN_RIGHT)
 	end

@@ -159,6 +159,7 @@ function GM:LoadMainMenu()
 		title:MoveTo(50, 130, 3)
 	end
 	title:SetText(translate.Get("the_eternal_apocalypse"))
+	title:SetTextColor(Color(255,255,255))
 	title:SetFont("Trebuchet24")
 	title:SizeToContents()
 	if self.PlayerCharactersTest then
@@ -166,6 +167,42 @@ function GM:LoadMainMenu()
 		title:SetPos(ScrW() / 2 - txtsize_x/2, 0)
 		title:MoveTo(ScrW() / 2 - txtsize_x/2, 100, 0.85)
 	end
+
+	-- Update panel
+	local titlepan = vgui.Create("DPanel", self.MainMenuPanel)
+	titlepan:SetPos(ScrW() - 700, ScrH() / 2 - 150)
+	titlepan:SetSize(650, 300)
+	titlepan.Paint = function() end
+
+	local p = {}
+	p.maintext = vgui.Create("DLabel", titlepan)
+	p.maintext:SetPos(0, 0)
+	p.maintext:SetText("(20.08.2025) 0.11.4:")
+	p.maintext:SetTextColor(Color(255,255,210))
+	p.maintext:SetFont("Trebuchet24")
+	p.maintext:SizeToContents()
+
+	p.text1 = vgui.Create("DLabel", titlepan)
+	p.text1:SetPos(0, 40)
+	p.text1:SetText("Inventory is moved to Q Menu! Scoreboard is now on first category on TAB menu by default.")
+	p.text1:SetTextColor(Color(255,255,210))
+	p.text1:SetFont("Trebuchet18")
+	p.text1:SizeToContents()
+
+	p.text2 = vgui.Create("DLabel", titlepan)
+	p.text2:SetPos(0, 70)
+	p.text2:SetText("Using items is now very much reworked. Item stats should now properly show in item descriptions.")
+	p.text2:SetTextColor(Color(255,255,210))
+	p.text2:SetFont("Trebuchet18")
+	p.text2:SizeToContents()
+
+	p.text3 = vgui.Create("DLabel", titlepan)
+	p.text3:SetPos(0, 100)
+	p.text3:SetText("To see more changes, join our discord by typing !discord in chat")
+	p.text3:SetTextColor(Color(255,210,210))
+	p.text3:SetFont("Trebuchet18")
+	p.text3:SizeToContents()
+
 
 	for i=1,self.PlayerCharactersTest and 2 or 1 do
 		local desc = vgui.Create("DLabel", self.MainMenuPanel)

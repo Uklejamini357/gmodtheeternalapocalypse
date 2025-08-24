@@ -234,9 +234,9 @@ function GM:StartCommand(ply, cmd)
 		if bit.band(IN_SPEED, keys) ~= 0 and !ply:GetCanSprint() then
 			keys = keys - IN_SPEED
 		end
-		if bit.band(IN_JUMP, keys) ~= 0 and !ply:GetCanSprint() then
-			keys = keys - IN_JUMP
-		end
+		-- if bit.band(IN_JUMP, keys) ~= 0 and !ply:GetCanSprint() then
+			-- keys = keys - IN_JUMP
+		-- end
 	end
 
 	if (ply:IsUsingItem() and not ply.UsingItemCanMove) or ply:IsSleeping() then

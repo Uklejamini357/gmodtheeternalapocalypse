@@ -513,16 +513,15 @@ function GM:InitPostEntity()
 end
 
 function GM:MapReInit()
-	/*
 	--Don't disable this function below, unless you want to have some fun of course
 	for k, v in pairs(ents.FindByClass("npc_*")) do v:Remove() end
-	for k, v in pairs(ents.FindByClass("weapon_*")) do v:Remove() end
+	for k, v in pairs(ents.FindByClass("weapon_*")) do if v:GetOwner() == NULL or not v:GetOwner() then v:Remove() end end
 	for k, v in pairs(ents.FindByClass("item_*")) do v:Remove() end
 	for k, v in pairs(ents.FindByClass("prop_physics")) do
 		if v:Health() != 0 then continue end
 		self:SetupProp(v)
 	end --i'm looking forward for new function to scale props health with their size (or their weight)
-	*/
+
 	for k, v in pairs(ents.FindByClass("prop_door_rotating")) do
 		v.doorhealth = tonumber(self.Config["DoorHealth"])
 	end

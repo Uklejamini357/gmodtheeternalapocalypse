@@ -117,8 +117,9 @@ local function DoInvPanel()
 					end)
 					parent:SetIcon("icon16/accept.png")
 					for _,ply in pairs(ents.FindInSphere(ply:GetPos(), 500)) do
+						local add = item.ItemType == ITEMTYPE_MED and " ["..pl:Health().."/"..pl:GetMaxHealth().."]" or ""
 						if ply:IsPlayer() and ply ~= me then
-							sub:AddOption(ply:Nick(), function()
+							sub:AddOption(pl:Nick()..add, function()
 								UseItem(ply, k)
 							end)
 						end

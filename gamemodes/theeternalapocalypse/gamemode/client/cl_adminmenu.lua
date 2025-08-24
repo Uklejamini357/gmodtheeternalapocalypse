@@ -568,7 +568,7 @@ function GM:AdminMenu()
 			end
 --			GiveButton.DoDoubleClick = GiveButton.DoClick
 
-			if TEADevCheck(LocalPlayer()) and cat == 4 then
+			if TEADevCheck(LocalPlayer()) and cat == ITEMCATEGORY_ARMOR then
 				local EquipButton = vgui.Create("DButton", ItemBackground)
 				EquipButton:SetSize(60, 15)
 				EquipButton:SetPos(80, 60)
@@ -587,7 +587,7 @@ function GM:AdminMenu()
 		parent:AddItem(ItemBackground)
 		end
 		if TEADevCheck(LocalPlayer()) then
-			if TEADevCheck(LocalPlayer()) and cat == 4 then
+			if TEADevCheck(LocalPlayer()) and cat == ITEMCATEGORY_ARMOR then
 				local UnequipButton = vgui.Create("DButton", SpawnMenuProperties)
 				UnequipButton:SetSize(100, 20)
 				UnequipButton:SetPos(860, 5)

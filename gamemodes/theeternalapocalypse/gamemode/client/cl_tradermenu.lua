@@ -96,9 +96,10 @@ end
 function GM:TraderMenu()
 	if IsValid(TraderFrame) then TraderFrame:Remove() end
 	local ply = LocalPlayer()
+	local wide, tall = 1000, 700
 
 	TraderFrame = vgui.Create("DFrame")
-	TraderFrame:SetSize(1000, 700)
+	TraderFrame:SetSize(wide, tall)
 	TraderFrame:Center()
 	TraderFrame:SetTitle("")
 	TraderFrame:SetDraggable(false)
@@ -137,53 +138,16 @@ function GM:TraderMenu()
 		end
 	end
 
-	local SupplyPanel = vgui.Create("DPanelList")
-	SupplyPanel:SetTall(635)
-	SupplyPanel:SetWide(890)
-	SupplyPanel:SetPos(5, 25)
-	SupplyPanel:EnableVerticalScrollbar(true)
-	SupplyPanel:EnableHorizontal(true)
-	SupplyPanel:SetSpacing(10)
-	
-	local AmmoPanel = vgui.Create("DPanelList")
-	AmmoPanel:SetTall(635)
-	AmmoPanel:SetWide(890)
-	AmmoPanel:SetPos(5, 25)
-	AmmoPanel:EnableVerticalScrollbar(true)
-	AmmoPanel:EnableHorizontal(true)
-	AmmoPanel:SetSpacing(10)
-	
-	local GunPanel = vgui.Create("DPanelList")
-	GunPanel:SetTall(635)
-	GunPanel:SetWide(890)
-	GunPanel:SetPos(5, 25)
-	GunPanel:EnableVerticalScrollbar(true)
-	GunPanel:EnableHorizontal(true)
-	GunPanel:SetSpacing(10)
-	
-	local ArmorPanel = vgui.Create("DPanelList")
-	ArmorPanel:SetTall(635)
-	ArmorPanel:SetWide(890)
-	ArmorPanel:SetPos(5, 25)
-	ArmorPanel:EnableVerticalScrollbar(true)
-	ArmorPanel:EnableHorizontal(true)
-	ArmorPanel:SetSpacing(10)
-
-	local JunkPanel = vgui.Create("DPanelList")
-	JunkPanel:SetTall(635)
-	JunkPanel:SetWide(890)
-	JunkPanel:SetPos(5, 25)
-	JunkPanel:EnableVerticalScrollbar(true)
-	JunkPanel:EnableHorizontal(true)
-	JunkPanel:SetSpacing(10)
-
-	local MiscPanel = vgui.Create("DPanelList")
-	MiscPanel:SetTall(635)
-	MiscPanel:SetWide(890)
-	MiscPanel:SetPos(5, 25)
-	MiscPanel:EnableVerticalScrollbar(true)
-	MiscPanel:EnableHorizontal(true)
-	MiscPanel:SetSpacing(10)
+	local buypanel = {}
+	for i=1,6 do
+		if i == ITEMCATEGORY_JUNK then continue end -- fuck that
+		buypanel[i] = vgui.Create("DPanelList")
+		buypanel[i]:SetSize(wide-110, tall-65)
+		buypanel[i]:SetPos(5, 25)
+		buypanel[i]:EnableVerticalScrollbar(true)
+		buypanel[i]:EnableHorizontal(true)
+		buypanel[i]:SetSpacing(10)
+	end
 
 	local SellPanel = vgui.Create("DPanelList")
 	SellPanel:SetTall(635)
@@ -365,12 +329,10 @@ function GM:TraderMenu()
 			parent:AddItem(ItemBackground)
 		end
 	end
-	DoTraderList(ITEMCATEGORY_SUPPLIES, SupplyPanel)
-	DoTraderList(ITEMCATEGORY_AMMO, AmmoPanel)
-	DoTraderList(ITEMCATEGORY_WEAPONS, GunPanel)
-	DoTraderList(ITEMCATEGORY_ARMOR, ArmorPanel)
-	DoTraderList(ITEMCATEGORY_JUNK, JunkPanel)
-	DoTraderList(ITEMCATEGORY_MISCELLANEOUS, MiscPanel)
+	for i=1,6 do
+		if i == ITEMCATEGORY_JUNK then continue end
+		DoTraderList(i, buypanel[i])
+	end
 
 
 --------------------------------------------sell panel-------------------------------------------------------------
@@ -628,12 +590,12 @@ function GM:TraderMenu()
 
 
 
-	PropertySheet:AddSheet(translate.Get("items_category_1"), AmmoPanel, "icon16/ammo_three.png", false, false, translate.Get("items_category_1_d"))
-	PropertySheet:AddSheet(translate.Get("items_category_2"), SupplyPanel, "icon16/box.png", false, false, translate.Get("items_category_2_d"))
-	PropertySheet:AddSheet(translate.Get("items_category_3"), GunPanel, "icon16/gun.png", false, false, translate.Get("items_category_3_d"))
-	PropertySheet:AddSheet(translate.Get("items_category_4"), ArmorPanel, "icon16/shield.png", false, false, translate.Get("items_category_4_d"))
-	PropertySheet:AddSheet(translate.Get("items_category_5"), JunkPanel, "icon16/bin.png", false, false, translate.Get("items_category_5_d"))
-	PropertySheet:AddSheet(translate.Get("items_category_6"), MiscPanel, "icon16/basket.png", false, false, translate.Get("items_category_6_d"))
+	PropertySheet:AddSheet(translate.Get("items_category_1"), buypanel[i], "icon16/ammo_three.png", false, false, translate.Get("items_category_1_d"))
+	PropertySheet:AddSheet(translate.Get("items_category_2"), buypanel[i], "icon16/box.png", false, false, translate.Get("items_category_2_d"))
+	PropertySheet:AddSheet(translate.Get("items_category_3"), buypanel[i], "icon16/gun.png", false, false, translate.Get("items_category_3_d"))
+	PropertySheet:AddSheet(translate.Get("items_category_4"), buypanel[i], "icon16/shield.png", false, false, translate.Get("items_category_4_d"))
+	PropertySheet:AddSheet(translate.Get("items_category_5"), buypanel[i], "icon16/bin.png", false, false, translate.Get("items_category_5_d"))
+	PropertySheet:AddSheet(translate.Get("items_category_6"), buypanel[i], "icon16/basket.png", false, false, translate.Get("items_category_6_d"))
 	PropertySheet:AddSheet("My Items", SellPanel, "icon16/money_dollar.png", false, false, "Sell your items that you don't need for cash")
 	PropertySheet:AddSheet("Item Vault", VaultPanel, "icon16/building.png", false, false, "Store your stuff that you don't need")
 /*

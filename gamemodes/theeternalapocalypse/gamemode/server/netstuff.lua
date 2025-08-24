@@ -65,6 +65,7 @@ util.AddNetworkString("tea_player_sendcharacters")
 
 
 util.AddNetworkString("tea_admin_sendspawns")
+util.AddNetworkString("tea_admin_safezone")
 
 
 --util.AddNetworkString("Respawn")
@@ -296,13 +297,11 @@ net.Receive("tea_player_ready_spawn", function(len, ply)
 	net.WriteBool(tobool(ply.HasSpawnedReady))
 	net.Send(ply)
 
-	if !ply.HasSpawnedReady then
+	if !ply:Alive() and !ply.HasSpawnedReady then
 		GAMEMODE:SystemBroadcast(translate.Format("plspawned", ply:Nick()), Color(255,255,155,255), false)
-		-- GAMEMODE:SystemBroadcast(Format("#tea.chat_message.plspawned", ply:Nick()), Color(255,255,155,255), false)
+		ply.HasSpawnedReady = true
+		ply:Spawn()
 	end
-	ply.HasSpawnedReady = true
-	ply:Spawn()
-
 	ply:LoadLastSession()
 end)
 

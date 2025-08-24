@@ -326,6 +326,8 @@ LANG.item_deadly_crossbowbolt_n = "Deadly Crossbow Bolts"
 LANG.item_deadly_crossbowbolt_d = "Deadly Crossbow Bolts used for Deadly Crossbows. Explodes upon impact."
 LANG.item_minigunammo_n = "Minigun Ammo"
 LANG.item_minigunammo_d = "Incredibly expensive and heavy ammunition, however it only serves purpose for one weapon - the Deadly Minigun."
+LANG.item_plasmaammo_n = "Plasma Charges"
+LANG.item_plasmaammo_d = "Very volatile. Its cost is very high due to it being very powerful. Contains 10 charges."
 
 -- Weapons
 
