@@ -375,6 +375,7 @@ end
 function GM:NPCReward(ent)
 	local ct = CurTime()
 
+	local isboss = ent.BossMonster
 	local isvariant = ent:GetEliteVariant() ~= 0
 	local isboss = ent.BossMonster and ent.DamagedBy
 	local attackers = ent.DamagedBy
@@ -405,18 +406,20 @@ function GM:NPCReward(ent)
 				gamemode.Call("GiveTaskProgress", killer, "elite_problem", 1)
 			end
 
-			local addinfection = ((ent.InfectionRate or 0) * math.min(3, 1 + (killer.ZombieKillStreak * 0.04))) / (1 + ((player.GetCount() - 1) * (7 / 9))) * self.InfectionLevelGainMul
-			addinfection = addinfection * (self:GetInfectionLevel() > 100 and 0.4/(self:GetInfectionMul()-1) or self:GetInfectionLevel() > 75 and 0.5 or self:GetInfectionLevel() > 50 and 0.75 or 1)
+			local addinfection = ((ent.InfectionRate or 0) * math.min(3, 1 + (killer.ZombieKillStreak * 0.04))) / (1 + ((player.GetCount() - 1) * (2 / 9))) * self.InfectionLevelGainMul
+			addinfection = addinfection * (self:GetInfectionLevel() > 100 and 0.4/(self:GetInfectionMul()-1) or
+			self:GetInfectionLevel() > 75 and 0.5 or
+			self:GetInfectionLevel() > 50 and 0.75 or 1)
 
 			self:SetInfectionLevel(self:GetInfectionLevel() + addinfection)
 			self.NextInfectionDecrease = math.max(self.NextInfectionDecrease, ct + 25)
-			self.InfectionDecreasedTimes = 0
+			self.InfectionDecreasedTimes = math.max(0, self.InfectionDecreasedTimes - 5)
 			killer.ZombieKillStreak = killer.ZombieKillStreak + 1
-			timer.Create("TEA_InfectionStreak_1_"..killer:EntIndex(), 7, 1, function()
+			timer.Create("TEA_InfectionStreak_1_"..killer:EntIndex(), math.min(10, 7+killer.ZombieKillStreak*0.05), 1, function()
 				if !killer:IsValid() then return end
-				killer.ZombieKillStreak = math.floor(killer.ZombieKillStreak / 3)
+				killer.ZombieKillStreak = math.floor(killer.ZombieKillStreak / 2)
 			end)
-			timer.Create("TEA_InfectionStreak_2_"..killer:EntIndex(), 17.5, 1, function()
+			timer.Create("TEA_InfectionStreak_2_"..killer:EntIndex(), math.min(25, 17.5+killer.ZombieKillStreak*0.1), 1, function()
 				if !killer:IsValid() then return end
 				killer.ZombieKillStreak = 0
 			end)
@@ -561,10 +564,22 @@ function GM:SpawnZombie(ply, cmd, args)
 	end
 
 	local class = tostring(args[1]) or "npc_ate_basic"
-	local xp = tonumber(args[2]) or 100
+	local xp = tonumber(args[2])
+	if !xp or xp == -1 then
+		xp = GAMEMODE.Config["ZombieClasses"][class] and GAMEMODE.Config["ZombieClasses"][class].XPReward or GAMEMODE.Config["BossClasses"][class] and GAMEMODE.Config["BossClasses"][class].XPReward or 100
+	end
 	local cash = tonumber(args[3]) or 50
+	if !cash or cash == -1 then
+		cash = GAMEMODE.Config["ZombieClasses"][class] and GAMEMODE.Config["ZombieClasses"][class].MoneyReward or GAMEMODE.Config["BossClasses"][class] and GAMEMODE.Config["BossClasses"][class].MoneyReward or 50
+	end
 	local infectionrate = tonumber(args[4]) or 0.01
+	if !infectionrate or infectionrate == -1 then
+		infectionrate = GAMEMODE.Config["ZombieClasses"][class] and GAMEMODE.Config["ZombieClasses"][class].InfectionRate or GAMEMODE.Config["BossClasses"][class] and GAMEMODE.Config["BossClasses"][class].InfectionRate or 0.05
+	end
 	local isboss = tobool(args[5]) or false
+	if !isboss or isboss == -1 then
+		isboss = tobool(GAMEMODE.Config["BossClasses"][class])
+	end
 	local shouldsendchat = tonumber(args[6]) or 1
 	
 	local vStart = ply:GetShootPos()

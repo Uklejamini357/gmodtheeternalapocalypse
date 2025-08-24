@@ -629,19 +629,19 @@ function GM:DrawVitals()
 	end
 
 	if self:GetServerRestartTime() ~= 0 then
-		draw.DrawText("Server restarts in: "..util.ToMinutesSeconds(math.max(0, self:GetServerRestartTime() - CurTime())), "TEA.HUDFont", ScrW()/2, 180, Color(255,255,255,255), TEXT_ALIGN_CENTER)
+		draw.DrawText(translate.Format("server_restart_in", util.ToMinutesSeconds(math.max(0, self:GetServerRestartTime() - CurTime()))), "TEA.HUDFont", ScrW()/2, 180, Color(255,255,255,255), TEXT_ALIGN_CENTER)
 	end
 
 	if self:GetEventTimer() ~= -1 and self:GetEvent() ~= EVENT_NONE then
 		local events = {
-			[EVENT_ZOMBIEAPOCALYPSE] = "Zombie Survival",
+			[EVENT_ZOMBIEAPOCALYPSE] = translate.Get("event_zs"),
 		}
 
 		if events[self:GetEvent()] then
-			draw.DrawText("Event: "..events[self:GetEvent()], "TEA.HUDFontSmall", ScrW()/2, 210, Color(255,215,155,255), TEXT_ALIGN_CENTER)
+			draw.DrawText(translate.Get("current_event", events[self:GetEvent()]), "TEA.HUDFontSmall", ScrW()/2, 210, Color(255,215,155,255), TEXT_ALIGN_CENTER)
 		end
 
-		local str = "Event timer: "
+		local str = translate.Get("event_timer")..": "
 		local s = self:GetEventTimer() - CurTime() < 60 and math.sin(CurTime()*2.1)*100 or 0
 		draw.DrawText(str..util.ToMinutesSeconds(math.max(0, self:GetEventTimer() - CurTime())), "TEA.HUDFontSmall", ScrW()/2, 230, Color(255,155+s,155+s,255), TEXT_ALIGN_CENTER)
 	end

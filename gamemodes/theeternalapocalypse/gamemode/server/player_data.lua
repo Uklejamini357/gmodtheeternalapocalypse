@@ -47,7 +47,7 @@ function GM:CorrectPlayerDataFromPreviousVersions(ply, prevdata)
 
 	if ply.Statistics["playerdeaths"] then
 		ply.Statistics["Deaths"] = ply.Statistics["playerdeaths"]
-		ply.Statistics["playerskilled"] = nil
+		ply.Statistics["playerdeaths"] = nil
 	end
 
 	if !prevdata.perkpoints then

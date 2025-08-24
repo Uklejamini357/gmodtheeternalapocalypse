@@ -60,6 +60,7 @@ GM.Tasks = {
 		Callback = function(ply)
 			ply.XP = ply.XP + 2000
 			ply.Money = ply.Money + 1500
+			gamemode.Call("SystemGiveItem", ply, "item_armymedkit", 1)
 			ply:SystemMessage("You gained 2000 XP, 1500 cash and 1x Army Medkit for completing a task!", Color(180,255,255))
 		end
 	},

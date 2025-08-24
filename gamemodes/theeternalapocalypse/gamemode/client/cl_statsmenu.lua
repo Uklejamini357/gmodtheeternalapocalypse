@@ -1,16 +1,6 @@
 -------- STATISTICS --------
 
-
 local TargetStats = {}
-TargetStats.Nick = 0
-TargetStats.BestSurvivalTime = 0
-TargetStats.ZKills = 0
-TargetStats.PlyKills = 0
-TargetStats.PlyDeaths = 0
-TargetStats.MMeleeXP = 0
-TargetStats.MMeleeLvl = 0
-TargetStats.MPvPXP = 0
-TargetStats.MPvPLvl = 0
 
 local RefreshStats = function()
 end
@@ -92,14 +82,14 @@ function StatsMenu(ent)
     
 	RefreshStats = function() -- I'm a "bit of coder"... no?
         if !StatsFrame:IsValid() then return end
-        loadtext:SetText("")
+        loadtext:SetVisible(false)
         stats1:SetText(translate.Format("besttimesurvived", util.ToMinutesSeconds(TargetStats.BestSurvivalTime)))
         stats1:SizeToContents()
-        stats2:SetText(Format("Zombies killed in total: %s", TargetStats.ZKills))
+        stats2:SetText(Format("Zombies killed in total: %s", TargetStats.ZombieKills))
         stats2:SizeToContents()
-        stats3:SetText(Format("Total players killed on this server: %s", TargetStats.PlyKills))
+        stats3:SetText(Format("Total players killed on this server: %s", TargetStats.PlayersKilled))
 	    stats3:SizeToContents()
-        stats4:SetText(Format("Total deaths on this server: %s", TargetStats.PlyDeaths))
+        stats4:SetText(Format("Total deaths on this server: %s", TargetStats.Deaths))
 	    stats4:SizeToContents()
         stats5:SetText(Format("Mastery Melee XP: %s / %s (Level %s)", math.floor(TargetStats.MMeleeXP), TargetStats.MMeleeReqXP, TargetStats.MMeleeLvl))
 	    stats5:SizeToContents()

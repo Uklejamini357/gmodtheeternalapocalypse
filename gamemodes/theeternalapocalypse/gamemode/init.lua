@@ -242,7 +242,7 @@ function GM:Think()
 		ply.Thirst = math.Clamp(ply.Thirst - (6*ft / (1 + (ply.StatSurvivor * 0.045)))*(sleeping and 20 or 1), 0, 10000)
 		ply.Fatigue = math.Clamp(ply.Fatigue + (sleeping and -200*ft or 3.2*ft / (1 + (ply.StatSurvivor * 0.045))), 0, 10000)
 
-		--random chance of getting infected per tick is very rare, but has chance if survived for more than 10 minutes, can decrease chance of this happening by increasing immunity skill level
+		--random chance of getting infected per tick is very rare, but has chance if survived for more than 10 minutes
 		if self.RandomPlayerInfection then
 			local infectionchance = math.random(1, math.max(50000, 2000000 - (ct - ply.SurvivalTime)))
 			if (infectionchance == 1 and math.floor(ct - ply.SurvivalTime) >= 900) and ply.Infection <= 0 and ply:Alive() then
@@ -273,11 +273,11 @@ function GM:Think()
 				ply:WakeUp()
 
 				ply:SendChat(
-					wakeupcause == 1 and "You wake up with a very strong feeling of dehydration." or
-					wakeupcause == 2 and "You wake up with a very strong feeling of imminent starvation." or
-					wakeupcause == 3 and "You wake up with a strong feeling of dying from infection." or
-					wakeupcause == 4 and "You wake up as you fell into the water. Wtf were you thinking?!" or
-					"You wake up feeling rested!"
+					wakeupcause == 1 and translate.ClientGet(ply, "wakeup_cause_thirst") or
+					wakeupcause == 2 and translate.ClientGet(ply, "wakeup_cause_hunger") or
+					wakeupcause == 3 and translate.ClientGet(ply, "wakeup_cause_infection") or
+					wakeupcause == 4 and translate.ClientGet(ply, "wakeup_cause_water") or
+					translate.ClientGet(ply, "wakeup_cause_rested")
 				)
 			end
 		end
@@ -404,11 +404,11 @@ function GM:Think()
 
 			if !ply:InVehicle() then
 				if (ply:IsSprinting() and PlayerIsMoving and not ply:Crouching()) then
-					ply.Stamina = ply.Stamina - 6*ft*endurance_mul*weightpenalty
+					ply.Stamina = ply.Stamina - 5.4*ft*endurance_mul*weightpenalty
 				elseif PlayerIsMoving and ply:Crouching() then
-					ply.Stamina = ply.Stamina - 2.7*ft*endurance_mul*math.sqrt(weightpenalty)
+					ply.Stamina = ply.Stamina - 2.43*ft*endurance_mul*math.sqrt(weightpenalty)
 				elseif PlayerIsMoving then
-					ply.Stamina = ply.Stamina - 3*ft*endurance_mul*math.sqrt(weightpenalty)
+					ply.Stamina = ply.Stamina - 2.7*ft*endurance_mul*math.sqrt(weightpenalty)
 				end
 			end
 
@@ -435,7 +435,9 @@ function GM:PlayerConnect(name, ip)
 end
 
 function GM:PlayerDisconnected(ply)
-	self:SystemBroadcast(Format("%s has left the server", ply:Name()), Color(255,255,155,255), false)
+	for _, pl in pairs(player.GetAll()) do
+		pl:SystemMessage(translate.ClientFormat(pl, "plleft", ply:Name()), Color(255,255,155,255), false)
+	end
 
 	gamemode.Call("SavePlayer", ply)
 	for k,v in pairs(ents.GetAll()) do
@@ -713,7 +715,7 @@ function GM:EntityTakeDamage(ent, dmginfo)
 	if ent:IsPlayer() and ent:Alive() and dmginfo:GetDamage() > 1 and ent:IsSleeping() then
 		ent:WakeUp()
 
-		ent:SendChat("You wake up as you feel someone is killing you!")
+		ent:SendChat(translate.ClientGet(ent, "wakeup_cause_damage"))
 	end
 
 	local attacker = dmginfo:GetAttacker()
@@ -1012,7 +1014,7 @@ end)
 
 local sv_alltalk = GetConVar("sv_alltalk")
 function GM:PlayerCanHearPlayersVoice(listener, talker)
-	if sv_alltalk:GetInt() ~= 1 then return true, false end
+	if sv_alltalk:GetInt() == 1 then return true, false end
 
 
 	if listener:GetPos():Distance(talker:GetPos()) <= 1250 then

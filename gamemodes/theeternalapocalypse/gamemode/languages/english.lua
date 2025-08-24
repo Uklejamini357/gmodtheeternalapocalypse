@@ -58,6 +58,13 @@ LANG.ver_4 = "Ver. %s (Debug Mode [Experimental])"
 LANG.ver_5 = "Ver. %s (Debug Mode [True Debug Mode])"
 LANG.level_prestige = "Level: %d / Prestige: %d"
 
+LANG.server_restart_in = "Server restarts in: %s"
+
+-- Events
+LANG.current_event = "Event: %s"
+LANG.event_timer = "Event timer"
+LANG.event_zs = "Zombie Survival"
+
 --Context Menu
 
 LANG.clearprops = "Clear my Props"
@@ -157,6 +164,9 @@ LANG.deaths = "Deaths: %s"
 LANG.mute = "Mute"
 LANG.profile = "Profile"
 LANG.pvp = "PvP"
+LANG.status = "Status: %s"
+LANG.status_alive = "Alive"
+LANG.status_dead = "Dead"
 LANG.changemodel = "Change Model"
 LANG.changemodel_d = "Change your look"
 LANG.inc1stat = "Increase %s by 1"
@@ -678,6 +688,7 @@ LANG.plhasprestiged_3 = "%s has now Prestige %d!"
 LANG.plcaughtinfection = "You have caught infection!"
 LANG.pljoined = "%s has joined the server"
 LANG.plspawned = "%s has spawned into the game"
+LANG.plleft = "%s has left the server"
 LANG.factionnewleader = "%s has been randomly selected to be the new leader of %s!"
 
 LANG.itemnouse = "This is just useless trash"
@@ -873,6 +884,13 @@ LANG.you_picked_up_a_lootcache_rare = "You picked up a rare cache containing [%d
 LANG.player_found_lootcache_boss = "%s has found a boss cache containing %dx %s!"
 LANG.player_found_lootcache_faction = "%s has found a faction loot cache containing %dx %s!"
 LANG.player_found_lootcache_rare = "%s has found a rare cache containing %dx %s!"
+
+LANG.wakeup_cause_thirst = "You wake up with a very strong feeling of dehydration."
+LANG.wakeup_cause_hunger = "You wake up with a very strong feeling of imminent starvation."
+LANG.wakeup_cause_infection = "You wake up with a strong feeling of dying from infection."
+LANG.wakeup_cause_water = "You wake up as you fell into the water. Wtf were you thinking?!"
+LANG.wakeup_cause_damage = "You wake up as you feel something is killing you!"
+LANG.wakeup_cause_rested = "You wake up feeling rested!"
 
 LANG.i_cant_pick_this_up = "I can't pick this up!"
 

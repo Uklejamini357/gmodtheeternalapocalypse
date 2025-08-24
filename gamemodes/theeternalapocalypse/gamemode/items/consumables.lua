@@ -660,7 +660,7 @@ GM:CreateItem("item_stalker_stimpack", {
         Infection = 0,
         FastUsable = true,
     },
-    UseSound = "sound",
+    UseSound = "theeternalapocalypse/items/inv_stimpack.ogg",
 
     -- UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 1.6, 40, 0, "theeternalapocalypse/items/inv_stimpack.ogg") return healing end,
     CanUseOnOthers = true
@@ -683,7 +683,7 @@ GM:CreateItem("item_stalker_stimpack_army", {
         Infection = 0,
         FastUsable = true,
     },
-    UseSound = "sound",
+    UseSound = "theeternalapocalypse/items/inv_stimpack.ogg",
 
     -- UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 1.6, 70, 0, "theeternalapocalypse/items/inv_stimpack.ogg") return healing end,
     CanUseOnOthers = true
@@ -706,7 +706,7 @@ GM:CreateItem("item_stalker_stimpack_scientific", {
         Infection = -30,
         FastUsable = true,
     },
-    UseSound = "sound",
+    UseSound = "theeternalapocalypse/items/inv_stimpack.ogg",
 
     -- UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 1.6, 105, 30, "theeternalapocalypse/items/inv_stimpack.ogg") return healing end,
     CanUseOnOthers = true

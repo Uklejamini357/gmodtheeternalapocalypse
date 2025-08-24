@@ -466,7 +466,7 @@ function ENT:OnInjured(damageInfo)
 	self.Ouchies = (self.Ouchies or 0) + dmg
 	
 	if attacker:IsPlayer() then
-		self.target = attacker
+		self:FindTarget()
 	end
 
 	if self.IsEnraged and self.Ouchies > math.min(2000, 0.06 * self:GetMaxHealth()) or self.Ouchies > math.min(3500, 0.13 * self:GetMaxHealth()) then
@@ -599,4 +599,21 @@ function ENT:Teleport_NPC(ent)
 
 	ent:SetPos(pos)
 	ent:DropToFloor()
+end
+
+function ENT:OnStuck()
+	local pos = self:GetPos() + self:GetAngles():Forward()*-90 + Vector(0,0,32)
+
+	local nav = navmesh.GetNearestNavArea(pos, false, 300, false, true, -2)
+	local reachpos
+	if nav then
+		if self.loco:IsAreaTraversable(nav) then
+			reachpos = nav:GetClosestPointOnArea(pos)
+		end
+	end
+
+	self:SetPos(reachpos or pos)
+	self:DropToFloor()
+
+	self.loco:ClearStuck()
 end

@@ -4,7 +4,7 @@ GM.Author	= "Uklejamini"
 GM.Email	= ""
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
 GM.Version	= "0.11.4"
-GM.DateVer	= "05.08.2025" -- Follows the DD.MM.YYYY format.
+GM.DateVer	= "24.08.2025" -- Follows the DD.MM.YYYY format.
 GM.Credits = {
 	-- Assets
 	{"GSC Game World",			"For all the S.T.A.L.K.E.R. content",										""},

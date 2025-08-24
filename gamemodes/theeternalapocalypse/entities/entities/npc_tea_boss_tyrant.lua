@@ -503,7 +503,7 @@ function ENT:OnInjured(damageInfo)
 	end
 
 	if attacker:IsPlayer() then
-		self.target = attacker
+		self:FindTarget()
 	end
 
 
@@ -624,4 +624,21 @@ function ENT:AttackDoor(target)
 	timer.Simple(tonumber(GAMEMODE.Config["DoorResetTime"]), function() ResetDoor(target, ent) end)
 	coroutine.wait(self.AttackFinishTime)
 	self:StartActivity( self.WalkAnim )
+end
+
+function ENT:OnStuck()
+	local pos = self:GetPos() + self:GetAngles():Forward()*-90 + Vector(0,0,32)
+
+	local nav = navmesh.GetNearestNavArea(pos, false, 300, false, true, -2)
+	local reachpos
+	if nav then
+		if self.loco:IsAreaTraversable(nav) then
+			reachpos = nav:GetClosestPointOnArea(pos)
+		end
+	end
+
+	self:SetPos(reachpos or pos)
+	self:DropToFloor()
+
+	self.loco:ClearStuck()
 end

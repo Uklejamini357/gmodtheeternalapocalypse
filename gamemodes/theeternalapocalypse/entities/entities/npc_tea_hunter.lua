@@ -21,7 +21,7 @@ function ENT:SetUpStats()
 
 -- dont bother changing any of this unless you like derpy shit (yea, i do like it)
 	self.CanScream = true
-	self.RageLevel = 2
+	self.RageLevel = 1.5
 	self.SpeedBuff = 2
 
 -- animations for the StartActivity function

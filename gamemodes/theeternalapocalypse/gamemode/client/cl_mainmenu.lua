@@ -170,8 +170,8 @@ function GM:LoadMainMenu()
 
 	-- Update panel
 	local titlepan = vgui.Create("DPanel", self.MainMenuPanel)
-	titlepan:SetPos(ScrW() - 700, ScrH() / 2 - 150)
-	titlepan:SetSize(650, 300)
+	titlepan:SetPos(ScrW() - 500, ScrH() / 2 - 150)
+	titlepan:SetSize(450, 300)
 	titlepan.Paint = function() end
 
 	local p = {}
@@ -182,26 +182,54 @@ function GM:LoadMainMenu()
 	p.maintext:SetFont("Trebuchet24")
 	p.maintext:SizeToContents()
 
+	local y = 40
 	p.text1 = vgui.Create("DLabel", titlepan)
-	p.text1:SetPos(0, 40)
-	p.text1:SetText("Inventory is moved to Q Menu! Scoreboard is now on first category on TAB menu by default.")
+	p.text1:SetPos(0, y)
+	p.text1:SetText("Inventory is moved to Q Menu")
 	p.text1:SetTextColor(Color(255,255,210))
 	p.text1:SetFont("Trebuchet18")
 	p.text1:SizeToContents()
+	y = y + 30
 
 	p.text2 = vgui.Create("DLabel", titlepan)
-	p.text2:SetPos(0, 70)
-	p.text2:SetText("Using items is now very much reworked. Item stats should now properly show in item descriptions.")
+	p.text2:SetPos(0, y)
+	p.text2:SetText("Scoreboard is now on first category on TAB menu by default.")
 	p.text2:SetTextColor(Color(255,255,210))
 	p.text2:SetFont("Trebuchet18")
 	p.text2:SizeToContents()
+	y = y + 30
 
 	p.text3 = vgui.Create("DLabel", titlepan)
-	p.text3:SetPos(0, 100)
-	p.text3:SetText("To see more changes, join our discord by typing !discord in chat")
-	p.text3:SetTextColor(Color(255,210,210))
+	p.text3:SetPos(0, y)
+	p.text3:SetText("Using items is now very much reworked.")
+	p.text3:SetTextColor(Color(255,255,210))
 	p.text3:SetFont("Trebuchet18")
 	p.text3:SizeToContents()
+	y = y + 30
+
+	p.text4 = vgui.Create("DLabel", titlepan)
+	p.text4:SetPos(0, y)
+	p.text4:SetText("Item stats should now properly show in item descriptions.")
+	p.text4:SetTextColor(Color(255,255,210))
+	p.text4:SetFont("Trebuchet18")
+	p.text4:SizeToContents()
+	y = y + 30
+
+	p.text5 = vgui.Create("DLabel", titlepan)
+	p.text5:SetPos(0, y)
+	p.text5:SetText("For more changes, join our discord by typing !discord in chat")
+	p.text5:SetTextColor(Color(255,210,210))
+	p.text5:SetFont("Trebuchet18")
+	p.text5:SizeToContents()
+	y = y + 30
+
+	p.text6 = vgui.Create("DLabel", titlepan)
+	p.text6:SetPos(0, y)
+	p.text6:SetText("And check out our latest announcement!")
+	p.text6:SetTextColor(Color(255,210,210))
+	p.text6:SetFont("Trebuchet18")
+	p.text6:SizeToContents()
+	y = y + 30
 
 
 	for i=1,self.PlayerCharactersTest and 2 or 1 do
