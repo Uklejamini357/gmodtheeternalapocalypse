@@ -23,6 +23,19 @@ include("client/cl_mainmenu.lua")
 include("client/cl_perksmenu.lua")
 include("client/cl_tooltip.lua")
 
+GM.HUDs = {}
+local files = file.Find(GM.FolderName.."/gamemode/client/hud/*.lua", "LUA")
+for _,f in pairs(files) do
+	HUD = {}
+	HUD.ID = #GM.HUDs+1
+	include("client/hud/"..f)
+	GM.HUDs[HUD.ID] = HUD
+	HUD = nil
+end
+if GAMEMODE then
+	GAMEMODE.HUDs = GM.HUDs
+end
+
 include("client/cl_net.lua")
 include("cl_killicons.lua")
 
@@ -75,6 +88,7 @@ function GM:LocalPlayerDeath(attacker)
 	end
 end
 
+local NextSecond = CurTime()
 function GM:Think()
 	local me = LocalPlayer()
 	if !me:IsValid() then return end
@@ -131,29 +145,45 @@ function GM:Think()
 
 		if !self.DisableTips then
 			local tea_Tips = {
-				{Color(255, 127, 143), translate.Get("Tip1")},
-				{Color(127, 127, 255), translate.Get("Tip2")},
-				{Color(159, 127, 223), translate.Get("Tip3")},
-				{Color(95, 223, 95), translate.Get("Tip4")},
-				{Color(159, 159, 159), translate.Get("Tip5")},
-				{Color(191, 95, 191), translate.Get("Tip6")},
-				{Color(127, 159, 127), translate.Get("Tip7")},
-				{Color(223, 127, 159), translate.Get("Tip8")},
-				{Color(143, 159, 223), translate.Get("Tip9")},
-				{Color(191, 127, 159), translate.Get("Tip10")},
-				{Color(63, 255, 223), translate.Get("Tip11")},
-				{Color(165, 223, 209), translate.Get("Tip12")},
-				{Color(239, 223, 223), translate.Get("Tip13")},
-				{Color(207, 191, 255), translate.Get("Tip14")},
-				{Color(0, 223, 255), translate.Get("Tip15")},
-				{Color(31, 223, 223), translate.Get("Tip16")},
-				{Color(31, 223, 223), translate.Get("Tip17")},
-				{Color(63, 255, 191), translate.Get("Tip18")},
-				{Color(91, 111, 159), translate.Get("Tip19")},
+				{Color(255, 127, 143), "Tip1"},
+				{Color(127, 127, 255), "Tip2"},
+				{Color(159, 127, 223), "Tip3"},
+				{Color(95, 223, 95), "Tip4"},
+				{Color(159, 159, 159), "Tip5"},
+				{Color(191, 95, 191), "Tip6"},
+				{Color(127, 159, 127), "Tip7"},
+				{Color(223, 127, 159), "Tip8"},
+				{Color(143, 159, 223), "Tip9"},
+				{Color(191, 127, 159), "Tip10"},
+				{Color(63, 255, 223), "Tip11"},
+				{Color(165, 223, 209), "Tip12"},
+				{Color(239, 223, 223), "Tip13"},
+				{Color(207, 191, 255), "Tip14"},
+				{Color(0, 223, 255), "Tip15"},
+				{Color(31, 223, 223), "Tip16"},
+				{Color(31, 223, 223), "Tip17"},
+				{Color(63, 255, 191), "Tip18"},
+				{Color(91, 111, 159), "Tip19"},
 			}
 
 			local tip = table.Random(tea_Tips)
-			chat.AddText(Color(255,255,255), "[", Color(255,223,223), "Tips", Color(255,255,255), "]", Color(223,223,223), ": ", tip[1], tip[2])
+			chat.AddText(Color(255,255,255), "[", Color(255,223,223), "Tips", Color(255,255,255), "]", Color(223,223,223), ": ", tip[1], translate.Get(tip[2]))
+		end
+	end
+
+	if NextSecond < CurTime() then
+		NextSecond = CurTime() + 1
+
+		if self.AmbientMusicEnabled and (!self.NextAmbientMusic or self.NextAmbientMusic < CurTime() or self.AmbientMusic and !self.AmbientMusic:IsPlaying()) then
+			if self.AmbientMusic and self.AmbientMusic:IsPlaying() then
+				self.AmbientMusic:Stop()
+			end
+
+			local snd = "music/ambient/klangsegler_dark_valley.mp3"
+			self.AmbientMusic = CreateSound(me, "#"..snd)
+			self.AmbientMusic:Play()
+
+			self.NextAmbientMusic = CurTime() + SoundDuration(snd) + 15
 		end
 	end
 end
@@ -313,8 +343,6 @@ function GM:InitializeLocalPlayer()
 	pl.Infection = 0
 	MySurvivaltime = 0
 	pl.Battery = 0
-	MyLvl = 0
-	MyPrestige = 0
 	MyMoney = 0
 	MyXP = 0
 	MySP = 0

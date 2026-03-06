@@ -92,6 +92,9 @@ end
 
 function GM:CallPerksMenu()
 	if IsValid(perksvgui) then perksvgui:Remove() end
+
+	local pl = LocalPlayer()
+
 	perksvgui = vgui.Create("DFrame")
 	perksvgui:SetSize(900, 660)
 	perksvgui:Center()
@@ -192,7 +195,7 @@ function GM:CallPerksMenu()
         local size_x,size_y = 400,150
 		perkpanel:SetSize(size_x, size_y)
 		perkpanel.Paint = function(panel) -- Paint function
-			draw.RoundedBoxEx(8,1,1,panel:GetWide()-2,panel:GetTall()-2, self.LocalPerks[k] and Color(40, 200, 40, 25) or v.PrestigeReq > MyPrestige and Color(75, 75, 75, 50) or Color(200, 40, 40, 25), false, false, false, false)
+			draw.RoundedBoxEx(8,1,1,panel:GetWide()-2,panel:GetTall()-2, self.LocalPerks[k] and Color(40, 200, 40, 25) or v.PrestigeReq > pl:GetTEAPrestige() and Color(75, 75, 75, 50) or Color(200, 40, 40, 25), false, false, false, false)
 			surface.SetDrawColor(50, 50, 50, 255)
 			surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
 		end
@@ -251,9 +254,9 @@ function GM:CallPerksMenu()
 		local perkapply = vgui.Create("DButton", perkpanel)
 		perkapply:SetSize(size_x - 20, 30)
 		perkapply:SetPos(10, size_y - 35)
-		perkapply:SetText(self.LocalPerks[k] and "Unlocked" or v.PrestigeReq > MyPrestige and "Not enough prestige" or "Unlock")
+		perkapply:SetText(self.LocalPerks[k] and "Unlocked" or v.PrestigeReq > pl:GetTEAPrestige() and "Not enough prestige" or "Unlock")
 		perkapply.Think = function(panel)
-			local txt = self.LocalPerks[k] and "Unlocked" or v.PrestigeReq > MyPrestige and "Not enough prestige" or "Unlock"
+			local txt = self.LocalPerks[k] and "Unlocked" or v.PrestigeReq > pl:GetTEAPrestige() and "Not enough prestige" or "Unlock"
 			if panel:GetText() == txt then return end
 			panel:SetText(txt)	
 		end
@@ -261,7 +264,7 @@ function GM:CallPerksMenu()
 		perkapply.Paint = function(panel)
 			surface.SetDrawColor(0, 150, 0, 255)
 			surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
-			draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), v.PrestigeReq > MyPrestige and Color(75, 75, 75, 130) or Color(0, 50, 0, 130))
+			draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), v.PrestigeReq > pl:GetTEAPrestige() and Color(75, 75, 75, 130) or Color(0, 50, 0, 130))
 		end
 		perkapply.DoClick = function(panel)
 			net.Start("tea_perksunlock")

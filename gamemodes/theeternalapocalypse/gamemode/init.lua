@@ -35,6 +35,11 @@ AddCSLuaFile("client/cl_mainmenu.lua")
 AddCSLuaFile("client/cl_perksmenu.lua")
 AddCSLuaFile("client/cl_tooltip.lua")
 
+local files = file.Find(GM.FolderName.."/gamemode/client/hud/*.lua", "LUA")
+for _,f in pairs(files) do
+	AddCSLuaFile("client/hud/"..f)
+end
+
 AddCSLuaFile("client/cl_net.lua")
 AddCSLuaFile("cl_killicons.lua")
 

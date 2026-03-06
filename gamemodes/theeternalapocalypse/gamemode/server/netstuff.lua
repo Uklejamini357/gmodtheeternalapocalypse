@@ -83,8 +83,6 @@ end
 
 function GM:NetUpdatePeriodicStats(ply)
 	net.Start("UpdatePeriodicStats")
-	net.WriteFloat(ply.Level)
-	net.WriteFloat(ply.Prestige)
 	net.WriteFloat(ply.Money)
 	net.WriteFloat(ply.XP)
 	net.WriteFloat(ply.StatPoints)

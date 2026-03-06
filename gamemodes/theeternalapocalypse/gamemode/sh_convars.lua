@@ -138,14 +138,13 @@ end, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_config_propspawndistance")
 
 
 if CLIENT then
-
 	GM.HUDEnabled = CreateClientConVar("tea_cl_hud", 1, true, false, "Enable The Eternal Apocalypse HUD", 0, 1):GetBool()
 	cvars.AddChangeCallback("tea_cl_hud", function(cvar,old,new)
 		GAMEMODE.HUDEnabled = tobool(new)
 		GAMEMODE:OnConVarChanged(cvar, old, new)
 	end, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_cl_hud")
 
-	GM.HUDStyle = CreateClientConVar("tea_cl_hudstyle", 0, true, false, "Switch between HUD styles", 0, 2):GetInt()
+	GM.HUDStyle = CreateClientConVar("tea_cl_hudstyle", 0, true, false, "Switch between HUD styles"):GetInt()
 	cvars.AddChangeCallback("tea_cl_hudstyle", function(cvar,old,new)
 		GAMEMODE.HUDStyle = math.floor(tonumber(new))
 		GAMEMODE:OnConVarChanged(cvar, old, new)

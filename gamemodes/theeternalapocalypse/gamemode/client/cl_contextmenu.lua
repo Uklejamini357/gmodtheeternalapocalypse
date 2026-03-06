@@ -420,6 +420,8 @@ end
 
 
 function GM:WantToPrestige()
+	local pl = LocalPlayer()
+
 	local pframe = vgui.Create("DFrame")
 	pframe:SetSize(560,340)
 	pframe:Center()
@@ -440,7 +442,7 @@ function GM:WantToPrestige()
 	prestigetext:SetFont("TEA.HUDFontSmall")
 	prestigetext:SetColor(Color(205,205,205,255))
 	prestigetext:SetWrap(true)
-	prestigetext:SetText("Prestiging allows you to gain more levels depending on your Prestige level.\nYou will also be given some cash and a perk point if you prestige.\nYou need to be at least level "..LocalPlayer():GetMaxLevel().." ("..self.MaxLevel.." plus "..self.LevelsPerPrestige.." depending on prestige) in order to prestige.")
+	prestigetext:SetText("Prestiging allows you to gain more levels depending on your Prestige level.\nYou will also be given some cash and a perk point if you prestige.\nYou need to be at least level "..pl:GetMaxLevel().." ("..self.MaxLevel.." plus "..self.LevelsPerPrestige.." depending on prestige) in order to prestige.")
 	prestigetext:SetSize(540, 60)
 	prestigetext:SetPos(10,30)
 
@@ -448,7 +450,7 @@ function GM:WantToPrestige()
 	prestigetext2:SetFont("TEA.HUDFontSmall")
 	prestigetext2:SetColor(Color(205,205,205,255))
 	prestigetext2:SetWrap(true)
-	prestigetext2:SetText(Format("You may %sprestige.", MyLvl >= LocalPlayer():GetMaxLevel() and "" or "not "))
+	prestigetext2:SetText(Format("You may %sprestige.", pl:GetTEALevel() >= pl:GetMaxLevel() and "" or "not "))
 	prestigetext2:SetSize(540, 240)
 	prestigetext2:SetPos(10,30)
 
@@ -465,13 +467,13 @@ function GM:WantToPrestige()
 		draw.RoundedBox(2, 0, 0, doprestige:GetWide(), doprestige:GetTall(), Color(0, 0, 0, 130))
 	end
 	doprestige.DoClick = function(panel)
-		local levelrequiredforprestige = LocalPlayer():GetMaxLevel()
+		local levelrequiredforprestige = pl:GetMaxLevel()
 		if shouldprestige then
 			pframe:Remove()
 --			gamemode.Call("ConfirmPrestige")
 			net.Start("Prestige")
 			net.SendToServer()
-		elseif MyLvl >= levelrequiredforprestige then
+		elseif pl:GetTEALevel() >= levelrequiredforprestige then
 			panel:SetText("")
 
 			local t = "D O  I T"

@@ -111,8 +111,8 @@ function meta:GetReqXP()
 	local addxpperlevel = 97
 	local addxpperlevel2 = 1.1329
 
-	local plyprestige = SERVER and self.Prestige or MyPrestige
-	local plylevel = SERVER and self.Level or MyLvl
+	local plyprestige = SERVER and self.Prestige or self:GetTEAPrestige()
+	local plylevel = SERVER and self.Level or self:GetTEALevel()
 
 	local xp = (basexpreq + (plylevel  * addxpperlevel) * (1 + (plyprestige * (0.0072 + math.min(20, plyprestige) * 0.0003)))) ^ addxpperlevel2
 	return math.floor(xp * math.max(1, 1+(plylevel-30)*0.01))
@@ -139,7 +139,7 @@ function meta:GetReqMasteryPvPXP(ply)
 end
 
 function meta:GetProgressToPrestige()
-	local lvl, xp = SERVER and self.Level or CLIENT and MyLvl or 0
+	local lvl, xp = SERVER and self.Level or CLIENT and self:GetTEALevel() or 0
 	local xp = math.min(self:GetReqXP(), SERVER and self.XP or CLIENT and MyXP or 0)
 
 	return math.min(1, lvl >= self:GetMaxLevel() and 1 or (lvl - 1 + (xp / self:GetReqXP())) / (self:GetMaxLevel() - 1))
