@@ -4,40 +4,42 @@ function GM:LoadTraders()
 	   file.CreateDir(self.DataFolder.."/spawns/"..string.lower(game.GetMap()))
 	end
 	if file.Exists(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/traders.txt", "DATA") then
-		TradersData = ""
-		TradersData = file.Read(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/traders.txt", "DATA")
+		self.TraderSpawnpoints = file.Read(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/traders.txt", "DATA")
+
+		local tbl = {}
+		for _,v in pairs(string.Explode("\n", self.TraderSpawnpoints)) do
+			local Booty = string.Explode(";", v)
+			local pos = util.StringToType(Booty[1], "Vector")
+			local ang = util.StringToType(Booty[2], "Angle")
+
+			table.insert(tbl, {pos, ang})
+		end
+		self.TraderSpawnpoints = tbl
+
 		print("Traders file loaded")
 		return true
 	else
-		TradersData = ""
 		print("No traders file for this map")
 		return false
 	end
 end
 
 function GM:SpawnTraders()
-	if TradersData ~= "" then
-		for k, v in pairs(ents.FindByClass("tea_trader")) do
-			v:Remove()
-		end
+	for k, v in ipairs(ents.FindByClass("tea_trader")) do
+		v:Remove()
+	end
 
-		local TradersList = string.Explode("\n", TradersData)
-		for k, v in pairs(TradersList) do
-			Trader = string.Explode(";", v)
-			local pos = util.StringToType(Trader[1], "Vector")
-			local ang = util.StringToType(Trader[2], "Angle")
-			local ent = ents.Create("tea_trader")
-			ent:SetPos(pos)
-			ent:SetAngles(ang)
-			ent:SetNetworkedString("Owner", "World")
-			ent:Spawn()
-			ent:Activate()
-		end
+	for k, v in pairs(self.TraderSpawnpoints) do
+		local pos = v[1]
+		local ang = v[2]
+		local ent = ents.Create("tea_trader")
+		ent:SetPos(pos)
+		ent:SetAngles(ang)
+		ent:SetNetworkedString("Owner", "World")
+		ent:Spawn()
+		ent:Activate()
 	end
 end
-timer.Simple(1, function()
-	gamemode.Call("SpawnTraders")
-end)
 
 function GM:AddTrader(ply, cmd, args)
 	if !SuperAdminCheck(ply) then 
@@ -46,13 +48,9 @@ function GM:AddTrader(ply, cmd, args)
 		return
 	end
 
-	if TradersData == "" then
-		NewData = tostring(ply:GetPos())..";"..tostring(ply:GetAngles())
-	else
-		NewData = TradersData.."\n"..tostring(ply:GetPos())..";"..tostring(ply:GetAngles())
-	end
-	
-	file.Write(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/traders.txt", NewData)
+	table.insert(self.TraderSpawnpoints, {ply:GetPos(), ply:GetAngles()})
+
+	self:SaveTraderSpawns()
 
 	gamemode.Call("LoadTraders") --reload them
 	ply:SendChat("Added a trader spawnpoint at position "..tostring(ply:GetPos()).."!")
@@ -73,9 +71,15 @@ function GM:ClearTraders(ply, cmd, args)
 		return
 	end
 
+	local entries = table.Count(self.TraderSpawnpoints)
+	self.TraderSpawnpoints = {}
 	if file.Exists(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/traders.txt", "DATA") then
 		file.Delete(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/traders.txt")
 	end
+	for _,ent in ipairs(ents.FindByClass("tea_trader")) do
+		ent:Remove()
+	end
+
 	ply:SendChat("Deleted all trader spawnpoints!")
 	self:DebugLog("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all trader spawnpoints!")
 	ply:ConCommand("playgamesound buttons/button15.wav")
@@ -83,6 +87,15 @@ end
 concommand.Add("tea_cleartraderspawns", function(ply, cmd, args)
 	gamemode.Call("ClearTraders", ply, cmd, args)
 end)
+
+function GM:SaveTraderSpawns()
+	local ftext = ""
+	for _,var in pairs(self.TraderSpawnpoints) do
+		ftext = ftext..(ftext=="" and "" or "\n")..tostring(var[1])..";"..tostring(var[2])
+	end
+
+	file.Write(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/traders.txt", ftext)
+end
 
 function GM:RefreshTraders(ply, cmd, args)
 	if !SuperAdminCheck(ply) then 

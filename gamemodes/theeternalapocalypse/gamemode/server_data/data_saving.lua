@@ -6,11 +6,13 @@ function GM:LoadServerData()
 
     if file.Exists(filedir2, "DATA") then
 		local method = self.Config.SFS and sfs.decode or util.JSONToTable
-		local tbl = method(file.Read(filedir_ply, "DATA"))
+		local tbl = method(file.Read(filedir2, "DATA"))
  
         if tbl.InfectionLevel then
             self:SetInfectionLevel(tbl.InfectionLevel, true)
         end
+
+        self.ServerInitOsTime = tbl.ServerInitOsTime or os.time()
     else
         self:SetInfectionLevel(0, true)
     end
@@ -22,6 +24,7 @@ function GM:SaveServerData()
     local Data = {}
 	Data["InfectionLevel"] = self:GetInfectionLevel()
 	Data["Statistics"] = self.StatTracker
+	Data["ServerInitOsTime"] = self.ServerInitOsTime
 
 
 	local method = self.Config.SFS and sfs.encode or util.TableToJSON

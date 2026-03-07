@@ -76,36 +76,42 @@ function GM:LoadTaskDealers()
 	if not file.IsDir(self.DataFolder.."/spawns/"..string.lower(game.GetMap()), "DATA") then
 	   file.CreateDir(self.DataFolder.."/spawns/"..string.lower(game.GetMap()))
 	end
+
 	if file.Exists(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/taskdealers.txt", "DATA") then
-		TaskDealersData = ""
-		TaskDealersData = file.Read(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/taskdealers.txt", "DATA")
+		self.TaskDealerSpawnpoints = file.Read(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/taskdealers.txt", "DATA")
+
+		local tbl = {}
+		for _,v in pairs(string.Explode("\n", self.TaskDealerSpawnpoints)) do
+			local Booty = string.Explode(";", v)
+			local pos = util.StringToType(Booty[1], "Vector")
+			local ang = util.StringToType(Booty[2], "Angle")
+
+			table.insert(tbl, {pos, ang})
+		end
+		self.TaskDealerSpawnpoints = tbl
 		print("Task dealers file loaded")
 		return true
 	else
-		TaskDealersData = ""
 		print("No task dealers file for this map")
 		return false
 	end
 end
 
 function GM:SpawnTaskDealers()
-	if TaskDealersData ~= "" then
-		for k, v in pairs(ents.FindByClass("tea_taskdealer")) do
-			v:Remove()
-		end
+	for _,ent in ipairs(ents.FindByClass("tea_taskdealer")) do
+		ent:Remove()
+	end
 
-		local TaskDealersList = string.Explode("\n", TaskDealersData)
-		for k, v in pairs(TaskDealersList) do
-			TaskDealer = string.Explode(";", v)
-			local pos = util.StringToType(TaskDealer[1], "Vector")
-			local ang = util.StringToType(TaskDealer[2], "Angle")
-			local ent = ents.Create("tea_taskdealer")
-			ent:SetPos(pos)
-			ent:SetAngles(ang)
-			ent:SetNetworkedString("Owner", "World")
-			ent:Spawn()
-			ent:Activate()
-		end
+	for _,v in pairs(self.TaskDealerSpawnpoints) do
+		local pos = v[1]
+		local ang = v[2]
+
+		local ent = ents.Create("tea_taskdealer")
+		ent:SetPos(pos)
+		ent:SetAngles(ang)
+		ent:SetNetworkedString("Owner", "World")
+		ent:Spawn()
+		ent:Activate()
 	end
 end
 timer.Simple(1, function()
@@ -119,13 +125,9 @@ function GM:AddTaskDealer(ply, cmd, args)
 		return
 	end
 
-	if TaskDealersData == "" then
-		NewData = tostring(ply:GetPos())..";"..tostring(ply:GetAngles())
-	else
-		NewData = TaskDealersData.."\n"..tostring(ply:GetPos())..";"..tostring(ply:GetAngles())
-	end
-	
-	file.Write(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/taskdealers.txt", NewData)
+	table.insert(self.TaskDealerSpawnpoints, {ply:GetPos(), ply:GetAngles()})
+
+	self:SaveTaskDealerSpawns()
 
 	gamemode.Call("LoadTaskDealers") --reload them
 	ply:SendChat("Added a task dealer spawnpoint at position "..tostring(ply:GetPos()).."!")
@@ -146,9 +148,14 @@ function GM:ClearTaskDealers(ply, cmd, args)
 		return
 	end
 
+	self.TaskDealerSpawnpoints = {}
 	if file.Exists(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/taskdealers.txt", "DATA") then
 		file.Delete(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/taskdealers.txt")
 	end
+	for _,ent in ipairs(ents.FindByClass("tea_taskdealer")) do
+		ent:Remove()
+	end
+
 	ply:SendChat("Deleted all task dealer spawnpoints!")
 	self:DebugLog("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all task dealer spawnpoints!")
 	ply:ConCommand("playgamesound buttons/button15.wav")
@@ -173,6 +180,17 @@ end
 concommand.Add("tea_refreshtaskdealers", function(ply, cmd, args)
 	gamemode.Call("RefreshTaskDealers", ply, cmd, args)
 end)
+
+
+function GM:SaveTaskDealerSpawns()
+	local ftext = ""
+	for _,var in pairs(self.TaskDealerSpawnpoints) do
+		ftext = ftext..(ftext=="" and "" or "\n")..tostring(var[1])..";"..tostring(var[2])
+	end
+
+	file.Write(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/taskdealers.txt", ftext)
+end
+
 
 net.Receive("tea_taskassign", function(len, pl)
 	local task = net.ReadString()

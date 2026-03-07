@@ -57,49 +57,6 @@ Impossible: Extremely high Zombie health and damage, but a lot more XP and cash 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # ECONOMY DIFFICULTY
 
 
@@ -140,16 +97,6 @@ Economic difficulty list:
 
 
 
-
-
-
-
-
-
-
-
-
-
 # INFLATION DIFFICULTY
 
 RECOMMENDED FOR ADVANCED PLAYERS ONLY.
@@ -162,13 +109,13 @@ Counts hours too. (For reference, an hour is 1/24 days)
 
 Selection of inflation difficulties:
 -# (max buy price, max sell price in %, respectively)
-– None (Inflation disabled)
+– Off (Inflation disabled)
 – Low (104%, 101%)
 – Medium (108%, 102%)
 – Normal (115%, 105%)
 – Intermediate (125%, 108%)
 – High (140%, 115%)
-– Very High (155%, 120%)
-– World Crisis (190%, 125%)
+– Very High (165%, 120%)
+– World Crisis (220%, 125%)
 
 Note that this feature has a great impact on economic difficulty, depending on the settings.

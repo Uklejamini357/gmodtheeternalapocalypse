@@ -100,28 +100,69 @@ GM.ServerRules = {
 }
 
 
-/* These don't work yet sorry
+-- These don't work yet sorry
 
 -- Look in difficulties.txt for reference
 
 --[[Adjust overall gameplay difficulty. Higher difficulty means higher zombie HP and damage along with increased XP and money gain too)
-Note: Some difficulties may also change certain stats. --]]
+
+Basic		-	DIFFICULTY_GAMEPLAY_BASIC
+Normal		-	DIFFICULTY_GAMEPLAY_NORMAL
+Advanced	-	DIFFICULTY_GAMEPLAY_ADVANCED
+Challenging	-	DIFFICULTY_GAMEPLAY_CHALLENGING
+Ultimate	-	DIFFICULTY_GAMEPLAY_ULTIMATE
+Hell		-	DIFFICULTY_GAMEPLAY_HELL
+Impossible	-	DIFFICULTY_GAMEPLAY_IMPOSSIBLE
+
+Note: Some difficulties may also change certain stats.
+
+Refer to difficulties.txt for more information.
+--]]
 GM.GameplayDifficulty = DIFFICULTY_GAMEPLAY_NORMAL
 
 --[[
 Make economy more difficult (The higher the difficulty, the higher buy prices and lower sell prices) --
 Also grants more XP if another variable is enabled.
+
+Easy		- DIFFICULTY_ECONOMY_EASY
+Standard	- DIFFICULTY_ECONOMY_STANDARD
+Difficult	- DIFFICULTY_ECONOMY_DIFFICULT
+Complex		- DIFFICULTY_ECONOMY_COMPLEX
+Harsh		- DIFFICULTY_ECONOMY_HARSH
+Hellish		- DIFFICULTY_ECONOMY_HELLISH
+
+Refer to difficulties.txt for more information.
 ---]]
 GM.EconomyDifficulty = DIFFICULTY_ECONOMY_STANDARD
 
 --[[
 Make economy more difficult (The higher the difficulty, the higher buy prices and lower sell prices) --
+
+Off				- DIFFICULTY_INFLATION_OFF
+Low				- DIFFICULTY_INFLATION_LOW
+Medium			- DIFFICULTY_INFLATION_MEDIUM
+Normal			- DIFFICULTY_INFLATION_NORMAL
+Intermediate	- DIFFICULTY_INFLATION_INTERMEDIATE
+High			- DIFFICULTY_INFLATION_HIGH
+Very High		- DIFFICULTY_INFLATION_VERYHIGH
+World Crisis	- DIFFICULTY_INFLATION_WORLDCRISIS
+
+Refer to difficulties.txt for more information.
 ---]]
-GM.EconomyInflationMode = DIFFICULTY_GAMEPLAY_OFF
+GM.EconomyInflationMode = DIFFICULTY_INFLATION_OFF
 
 -- If enabled, Higher economy difficulty will grant more XP from zombies. Set it to false to disable this setting.
 GM.EconomyDifficultyAffectsXPGain = true
-*/
+
+
+
+-- The 2 settings below are only for when you want the selling/buying have no money. Highly recommended to have reasonable limits when Inflation setting is enabled.
+
+-- Max sell cost mul
+GM.MaxSellCostMul = 0.3
+
+-- Min buy cost mul
+GM.MinBuyCostMul = 0.5
 
 -------- CONFIG --------
 
@@ -146,8 +187,6 @@ GM.Config = {
 	-- amount of minutes after server started auto-maintenance sequence will restart map, to give players some time to get their base salvaged
 	["AutoMaintenanceDelay"] = 15,
 
-	-- people who are this level or below are considered Newbies (Note: this is being replaced to function PLAYER:IsNewbie(), see sh_player.lua)
---	["NewbieLevel"] = 10,
 	-- what gun to give to players if they are under the Newbie level and if they lost their previous one
 	["NewbieWeapon"] = "weapon_tea_noobcannon",
 	-- How much money should new players have?
@@ -170,6 +209,9 @@ GM.Config = {
 	["WalkSpeed"] = 155,
 	-- speed skill increases your running speed by 7 per skill level, so if default is 280, players can reach max of 350 run speed
 	["RunSpeed"] = 270,
+
+	-- Cycles inflation. (real-time days)
+	["InflationCycleTime"] = 28,
 
 	-- set to Legacy or PData
 	-- legacy saves player data as text files under garrysmod/data/theeternalapocalypse/profiles/(players steamid)/

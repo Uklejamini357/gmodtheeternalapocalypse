@@ -535,6 +535,78 @@ function GM:GetSkillDescription(id, ply)
 	return desc
 end
 
+function GM:SetInflationMeter(val)
+	return SetGlobalFloat("TEA.InflationMeter", val)
+end
+
+function GM:GetInflationMeter()
+	return GetGlobalFloat("TEA.InflationMeter", 0)
+end
+
+-- Updates every 1 hour
+function GM:CalcInflationMeter()
+	local time = self.Config["InflationCycleTime"]*86400
+	local val = ((os.time() - self.ServerInitOsTime)%time)/time
+
+	if val > 0.05 and val <= 0.6 then
+		return (val-0.05)/0.55
+	elseif val > 0.6 and val < 1 then
+		return (1-(val-0.6)/0.4)
+	end
+
+	return 0
+end
+
+function GM:GetInflationBuyCostMul()
+	local val = 0
+	local inflation = self:GetInflationMeter()
+
+	if self.EconomyInflationMode == DIFFICULTY_INFLATION_OFF then
+		return 0
+	elseif self.EconomyInflationMode == DIFFICULTY_INFLATION_LOW then
+		val = 0.04
+	elseif self.EconomyInflationMode == DIFFICULTY_INFLATION_MEDIUM then
+		val = 0.08
+	elseif self.EconomyInflationMode == DIFFICULTY_INFLATION_NORMAL then
+		val = 0.15
+	elseif self.EconomyInflationMode == DIFFICULTY_INFLATION_INTERMEDIATE then
+		val = 0.25
+	elseif self.EconomyInflationMode == DIFFICULTY_INFLATION_HIGH then
+		val = 0.40
+	elseif self.EconomyInflationMode == DIFFICULTY_INFLATION_VERYHIGH then
+		val = 0.65
+	elseif self.EconomyInflationMode == DIFFICULTY_INFLATION_WORLDCRISIS then
+		val = 1.20
+	end
+
+	return val*inflation
+end
+
+function GM:GetInflationSellCostMul()
+	local val = 0
+	local inflation = self:GetInflationMeter()
+
+	if self.EconomyInflationMode == DIFFICULTY_INFLATION_OFF then
+		return 0
+	elseif self.EconomyInflationMode == DIFFICULTY_INFLATION_LOW then
+		val = 0.01
+	elseif self.EconomyInflationMode == DIFFICULTY_INFLATION_MEDIUM then
+		val = 0.02
+	elseif self.EconomyInflationMode == DIFFICULTY_INFLATION_NORMAL then
+		val = 0.05
+	elseif self.EconomyInflationMode == DIFFICULTY_INFLATION_INTERMEDIATE then
+		val = 0.08
+	elseif self.EconomyInflationMode == DIFFICULTY_INFLATION_HIGH then
+		val = 0.15
+	elseif self.EconomyInflationMode == DIFFICULTY_INFLATION_VERYHIGH then
+		val = 0.20
+	elseif self.EconomyInflationMode == DIFFICULTY_INFLATION_WORLDCRISIS then
+		val = 0.25
+	end
+
+	return val*inflation
+end
+
 local entmeta = FindMetaTable("Entity")
 
 function entmeta:GetStructureHealth()

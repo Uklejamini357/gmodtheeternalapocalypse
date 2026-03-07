@@ -16,30 +16,85 @@ function GM:LoadZombies()
 	   file.CreateDir(self.DataFolder.."/spawns/"..string.lower(game.GetMap()))
 	end
 	if file.Exists(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/zombies.txt", "DATA") then
-		ZombieData = "" --reset it
-		ZombieData = file.Read(self.DataFolder.."/spawns/" .. string.lower(game.GetMap()) .. "/zombies.txt", "DATA")
+		self.ZombieSpawnpoints = file.Read(self.DataFolder.."/spawns/" .. string.lower(game.GetMap()) .. "/zombies.txt", "DATA")
+
+		local tbl = {}
+		for _,v in pairs(string.Explode("\n", self.ZombieSpawnpoints)) do
+			local Booty = string.Explode(";", v)
+			local pos = util.StringToType(Booty[1], "Vector")
+			local ang = util.StringToType(Booty[2], "Angle")
+
+			table.insert(tbl, {pos, ang})
+		end
+		self.ZombieSpawnpoints = tbl
+
 		print("Zombie spawnpoints loaded")
 	else
-		ZombieData = "" --just in case
 		print("No zombie spawnpoints found for this map")
 	end
+end
+
+function GM:AddZombie(ply, cmd, args)
+	if !SuperAdminCheck(ply) then 
+		ply:SystemMessage(translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205), true)
+		ply:ConCommand("playgamesound buttons/button8.wav")
+		return
+	end
+
+	table.insert(self.ZombieSpawnpoints, {ply:GetPos(), ply:GetAngles()})
+	
+	self:SaveZombieSpawns()
+
+	self:LoadZombies() --reload them
+
+	ply:SendChat("Added a zombie spawnpoint at position "..tostring(ply:GetPos()).."!")
+	self:DebugLog("[SPAWNPOINTS MODIFIED] "..ply:Nick().." has added a zombie spawnpoint at position "..tostring(ply:GetPos()).."!")
+	ply:ConCommand("playgamesound buttons/button3.wav")
+end
+concommand.Add("tea_addzombiespawn", function(ply, cmd, args, str)
+	GAMEMODE:AddZombie(ply, cmd, args, str)
+end)
+
+function GM:ClearZombies(ply, cmd, args)
+	if !SuperAdminCheck(ply) then 
+		ply:SystemMessage(translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205), true)
+		ply:ConCommand("playgamesound buttons/button8.wav")
+		return
+	end
+
+	self.ZombieSpawnpoints = {}
+	if file.Exists(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/zombies.txt", "DATA") then
+		file.Delete(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/zombies.txt")
+	end
+
+	ply:SendChat("Deleted all zombie spawnpoints")
+	self:DebugLog("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all zombie spawnpoints!")
+	ply:ConCommand("playgamesound buttons/button15.wav")
+end
+concommand.Add("tea_clearzombiespawns", function(ply, cmd, args, str)
+	GAMEMODE:ClearZombies(ply, cmd, args, str)
+end)
+
+function GM:SaveZombieSpawns()
+	local ftext = ""
+	for _,var in pairs(self.ZombieSpawnpoints) do
+		ftext = ftext..(ftext=="" and "" or "\n")..tostring(var[1])..";"..tostring(var[2])
+	end
+
+	file.Write(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/zombies.txt", ftext)
 end
 
 
 -- Not used currently.
 function GM:GetRandomZombieSpawn()
-	if ZombieData ~= "" then
+	if table.Count(self.ZombieSpawnpoints) == 0 then return end
 
-		local ZombiesList = string.Explode("\n", ZombieData)
-		local zombiespawn = table.Random(ZombiesList)
-		local Zed = string.Explode(";", zombiespawn)
-		local pos = util.StringToType(Zed[1], "Vector") + Vector(0, 0, 5)
-		local ang = util.StringToType(Zed[2], "Angle")
+	local zombiespawn = table.Random(self.ZombieSpawnpoints)
+	local Zed = string.Explode(";", zombiespawn)
+	local pos = util.StringToType(Zed[1], "Vector") + Vector(0, 0, 5)
+	-- local ang = util.StringToType(Zed[2], "Angle")
 
-		return pos
-	end
-
-	return nil
+	return pos
 end
 
 -- note: added the ability to create bosses with this function, setting isboss to true will make the monster distribute its xp reward to all attackers and announce its death
@@ -269,29 +324,29 @@ function GM:SpawnZombies()
 	end
 
 
-	if ZombieData ~= "" then
-		local ZombiesList = string.Explode("\n", ZombieData)
-		for k, v in RandomPairs(ZombiesList) do
-			local Zed = string.Explode(";", v)
-			local pos = util.StringToType(Zed[1], "Vector") + Vector(0, 0, 5)
-			local ang = util.StringToType(Zed[2], "Angle")
-			local inzedrange = true
-			local zeds = ents.FindInSphere(pos, 200)
-			for k, v in pairs(zeds) do
-				if v:IsNextBot() or v:IsNPC() or v:IsPlayer() then inzedrange = false end -- ignore spawnpoints that are obstructed by zombies or players
-			end
+	if table.Count(self.ZombieSpawnpoints) == 0 then return end
 
-			local inplyrange = false
-			local plycheck = ents.FindInSphere(pos, tonumber(self.MaxZombieSpawnDistance))
-			for k, v in pairs(plycheck) do
-				if v:IsPlayer() then inplyrange = true end
-			end
+	for k, v in RandomPairs(self.ZombieSpawnpoints) do
+		if self:ZombieCount() >= self.MaxZombies then break end
 
-			if not inplyrange or not inzedrange then continue end
-			if self:ZombieCount() >= self.MaxZombies then break end
+		local pos = v[1] + Vector(0, 0, 5)
+		local ang = v[2]
 
-			self:SpawnRandomZombie(pos + Vector(0, 0, 10), ang)
+		local inzedrange = true
+		for _, v in ipairs(ents.FindInSphere(pos, 200)) do
+			-- ignore spawnpoints that are obstructed by zombies or players
+			if v:IsNextBot() or v:IsNPC() or v:IsPlayer() then inzedrange = false break end
 		end
+		if !inzedrange then continue end
+
+		local inplyrange = false
+		for _, v in ipairs(ents.FindInSphere(pos, tonumber(self.MaxZombieSpawnDistance))) do
+			if v:IsPlayer() then inplyrange = true break end
+		end
+		if !inplyrange then continue end
+
+
+		self:SpawnRandomZombie(pos + Vector(0, 0, 10), ang)
 	end
 end
 concommand.Add("tea_dev_spawnzombies", function(ply, cmd)
@@ -304,70 +359,23 @@ concommand.Add("tea_dev_spawnzombies", function(ply, cmd)
 end)
 
 
-function GM:AddZombie(ply, cmd, args)
-	if !SuperAdminCheck(ply) then 
-		ply:SystemMessage(translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205), true)
-		ply:ConCommand("playgamesound buttons/button8.wav")
-		return
-	end
-
-	if ZombieData == "" then
-		NewData = tostring(ply:GetPos()) ..";".. tostring(ply:GetAngles())
-	else
-		NewData = ZombieData .. "\n" .. tostring(ply:GetPos()) .. ";" .. tostring(ply:GetAngles())
-	end
-	
-	file.Write(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/zombies.txt", NewData)
-
-	self:LoadZombies() --reload them
-	
-	ply:SendChat("Added a zombie spawnpoint at position "..tostring(ply:GetPos()).."!")
-	self:DebugLog("[SPAWNPOINTS MODIFIED] "..ply:Nick().." has added a zombie spawnpoint at position "..tostring(ply:GetPos()).."!")
-	ply:ConCommand("playgamesound buttons/button3.wav")
-end
-concommand.Add("tea_addzombiespawn", function(ply, cmd, args, str)
-	GAMEMODE:AddZombie(ply, cmd, args, str)
-end)
-
-function GM:ClearZombies(ply, cmd, args)
-	if !SuperAdminCheck(ply) then 
-		ply:SystemMessage(translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205), true)
-			ply:ConCommand("playgamesound buttons/button8.wav")
-			return
-	end
-	if file.Exists(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/zombies.txt", "DATA") then
-		file.Delete(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/zombies.txt")
-		ZombieData = ""
-	end
-	ply:SendChat("Deleted all zombie spawnpoints")
-	self:DebugLog("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all zombie spawnpoints!")
-	ply:ConCommand("playgamesound buttons/button15.wav")
-end
-concommand.Add("tea_clearzombiespawns", function(ply, cmd, args, str)
-	GAMEMODE:ClearZombies(ply, cmd, args, str)
-end)
-
 function GM:SpawnBoss(plycountoverride, nonotify)
-	local bspawned = false
 	plycountoverride = plycountoverride or #player.GetAll()
 
-	if ZombieData != "" then
-		local ZombiesList = string.Explode("\n", ZombieData)
-		for k, v in RandomPairs(ZombiesList) do
-			local Zed = string.Explode(";", v)
-			local pos = util.StringToType(Zed[1], "Vector")
-			local ang = util.StringToType(Zed[2], "Angle")
-			local inzedrange = true
-			local zeds = ents.FindInSphere(pos, 200)
-			for k, v in pairs(zeds) do
-				if v:IsNextBot() or v:IsNPC() or v:IsPlayer() then inzedrange = false end -- ignore spawnpoints that are obstructed by zombies or players
-			end
+	if table.Count(self.ZombieSpawnpoints) == 0 then return end
 
-			if bspawned then continue end
-			if !inzedrange then continue end
-			self:SpawnRandomBoss(pos + Vector(0, 0, 40), ang, plycountoverride, nonotify)
-			bspawned = true
+	for k, v in RandomPairs(self.ZombieSpawnpoints) do
+		local Zed = string.Explode(";", v)
+		local pos = util.StringToType(Zed[1], "Vector")
+		local ang = util.StringToType(Zed[2], "Angle")
+
+		local inzedrange = true
+		for _, v in ipairs(ents.FindInSphere(pos, 200)) do
+			if v:IsNextBot() or v:IsNPC() or v:IsPlayer() then inzedrange = false break end -- ignore spawnpoints that are obstructed by zombies or players
 		end
+		if !inzedrange then continue end
+		self:SpawnRandomBoss(pos + Vector(0, 0, 40), ang, plycountoverride, nonotify)
+		break
 	end
 end
 

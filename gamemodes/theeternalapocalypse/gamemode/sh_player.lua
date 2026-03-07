@@ -369,7 +369,7 @@ function meta:GetItemBuyCostMul(item)
 
 	local mul = 1 - ((self.StatBarter or 0) * 0.015)
 
-	return mul
+	return itemtbl.IgnoreBuyCostMulLimit and mul or math.max(GAMEMODE.MinBuyCostMul, mul)
 end
 
 function meta:GetItemSellCostMul(item)
@@ -385,7 +385,7 @@ function meta:GetItemSellCostMul(item)
 
 	local mul = 0.2 + ((self.StatBarter or 0) * 0.005)
 
-	return mul
+	return itemtbl.IgnoreSellCostMulLimit and mul or math.max(GAMEMODE.MaxSellCostMul, mul)
 end
 
 function meta:AddStatisticPoints(var, value)

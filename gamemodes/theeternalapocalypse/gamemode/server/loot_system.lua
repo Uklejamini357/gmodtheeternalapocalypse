@@ -21,11 +21,20 @@ function GM:LoadLoot()
 	   file.CreateDir(self.DataFolder.."/spawns/"..string.lower(game.GetMap()))
 	end
 	if file.Exists(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/loot.txt", "DATA") then
-		LootData = "" --reset it
-		LootData = file.Read(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/loot.txt", "DATA")
+		self.LootSpawnpoints = file.Read(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/loot.txt", "DATA")
+
+		local tbl = {}
+		for _,v in pairs(string.Explode("\n", self.LootSpawnpoints)) do
+			local Booty = string.Explode(";", v)
+			local pos = util.StringToType(Booty[1], "Vector")
+			local ang = util.StringToType(Booty[2], "Angle")
+
+			table.insert(tbl, {pos, ang})
+		end
+		self.LootSpawnpoints = tbl
+
 		print("Loot spawnpoints loaded")
 	else
-		LootData = "" --just in case
 		print("No loot spawnpoints found for this map")
 	end
 end
@@ -37,14 +46,10 @@ function GM:AddLoot(ply, cmd, args)
 		return
 	end
 
-	if LootData == "" then
-		NewData = tostring(ply:GetPos()) .. ";" .. tostring(ply:GetAngles())
-	else
-		NewData = LootData .. "\n" .. tostring(ply:GetPos()) .. ";" .. tostring(ply:GetAngles())
-	end
-	
-	file.Write(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/loot.txt", NewData)
-	
+	table.insert(self.LootSpawnpoints, {ply:GetPos(), ply:GetAngles()})
+
+	self:SaveLootSpawns()
+
 	self:LoadLoot() --reload them
 	
 	ply:SendChat("Added a loot spawnpoint at position "..tostring(ply:GetPos()).."!")
@@ -63,9 +68,11 @@ function GM:ClearLoot(ply, cmd, args)
 		return
 	end
 
+	self.LootSpawnpoints = {}
 	if file.Exists(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/loot.txt", "DATA") then
 		file.Delete(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/loot.txt")
 	end
+
 	ply:SendChat("Deleted all loot spawnpoints")
 	self:DebugLog("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all loot spawnpoints!")
 	ply:ConCommand("playgamesound buttons/button15.wav")
@@ -73,6 +80,15 @@ end
 concommand.Add("tea_clearlootspawns", function(ply, cmd, args)
 	gamemode.Call("ClearLoot", ply, cmd, args)
 end)
+
+function GM:SaveLootSpawns()
+	local ftext = ""
+	for _,var in pairs(self.LootSpawnpoints) do
+		ftext = ftext..(ftext=="" and "" or "\n")..tostring(var[1])..";"..tostring(var[2])
+	end
+
+	file.Write(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/loot.txt", ftext)
+end
 
 function GM:SpawnLootCache(ltype, pos, ang)
 	local ent
@@ -132,28 +148,26 @@ end
 
 function GM:SpawnLoot()
 	if (self.LootCount() >= self.MaxCaches) then return false end -- dont even bother running any checks if theres already too much loot
-		if (LootData != "") then
+	if table.Count(self.LootSpawnpoints) == 0 then return end
 
-		local LootList = string.Explode("\n", LootData)
-		for k, v in RandomPairs(LootList) do
-			if (self.LootCount() >= self.MaxCaches) then break end
-			local ent
+	local spawned = 0
+	for k, v in RandomPairs(self.LootSpawnpoints) do
+		if (self.LootCount() >= self.MaxCaches) then break end
+		local ent
 
-			local Booty = string.Explode(";", v)
-			local pos = util.StringToType(Booty[1], "Vector")
-			local ang = util.StringToType(Booty[2], "Angle")
-			local rng = math.Rand(0,300)
+		local pos = v[1]
+		local ang = v[2]
 
-			if rng < 100 then
-				if rng > 14 then
-					self:SpawnLootCache("loot_cache", pos, ang)
-				elseif rng > 2 then
-					self:SpawnLootCache("loot_cache_weapon", pos, ang)
-				else
-					self:SpawnLootCache("loot_cache_special", pos, ang)
-				end
-			end
+		local rng = math.Rand(0,100)
+		if rng > 14 then
+			self:SpawnLootCache("loot_cache", pos, ang)
+		elseif rng > 2 then
+			self:SpawnLootCache("loot_cache_weapon", pos, ang)
+		else
+			self:SpawnLootCache("loot_cache_special", pos, ang)
 		end
+		spawned = spawned + 1
+		if spawned >= 3 then break end
 	end
 end
 

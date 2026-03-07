@@ -475,12 +475,14 @@ function GM:Initialize()
 	self.DebugLogs = {}
 	self.StatTracker = {}
 
-	ZombieData = ""
-	DropData = ""
-	LootData = ""
-	TaskDealersData = TaskDealersData or ""
-	TradersData = ""
-	self.PlayerSpawnsData = self.PlayerSpawnsData or ""
+	self.ServerInitOsTime = os.time()
+
+	self.ZombieSpawnpoints = {}
+	self.AirdropSpawnpoints = {}
+	self.LootSpawnpoints = {}
+	self.TaskDealerSpawnpoints = {}
+	self.TraderSpawnpoints = {}
+	self.PlayerSpawnpoints = {}
 
 	SetGlobalBool("GM.ZombieSpawning", true)
 

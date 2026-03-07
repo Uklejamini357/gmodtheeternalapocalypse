@@ -54,7 +54,7 @@ i = GM:CreateItem("weapon_tea_axe", {
 })
 
 i = GM:CreateItem("weapon_tea_wrench", {
-    Cost = 800,
+    Cost = 1250,
     Model = "models/props_c17/tools_wrench01a.mdl",
     Weight = 0.47,
     Supply = 0,
@@ -87,7 +87,7 @@ i = GM:CreateItem("weapon_tea_scrapsword", {
 })
 
 i = GM:CreateItem("weapon_tea_g20", {
-    Cost = 450,
+    Cost = 850,
     Model = "models/weapons/w_pist_glock18.mdl",
     Weight = 1.18,
     Supply = 0,
@@ -98,7 +98,7 @@ i = GM:CreateItem("weapon_tea_g20", {
 })
 
 i = GM:CreateItem("weapon_tea_57", {
-    Cost = 600,
+    Cost = 1000,
     Model = "models/weapons/w_pist_fiveseven.mdl",
     Weight = 0.82,
     Supply = 0,
@@ -109,7 +109,7 @@ i = GM:CreateItem("weapon_tea_57", {
 })
 
 i = GM:CreateItem("weapon_tea_u45", {
-    Cost = 700,
+    Cost = 1100,
     Model = "models/weapons/w_pist_usp.mdl",
     Weight = 1.1,
     Supply = 0,
@@ -120,7 +120,7 @@ i = GM:CreateItem("weapon_tea_u45", {
 })
 
 i = GM:CreateItem("weapon_tea_warren50", {
-    Cost = 850,
+    Cost = 1650,
     Model = "models/weapons/w_pist_deagle.mdl",
     Weight = 1.73,
     Supply = 0,
@@ -164,7 +164,7 @@ i = GM:CreateItem("weapon_tea_satan", {
 })
 
 i = GM:CreateItem("weapon_tea_mp11", {
-    Cost = 2250,
+    Cost = 2750,
     Model = "models/weapons/w_smg_mac10.mdl",
     Weight = 2.85,
     Supply = 0,
@@ -175,7 +175,7 @@ i = GM:CreateItem("weapon_tea_mp11", {
 })
 
 i = GM:CreateItem("weapon_tea_rg900", {
-    Cost = 2500,
+    Cost = 3000,
     Model = "models/weapons/w_smg_tmp.mdl",
     Weight = 2.9,
     Supply = 0,
@@ -186,7 +186,7 @@ i = GM:CreateItem("weapon_tea_rg900", {
 })
 
 i = GM:CreateItem("weapon_tea_k5a", {
-    Cost = 3250,
+    Cost = 3500,
     Model = "models/weapons/w_smg_mp5.mdl",
     Weight = 3,
     Supply = 0,
@@ -197,7 +197,7 @@ i = GM:CreateItem("weapon_tea_k5a", {
 })
 
 i = GM:CreateItem("weapon_tea_stinger", {
-    Cost = 2800,
+    Cost = 3200,
     Model = "models/weapons/w_smg1.mdl",
     Weight = 3.85,
     Supply = 0,
@@ -208,7 +208,7 @@ i = GM:CreateItem("weapon_tea_stinger", {
 })
 
 i = GM:CreateItem("weapon_tea_bosch", {
-    Cost = 3750,
+    Cost = 4000,
     Model = "models/weapons/w_sten.mdl",
     Weight = 3.45,
     Supply = 0,

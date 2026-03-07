@@ -298,6 +298,7 @@ end
 /*---------------------------------------------------------
    Name: SWEP:GetViewModelPosition()
    Desc: Allows you to re-position the view model.
+   rubat fucked it up wtf. weapon feels too close and obstructs view while aiming.
 ---------------------------------------------------------*/
 local IRONSIGHT_TIME = 0.2
 
@@ -354,7 +355,7 @@ function SWEP:GetViewModelPosition(pos, ang)
 		self.fIronTime = CurTime()
 		
 		if bIron then
-			self.SwayScale 	= 0.3
+			self.SwayScale 	= 0.2
 			self.BobScale 	= 0.1
 		else 
 			self.SwayScale 	= 1.0
@@ -369,28 +370,29 @@ function SWEP:GetViewModelPosition(pos, ang)
 		return pos, ang
 	end
 	
-	local Mul = 1.0
-	
+	local Mul = 1
 	if fIronTime > CurTime() - IRONSIGHT_TIME then
 		Mul = math.Clamp((CurTime() - fIronTime) / IRONSIGHT_TIME, 0, 1)
 
-		if (!bIron) then Mul = 1 - Mul end
+		if !bIron then
+			Mul = 1 - Mul
+		end
 	end
 
-	if (self.IronSightsAng) then
+	if self.IronSightsAng then
 		ang = ang * 1
-		ang:RotateAroundAxis(ang:Right(), 	self.IronSightsAng.x * Mul)
-		ang:RotateAroundAxis(ang:Up(), 	self.IronSightsAng.y * Mul)
+		ang:RotateAroundAxis(ang:Right(), self.IronSightsAng.x * Mul)
+		ang:RotateAroundAxis(ang:Up(), self.IronSightsAng.y * Mul)
 		ang:RotateAroundAxis(ang:Forward(), self.IronSightsAng.z * Mul)
 	end
 	
-	local Right 	= ang:Right()
-	local Up 		= ang:Up()
-	local Forward 	= ang:Forward()
+	local Right = ang:Right()
+	local Up = ang:Up()
+	local Forward = ang:Forward()
 	
 	pos = pos + self.IronSightsPos.x * Right * Mul
 	pos = pos + self.IronSightsPos.y * Forward * Mul
-	pos = pos + self.IronSightsPos.z * Up * Mul 
+	pos = pos + self.IronSightsPos.z * Up * Mul
 	pos = pos + ironsightoffset
 	
 	return pos, ang
@@ -404,7 +406,7 @@ end
 SWEP.FOVMul = 1
 function SWEP:TranslateFOV(fov)
 	local bIron = self.Weapon:GetDTBool(1)	
-	if bIron then 
+	if bIron then
 		self.FOVMul = math.Clamp(self.FOVMul + (0.65 - self.FOVMul) * FrameTime() * (1 / IRONSIGHT_TIME),0,1)
 	else
 		self.FOVMul = math.Clamp(self.FOVMul + (1 - self.FOVMul) * FrameTime() * (1 / IRONSIGHT_TIME),0,1)
