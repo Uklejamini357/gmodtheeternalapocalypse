@@ -497,6 +497,8 @@ function GM:Initialize()
 	self:LoadPlayerSpawns()
 	self:LoadTaskDealers()
 	self:CheckSpawnChanceErrors()
+
+	self:SetInflationMeter(self:CalcInflationMeter())
 end
 
 function GM:OnGamemodeLoaded()
@@ -518,6 +520,8 @@ function GM:InitPostEntity()
 	RunConsoleCommand("M9KDisablePenetration", "1") --they are op with penetration, time to nerf them again (unless you want them to remain the same, remove or comment this line)
 	RunConsoleCommand("sv_defaultdeployspeed", "1") --so that users don't just switch weapons too quickly
 
+	self:SpawnTraders()
+	self:SpawnTaskDealers()
 	self:MapReInit()
 end
 
@@ -629,10 +633,9 @@ end
 
 function GM:PostCleanupMap()
 	self:MapReInit()
-	timer.Simple(0.5, function()
-		self:SpawnTraders()
-		self:SpawnTaskDealers()
-	end)
+
+	self:SpawnTraders()
+	self:SpawnTaskDealers()
 end
 
 function GM:OnNPCKilled(ent, attacker, inflictor, dmginfo)

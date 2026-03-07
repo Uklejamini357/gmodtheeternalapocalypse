@@ -368,6 +368,7 @@ function meta:GetItemBuyCostMul(item)
 	if itemtbl.IgnoreCostModifiers then return 1 end
 
 	local mul = 1 - ((self.StatBarter or 0) * 0.015)
+	mul = mul * (1 + GAMEMODE:GetInflationBuyCostMul())
 
 	return itemtbl.IgnoreBuyCostMulLimit and mul or math.max(GAMEMODE.MinBuyCostMul, mul)
 end
@@ -384,6 +385,7 @@ function meta:GetItemSellCostMul(item)
 	if itemtbl.IgnoreCostModifiers then return 1 end
 
 	local mul = 0.2 + ((self.StatBarter or 0) * 0.005)
+	mul = mul * (1 + GAMEMODE:GetInflationSellCostMul())
 
 	return itemtbl.IgnoreSellCostMulLimit and mul or math.max(GAMEMODE.MaxSellCostMul, mul)
 end

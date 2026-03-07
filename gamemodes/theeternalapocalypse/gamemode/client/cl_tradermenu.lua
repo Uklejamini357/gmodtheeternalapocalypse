@@ -141,7 +141,7 @@ function GM:TraderMenu()
 	local buypanel = {}
 	for i=1,6 do
 		if i == ITEMCATEGORY_JUNK then continue end -- fuck that
-		buypanel[i] = vgui.Create("DPanelList")
+		buypanel[i] = vgui.Create("DPanelList", TraderFrame)
 		buypanel[i]:SetSize(wide-110, tall-65)
 		buypanel[i]:SetPos(5, 25)
 		buypanel[i]:EnableVerticalScrollbar(true)
@@ -573,12 +573,18 @@ function GM:TraderMenu()
 
 
 
-	PropertySheet:AddSheet(translate.Get("items_category_1"), buypanel[i], "icon16/ammo_three.png", false, false, translate.Get("items_category_1_d"))
-	PropertySheet:AddSheet(translate.Get("items_category_2"), buypanel[i], "icon16/box.png", false, false, translate.Get("items_category_2_d"))
-	PropertySheet:AddSheet(translate.Get("items_category_3"), buypanel[i], "icon16/gun.png", false, false, translate.Get("items_category_3_d"))
-	PropertySheet:AddSheet(translate.Get("items_category_4"), buypanel[i], "icon16/shield.png", false, false, translate.Get("items_category_4_d"))
-	PropertySheet:AddSheet(translate.Get("items_category_5"), buypanel[i], "icon16/bin.png", false, false, translate.Get("items_category_5_d"))
-	PropertySheet:AddSheet(translate.Get("items_category_6"), buypanel[i], "icon16/basket.png", false, false, translate.Get("items_category_6_d"))
+	local icons = {
+		"icon16/ammo_three.png",
+		"icon16/box.png",
+		"icon16/gun.png",
+		"icon16/shield.png",
+		"icon16/bin.png",
+		"icon16/basket.png"
+	}
+	for i=1,#buypanel do
+		if !buypanel[i] then continue end
+		PropertySheet:AddSheet(translate.Get("items_category_"..i), buypanel[i], icons[i], false, false, translate.Get("items_category_"..i.."_d"))
+	end
 	PropertySheet:AddSheet("My Items", SellPanel, "icon16/money_dollar.png", false, false, "Sell your items that you don't need for cash")
 	PropertySheet:AddSheet("Item Vault", VaultPanel, "icon16/building.png", false, false, "Store your stuff that you don't need")
 /*

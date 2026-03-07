@@ -107,7 +107,7 @@ GM.ServerRules = {
 --[[Adjust overall gameplay difficulty. Higher difficulty means higher zombie HP and damage along with increased XP and money gain too)
 
 Basic		-	DIFFICULTY_GAMEPLAY_BASIC
-Normal		-	DIFFICULTY_GAMEPLAY_NORMAL
+Normal		-	DIFFICULTY_GAMEPLAY_NORMAL (default)
 Advanced	-	DIFFICULTY_GAMEPLAY_ADVANCED
 Challenging	-	DIFFICULTY_GAMEPLAY_CHALLENGING
 Ultimate	-	DIFFICULTY_GAMEPLAY_ULTIMATE
@@ -125,7 +125,7 @@ Make economy more difficult (The higher the difficulty, the higher buy prices an
 Also grants more XP if another variable is enabled.
 
 Easy		- DIFFICULTY_ECONOMY_EASY
-Standard	- DIFFICULTY_ECONOMY_STANDARD
+Standard	- DIFFICULTY_ECONOMY_STANDARD (default)
 Difficult	- DIFFICULTY_ECONOMY_DIFFICULT
 Complex		- DIFFICULTY_ECONOMY_COMPLEX
 Harsh		- DIFFICULTY_ECONOMY_HARSH

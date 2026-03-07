@@ -114,9 +114,6 @@ function GM:SpawnTaskDealers()
 		ent:Activate()
 	end
 end
-timer.Simple(1, function()
-	gamemode.Call("SpawnTaskDealers")
-end)
 
 function GM:AddTaskDealer(ply, cmd, args)
 	if !SuperAdminCheck(ply) then 

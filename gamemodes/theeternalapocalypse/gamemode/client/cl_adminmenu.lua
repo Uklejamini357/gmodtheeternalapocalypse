@@ -5,6 +5,7 @@ local last_cursor_x,last_cursor_y
 
 function GM:AdminMenu()
 	surface.PlaySound("buttons/button24.wav")
+	local pl = LocalPlayer()
 
 	local function RefreshPanel()
 		for id, line in ipairs(PlayerListView:GetLines()) do
@@ -16,7 +17,7 @@ function GM:AdminMenu()
 			pos.x = math.Round(pos.x)
 			pos.y = math.Round(pos.y)
 			pos.z = math.Round(pos.z)
-			local line = PlayerListView:AddLine(v:EntIndex(), v:Nick(), v:SteamID(), pos.x.."  "..pos.y.."  "..pos.z, math.Round(LocalPlayer():GetPos():Distance(v:GetPos())), v:GetUserGroup(), team.GetName(v:Team()), v:GetTEALevel(), v:GetTEAPrestige())
+			local line = PlayerListView:AddLine(v:EntIndex(), v:Nick(), v:SteamID(), pos.x.."  "..pos.y.."  "..pos.z, math.Round(pl:GetPos():Distance(v:GetPos())), v:GetUserGroup(), team.GetName(v:Team()), v:GetTEALevel(), v:GetTEAPrestige())
 			line.OnRightClick = function()
 				local derma = DermaMenu()
 				derma:AddOption("In progress!!", function() end)
@@ -453,14 +454,14 @@ function GM:AdminMenu()
 	CheckWeight:SetPos(400, 5)
 	CheckWeight:SetColor(Color(205,205,205,255))
 	CheckWeight:SetFont("TEA.HUDFontSmall")
-	CheckWeight:SetText(translate.Format("inv_weight", LocalPlayer():CalculateWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWalkWeight(), WEIGHT_UNIT))
+	CheckWeight:SetText(translate.Format("inv_weight", pl:CalculateWeight(), WEIGHT_UNIT, pl:CalculateMaxWeight(), WEIGHT_UNIT, pl:CalculateMaxWalkWeight(), WEIGHT_UNIT))
 	CheckWeight:SizeToContents()
 	CheckWeight.Think = function(this)
-		local changetxt = translate.Format("inv_weight", LocalPlayer():CalculateWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWeight(), WEIGHT_UNIT, LocalPlayer():CalculateMaxWalkWeight(), WEIGHT_UNIT)
+		local changetxt = translate.Format("inv_weight", pl:CalculateWeight(), WEIGHT_UNIT, pl:CalculateMaxWeight(), WEIGHT_UNIT, pl:CalculateMaxWalkWeight(), WEIGHT_UNIT)
 		if changetxt == this:GetText() then return end
 		this:SetText(changetxt)
 		this:SizeToContents()
-		this:SetTextColor(LocalPlayer():CalculateWeight() >= LocalPlayer():CalculateMaxWalkWeight() and Color(255,0,0) or LocalPlayer():CalculateWeight() >= LocalPlayer():CalculateMaxWeight() and Color(255,255,0) or Color(255,255,255))
+		this:SetTextColor(pl:CalculateWeight() >= pl:CalculateMaxWalkWeight() and Color(255,0,0) or pl:CalculateWeight() >= pl:CalculateMaxWeight() and Color(255,255,0) or Color(255,255,255))
 	end
 	]]
 
@@ -568,7 +569,7 @@ function GM:AdminMenu()
 			end
 --			GiveButton.DoDoubleClick = GiveButton.DoClick
 
-			if TEADevCheck(LocalPlayer()) and cat == ITEMCATEGORY_ARMOR then
+			if TEADevCheck(pl) and cat == ITEMCATEGORY_ARMOR then
 				local EquipButton = vgui.Create("DButton", ItemBackground)
 				EquipButton:SetSize(60, 15)
 				EquipButton:SetPos(80, 60)
@@ -586,8 +587,8 @@ function GM:AdminMenu()
 			end
 		parent:AddItem(ItemBackground)
 		end
-		if TEADevCheck(LocalPlayer()) then
-			if TEADevCheck(LocalPlayer()) and cat == ITEMCATEGORY_ARMOR then
+		if TEADevCheck(pl) then
+			if TEADevCheck(pl) and cat == ITEMCATEGORY_ARMOR then
 				local UnequipButton = vgui.Create("DButton", SpawnMenuProperties)
 				UnequipButton:SetSize(100, 20)
 				UnequipButton:SetPos(860, 5)
