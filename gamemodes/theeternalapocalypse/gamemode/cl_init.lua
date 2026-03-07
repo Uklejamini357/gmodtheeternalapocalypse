@@ -45,7 +45,6 @@ include("minigames/cl_init.lua")
 
 local death_sound_volume = 0
 local death_sound_volume_s = 0
-local death_sound_current
 SelectedProp = SelectedProp or "models/props_debris/wood_board04a.mdl" -- need to set this to something here to avoid a massive error spew
 
 function ChooseProp(mdl)
@@ -69,12 +68,17 @@ end
 function GM:LocalPlayerDeath(attacker)
 	local me = LocalPlayer()
 
-	death_sound_volume = tonumber(self.DeathSoundEffectVolume)
-	death_sound_volume_s = 0.015 * death_sound_volume
---	death_sound_current = Sound(GetConVar("tea_cl_deathsound"):GetString())
-	death_sound_current = CreateSound(me, Sound(self.DeathSound))
+	me.PlayerDead = true
+
 	if self.DeathSoundEffectEnabled then
-		death_sound_current:Play()
+		self.ActiveDeathSound = CreateSound(me, Sound(self.DeathSound))
+		self.ActiveDeathSound:ChangeVolume(self.DeathSoundEffectVolume)
+		self.ActiveDeathSound:Play()
+	end
+
+	if self.AmbientMusic and self.AmbientMusic:IsPlaying() then
+		self.AmbientMusic:FadeOut(1)
+		self.NextAmbientMusic = CurTime() + 5
 	end
 
 	self.tea_screenfadeout = 0
@@ -94,10 +98,6 @@ function GM:Think()
 	if !me:IsValid() then return end
 	local frametime = RealFrameTime()
 
-	if me:Alive() then
-		self.LastAliveTime = CurTime()
-	end
-
 	if me:IsSleeping() then
 		self.SleepVisionAffect = math.Approach(self.SleepVisionAffect, 1, 0.5*frametime)
 	elseif me:Alive() then
@@ -112,21 +112,15 @@ function GM:Think()
 		self.WraithAlpha = self.WraithAlpha - (frametime * 30)
 	end
 
-	if self.DeathSoundEffectEnabled and death_sound_current and death_sound_current:IsPlaying() then
-		if me:Alive() then
-			if death_sound_volume > 0 then
-				death_sound_current:ChangeVolume(death_sound_volume)
-			else
-				death_sound_current:Stop()
-			end
+	if self.DeathSoundEffectEnabled and self.ActiveDeathSound and self.ActiveDeathSound:IsPlaying() then
+		if !me.PlayerDead and me:Alive() then
+			self.ActiveDeathSound:FadeOut(1)
+			self.ActiveDeathSound = nil
+			self.NextAmbientMusic = CurTime() + 15
 		end
-	elseif not self.DeathSoundEffectEnabled and death_sound_current then
-		death_sound_volume = 0
-		death_sound_current:Stop()
 	end
 
 	if me:Alive() then
-		death_sound_volume = death_sound_volume - frametime*death_sound_volume_s
 		self.tea_screenfadeout = math.Clamp(self.tea_screenfadeout - frametime * (3 * 1.175), 0, 255)
 		self.tea_deathtext_a = math.Clamp(self.tea_deathtext_a - frametime * (5 * 1.175), 0, 255)
 		self.tea_survivalstats_a = math.Clamp(self.tea_survivalstats_a - frametime * (5 * 1.175), 0, 255)
@@ -174,17 +168,37 @@ function GM:Think()
 	if NextSecond < CurTime() then
 		NextSecond = CurTime() + 1
 
-		if self.AmbientMusicEnabled and (!self.NextAmbientMusic or self.NextAmbientMusic < CurTime() or self.AmbientMusic and !self.AmbientMusic:IsPlaying()) then
+		if self.AmbientMusicEnabled and me:Alive() and (!self.NextAmbientMusic or self.NextAmbientMusic < CurTime() or self.AmbientMusic and !self.AmbientMusic:IsPlaying())  then
 			if self.AmbientMusic and self.AmbientMusic:IsPlaying() then
 				self.AmbientMusic:Stop()
 			end
 
-			local snd = "music/ambient/klangsegler_dark_valley.mp3"
-			self.AmbientMusic = CreateSound(me, "#"..snd)
-			self.AmbientMusic:Play()
+			local files = file.Find("sound/music/ambient/*.mp3", "GAME")
 
-			self.NextAmbientMusic = CurTime() + SoundDuration(snd) + 15
+			if self.LastAmbientMusic then -- tries not to repeat last music
+				table.RemoveByValue(files, self.LastAmbientMusic)
+			end
+
+			local snd = table.Random(files)
+			local sndfile = "music/ambient/"..snd
+			self.AmbientMusic = CreateSound(me, "#"..sndfile)
+			self.AmbientMusic:PlayEx(0.3, 100)
+
+			self.LastAmbientMusic = snd
+			if self:GetDebug() >= DEBUGGING_NORMAL then
+				PrintTable(files)
+				print("Playing "..snd..". Duration: "..SoundDuration(sndfile).."s")
+			end
+
+			self.NextAmbientMusic = CurTime() + SoundDuration(sndfile) + 15
 		end
+	end
+
+	if me:Alive() then
+		self.LastAliveTime = CurTime()
+		me.PlayerDead = nil
+	else
+		me.PlayerDead = true
 	end
 end
 
@@ -327,7 +341,6 @@ function GM:InitPostEntity()
 
 	local me = LocalPlayer()
 	self:InitializeLocalPlayer()
-	death_sound_current = CreateSound(me, Sound(self.DeathSound))
 
 	self.HasInitialized = true
 	self:LoadMainMenu()
@@ -361,7 +374,7 @@ function GM:OnReloaded()
 	timer.Simple(1, function()
 		RunConsoleCommand("refresh_inventory")
 	end)
-	death_sound_current = CreateSound(LocalPlayer(), Sound(self.DeathSound))
+
 	print(self.Name.." gamemode files reloaded")
 end
 

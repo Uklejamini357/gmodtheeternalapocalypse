@@ -241,7 +241,7 @@ GM:CreateItem("m9k_an94", {
     Model = "models/weapons/w_rif_an_94.mdl",
     Weight = 4.4,
     Supply = -1,
-    Rarity = RARITY_MYTHIC,
+    Rarity = RARITY_LEGENDARY,
     Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "m9k_an94"
@@ -377,7 +377,7 @@ GM:CreateItem("m9k_ares_shrike", {
     Model = "models/weapons/w_ares_shrike.mdl",
     Weight = 9.85,
     Supply = -1,
-    Rarity = RARITY_MYTHIC,
+    Rarity = RARITY_LEGENDARY,
     Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "m9k_ares_shrike"
@@ -410,7 +410,7 @@ GM:CreateItem("m9k_m60", {
     Model = "models/weapons/w_m60_machine_gun.mdl",
     Weight = 9.8,
     Supply = 1,
-    Rarity = RARITY_LEGENDARY,
+    Rarity = RARITY_MYTHIC,
     Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "m9k_m60"
@@ -421,7 +421,7 @@ GM:CreateItem("m9k_pkm", {
     Model = "models/weapons/w_mach_russ_pkm.mdl",
     Weight = 8.5,
     Supply = 1,
-    Rarity = RARITY_MYTHIC,
+    Rarity = RARITY_LEGENDARY,
     Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "m9k_pkm"
@@ -491,7 +491,7 @@ GM:CreateItem("m9k_spas12", {
     Model = "models/weapons/w_spas_12.mdl",
     Weight = 4.2,
     Supply = -1,
-    Rarity = RARITY_MYTHIC,
+    Rarity = RARITY_LEGENDARY,
     Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "m9k_spas12"
@@ -502,7 +502,7 @@ GM:CreateItem("m9k_striker12", {
     Model = "models/weapons/w_striker_12g.mdl",
     Weight = 3.66,
     Supply = -1,
-    Rarity = RARITY_MYTHIC,
+    Rarity = RARITY_LEGENDARY,
     Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "m9k_striker12"
@@ -539,7 +539,7 @@ GM:CreateItem("m9k_barret_m82", {
     Model = "models/weapons/w_barret_m82.mdl",
     Weight = 11.85,
     Supply = -1,
-    Rarity = RARITY_LEGENDARY,
+    Rarity = RARITY_MYTHIC,
     Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "m9k_barret_m82"
@@ -605,7 +605,7 @@ GM:CreateItem("m9k_psg1", {
     Model = "models/weapons/w_hk_psg1.mdl",
     Weight = 8.28,
     Supply = -1,
-    Rarity = RARITY_MYTHIC,
+    Rarity = RARITY_LEGENDARY,
     Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "m9k_psg1"

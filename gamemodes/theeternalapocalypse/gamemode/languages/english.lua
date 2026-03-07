@@ -54,8 +54,6 @@ LANG.zspawnoff = "Zombie spawning disabled"
 LANG.ver_1 = "Ver. %s"
 LANG.ver_2 = "Ver. %s (Debug Mode)"
 LANG.ver_3 = "Ver. %s (Debug Mode [Advanced])"
-LANG.ver_4 = "Ver. %s (Debug Mode [Experimental])"
-LANG.ver_5 = "Ver. %s (Debug Mode [True Debug Mode])"
 LANG.level_prestige = "Level: %d / Prestige: %d"
 
 LANG.server_restart_in = "Server restarts in: %s"

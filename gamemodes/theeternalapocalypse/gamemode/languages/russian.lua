@@ -47,8 +47,6 @@ LANG.zspawnoff = "Появление зомби отключено"
 LANG.ver_1 = "Вер. %s"
 LANG.ver_2 = "Вер. %s (Режим отладки)"
 LANG.ver_3 = "Вер. %s (Режим отладки [Продвинутый])"
-LANG.ver_4 = "Вер. %s (Режим отладки [Экспериментальный])"
-LANG.ver_5 = "Вер. %s (Режим отладки [Абсолютный режим отладки])"
 LANG.level_prestige = "%d-й уровень / %d-й престиж"
 
 LANG.server_restart_in = "Server restarts in: %s"

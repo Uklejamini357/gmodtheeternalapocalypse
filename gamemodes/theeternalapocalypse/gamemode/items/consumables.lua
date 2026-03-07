@@ -446,7 +446,7 @@ GM:CreateItem("item_burger", {
     Model = "models/food/burger.mdl",
     Weight = 0.4,
     Supply = -1,
-    Rarity = RARITY_MYTHIC,
+    Rarity = RARITY_LEGENDARY,
     Category = ITEMCATEGORY_SUPPLIES,
 	ItemType = ITEMTYPE_FOOD,
 

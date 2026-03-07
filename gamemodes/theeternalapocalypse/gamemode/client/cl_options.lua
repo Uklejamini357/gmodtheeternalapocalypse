@@ -130,14 +130,19 @@ function GM:MakeOptions()
 	list:AddItem(EasyLabel(pan, "HUD Style", "TEA.HUDFontSmall", color_white))
 	local dropdown = vgui.Create("DComboBox", pan)
 	dropdown:SetMouseInputEnabled(true)
-	dropdown:AddChoice("Classic HUD Style")
-	dropdown:AddChoice("After The End Style")
-	dropdown:AddChoice("The Eternal Apocalypse Style")
+	for _,hud in pairs(self.HUDs) do
+		dropdown:AddChoice(hud.Name)
+	end
 	dropdown.OnSelect = function(me, index, value, data)
-		RunConsoleCommand("tea_cl_hudstyle", value == "The Eternal Apocalypse Style" and 2 or value == "Classic HUD Style" and 1 or 0)
+		for _,hud in pairs(self.HUDs) do
+			if hud.Name == value then
+				RunConsoleCommand("tea_cl_hudstyle", hud.ID)
+				break
+			end
+		end
 	end
 	local convarvalue = GetConVar("tea_cl_hudstyle"):GetInt()
-	dropdown:SetText(convarvalue == 2 and "The Eternal Apocalypse Style" or convarvalue == 1 and "Classic HUD Style" or "After The End Style")
+	dropdown:SetText(self.HUDs[self.HUDStyle].Name)
 	dropdown:SetTextColor(color_black)
 	list:AddItem(dropdown)
 

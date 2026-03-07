@@ -160,6 +160,10 @@ if CLIENT then
 	cvars.AddChangeCallback("tea_cl_deathsfx", function(cvar,old,new)
 		GAMEMODE.DeathSoundEffectEnabled = tobool(new)
 		GAMEMODE:OnConVarChanged(cvar, old, new)
+
+		if GAMEMODE.ActiveDeathSound and !GAMEMODE.DeathSoundEffectEnabled then
+			GAMEMODE.ActiveDeathSound:Stop()
+		end
 	end, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_cl_deathsfx")
 
 	GM.DeathSoundEffectVolume = CreateClientConVar("tea_cl_deathsfx_vol", 1, true, true, "How loud should be death sound effect?", 0, 1):GetFloat()
@@ -282,11 +286,24 @@ if CLIENT then
 		GAMEMODE:OnConVarChanged(cvar, old, new)
 	end, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_cl_damagenumber_lifetime")
 
-	GM.ConfirmationSellItems = CreateClientConVar("tea_cl_confirmation_sellitems", 1, true, false, "Popup to confirm when selling an item", 0, 1):GetBool()
-	cvars.AddChangeCallback("tea_cl_confirmation_sellitems", function(cvar,old,new)
-		GAMEMODE.ConfirmationSellItems = tobool(new)
+	-- GM.ConfirmationSellItems = CreateClientConVar("tea_cl_confirmation_sellitems", 1, true, false, "Popup to confirm when selling an item", 0, 1):GetBool()
+	-- cvars.AddChangeCallback("tea_cl_confirmation_sellitems", function(cvar,old,new)
+	-- 	GAMEMODE.ConfirmationSellItems = tobool(new)
+	-- 	GAMEMODE:OnConVarChanged(cvar, old, new)
+	-- end, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_cl_confirmation_sellitems")
+
+	GM.AmbientMusicEnabled = CreateClientConVar("tea_cl_ambientmusic", 0, true, false, "Ambient music", 0, 1):GetBool()
+	cvars.AddChangeCallback("tea_cl_ambientmusic", function(cvar,old,new)
+		GAMEMODE.AmbientMusicEnabled = tobool(new)
+
+		if !GAMEMODE.AmbientMusicEnabled and GAMEMODE.AmbientMusic then
+			GAMEMODE.AmbientMusic:Stop()
+			GAMEMODE.AmbientMusic = nil
+			GAMEMODE.NextAmbientMusic = 0
+		end
+
 		GAMEMODE:OnConVarChanged(cvar, old, new)
-	end, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_cl_confirmation_sellitems")
+	end, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_cl_ambientmusic")
 
 else
 

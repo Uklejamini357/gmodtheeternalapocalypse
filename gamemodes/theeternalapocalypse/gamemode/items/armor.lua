@@ -398,7 +398,7 @@ GM:CreateItem("item_armor_military_black", {
 	Model = "models/player/stalker/military_spetsnaz_black.mdl",
 	Weight = 15,
 	Supply = 0,
-	Rarity = RARITY_MYTHIC,
+	Rarity = RARITY_LEGENDARY,
 	Category = ITEMCATEGORY_ARMOR,
     ItemType = ITEMTYPE_ARMOR,
 	ArmorStats = {
@@ -417,7 +417,7 @@ GM:CreateItem("item_armor_exo", {
 	Model = "models/player/stalker/loner_exo.mdl",
 	Weight = 25,
 	Supply = 0,
-	Rarity = RARITY_MYTHIC,
+	Rarity = RARITY_LEGENDARY,
 	Category = ITEMCATEGORY_ARMOR,
     ItemType = ITEMTYPE_ARMOR,
 	ArmorStats = {
@@ -436,7 +436,7 @@ GM:CreateItem("item_armor_exo_merc", {
 	Model = "models/player/stalker/merc_exo.mdl",
 	Weight = 23.75,
 	Supply = 0,
-	Rarity = RARITY_LEGENDARY,
+	Rarity = RARITY_MYTHIC,
 	Category = ITEMCATEGORY_ARMOR,
     ItemType = ITEMTYPE_ARMOR,
 	ArmorStats = {
@@ -455,7 +455,7 @@ GM:CreateItem("item_armor_exo_dolg", {
 	Model = "models/player/stalker/duty_exo.mdl",
 	Weight = 27.5,
 	Supply = 0,
-	Rarity = RARITY_LEGENDARY,
+	Rarity = RARITY_MYTHIC,
 	Category = ITEMCATEGORY_ARMOR,
     ItemType = ITEMTYPE_ARMOR,
 	ArmorStats = {
@@ -474,7 +474,7 @@ GM:CreateItem("item_armor_exo_svoboda", {
 	Model = "models/player/stalker/freedom_exo.mdl",
 	Weight = 22.5,
 	Supply = 0,
-	Rarity = RARITY_MYTHIC,
+	Rarity = RARITY_LEGENDARY,
 	Category = ITEMCATEGORY_ARMOR,
     ItemType = ITEMTYPE_ARMOR,
 	ArmorStats = {
@@ -493,7 +493,7 @@ GM:CreateItem("item_armor_exo_monolith", {
 	Model = "models/player/stalker/monolith_exo.mdl",
 	Weight = 25,
 	Supply = 0,
-	Rarity = RARITY_LEGENDARY,
+	Rarity = RARITY_MYTHIC,
 	Category = ITEMCATEGORY_ARMOR,
     ItemType = ITEMTYPE_ARMOR,
 	ArmorStats = {
@@ -579,7 +579,7 @@ GM:CreateItem("item_armor_army_seva", {
 	Model = "models/stalkertnb/beri_seva.mdl",
 	Weight = 13,
 	Supply = 0,
-	Rarity = RARITY_MYTHIC,
+	Rarity = RARITY_LEGENDARY,
 	Category = ITEMCATEGORY_ARMOR,
     ItemType = ITEMTYPE_ARMOR,
 	ArmorStats = {
@@ -601,7 +601,7 @@ GM:CreateItem("item_armor_stalker_seva", {
 	Model = "models/stalkertnb/seva_lone.mdl",
 	Weight = 10,
 	Supply = 0,
-	Rarity = RARITY_MYTHIC,
+	Rarity = RARITY_LEGENDARY,
 	Category = ITEMCATEGORY_ARMOR,
     ItemType = ITEMTYPE_ARMOR,
 	ArmorStats = {
@@ -623,7 +623,7 @@ GM:CreateItem("item_armor_svoboda_seva", {
 	Model = "models/stalkertnb/seva_free.mdl",
 	Weight = 10,
 	Supply = 0,
-	Rarity = RARITY_MYTHIC,
+	Rarity = RARITY_LEGENDARY,
 	Category = ITEMCATEGORY_ARMOR,
     ItemType = ITEMTYPE_ARMOR,
 	ArmorStats = {
@@ -645,7 +645,7 @@ GM:CreateItem("item_armor_dolg_seva", {
 	Model = "models/stalkertnb/seva_duty.mdl",
 	Weight = 10,
 	Supply = 0,
-	Rarity = RARITY_MYTHIC,
+	Rarity = RARITY_LEGENDARY,
 	Category = ITEMCATEGORY_ARMOR,
     ItemType = ITEMTYPE_ARMOR,
 	ArmorStats = {
@@ -667,7 +667,7 @@ GM:CreateItem("item_armor_monolith_seva_heavy", {
 	Model = "models/stalkertnb/seva_monolith_heavy.mdl",
 	Weight = 16.5,
 	Supply = 0,
-	Rarity = RARITY_MYTHIC,
+	Rarity = RARITY_LEGENDARY,
 	Category = ITEMCATEGORY_ARMOR,
     ItemType = ITEMTYPE_ARMOR,
 	ArmorStats = {
@@ -689,7 +689,7 @@ GM:CreateItem("item_armor_exo_dolg_heavy", {
 	Model = "models/stalkertnb/exo_skat_duty_heavy.mdl",
 	Weight = 35,
 	Supply = 0,
-	Rarity = RARITY_LEGENDARY,
+	Rarity = RARITY_MYTHIC,
 	Category = ITEMCATEGORY_ARMOR,
     ItemType = ITEMTYPE_ARMOR,
 	ArmorStats = {
@@ -710,7 +710,7 @@ GM:CreateItem("item_armor_rad_svoboda", {
 	Model = "models/stalkertnb/rad_free.mdl",
 	Weight = 18,
 	Supply = 0,
-	Rarity = RARITY_LEGENDARY,
+	Rarity = RARITY_MYTHIC,
 	Category = ITEMCATEGORY_ARMOR,
     ItemType = ITEMTYPE_ARMOR,
 	ArmorStats = {
@@ -731,7 +731,7 @@ GM:CreateItem("item_armor_rad_monolith_boss", {
 	Model = "models/stalkertnb/rad_monoboss.mdl",
 	Weight = 23,
 	Supply = 0,
-	Rarity = RARITY_LEGENDARY,
+	Rarity = RARITY_MYTHIC,
 	Category = ITEMCATEGORY_ARMOR,
     ItemType = ITEMTYPE_ARMOR,
 	ArmorStats = {

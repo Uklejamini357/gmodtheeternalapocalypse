@@ -3,8 +3,8 @@ GM.AltName	= "After The End Reborn"
 GM.Author	= "Uklejamini"
 GM.Email	= ""
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.11.4a"
-GM.DateVer	= "24.08.2025" -- Follows the DD.MM.YYYY format.
+GM.Version	= "0.11.5 Pre-release"
+GM.DateVer	= "07.03.2026" -- Follows the DD.MM.YYYY format.
 GM.Credits = {
 	-- Assets
 	{"GSC Game World",			"For all the S.T.A.L.K.E.R. content",										""},
@@ -172,45 +172,45 @@ function GM:CheckItemRarity(rarity)
 	local tbl = {}
 
 	if rarity == 0 then
-		tbl.col = Color(155,155,155,255)
+		tbl.col = Color(155,155,155)
 		tbl.text = "Trash"
 	elseif rarity == 1 then
-		tbl.col = Color(205,205,205,255)
+		tbl.col = Color(205,205,205)
 		tbl.text = "Junk"
 	elseif rarity == 2 then
-		tbl.col = Color(230,230,230,255)
+		tbl.col = Color(230,230,230)
 		tbl.text = "Common"
 	elseif rarity == 3 then
-		tbl.col = Color(205,255,205,255)
+		tbl.col = Color(205,255,205)
 		tbl.text = "Uncommon"
 	elseif rarity == 4 then
-		tbl.col = Color(155,155,255,255)
+		tbl.col = Color(155,155,255)
 		tbl.text = "Rare"
 	elseif rarity == 5 then
-		tbl.col = Color(255,205,0,255)
+		tbl.col = Color(255,205,0)
 		tbl.text = "Super Rare"
 	elseif rarity == 6 then
-		tbl.col = Color(255,155,255,255)
+		tbl.col = Color(255,155,255)
 		tbl.text = "Epic"
 	elseif rarity == 7 then
-		tbl.col = Color(255,105,105,255)
-		tbl.text = "Mythic"
-	elseif rarity == 8 then
-		tbl.col = Color(255,105,255,255)
+		tbl.col = Color(255,130,251)
 		tbl.text = "Legendary"
+	elseif rarity == 8 then
+		tbl.col = Color(252,98,56)
+		tbl.text = "Mythic"
 	elseif rarity == 9 then
-		tbl.col = Color(math.abs(math.sin(SysTime()))*255,0,155,255)
+		tbl.col = Color(math.abs(math.sin(SysTime()))*255,0,155)
 		tbl.text = "Godly"
 		tbl.keeprefresh = true
 	elseif rarity == 10 then
-		tbl.col = Color(55,55,155+math.abs(math.sin(SysTime()))*100,255)
+		tbl.col = Color(55,55,155+math.abs(math.sin(SysTime()))*100)
 		tbl.text = "Event"
 		tbl.keeprefresh = true
 	elseif rarity == 11 then
-		tbl.col = Color(255,255,255,255)
+		tbl.col = Color(255,255,255)
 		tbl.text = "Unobtainable"
 	else
-		tbl.col = Color(96,96,96,255)
+		tbl.col = Color(96,96,96)
 		tbl.text = "Uncategorized"
 	end
 

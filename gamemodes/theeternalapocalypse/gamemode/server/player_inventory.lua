@@ -153,7 +153,7 @@ function GM:UseItem(ply, item, use, targetply)
 						ply:SelectWeapon(gun)
 					end
 				elseif ref.ArmorStats then
-					if ply.EquippedArmor == item then
+					if ply.EquippedArmor ~= "none" and ply.EquippedArmor == item then
 						ply:SendUseDelay(3, "Unequipping Armor...")
 						ply:EmitSound("npc/combine_soldier/zipline_hitground2.wav")
 						timer.Simple(3, function()
@@ -261,39 +261,37 @@ function GM:UseItem(ply, item, use, targetply)
 					GAMEMODE:SystemRemoveItem(ply, item, true)
 				end
 			else
-				local armor = ref.Category == ITEMCATEGORY_ARMOR
-				local hasmorethan1 = ply.Inventory[item] > 1
-				if armor and !hasmorethan1 and !timer.Exists("Plywantstodropequippedarmor"..ply:EntIndex()) and ply:GetNWString("ArmorType") == item then
-					ply:SendChat(translate.ClientFormat(ply, "warning_about_to_drop_equipped_armor", 10))
-					timer.Create("Plywantstodropequippedarmor"..ply:EntIndex(), 10, 1, function() end)
-					return false
-				end
-
-				GAMEMODE:SystemRemoveItem(ply, item, false)
-
-				local vStart, vForward = ply:GetShootPos(), ply:GetAimVector()
-				local tr = util.TraceLine({
-					start = vStart,
-					endpos = vStart + vForward * 70,
-					filter = ply
-				})
-				local ent = ents.Create("ate_droppeditem")
-				ent:SetPos(tr.HitPos)
-				ent:SetAngles(Angle(0, ply:EyeAngles().yaw, 0))
-				ent:SetModel(armor and "models/props/cs_office/cardboard_box01.mdl" or GAMEMODE.ItemsList[item].Model)
-				ent:SetNWString("ItemClass", item)
-				ent:Spawn()
-				ent:Activate()
-
-				if !hasmorethan1 then
-					if armor and ply.EquippedArmor == tostring(item) then
-						ply:ArmorUnequip()
+				if ref.WeaponType and !ref.IsGrenade then
+					ply:InvStripWeapon(ref.WeaponType)
+				elseif ref.ArmorStats then
+					local armor = ref.Category == ITEMCATEGORY_ARMOR
+					local hasmorethan1 = ply.Inventory[item] > 1
+					if armor and !hasmorethan1 and !timer.Exists("Plywantstodropequippedarmor"..ply:EntIndex()) and ply:GetNWString("ArmorType") == item then
+						ply:SendChat(translate.ClientFormat(ply, "warning_about_to_drop_equipped_armor", 10))
+						timer.Create("Plywantstodropequippedarmor"..ply:EntIndex(), 10, 1, function() end)
+						return false
 					end
 
-					ply:ArmorUnequip()
-				end
+					GAMEMODE:SystemRemoveItem(ply, item, false)
 
-				ply:InvStripWeapon(item)
+					local vStart, vForward = ply:GetShootPos(), ply:GetAimVector()
+					local tr = util.TraceLine({
+						start = vStart,
+						endpos = vStart + vForward * 70,
+						filter = ply
+					})
+					local ent = ents.Create("ate_droppeditem")
+					ent:SetPos(tr.HitPos)
+					ent:SetAngles(Angle(0, ply:EyeAngles().yaw, 0))
+					ent:SetModel(armor and "models/props/cs_office/cardboard_box01.mdl" or GAMEMODE.ItemsList[item].Model)
+					ent:SetNWString("ItemClass", item)
+					ent:Spawn()
+					ent:Activate()
+
+					if !hasmorethan1 and armor and ply.EquippedArmor == tostring(item) then
+						ply:ArmorUnequip()
+					end
+				end
 			end
 
 			if ref.OnItemDropped then
