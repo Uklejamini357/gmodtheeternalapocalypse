@@ -71,9 +71,14 @@ function GM:LocalPlayerDeath(attacker)
 	me.PlayerDead = true
 
 	if self.DeathSoundEffectEnabled then
+		if self.ActiveDeathSound then
+			self.ActiveDeathSound:Stop()
+		end
+
 		self.ActiveDeathSound = CreateSound(me, Sound(self.DeathSound))
 		self.ActiveDeathSound:ChangeVolume(self.DeathSoundEffectVolume)
 		self.ActiveDeathSound:Play()
+		self.ActiveDeathSoundTime = CurTime() + SoundDuration(self.DeathSound)
 	end
 
 	if self.AmbientMusic and self.AmbientMusic:IsPlaying() then
@@ -112,7 +117,7 @@ function GM:Think()
 		self.WraithAlpha = self.WraithAlpha - (frametime * 30)
 	end
 
-	if self.DeathSoundEffectEnabled and self.ActiveDeathSound and self.ActiveDeathSound:IsPlaying() then
+	if self.DeathSoundEffectEnabled and self.ActiveDeathSound and self.ActiveDeathSound:IsPlaying() and (!self.ActiveDeathSoundTime or self.ActiveDeathSoundTime > CurTime()) then
 		if !me.PlayerDead and me:Alive() then
 			self.ActiveDeathSound:FadeOut(1)
 			self.ActiveDeathSound = nil

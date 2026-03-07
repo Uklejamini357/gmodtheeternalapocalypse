@@ -314,9 +314,6 @@ function GM:DrawVitals()
 
 		draw.SimpleText("Held weapon: "..tostring(weapon), "TEA.HUDFontSmall", 20, y, Color(205,205,255), 0, 1)
 		y = y + 22
-
-		draw.SimpleText("Trace Entity: "..tostring(tr.Entity), "TEA.HUDFontSmall", 20, y, Color(205,205,255), 0, 0)
-		y = y + 22
 	end
 
 	if self:GetServerRestartTime() ~= 0 then

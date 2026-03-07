@@ -129,19 +129,19 @@ function HUD:DrawPVP(pl, state, w, h)
     draw_SimpleText("PvP: "..translate.Get("pvp_state"..state), "TEA.HUDFontSmall", 270, h - 30, Color(205,205,205), 0, 0)
 end
 
-function HUD:DrawDead(pl, w, h)
+function HUD:DrawDead(pl, w, h, Spawn)
     local a = 205
 
     local message
     draw_DrawText("You died", "TEA.HUDFontSmall", ScrW() / 2, ScrH() / 2 - 40, Color(230,115,115,a), TEXT_ALIGN_CENTER)
-    draw_DrawText("Cause of death: "..self.DeathMessage, "TEA.HUDFontSmall", ScrW() / 2, ScrH() / 2 - 180, Color(230,230,230,a), TEXT_ALIGN_CENTER)
+    draw_DrawText("Cause of death: "..GAMEMODE.DeathMessage, "TEA.HUDFontSmall", ScrW() / 2, ScrH() / 2 - 180, Color(230,230,230,a), TEXT_ALIGN_CENTER)
 
-    local survtime,bsurvtime = math.floor(self.MyLastSurvivalStats.SurvivalTime), math.floor(self.MyLastSurvivalStats.BestSurvivalTime) 
+    local survtime,bsurvtime = math.floor(GAMEMODE.MyLastSurvivalStats.SurvivalTime), math.floor(GAMEMODE.MyLastSurvivalStats.BestSurvivalTime) 
 
     draw_DrawText(Format(bsurvtime < survtime and "Survival Time: %s (Previous Best: %s, +%s)" or "Survival Time: %s", util.ToMinutesSeconds(survtime), util.ToMinutesSeconds(bsurvtime), util.ToMinutesSeconds(survtime - bsurvtime)),
     "TEA.HUDFontSmall", ScrW() / 2, ScrH() / 2 + 20, Color(230,230,230,a), TEXT_ALIGN_CENTER)
-    draw_DrawText(Format("Zombies killed: %d", self.MyLastSurvivalStats.ZombieKills), "TEA.HUDFontSmall", ScrW() / 2, ScrH() / 2 + 44, Color(230,230,230,a), TEXT_ALIGN_CENTER)
-    draw_DrawText(Format("Players killed: %d", self.MyLastSurvivalStats.PlayerKills), "TEA.HUDFontSmall", ScrW() / 2, ScrH() / 2 + 68, Color(230,230,230,a), TEXT_ALIGN_CENTER)
+    draw_DrawText(Format("Zombies killed: %d", GAMEMODE.MyLastSurvivalStats.ZombieKills), "TEA.HUDFontSmall", ScrW() / 2, ScrH() / 2 + 44, Color(230,230,230,a), TEXT_ALIGN_CENTER)
+    draw_DrawText(Format("Players killed: %d", GAMEMODE.MyLastSurvivalStats.PlayerKills), "TEA.HUDFontSmall", ScrW() / 2, ScrH() / 2 + 68, Color(230,230,230,a), TEXT_ALIGN_CENTER)
 
     message = Spawn > CurTime() + 1 and translate.Format("respawn_1", math.Clamp(math.ceil(Spawn - CurTime()), 0, 2147483647), translate.Get("seconds")) or Spawn > CurTime() and translate.Format("respawn_1", math.Clamp(math.ceil(Spawn - CurTime()), 0, 2147483647), translate.Get("second")) or translate.Get("respawn_2")
     draw_DrawText(message, "TEA.HUDFont", ScrW() / 2, ScrH() / 2 - 200, Color(255,255,255), TEXT_ALIGN_CENTER)
