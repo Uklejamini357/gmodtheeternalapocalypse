@@ -75,6 +75,7 @@ include("server/mastery.lua") -- Mastery for various types, including pvp and me
 --include("server/weather_events.lua") -- excluded because file is empty
 --include("time_weather.lua") -- excluded due to file being non-existant
 include("server/player_quests.lua") -- Tasks and task dealers
+include("server/openworld.lua") -- Openworld implementation
 
 include("server_data/data_saving.lua")
 

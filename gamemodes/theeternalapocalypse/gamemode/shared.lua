@@ -3,8 +3,8 @@ GM.AltName	= "After The End Reborn"
 GM.Author	= "Uklejamini"
 GM.Email	= ""
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.11.5 Pre-release"
-GM.DateVer	= "07.03.2026" -- Follows the DD.MM.YYYY format.
+GM.Version	= "0.12.0b1"
+GM.DateVer	= "08.03.2026" -- Follows the DD.MM.YYYY format.
 GM.Credits = {
 	-- Assets
 	{"GSC Game World",			"For all the S.T.A.L.K.E.R. content",										""},
@@ -27,61 +27,61 @@ GM.Credits = {
 
 DeriveGamemode("sandbox")
 
-hook.Add( "CanProperty", "TEA.CanProperty", function(ply, property, ent)
+hook.Add("CanProperty", "TEA.CanProperty", function(ply, property, ent)
 	if not SuperAdminCheck(ply) then return false end
 end)
 
-hook.Add( "CanArmDupe", "TEA.CanArmDupe", function(ply)
+hook.Add("CanArmDupe", "TEA.CanArmDupe", function(ply)
 	if not SuperAdminCheck(ply) then return false end
 end)
 
-hook.Add( "CanDrive", "TEA.CanDrive", function(ply, ent)
+hook.Add("CanDrive", "TEA.CanDrive", function(ply, ent)
 	if not SuperAdminCheck(ply) then return false end
 end)
 
-hook.Add( "CanTool", "TEA.CanTool", function(ply, tr, toolname, tool, button)
+hook.Add("CanTool", "TEA.CanTool", function(ply, tr, toolname, tool, button)
 	if not SuperAdminCheck(ply) then return false end
 end)
 
 if SERVER then
 
-	hook.Add( "PlayerSpawnEffect", "TEA.PlayerSpawnEffect", function(ply, model)
+	hook.Add("PlayerSpawnEffect", "TEA.PlayerSpawnEffect", function(ply, model)
 		if not SuperAdminCheck(ply) then return false end
 	end)
 
-	hook.Add( "PlayerSpawnNPC", "TEA.PlayerSpawnNPC", function(ply, npc_type, weapon)
+	hook.Add("PlayerSpawnNPC", "TEA.PlayerSpawnNPC", function(ply, npc_type, weapon)
 		if not SuperAdminCheck(ply) then return false end
 	end)
 
-	hook.Add( "PlayerSpawnObject", "TEA.PlayerSpawnObject", function(ply, model, skin)
+	hook.Add("PlayerSpawnObject", "TEA.PlayerSpawnObject", function(ply, model, skin)
 		if not SuperAdminCheck(ply) then return false end
 	end)
 
-	hook.Add( "PlayerSpawnProp", "TEA.PlayerSpawnProp", function(ply, model)
+	hook.Add("PlayerSpawnProp", "TEA.PlayerSpawnProp", function(ply, model)
 		if not SuperAdminCheck(ply) then return false end
 	end)
 
-	hook.Add( "PlayerSpawnRagdoll", "TEA.PlayerSpawnRagdoll", function(ply, model)
+	hook.Add("PlayerSpawnRagdoll", "TEA.PlayerSpawnRagdoll", function(ply, model)
 		if not SuperAdminCheck(ply) then return false end
 	end)
 
-	hook.Add( "PlayerSpawnSENT", "TEA.PlayerSpawnSENT", function(ply, class)
+	hook.Add("PlayerSpawnSENT", "TEA.PlayerSpawnSENT", function(ply, class)
 		if not SuperAdminCheck(ply) then return false end
 	end)
 
-	hook.Add( "PlayerSpawnSWEP", "TEA.PlayerSpawnSWEP", function(ply, weapon, swep)
+	hook.Add("PlayerSpawnSWEP", "TEA.PlayerSpawnSWEP", function(ply, weapon, swep)
 		if not SuperAdminCheck(ply) then return false end
 	end)
 
-	hook.Add( "PlayerSpawnVehicle", "TEA.PlayerSpawnVehicle", function(ply, model, name, table)
+	hook.Add("PlayerSpawnVehicle", "TEA.PlayerSpawnVehicle", function(ply, model, name, table)
 		if not SuperAdminCheck(ply) then return false end
 	end)
 
-	hook.Add( "PlayerGiveSWEP", "TEA.PlayerGiveSWEP", function(ply, weapon, spawninfo)
+	hook.Add("PlayerGiveSWEP", "TEA.PlayerGiveSWEP", function(ply, weapon, spawninfo)
 		if not SuperAdminCheck(ply) then return false end
 	end)
 
-	hook.Add( "PlayerSpawnedProp", "TEA.PlayerSpawnedProp", function(ply, model, ent)
+	hook.Add("PlayerSpawnedProp", "TEA.PlayerSpawnedProp", function(ply, model, ent)
 		if ent:Health() != 0 then return end
 		gamemode.Call("SetupProp", ent)
 	end)
