@@ -179,7 +179,8 @@ function meta:CalculateMaxWeight()
 	-- if SERVER then
 		if self.StatsPaused then return math.huge end
 
-		return baseweight + perksweight + ((self.StatStrength or 0) * 1.53) + (self:GetNWString("ArmorType") ~= "none" and armortype["ArmorStats"]["carryweight"] or 0)
+		return (baseweight + perksweight + ((self.StatStrength or 0) * 1.53) + (self:GetNWString("ArmorType") ~= "none" and armortype["ArmorStats"]["carryweight"] or 0)) *
+		(GAMEMODE.GameplayDifficulty == DIFFICULTY_GAMEPLAY_HELL and 0.9 or GAMEMODE.GameplayDifficulty == DIFFICULTY_GAMEPLAY_IMPOSSIBLE and 0.75 or 1)
 	-- else
 		-- local skillsweight = (Perks.Strength or 0) * 1.53
 		-- local additionalarmorweight = armorstr ~= "none" and armortype["ArmorStats"]["carryweight"] or 0
@@ -273,6 +274,10 @@ function meta:IsUsingItem()
 end
 
 function meta:IsDying()
+	if GAMEMODE.GameplayDifficulty == DIFFICULTY_GAMEPLAY_HELL and self.Infection > 5000 or GAMEMODE.GameplayDifficulty == DIFFICULTY_GAMEPLAY_IMPOSSIBLE and self.Infection > 1000 then
+		return true
+	end
+
 	return (self.Thirst <= 0 or self.Hunger <= 0 or self.Fatigue >= 10000 and self.Stamina <= 0 or self.Infection >= 10000)
 end
 
@@ -369,6 +374,7 @@ function meta:GetItemBuyCostMul(item)
 
 	local mul = 1 - ((self.StatBarter or 0) * 0.015)
 	mul = mul * (1 + GAMEMODE:GetInflationBuyCostMul())
+	mul = mul * GAMEMODE:GetEconomyDiffBuyCostMul()
 
 	return itemtbl.IgnoreBuyCostMulLimit and mul or math.max(GAMEMODE.MinBuyCostMul, mul)
 end
@@ -382,10 +388,11 @@ function meta:GetItemSellCostMul(item)
 		itemtbl = item
 	end
 
-	if itemtbl.IgnoreCostModifiers then return 1 end
+	if itemtbl.IgnoreCostModifiers then return 0.2 end
 
 	local mul = 0.2 + ((self.StatBarter or 0) * 0.005)
 	mul = mul * (1 + GAMEMODE:GetInflationSellCostMul())
+	mul = mul * GAMEMODE:GetEconomyDiffSellCostMul()
 
 	return itemtbl.IgnoreSellCostMulLimit and mul or math.max(GAMEMODE.MaxSellCostMul, mul)
 end

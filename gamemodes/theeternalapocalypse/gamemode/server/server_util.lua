@@ -4,7 +4,15 @@ end
 
 local MT_PLAYER = FindMetaTable("Player")
 local MT_ENTITY = FindMetaTable("Entity")
-
+local diffdamage = {
+	[DIFFICULTY_GAMEPLAY_BASIC] = 0.75,
+	[DIFFICULTY_GAMEPLAY_NORMAL] = 1,
+	[DIFFICULTY_GAMEPLAY_ADVANCED] = 1.2,
+	[DIFFICULTY_GAMEPLAY_CHALLENGING] = 1.5,
+	[DIFFICULTY_GAMEPLAY_ULTIMATE] = 1.75,
+	[DIFFICULTY_GAMEPLAY_HELL] = 2.25,
+	[DIFFICULTY_GAMEPLAY_IMPOSSIBLE] = 3
+}
 
 function MT_PLAYER:ProcessPlayerDamage(dmginfo)
 	local attacker = dmginfo:GetAttacker()
@@ -69,7 +77,7 @@ function MT_PLAYER:ProcessPlayerDamage(dmginfo)
 	end
 
 	if attacker.IsZombie then
-		dmginfo:ScaleDamage(GAMEMODE:GetInfectionMul(0.5)) -- +0.5% damage per 1% infection
+		dmginfo:ScaleDamage(GAMEMODE:GetInfectionMul(0.5) * (diffdamage[GAMEMODE.GameplayDifficulty] or 1)) -- +0.5% damage per 1% infection
 
 		if self:IsNewbie() then
 			dmginfo:ScaleDamage(0.9)
@@ -138,7 +146,7 @@ function MT_ENTITY:ProcessDamage(dmginfo)
 	end
 
 	if attacker.IsZombie and self.IsPropBarricade then
-		dmginfo:ScaleDamage(GAMEMODE:GetInfectionMul(0.5)) -- +0.5% damage to barricade per 1% infection
+		dmginfo:ScaleDamage(GAMEMODE:GetInfectionMul(0.5) * (diffdamage[GAMEMODE.GameplayDifficulty] or 1)) -- +0.5% damage to barricade per 1% infection
 	end
 
 	return true

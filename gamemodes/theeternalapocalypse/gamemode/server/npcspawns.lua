@@ -114,8 +114,8 @@ function GM:CreateZombie(class, pos, ang, xp, cash, infectionrate, isboss)
 	ent.DamagedBy = {}
 
 	ent:Spawn()
-	ent:SetHealth(ent:Health() * self.ZombieHealthMultiplier)
-	ent:SetMaxHealth(ent:GetMaxHealth() * self.ZombieHealthMultiplier)
+	ent:SetHealth(ent:Health() * self.ZombieHealthMultiplier * self:GetDiffZombieHealthMul())
+	ent:SetMaxHealth(ent:GetMaxHealth() * self.ZombieHealthMultiplier * self:GetDiffZombieHealthMul())
 	ent:Activate()
 	if self:GetDebug() >= DEBUGGING_ADVANCED then print("Zombie spawned:", "\n"..class, pos, ang, "XPReward: "..xp, "MoneyReward: "..cash, isboss and "Isboss: true" or "Isboss: false") end
 	return ent -- used for SpawnZombie command
@@ -158,7 +158,7 @@ function GM:SpawnRandomZombie(pos, ang)
 
 			local elitechance = math.Rand(0, 100)
 			local elite = elitechance ~= 0 and elitechance <= self:GetEliteVariantSpawnChance(false)
-			local ent = self:CreateZombie(k, pos, ang, v.XPReward, v.MoneyReward, v.InfectionRate, false)
+			local ent = self:CreateZombie(k, pos, ang, v.XPReward * self:GetDiffXPMul(), v.MoneyReward * self:GetDiffCashMul(), v.InfectionRate, false)
 
 			if elite and v.AllowEliteVariants then
 				local elite_variant = math.random(8)
@@ -223,7 +223,7 @@ function GM:SpawnRandomBoss(pos, ang, plycountoverride, nonotify)
 
 				local elitechance = math.Rand(0, 100)
 				local elite = elitechance ~= 0 and elitechance <= self:GetEliteVariantSpawnChance(true)
-				local ent = self:CreateZombie(k, pos, ang, v.XPReward, v.MoneyReward, v.InfectionRate, true)
+				local ent = self:CreateZombie(k, pos, ang, v.XPReward * self:GetDiffXPMul(), v.MoneyReward * self:GetDiffCashMul(), v.InfectionRate, true)
 
 				if elite and v.AllowEliteVariants then
 					local elite_variant = 8--math.random(8)

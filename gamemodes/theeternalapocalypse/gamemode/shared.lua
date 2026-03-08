@@ -607,6 +607,138 @@ function GM:GetInflationSellCostMul()
 	return val*inflation
 end
 
+function GM:GetEconomyDiffBuyCostMul()
+	if self.EconomyDifficulty == DIFFICULTY_ECONOMY_EASY then
+		return 0.85
+	elseif self.EconomyDifficulty == DIFFICULTY_ECONOMY_STANDARD then
+		return 1
+	elseif self.EconomyDifficulty == DIFFICULTY_ECONOMY_DIFFICULT then
+		return 1.20
+	elseif self.EconomyDifficulty == DIFFICULTY_ECONOMY_COMPLEX then
+		return 1.50
+	elseif self.EconomyDifficulty == DIFFICULTY_ECONOMY_HARSH then
+		return 2.00
+	elseif self.EconomyDifficulty == DIFFICULTY_ECONOMY_HELLISH then
+		return 2.50
+	end
+
+	return 1
+end
+
+function GM:GetEconomyDiffSellCostMul()
+	if self.EconomyDifficulty == DIFFICULTY_ECONOMY_EASY then
+		return 1.10
+	elseif self.EconomyDifficulty == DIFFICULTY_ECONOMY_STANDARD then
+		return 1
+	elseif self.EconomyDifficulty == DIFFICULTY_ECONOMY_DIFFICULT then
+		return 0.85
+	elseif self.EconomyDifficulty == DIFFICULTY_ECONOMY_COMPLEX then
+		return 0.75
+	elseif self.EconomyDifficulty == DIFFICULTY_ECONOMY_HARSH then
+		return 0.60
+	elseif self.EconomyDifficulty == DIFFICULTY_ECONOMY_HELLISH then
+		return 0.50
+	end
+
+	return 1
+end
+
+function GM:GetEconomyXPGainMul()
+	if !self.EconomyDifficultyAffectsXPGain then return 1 end
+
+	if self.EconomyDifficulty == DIFFICULTY_ECONOMY_EASY then
+		return 0.95
+	elseif self.EconomyDifficulty == DIFFICULTY_ECONOMY_STANDARD then
+		return 1
+	elseif self.EconomyDifficulty == DIFFICULTY_ECONOMY_DIFFICULT then
+		return 1.05
+	elseif self.EconomyDifficulty == DIFFICULTY_ECONOMY_COMPLEX then
+		return 1.10
+	elseif self.EconomyDifficulty == DIFFICULTY_ECONOMY_HARSH then
+		return 1.20
+	elseif self.EconomyDifficulty == DIFFICULTY_ECONOMY_HELLISH then
+		return 1.30
+	end
+
+	return 1
+end
+
+function GM:GetDiffZombieHealthMul()
+	if self.GameplayDifficulty == DIFFICULTY_GAMEPLAY_BASIC then
+		return 0.8
+	elseif self.GameplayDifficulty == DIFFICULTY_GAMEPLAY_NORMAL then
+		return 1
+	elseif self.GameplayDifficulty == DIFFICULTY_GAMEPLAY_ADVANCED then
+		return 1.15
+	elseif self.GameplayDifficulty == DIFFICULTY_GAMEPLAY_CHALLENGING then
+		return 1.40
+	elseif self.GameplayDifficulty == DIFFICULTY_GAMEPLAY_ULTIMATE then
+		return 1.60
+	elseif self.GameplayDifficulty == DIFFICULTY_GAMEPLAY_HELL then
+		return 2
+	elseif self.GameplayDifficulty == DIFFICULTY_GAMEPLAY_IMPOSSIBLE then
+		return 5
+	end 
+	return 1
+end
+
+function GM:GetDiffZombieDamageMul()
+	if self.GameplayDifficulty == DIFFICULTY_GAMEPLAY_BASIC then
+		return 0.75
+	elseif self.GameplayDifficulty == DIFFICULTY_GAMEPLAY_NORMAL then
+		return 1
+	elseif self.GameplayDifficulty == DIFFICULTY_GAMEPLAY_ADVANCED then
+		return 1.20
+	elseif self.GameplayDifficulty == DIFFICULTY_GAMEPLAY_CHALLENGING then
+		return 1.50
+	elseif self.GameplayDifficulty == DIFFICULTY_GAMEPLAY_ULTIMATE then
+		return 1.75
+	elseif self.GameplayDifficulty == DIFFICULTY_GAMEPLAY_HELL then
+		return 2.25
+	elseif self.GameplayDifficulty == DIFFICULTY_GAMEPLAY_IMPOSSIBLE then
+		return 3
+	end 
+	return 1
+end
+
+function GM:GetDiffXPMul()
+	if self.GameplayDifficulty == DIFFICULTY_GAMEPLAY_BASIC then
+		return 0.85
+	elseif self.GameplayDifficulty == DIFFICULTY_GAMEPLAY_NORMAL then
+		return 1
+	elseif self.GameplayDifficulty == DIFFICULTY_GAMEPLAY_ADVANCED then
+		return 1.20
+	elseif self.GameplayDifficulty == DIFFICULTY_GAMEPLAY_CHALLENGING then
+		return 1.30
+	elseif self.GameplayDifficulty == DIFFICULTY_GAMEPLAY_ULTIMATE then
+		return 1.6
+	elseif self.GameplayDifficulty == DIFFICULTY_GAMEPLAY_HELL then
+		return 2
+	elseif self.GameplayDifficulty == DIFFICULTY_GAMEPLAY_IMPOSSIBLE then
+		return 4
+	end 
+	return 1
+end
+
+function GM:GetDiffCashMul()
+	if self.GameplayDifficulty == DIFFICULTY_GAMEPLAY_BASIC then
+		return 0.85
+	elseif self.GameplayDifficulty == DIFFICULTY_GAMEPLAY_NORMAL then
+		return 1
+	elseif self.GameplayDifficulty == DIFFICULTY_GAMEPLAY_ADVANCED then
+		return 1.10
+	elseif self.GameplayDifficulty == DIFFICULTY_GAMEPLAY_CHALLENGING then
+		return 1.20
+	elseif self.GameplayDifficulty == DIFFICULTY_GAMEPLAY_ULTIMATE then
+		return 1.4
+	elseif self.GameplayDifficulty == DIFFICULTY_GAMEPLAY_HELL then
+		return 1.75
+	elseif self.GameplayDifficulty == DIFFICULTY_GAMEPLAY_IMPOSSIBLE then
+		return 3.5
+	end 
+	return 1
+end
+
 local entmeta = FindMetaTable("Entity")
 
 function entmeta:GetStructureHealth()

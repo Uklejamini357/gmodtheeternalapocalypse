@@ -109,6 +109,23 @@ function GM:CalcJumpPower(ply)
 end
 
 local NextTick = 0
+local staminadiffregen = {
+	[DIFFICULTY_GAMEPLAY_BASIC] = 1.08,
+	[DIFFICULTY_GAMEPLAY_CHALLENGING] = 0.96,
+	[DIFFICULTY_GAMEPLAY_ULTIMATE] = 0.93,
+	[DIFFICULTY_GAMEPLAY_HELL] = 0.88,
+	[DIFFICULTY_GAMEPLAY_IMPOSSIBLE] = 0.75,
+}
+local statupdaterate = {
+	[DIFFICULTY_GAMEPLAY_ULTIMATE] = 1.25,
+	[DIFFICULTY_GAMEPLAY_HELL] = 1.5,
+	[DIFFICULTY_GAMEPLAY_IMPOSSIBLE] = 2.5,
+}
+local infectionupdaterate = {
+	[DIFFICULTY_GAMEPLAY_ULTIMATE] = 1.25,
+	[DIFFICULTY_GAMEPLAY_HELL] = 2.5,
+	[DIFFICULTY_GAMEPLAY_IMPOSSIBLE] = 6.66,
+}
 
 function GM:Think()
 	local ct = CurTime()
@@ -151,7 +168,7 @@ function GM:Think()
 			if !self.RestartingLevel then
 				self:SystemBroadcast("Restarting map...", Color(205,205,205), true)
 				self.RestartingLevel = true
-				for _,ply in pairs(player.GetAll()) do ply:SendLua("surface.PlaySound(\"buttons/button15.wav\")") end
+				for _,ply in player.Iterator() do ply:SendLua("surface.PlaySound(\"buttons/button15.wav\")") end
 			end
 			timer.Simple(1, function()
 				for k,o in pairs(self.Config["ZombieClasses"]) do
@@ -183,12 +200,12 @@ function GM:Think()
 		else
 			local averagelevelprogress = 0
 			local averageprestige = 0
-			for _,pl in pairs(player.GetAll()) do
+			for _,pl in player.Iterator() do
 				averagelevelprogress = averagelevelprogress + math.Clamp((pl.Level-1) / (pl:GetMaxLevel()-1), 0, 1)
 			end
 			averagelevelprogress = averagelevelprogress / player.GetCount()
 
-			for _,pl in pairs(player.GetAll()) do
+			for _,pl in player.Iterator() do
 				-- averageprestige = pl.Prestige + pl:GetProgressToPrestige()
 				averageprestige = averageprestige + math.Clamp(pl.Prestige, 0, 100)
 			end
@@ -202,12 +219,13 @@ function GM:Think()
 			self.NextSave = ct
 			gamemode.Call("SaveTimer")
 		end
-	
-		for _,ply in pairs(player.GetAll()) do
-			local noregen_thirst = 3000
-			local noregen_hunger = 3000
-			local noregen_fatigue = 7000
-			local noregen_infection = 5000
+
+		local noregen_thirst = 3000
+		local noregen_hunger = 3000
+		local noregen_fatigue = 7000
+		local noregen_infection = 5000
+
+		for _,ply in player.Iterator() do
 			if (ply.Thirst >= noregen_thirst and ply.Hunger >= noregen_hunger and ply.Fatigue <= noregen_fatigue and ply.Infection <= noregen_infection) then
 				if ply.HPRegen and ply:Health() < ply:GetMaxHealth() then
 					ply.HPRegen = math.Clamp(ply.HPRegen + 0.11*(1 + ply.StatMedSkill * 0.08)*(ply:IsSleeping() and 10 or 1), 0, ply:GetMaxHealth())
@@ -229,7 +247,7 @@ function GM:Think()
 
 	end
 
-	for _,ply in pairs(player.GetAll()) do
+	for _,ply in player.Iterator() do
 		if !ply:IsValid() then continue end
 		if !ply:Alive() or ply.StatsPaused or ply:GetObserverMode() ~= OBS_MODE_NONE then 
 			if (ply.NextTick or 0) < RealTime() then
@@ -243,9 +261,9 @@ function GM:Think()
 		local sleeping = ply:IsSleeping()
 
 		-- hunger, thirst, fatigue, infection
-		ply.Hunger = math.Clamp(ply.Hunger - (5*ft / (1 + (ply.StatSurvivor * 0.045)))*(sleeping and 20 or 1), 0, 10000)
-		ply.Thirst = math.Clamp(ply.Thirst - (6*ft / (1 + (ply.StatSurvivor * 0.045)))*(sleeping and 20 or 1), 0, 10000)
-		ply.Fatigue = math.Clamp(ply.Fatigue + (sleeping and -200*ft or 3.2*ft / (1 + (ply.StatSurvivor * 0.045))), 0, 10000)
+		ply.Hunger = math.Clamp(ply.Hunger - (5*ft / (1 + ply.StatSurvivor * 0.045) * (statupdaterate[self.GameplayDifficulty] or 1))*(sleeping and 20 or 1), 0, 10000)
+		ply.Thirst = math.Clamp(ply.Thirst - (6*ft / (1 + ply.StatSurvivor * 0.045) * (statupdaterate[self.GameplayDifficulty] or 1))*(sleeping and 20 or 1), 0, 10000)
+		ply.Fatigue = math.Clamp(ply.Fatigue + (sleeping and -200*ft or (3.2*ft / (1 + ply.StatSurvivor * 0.045) * (statupdaterate[self.GameplayDifficulty] or 1))), 0, 10000)
 
 		--random chance of getting infected per tick is very rare, but has chance if survived for more than 10 minutes
 		if self.RandomPlayerInfection then
@@ -256,7 +274,7 @@ function GM:Think()
 		end
 
 		if (ply.Infection > 0 or infectionchance and infectionchance == 1) then
-			ply.Infection = math.Clamp(ply.Infection + (16*ft * (1 - ply.StatImmunity * 0.035))*(sleeping and 8 or 1), 0, 10000)
+			ply.Infection = math.Clamp(ply.Infection + (16*ft * (1 - ply.StatImmunity * 0.035) * (statupdaterate[self.GameplayDifficulty] or 1))*(sleeping and 8 or 1), 0, 10000)
 		end
 
 		if sleeping then
@@ -300,12 +318,14 @@ function GM:Think()
 				local hungerdying = ply.Hunger <= 0
 				local thirstdying = ply.Thirst <= 0
 				local fatiguedying = ply.Fatigue >= 10000
-				local infectiondying = ply.Infection >= 10000
+				local infectiondying = self.GameplayDifficulty == DIFFICULTY_GAMEPLAY_IMPOSSIBLE and ply.Infection > 1000 or self.GameplayDifficulty == DIFFICULTY_GAMEPLAY_HELL and ply.Infection > 5000 or ply.Infection >= 10000
 
 				if hungerdying then dmg = dmg + 2*ft end
 				if thirstdying then dmg = dmg + 2*ft end
 				if fatiguedying then dmg = dmg + 2*ft end
-				if infectiondying then dmg = dmg + 2*ft end
+				if infectiondying then
+					dmg = dmg + (self.GameplayDifficulty == DIFFICULTY_GAMEPLAY_IMPOSSIBLE and math.min(2, (ply.Infection-1000)/2000))*ft
+				end
 				dmg = dmg + 1*ft
 
 				ply.StatsDyingDamage = dmg
@@ -400,7 +420,11 @@ function GM:Think()
 			local fatigabove99 = ply.Fatigue > 9900
 
 			if ply.Fatigue < 9900 then
-				ply.Stamina = ply.Stamina + 3.04*ft * (ply:HasPerk("enduring_endurance") and ply.Stamina < 25 and 1.3 or 1) * (fatigabove99 and 0 or fatigabove70 and 0.8 + ((7000-ply.Fatigue)/10000)*2 or 1) * (ply:WaterLevel() == 3 and 2/3 or 1)
+				ply.Stamina = ply.Stamina + 3.04*ft *
+				(ply:HasPerk("enduring_endurance") and ply.Stamina < 25 and 1.3 or 1) *
+				(fatigabove99 and 0 or fatigabove70 and 0.8 + ((7000-ply.Fatigue)/10000)*2 or 1) *
+				(ply:WaterLevel() == 3 and 2/3 or 1) *
+				(staminadiffregen[self.GameplayDifficulty] or 1)
 			elseif ply.Fatigue >= 10000 then
 				ply.Stamina = ply.Stamina - 2*ft
 			end
@@ -432,14 +456,14 @@ function GM:Tick()
 end
 
 function GM:PlayerConnect(name, ip)
-	for _, ply in pairs(player.GetAll()) do
+	for _, ply in player.Iterator() do
 		ply:SystemMessage(translate.ClientFormat(ply, "pljoined", name), Color(255,255,155,255), false)
 		-- ply:SystemMessage(Format("#tea.chat_message.pljoined", name), Color(255,255,155,255), false)
 	end
 end
 
 function GM:PlayerDisconnected(ply)
-	for _, pl in pairs(player.GetAll()) do
+	for _, pl in player.Iterator() do
 		pl:SystemMessage(translate.ClientFormat(pl, "plleft", ply:Name()), Color(255,255,155,255), false)
 	end
 
@@ -542,7 +566,7 @@ end
 
 function GM:OnReloaded()
 	timer.Simple(0.3, function()
-		for k, v in pairs(player.GetAll()) do self:FullyUpdatePlayer(v) end
+		for k, v in player.Iterator() do self:FullyUpdatePlayer(v) end
 	end)
 	print("\n")
 
@@ -556,7 +580,7 @@ function GM:OnReloaded()
 end
 
 function GM:ShutDown()
-	for _, ply in pairs(player.GetAll()) do
+	for _, ply in ipairs(player.GetAll()) do
 		gamemode.Call("SavePlayer", ply)
 	end
 	print("WARNING! WARNING!! THE OBJECT IS GONE!!")
@@ -583,52 +607,11 @@ function GM:DoAutoMaintenance(time)
 	if self.IsMaintenance then return end
 	self:SystemBroadcast(Format("Attention! The server will automatically restart map in %d minutes! Please make sure you have salvaged all of your structures and cashed in your bounties before the server restarts.", time / 60), Color(205,205,205), false)
 	print(Format("Starting map restart sequence. ETA: %d minutes.", time / 60))
-	for _,v in pairs(player.GetAll()) do v:ConCommand("playgamesound common/warning.wav") end
+	for _,v in ipairs(player.GetAll()) do
+		v:ConCommand("playgamesound common/warning.wav")
+	end
 	self.IsMaintenance = true
 	self:SetServerRestartTime(CurTime() + time)
-
-	/* -- It will be now reworked
-	timer.Create("TEAChangingLevel", 60, 0, function()
-		if self.MinutesBeforeMaintenance > 1 then
-			self.MinutesBeforeMaintenance = self.MinutesBeforeMaintenance - 1
-			self:SystemBroadcast(Format("Due to maintenances, the server will restart in %d minutes.", self.MinutesBeforeMaintenance), Color(205,205,205), true)
-		else
-			self:SystemBroadcast("WARNING! Server is restarting in:", Color(205,205,205), true)
-			timer.Destroy("TEAChangingLevel")
-			self.AutoMaintenancePhase = 10
-			timer.Create("TEAChangingLevel_2", 1, 0, function()
-				if self.AutoMaintenancePhase >= 1 then
-					self:SystemBroadcast(self.AutoMaintenancePhase.."...", Color(205,25.5*self.AutoMaintenancePhase,25.5*self.AutoMaintenancePhase), false)
-					for _,ply in pairs(player.GetAll()) do ply:ConCommand("playgamesound buttons/button17.wav") end
-					self.AutoMaintenancePhase = self.AutoMaintenancePhase - 1
-				else
-					if !self.RestartingLevel then
-						self:SystemBroadcast("Restarting server...", Color(205,205,205), true)
-						self.RestartingLevel = true
-						for _,ply in pairs(player.GetAll()) do ply:ConCommand("playgamesound buttons/button15.wav") end
-					end
-					timer.Simple(1, function()
-						for k,o in pairs(self.Config["ZombieClasses"]) do
-							for _, ent in pairs(ents.FindByClass(k)) do
-								ent:Remove()
-							end
-						end
-					end)
-					timer.Simple(2, function()
-						for k,o in pairs(self.Config["BossClasses"]) do
-							for _, ent in pairs(ents.FindByClass(k)) do
-								ent:Remove()
-							end
-						end
-					end)
-					timer.Simple(5, function()
-						RunConsoleCommand("changelevel", game.GetMap())
-					end)
-				end
-			end)
-		end
-	end)
-	*/
 end
 
 function GM:PostCleanupMap()
@@ -668,7 +651,7 @@ function GM:OnNPCKilled(ent, attacker, inflictor, dmginfo)
 		local xp = npcrewards[entclass][1]
 		local cash = npcrewards[entclass][2]
 		if !self.Config["ZombieClasses"][entclass] and !ent.XPReward and !ent.MoneyReward then
-			self:Payout(attacker, xp, cash)
+			self:Payout(attacker, xp*self:GetEconomyXPGainMul(), cash)
 		end
 	elseif !ent.TEA_DeadNPC then
 		gamemode.Call("NPCReward", ent)
