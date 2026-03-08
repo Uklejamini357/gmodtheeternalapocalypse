@@ -117,7 +117,7 @@ function GM:Think()
 		self.WraithAlpha = self.WraithAlpha - (frametime * 30)
 	end
 
-	if self.DeathSoundEffectEnabled and self.ActiveDeathSound and self.ActiveDeathSound:IsPlaying() and (!self.ActiveDeathSoundTime or self.ActiveDeathSoundTime > CurTime()) then
+	if self.DeathSoundEffectEnabled and self.ActiveDeathSound and self.ActiveDeathSound:IsPlaying() and (!self.LastAliveTime or self.LastAliveTime+1 < CurTime()) and (!self.ActiveDeathSoundTime or self.ActiveDeathSoundTime > CurTime()) then
 		if !me.PlayerDead and me:Alive() then
 			self.ActiveDeathSound:FadeOut(1)
 			self.ActiveDeathSound = nil

@@ -508,8 +508,11 @@ function GM:Initialize()
 	self.TaskDealerSpawnpoints = {}
 	self.TraderSpawnpoints = {}
 	self.PlayerSpawnpoints = {}
+	self.OpenworldTransitions = {}
 
 	SetGlobalBool("GM.ZombieSpawning", true)
+
+	self:InitializeDataDirs()
 
 	self:LoadServerData()
 	self:SetUpSeasonalEvents()
@@ -1126,8 +1129,9 @@ function GM:PlayerLoadout(ply)
 	if ply.AdminMode then
 		ply:Give("weapon_physgun")
 		ply:Give("gmod_tool")
+		ply:Give("tea_admintool")
 		ply:Give("tea_buildtool")
-		ply:SelectWeapon("weapon_physgun")
+		ply:SelectWeapon("tea_admintool")
 	else
 		ply:Give("tea_fists")
 		ply:Give("tea_buildtool")

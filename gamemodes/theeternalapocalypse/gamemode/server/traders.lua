@@ -1,8 +1,9 @@
 
 function GM:LoadTraders()
 	if not file.IsDir(self.DataFolder.."/spawns/"..string.lower(game.GetMap()), "DATA") then
-	   file.CreateDir(self.DataFolder.."/spawns/"..string.lower(game.GetMap()))
+	   	file.CreateDir(self.DataFolder.."/spawns/"..string.lower(game.GetMap()))
 	end
+
 	if file.Exists(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/traders.txt", "DATA") then
 		self.TraderSpawnpoints = file.Read(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/traders.txt", "DATA")
 

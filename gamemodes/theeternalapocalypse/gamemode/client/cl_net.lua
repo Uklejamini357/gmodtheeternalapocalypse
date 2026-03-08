@@ -115,7 +115,6 @@ end)
 net.Receive("tea_taskstatsupdate", function(len)
 	local task = net.ReadString()
 	local value = net.ReadFloat()
-	local complete = net.ReadBool()
 
 	GAMEMODE.CurrentTask = task
 	GAMEMODE.CurrentTaskProgress = value
@@ -186,4 +185,12 @@ net.Receive("RecvFactions", function(length, client)
 	for k, v in pairs(LocalFactions) do
 		team.SetUp(v.index, k, v.color, v.public)
 	end
+end)
+
+net.Receive("tea_openworld_level", function()
+    local nettype = net.ReadUInt(4)
+    local id = net.ReadUInt(8)
+    local name = net.ReadString()
+    local map = net.ReadString()
+    local direction = net.ReadUInt(2)
 end)

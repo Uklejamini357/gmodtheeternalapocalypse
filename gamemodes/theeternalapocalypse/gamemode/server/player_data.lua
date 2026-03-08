@@ -117,12 +117,7 @@ end
 
 function GM:SavePlayer(ply, force)
 	if not force and (ply.NoDataSave or not self.DatabaseSaving) then return end
-	local filedir = self.DataFolder.."/players/"
 	local plyfile = self.DataFolder.."/players/"..string.lower(string.gsub(ply:SteamID(), ":", "_")..".txt")
-
-	if not file.IsDir(filedir, "DATA") then
-		file.CreateDir(filedir)
-	end
 
 	local Data = {}
 	Data["XP"] = ply.XP

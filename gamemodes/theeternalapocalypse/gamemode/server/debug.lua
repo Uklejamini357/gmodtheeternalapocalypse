@@ -27,10 +27,6 @@ function GM:SaveLog()
 	local filename = string.Replace(DateStr, "/", "_")..".txt"
 	self:DebugLog("Logs have been saved.\n")
 
-	if not file.IsDir(self.DataFolder.."/logs", "DATA") then
-	   file.CreateDir(self.DataFolder.."/logs")
-	end
-
 	local StringToWrite = ""
 	for k, v in pairs(self.DebugLogs) do
 		if (StringToWrite == "") then

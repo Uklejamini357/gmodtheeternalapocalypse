@@ -1,12 +1,17 @@
+function GM:InitializeDataDirs()
+    file.CreateDir(self.DataFolder)
+    file.CreateDir(self.DataFolder.."/logs")
+    file.CreateDir(self.DataFolder.."/players")
+    file.CreateDir(self.DataFolder.."/server")
+    file.CreateDir(self.DataFolder.."/spawns")
+end
+
 function GM:LoadServerData()
-    local filedir = self.DataFolder.."/server"
-    local filedir2 = self.DataFolder.."/server/globaldata.txt"
+    local filedir = self.DataFolder.."/server/globaldata.txt"
 
-    if not file.IsDir(filedir, "DATA") then file.CreateDir(filedir) end
-
-    if file.Exists(filedir2, "DATA") then
+    if file.Exists(filedir, "DATA") then
 		local method = self.Config.SFS and sfs.decode or util.JSONToTable
-		local tbl = method(file.Read(filedir2, "DATA"))
+		local tbl = method(file.Read(filedir, "DATA"))
  
         if tbl.InfectionLevel then
             self:SetInfectionLevel(tbl.InfectionLevel, true)

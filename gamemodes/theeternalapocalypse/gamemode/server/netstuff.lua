@@ -368,6 +368,8 @@ net.Receive("tea_perksreset", function(len, pl)
 	GAMEMODE:NetUpdatePeriodicStats(pl)
 end)
 
+
+-- BROKEN currently due to code rewrite. Working for a replacement.
 function GM:SendSpawnsToPlayer(pl, spawn)
 	net.Start("tea_admin_sendspawns")
 	net.WriteString(spawn)

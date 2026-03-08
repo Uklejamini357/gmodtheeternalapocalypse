@@ -3,7 +3,7 @@ GM.AltName	= "After The End Reborn"
 GM.Author	= "Uklejamini"
 GM.Email	= ""
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.12.0b1"
+GM.Version	= "0.12.0b2"
 GM.DateVer	= "08.03.2026" -- Follows the DD.MM.YYYY format.
 GM.Credits = {
 	-- Assets

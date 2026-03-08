@@ -1,6 +1,6 @@
 SWEP.Author = "Uklejamini" --Swep info and other stuff
 SWEP.Contact = ""
-SWEP.Purpose = "Admin Tool"
+SWEP.Purpose = "Admin Tool."
 SWEP.Instructions = ""
 if SERVER then
     SWEP.Weight = 1
@@ -35,10 +35,20 @@ SWEP.Secondary.DefaultClip = 0
 SWEP.Secondary.Automatic = false
 SWEP.Secondary.Ammo = "none"
 
-SWEP.ViewModel = "models/weapons/v_physcannon.mdl"
-SWEP.WorldModel = "models/weapons/w_physics.mdl"
+SWEP.ViewModel = ""
+SWEP.WorldModel = ""
 
 function SWEP:DrawHUD()
+    draw.DrawText("ADMIN TOOL", "TargetIDSmall", ScrW()/2, ScrH()*0.2, color_white, TEXT_ALIGN_CENTER)
+    draw.DrawText("Nothing to do with it yet, sorry.", "TargetIDSmall", ScrW()/2, ScrH()*0.2 + 20, color_white, TEXT_ALIGN_CENTER)
+end
+
+function SWEP:DrawViewModel()
+    return false
+end
+
+function SWEP:DrawWorldModel()
+    return true
 end
 
 function SWEP:SetupDataTables()
@@ -63,6 +73,7 @@ function SWEP:SecondaryAttack()
 end
 
 function SWEP:Holster()
+    return true
 end
 
 function SWEP:OnRemove()
