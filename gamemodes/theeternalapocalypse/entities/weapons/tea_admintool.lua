@@ -2,6 +2,7 @@ SWEP.Author = "Uklejamini" --Swep info and other stuff
 SWEP.Contact = ""
 SWEP.Purpose = "Admin Tool."
 SWEP.Instructions = ""
+
 if SERVER then
     SWEP.Weight = 1
     SWEP.AutoSwitchTo = false
@@ -43,41 +44,62 @@ function SWEP:DrawHUD()
     draw.DrawText("Nothing to do with it yet, sorry.", "TargetIDSmall", ScrW()/2, ScrH()*0.2 + 20, color_white, TEXT_ALIGN_CENTER)
 end
 
-function SWEP:DrawViewModel()
-    return false
+function SWEP:SetMode(mode)
+    self:SetDTInt(0, mode)
 end
 
-function SWEP:DrawWorldModel()
-    return true
+function SWEP:GetMode()
+    return self:GetDTInt(0)
 end
 
-function SWEP:SetupDataTables()
+function SWEP:SetSubMode(mode)
+    self:SetDTInt(1, mode)
 end
 
-function SWEP:Reload()
+function SWEP:GetSubMode()
+    return self:GetDTInt(1)
 end
 
-function SWEP:GetSelected()
-end
-
-function SWEP:IsSelectedStructure()
-end
-
-function SWEP:GetSelectedStructureModel()
+function SWEP:Initialize()
+    self:SetHoldType(0)
 end
 
 function SWEP:PrimaryAttack()
+    if self:GetMode() == ADMINTOOL_MODE_NONE then return end
 end
 
 function SWEP:SecondaryAttack()
+    if CLIENT then
+        gamemode.Call("OpenAdminToolSelectMode", self)
+    end
+end
+
+function SWEP:Reload()
+    if self.NextReload and self.NextReload > CurTime() then return end
+    if CLIENT then
+        gamemode.Call("OpenAdminToolMenu", self)
+        self.NextReload = CurTime() + 0.6
+    end
 end
 
 function SWEP:Holster()
     return true
 end
 
-function SWEP:OnRemove()
-end
+local mat,matnum = Material("color")
+if CLIENT then
+    hook.Add("PostDrawOpaqueRenderables", "TEA.AdminTool.Render", function()
+        local pl = LocalPlayer()
+        local wep = pl.GetActiveWeapon and pl:GetActiveWeapon()
+        if wep and wep:IsValid() and wep:GetClass() == "tea_admintool" then
+            local pos = pl:GetEyeTrace().HitPos
 
-function SWEP:Think()
+            pos.x = math.Round(pos.x)
+            pos.y = math.Round(pos.y)
+            pos.z = math.Round(pos.z)
+
+            render.SetMaterial(mat)
+            render.DrawSphere(pos, 4, 8, 8, Color(255,0,0,200))
+        end
+    end)
 end

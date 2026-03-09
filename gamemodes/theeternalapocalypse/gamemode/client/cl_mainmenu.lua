@@ -154,14 +154,13 @@ function GM:LoadMainMenu()
 	self.MainMenuPanel.SoundDur = SoundDur(sound)
 
 	local title = vgui.Create("DLabel", self.MainMenuPanel)
-	if !self.PlayerCharactersTest then
-		title:SetPos(0, 130)
-		title:MoveTo(50, 130, 3)
-	end
 	title:SetText(translate.Get("the_eternal_apocalypse"))
 	title:SetTextColor(Color(255,255,255))
 	title:SetFont("Trebuchet24")
 	title:SizeToContents()
+	title:CenterHorizontal()
+	local x = title:GetPos()
+	title:MoveTo(x, 120, 3)
 	if self.PlayerCharactersTest then
 		local txtsize_x,txtsize_y = title:GetSize()
 		title:SetPos(ScrW() / 2 - txtsize_x/2, 0)
@@ -170,7 +169,8 @@ function GM:LoadMainMenu()
 
 	-- Update panel
 	local titlepan = vgui.Create("DPanel", self.MainMenuPanel)
-	titlepan:SetPos(ScrW() - 500, ScrH() / 2 - 150)
+	titlepan:SetPos(ScrW(), ScrH() / 2 - 150)
+	titlepan:MoveTo(ScrW() - 500, ScrH()/2 - 150, 3)
 	titlepan:SetSize(450, 300)
 	titlepan.Paint = function() end
 
@@ -232,15 +232,14 @@ function GM:LoadMainMenu()
 	y = y + 30
 
 
-	for i=1,self.PlayerCharactersTest and 2 or 1 do
+	for i=1,2 do
 		local desc = vgui.Create("DLabel", self.MainMenuPanel)
-		if !self.PlayerCharactersTest then
-			desc:SetPos(0, 170)
-			desc:MoveTo(50, 170, 3.5)
-		end
+		desc:SetContentAlignment(5)
 		desc:SetText(translate.Get("the_eternal_apocalypse_desc"))
 		desc:SetFont("Trebuchet18")
 		desc:SizeToContents()
+		desc:SetPos(ScrW()/2 + (i==2 and (ScrW()+desc:GetWide())/2 or -(ScrW()+desc:GetWide())/2), 160)
+		desc:MoveTo(ScrW()/2-desc:GetWide()/2, 160, 2)
 		if self.PlayerCharactersTest then
 			local txtsize_x,txtsize_y = desc:GetSize()
 			desc:SetPos(ScrW() / 2 - txtsize_x/2 + (ScrW()/2)*(i == 1 and 1 or -1), 150)
@@ -260,58 +259,69 @@ function GM:LoadMainMenu()
 	end
 
 	if !self.PlayerCharactersTest then
-		local note = vgui.Create("DLabel", self.MainMenuPanel)
-		note:SetPos(0, 200)
-		note:MoveTo(50, 200, 3.5)
-		note:SetTextColor(Color(127,255,255))
-		note:SetText("Please note, this is a beta version. Some things may not work as expected.\nAdding new options to main menu soon!")
-		note:SetFont("Trebuchet18")
-		note:SizeToContents()
+		for i=1,2 do
+			local note = vgui.Create("DLabel", self.MainMenuPanel)
+			note:SetContentAlignment(5)
+			note:SetTextColor(Color(127,255,255))
+			note:SetText("Please note, this is a beta version. Some things may not work as expected.")
+			note:SetFont("Trebuchet18")
+			note:SizeToContents()
+			note:SetPos(ScrW()/2 + (i==2 and ScrW() or -ScrW()), 200)
+			note:MoveTo(ScrW()/2-note:GetWide()/2, 200, 2.5)
+		end
 	end
 
 	local button = vgui.Create("DButton", self.MainMenuPanel)
-	if self.PlayerCharactersTest then
-		button:SetPos(0, 0)
-	else
-		button:SetPos(0, 260)
-		button:MoveTo(50, 260, 3.5)
-	end
-
-	button:SetSize(120, 25)
-	if self.PlayerCharactersTest then
-		button:SetText("")
-	else
-		button:SetText(translate.Get("play"))
-	end
+	button:SetSize(200, 25)
+	button:CenterHorizontal()
+	button:CenterVertical(1)
+	local x,y = button:GetPos()
+	button:MoveTo(x, y-200, 2.5)
+	button:SetText(translate.Get("play"))
 	button:SetTextColor(Color(255,255,255))
 	button:SetFont("TEA.HUDFontSmall")
 	button.DoClick = function(self)
 		net.Start("tea_player_ready_spawn")
 		net.SendToServer()
 	end
-	if self.PlayerCharactersTest then button.Paint = function() end end
+	button.Paint = function(self,w,h)
+		surface.SetDrawColor(255,255,255,200)
+		surface.DrawOutlinedRect(0,0,w,h)
+	end
 
 	if !self.PlayerCharactersTest then
 		button = vgui.Create("DButton", self.MainMenuPanel)
-		button:SetPos(0, 290)
-		button:MoveTo(50, 290, 3.5)
-		button:SetSize(120, 25)
+		button:SetSize(160, 25)
+		button:CenterHorizontal()
+		button:CenterVertical(1)
+		local x,y = button:GetPos()
+		button:MoveTo(x, y-160, 2.5)
 		button:SetText("Help")
 		button:SetTextColor(Color(255,255,205))
 		button:SetFont("TEA.HUDFontSmall")
 		button.DoClick = function(self)
 			gamemode.Call("HelpMenu")
 		end
+		button.Paint = function(self,w,h)
+			surface.SetDrawColor(255,255,255,200)
+			surface.DrawOutlinedRect(0,0,w,h)
+		end
 
 		button = vgui.Create("DButton", self.MainMenuPanel)
-		button:SetPos(0, 320)
-		button:MoveTo(50, 320, 3.5)
 		button:SetSize(120, 25)
+		button:CenterHorizontal()
+		button:CenterVertical(1)
+		local x,y = button:GetPos()
+		button:MoveTo(x, y-120, 2.5)
 		button:SetText(translate.Get("disconnect"))
 		button:SetTextColor(Color(255,205,205))
 		button:SetFont("TEA.HUDFontSmall")
 		button.DoClick = function(self)
 			RunConsoleCommand("disconnect")
+		end
+		button.Paint = function(self,w,h)
+			surface.SetDrawColor(255,255,255,200)
+			surface.DrawOutlinedRect(0,0,w,h)
 		end
 	end
 

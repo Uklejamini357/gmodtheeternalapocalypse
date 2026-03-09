@@ -66,6 +66,7 @@ util.AddNetworkString("tea_player_sendcharacters")
 
 util.AddNetworkString("tea_admin_sendspawns")
 util.AddNetworkString("tea_admin_safezone")
+util.AddNetworkString("tea_admin_tool")
 
 
 --util.AddNetworkString("Respawn")
@@ -435,6 +436,19 @@ function GM:SendSpawnsToPlayer(pl, spawn)
 	net.WriteTable(spawns)
 	net.Send(pl)
 end
+
+net.Receive("tea_admin_tool", function(len, pl)
+	local t = net.ReadString()
+	local wep = pl:GetWeapon("tea_admintool")
+	if !IsValid(wep) then return end
+
+	if t == "selectmode" then
+		local mode = net.ReadUInt(4)
+
+		wep:SetMode(mode)
+	end
+
+end)
 
 
 function GM:SendAllSpawnsToPlayer(pl)
