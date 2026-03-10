@@ -194,3 +194,13 @@ net.Receive("tea_openworld_level", function()
     local map = net.ReadString()
     local direction = net.ReadUInt(2)
 end)
+
+net.Receive("tea_admin_tool", function()
+	local mode = net.ReadString()
+	if mode == "admineyes" then
+		local var = net.ReadString()
+		local vars = net.ReadTable()
+
+		GAMEMODE.AdminEyes[var] = vars
+	end
+end)

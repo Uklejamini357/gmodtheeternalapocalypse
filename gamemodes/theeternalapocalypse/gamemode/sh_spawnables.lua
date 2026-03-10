@@ -178,3 +178,75 @@ GM.SpecialStructureSpawns = {
 */
 
 }
+
+
+GM.AdminMapSpawnables = {
+	Zombie = {
+		Spawn = function(owner, swep, tr)
+			gamemode.Call("AddZombieSpawnpoint", tr.HitPos, owner:EyeAngles().yaw, 0, 0)
+			PrintMessage(3, "Added zombie spawnpoint")
+		end
+	},
+
+	Loot = {
+		Spawn = function(owner, swep, tr)
+			gamemode.Call("AddLootSpawnpoint", tr.HitPos, owner:EyeAngles().yaw, 0, 0)
+		end
+	},
+
+	Airdrop = {
+		Spawn = function(owner, swep, tr)
+			local err,msg = gamemode.Call("AddAirdropSpawnpoint", tr.HitPos, owner:EyeAngles().yaw)
+			if err then
+				PrintMessage(3, "Error: "..msg)
+			end
+		end
+	},
+
+	Trader = {
+		Spawn = function(owner, swep, tr)
+			gamemode.Call("AddTraderSpawnpoint", tr.HitPos, owner:EyeAngles().yaw, 0, 0)
+		end
+	},
+
+	PlayerSpawnpoint = {
+		Spawn = function(owner, swep, tr)
+			gamemode.Call("AddPlayerSpawnpoint", tr.HitPos, owner:EyeAngles().yaw, 0, 0)
+		end
+	},
+
+	TaskDealer = {
+		Spawn = function(owner, swep, tr)
+			gamemode.Call("AddTaskDealerSpawnpoint", tr.HitPos, owner:EyeAngles().yaw, 0, 0)
+		end
+	},
+
+	Openworld = {
+		Name = "Create transition",
+		Spawn = function(owner, swep, tr)
+			if !swep.OpenworldPos1 then
+				swep.OpenworldPos1 = swep:GetAimPos()
+				PrintMessage(3, tostring(swep.OpenworldPos1))
+				return
+			end
+
+			swep.OpenworldPos2 = swep:GetAimPos()
+			PrintMessage(3, tostring(swep.OpenworldPos2))
+
+			swep.OpenworldPos1 = nil
+			swep.OpenworldPos2 = nil
+		end
+	}
+}
+
+GM.AdminTools = {
+	Explode = {
+		Spawn = function(owner, swep, tr)
+			local explode = ents.Create("env_explosion")
+			explode:SetKeyValue("iMagnitude", 100)
+			explode:SetPos(tr.HitPos)
+			explode:Spawn()
+			explode:Fire("Explode")
+		end
+	}
+}

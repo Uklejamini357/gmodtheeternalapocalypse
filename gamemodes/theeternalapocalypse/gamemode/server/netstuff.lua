@@ -442,12 +442,30 @@ net.Receive("tea_admin_tool", function(len, pl)
 	local wep = pl:GetWeapon("tea_admintool")
 	if !IsValid(wep) then return end
 
-	if t == "selectmode" then
-		local mode = net.ReadUInt(4)
+	if t == "selectspawner" then
+		local spawning = net.ReadString()
 
-		wep:SetMode(mode)
+		if GAMEMODE.Config["ZombieClasses"][spawning] or GAMEMODE.Config["BossClasses"][spawning] then
+			wep:SetSpawningType(ADMINTOOL_SPAWNTYPE_ZOMBIE)
+		elseif GAMEMODE.FlimsyProps[spawning] then
+			wep:SetSpawningType(ADMINTOOL_SPAWNTYPE_PROPSFLIMSY)
+		elseif GAMEMODE.ToughProps[spawning] then
+			wep:SetSpawningType(ADMINTOOL_SPAWNTYPE_PROPSSTRONG)
+		elseif GAMEMODE.SpecialStructureSpawns[spawning] then
+			wep:SetSpawningType(ADMINTOOL_SPAWNTYPE_FACSTRUCTURES)
+		elseif GAMEMODE.AdminMapSpawnables[spawning] then
+			wep:SetSpawningType(ADMINTOOL_SPAWNTYPE_MAPSPAWNS)
+		elseif GAMEMODE.AdminTools[spawning] then
+			wep:SetSpawningType(ADMINTOOL_SPAWNTYPE_TOOL)
+		end
+		wep:SetSpawning(spawning)
+
+	elseif t == "setoptions" then
+		local tbl = net.ReadTable()
+		table.Merge(wep.SetOptions, tbl)
+	elseif t == "toggleremover" then
+		wep:SetMode(net.ReadUInt(4))
 	end
-
 end)
 
 

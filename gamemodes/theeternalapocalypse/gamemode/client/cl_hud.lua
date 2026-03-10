@@ -306,7 +306,7 @@ function GM:DrawVitals()
 
 		draw.SimpleText("Trace Entity: "..tostring(tr.Entity), "TEA.HUDFontSmall", 20, y, Color(205,205,255), 0, 0)
 		y = y + 22
-		if tr.Entity != NULL and tr.Entity:Health() > 0 then
+		if tr.Entity and tr.Entity:IsValid() and tr.Entity:Health() > 0 then
 			y = y - 8
 			draw.SimpleText("Ent HP: "..tr.Entity:Health().."/"..tr.Entity:GetMaxHealth(), "TEA.HUDFontSmall", 20, y, Color(205,205,255), 0, 0)
 			y = y + 22

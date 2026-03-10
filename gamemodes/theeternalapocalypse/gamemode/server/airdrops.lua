@@ -8,12 +8,20 @@ function GM:LoadAD()
 		self.AirdropSpawnpoints = file.Read(self.DataFolder.."/spawns/" .. string.lower(game.GetMap()) .. "/airdrops.txt", "DATA")
 
 		local tbl = {}
-		for _,v in pairs(string.Explode("\n", self.AirdropSpawnpoints)) do
-			local Booty = string.Explode(";", v)
-			local pos = util.StringToType(Booty[1], "Vector")
-			local ang = util.StringToType(Booty[2], "Angle")
+		for _,str in pairs(string.Explode("\n", self.AirdropSpawnpoints)) do
+			local v = string.Explode(";", str)
+			local pos = v[1]
+			local ang = Angle(0, tonumber(v[2]), 0)
 
-			table.insert(tbl, {pos, ang})
+			local tr = util.TraceLine({
+				start = ply:GetPos(),
+				endpos = ply:GetPos() + Vector(0, 0, 90000),
+				mask = MASK_SOLID_BRUSHONLY,
+			})
+			-- if !tr.HitSky then ply:SystemMessage("You can only place airdrop spawns in areas that are visible to the skybox!", Color(255,205,205,255), true) return end
+			local hitp = tr.HitPos - Vector(0, 0, 80)
+
+			table.insert(tbl, {pos, ang, hitp})
 		end
 		self.AirdropSpawnpoints = tbl
 
@@ -24,57 +32,42 @@ function GM:LoadAD()
 end
 
 
-function GM:AddAirdropSpawn(ply, cmd, args)
-	if !SuperAdminCheck(ply) then 
-		ply:SystemMessage(translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205,255), true)
-		ply:ConCommand("playgamesound buttons/button8.wav")
-		return
-	end
-
+function GM:AddAirdropSpawn(pos, ang)
 	local tr = util.TraceLine({
-		start = ply:GetPos(),
-		endpos = ply:GetPos() + Vector(0, 0, 90000),
+		start = pos,
+		endpos = pos + Vector(0, 0, 90000),
 		mask = MASK_SOLID_BRUSHONLY,
 	})
-	if !tr.HitSky then ply:SystemMessage("You can only place airdrop spawns in areas that are visible to the skybox!", Color(255,205,205,255), true) return end
+	if !tr.HitSky then return false, "Must be placed in a place visible to sky." end
 	local hitp = tr.HitPos - Vector(0, 0, 80)
 
 	table.insert(self.AirdropSpawnpoints, {hitp, ply:GetAngles()})
 
 	self:SaveAirdropSpawns()
-	self:LoadAD() --reload them
 
-	ply:SendChat("Added an airdrop spawnpoint at position "..tostring(hitp).."!")
-	self:DebugLog("[SPAWNPOINTS MODIFIED] "..ply:Nick().." has added an airdrop spawnpoint at position "..tostring(hitp).."!")
-	ply:ConCommand("playgamesound buttons/button3.wav")
+	return true
 end
-concommand.Add("tea_addairdropspawn", function(ply, cmd, args)
-	gamemode.Call("AddAirdropSpawn", ply, cmd, args)
-end)
+
+function GM:ClearAirdropSpawns()
+	self.AirdropSpawnpoints = {}
+	if file.Exists(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/airdrops.txt", "DATA") then
+		file.Delete(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/airdrops.txt")
+	end
+end
 
 
-function GM:ClearAirdropSpawns(ply, cmd, args)
+concommand.Add("tea_clearairdropspawns", function(ply, cmd, args)
 	if !SuperAdminCheck(ply) then 
 		ply:SystemMessage(translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205,255), true)
 		ply:ConCommand("playgamesound buttons/button8.wav")
 		return
 	end
 
-	if file.Exists(self.DataFolder.."/spawns/".. string.lower(game.GetMap()) .."/airdrops.txt", "DATA") then
-		file.Delete(self.DataFolder.."/spawns/".. string.lower(game.GetMap()) .."/airdrops.txt")
-	end
-
-	self.AirdropSpawnpoints = {}
-	if file.Exists(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/airdrops.txt", "DATA") then
-		file.Delete(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/airdrops.txt")
-	end
+	GAMEMODE:ClearAirdropSpawns()
 
 	ply:SendChat("Deleted all airdrop spawnpoints")
-	self:DebugLog("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all airdrop spawnpoints!")
+	GAMEMODE:DebugLog("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all airdrop spawnpoints!")
 	ply:ConCommand("playgamesound buttons/button15.wav")
-end
-concommand.Add("tea_clearairdropspawns", function(ply, cmd, args)
-	gamemode.Call("ClearAirdropSpawns", ply, cmd, args)
 end)
 
 function GM:SaveAirdropSpawns()

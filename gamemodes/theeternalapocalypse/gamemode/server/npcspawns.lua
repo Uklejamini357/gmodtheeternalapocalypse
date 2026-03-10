@@ -19,12 +19,14 @@ function GM:LoadZombies()
 		self.ZombieSpawnpoints = file.Read(self.DataFolder.."/spawns/" .. string.lower(game.GetMap()) .. "/zombies.txt", "DATA")
 
 		local tbl = {}
-		for _,v in pairs(string.Explode("\n", self.ZombieSpawnpoints)) do
-			local Booty = string.Explode(";", v)
-			local pos = util.StringToType(Booty[1], "Vector")
-			local ang = util.StringToType(Booty[2], "Angle")
+		for _,str in pairs(string.Explode("\n", self.ZombieSpawnpoints)) do
+			local v = string.Explode(";", str)
+			local pos = util.StringToType(v[1], "Vector")
+			local ang = Angle(0, tonumber(v[2]), 0)
+			local radius = tonumber(v[3] or 0)
+			local tier = tonumber(v[4] or 1)
 
-			table.insert(tbl, {pos, ang})
+			table.insert(tbl, {pos, ang, radius, tier})
 		end
 		self.ZombieSpawnpoints = tbl
 
@@ -34,48 +36,34 @@ function GM:LoadZombies()
 	end
 end
 
-function GM:AddZombie(ply, cmd, args)
-	if !SuperAdminCheck(ply) then 
-		ply:SystemMessage(translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205), true)
-		ply:ConCommand("playgamesound buttons/button8.wav")
-		return
-	end
-
-	table.insert(self.ZombieSpawnpoints, {ply:GetPos(), ply:GetAngles()})
+function GM:AddZombieSpawnpoint(pos, yaw, radius, tier)
+	table.insert(self.ZombieSpawnpoints, {pos, Angle(0, yaw, 0), radius, tier})
 	
-	self:SaveZombieSpawns()
-
-	self:LoadZombies() --reload them
-
-	ply:SendChat("Added a zombie spawnpoint at position "..tostring(ply:GetPos()).."!")
-	self:DebugLog("[SPAWNPOINTS MODIFIED] "..ply:Nick().." has added a zombie spawnpoint at position "..tostring(ply:GetPos()).."!")
-	ply:ConCommand("playgamesound buttons/button3.wav")
+	self:SaveZombieSpawnpoints()
+	return true
 end
-concommand.Add("tea_addzombiespawn", function(ply, cmd, args, str)
-	GAMEMODE:AddZombie(ply, cmd, args, str)
-end)
 
-function GM:ClearZombies(ply, cmd, args)
-	if !SuperAdminCheck(ply) then 
-		ply:SystemMessage(translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205), true)
-		ply:ConCommand("playgamesound buttons/button8.wav")
-		return
-	end
-
+function GM:ClearZombieSpawnpoints()
 	self.ZombieSpawnpoints = {}
 	if file.Exists(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/zombies.txt", "DATA") then
 		file.Delete(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/zombies.txt")
 	end
-
-	ply:SendChat("Deleted all zombie spawnpoints")
-	self:DebugLog("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all zombie spawnpoints!")
-	ply:ConCommand("playgamesound buttons/button15.wav")
 end
 concommand.Add("tea_clearzombiespawns", function(ply, cmd, args, str)
-	GAMEMODE:ClearZombies(ply, cmd, args, str)
+	if !SuperAdminCheck(ply) then 
+		ply:SystemMessage(translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205), true)
+		ply:ConCommand("playgamesound buttons/button8.wav")
+		return
+	end
+
+	GAMEMODE:ClearZombieSpawnpoints()
+
+	ply:SendChat("Deleted all zombie spawnpoints")
+	GAMEMODE:DebugLog("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all zombie spawnpoints!")
+	ply:ConCommand("playgamesound buttons/button15.wav")
 end)
 
-function GM:SaveZombieSpawns()
+function GM:SaveZombieSpawnpoints()
 	local ftext = ""
 	for _,var in pairs(self.ZombieSpawnpoints) do
 		ftext = ftext..(ftext=="" and "" or "\n")..tostring(var[1])..";"..tostring(var[2])
@@ -365,9 +353,8 @@ function GM:SpawnBoss(plycountoverride, nonotify)
 	if table.Count(self.ZombieSpawnpoints) == 0 then return end
 
 	for k, v in RandomPairs(self.ZombieSpawnpoints) do
-		local Zed = string.Explode(";", v)
-		local pos = util.StringToType(Zed[1], "Vector")
-		local ang = util.StringToType(Zed[2], "Angle")
+		local pos = v[1]
+		local ang = v[2]
 
 		local inzedrange = true
 		for _, v in ipairs(ents.FindInSphere(pos, 200)) do

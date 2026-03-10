@@ -24,10 +24,10 @@ function GM:LoadLoot()
 		self.LootSpawnpoints = file.Read(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/loot.txt", "DATA")
 
 		local tbl = {}
-		for _,v in pairs(string.Explode("\n", self.LootSpawnpoints)) do
-			local Booty = string.Explode(";", v)
-			local pos = util.StringToType(Booty[1], "Vector")
-			local ang = util.StringToType(Booty[2], "Angle")
+		for _,str in pairs(string.Explode("\n", self.LootSpawnpoints)) do
+			local v = string.Explode(";", str)
+			local pos = util.StringToType(v[1], "Vector")
+			local ang = Angle(0, tonumber(v[2]), 0)
 
 			table.insert(tbl, {pos, ang})
 		end
@@ -39,46 +39,48 @@ function GM:LoadLoot()
 	end
 end
 
-function GM:AddLoot(ply, cmd, args)
-	if !SuperAdminCheck(ply) then
-		ply:SystemMessage(translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205,255), true)
-		ply:ConCommand("playgamesound buttons/button8.wav")
-		return
-	end
-
-	table.insert(self.LootSpawnpoints, {ply:GetPos(), ply:GetAngles()})
+function GM:AddLootSpawnpoint(pos, yaw, radius, tier)
+	table.insert(self.LootSpawnpoints, {pos, Angle(0, yaw, 0), radius, tier})
 
 	self:SaveLootSpawns()
-
-	self:LoadLoot() --reload them
-	
-	ply:SendChat("Added a loot spawnpoint at position "..tostring(ply:GetPos()).."!")
-	self:DebugLog("[SPAWNPOINTS MODIFIED] "..ply:Nick().." has added a loot spawnpoint at position "..tostring(ply:GetPos()).."!")
-	ply:ConCommand("playgamesound buttons/button3.wav")
+	return true
 end
-concommand.Add("tea_addlootspawn", function(ply, cmd, args)
-	gamemode.Call("AddLoot", ply, cmd, args)
-end)
+
+function GM:DeleteLootSpawnpoint(id)
+	self.LootSpawnpoints[id] = nil
+	
+	for i=1,#self.LootSpawnpoints do
+		if i <= 1 then continue end
+		if !self.LootSpawnpoints[i-1] then
+			self.LootSpawnpoints[i-1] = self.LootSpawnpoints[i]
+			self.LootSpawnpoints[i] = nil
+		end
+	end
+
+	self:SaveLootSpawns()
+end
+
+function GM:ClearLootSpawnpoints()
+	self.LootSpawnpoints = {}
+	
+	if file.Exists(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/loot.txt", "DATA") then
+		file.Delete(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/loot.txt")
+	end
+end
 
 
-function GM:ClearLoot(ply, cmd, args)
+concommand.Add("tea_clearlootspawns", function(ply, cmd, args)
 	if !SuperAdminCheck(ply) then 
 		ply:SystemMessage(translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205,255), true)
 		ply:ConCommand("playgamesound buttons/button8.wav")
 		return
 	end
 
-	self.LootSpawnpoints = {}
-	if file.Exists(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/loot.txt", "DATA") then
-		file.Delete(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/loot.txt")
-	end
+	GAMEMODE:ClearLootSpawnpoints()
 
 	ply:SendChat("Deleted all loot spawnpoints")
-	self:DebugLog("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all loot spawnpoints!")
+	GAMEMODE:DebugLog("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all loot spawnpoints!")
 	ply:ConCommand("playgamesound buttons/button15.wav")
-end
-concommand.Add("tea_clearlootspawns", function(ply, cmd, args)
-	gamemode.Call("ClearLoot", ply, cmd, args)
 end)
 
 function GM:SaveLootSpawns()

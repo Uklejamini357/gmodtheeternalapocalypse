@@ -1,5 +1,9 @@
 --if you find this text, congratulations
 pAdmMenuFrame = nil
+
+GM.AdminEyes = {}
+GM.EnabledAdminEyes = {}
+
 local PlayerListView
 local last_cursor_x,last_cursor_y
 
@@ -205,208 +209,16 @@ function GM:AdminMenu()
 	end
 
 
-	local SAdminCmds = vgui.Create("DPanel", PropertySheet)
-	SAdminCmds:SetSize(AdmMenuFrame:GetWide() - 20, AdmMenuFrame:GetTall() - 20)
-	SAdminCmds.Paint = function(self, w, h)
-		draw.RoundedBox(2, 0, 0, w, h, Color(0, 0, 0, 100))
-		surface.SetDrawColor(0, 0, 0, 0)
-	end
-	
-	local stext1 = vgui.Create("DLabel", SAdminCmds)
-	stext1:SetFont("TEA.HUDFontSmall")
-	stext1:SetColor(Color(205,205,205,255))
-	stext1:SetText("Airdrop Spawns")
-	stext1:SizeToContents()
-	stext1:SetPos(20, 20)
-	
-	local sbutton1 = vgui.Create("DButton", SAdminCmds)
-	sbutton1:SetSize(120, 30)
-	sbutton1:SetPos(20, 45)
-	sbutton1:SetText("Add airdrop spawnpoint")
-	sbutton1:SetTextColor(Color(255, 255, 255, 255))
-	sbutton1.Paint = function(panel)
-		surface.SetDrawColor(150, 150, 0 ,255)
-		surface.DrawOutlinedRect(0, 0, sbutton1:GetWide(), sbutton1:GetTall())
-		draw.RoundedBox(2, 0, 0, sbutton1:GetWide(), sbutton1:GetTall(), Color(0, 0, 0, 130))
-	end
-	sbutton1.DoClick = function()
-		RunConsoleCommand("tea_addairdropspawn")
-	end
+	local text3 = vgui.Create("DLabel", AdminCmds)
+	text3:SetFont("TEA.HUDFontSmall")
+	text3:SetColor(Color(205,205,205,255))
+	text3:SetText("Misc")
+	text3:SizeToContents()
+	text3:SetPos(20, 150)
 
-	local sbutton2 = vgui.Create("DButton", SAdminCmds)
-	sbutton2:SetSize(120, 30)
-	sbutton2:SetPos(150, 45)
-	sbutton2:SetText("Clear airdrop spawns")
-	sbutton2:SetTextColor(Color(255, 255, 255, 255))
-	sbutton2.Paint = function(panel)
-	surface.SetDrawColor(150, 150, 0 ,255)
-	surface.DrawOutlinedRect(0, 0, sbutton2:GetWide(), sbutton2:GetTall())
-	draw.RoundedBox(2, 0, 0, sbutton2:GetWide(), sbutton2:GetTall(), Color(0, 0, 0, 130))
-	end
-	sbutton2.DoClick = function()
-		Derma_Query("Are you sure?", "Confirmation", "Yes", function()
-			RunConsoleCommand("tea_clearairdropspawns")
-		end, "No")
-	end
-	
-	local stext2 = vgui.Create("DLabel", SAdminCmds)
-	stext2:SetFont("TEA.HUDFontSmall")
-	stext2:SetColor(Color(205,205,205,255))
-	stext2:SetText("Loot Spawns")
-	stext2:SizeToContents()
-	stext2:SetPos(20, 100)
-
-	local sbutton3 = vgui.Create("DButton", SAdminCmds)
-	sbutton3:SetSize(120, 30)
-	sbutton3:SetPos(20, 125)
-	sbutton3:SetText("Add loot spawnpoint")
-	sbutton3:SetTextColor(Color(255, 255, 255, 255))
-	sbutton3.Paint = function(panel)
-	surface.SetDrawColor(150, 150, 0 ,255)
-	surface.DrawOutlinedRect(0, 0, sbutton3:GetWide(), sbutton3:GetTall())
-	draw.RoundedBox(2, 0, 0, sbutton3:GetWide(), sbutton3:GetTall(), Color(0, 0, 0, 130))
-	end
-	sbutton3.DoClick = function()
-		RunConsoleCommand("tea_addlootspawn")
-	end
-
-	local sbutton4 = vgui.Create("DButton", SAdminCmds)
-	sbutton4:SetSize(120, 30)
-	sbutton4:SetPos(150, 125)
-	sbutton4:SetText("Clear loot spawns")
-	sbutton4:SetTextColor(Color(255, 255, 255, 255))
-	sbutton4.Paint = function(panel)
-	surface.SetDrawColor(150, 150, 0 ,255)
-	surface.DrawOutlinedRect(0, 0, sbutton4:GetWide(), sbutton4:GetTall())
-	draw.RoundedBox(2, 0, 0, sbutton4:GetWide(), sbutton4:GetTall(), Color(0, 0, 0, 130))
-	end
-	sbutton4.DoClick = function()
-		Derma_Query("Are you sure?", "Confirmation", "Yes", function()
-			RunConsoleCommand("tea_clearlootspawns")
-		end, "No")
-	end
-
-	local stext3 = vgui.Create("DLabel", SAdminCmds)
-	stext3:SetFont("TEA.HUDFontSmall")
-	stext3:SetColor(Color(205,205,205,255))
-	stext3:SetText("Player Spawnpoints")
-	stext3:SizeToContents()
-	stext3:SetPos(20, 180)
-
-	local sbutton5 = vgui.Create("DButton", SAdminCmds)
-	sbutton5:SetSize(120, 30)
-	sbutton5:SetPos(20, 205)
-	sbutton5:SetText("Add player spawnpoint")
-	sbutton5:SetTextColor(Color(255, 255, 255, 255))
-	sbutton5.Paint = function(panel)
-		surface.SetDrawColor(150, 150, 0 ,255)
-		surface.DrawOutlinedRect(0, 0, sbutton5:GetWide(), sbutton5:GetTall())
-		draw.RoundedBox(2, 0, 0, sbutton5:GetWide(), sbutton5:GetTall(), Color(0, 0, 0, 130))
-	end
-	sbutton5.DoClick = function()
-		RunConsoleCommand("tea_addplayerspawnpoint", "Spawnpoint_name")
-	end
-
-	local sbutton6 = vgui.Create("DButton", SAdminCmds)
-	sbutton6:SetSize(120, 30)
-	sbutton6:SetPos(150, 205)
-	sbutton6:SetText("Clear player spawnponts")
-	sbutton6:SetTextColor(Color(255, 255, 255, 255))
-	sbutton6.Paint = function(panel)
-		surface.SetDrawColor(150, 150, 0 ,255)
-		surface.DrawOutlinedRect(0, 0, sbutton6:GetWide(), sbutton6:GetTall())
-		draw.RoundedBox(2, 0, 0, sbutton6:GetWide(), sbutton6:GetTall(), Color(0, 0, 0, 130))
-	end
-	sbutton6.DoClick = function()
-		Derma_Query("Are you sure?", "Confirmation", "Yes", function()
-			RunConsoleCommand("tea_clearplayerspawnpoints", "No name")
-		end, "No")
-	end
-
-	local stext4 = vgui.Create("DLabel", SAdminCmds)
-	stext4:SetFont("TEA.HUDFontSmall")
-	stext4:SetColor(Color(205,205,205,255))
-	stext4:SetText("Trader Spawns")
-	stext4:SizeToContents()
-	stext4:SetPos(20, 260)
-
-	local sbutton7 = vgui.Create("DButton", SAdminCmds)
-	sbutton7:SetSize(120, 30)
-	sbutton7:SetPos(20, 285)
-	sbutton7:SetText("Add trader spawnpoint")
-	sbutton7:SetTextColor(Color(255, 255, 255, 255))
-	sbutton7.Paint = function(panel)
-		surface.SetDrawColor(150, 150, 0 ,255)
-		surface.DrawOutlinedRect(0, 0, sbutton7:GetWide(), sbutton7:GetTall())
-		draw.RoundedBox(2, 0, 0, sbutton7:GetWide(), sbutton7:GetTall(), Color(0, 0, 0, 130))
-	end
-	sbutton7.DoClick = function()
-		RunConsoleCommand("tea_addtrader")
-	end
-
-	local sbutton8 = vgui.Create("DButton", SAdminCmds)
-	sbutton8:SetSize(120, 30)
-	sbutton8:SetPos(150, 285)
-	sbutton8:SetText("Clear Trader spawns")
-	sbutton8:SetTextColor(Color(255, 255, 255, 255))
-	sbutton8.Paint = function(panel)
-		surface.SetDrawColor(150, 150, 0 ,255)
-		surface.DrawOutlinedRect(0, 0, sbutton8:GetWide(), sbutton8:GetTall())
-		draw.RoundedBox(2, 0, 0, sbutton8:GetWide(), sbutton8:GetTall(), Color(0, 0, 0, 130))
-	end
-	sbutton8.DoClick = function()
-		Derma_Query("Are you sure?", "Confirmation", "Yes", function()
-			RunConsoleCommand("tea_cleartraderspawns")
-		end, "No")
-	end
-
-	local stext5 = vgui.Create("DLabel", SAdminCmds)
-	stext5:SetFont("TEA.HUDFontSmall")
-	stext5:SetColor(Color(205,205,205,255))
-	stext5:SetText("Zombie Spawns")
-	stext5:SizeToContents()
-	stext5:SetPos(20, 340)
-
-	local sbutton9 = vgui.Create("DButton", SAdminCmds)
-	sbutton9:SetSize(120, 30)
-	sbutton9:SetPos(20, 365)
-	sbutton9:SetText("Add zombie spawnpoint")
-	sbutton9:SetTextColor(Color(255, 255, 255, 255))
-	sbutton9.Paint = function(panel)
-		surface.SetDrawColor(150, 150, 0 ,255)
-		surface.DrawOutlinedRect(0, 0, sbutton9:GetWide(), sbutton9:GetTall())
-		draw.RoundedBox(2, 0, 0, sbutton9:GetWide(), sbutton9:GetTall(), Color(0, 0, 0, 130))
-	end
-	sbutton9.DoClick = function()
-		RunConsoleCommand("tea_addzombiespawn")
-	end
-
-	local sbutton10 = vgui.Create("DButton", SAdminCmds)
-	sbutton10:SetSize(120, 30)
-	sbutton10:SetPos(150, 365)
-	sbutton10:SetText("Clear zombie spawns")
-	sbutton10:SetTextColor(Color(255, 255, 255, 255))
-	sbutton10.Paint = function(panel)
-		surface.SetDrawColor(150, 150, 0 ,255)
-		surface.DrawOutlinedRect(0, 0, sbutton10:GetWide(), sbutton10:GetTall())
-		draw.RoundedBox(2, 0, 0, sbutton10:GetWide(), sbutton10:GetTall(), Color(0, 0, 0, 130))
-	end
-	sbutton10.DoClick = function()
-		Derma_Query("Are you sure?", "Confirmation", "Yes", function()
-			RunConsoleCommand("tea_clearzombiespawns")
-		end, "No")
-	end
-	
-	local stext6 = vgui.Create("DLabel", SAdminCmds)
-	stext6:SetFont("TEA.HUDFontSmall")
-	stext6:SetColor(Color(205,205,205,255))
-	stext6:SetText("Misc")
-	stext6:SizeToContents()
-	stext6:SetPos(20, 420)
-
-	local clearprops = vgui.Create("DButton", SAdminCmds)
+	local clearprops = vgui.Create("DButton", AdminCmds)
 	clearprops:SetSize(120, 30)
-	clearprops:SetPos(20, 445)
+	clearprops:SetPos(20, 175)
 	clearprops:SetText("Cleanup All Props")
 	clearprops:SetToolTip("WARNING!")
 	clearprops:SetTextColor(Color(255, 255, 255, 255))
@@ -622,85 +434,30 @@ function GM:AdminMenu()
 
 	PropertySheet:AddSheet(translate.Get("admin_panel_tab_1"), PlayerList, "icon16/shield.png", false, false, translate.Get("admin_panel_tab_1_d"))
 	PropertySheet:AddSheet(translate.Get("admin_panel_tab_2"), AdminCmds, "icon16/shield.png", false, false, translate.Get("admin_panel_tab_2_d"))
-	PropertySheet:AddSheet(translate.Get("admin_panel_tab_3"), SAdminCmds, "icon16/shield_add.png", false, false, translate.Get("admin_panel_tab_3_d"))
 	PropertySheet:AddSheet(translate.Get("admin_panel_tab_4"), SpawnMenu, "icon16/table.png", false, false, translate.Get("admin_panel_tab_4_d"))
 end
 
 local atm
-local function btnclick(self)
+local optionstbl = {}
+local function btnspawning(self)
 	net.Start("tea_admin_tool")
-	net.WriteString("selectmode")
-	net.WriteUInt(self.ModeID, 4)
+	net.WriteString("selectspawner")
+	net.WriteString(self.SpawningID)
 	net.SendToServer()
-
-	self:GetParent():Remove()
 end
-local function btnpaint(self, w, h)
-	surface.SetDrawColor(0,0,0,200)
-	surface.DrawRect(0,0,w,h)
-	surface.SetDrawColor(255,255,255,100)
-	surface.DrawOutlinedRect(0,0,w,h)
+local function updateoptions(tbl)
+	net.Start("tea_admin_tool")
+	net.WriteString("setoptions")
+	net.WriteTable(tbl)
+	net.SendToServer()
 end
-function GM:OpenAdminToolSelectMode(wep)
-	atm = vgui.Create("Panel")
-	atm:SetSize(400, 150)
-	atm:Center()
-	atm.Paint = function(self, w, h)
-		surface.SetDrawColor(0,0,0,200)
-		surface.DrawRect(0,0,w,h)
-		surface.SetDrawColor(255,255,255,100)
-		surface.DrawOutlinedRect(0,0,w,h)
-	end
-
-	atm:MakePopup()
-
-	local CurrentMode = wep:GetMode()
-	local CurrentSubMode = wep:GetSubMode()
-
-	atm.b = vgui.Create("DButton", atm)
-	atm.b:SetFont("TEA.HUDFont")
-	atm.b:SetText("None")
-	atm.b:Dock(TOP)
-	atm.b:DockMargin(0, 10, 0, 0)
-	atm.b.DoClick = btnclick
-	atm.b.Paint = btnpaint
-	atm.b.ModeID = ADMINTOOL_MODE_NONE
-
-	atm.b = vgui.Create("DButton", atm)
-	atm.b:SetFont("TEA.HUDFont")
-	atm.b:SetText("Zombies")
-	atm.b:Dock(TOP)
-	atm.b:DockMargin(0, 10, 0, 0)
-	atm.b.DoClick = btnclick
-	atm.b.Paint = btnpaint
-	atm.b.ModeID = ADMINTOOL_MODE_ZOMBIE
-
-	atm.b = vgui.Create("DButton", atm)
-	atm.b:SetFont("TEA.HUDFont")
-	atm.b:SetText("Map")
-	atm.b:Dock(TOP)
-	atm.b:DockMargin(0, 10, 0, 0)
-	atm.b.DoClick = btnclick
-	atm.b.Paint = btnpaint
-	atm.b.ModeID = ADMINTOOL_MODE_MAP
-
-	atm.b = vgui.Create("DButton", atm)
-	atm.b:SetFont("TEA.HUDFont")
-	atm.b:SetText("Openworld")
-	atm.b:Dock(TOP)
-	atm.b:DockMargin(0, 10, 0, 50)
-	atm.b.DoClick = btnclick
-	atm.b.Paint = btnpaint
-	atm.b.ModeID = ADMINTOOL_MODE_OPENWORLD
-end
-
-local atm
 function GM:OpenAdminToolMenu(wep)
 	if atm and IsValid(atm) then
 		if atm:IsVisible() then
 			atm:SetVisible(false)
 			return
 		end
+		atm.LastOpened = SysTime()
 
 		atm:SetVisible(true)
 		atm:MakePopup()
@@ -711,13 +468,22 @@ function GM:OpenAdminToolMenu(wep)
 		return
 	end
 
-	atm = vgui.Create("Panel")
+	atm = vgui.Create("EditablePanel")
 	atm:SetSize(ScrW(), ScrH())
 	atm:Center()
 	atm.Paint = function(self, w, h)
 		surface.SetDrawColor(0,0,0,160)
 		surface.DrawRect(0,0,w,h)
 	end
+	atm.Think = function(self)
+		if atm.LastOpened+0.6<SysTime() and input.IsKeyDown(input.GetKeyCode(input.LookupBinding("+reload"))) then
+			self:SetVisible(false)
+			if wep and wep:IsValid() then
+				wep.NextReload = CurTime() + 0.6
+			end
+		end
+	end
+	atm.LastOpened = SysTime()
 
 	atm:SetAlpha(0)
 	atm:AlphaTo(255, 0.5, 0)
@@ -757,105 +523,367 @@ function GM:OpenAdminToolMenu(wep)
 		surface.DrawOutlinedRect(0,0,w,h)
 	end
 
-	atm.panel = vgui.Create("Panel", atm.Categories)
-	atm.panel:Dock(FILL)
-	atm.Categories:AddSheet("Zombies", atm.panel)
+	local sidepanel = vgui.Create("EditablePanel", atm.Categories)
+	sidepanel:SetSize(400, 300)
+	sidepanel.Paint = function(self, w, h)
+		surface.SetDrawColor(0,0,0,100)
+		surface.DrawRect(0,0,w,h)
+		surface.SetDrawColor(255,255,255,200)
+		surface.DrawOutlinedRect(0,0,w,h)
 
-	local sidepanel = vgui.Create("DScrollPanel", atm.panel)
-	sidepanel:SetWide(ScrW()*0.15)
-	sidepanel:Dock(RIGHT)
-	sidepanel.Paint = function(self,w,h)
-		surface.SetDrawColor(255,0,0,200)
+		surface.SetDrawColor(255,0,0,255)
 		surface.DrawLine(0,0,0,h)
 	end
+	sidepanel:Dock(RIGHT)
+	sidepanel:SetWide(ScrH()*0.15)
 
 	do
-		local p = vgui.Create("Panel", sidepanel)
-		p:Dock(TOP)
-		p:DockMargin(5,0,0,0)
-		p.Paint = function(self,w,h)
-			surface.SetDrawColor(0,0,0,100)
+		local b = vgui.Create("DButton", sidepanel)
+		b:SetText("Remover")
+		b:SetFont("TEA.HUDFont")
+		b:SetTextColor(color_white)
+		b:Dock(TOP)
+		b:DockMargin(0, 10, 0, 0)
+		b.DoClick = function()
+			net.Start("tea_admin_tool")
+			net.WriteString("toggleremover")
+			net.WriteUInt(wep:GetMode()==ADMINTOOL_MODE_SPAWNER and ADMINTOOL_MODE_DELETE or ADMINTOOL_MODE_SPAWNER, 4)
+			net.SendToServer()
+		end
+		b.DoRightClick = function()
+			net.Start("tea_admin_tool")
+			net.WriteString("toggleremover")
+			net.WriteUInt(wep:GetMode()~=ADMINTOOL_MODE_DELETEUNSAFE and ADMINTOOL_MODE_DELETEUNSAFE or ADMINTOOL_MODE_SPAWNER, 4)
+			net.SendToServer()
+		end
+		b.Paint = function(self,w,h)
+			surface.SetDrawColor(wep:GetMode()~=ADMINTOOL_MODE_SPAWNER and 200 or 0,0,0,wep:GetMode()==ADMINTOOL_MODE_DELETEUNSAFE and 255 or 50)
+			surface.DrawRect(0,0,w,h)
+
+			surface.SetDrawColor(255,255,255,200)
+			surface.DrawOutlinedRect(0,0,w,h)
+		end
+	end
+
+	atm.panel = vgui.Create("EditablePanel", atm.Categories)
+	atm.panel:Dock(FILL)
+	local shtbl = atm.Categories:AddSheet("Zombies", atm.panel)
+	shtbl.Button.Paint = atm.Categories.Paint
+	shtbl.Button:SetTextColor(color_white)
+	shtbl.Button:SetTooltip(shtbl.Button:GetText())
+
+	atm.panel.Text = vgui.Create("DLabel", atm.panel)
+	atm.panel.Text:Dock(TOP)
+	atm.panel.Text:SetText("Normal Zombies")
+	atm.panel.Text:SetFont("TEA.HUDFont")
+	atm.panel.Text:SizeToContents()
+
+	for class,tbl in SortedPairs(self.Config["ZombieClasses"]) do
+		local button = vgui.Create("DButton", atm.panel)
+		button:SetContentAlignment(4)
+		button:SetText(tbl.Name or scripted_ents.Get(class) and scripted_ents.Get(class).PrintName or "[NAME NOT FOUND]")
+		button:SetTextColor(color_white)
+		button:SetFont("TEA.HUDFont")
+		button:SizeToContents()
+		button:SetTall(30)
+		button:Dock(TOP)
+		button:DockMargin(0, 10, 0, 0)
+		button.Paint = function(self,w,h)
+			surface.SetDrawColor(0,0,0,200)
 			surface.DrawRect(0,0,w,h)
 			surface.SetDrawColor(255,255,255,200)
 			surface.DrawOutlinedRect(0,0,w,h)
 		end
+		button.DoClick = btnspawning
+		button.SpawningID = class
+	end
 
-		local b1 = vgui.Create("DNumberWang", p)
-		b1:SetTooltip("Set to an empty value to make it default.")
-		b1:Dock(LEFT)
-		b1:DockMargin(0, 0, p:GetWide(), 0)
-		b1.Paint = function(self,w,h)
-			surface.SetDrawColor(0,0,0,100)
+	atm.panel.Text = vgui.Create("DLabel", atm.panel)
+	atm.panel.Text:Dock(TOP)
+	atm.panel.Text:SetText("Boss Zombies")
+	atm.panel.Text:SetFont("TEA.HUDFont")
+	atm.panel.Text:SizeToContents()
+
+	for class,tbl in SortedPairs(self.Config["BossClasses"]) do
+		local button = vgui.Create("DButton", atm.panel)
+		button:SetContentAlignment(4)
+		button:SetText(tbl.Name or scripted_ents.Get(class) and scripted_ents.Get(class).PrintName or "[NAME NOT FOUND]")
+		button:SetTextColor(color_white)
+		button:SetFont("TEA.HUDFont")
+		button:SizeToContents()
+		button:SetTall(30)
+		button:Dock(TOP)
+		button:DockMargin(0, 10, 0, 0)
+		button.Paint = function(self,w,h)
+			surface.SetDrawColor(0,0,0,200)
 			surface.DrawRect(0,0,w,h)
 			surface.SetDrawColor(255,255,255,200)
 			surface.DrawOutlinedRect(0,0,w,h)
 		end
+		button.DoClick = btnspawning
+		button.SpawningID = class
+	end
 
-		local b2 = vgui.Create("DLabel", p)
+
+	atm.panel = vgui.Create("DIconLayout", atm.Categories)
+	atm.panel:Dock(FILL)
+	local shtbl = atm.Categories:AddSheet("Props & Structures", atm.panel)
+	shtbl.Button.Paint = atm.Categories.Paint
+	shtbl.Button:SetTextColor(color_white)
+	shtbl.Button:SetTooltip(shtbl.Button:GetText())
+
+	atm.panel.Text = atm.panel:Add("DLabel")
+	atm.panel.Text.OwnLine = true
+	atm.panel.Text:SetWide(atm.panel:GetWide())
+	atm.panel.Text:SetText("Flimsy props")
+	atm.panel.Text:SetFont("TEA.HUDFont")
+	atm.panel.Text:SizeToContents()
+
+	for model,tbl in SortedPairs(GAMEMODE.FlimsyProps) do
+		local button = atm.panel:Add("DButton")
+		button:SetContentAlignment(2)
+		button:SetText(tbl.Name or "")
+		button:SetTextColor(color_white)
+		button:SetTooltip((tbl.Name or "").."\nToughness: ".. tbl.Toughness*500 .."hp")
+		button:SetFont("TEA.HUDFont")
+		button:SetSize(128, 128)
+		button.Paint = function(self,w,h)
+			surface.SetDrawColor(0,0,0,200)
+			surface.DrawRect(0,0,w,h)
+			surface.SetDrawColor(255,255,255,200)
+			surface.DrawOutlinedRect(0,0,w,h)
+		end
+		button.DoClick = btnspawning
+		button.SpawningID = model
+
+		local icon = vgui.Create("SpawnIcon", button)
+		icon:SetModel(model)
+		icon:SetSize(button:GetSize())
+		icon.PaintOver = function() return end
+		icon.OnMousePressed = function() return false end
+		icon:SetMouseInputEnabled(false)
+	end
+
+	atm.panel.Text = atm.panel:Add("DLabel")
+	atm.panel.Text.OwnLine = true
+	atm.panel.Text:SetWide(atm.panel:GetWide())
+	atm.panel.Text:SetText("Strong props")
+	atm.panel.Text:SetFont("TEA.HUDFont")
+	atm.panel.Text:SizeToContents()
+
+	for class,tbl in SortedPairs(GAMEMODE.ToughProps) do
+		local button = atm.panel:Add("DButton")
+		button:SetContentAlignment(2)
+		button:SetText(tbl.Name or "")
+		button:SetTextColor(color_white)
+		button:SetTooltip((tbl.Name or "").."\nToughness: ".. tbl.Toughness*500 .."hp")
+		button:SetFont("TEA.HUDFont")
+		button:SetSize(128, 128)
+		button.Paint = function(self,w,h)
+			surface.SetDrawColor(0,0,0,200)
+			surface.DrawRect(0,0,w,h)
+			surface.SetDrawColor(255,255,255,200)
+			surface.DrawOutlinedRect(0,0,w,h)
+		end
+		button.DoClick = btnspawning
+		button.SpawningID = class
+
+		local icon = vgui.Create("SpawnIcon", button)
+		icon:SetModel(class)
+		icon:SetSize(button:GetSize())
+		icon.PaintOver = function() return end
+		icon.OnMousePressed = function() return false end
+		icon:SetMouseInputEnabled(false)
+	end
+
+	atm.panel.Text = atm.panel:Add("DLabel")
+	atm.panel.Text.OwnLine = true
+	atm.panel.Text:SetWide(atm.panel:GetWide())
+	atm.panel.Text:SetText("Faction Structures")
+	atm.panel.Text:SetFont("TEA.HUDFont")
+	atm.panel.Text:SizeToContents()
+
+	for class,tbl in SortedPairs(GAMEMODE.SpecialStructureSpawns) do
+		local button = atm.panel:Add("DButton")
+		button:SetContentAlignment(2)
+		button:SetText(tbl.Name or "")
+		button:SetTextColor(color_white)
+		button:SetTooltip((tbl.Name or "").."\nDescription: ".. tbl.Description .."hp")
+		button:SetFont("TEA.HUDFont")
+		button:SetSize(128, 128)
+		button.Paint = function(self,w,h)
+			surface.SetDrawColor(0,0,0,200)
+			surface.DrawRect(0,0,w,h)
+			surface.SetDrawColor(255,255,255,200)
+			surface.DrawOutlinedRect(0,0,w,h)
+		end
+		button.DoClick = btnspawning
+		button.SpawningID = class
+
+		local icon = vgui.Create("SpawnIcon", button)
+		icon:SetModel(tbl.Model)
+		icon:SetSize(button:GetSize())
+		icon.PaintOver = function() return end
+		icon.OnMousePressed = function() return false end
+		icon:SetMouseInputEnabled(false)
+	end
+
+	atm.panel = vgui.Create("Panel", atm.Categories)
+	atm.panel:Dock(FILL)
+	local shtbl = atm.Categories:AddSheet("Spawns", atm.panel)
+	shtbl.Button.Paint = atm.Categories.Paint
+	shtbl.Button:SetTextColor(color_white)
+	shtbl.Button:SetTooltip(shtbl.Button:GetText())
+
+	for class,tbl in SortedPairs(self.AdminMapSpawnables) do
+		local button = vgui.Create("DButton", atm.panel)
+		button:SetContentAlignment(4)
+		button:SetText(class)
+		button:SetTextColor(color_white)
+		button:SetFont("TEA.HUDFont")
+		button:SizeToContents()
+		button:SetTall(30)
+		button:Dock(TOP)
+		button:DockMargin(0, 10, 0, 0)
+		button.Paint = function(self,w,h)
+			surface.SetDrawColor(0,0,0,200)
+			surface.DrawRect(0,0,w,h)
+			surface.SetDrawColor(255,255,255,200)
+			surface.DrawOutlinedRect(0,0,w,h)
+		end
+		button.DoClick = btnspawning
+		button.SpawningID = class
+	end
+
+	atm.panel = vgui.Create("Panel", atm.Categories)
+	atm.panel:Dock(FILL)
+	local shtbl = atm.Categories:AddSheet("Tools", atm.panel)
+	shtbl.Button.Paint = atm.Categories.Paint
+	shtbl.Button:SetTextColor(color_white)
+	shtbl.Button:SetTooltip(shtbl.Button:GetText())
+
+	
+	for class,tbl in SortedPairs(self.AdminTools) do
+		local button = vgui.Create("DButton", atm.panel)
+		button:SetContentAlignment(4)
+		button:SetText(class)
+		button:SetTextColor(color_white)
+		button:SetFont("TEA.HUDFont")
+		button:SizeToContents()
+		button:SetTall(30)
+		button:Dock(TOP)
+		button:DockMargin(0, 10, 0, 0)
+		button.Paint = function(self,w,h)
+			surface.SetDrawColor(0,0,0,200)
+			surface.DrawRect(0,0,w,h)
+			surface.SetDrawColor(255,255,255,200)
+			surface.DrawOutlinedRect(0,0,w,h)
+		end
+		button.DoClick = btnspawning
+		button.SpawningID = class
+	end
+end
+
+-- this panel is fucked
+local atm
+function GM:OpenAdminToolMenuOptions(wep)
+	atm = vgui.Create("EditablePanel")
+	atm:SetSize(400, 300)
+	atm.Paint = function(self, w, h)
+		surface.SetDrawColor(0,0,0,100)
+		surface.DrawRect(0,0,w,h)
+		surface.SetDrawColor(255,255,255,200)
+		surface.DrawOutlinedRect(0,0,w,h)
+	end
+	atm.OnRemove = function(self)
+		hook.Remove("OnPauseMenuShow", self)
+	end
+	hook.Add("OnPauseMenuShow", atm, function()
+		if atm and atm:IsValid() then
+			atm:Remove()
+			return false
+		end
+	end)
+	atm:Center()
+	atm:MakePopup()
+
+
+
+	do
+		local b2 = vgui.Create("DLabel", atm)
 		b2:SetText("Cash gain")
-		b2:Dock(LEFT)
+		b2:Dock(TOP)
 		b2:SizeToContents()
-	end
 
-	do
-		local p = vgui.Create("Panel", sidepanel)
-		p:Dock(TOP)
-		p:DockMargin(5,0,0,0)
-		p.Paint = function(self,w,h)
-			surface.SetDrawColor(0,0,0,100)
-			surface.DrawRect(0,0,w,h)
-			surface.SetDrawColor(255,255,255,200)
-			surface.DrawOutlinedRect(0,0,w,h)
-		end
-
-		local b1 = vgui.Create("DNumberWang", p)
+		local b1 = vgui.Create("DTextEntry", atm)
 		b1:SetTooltip("Set to an empty value to make it default.")
-		b1:Dock(LEFT)
-		b1:DockMargin(0, 0, p:GetWide(), 0)
+		b1:SetText(optionstbl["CashReward"] or 0)
+		b1:SetTextColor(color_white)
+		b1:Dock(TOP)
+		b1:DockMargin(0, 0, atm:GetWide(), 0)
 		b1.Paint = function(self,w,h)
 			surface.SetDrawColor(0,0,0,100)
 			surface.DrawRect(0,0,w,h)
 			surface.SetDrawColor(255,255,255,200)
 			surface.DrawOutlinedRect(0,0,w,h)
 		end
+		b1:SetUpdateOnType(false)
+		b1.OnValueChange = function(self, newvalue)
+			optionstbl["CashReward"] = tonumber(newvalue)
+			updateoptions(optionstbl)
+		end
+	end
 
-		local b2 = vgui.Create("DLabel", p)
+	do
+		local b2 = vgui.Create("DLabel", atm)
 		b2:SetText("XP gain")
-		b2:Dock(LEFT)
+		b2:Dock(TOP)
 		b2:SizeToContents()
-	end
 
-	do
-		local p = vgui.Create("Panel", sidepanel)
-		p:Dock(TOP)
-		p:DockMargin(5,0,0,0)
-		p.Paint = function(self,w,h)
-			surface.SetDrawColor(0,0,0,100)
-			surface.DrawRect(0,0,w,h)
-			surface.SetDrawColor(255,255,255,200)
-			surface.DrawOutlinedRect(0,0,w,h)
-		end
-
-
-		local b1 = vgui.Create("DNumberWang", p)
+		local b1 = vgui.Create("DTextEntry", atm)
+		b1:SetText(optionstbl["XPReward"] or 0)
 		b1:SetTooltip("Set to an empty value to make it default.")
-		b1:Dock(LEFT)
-		b1:DockMargin(0, 0, p:GetWide(), 0)
+		b1:Dock(TOP)
+		b1:DockMargin(0, 0, atm:GetWide(), 0)
 		b1.Paint = function(self,w,h)
 			surface.SetDrawColor(0,0,0,100)
 			surface.DrawRect(0,0,w,h)
 			surface.SetDrawColor(255,255,255,200)
 			surface.DrawOutlinedRect(0,0,w,h)
 		end
-
-		local b2 = vgui.Create("DLabel", p)
-		b2:SetText("Infection level gainrate")
-		b2:Dock(LEFT)
-		b2:SizeToContents()
+		b1:SetUpdateOnType(false)
+		b1.OnValueChange = function(self, newvalue)
+			optionstbl["XPReward"] = tonumber(newvalue)
+			updateoptions(optionstbl)
+		end
 	end
 
 	do
-		local b1 = vgui.Create("DCheckBoxLabel", sidepanel)
+		local b2 = vgui.Create("DLabel", atm)
+		b2:SetText("Infection level gainrate")
+		b2:Dock(TOP)
+		b2:SizeToContents()
+
+		local b1 = vgui.Create("DTextEntry", atm)
+		b1:SetText(optionstbl["InfectionRate"] or 0)
+		b1:SetTooltip("Set to an empty value to make it default.")
+		b1:Dock(TOP)
+		b1:DockMargin(0, 0, atm:GetWide(), 0)
+		b1.Paint = function(self,w,h)
+			surface.SetDrawColor(255,255,255,100)
+			surface.DrawRect(0,0,w,h)
+			surface.SetDrawColor(255,255,255,200)
+			surface.DrawOutlinedRect(0,0,w,h)
+		end
+		b1:SetUpdateOnType(false)
+		b1.OnValueChange = function(self, newvalue)
+			optionstbl["InfectionRate"] = tonumber(newvalue)
+			updateoptions(optionstbl)
+		end
+	end
+
+	do
+		local b1 = vgui.Create("DCheckBoxLabel", atm)
 		b1:SetText("Boss zombie")
 		b1:Dock(TOP)
 		b1:DockMargin(5,0,0,0)
@@ -866,72 +894,4 @@ function GM:OpenAdminToolMenu(wep)
 			surface.DrawOutlinedRect(0,0,w,h)
 		end
 	end
-
-
-
-	atm.panel.Text = vgui.Create("DLabel", atm.panel)
-	atm.panel.Text:Dock(TOP)
-	atm.panel.Text:SetText("Normal Zombies")
-	atm.panel.Text:SetFont("TEA.HUDFont")
-	atm.panel.Text:SizeToContents()
-
-	for class,tbl in pairs(self.Config["ZombieClasses"]) do
-		local button = vgui.Create("DButton", atm.panel)
-		button:SetText(tbl.Name or scripted_ents.Get(class) and scripted_ents.Get(class).PrintName or "[NAME NOT FOUND]")
-		button:SetFont("TEA.HUDFont")
-		button:SizeToContents()
-		button:SetTall(30)
-		button:Dock(TOP)
-		button:DockMargin(0, 10, 0, 0)
-		button.Paint = function(self,w,h)
-			surface.SetDrawColor(0,0,0,200)
-			surface.DrawRect(0,0,w,h)
-			surface.SetDrawColor(255,255,255,200)
-			surface.DrawOutlinedRect(0,0,w,h)
-		end
-	end
-
-	atm.panel.Text = vgui.Create("DLabel", atm.panel)
-	atm.panel.Text:Dock(TOP)
-	atm.panel.Text:SetText("Boss Zombies")
-	atm.panel.Text:SetFont("TEA.HUDFont")
-	atm.panel.Text:SizeToContents()
-
-	for _,tbl in pairs(self.Config["BossClasses"]) do
-		local button = vgui.Create("DButton", atm.panel)
-		button:SetText(tbl.Name or scripted_ents.Get(class) and scripted_ents.Get(class).PrintName or "[NAME NOT FOUND]")
-		button:SetFont("TEA.HUDFont")
-		button:SizeToContents()
-		button:SetTall(30)
-		button:Dock(TOP)
-		button:DockMargin(0, 10, 0, 0)
-		button.Paint = function(self,w,h)
-			surface.SetDrawColor(0,0,0,200)
-			surface.DrawRect(0,0,w,h)
-			surface.SetDrawColor(255,255,255,200)
-			surface.DrawOutlinedRect(0,0,w,h)
-		end
-	end
-
-
-	atm.panel = vgui.Create("Panel", atm.Categories)
-	atm.panel:Dock(FILL)
-	atm.Categories:AddSheet("Props & Structures", atm.panel)
-
-	atm.panel.Text = vgui.Create("DLabel", atm.panel)
-	atm.panel.Text:Dock(TOP)
-	atm.panel.Text:SetText("Flimsy props")
-	atm.panel.Text:SetFont("TEA.HUDFont")
-	atm.panel.Text:SizeToContents()
-
-
-	atm.panel = vgui.Create("Panel", atm.Categories)
-	atm.panel:Dock(FILL)
-	atm.Categories:AddSheet("Spawns", atm.panel)
-
-	atm.panel = vgui.Create("Panel", atm.Categories)
-	atm.panel:Dock(FILL)
-	atm.Categories:AddSheet("Tools", atm.panel)
-
-
 end
