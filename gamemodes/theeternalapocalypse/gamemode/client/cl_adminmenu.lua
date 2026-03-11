@@ -61,7 +61,7 @@ function GM:AdminMenu()
 		hook.Remove("OnPauseMenuShow", self)
 	end
 	hook.Add("OnPauseMenuShow", frame, function()
-		if frame and frame:IsVisible() then
+		if frame and frame:IsValid() and frame:IsVisible() then
 			frame:Close()
 			return false
 		end
@@ -430,7 +430,6 @@ function GM:AdminMenu()
 	SpawnMenuProperties:AddSheet(translate.Get("items_category_5"), buypanel[5], "icon16/bin.png", false, false, translate.Get("items_category_5_d"))
 	SpawnMenuProperties:AddSheet(translate.Get("items_category_6"), buypanel[6], "icon16/basket.png", false, false, translate.Get("items_category_6_d"))
 	SpawnMenuProperties:AddSheet(translate.Get("items_category_7"), buypanel[7], "icon16/basket.png", false, false, translate.Get("items_category_7_d"))
-/*
 
 	local MapConfig = vgui.Create("DPanel", PropertySheet)
 	MapConfig:SetSize(AdmMenuFrame:GetWide() - 20, AdmMenuFrame:GetTall() - 20)
@@ -445,16 +444,12 @@ function GM:AdminMenu()
 		draw.RoundedBox(2, 0, 0, w, h, Color(0, 0, 0, 100))
 		surface.SetDrawColor(0, 0, 0, 0)
 	end
-*/
 
 	PropertySheet:AddSheet(translate.Get("admin_panel_tab_1"), PlayerList, "icon16/shield.png", false, false, translate.Get("admin_panel_tab_1_d"))
 	PropertySheet:AddSheet(translate.Get("admin_panel_tab_2"), AdminCmds, "icon16/shield.png", false, false, translate.Get("admin_panel_tab_2_d"))
 	PropertySheet:AddSheet(translate.Get("admin_panel_tab_3"), SpawnMenu, "icon16/table.png", false, false, translate.Get("admin_panel_tab_3_d"))
-/*
-
-PropertySheet:AddSheet(translate.Get("admin_panel_tab_4"), MapConfig, "icon16/table.png", false, false, translate.Get("admin_panel_tab_4_d"))
-PropertySheet:AddSheet(translate.Get("admin_panel_tab_5"), OpenwManager, "icon16/table.png", false, false, translate.Get("admin_panel_tab_5_d"))
-*/
+	PropertySheet:AddSheet(translate.Get("admin_panel_tab_4"), MapConfig, "icon16/table.png", false, false, translate.Get("admin_panel_tab_4_d"))
+	PropertySheet:AddSheet(translate.Get("admin_panel_tab_5"), OpenwManager, "icon16/table.png", false, false, translate.Get("admin_panel_tab_5_d"))
 end
 
 local atm
@@ -506,6 +501,16 @@ function GM:OpenAdminToolMenu(wep)
 	end
 	atm.LastOpened = SysTime()
 	atm.Wep = wep
+	local pan = atm
+	pan.OnRemove = function(self)
+		hook.Remove("OnPauseMenuShow", self)
+	end
+	hook.Add("OnPauseMenuShow", pan, function()
+		if pan and pan:IsValid() and pan:IsVisible() then
+			pan:Remove()
+			return false
+		end
+	end)
 
 	atm:SetAlpha(0)
 	atm:AlphaTo(255, 0.5, 0)
@@ -760,7 +765,7 @@ function GM:OpenAdminToolMenu(wep)
 	for class,tbl in SortedPairs(self.AdminMapSpawnables) do
 		local button = vgui.Create("DButton", atm.panel)
 		button:SetContentAlignment(4)
-		button:SetText(class)
+		button:SetText(tbl.Name or class)
 		button:SetTextColor(color_white)
 		button:SetFont("TEA.HUDFont")
 		button:SizeToContents()
@@ -788,7 +793,7 @@ function GM:OpenAdminToolMenu(wep)
 	for class,tbl in SortedPairs(self.AdminTools) do
 		local button = vgui.Create("DButton", atm.panel)
 		button:SetContentAlignment(4)
-		button:SetText(class)
+		button:SetText(tbl.Name or class)
 		button:SetTextColor(color_white)
 		button:SetFont("TEA.HUDFont")
 		button:SizeToContents()
@@ -841,7 +846,6 @@ function GM:OpenAdminToolMenuOptions(wep)
 		b1:SetText(optionstbl["CashReward"] or 0)
 		b1:Dock(TOP)
 		b1:DockMargin(0, 10, 0, 0)
-		b1:SetUpdateOnType(false)
 		b1.OnValueChange = function(self, newvalue)
 			optionstbl["CashReward"] = tonumber(newvalue)
 			updateoptions(optionstbl)
@@ -859,7 +863,6 @@ function GM:OpenAdminToolMenuOptions(wep)
 		b1:SetTooltip("Set to an empty value to make it default.")
 		b1:Dock(TOP)
 		b1:DockMargin(0, 10, 0, 0)
-		b1:SetUpdateOnType(false)
 		b1.OnValueChange = function(self, newvalue)
 			optionstbl["XPReward"] = tonumber(newvalue)
 			updateoptions(optionstbl)
@@ -877,7 +880,6 @@ function GM:OpenAdminToolMenuOptions(wep)
 		b1:SetTooltip("Set to an empty value to make it default.")
 		b1:Dock(TOP)
 		b1:DockMargin(0, 10, 0, 0)
-		b1:SetUpdateOnType(false)
 		b1.OnValueChange = function(self, newvalue)
 			optionstbl["InfectionRate"] = tonumber(newvalue)
 			updateoptions(optionstbl)
@@ -920,16 +922,36 @@ function GM:CreateOpenworldTransition(spawnpos, pos1, pos2)
 	atm:Center()
 	atm:MakePopup()
 
-	local text = vgui.Create("DLabel", atm)
-	text:SetText("Where should it lead you to?")
-	text:Dock(TOP)
-	text:SetContentAlignment(4)
+	local textname = vgui.Create("DLabel", atm)
+	textname:SetText("Give it a name... or leave it empty")
+	textname:Dock(TOP)
+	textname:SetContentAlignment(4)
 
 	local mapname = vgui.Create("DTextEntry", atm)
-	mapname:SetText(game.GetMap())
+	mapname:SetText("")
 	mapname:SetTextColor(color_black)
 	mapname:Dock(TOP)
 	mapname:DockMargin(0, 10, 0, 0)
+
+	local map = vgui.Create("DLabel", atm)
+	map:SetText("Map: "..game.GetMap())
+	map:Dock(TOP)
+	map:SetContentAlignment(4)
+
+	local spawnpostext = vgui.Create("DLabel", atm)
+	spawnpostext:SetText("Spawn pos: "..spawnpos.x.." "..spawnpos.y.." "..spawnpos.z)
+	spawnpostext:Dock(TOP)
+	spawnpostext:SetContentAlignment(4)
+
+	local pos1text = vgui.Create("DLabel", atm)
+	pos1text:SetText("Area start: "..pos1.x.." "..pos1.y.." "..pos1.z)
+	pos1text:Dock(TOP)
+	pos1text:SetContentAlignment(4)
+
+	local pos2text = vgui.Create("DLabel", atm)
+	pos2text:SetText("Area end: "..pos2.x.." "..pos2.y.." "..pos2.z)
+	pos2text:Dock(TOP)
+	pos2text:SetContentAlignment(4)
 
 	local btn = vgui.Create("DButton", atm)
 	btn:Dock(TOP)
@@ -941,7 +963,6 @@ function GM:CreateOpenworldTransition(spawnpos, pos1, pos2)
 		net.WriteVector(spawnpos)
 		net.WriteVector(pos1)
 		net.WriteVector(pos2)
-		net.WriteString(mapname:GetText())
 		net.SendToServer()
 		
 		chat.AddText("placeholder")

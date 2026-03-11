@@ -179,18 +179,53 @@ GM.SpecialStructureSpawns = {
 
 }
 
+--------------------------------
+--
+-- DON'T EDIT THE BELOW, UNLESS YOU KNOW WHAT YOU ARE DOING!!!
+--
+--------------------------------
 
+local color_red = Color(255,0,0,160)
+local color_yellow = Color(255,255,0,160)
+local color_lime = Color(159,255,160,160)
+local color_cyan = Color(120,255,210,160)
+local color_white = Color(255,255,255,160)
+local color_purple = Color(205,53,255,160)
+local color_blue = Color(93,123,255,160)
 GM.AdminMapSpawnables = {
 	Zombie = {
 		Spawn = function(owner, swep, tr, pos)
 			gamemode.Call("AddZombieSpawnpoint", pos, owner:EyeAngles().yaw, 0, 0)
 			owner:PrintMessage(3, "Added zombie spawnpoint")
+		end,
+		View = function(owner, var)
+			cam.IgnoreZ(true)
+			render.DrawLine(var.Pos+Vector(0,0,80), var.Pos,color_red,true)
+			cam.Start3D2D(var.Pos+Vector(0,0,80), Angle(0, owner:EyeAngles().yaw + 90, 90), math.Clamp(owner:GetPos():Distance(var.Pos)/500, 0.5, 5))
+			draw.DrawText("Zombie spawn #"..var.ID, "TEA.HUDFont", 0, 0, color_red, TEXT_ALIGN_LEFT)
+			draw.DrawText("Radius: "..var.Radius, "TEA.HUDFont", 0, 20, color_red, TEXT_ALIGN_LEFT)
+			draw.DrawText("Tier: "..var.Tier, "TEA.HUDFont", 0, 40, color_red, TEXT_ALIGN_LEFT)
+			cam.End3D2D()
+
+			render.DrawSphere(var.Pos, var.Radius, 16, 16, color_red)
+			cam.IgnoreZ(false)
 		end
 	},
 
 	Loot = {
 		Spawn = function(owner, swep, tr, pos)
 			gamemode.Call("AddLootSpawnpoint", pos, owner:EyeAngles().yaw, 0, 0)
+		end,
+		View = function(owner, var)
+			cam.IgnoreZ(true)
+			render.DrawLine(var.Pos+Vector(0,0,80), var.Pos,color_white,true)
+			cam.Start3D2D(var.Pos+Vector(0,0,80), Angle(0, owner:EyeAngles().yaw + 90, 90), math.Clamp(owner:GetPos():Distance(var.Pos)/500, 0.5, 5))
+			draw.DrawText("Loot spawn #"..var.ID, "TEA.HUDFont", 0, 0, color_red, TEXT_ALIGN_LEFT)
+			draw.DrawText("Tier: "..var.Tier, "TEA.HUDFont", 0, 20, color_red, TEXT_ALIGN_LEFT)
+			cam.End3D2D()
+
+			render.DrawSphere(var.Pos, var.Radius, 16, 16, color_red)
+			cam.IgnoreZ(false)
 		end
 	},
 
@@ -200,24 +235,65 @@ GM.AdminMapSpawnables = {
 			if err then
 				PrintMessage(3, "Error: "..msg)
 			end
+		end,
+		View = function(owner, var)
+			cam.IgnoreZ(true)
+			render.DrawLine(var.Pos+Vector(0,0,80), var.Pos,color_white,true)
+			cam.Start3D2D(var.Pos+Vector(0,0,80), Angle(0, owner:EyeAngles().yaw + 90, 90), math.Clamp(owner:GetPos():Distance(var.Pos)/500, 0.5, 5))
+			draw.DrawText("Airdrop spawn #"..var.ID, "TEA.HUDFont", 0, 0, color_red, TEXT_ALIGN_LEFT)
+			draw.DrawText("Radius: "..var.Radius, "TEA.HUDFont", 0, 20, color_red, TEXT_ALIGN_LEFT)
+			cam.End3D2D()
+
+			render.DrawSphere(var.Pos, var.Radius, 16, 16, color_red)
+			cam.IgnoreZ(false)
 		end
 	},
 
 	Trader = {
 		Spawn = function(owner, swep, tr, pos)
 			gamemode.Call("AddTraderSpawnpoint", pos, owner:EyeAngles().yaw, 0, 0)
+		end,
+		View = function(owner, var)
+			cam.IgnoreZ(true)
+			render.DrawLine(var.Pos+Vector(0,0,80), var.Pos,color_white,true)
+			cam.Start3D2D(var.Pos+Vector(0,0,80), Angle(0, owner:EyeAngles().yaw + 90, 90), math.Clamp(owner:GetPos():Distance(var.Pos)/500, 0.5, 5))
+			draw.DrawText("Trader spawn #"..var.ID, "TEA.HUDFont", 0, 0, color_red, TEXT_ALIGN_LEFT)
+			cam.End3D2D()
+
+			render.DrawSphere(var.Pos, var.Radius, 16, 16, color_red)
+			cam.IgnoreZ(false)
 		end
 	},
 
 	PlayerSpawnpoint = {
 		Spawn = function(owner, swep, tr, pos)
 			gamemode.Call("AddPlayerSpawnpoint", pos, owner:EyeAngles().yaw, 0, 0)
+		end,
+		View = function(owner, var)
+			cam.IgnoreZ(true)
+			render.DrawLine(var.Pos+Vector(0,0,80), var.Pos,color_white,true)
+			cam.Start3D2D(var.Pos+Vector(0,0,80), Angle(0, owner:EyeAngles().yaw + 90, 90), math.Clamp(owner:GetPos():Distance(var.Pos)/500, 0.5, 5))
+			draw.DrawText("Player spawn #"..var.ID, "TEA.HUDFont", 0, 0, color_red, TEXT_ALIGN_LEFT)
+			cam.End3D2D()
+
+			render.DrawSphere(var.Pos, var.Radius, 16, 16, color_red)
+			cam.IgnoreZ(false)
 		end
 	},
 
 	TaskDealer = {
 		Spawn = function(owner, swep, tr, pos)
 			gamemode.Call("AddTaskDealerSpawnpoint", pos, owner:EyeAngles().yaw, 0, 0)
+		end,
+		View = function(owner, var)
+			cam.IgnoreZ(true)
+			render.DrawLine(var.Pos+Vector(0,0,80), var.Pos,color_white,true)
+			cam.Start3D2D(var.Pos+Vector(0,0,80), Angle(0, owner:EyeAngles().yaw + 90, 90), math.Clamp(owner:GetPos():Distance(var.Pos)/500, 0.5, 5))
+			draw.DrawText("Taskdealer spawn #"..var.ID, "TEA.HUDFont", 0, 0, color_red, TEXT_ALIGN_LEFT)
+			cam.End3D2D()
+
+			render.DrawSphere(var.Pos, var.Radius, 16, 16, color_red)
+			cam.IgnoreZ(false)
 		end
 	},
 
@@ -254,6 +330,20 @@ GM.AdminMapSpawnables = {
 		end,
 		OnSelect = function(owner, swep)
 			owner:PrintMessage(3, "Select the position where a player would start when transitioning back here..")
+
+			swep.OpenworldStartPos = nil
+			swep.OpenworldPos1 = nil
+			swep.OpenworldPos2 = nil
+		end,
+		View = function(owner, var)
+			cam.IgnoreZ(true)
+			render.DrawBox(var.Pos, angle_zero, var.AreaMin, var.AreaMax, color_blue)
+			cam.Start3D2D(var.Pos+Vector(0,0,80), Angle(0, owner:EyeAngles().yaw + 90, 90), math.Clamp(owner:GetPos():Distance(var.Pos)/500, 0.5, 5))
+			draw.DrawText("Transition #"..var.ID, "TEA.HUDFont", 0, 0, color_red, TEXT_ALIGN_LEFT)
+			cam.End3D2D()
+
+			render.DrawSphere(var.Pos, var.Radius, 16, 16, color_red)
+			cam.IgnoreZ(false)
 		end
 	}
 }
@@ -267,5 +357,5 @@ GM.AdminTools = {
 			explode:Spawn()
 			explode:Fire("Explode")
 		end
-	}
+	},
 }

@@ -187,12 +187,83 @@ net.Receive("RecvFactions", function(length, client)
 	end
 end)
 
+local opnwrld_ui
 net.Receive("tea_openworld_level", function()
     local nettype = net.ReadUInt(4)
-    local id = net.ReadUInt(8)
-    local name = net.ReadString()
-    local map = net.ReadString()
-    local direction = net.ReadUInt(2)
+
+	if nettype == OPENWORLD_NETTYPE_SENDINFO then
+		local map = net.ReadString()
+		local plrs = net.ReadUInt(8)
+
+
+		if IsValid(opnwrld_ui) then opnwrld_ui:Remove() end
+		opnwrld_ui = vgui.Create("DPanel")
+		opnwrld_ui:SetSize(400, 175)
+		opnwrld_ui:CenterHorizontal()
+		opnwrld_ui:CenterVertical(0.1)
+		opnwrld_ui.Paint = function(self, w, h)
+			surface.SetDrawColor(0,0,0,150)
+			surface.DrawRect(0,0,w,h)
+			surface.SetDrawColor(255,255,255,200)
+			surface.DrawOutlinedRect(0,0,w,h)
+		end
+		opnwrld_ui:MakePopup()
+		opnwrld_ui:SetKeyboardInputEnabled(false)
+
+		local label = vgui.Create("DLabel", opnwrld_ui)
+		label:SetText("Traverse to another map?")
+		label:SetFont("TEA.HUDFontSmall")
+		label:Dock(TOP)
+		label:DockMargin(0,10,0,0)
+
+		local labelmap = vgui.Create("DLabel", opnwrld_ui)
+		labelmap:SetText(map)
+		labelmap:SetFont("TEA.HUDFontSmall")
+		labelmap:Dock(TOP)
+		labelmap:DockMargin(0,10,0,0)
+
+		local labelplrs = vgui.Create("DLabel", opnwrld_ui)
+		labelplrs:SetFont("TEA.HUDFontSmall")
+		labelplrs:Dock(TOP)
+		labelplrs:DockMargin(0,10,0,0)
+		labelplrs.UpdatePlayers = function(self, plrs)
+			self:SetText("Other players who also want to transition: "..plrs.."/"..#player.GetHumans())
+		end
+		labelplrs:UpdatePlayers(plrs)
+		opnwrld_ui.players = labelplrs
+
+		local btn = vgui.Create("DButton", opnwrld_ui)
+		local close
+		btn:SetText("Yes!")
+		btn:SetFont("TEA.HUDFontSmall")
+		btn:Dock(TOP)
+		btn:DockMargin(0,10,0,0)
+		btn.DoClick = function(self)
+			opnwrld_ui:SetMouseInputEnabled(false)
+
+			btn:Remove()
+			close:Remove()
+
+			net.Start("tea_openworld_level")
+			net.WriteUInt(OPENWORLD_NETTYPE_CONFIRM, 4)
+			net.SendToServer()
+		end
+
+		close = vgui.Create("DButton", opnwrld_ui)
+		close:SetText("No!!")
+		close:SetFont("TEA.HUDFontSmall")
+		close:Dock(TOP)
+		close:DockMargin(0,10,0,0)
+		close.DoClick = function(self)
+			opnwrld_ui:Remove()
+		end
+	elseif nettype == OPENWORLD_NETTYPE_UPDATEPLAYERS then
+		if !IsValid(opnwrld_ui) then return end
+		opnwrld_ui.players:UpdatePlayers(net.ReadUInt(8))
+	elseif nettype == OPENWORLD_NETTYPE_LEFTAREA then
+		if !IsValid(opnwrld_ui) then return end
+		opnwrld_ui:Remove()
+	end
 end)
 
 net.Receive("tea_admin_tool", function()

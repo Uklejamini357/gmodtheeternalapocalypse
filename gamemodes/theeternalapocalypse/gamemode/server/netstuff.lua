@@ -417,7 +417,7 @@ net.Receive("tea_admin_tool", function(len, pl)
 			wep:SetSpawningType(ADMINTOOL_SPAWNTYPE_TOOL)
 
 			if at.OnSelect then
-				at.OnSelect()
+				at.OnSelect(owner, wep)
 			end
 		end
 		wep:SetSpawning(spawning)

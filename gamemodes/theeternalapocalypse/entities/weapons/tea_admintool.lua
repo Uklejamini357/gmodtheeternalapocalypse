@@ -229,7 +229,7 @@ function SWEP:GetAimPos()
     return pos
 end
 
-local mat,matnum = Material("color")
+local mat = Material("color")
 if CLIENT then
     hook.Add("PostDrawOpaqueRenderables", "TEA.AdminTool.Render", function()
         local pl = LocalPlayer()
@@ -239,6 +239,12 @@ if CLIENT then
 
             render.SetMaterial(mat)
             render.DrawSphere(pos, 4, 8, 8, Color(255,0,0,200))
+
+            for t,var in pairs(GAMEMODE.AdminEyes) do
+                if GAMEMODE.AdminEyesEnabled[t] and GAMEMODE.AdminMapSpawnables[t] and GAMEMODE.AdminMapSpawnables[t].View then
+                    GAMEMODE.AdminMapSpawnables[t].View(pl, var)
+                end
+            end
         end
     end)
 end

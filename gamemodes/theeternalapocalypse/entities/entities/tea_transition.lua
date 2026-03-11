@@ -22,12 +22,18 @@ end
 function ENT:StartTouch(ent)
 	if not (ent:IsPlayer() and ent:Alive()) then return end
 
--- TODO: Don't immediately make player join the transition. Instead, make a prompt when a player wants to go to another map.
-	--GAMEMODE:OpenworldPlayerJoinTransition(ent, self)
+	ent.OpenworldCanTravelTo = self
+
+	gamemode.Call("OpenworldPlayerSendConfirm", ent, self)
 end
 
 function ENT:EndTouch(ent)
 	if not (ent:IsPlayer()) then return end
 
-	GAMEMODE:OpenworldPlayerLeaveTransition(ent)
+	GAMEMODE:OpenworldPlayerLeaveTransition(ent, self)
+	ent.OpenworldCanTravelTo = nil
+
+	net.Start("tea_openworld_level")
+	net.WriteUInt(OPENWORLD_NETTYPE_LEFTAREA, 4)
+	net.Send(ent)
 end
