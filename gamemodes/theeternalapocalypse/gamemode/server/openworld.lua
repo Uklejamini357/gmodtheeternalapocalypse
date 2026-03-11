@@ -39,6 +39,7 @@ function GM:OpenworldPlayerJoinTransition(ply, ent)
 end
 
 function GM:OpenworldPlayerLeaveTransition(ply)
+    if !ply.TransitioningToMap then return end
     ply.TransitioningToMap = nil
 
     local joined = 0
@@ -48,7 +49,7 @@ function GM:OpenworldPlayerLeaveTransition(ply)
         end
     end
 
-    if joined <= #player.GetHumans() then
+    if joined <= #player.GetHumans() and timer.Exists("TEA.OpenworldMapchange") then
         timer.Remove("TEA.OpenworldMapchange")
         PrintMessage(3, "Map transitioning aborted!")
     end

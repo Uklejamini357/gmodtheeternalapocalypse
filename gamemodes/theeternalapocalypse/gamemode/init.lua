@@ -551,7 +551,7 @@ function GM:InitPostEntity()
 
 	self:SpawnTraders()
 	self:SpawnTaskDealers()
-	self:SpawnLevelTransitions(l
+	self:SpawnLevelTransitions()
 	self:MapReInit()
 end
 
@@ -1003,7 +1003,7 @@ end
 function GM:PlayerReady(ply)
 	self:FullyUpdatePlayer(ply)
 	
-	if !ply.LastSession["transitioning"] then return end
+	if !ply.LastSessionInfo or !ply.LastSessionInfo["transitioning"] then return end
 	net.Start("tea_player_ready_spawn")
 	net.WriteBool(tobool(ply.HasSpawnedReady))
 	net.Send(ply)

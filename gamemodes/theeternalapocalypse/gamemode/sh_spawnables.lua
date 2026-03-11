@@ -224,12 +224,6 @@ GM.AdminMapSpawnables = {
 	Openworld = {
 		Name = "Create transition",
 		Spawn = function(owner, swep, tr, pos)
-			if !swep.OpenworldNew then
-				swep.OpenworldNew = true
-				owner:PrintMessage(3, "You are now creating a new openworld transition. Select the position where a player would start when transitioning back here..")
-				return
-			end
-
 			if !swep.OpenworldStartPos then
 				swep.OpenworldStartPos = pos
 				owner:PrintMessage(3, tostring(pos))
@@ -254,10 +248,12 @@ GM.AdminMapSpawnables = {
 			net.WriteVector(swep.OpenworldPos2)
 			net.Send(owner)
 
-			swep.OpenworldNew = nil
 			swep.OpenworldStartPos = nil
 			swep.OpenworldPos1 = nil
 			swep.OpenworldPos2 = nil
+		end,
+		OnSelect = function(owner, swep)
+			owner:PrintMessage(3, "Select the position where a player would start when transitioning back here..")
 		end
 	}
 }

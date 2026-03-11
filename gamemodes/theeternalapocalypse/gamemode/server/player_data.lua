@@ -625,35 +625,42 @@ end
 
 --level up
 function GM:GainLevel(ply)
-	local sp = tonumber(ply.Level) >= 55 and 3 or tonumber(ply.Level) >= 30 and 2 or 1
-	local moneyreward = 56 + math.floor((ply.Level ^ 1.1217) * 16 + (ply.Level * 5) + (ply.Prestige * 2.4892))
-	local reqxp = ply:GetReqXP()
-	
-	ply.XP = ply.XP - reqxp
-	ply.Level = ply.Level + 1
-	ply.Money = ply.Money + moneyreward
-	ply.StatPoints = ply.StatPoints + sp
+	local totalsp = 0
+	local totalmoneyreward = 0
+	for i=1,100 do
+		local sp = tonumber(ply.Level) >= 55 and 3 or tonumber(ply.Level) >= 30 and 2 or 1
+		local moneyreward = 56 + math.floor((ply.Level ^ 1.1217) * 16 + (ply.Level * 5) + (ply.Prestige * 2.4892))
+		local reqxp = ply:GetReqXP()
 
-	if self:GetDebug() >= DEBUGGING_NORMAL then
-		print(
-			Format("%s has leveled up to Level %s with a reward of %s %ss and reduction of %s XP! (XP now: %s)",
-			ply:Nick(), ply.Level, moneyreward, self.Config["Currency"], reqxp, ply.XP)
-		)
+		ply.XP = ply.XP - reqxp
+		ply.Level = ply.Level + 1
+		ply.Money = ply.Money + moneyreward
+		ply.StatPoints = ply.StatPoints + sp
+
+		totalsp = totalsp + sp
+		totalmoneyreward = totalmoneyreward + moneyreward
+
+		if self:GetDebug() >= DEBUGGING_NORMAL then
+			print(
+				Format("%s has leveled up to Level %s with a reward of %s %ss and reduction of %s XP! (XP now: %s)",
+				ply:Nick(), ply.Level, moneyreward, self.Config["Currency"], reqxp, ply.XP)
+			)
+		end
+
+		if not (ply:IsValid() and ply.XP >= ply:GetReqXP() and tonumber(ply.Level) < ply:GetMaxLevel()) then break end
 	end
 
-	ply:SendChat(translate.ClientFormat(ply, "pllvlup", ply.Level, sp, moneyreward, self.Config["Currency"]))
+	ply:SendChat(translate.ClientFormat(ply, "pllvlup", ply.Level, totalsp, totalmoneyreward, self.Config["Currency"]))
 	if ply:GetInfoNum("tea_cl_playlevelupsound", 1) >= 1 then
 		ply:SendLua('LocalPlayer():ConCommand([[playvol "theeternalapocalypse/levelup.wav" 0.55]])')
 	end
 
 	ply:SetNWInt("PlyLevel", ply.Level)
-
 	self:NetUpdatePeriodicStats(ply)
 
 	timer.Simple(0.04, function() -- Timer was created to prevent Buffer Overflow if user has too much XP if user levels up
-		if ply:IsValid() and ply.XP >= ply:GetReqXP() and tonumber(ply.Level) < ply:GetMaxLevel() then
-			self:GainLevel(ply) -- This is so the user will gain another level if user has required xp for next level and will repeat
-		end
+		if not (ply:IsValid() and ply.XP >= ply:GetReqXP() and tonumber(ply.Level) < ply:GetMaxLevel()) then return end
+		self:GainLevel(ply) -- This is so the user will gain another level if user has required xp for next level and will repeat
 	end)
 
 	if tonumber(ply.Level) >= ply:GetMaxLevel() then

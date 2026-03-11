@@ -404,9 +404,21 @@ net.Receive("tea_admin_tool", function(len, pl)
 		elseif GAMEMODE.SpecialStructureSpawns[spawning] then
 			wep:SetSpawningType(ADMINTOOL_SPAWNTYPE_FACSTRUCTURES)
 		elseif GAMEMODE.AdminMapSpawnables[spawning] then
+			local ams = GAMEMODE.AdminMapSpawnables[spawning]
+
 			wep:SetSpawningType(ADMINTOOL_SPAWNTYPE_MAPSPAWNS)
+
+			if ams.OnSelect then
+				ams.OnSelect(pl, wep)
+			end
 		elseif GAMEMODE.AdminTools[spawning] then
+			local at = GAMEMODE.AdminTools[spawning]
+
 			wep:SetSpawningType(ADMINTOOL_SPAWNTYPE_TOOL)
+
+			if at.OnSelect then
+				at.OnSelect()
+			end
 		end
 		wep:SetSpawning(spawning)
 

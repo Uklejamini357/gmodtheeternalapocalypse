@@ -56,16 +56,16 @@ function GM:AdminMenu()
 	AdmMenuFrame:ShowCloseButton(true)
 	AdmMenuFrame:SetDeleteOnClose(false)
 	AdmMenuFrame:MakePopup()
-	AdmMenuFrame.Think = function(this)
-		if input.IsKeyDown(KEY_ESCAPE) and gui.IsGameUIVisible() then
-			timer.Simple(0, function()
-				this:Close()
-			end)
-			gui.HideGameUI()
-		end
-
---		last_cursor_x,last_cursor_y = gui.MousePos()
+	local frame = AdmMenuFrame
+	frame.OnRemove = function(self)
+		hook.Remove("OnPauseMenuShow", self)
 	end
+	hook.Add("OnPauseMenuShow", frame, function()
+		if frame and frame:IsVisible() then
+			frame:Close()
+			return false
+		end
+	end)
 	AdmMenuFrame.Paint = function()
 		draw.RoundedBox(2, 0, 0, AdmMenuFrame:GetWide(), AdmMenuFrame:GetTall(), Color(0, 0, 0, 200))
 		surface.SetDrawColor(150, 150, 0 ,255)
@@ -421,7 +421,6 @@ function GM:AdminMenu()
 	for i=1,7 do
 		RefreshItemList(i, buypanel[i])
 	end
-
 	RefreshPanel()
 
 	SpawnMenuProperties:AddSheet(translate.Get("items_category_1"), buypanel[1], "icon16/ammo_three.png", false, false, translate.Get("items_category_1_d"))
@@ -431,10 +430,31 @@ function GM:AdminMenu()
 	SpawnMenuProperties:AddSheet(translate.Get("items_category_5"), buypanel[5], "icon16/bin.png", false, false, translate.Get("items_category_5_d"))
 	SpawnMenuProperties:AddSheet(translate.Get("items_category_6"), buypanel[6], "icon16/basket.png", false, false, translate.Get("items_category_6_d"))
 	SpawnMenuProperties:AddSheet(translate.Get("items_category_7"), buypanel[7], "icon16/basket.png", false, false, translate.Get("items_category_7_d"))
+/*
+
+	local MapConfig = vgui.Create("DPanel", PropertySheet)
+	MapConfig:SetSize(AdmMenuFrame:GetWide() - 20, AdmMenuFrame:GetTall() - 20)
+	MapConfig.Paint = function(self, w, h)
+		draw.RoundedBox(2, 0, 0, w, h, Color(0, 0, 0, 100))
+		surface.SetDrawColor(0, 0, 0, 0)
+	end
+
+	local OpenwManager = vgui.Create("DPanel", PropertySheet)
+	OpenwManager:SetSize(AdmMenuFrame:GetWide() - 20, AdmMenuFrame:GetTall() - 20)
+	OpenwManager.Paint = function(self, w, h)
+		draw.RoundedBox(2, 0, 0, w, h, Color(0, 0, 0, 100))
+		surface.SetDrawColor(0, 0, 0, 0)
+	end
+*/
 
 	PropertySheet:AddSheet(translate.Get("admin_panel_tab_1"), PlayerList, "icon16/shield.png", false, false, translate.Get("admin_panel_tab_1_d"))
 	PropertySheet:AddSheet(translate.Get("admin_panel_tab_2"), AdminCmds, "icon16/shield.png", false, false, translate.Get("admin_panel_tab_2_d"))
-	PropertySheet:AddSheet(translate.Get("admin_panel_tab_4"), SpawnMenu, "icon16/table.png", false, false, translate.Get("admin_panel_tab_4_d"))
+	PropertySheet:AddSheet(translate.Get("admin_panel_tab_3"), SpawnMenu, "icon16/table.png", false, false, translate.Get("admin_panel_tab_3_d"))
+/*
+
+PropertySheet:AddSheet(translate.Get("admin_panel_tab_4"), MapConfig, "icon16/table.png", false, false, translate.Get("admin_panel_tab_4_d"))
+PropertySheet:AddSheet(translate.Get("admin_panel_tab_5"), OpenwManager, "icon16/table.png", false, false, translate.Get("admin_panel_tab_5_d"))
+*/
 end
 
 local atm
@@ -464,6 +484,7 @@ function GM:OpenAdminToolMenu(wep)
 		atm:SetKeyboardInputEnabled(false)
 		atm:SetAlpha(0)
 		atm:AlphaTo(255, 0.5, 0)
+		atm.Wep = wep
 
 		return
 	end
@@ -478,12 +499,13 @@ function GM:OpenAdminToolMenu(wep)
 	atm.Think = function(self)
 		if atm.LastOpened+0.6<SysTime() and input.IsKeyDown(input.GetKeyCode(input.LookupBinding("+reload"))) then
 			self:SetVisible(false)
-			if wep and wep:IsValid() then
-				wep.NextReload = CurTime() + 0.6
+			if atm.Wep and atm.Wep:IsValid() then
+				atm.Wep.NextReload = CurTime() + 0.6
 			end
 		end
 	end
 	atm.LastOpened = SysTime()
+	atm.Wep = wep
 
 	atm:SetAlpha(0)
 	atm:AlphaTo(255, 0.5, 0)
@@ -547,17 +569,17 @@ function GM:OpenAdminToolMenu(wep)
 		b.DoClick = function()
 			net.Start("tea_admin_tool")
 			net.WriteString("toggleremover")
-			net.WriteUInt(wep:GetMode()==ADMINTOOL_MODE_SPAWNER and ADMINTOOL_MODE_DELETE or ADMINTOOL_MODE_SPAWNER, 4)
+			net.WriteUInt(atm.Wep:GetMode()==ADMINTOOL_MODE_SPAWNER and ADMINTOOL_MODE_DELETE or ADMINTOOL_MODE_SPAWNER, 4)
 			net.SendToServer()
 		end
 		b.DoRightClick = function()
 			net.Start("tea_admin_tool")
 			net.WriteString("toggleremover")
-			net.WriteUInt(wep:GetMode()~=ADMINTOOL_MODE_DELETEUNSAFE and ADMINTOOL_MODE_DELETEUNSAFE or ADMINTOOL_MODE_SPAWNER, 4)
+			net.WriteUInt(atm.Wep:GetMode()~=ADMINTOOL_MODE_DELETEUNSAFE and ADMINTOOL_MODE_DELETEUNSAFE or ADMINTOOL_MODE_SPAWNER, 4)
 			net.SendToServer()
 		end
 		b.Paint = function(self,w,h)
-			surface.SetDrawColor(wep:GetMode()~=ADMINTOOL_MODE_SPAWNER and 200 or 0,0,0,wep:GetMode()==ADMINTOOL_MODE_DELETEUNSAFE and 255 or 50)
+			surface.SetDrawColor(atm.Wep:GetMode()~=ADMINTOOL_MODE_SPAWNER and 200 or 0,0,0,atm.Wep:GetMode()==ADMINTOOL_MODE_DELETEUNSAFE and 255 or 50)
 			surface.DrawRect(0,0,w,h)
 
 			surface.SetDrawColor(255,255,255,200)
