@@ -22,7 +22,8 @@ end
 function ENT:StartTouch(ent)
 	if not (ent:IsPlayer() and ent:Alive()) then return end
 
-	GAMEMODE:OpenworldPlayerJoinTransition(ent, self.RouteID)
+-- TODO: Don't immediately make player join the transition. Instead, make a prompt when a player wants to go to another map.
+	--GAMEMODE:OpenworldPlayerJoinTransition(ent, self)
 end
 
 function ENT:EndTouch(ent)

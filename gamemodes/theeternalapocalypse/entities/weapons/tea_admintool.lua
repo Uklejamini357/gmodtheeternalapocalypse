@@ -107,7 +107,7 @@ function SWEP:SpawnIn(spawning, owner, tr, ang)
     if CLIENT then return end
     if self:GetSpawningType() == ADMINTOOL_SPAWNTYPE_ZOMBIE then
         local zm = GAMEMODE.Config["ZombieClasses"][spawning] or GAMEMODE.Config["BossClasses"][spawning]
-        local ent = GAMEMODE:CreateZombie(spawning, RoundPos(tr.HitPos), Angle(0,ang.yaw,0), self.SetOptions.XPReward or zm.XPReward, self.SetOptions.MoneyReward or zm.MoneyReward, self.SetOptions.InfectionRate or zm.InfectionRate, self.SetOptions.BossZombie)
+        local ent = GAMEMODE:CreateZombie(spawning, RoundPos(tr.HitPos), Angle(0,ang.yaw,0), self.SetOptions.XPReward or zm.XPReward, self.SetOptions.CashReward or zm.CashReward, self.SetOptions.InfectionRate or zm.InfectionRate, self.SetOptions.BossZombie)
         if ent and ent:IsValid() then
             ent:SetPos(ent:GetPos() + Vector(0,0,8))
             ent:DropToFloor()
@@ -198,14 +198,19 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:SecondaryAttack()
-    if CLIENT then
+	if game.SinglePlayer() then
+        self:GetOwner():SendLua([[gamemode.Call("OpenAdminToolMenuOptions", LocalPlayer():GetWeapon("]]..self:GetClass()..[["))]])
+    elseif CLIENT then
         gamemode.Call("OpenAdminToolMenuOptions", self)
     end
 end
 
 function SWEP:Reload()
     if self.NextReload and self.NextReload > CurTime() then return end
-    if CLIENT then
+	if game.SinglePlayer() then
+        self:GetOwner():SendLua([[gamemode.Call("OpenAdminToolMenu", LocalPlayer():GetWeapon("]]..self:GetClass()..[["))]])
+        self.NextReload = CurTime() + 1
+    elseif CLIENT then
         gamemode.Call("OpenAdminToolMenu", self)
         self.NextReload = CurTime() + 1
     end

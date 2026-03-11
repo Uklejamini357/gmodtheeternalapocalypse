@@ -247,17 +247,17 @@ GM.AdminMapSpawnables = {
 			swep.OpenworldPos2 = pos
 			owner:PrintMessage(3, tostring(pos))
 
+			net.Start("tea_admin_tool")
+			net.WriteString("openworldcreate")
+			net.WriteVector(swep.OpenworldStartPos)
+			net.WriteVector(swep.OpenworldPos1)
+			net.WriteVector(swep.OpenworldPos2)
+			net.Send(owner)
+
 			swep.OpenworldNew = nil
 			swep.OpenworldStartPos = nil
 			swep.OpenworldPos1 = nil
 			swep.OpenworldPos2 = nil
-			
-			net.Start("tea_admin_tool")
-			net.WriteString("openworldcreate")
-			net.WriteVector(swep.OpenworldSpawnPos)
-			net.WriteVector(swep.OpenworldPos1)
-			net.WriteVector(swep.OpenworldPos2)
-			net.Send(owner)
 		end
 	}
 }

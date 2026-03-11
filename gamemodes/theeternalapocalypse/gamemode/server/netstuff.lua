@@ -383,7 +383,10 @@ net.Receive("tea_admin_tool", function(len, pl)
 		local max = net.ReadVector()
 		local name = net.ReadString()
 
+		PrintMessage(3, "new transition has been made.")
 		gamemode.Call("CreateMapTransition", name, game.GetMap(), start, min, max)
+		gamemode.Call("SaveTransitionsData")
+		gamemode.Call("SpawnLevelTransitions")
 	end
 
 	local wep = pl:GetWeapon("tea_admintool")

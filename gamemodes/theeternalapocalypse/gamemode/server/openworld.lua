@@ -10,15 +10,21 @@ function GM:OpenworldTransition(tomapid)
     PrintMessage(3, "Transitioning to "..map.."...")
 
     timer.Create("TEA.OpenworldMapchange", 5, 1, function()
+		for _,pl in player.Iterator() do
+			pl.TransitioningMap = map
+			pl.TransitioningPos = data.StartPos
+		end
+	
         RunConsoleCommand("changelevel", map)
     end)
 end
 
 function GM:OpenworldPlayerJoinTransition(ply, ent)
 	if !ent.LinkedTo then return end
+
     local data = self.OpenworldTransitions[ent.LinkedTo]
-    pl.TransitioningToMap = data.Map
-    pl:PrintMessage(3, "placeholder")
+    ply.TransitioningToMap = data.Map
+    ply:PrintMessage(3, "placeholder")
 
     local joined = 0
     for _,pl in ipairs(player.GetHumans()) do
@@ -42,7 +48,7 @@ function GM:OpenworldPlayerLeaveTransition(ply)
         end
     end
 
-    if joined < #player.GetHumans() then
+    if joined <= #player.GetHumans() then
         timer.Remove("TEA.OpenworldMapchange")
         PrintMessage(3, "Map transitioning aborted!")
     end
@@ -98,16 +104,18 @@ end
 
 function GM:LoadTransitionsData()
     local method = self.Config.SFS and sfs.decode or util.JSONToTable
-    local tbl = method(file.Read(self.DataFolder.."/openworlddata.txt", "LUA"))
+    local tbl = method(file.Read(self.DataFolder.."/openworlddata.txt", "DATA"))
 
-    for _,data in pairs(tbl) do
-        local id = data.ID
-        data.ID = nil
+    for id,data in pairs(tbl) do
         self.OpenworldTransitions[id] = data
     end
 end
 
 function GM:SpawnLevelTransitions()
+    for _, ent in ipairs(ents.FindByClass("tea_transition")) do
+    	ent:Remove()
+    end
+
     for id, v in pairs(self.OpenworldTransitions) do
         if v.Map ~= game.GetMap() then continue end
 
@@ -141,8 +149,6 @@ function GM:UpdateLevelTransitions()
 end
 
 function GM:SaveTransitionsData()
-    self.OpenworldTransitions[#self.OpenworldTransitions + 1] = {}
-    
 	local method = self.Config.SFS and sfs.encode or util.TableToJSON
-    file.Write(self.DataFolder.."/openworlddata.txt", method(Data, self.Config.SFS and 50000 or true))
+    file.Write(self.DataFolder.."/openworlddata.txt", method(self.OpenworldTransitions, self.Config.SFS and 50000 or true))
 end

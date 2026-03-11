@@ -518,6 +518,7 @@ function GM:Initialize()
 	self:SetUpSeasonalEvents()
 
 --	self:AddResources()
+	self:LoadTransitionsData()
 	self:LoadLoot()
 	self:LoadAD()
 	self:LoadZombies()
@@ -550,6 +551,15 @@ function GM:InitPostEntity()
 
 	self:SpawnTraders()
 	self:SpawnTaskDealers()
+	self:SpawnLevelTransitions(l
+	self:MapReInit()
+end
+
+function GM:PostCleanupMap()
+	self:SpawnTraders()
+	self:SpawnTaskDealers()
+	self:SpawnLevelTransitions()
+	
 	self:MapReInit()
 end
 
@@ -616,13 +626,6 @@ function GM:DoAutoMaintenance(time)
 	end
 	self.IsMaintenance = true
 	self:SetServerRestartTime(CurTime() + time)
-end
-
-function GM:PostCleanupMap()
-	self:MapReInit()
-
-	self:SpawnTraders()
-	self:SpawnTaskDealers()
 end
 
 function GM:OnNPCKilled(ent, attacker, inflictor, dmginfo)
@@ -999,6 +1002,18 @@ end
 
 function GM:PlayerReady(ply)
 	self:FullyUpdatePlayer(ply)
+	
+	if !ply.LastSession["transitioning"] then return end
+	net.Start("tea_player_ready_spawn")
+	net.WriteBool(tobool(ply.HasSpawnedReady))
+	net.Send(ply)
+
+	if !ply:Alive() and !ply.HasSpawnedReady then
+		GAMEMODE:SystemBroadcast(translate.Format("plspawned", ply:Nick()), Color(255,255,155,255), false)
+		ply.HasSpawnedReady = true
+		ply:Spawn()
+	end
+	ply:LoadLastSession()
 end
 
 function GM:PlayerSay(ply, text, team)
@@ -1015,7 +1030,6 @@ end)
 local sv_alltalk = GetConVar("sv_alltalk")
 function GM:PlayerCanHearPlayersVoice(listener, talker)
 	if sv_alltalk:GetInt() == 1 then return true, false end
-
 
 	if listener:GetPos():Distance(talker:GetPos()) <= 1250 then
 		return true, false
