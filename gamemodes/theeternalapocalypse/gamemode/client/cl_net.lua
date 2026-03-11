@@ -202,5 +202,10 @@ net.Receive("tea_admin_tool", function()
 		local vars = net.ReadTable()
 
 		GAMEMODE.AdminEyes[var] = vars
+	elseif mode == "openworldcreate" then
+		local startpos = net.ReadVector()
+		local box = {net.ReadVector(), net.ReadVector()}
+
+		gamemode.Call("CreateOpenworldTransition", startpos, box[1], box[2])
 	end
 end)

@@ -784,7 +784,6 @@ function GM:OpenAdminToolMenu(wep)
 	end
 end
 
--- this panel is fucked
 local atm
 function GM:OpenAdminToolMenuOptions(wep)
 	atm = vgui.Create("EditablePanel")
@@ -820,7 +819,7 @@ function GM:OpenAdminToolMenuOptions(wep)
 		b1:SetText(optionstbl["CashReward"] or 0)
 		b1:SetTextColor(color_white)
 		b1:Dock(TOP)
-		b1:DockMargin(0, 0, atm:GetWide(), 0)
+		b1:DockMargin(0, 10, 0, 0)
 		b1.Paint = function(self,w,h)
 			surface.SetDrawColor(0,0,0,100)
 			surface.DrawRect(0,0,w,h)
@@ -844,7 +843,7 @@ function GM:OpenAdminToolMenuOptions(wep)
 		b1:SetText(optionstbl["XPReward"] or 0)
 		b1:SetTooltip("Set to an empty value to make it default.")
 		b1:Dock(TOP)
-		b1:DockMargin(0, 0, atm:GetWide(), 0)
+		b1:DockMargin(0, 10, 0, 0)
 		b1.Paint = function(self,w,h)
 			surface.SetDrawColor(0,0,0,100)
 			surface.DrawRect(0,0,w,h)
@@ -868,7 +867,7 @@ function GM:OpenAdminToolMenuOptions(wep)
 		b1:SetText(optionstbl["InfectionRate"] or 0)
 		b1:SetTooltip("Set to an empty value to make it default.")
 		b1:Dock(TOP)
-		b1:DockMargin(0, 0, atm:GetWide(), 0)
+		b1:DockMargin(0, 10, 0, 0)
 		b1.Paint = function(self,w,h)
 			surface.SetDrawColor(255,255,255,100)
 			surface.DrawRect(0,0,w,h)
@@ -893,5 +892,61 @@ function GM:OpenAdminToolMenuOptions(wep)
 			surface.SetDrawColor(255,255,255,200)
 			surface.DrawOutlinedRect(0,0,w,h)
 		end
+	end
+end
+
+local atm
+function GM:CreateOpenworldTransition(wep, spawnpos, pos1, pos2)
+	atm = vgui.Create("EditablePanel")
+	atm:SetSize(400, 300)
+	atm.Paint = function(self, w, h)
+		surface.SetDrawColor(0,0,0,100)
+		surface.DrawRect(0,0,w,h)
+		surface.SetDrawColor(255,255,255,200)
+		surface.DrawOutlinedRect(0,0,w,h)
+	end
+	atm.OnRemove = function(self)
+		hook.Remove("OnPauseMenuShow", self)
+	end
+	hook.Add("OnPauseMenuShow", atm, function()
+		if atm and atm:IsValid() then
+			atm:Remove()
+			return false
+		end
+	end)
+	atm:Center()
+	atm:MakePopup()
+
+
+
+	local text = vgui.Create("DLabel", atm)
+	text:SetText("Where should it lead you to?")
+	text:Dock(TOP)
+	text:SetContentAlignment(4)
+
+	local mapname = vgui.Create("DTextEntry", atm)
+	mapname:SetText()
+	mapname:SetTextColor(color_white)
+	mapname:Dock(TOP)
+	mapname:DockMargin(0, 10, 0, 0)
+	mapname.Paint = function(self,w,h)
+		surface.SetDrawColor(0,0,0,100)
+		surface.DrawRect(0,0,w,h)
+		surface.SetDrawColor(255,255,255,200)
+		surface.DrawOutlinedRect(0,0,w,h)
+	end
+
+	local btn = vgui.Create("DButton", atm)
+	btn:SetText("Make new transition!")
+	btn.DoClick = function()
+		net.Start("tea_admin_tool")
+		net.WriteString("createopenworldtransition")
+		net.WriteVector(startpos)
+		net.WriteVector(pos1)
+		net.WriteVector(pos2)
+		net.WriteString(mapname:GetText())
+		net.SendToServer()
+
+		atm:Remove()
 	end
 end

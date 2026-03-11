@@ -224,6 +224,17 @@ GM.AdminMapSpawnables = {
 	Openworld = {
 		Name = "Create transition",
 		Spawn = function(owner, swep, tr)
+			if !swep.OpenworldNew then
+				swep.OpenworldNew = true
+				return
+			end
+
+			if !swep.OpenworldStartPos then
+				swep.OpenworldStartPos = swep:GetAimPos()
+				PrintMessage(3, tostring(swep.OpenworldStartPos))
+				return
+			end
+
 			if !swep.OpenworldPos1 then
 				swep.OpenworldPos1 = swep:GetAimPos()
 				PrintMessage(3, tostring(swep.OpenworldPos1))
@@ -233,8 +244,17 @@ GM.AdminMapSpawnables = {
 			swep.OpenworldPos2 = swep:GetAimPos()
 			PrintMessage(3, tostring(swep.OpenworldPos2))
 
+			swep.OpenworldNew = nil
+			swep.OpenworldStartPos = nil
 			swep.OpenworldPos1 = nil
 			swep.OpenworldPos2 = nil
+			
+			net.Start("tea_admin_tool")
+			net.WriteString("openworldcreate")
+			net.WriteVector(swep.OpenworldSpawnPos)
+			net.WriteVector(swep.OpenworldPos1)
+			net.WriteVector(swep.OpenworldPos2)
+			net.Send(owner)
 		end
 	}
 }
