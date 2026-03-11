@@ -53,6 +53,7 @@ function GM:OpenworldPlayerJoinTransition(ply, ent)
 
 
     if joined >= #player.GetHumans() then
+        PrintMessage(3, "There are now enough players to traverse to another map.")
         self:OpenworldTransition(ent.LinkedTo)
     end
 end
@@ -75,7 +76,7 @@ function GM:OpenworldPlayerLeaveTransition(pl, ent)
 
     if joined <= #player.GetHumans() and timer.Exists("TEA.OpenworldMapchange") then
         timer.Remove("TEA.OpenworldMapchange")
-        PrintMessage(3, "Map transitioning aborted!")
+        PrintMessage(3, "Map transitioning aborted, one of the players have left the transition area!")
     end
 end
 

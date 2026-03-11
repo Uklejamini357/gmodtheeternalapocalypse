@@ -248,6 +248,12 @@ net.Receive("tea_openworld_level", function()
 			net.WriteUInt(OPENWORLD_NETTYPE_CONFIRM, 4)
 			net.SendToServer()
 		end
+		btn.Paint = function(self, w, h)
+			surface.SetDrawColor(0,0,200,self:IsHovered() and 150 or 0)
+			surface.DrawRect(0,0,w,h)
+			surface.SetDrawColor(255,255,255,200)
+			surface.DrawOutlinedRect(0,0,w,h)
+		end
 
 		close = vgui.Create("DButton", opnwrld_ui)
 		close:SetText("No!!")
@@ -257,6 +263,7 @@ net.Receive("tea_openworld_level", function()
 		close.DoClick = function(self)
 			opnwrld_ui:Remove()
 		end
+		close.Paint = btn.Paint
 	elseif nettype == OPENWORLD_NETTYPE_UPDATEPLAYERS then
 		if !IsValid(opnwrld_ui) then return end
 		opnwrld_ui.players:UpdatePlayers(net.ReadUInt(8))
