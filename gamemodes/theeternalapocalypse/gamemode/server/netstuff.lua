@@ -378,11 +378,12 @@ net.Receive("tea_admin_tool", function(len, pl)
 	local t = net.ReadString()
 	
 	if t == "createopenworldtransition" then
-		local startpos = net.ReadVector()
-		local box = {net.ReadVector(), net.ReadVector()}
+		local start = net.ReadVector()
+		local min = net.ReadVector()
+		local max = net.ReadVector()
 		local name = net.ReadString()
 
-		gamemode.Call("something")
+		gamemode.Call("CreateMapTransition", name, game.GetMap(), start, min, max)
 	end
 
 	local wep = pl:GetWeapon("tea_admintool")

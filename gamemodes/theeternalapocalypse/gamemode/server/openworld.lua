@@ -2,40 +2,33 @@ util.AddNetworkString("tea_openworld_level")
 
 -- I'd love to actually make it connect between servers and share data with SQL/MySQL. But for now, this is what we'll be having.
 
-function GM:OpenworldTransition(routeid)
-    local map = self.OpenworldTransitions[routeid]
-    if !map then return end
-    local loading = map.Map1 == game.GetMap() and map.Map2 or map.Map2 == game.GetMap() and map.Map1 or nil
+function GM:OpenworldTransition(tomapid)
+    local data = self.OpenworldTransitions[tomapid]
+    if !data then return end
+    local map = data.Map
 
-    if !loading then return end
-    PrintMessage(3, "Transitioning to "..loading.."...")
+    PrintMessage(3, "Transitioning to "..map.."...")
 
     timer.Create("TEA.OpenworldMapchange", 5, 1, function()
-        RunConsoleCommand("changelevel", loading)
+        RunConsoleCommand("changelevel", map)
     end)
 end
 
-function GM:OpenworldPlayerJoinTransition(ply, routeid)
-    local map = self.OpenworldTransitions[routeid]
-    if !map then return end
-    local loading = map.Map1 == game.GetMap() and map.Map2 or map.Map2 == game.GetMap() and map.Map1 or nil
-
-    if !loading then return end
-    if not (map.Direction == MAP_DIRECTION_BOTH or map.Direction == MAP_DIRECTION_FORWARD and map.Map1 == game.GetMap() or map.Direction == MAP_DIRECTION_BACKWARD and map.Map2 == game.GetMap()) then
-        return
-    end
-
-    pl.TransitioningToMap = loading
+function GM:OpenworldPlayerJoinTransition(ply, ent)
+	if !ent.LinkedTo then return end
+    local data = self.OpenworldTransitions[ent.LinkedTo]
+    pl.TransitioningToMap = data.Map
+    pl:PrintMessage(3, "placeholder")
 
     local joined = 0
     for _,pl in ipairs(player.GetHumans()) do
-        if pl.TransitioningToMap == loading then
+        if pl.TransitioningToMap == data.Map then
             joined = joined + 1
         end
     end
 
     if joined >= #player.GetHumans() then
-        self:OpenworldTransition(routeid)
+        self:OpenworldTransition(ent.LinkedTo)
     end
 end
 
@@ -55,22 +48,14 @@ function GM:OpenworldPlayerLeaveTransition(ply)
     end
 end
 
-function GM:OpenworldPlayerSendConfirm(ply, routeid, map)
-    local map = self.OpenworldTransitions[routeid]
+function GM:OpenworldPlayerSendConfirm(ply, ent)
+    local data = self.OpenworldTransitions[ent.LinkedTo]
     if !map then return end
-    local loading = map.Map1 == game.GetMap() and map.Map2 or map.Map2 == game.GetMap() and map.Map1 or nil
-
-    if !loading then return end
-    if not (map.Direction == MAP_DIRECTION_BOTH or map.Direction == MAP_DIRECTION_FORWARD and map.Map1 == game.GetMap() or map.Direction == MAP_DIRECTION_BACKWARD and map.Map2 == game.GetMap()) then
-        return
-    end
+    local map = data.Map
 
     net.Start("tea_openworld_level")
     net.WriteUInt(OPENWORLD_NETTYPE_SENDINFO, 4)
-    net.WriteUInt(routeid, 8)
-    net.WriteString(map.Name)
-    net.WriteString(loading)
-    net.WriteUInt(map.Direction, 2)
+    net.WriteString(data.Map)
     net.Send(ply)
 end
 
@@ -84,11 +69,11 @@ function GM:SendMapTransitionsInfo(pl)
 
 	net.Start("tea_openworld_level")
 	net.WriteUInt(OPENWORLD_NETTYPE_SENDMAPSINFO, 4)
-	
+	net.WriteTable(tbl)
 	net.Send(pl)
 end
 
-function GM:CreateMapRouteLink(name, map, start, min, max)
+function GM:CreateMapTransition(name, map, start, min, max)
 	local id = #self.OpenworldTransitions + 1
     self.OpenworldTransitions[id] = {
         Name = name,
@@ -100,6 +85,15 @@ function GM:CreateMapRouteLink(name, map, start, min, max)
 
     -- debugging
     print("Created a new transition trigger")
+end
+
+function GM:CreateMapTransitionLink(id1, id2)
+	if !self.OpenworldTransitions[id1] then print("invalid transition (arg #1)") return end
+	if !self.OpenworldTransitions[id2] then print("invalid transition (arg #2)") return end
+
+	self.OpenworldTransitions[id1].LinkedTo = id2
+
+	print("Created a link to a map")
 end
 
 function GM:LoadTransitionsData()
@@ -115,16 +109,35 @@ end
 
 function GM:SpawnLevelTransitions()
     for id, v in pairs(self.OpenworldTransitions) do
-        local second = v.Map2 == game.GetMap()
-        if v.Map1 ~= game.GetMap() and !second then continue end
+        if v.Map ~= game.GetMap() then continue end
 
         local transition = ents.Create("tea_transition")
-        transition.min = second and v.MinBounds2 or v.MinBounds1
-        transition.max = second and v.MaxBounds2 or v.MaxBounds1
-        transition.RouteID = id
-        transition:SetPos(second and v.Pos2 or v.Pos1)
+        transition.min = v.AreaMin
+        transition.max = v.AreaMax
+        transition.ID = id
+        transition.LinkedTo = v.LinkedTo
+        transition.StartPos = v.StartPos
+        transition:SetPos((v.AreaMin + v.AreaMax) / 2)
         transition:Spawn()
     end
+
+    self:SendMapTransitionsInfo(player.GetAll())
+end
+
+function GM:UpdateLevelTransitions()
+    for _, ent in ipairs(ents.FindByClass("tea_transition")) do
+    	if !ent.ID then print(ent, "has invalid ID, wtf!!!") continue end
+        local data = self.OpenworldTransitions[ent.ID]
+        if !data then ent:Remove() continue end
+
+        ent.min = data.AreaMin
+        ent.max = data.AreaMax
+        ent.LinkedTo = data.LinkedTo
+        ent.StartPos = data.StartPos
+        ent:SetPos((data.AreaMin + data.AreaMax) / 2)
+    end
+
+    self:SendMapTransitionsInfo(player.GetAll())
 end
 
 function GM:SaveTransitionsData()
@@ -132,7 +145,4 @@ function GM:SaveTransitionsData()
     
 	local method = self.Config.SFS and sfs.encode or util.TableToJSON
     file.Write(self.DataFolder.."/openworlddata.txt", method(Data, self.Config.SFS and 50000 or true))
-
-    -- debugging
-    PrintMessage(3, "A new path has opened: "..name.." ("..from.." <-> "..to..")")
 end
