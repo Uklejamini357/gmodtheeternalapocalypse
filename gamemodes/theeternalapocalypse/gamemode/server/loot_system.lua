@@ -27,7 +27,7 @@ function GM:LoadLoot()
 		for _,str in pairs(string.Explode("\n", self.LootSpawnpoints)) do
 			local v = string.Explode(";", str)
 			local pos = util.StringToType(v[1], "Vector")
-			local ang = Angle(0, tonumber(v[2]), 0)
+			local ang = util.StringToType(v[2], "Angle")
 
 			table.insert(tbl, {pos, ang})
 		end
@@ -39,8 +39,8 @@ function GM:LoadLoot()
 	end
 end
 
-function GM:AddLootSpawnpoint(pos, yaw, radius, tier)
-	table.insert(self.LootSpawnpoints, {pos, Angle(0, yaw, 0), radius, tier})
+function GM:AddLootSpawnpoint(pos, ang, radius, tier)
+	table.insert(self.LootSpawnpoints, {pos, ang, radius, tier})
 
 	self:SaveLootSpawns()
 	return true
@@ -62,7 +62,7 @@ end
 
 function GM:ClearLootSpawnpoints()
 	self.LootSpawnpoints = {}
-	
+
 	if file.Exists(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/loot.txt", "DATA") then
 		file.Delete(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/loot.txt")
 	end

@@ -209,6 +209,22 @@ GM.AdminMapSpawnables = {
 
 			render.DrawSphere(var.Pos, var.Radius, 16, 16, color_red)
 			cam.IgnoreZ(false)
+		end,
+		Get = function()
+			return GAMEMODE.ZombieSpawnpoints
+		end,
+		GetAdminEyes = function(owner)
+			local tbl = {}
+			for id,v in pairs(GAMEMODE.ZombieSpawnpoints) do
+				tbl[id] = {
+					Pos = v[1],
+					Ang = v[2],
+					Radius = v[3],
+					Tier = v[4]
+				}
+			end
+
+			return tbl
 		end
 	},
 
@@ -226,6 +242,22 @@ GM.AdminMapSpawnables = {
 
 			render.DrawSphere(var.Pos, var.Radius, 16, 16, color_red)
 			cam.IgnoreZ(false)
+		end,
+		Get = function()
+			return GAMEMODE.ZombieSpawnpoints
+		end,
+		GetAdminEyes = function(owner)
+			local tbl = {}
+			for id,v in pairs(GAMEMODE.ZombieSpawnpoints) do
+				tbl[id] = {
+					Pos = v[1],
+					Ang = v[2],
+					Radius = v[3],
+					Tier = v[4]
+				}
+			end
+
+			return tbl
 		end
 	},
 
@@ -246,6 +278,22 @@ GM.AdminMapSpawnables = {
 
 			render.DrawSphere(var.Pos, var.Radius, 16, 16, color_red)
 			cam.IgnoreZ(false)
+		end,
+		Get = function()
+			return GAMEMODE.ZombieSpawnpoints
+		end,
+		GetAdminEyes = function(owner)
+			local tbl = {}
+			for id,v in pairs(GAMEMODE.ZombieSpawnpoints) do
+				tbl[id] = {
+					Pos = v[1],
+					Ang = v[2],
+					Radius = v[3],
+					Tier = v[4]
+				}
+			end
+
+			return tbl
 		end
 	},
 
@@ -262,6 +310,22 @@ GM.AdminMapSpawnables = {
 
 			render.DrawSphere(var.Pos, var.Radius, 16, 16, color_red)
 			cam.IgnoreZ(false)
+		end,
+		Get = function()
+			return GAMEMODE.ZombieSpawnpoints
+		end,
+		GetAdminEyes = function(owner)
+			local tbl = {}
+			for id,v in pairs(GAMEMODE.ZombieSpawnpoints) do
+				tbl[id] = {
+					Pos = v[1],
+					Ang = v[2],
+					Radius = v[3],
+					Tier = v[4]
+				}
+			end
+
+			return tbl
 		end
 	},
 
@@ -278,6 +342,22 @@ GM.AdminMapSpawnables = {
 
 			render.DrawSphere(var.Pos, var.Radius, 16, 16, color_red)
 			cam.IgnoreZ(false)
+		end,
+		Get = function()
+			return GAMEMODE.ZombieSpawnpoints
+		end,
+		GetAdminEyes = function(owner)
+			local tbl = {}
+			for id,v in pairs(GAMEMODE.ZombieSpawnpoints) do
+				tbl[id] = {
+					Pos = v[1],
+					Ang = v[2],
+					Radius = v[3],
+					Tier = v[4]
+				}
+			end
+
+			return tbl
 		end
 	},
 
@@ -294,6 +374,22 @@ GM.AdminMapSpawnables = {
 
 			render.DrawSphere(var.Pos, var.Radius, 16, 16, color_red)
 			cam.IgnoreZ(false)
+		end,
+		Get = function()
+			return GAMEMODE.ZombieSpawnpoints
+		end,
+		GetAdminEyes = function(owner)
+			local tbl = {}
+			for id,v in pairs(GAMEMODE.ZombieSpawnpoints) do
+				tbl[id] = {
+					Pos = v[1],
+					Ang = v[2],
+					Radius = v[3],
+					Tier = v[4]
+				}
+			end
+
+			return tbl
 		end
 	},
 
@@ -344,6 +440,22 @@ GM.AdminMapSpawnables = {
 
 			render.DrawSphere(var.Pos, var.Radius, 16, 16, color_red)
 			cam.IgnoreZ(false)
+		end,
+		Get = function()
+			return GAMEMODE.ZombieSpawnpoints
+		end,
+		GetAdminEyes = function(owner)
+			local tbl = {}
+			for id,v in pairs(GAMEMODE.ZombieSpawnpoints) do
+				tbl[id] = {
+					Pos = v[1],
+					Ang = v[2],
+					Radius = v[3],
+					Tier = v[4]
+				}
+			end
+
+			return tbl
 		end
 	}
 }

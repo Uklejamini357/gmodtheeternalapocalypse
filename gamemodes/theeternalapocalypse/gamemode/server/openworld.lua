@@ -1,4 +1,3 @@
-util.AddNetworkString("tea_openworld_level")
 
 -- I'd love to actually make it connect between servers and share data with SQL/MySQL. But for now, this is what we'll be having.
 
@@ -27,7 +26,8 @@ function GM:OpenworldPlayerJoinTransition(ply, ent)
         net.Start("tea_openworld_level")
         net.WriteUInt(OPENWORLD_NETTYPE_LEFTAREA, 4)
         net.Send(ply)
-        return end
+        return
+    end
     if ply.OpenworldCanTravelTo ~= ent then return end
 
     local data = self.OpenworldTransitions[ent.LinkedTo]

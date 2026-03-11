@@ -10,8 +10,8 @@ function GM:LoadAD()
 		local tbl = {}
 		for _,str in pairs(string.Explode("\n", self.AirdropSpawnpoints)) do
 			local v = string.Explode(";", str)
-			local pos = v[1]
-			local ang = Angle(0, tonumber(v[2]), 0)
+			local pos = util.StringToType(v[1], "Vector")
+			local ang = util.StringToType(v[2], "Angle")
 
 			local tr = util.TraceLine({
 				start = ply:GetPos(),
@@ -41,7 +41,7 @@ function GM:AddAirdropSpawn(pos, ang)
 	if !tr.HitSky then return false, "Must be placed in a place visible to sky." end
 	local hitp = tr.HitPos - Vector(0, 0, 80)
 
-	table.insert(self.AirdropSpawnpoints, {hitp, ply:GetAngles()})
+	table.insert(self.AirdropSpawnpoints, {pos, ang, hitp})
 
 	self:SaveAirdropSpawns()
 
@@ -120,6 +120,7 @@ function GM:SpawnAirdrop(plycountoverride, silent, delay)
 	local random = table.Random(self.AirdropSpawnpoints)
 	local pos = random[1]
 	local ang = random[2]
+	local hitpos = random[3]
 
 	local dropent = ents.Create("airdrop_cache")
 	dropent:SetPos(pos)

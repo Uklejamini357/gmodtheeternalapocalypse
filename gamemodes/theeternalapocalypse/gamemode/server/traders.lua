@@ -8,10 +8,10 @@ function GM:LoadTraders()
 		self.TraderSpawnpoints = file.Read(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/traders.txt", "DATA")
 
 		local tbl = {}
-		for _,v in pairs(string.Explode("\n", self.TraderSpawnpoints)) do
-			local Booty = string.Explode(";", v)
-			local pos = util.StringToType(Booty[1], "Vector")
-			local ang = util.StringToType(Booty[2], "Angle")
+		for _,str in pairs(string.Explode("\n", self.TraderSpawnpoints)) do
+			local v = string.Explode(";", str)
+			local pos = util.StringToType(v[1], "Vector")
+			local ang = Angle(0, v[2], 0)
 
 			table.insert(tbl, {pos, ang})
 		end
@@ -33,6 +33,7 @@ function GM:SpawnTraders()
 	for k, v in pairs(self.TraderSpawnpoints) do
 		local pos = v[1]
 		local ang = v[2]
+
 		local ent = ents.Create("tea_trader")
 		ent:SetPos(pos)
 		ent:SetAngles(ang)
@@ -42,37 +43,15 @@ function GM:SpawnTraders()
 	end
 end
 
-function GM:AddTrader(ply, cmd, args)
-	if !SuperAdminCheck(ply) then 
-		self:SystemMessage(ply, translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205), true)
-		ply:ConCommand("playgamesound buttons/button8.wav")
-		return
-	end
-
-	table.insert(self.TraderSpawnpoints, {ply:GetPos(), ply:GetAngles()})
+function GM:AddTraderSpawnpoint(pos, ang)
+	table.insert(self.TraderSpawnpoints, {pos, ang})
 
 	self:SaveTraderSpawns()
 
-	gamemode.Call("LoadTraders") --reload them
-	ply:SendChat("Added a trader spawnpoint at position "..tostring(ply:GetPos()).."!")
-	self:DebugLog("[SPAWNPOINTS MODIFIED] "..ply:Nick().." has added a trader spawnpoint at position "..tostring(ply:GetPos()).."!")
-	ply:ConCommand("playgamesound buttons/button3.wav")
-	timer.Simple(1, function()
-		gamemode.Call("SpawnTraders")
-	end)
+	gamemode.Call("SpawnTraders")
 end
-concommand.Add("tea_addtrader", function(ply, cmd, args)
-	gamemode.Call("AddTrader", ply, cmd, args)
-end)
 
-function GM:ClearTraders(ply, cmd, args)
-	if !SuperAdminCheck(ply) then
-		self:SystemMessage(ply, translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205), true)
-		ply:ConCommand("playgamesound buttons/button8.wav")
-		return
-	end
-
-	local entries = table.Count(self.TraderSpawnpoints)
+function GM:ClearTraderSpawnpoints()
 	self.TraderSpawnpoints = {}
 	if file.Exists(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/traders.txt", "DATA") then
 		file.Delete(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/traders.txt")
@@ -80,13 +59,19 @@ function GM:ClearTraders(ply, cmd, args)
 	for _,ent in ipairs(ents.FindByClass("tea_trader")) do
 		ent:Remove()
 	end
+end
+concommand.Add("tea_cleartraderspawns", function(ply, cmd, args)
+	if !SuperAdminCheck(ply) then
+		self:SystemMessage(ply, translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205), true)
+		ply:ConCommand("playgamesound buttons/button8.wav")
+		return
+	end
+
+	GAMEMODE:ClearTraderSpawnpoints()
 
 	ply:SendChat("Deleted all trader spawnpoints!")
 	self:DebugLog("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all trader spawnpoints!")
 	ply:ConCommand("playgamesound buttons/button15.wav")
-end
-concommand.Add("tea_cleartraderspawns", function(ply, cmd, args)
-	gamemode.Call("ClearTraders", ply, cmd, args)
 end)
 
 function GM:SaveTraderSpawns()

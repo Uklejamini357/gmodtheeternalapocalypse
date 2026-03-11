@@ -22,6 +22,11 @@ end
 function ENT:StartTouch(ent)
 	if not (ent:IsPlayer() and ent:Alive()) then return end
 
+    if CurTime() < 300 then
+        ent:PrintMessage(3, "Whoa slow down, you cannot go to another map yet!")
+        return
+    end
+
 	ent.OpenworldCanTravelTo = self
 
 	gamemode.Call("OpenworldPlayerSendConfirm", ent, self)

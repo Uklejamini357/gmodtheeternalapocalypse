@@ -21,7 +21,6 @@ util.AddNetworkString("tea_damagefloater")
 
 util.AddNetworkString("UseItem") -- for the following 4 below, see player_inventory.lua
 util.AddNetworkString("DestroyItem") -- For destroying an item
-util.AddNetworkString("UseGun")
 util.AddNetworkString("BuyItem")
 util.AddNetworkString("SellItem")
 util.AddNetworkString("OpenTraderMenu") -- see cl_tradermenu.lua
@@ -62,6 +61,7 @@ util.AddNetworkString("tea_perksreset")
 -- Misc network strings
 util.AddNetworkString("tea_plyevent_vaultupdate")
 util.AddNetworkString("tea_player_sendcharacters")
+util.AddNetworkString("tea_openworld_level")
 
 
 util.AddNetworkString("tea_admin_sendspawns")

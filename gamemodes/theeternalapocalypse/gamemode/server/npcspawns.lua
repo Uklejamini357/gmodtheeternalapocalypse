@@ -22,7 +22,7 @@ function GM:LoadZombies()
 		for _,str in pairs(string.Explode("\n", self.ZombieSpawnpoints)) do
 			local v = string.Explode(";", str)
 			local pos = util.StringToType(v[1], "Vector")
-			local ang = Angle(0, tonumber(v[2]), 0)
+			local ang = util.StringToType(v[2], "Angle")
 			local radius = tonumber(v[3] or 0)
 			local tier = tonumber(v[4] or 1)
 
@@ -78,9 +78,8 @@ function GM:GetRandomZombieSpawn()
 	if table.Count(self.ZombieSpawnpoints) == 0 then return end
 
 	local zombiespawn = table.Random(self.ZombieSpawnpoints)
-	local Zed = string.Explode(";", zombiespawn)
-	local pos = util.StringToType(Zed[1], "Vector") + Vector(0, 0, 5)
-	-- local ang = util.StringToType(Zed[2], "Angle")
+	local pos = zombiespawn[1] + Vector(0, 0, 5)
+	local ang = zombiespawn[2]
 
 	return pos
 end

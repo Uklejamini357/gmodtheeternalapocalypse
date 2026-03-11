@@ -407,16 +407,6 @@ end)
 ----------------------------------------------------------equip guns----------------------------------------------------------------------------
 
 
-net.Receive("UseGun", function(length, ply)
-	local item = net.ReadString()
-	if ply.Inventory[item] then
-		ply:Give(item)
-		ply:SelectWeapon(item)
-	else
-		ply:SendChat(translate.ClientGet(ply, "hasnoitem"))
-	end
-end)
-
 function meta:InvStripWeapon(item)
 	local wep = self:GetWeapon(item)
 	local itemtbl = GAMEMODE.ItemsList[item]
