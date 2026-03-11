@@ -74,23 +74,32 @@ function GM:OpenworldPlayerSendConfirm(ply, routeid, map)
     net.Send(ply)
 end
 
-function GM:CreateMapRouteLink(name, from, frompos, fromminbounds, frommaxbounds, name2, to, topos, tominbounds, tomaxbounds, direction)
-    self.OpenworldTransitions[#self.OpenworldTransitions + 1] = {
-        Name1 = name1,
-        Map1 = from,
-        Pos1 = frompos,
-        MinBounds1 = fromminbounds,
-        MaxBounds1 = frommaxbounds,
-        Name2 = name2,
-        Map2 = to,
-        Pos2 = topos,
-        MinBounds2 = tominbounds,
-        MaxBounds2 = tomaxbounds,
-        Direction = direction
+function GM:SendMapTransitionsInfo(pl)
+	local tbl = {}
+	for _,map in pairs(self.OpenworldTransitions) do
+		if map.Map == game.GetMap() then
+			table.insert(tbl, map)
+		end
+	end 
+
+	net.Start("tea_openworld_level")
+	net.WriteUInt(OPENWORLD_NETTYPE_SENDMAPSINFO, 4)
+	
+	net.Send(pl)
+end
+
+function GM:CreateMapRouteLink(name, map, start, min, max)
+	local id = #self.OpenworldTransitions + 1
+    self.OpenworldTransitions[id] = {
+        Name = name,
+        Map = map,
+        StartPos = start,
+        AreaMin = min,
+        AreaMax = max
     }
 
     -- debugging
-    PrintMessage(3, "A new path has opened: "..name.." ("..from.." <-> "..to..")")
+    print("Created a new transition trigger")
 end
 
 function GM:LoadTransitionsData()

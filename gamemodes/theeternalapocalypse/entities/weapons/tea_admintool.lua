@@ -165,11 +165,11 @@ function SWEP:SpawnIn(spawning, owner, tr, ang)
         return
     elseif self:GetSpawningType() == ADMINTOOL_SPAWNTYPE_MAPSPAWNS then
         if GAMEMODE.AdminMapSpawnables[self:GetSpawning()] then
-            GAMEMODE.AdminMapSpawnables[self:GetSpawning()].Spawn(owner, self, tr)
+            GAMEMODE.AdminMapSpawnables[self:GetSpawning()].Spawn(owner, self, tr, self:GetAimPos())
         end
     elseif self:GetSpawningType() == ADMINTOOL_SPAWNTYPE_TOOL then
         if GAMEMODE.AdminTools[self:GetSpawning()] then
-            GAMEMODE.AdminTools[self:GetSpawning()].Spawn(owner, self, tr)
+            GAMEMODE.AdminTools[self:GetSpawning()].Spawn(owner, self, tr, self:GetAimPos())
         end
     end
 end

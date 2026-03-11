@@ -182,21 +182,21 @@ GM.SpecialStructureSpawns = {
 
 GM.AdminMapSpawnables = {
 	Zombie = {
-		Spawn = function(owner, swep, tr)
-			gamemode.Call("AddZombieSpawnpoint", tr.HitPos, owner:EyeAngles().yaw, 0, 0)
-			PrintMessage(3, "Added zombie spawnpoint")
+		Spawn = function(owner, swep, tr, pos)
+			gamemode.Call("AddZombieSpawnpoint", pos, owner:EyeAngles().yaw, 0, 0)
+			owner:PrintMessage(3, "Added zombie spawnpoint")
 		end
 	},
 
 	Loot = {
-		Spawn = function(owner, swep, tr)
-			gamemode.Call("AddLootSpawnpoint", tr.HitPos, owner:EyeAngles().yaw, 0, 0)
+		Spawn = function(owner, swep, tr, pos)
+			gamemode.Call("AddLootSpawnpoint", pos, owner:EyeAngles().yaw, 0, 0)
 		end
 	},
 
 	Airdrop = {
-		Spawn = function(owner, swep, tr)
-			local err,msg = gamemode.Call("AddAirdropSpawnpoint", tr.HitPos, owner:EyeAngles().yaw)
+		Spawn = function(owner, swep, tr, pos)
+			local err,msg = gamemode.Call("AddAirdropSpawnpoint", pos, owner:EyeAngles().yaw)
 			if err then
 				PrintMessage(3, "Error: "..msg)
 			end
@@ -204,45 +204,48 @@ GM.AdminMapSpawnables = {
 	},
 
 	Trader = {
-		Spawn = function(owner, swep, tr)
-			gamemode.Call("AddTraderSpawnpoint", tr.HitPos, owner:EyeAngles().yaw, 0, 0)
+		Spawn = function(owner, swep, tr, pos)
+			gamemode.Call("AddTraderSpawnpoint", pos, owner:EyeAngles().yaw, 0, 0)
 		end
 	},
 
 	PlayerSpawnpoint = {
-		Spawn = function(owner, swep, tr)
-			gamemode.Call("AddPlayerSpawnpoint", tr.HitPos, owner:EyeAngles().yaw, 0, 0)
+		Spawn = function(owner, swep, tr, pos)
+			gamemode.Call("AddPlayerSpawnpoint", pos, owner:EyeAngles().yaw, 0, 0)
 		end
 	},
 
 	TaskDealer = {
-		Spawn = function(owner, swep, tr)
-			gamemode.Call("AddTaskDealerSpawnpoint", tr.HitPos, owner:EyeAngles().yaw, 0, 0)
+		Spawn = function(owner, swep, tr, pos)
+			gamemode.Call("AddTaskDealerSpawnpoint", pos, owner:EyeAngles().yaw, 0, 0)
 		end
 	},
 
 	Openworld = {
 		Name = "Create transition",
-		Spawn = function(owner, swep, tr)
+		Spawn = function(owner, swep, tr, pos)
 			if !swep.OpenworldNew then
 				swep.OpenworldNew = true
+				owner:PrintMessage(3, "You are now creating a new openworld transition. Select the position where a player would start when transitioning back here..")
 				return
 			end
 
 			if !swep.OpenworldStartPos then
-				swep.OpenworldStartPos = swep:GetAimPos()
-				PrintMessage(3, tostring(swep.OpenworldStartPos))
+				swep.OpenworldStartPos = pos
+				owner:PrintMessage(3, tostring(pos))
+				owner:PrintMessage(3, "Now its time to create an area where players can to transition between maps! Select a starting area")
 				return
 			end
 
 			if !swep.OpenworldPos1 then
-				swep.OpenworldPos1 = swep:GetAimPos()
-				PrintMessage(3, tostring(swep.OpenworldPos1))
+				swep.OpenworldPos1 = pos
+				owner:PrintMessage(3, tostring(pos))
+				owner:PrintMessage(3, "Now select an end area.")
 				return
 			end
 
-			swep.OpenworldPos2 = swep:GetAimPos()
-			PrintMessage(3, tostring(swep.OpenworldPos2))
+			swep.OpenworldPos2 = pos
+			owner:PrintMessage(3, tostring(pos))
 
 			swep.OpenworldNew = nil
 			swep.OpenworldStartPos = nil
@@ -261,10 +264,10 @@ GM.AdminMapSpawnables = {
 
 GM.AdminTools = {
 	Explode = {
-		Spawn = function(owner, swep, tr)
+		Spawn = function(owner, swep, tr, pos)
 			local explode = ents.Create("env_explosion")
 			explode:SetKeyValue("iMagnitude", 100)
-			explode:SetPos(tr.HitPos)
+			explode:SetPos(pos)
 			explode:Spawn()
 			explode:Fire("Explode")
 		end

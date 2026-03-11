@@ -370,75 +370,21 @@ net.Receive("tea_perksreset", function(len, pl)
 end)
 
 
--- BROKEN currently due to code rewrite. Working for a replacement.
 function GM:SendSpawnsToPlayer(pl, spawn)
-	net.Start("tea_admin_sendspawns")
-	net.WriteString(spawn)
-
-	local spawns = {}
-	if spawn == "zombies" then
-		local SpawnsList = string.Explode("\n", ZombieData)
-		for k,v in pairs(SpawnsList) do
-			local Spawning = string.Explode(";", v)
-			local pos  = util.StringToType(Spawning[1], "Vector")
-			local ang  = util.StringToType(Spawning[2], "Angle")
-
-			table.insert(spawns, {pos, ang})
-		end
-	elseif spawn == "loots" then
-		local SpawnsList = string.Explode("\n", LootData)
-		for k,v in pairs(SpawnsList) do
-			local Spawning = string.Explode(";", v)
-			local pos  = util.StringToType(Spawning[1], "Vector")
-			local ang  = util.StringToType(Spawning[2], "Angle")
-
-			table.insert(spawns, {pos, ang})
-		end
-
-	elseif spawn == "traders" then
-		local SpawnsList = string.Explode("\n", TradersData)
-		for k,v in pairs(SpawnsList) do
-			local Spawning = string.Explode(";", v)
-			local pos  = util.StringToType(Spawning[1], "Vector")
-			local ang  = util.StringToType(Spawning[2], "Angle")
-
-			table.insert(spawns, {pos, ang})
-		end
-	elseif spawn == "taskdealers" then
-		local SpawnsList = string.Explode("\n", TaskDealersData)
-		for k,v in pairs(SpawnsList) do
-			local Spawning = string.Explode(";", v)
-			local pos  = util.StringToType(Spawning[1], "Vector")
-			local ang  = util.StringToType(Spawning[2], "Angle")
-
-			table.insert(spawns, {pos, ang})
-		end
-	elseif spawn == "airdrops" then
-		local SpawnsList = string.Explode("\n", DropData)
-		for k,v in pairs(SpawnsList) do
-			local Spawning = string.Explode(";", v)
-			local pos  = util.StringToType(Spawning[1], "Vector")
-			local ang  = util.StringToType(Spawning[2], "Angle")
-
-			table.insert(spawns, {pos, ang})
-		end
-	elseif spawn == "playerspawns" then
-		local SpawnsList = string.Explode("\n", GAMEMODE.PlayerSpawnsData)
-		for k,v in pairs(SpawnsList) do
-			local Spawning = string.Explode(";", v)
-			local pos  = util.StringToType(Spawning[1], "Vector")
-			local ang  = util.StringToType(Spawning[2], "Angle")
-			local name = tostring(Spawning[3])
-
-			table.insert(spawns, {pos, ang, name})
-		end
-	end
-	net.WriteTable(spawns)
-	net.Send(pl)
 end
 
 net.Receive("tea_admin_tool", function(len, pl)
+	if !SuperAdminCheck(pl) then return end
 	local t = net.ReadString()
+	
+	if t == "createopenworldtransition" then
+		local startpos = net.ReadVector()
+		local box = {net.ReadVector(), net.ReadVector()}
+		local name = net.ReadString()
+
+		gamemode.Call("something")
+	end
+
 	local wep = pl:GetWeapon("tea_admintool")
 	if !IsValid(wep) then return end
 
