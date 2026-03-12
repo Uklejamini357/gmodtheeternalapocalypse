@@ -179,14 +179,15 @@ function GM:DrawNames()
 		end
 		local colormult = lastdraw + 1 - CurTime()
 
-		draw_RoundedBox(1, (ScrW() / 2) - 170, 230, 340, 60, Color(0, 0, 0, colormult * 175))
+		draw_RoundedBox(1, (ScrW() / 2) - 170, 210, 340, 75, Color(0, 0, 0, colormult * 175))
 		surface_SetDrawColor(90,0,0,colormult * 155)
-		surface_DrawOutlinedRect((ScrW() / 2) - 170, 230, 340, 60)
+		surface_DrawOutlinedRect((ScrW() / 2) - 170, 210, 340, 75)
 
 		local class = self.Config["ZombieClasses"][npcent:GetClass()] or self.Config["BossClasses"][npcent:GetClass()]
-		draw.SimpleText(class.Name..(npcent:GetEliteVariant() ~= 0 and " (Elite variant: "..(self.VariantNames[npcent:GetEliteVariant()] or "N/A")..")" or ""), "TEA.HUDFontSmall", (ScrW() / 2) - 160, 244, Color(108,108,108,colormult * 255), 0, 1)
-		draw.SimpleText(translate.Format("health", npcent:Health(), npcent:GetMaxHealth()), "TEA.HUDFontSmall", (ScrW() / 2) - 160, 262, Color(math.Clamp(255 * (npcent:Health() / npcent:GetMaxHealth()), 127, 255),48,48,colormult * 255), 0, 1)
-		draw.SimpleText(tostring(npcent.Purpose), "DefaultFontSmall", (ScrW() / 2) - 160, 280, Color(148,148,148,colormult * 255), 0, 1)
+		draw.SimpleText(class.Name..(npcent:GetEliteVariant() ~= 0 and " (Elite variant: "..(self.VariantNames[npcent:GetEliteVariant()] or "N/A")..")" or ""), "TEA.HUDFontSmall", (ScrW() / 2) - 160, 224, Color(108,108,108,colormult * 255), 0, 1)
+		draw.SimpleText(translate.Format("health", npcent:Health(), npcent:GetMaxHealth()), "TEA.HUDFontSmall", (ScrW() / 2) - 160, 242, Color(math.Clamp(255 * (npcent:Health() / npcent:GetMaxHealth()), 127, 255),48,48,colormult * 255), 0, 1)
+		draw.SimpleText("Level: "..npcent:GetZombieLevel(), "TEA.HUDFontSmall", (ScrW() / 2) - 160, 260, Color(255, 127, 255, colormult * 255), 0, 1)
+		draw.SimpleText(tostring(npcent.Purpose), "DefaultFontSmall", (ScrW() / 2) - 160, 276, Color(148,148,148,colormult * 255), 0, 1)
 	end
 end
 

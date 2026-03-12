@@ -387,6 +387,19 @@ net.Receive("tea_admin_tool", function(len, pl)
 		gamemode.Call("CreateMapTransition", name, game.GetMap(), start, min, max)
 		gamemode.Call("SaveTransitionsData")
 		gamemode.Call("SpawnLevelTransitions")
+	elseif t == "admineyes" then
+		local m = net.ReadString()
+		local v = net.ReadBool()
+
+
+		local spawnables = GAMEMODE.AdminMapSpawnables[m]
+		if spawnables.GetAdminEyes then
+			net.Start("tea_admin_tool")
+			net.WriteString("admineyes")
+			net.WriteString(m)
+			net.WriteTable(spawnables.GetAdminEyes(pl))
+			net.Send(pl)
+		end
 	end
 
 	local wep = pl:GetWeapon("tea_admintool")

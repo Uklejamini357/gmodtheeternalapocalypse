@@ -143,21 +143,24 @@ function GM:CMenu()
 				draw.SimpleText(Format("Infection level: %s%% (Effective: %s%%)", infection, effective), "TEA.HUDFont", scw - 590, sch / 2 - 145, color, 0, 0)
 			end
 
-			local y = sch / 2 - 120
-			local dmgtakeperc = math.Round(1 / self:GetInfectionMul()*100, 2)
-			draw.SimpleText(Format("Zombies take: %s%% damage", (dmgtakeperc < 0.1 and "<0.1" or dmgtakeperc)), "TEA.HUDFontSmall", scw - 590, y, color, 0, 0)
-			y = y + 15
-			draw.SimpleText(Format("Zombies deal: %s%% damage", math.Round(self:GetInfectionMul(0.5)*100, 2)), "TEA.HUDFontSmall", scw - 590, y, color, 0, 0)
-			y = y + 15
-			draw.SimpleText(Format("Zombie cash reward: %s%%", math.Round(self:GetInfectionMul(0.5)*100, 2)), "TEA.HUDFontSmall", scw - 590, y, color, 0, 0)
-			y = y + 15
-			draw.SimpleText(Format("Zombie xp reward: %s%%", math.Round(self:GetInfectionMul()*100, 2)), "TEA.HUDFontSmall", scw - 590, y, color, 0, 0)
-			y = y + 15
-			draw.SimpleText(Format("Zombie speed: %s%%", math.Round(math.Clamp(self:GetInfectionMul(0.5)-0.25, 1, 1.25)*100, 2)), "TEA.HUDFontSmall", scw - 590, y, color, 0, 0)
+			local y = sch / 2 - 125
+			local minlvl = 1+effective/7
+			local maxlvl = 10+effective/5
+			draw.SimpleText(Format("Zombies level: %d~%d", minlvl, maxlvl), "TEA.HUDFont", scw - 590, y, color, 0, 0)
 			y = y + 20
-			draw.SimpleText(Format("Elite variant spawn chance: %s%%", math.Round(self:GetEliteVariantSpawnChance(false), 2)), "TEA.HUDFontSmall", scw - 590, y, color, 0, 0)
+			draw.SimpleText(Format("Zombies health: %s%%~%s%%", 100*math.Round(0.85+minlvl*0.015, 4), 100*math.Round(0.85+maxlvl*0.015, 4)), "TEA.HUDFontSmall", scw - 590, y, color, 0, 0)
 			y = y + 15
-			draw.SimpleText(Format("Elite variant Boss spawn chance: %s%%", math.Round(self:GetEliteVariantSpawnChance(true), 2)), "TEA.HUDFontSmall", scw - 590, y, color, 0, 0)
+			draw.SimpleText(Format("Zombies damage dealt: %s%%~%s%%", 100*math.Round(0.85+minlvl*0.015, 4), 100*math.Round(0.85+maxlvl*0.015, 4)), "TEA.HUDFontSmall", scw - 590, y, color, 0, 0)
+			y = y + 15
+			draw.SimpleText(Format("Zombies cash reward: %s%%~%s%%", 100*math.Round(0.85+minlvl*0.015, 4), 100*math.Round(0.85+maxlvl*0.015, 4)), "TEA.HUDFontSmall", scw - 590, y, color, 0, 0)
+			y = y + 15
+			draw.SimpleText(Format("Zombies xp reward: %s%%~%s%%", 100*math.Round(0.75+minlvl*0.025, 4), 100*math.Round(0.75+maxlvl*0.025, 4)), "TEA.HUDFontSmall", scw - 590, y, color, 0, 0)
+			y = y + 15
+			draw.SimpleText(Format("Zombies speed: %s%%~%s%%", math.Round(100*math.Clamp(1 + (minlvl-20), 1, 1.25), 2), math.Round(100*math.Clamp(1 + (maxlvl-20), 1, 1.25), 2)), "TEA.HUDFontSmall", scw - 590, y, color, 0, 0)
+			y = y + 20
+			draw.SimpleText(Format("Elite variant spawn chance: %s%%", math.Round(self:GetEliteVariantSpawnChance(false), 4)), "TEA.HUDFontSmall", scw - 590, y, color, 0, 0)
+			y = y + 15
+			draw.SimpleText(Format("Elite variant Boss spawn chance: %s%%", math.Round(self:GetEliteVariantSpawnChance(true), 4)), "TEA.HUDFontSmall", scw - 590, y, color, 0, 0)
 			
 			
 			y = sch / 2 + 65

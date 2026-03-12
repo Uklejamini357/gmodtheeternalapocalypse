@@ -13,6 +13,7 @@ function GM:OpenworldTransition(tomapid)
 		for _,pl in player.Iterator() do
 			pl.TransitioningMap = map
 			pl.TransitioningPos = data.StartPos
+			pl.TransitioningAng = data.StartAng
 		end
 	
         RunConsoleCommand("changelevel", map)

@@ -14,8 +14,8 @@ function GM:LoadAD()
 			local ang = util.StringToType(v[2], "Angle")
 
 			local tr = util.TraceLine({
-				start = ply:GetPos(),
-				endpos = ply:GetPos() + Vector(0, 0, 90000),
+				start = pos,
+				endpos = pos + Vector(0, 0, 90000),
 				mask = MASK_SOLID_BRUSHONLY,
 			})
 			-- if !tr.HitSky then ply:SystemMessage("You can only place airdrop spawns in areas that are visible to the skybox!", Color(255,205,205,255), true) return end
@@ -32,20 +32,20 @@ function GM:LoadAD()
 end
 
 
-function GM:AddAirdropSpawn(pos, ang)
+function GM:AddAirdropSpawnpoint(pos, ang)
 	local tr = util.TraceLine({
 		start = pos,
 		endpos = pos + Vector(0, 0, 90000),
 		mask = MASK_SOLID_BRUSHONLY,
 	})
-	if !tr.HitSky then return false, "Must be placed in a place visible to sky." end
+	if !tr.HitSky then return true, "Must be placed in a place visible to sky." end
 	local hitp = tr.HitPos - Vector(0, 0, 80)
 
 	table.insert(self.AirdropSpawnpoints, {pos, ang, hitp})
 
 	self:SaveAirdropSpawns()
 
-	return true
+	return false
 end
 
 function GM:ClearAirdropSpawns()

@@ -185,13 +185,21 @@ GM.SpecialStructureSpawns = {
 --
 --------------------------------
 
-local color_red = Color(255,0,0,160)
-local color_yellow = Color(255,255,0,160)
-local color_lime = Color(159,255,160,160)
-local color_cyan = Color(120,255,210,160)
-local color_white = Color(255,255,255,160)
-local color_purple = Color(205,53,255,160)
-local color_blue = Color(93,123,255,160)
+local color_red = Color(255,0,0,60)
+local color_yellow = Color(255,255,0,60)
+local color_lime = Color(159,255,160,60)
+local color_cyan = Color(120,255,210,60)
+local color_white = Color(255,255,255,60)
+local color_purple = Color(205,53,255,60)
+local color_blue = Color(93,123,255,60)
+
+local tcolor_red = Color(255,0,0,255)
+local tcolor_yellow = Color(255,255,0,255)
+local tcolor_lime = Color(159,255,160,255)
+local tcolor_cyan = Color(120,255,210,255)
+local tcolor_white = Color(255,255,255,255)
+local tcolor_purple = Color(205,53,255,255)
+local tcolor_blue = Color(93,123,255,255)
 GM.AdminMapSpawnables = {
 	Zombie = {
 		Spawn = function(owner, swep, tr, pos)
@@ -200,14 +208,15 @@ GM.AdminMapSpawnables = {
 		end,
 		View = function(owner, var)
 			cam.IgnoreZ(true)
-			render.DrawLine(var.Pos+Vector(0,0,80), var.Pos,color_red,true)
-			cam.Start3D2D(var.Pos+Vector(0,0,80), Angle(0, owner:EyeAngles().yaw + 90, 90), math.Clamp(owner:GetPos():Distance(var.Pos)/500, 0.5, 5))
-			draw.DrawText("Zombie spawn #"..var.ID, "TEA.HUDFont", 0, 0, color_red, TEXT_ALIGN_LEFT)
-			draw.DrawText("Radius: "..var.Radius, "TEA.HUDFont", 0, 20, color_red, TEXT_ALIGN_LEFT)
-			draw.DrawText("Tier: "..var.Tier, "TEA.HUDFont", 0, 40, color_red, TEXT_ALIGN_LEFT)
-			cam.End3D2D()
-
-			render.DrawSphere(var.Pos, var.Radius, 16, 16, color_red)
+			local ownang = owner:EyeAngles()
+			for id,v in pairs(var) do
+				render.DrawLine(v.Pos+Vector(0,0,80), v.Pos,tcolor_red,true)
+				cam.Start3D2D(v.Pos+Vector(0,0,80), Angle(0, ownang.yaw - 90, 90 - ownang.Pitch), math.Clamp(owner:GetPos():Distance(v.Pos)/750, 0.5, 5))
+				draw.DrawText("Zombie spawn #"..id, "TEA.HUDFont", 0, 0, tcolor_red, TEXT_ALIGN_LEFT)
+				-- draw.DrawText("Radius: "..v.Radius, "TEA.HUDFont", 0, 20, tcolor_red, TEXT_ALIGN_LEFT)
+				-- draw.DrawText("Tier: "..v.Tier, "TEA.HUDFont", 0, 40, tcolor_red, TEXT_ALIGN_LEFT)
+				cam.End3D2D()
+			end
 			cam.IgnoreZ(false)
 		end,
 		Get = function()
@@ -230,30 +239,31 @@ GM.AdminMapSpawnables = {
 
 	Loot = {
 		Spawn = function(owner, swep, tr, pos)
-			gamemode.Call("AddLootSpawnpoint", pos, owner:EyeAngles().yaw, 0, 0)
+			gamemode.Call("AddLootSpawnpoint", pos, Angle(0, owner:EyeAngles().yaw, 0), 0, 0)
+			owner:PrintMessage(3, "Added loot spawnpoint")
 		end,
 		View = function(owner, var)
 			cam.IgnoreZ(true)
-			render.DrawLine(var.Pos+Vector(0,0,80), var.Pos,color_white,true)
-			cam.Start3D2D(var.Pos+Vector(0,0,80), Angle(0, owner:EyeAngles().yaw + 90, 90), math.Clamp(owner:GetPos():Distance(var.Pos)/500, 0.5, 5))
-			draw.DrawText("Loot spawn #"..var.ID, "TEA.HUDFont", 0, 0, color_red, TEXT_ALIGN_LEFT)
-			draw.DrawText("Tier: "..var.Tier, "TEA.HUDFont", 0, 20, color_red, TEXT_ALIGN_LEFT)
-			cam.End3D2D()
-
-			render.DrawSphere(var.Pos, var.Radius, 16, 16, color_red)
+			local ownang = owner:EyeAngles()
+			for id,v in pairs(var) do
+				render.DrawLine(v.Pos+Vector(0,0,80), v.Pos,color_yellow,true)
+				cam.Start3D2D(v.Pos+Vector(0,0,80), Angle(0, ownang.yaw - 90, 90 - ownang.Pitch), math.Clamp(owner:GetPos():Distance(v.Pos)/750, 0.5, 5))
+				draw.DrawText("Loot spawn #"..id, "TEA.HUDFont", 0, 0, tcolor_yellow, TEXT_ALIGN_LEFT)
+				-- draw.DrawText("Tier: "..v.Tier, "TEA.HUDFont", 0, 20, tcolor_yellow, TEXT_ALIGN_LEFT)
+				cam.End3D2D()
+			end
 			cam.IgnoreZ(false)
 		end,
 		Get = function()
-			return GAMEMODE.ZombieSpawnpoints
+			return GAMEMODE.LootSpawnpoints
 		end,
 		GetAdminEyes = function(owner)
 			local tbl = {}
-			for id,v in pairs(GAMEMODE.ZombieSpawnpoints) do
+			for id,v in pairs(GAMEMODE.LootSpawnpoints) do
 				tbl[id] = {
 					Pos = v[1],
 					Ang = v[2],
-					Radius = v[3],
-					Tier = v[4]
+					Tier = v[3]
 				}
 			end
 
@@ -263,33 +273,34 @@ GM.AdminMapSpawnables = {
 
 	Airdrop = {
 		Spawn = function(owner, swep, tr, pos)
-			local err,msg = gamemode.Call("AddAirdropSpawnpoint", pos, owner:EyeAngles().yaw)
-			if err then
-				PrintMessage(3, "Error: "..msg)
+			local err,msg = gamemode.Call("AddAirdropSpawnpoint", pos, Angle(0, owner:EyeAngles().yaw, 0))
+			if err and msg then
+				owner:PrintMessage(3, "Error: "..msg)
+				return
 			end
+			owner:PrintMessage(3, "Added airdrop spawnpoint")
 		end,
 		View = function(owner, var)
 			cam.IgnoreZ(true)
-			render.DrawLine(var.Pos+Vector(0,0,80), var.Pos,color_white,true)
-			cam.Start3D2D(var.Pos+Vector(0,0,80), Angle(0, owner:EyeAngles().yaw + 90, 90), math.Clamp(owner:GetPos():Distance(var.Pos)/500, 0.5, 5))
-			draw.DrawText("Airdrop spawn #"..var.ID, "TEA.HUDFont", 0, 0, color_red, TEXT_ALIGN_LEFT)
-			draw.DrawText("Radius: "..var.Radius, "TEA.HUDFont", 0, 20, color_red, TEXT_ALIGN_LEFT)
-			cam.End3D2D()
-
-			render.DrawSphere(var.Pos, var.Radius, 16, 16, color_red)
+			local ownang = owner:EyeAngles()
+			for id,v in pairs(var) do
+				render.DrawLine(v.Pos+Vector(0,0,80), v.Pos,color_green,true)
+				cam.Start3D2D(v.Pos+Vector(0,0,80), Angle(0, ownang.yaw - 90, 90 - ownang.Pitch), math.Clamp(owner:GetPos():Distance(v.Pos)/750, 0.5, 5))
+				draw.DrawText("Airdrop spawn #"..id, "TEA.HUDFont", 0, 0, tcolor_green, TEXT_ALIGN_LEFT)
+				-- draw.DrawText("Radius: "..v.Radius, "TEA.HUDFont", 0, 20, tcolor_green, TEXT_ALIGN_LEFT)
+				cam.End3D2D()
+			end
 			cam.IgnoreZ(false)
 		end,
 		Get = function()
-			return GAMEMODE.ZombieSpawnpoints
+			return GAMEMODE.AirdropSpawnpoints
 		end,
 		GetAdminEyes = function(owner)
 			local tbl = {}
-			for id,v in pairs(GAMEMODE.ZombieSpawnpoints) do
+			for id,v in pairs(GAMEMODE.AirdropSpawnpoints) do
 				tbl[id] = {
 					Pos = v[1],
-					Ang = v[2],
-					Radius = v[3],
-					Tier = v[4]
+					Ang = v[2]
 				}
 			end
 
@@ -299,29 +310,29 @@ GM.AdminMapSpawnables = {
 
 	Trader = {
 		Spawn = function(owner, swep, tr, pos)
-			gamemode.Call("AddTraderSpawnpoint", pos, owner:EyeAngles().yaw, 0, 0)
+			gamemode.Call("AddTraderSpawnpoint", pos, Angle(0, owner:EyeAngles().yaw, 0), 0, 0)
+			owner:PrintMessage(3, "Added trader spawnpoint")
 		end,
 		View = function(owner, var)
 			cam.IgnoreZ(true)
-			render.DrawLine(var.Pos+Vector(0,0,80), var.Pos,color_white,true)
-			cam.Start3D2D(var.Pos+Vector(0,0,80), Angle(0, owner:EyeAngles().yaw + 90, 90), math.Clamp(owner:GetPos():Distance(var.Pos)/500, 0.5, 5))
-			draw.DrawText("Trader spawn #"..var.ID, "TEA.HUDFont", 0, 0, color_red, TEXT_ALIGN_LEFT)
-			cam.End3D2D()
-
-			render.DrawSphere(var.Pos, var.Radius, 16, 16, color_red)
+			local ownang = owner:EyeAngles()
+			for id,v in pairs(var) do
+				render.DrawLine(v.Pos+Vector(0,0,80), v.Pos,color_white,true)
+				cam.Start3D2D(v.Pos+Vector(0,0,80), Angle(0, ownang.yaw - 90, 90 - ownang.Pitch), math.Clamp(owner:GetPos():Distance(v.Pos)/750, 0.5, 5))
+				draw.DrawText("Trader spawn #"..id, "TEA.HUDFont", 0, 0, tcolor_cyan, TEXT_ALIGN_LEFT)
+				cam.End3D2D()
+			end
 			cam.IgnoreZ(false)
 		end,
 		Get = function()
-			return GAMEMODE.ZombieSpawnpoints
+			return GAMEMODE.TraderSpawnpoints
 		end,
 		GetAdminEyes = function(owner)
 			local tbl = {}
-			for id,v in pairs(GAMEMODE.ZombieSpawnpoints) do
+			for id,v in pairs(GAMEMODE.TraderSpawnpoints) do
 				tbl[id] = {
 					Pos = v[1],
-					Ang = v[2],
-					Radius = v[3],
-					Tier = v[4]
+					Ang = v[2]
 				}
 			end
 
@@ -331,29 +342,31 @@ GM.AdminMapSpawnables = {
 
 	PlayerSpawnpoint = {
 		Spawn = function(owner, swep, tr, pos)
-			gamemode.Call("AddPlayerSpawnpoint", pos, owner:EyeAngles().yaw, 0, 0)
+			gamemode.Call("AddPlayerSpawnpoint", pos, owner:EyeAngles().yaw)
+			owner:PrintMessage(3, "Added player spawnpoint")
 		end,
 		View = function(owner, var)
 			cam.IgnoreZ(true)
-			render.DrawLine(var.Pos+Vector(0,0,80), var.Pos,color_white,true)
-			cam.Start3D2D(var.Pos+Vector(0,0,80), Angle(0, owner:EyeAngles().yaw + 90, 90), math.Clamp(owner:GetPos():Distance(var.Pos)/500, 0.5, 5))
-			draw.DrawText("Player spawn #"..var.ID, "TEA.HUDFont", 0, 0, color_red, TEXT_ALIGN_LEFT)
-			cam.End3D2D()
+			local ownang = owner:EyeAngles()
+			for id,v in pairs(var) do
+				render.DrawLine(v.Pos+Vector(0,0,80), v.Pos,color_white,true)
+				cam.Start3D2D(v.Pos+Vector(0,0,80), Angle(0, ownang.yaw - 90, 90 - ownang.Pitch), math.Clamp(owner:GetPos():Distance(v.Pos)/750, 0.5, 5))
+				draw.DrawText("Player spawn #"..id, "TEA.HUDFont", 0, 0, tcolor_white, TEXT_ALIGN_LEFT)
+				cam.End3D2D()
+			end
 
-			render.DrawSphere(var.Pos, var.Radius, 16, 16, color_red)
+			-- render.DrawSphere(var.Pos, var.Radius, 16, 16, color_red)
 			cam.IgnoreZ(false)
 		end,
 		Get = function()
-			return GAMEMODE.ZombieSpawnpoints
+			return GAMEMODE.PlayerSpawnpoints
 		end,
 		GetAdminEyes = function(owner)
 			local tbl = {}
-			for id,v in pairs(GAMEMODE.ZombieSpawnpoints) do
+			for id,v in pairs(GAMEMODE.PlayerSpawnpoints) do
 				tbl[id] = {
 					Pos = v[1],
-					Ang = v[2],
-					Radius = v[3],
-					Tier = v[4]
+					Ang = v[2]
 				}
 			end
 
@@ -363,29 +376,29 @@ GM.AdminMapSpawnables = {
 
 	TaskDealer = {
 		Spawn = function(owner, swep, tr, pos)
-			gamemode.Call("AddTaskDealerSpawnpoint", pos, owner:EyeAngles().yaw, 0, 0)
+			gamemode.Call("AddTaskDealerSpawnpoint", pos, Angle(0, owner:EyeAngles().yaw, 0))
+			owner:PrintMessage(3, "Added taskdealer spawnpoint")
 		end,
 		View = function(owner, var)
 			cam.IgnoreZ(true)
-			render.DrawLine(var.Pos+Vector(0,0,80), var.Pos,color_white,true)
-			cam.Start3D2D(var.Pos+Vector(0,0,80), Angle(0, owner:EyeAngles().yaw + 90, 90), math.Clamp(owner:GetPos():Distance(var.Pos)/500, 0.5, 5))
-			draw.DrawText("Taskdealer spawn #"..var.ID, "TEA.HUDFont", 0, 0, color_red, TEXT_ALIGN_LEFT)
-			cam.End3D2D()
-
-			render.DrawSphere(var.Pos, var.Radius, 16, 16, color_red)
+			local ownang = owner:EyeAngles()
+			for id,v in pairs(var) do
+				render.DrawLine(v.Pos+Vector(0,0,80), v.Pos,color_purple,true)
+				cam.Start3D2D(v.Pos+Vector(0,0,80), Angle(0, ownang.yaw - 90, 90 - ownang.Pitch), math.Clamp(owner:GetPos():Distance(v.Pos)/750, 0.5, 5))
+				draw.DrawText("Taskdealer spawn #"..id, "TEA.HUDFont", 0, 0, tcolor_purple, TEXT_ALIGN_LEFT)
+				cam.End3D2D()
+			end
 			cam.IgnoreZ(false)
 		end,
 		Get = function()
-			return GAMEMODE.ZombieSpawnpoints
+			return GAMEMODE.TaskDealerSpawnpoints
 		end,
 		GetAdminEyes = function(owner)
 			local tbl = {}
-			for id,v in pairs(GAMEMODE.ZombieSpawnpoints) do
+			for id,v in pairs(GAMEMODE.TaskDealerSpawnpoints) do
 				tbl[id] = {
 					Pos = v[1],
-					Ang = v[2],
-					Radius = v[3],
-					Tier = v[4]
+					Ang = v[2]
 				}
 			end
 
@@ -433,26 +446,46 @@ GM.AdminMapSpawnables = {
 		end,
 		View = function(owner, var)
 			cam.IgnoreZ(true)
-			render.DrawBox(var.Pos, angle_zero, var.AreaMin, var.AreaMax, color_blue)
-			cam.Start3D2D(var.Pos+Vector(0,0,80), Angle(0, owner:EyeAngles().yaw + 90, 90), math.Clamp(owner:GetPos():Distance(var.Pos)/500, 0.5, 5))
-			draw.DrawText("Transition #"..var.ID, "TEA.HUDFont", 0, 0, color_red, TEXT_ALIGN_LEFT)
-			cam.End3D2D()
+			local ownang = owner:EyeAngles()
+			for id,v in pairs(var) do
+				render.DrawBox(v.Pos, angle_zero, v.AreaMin-v.Pos, v.AreaMax-v.Pos, color_blue)
+				render.DrawBox(v.Pos, angle_zero, v.AreaMax-v.Pos, v.AreaMin-v.Pos, color_blue)
+				cam.Start3D2D(v.Pos+Vector(0,0,80), Angle(0, ownang.yaw - 90, 90 - ownang.Pitch), math.Clamp(owner:GetPos():Distance(v.Pos)/750, 0.3, 5))
+				draw.DrawText("Transition #"..id, "TEA.HUDFont", 0, -40, tcolor_blue, TEXT_ALIGN_CENTER)
+				draw.DrawText("StartPos: "..tostring(v.StartPos), "TEA.HUDFont", 0, -20, tcolor_blue, TEXT_ALIGN_CENTER)
+				draw.DrawText("StartAng: "..tostring(v.StartAng), "TEA.HUDFont", 0, 0, tcolor_blue, TEXT_ALIGN_CENTER)
+				draw.DrawText("Pos: "..tostring(v.Pos), "TEA.HUDFont", 0, 20, tcolor_blue, TEXT_ALIGN_CENTER)
+				draw.DrawText("AreaMin: "..tostring(v.AreaMin-v.Pos), "TEA.HUDFont", 0, 40, tcolor_blue, TEXT_ALIGN_CENTER)
+				draw.DrawText("AreaMax: "..tostring(v.AreaMax-v.Pos), "TEA.HUDFont", 0, 60, tcolor_blue, TEXT_ALIGN_CENTER)
+				draw.DrawText("Linked to [ID]: "..tostring(v.LinkedTo or "NONE"), "TEA.HUDFont", 0, 80, tcolor_blue, TEXT_ALIGN_CENTER)
+				if v.Map then
+					draw.DrawText("Transitions to: "..tostring(v.Map), "TEA.HUDFont", 0, 100, tcolor_blue, TEXT_ALIGN_CENTER)
+				end
+				cam.End3D2D()
 
-			render.DrawSphere(var.Pos, var.Radius, 16, 16, color_red)
+				-- render.DrawSphere(v.Pos, v.Radius, 16, 16, color_red)
+			end
 			cam.IgnoreZ(false)
 		end,
 		Get = function()
-			return GAMEMODE.ZombieSpawnpoints
+			return GAMEMODE.OpenworldTransitions
 		end,
 		GetAdminEyes = function(owner)
 			local tbl = {}
-			for id,v in pairs(GAMEMODE.ZombieSpawnpoints) do
+			for id,v in pairs(GAMEMODE.OpenworldTransitions) do
+				if v.Map ~= game.GetMap() then continue end
 				tbl[id] = {
-					Pos = v[1],
-					Ang = v[2],
-					Radius = v[3],
-					Tier = v[4]
+					Pos = (v.AreaMin+v.AreaMax)/2,
+					AreaMin = v.AreaMin,
+					AreaMax = v.AreaMax,
+					StartPos = v.StartPos,
+					LinkedTo = v.LinkedTo
 				}
+
+				local linkedto = GAMEMODE.OpenworldTransitions[v.LinkedTo]
+				if linkedto then
+					tbl[id].Map = linkedto.Map
+				end
 			end
 
 			return tbl

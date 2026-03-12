@@ -29,12 +29,10 @@ local RDtext = {
 }
 
 local RDStext = {
-	"has died.",
-	"suicided.",
-	"has taken their life off the reality.",
+	"died.",
 	"could not stand the living anymore.",
 	"has put to end their misery.",
-	"was unable to survive for the rest of the days.",
+	"couldn't survive.",
 	"has bit the dust.",
 	"kicked the bucket.",
 }

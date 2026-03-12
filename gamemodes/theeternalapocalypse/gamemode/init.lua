@@ -193,10 +193,10 @@ function GM:Think()
 
 		if self.InfectionLevelIncreaseType == 1 then
 			if self.InfectionLevelEnabled and plycount > 0 and self.NextInfectionDecrease < ct and self:GetInfectionLevel() > 0 and not self.InfectionLevelShouldNotDecrease then
-				self.NextInfectionDecrease = ct + 9
-				self.InfectionDecreasedTimes = math.Clamp(self.InfectionDecreasedTimes + 1, 0, 45)
+				self.NextInfectionDecrease = ct + math.max(1, 9/(1+self.InfectionDecreasedTimes*0.03))
+				self.InfectionDecreasedTimes = math.max(self.InfectionDecreasedTimes + 1, 0)
 			
-				self:SetInfectionLevel(math.max(0, self:GetInfectionLevel() - (0.045 + (self.InfectionDecreasedTimes * 0.0072))))
+				self:SetInfectionLevel(math.max(0, self:GetInfectionLevel() - (0.045 + math.Clamp(self.InfectionDecreasedTimes, 0, 60) * 0.0072)))
 			end
 		else
 			local averagelevelprogress = 0
@@ -1002,18 +1002,6 @@ end
 
 function GM:PlayerReady(ply)
 	self:FullyUpdatePlayer(ply)
-	
-	if !ply.LastSessionInfo or !ply.LastSessionInfo["transitioning"] then return end
-	net.Start("tea_player_ready_spawn")
-	net.WriteBool(tobool(ply.HasSpawnedReady))
-	net.Send(ply)
-
-	if !ply:Alive() and !ply.HasSpawnedReady then
-		GAMEMODE:SystemBroadcast(translate.Format("plspawned", ply:Nick()), Color(255,255,155,255), false)
-		ply.HasSpawnedReady = true
-		ply:Spawn()
-	end
-	ply:LoadLastSession()
 end
 
 function GM:PlayerSay(ply, text, team)

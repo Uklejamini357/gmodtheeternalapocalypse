@@ -77,7 +77,7 @@ function MT_PLAYER:ProcessPlayerDamage(dmginfo)
 	end
 
 	if attacker.IsZombie then
-		dmginfo:ScaleDamage(GAMEMODE:GetInfectionMul(0.5) * (diffdamage[GAMEMODE.GameplayDifficulty] or 1)) -- +0.5% damage per 1% infection
+		dmginfo:ScaleDamage((0.85 + attacker:GetZombieLevel()*0.015) * (diffdamage[GAMEMODE.GameplayDifficulty] or 1))
 
 		if self:IsNewbie() then
 			dmginfo:ScaleDamage(0.9)
@@ -146,7 +146,7 @@ function MT_ENTITY:ProcessDamage(dmginfo)
 	end
 
 	if attacker.IsZombie and self.IsPropBarricade then
-		dmginfo:ScaleDamage(GAMEMODE:GetInfectionMul(0.5) * (diffdamage[GAMEMODE.GameplayDifficulty] or 1)) -- +0.5% damage to barricade per 1% infection
+		dmginfo:ScaleDamage((0.85 + attacker:GetZombieLevel()*0.015) * (diffdamage[GAMEMODE.GameplayDifficulty] or 1)) -- +0.5% damage to barricade per 1% infection
 	end
 
 	return true
@@ -164,8 +164,6 @@ function MT_ENTITY:ProcessNPCDamage(dmginfo)
 	end
 
 	if !directdmg and self.IsZombie then
-		dmginfo:ScaleDamage(1 / GAMEMODE:GetInfectionMul())
-
 		if !self.BossMonster and attacker:IsPlayer() and attacker:HasPerk("celestiality") then
 			if self:GetEliteVariant() ~= 0 then
 				dmginfo:ScaleDamage(1.1)

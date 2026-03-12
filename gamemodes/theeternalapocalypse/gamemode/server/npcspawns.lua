@@ -91,18 +91,23 @@ function GM:CreateZombie(class, pos, ang, xp, cash, infectionrate, isboss)
 
 	local ent = ents.Create(class)
 	if !ent:IsValid() then return NULL end
+
+	local lvl = math.random(1+GAMEMODE:GetInfectionLevel()/7, 10+GAMEMODE:GetInfectionLevel()/5)
+
 	ent:SetPos(pos)
 	ent:SetAngles(ang)
-	ent.XPReward = xp
-	ent.MoneyReward = cash
+	ent.XPReward = xp*(0.75+lvl*0.025)
+	ent.MoneyReward = cash*(0.85+lvl*0.015)
 	ent.InfectionRate = infectionrate
 	ent.IsZombie = true
 	ent.BossMonster = isboss
 	ent.DamagedBy = {}
 
+	ent:SetZombieLevel(lvl)
+
 	ent:Spawn()
-	ent:SetHealth(ent:Health() * self.ZombieHealthMultiplier * self:GetDiffZombieHealthMul())
-	ent:SetMaxHealth(ent:GetMaxHealth() * self.ZombieHealthMultiplier * self:GetDiffZombieHealthMul())
+	ent:SetHealth(ent:Health() * self.ZombieHealthMultiplier * self:GetDiffZombieHealthMul() * (0.75+lvl*0.025))
+	ent:SetMaxHealth(ent:GetMaxHealth() * self.ZombieHealthMultiplier * self:GetDiffZombieHealthMul() * (0.75+lvl*0.025))
 	ent:Activate()
 	if self:GetDebug() >= DEBUGGING_ADVANCED then print("Zombie spawned:", "\n"..class, pos, ang, "XPReward: "..xp, "MoneyReward: "..cash, isboss and "Isboss: true" or "Isboss: false") end
 	return ent -- used for SpawnZombie command
@@ -378,8 +383,8 @@ function GM:NPCReward(ent)
 		if !isboss and killer and killer:IsValid() then
 			for attacker, dmg in pairs(attackers) do
 				local hasbountyhunter = attacker:HasPerk("bountyhunter")
-				local xp = ent.XPReward * self.XPGainMul * GAMEMODE:GetInfectionMul() * math.Round(1 + (attacker.StatKnowledge * 0.03), 3)
-				local cash = ent.MoneyReward * self.CashGainMul * (0.5 + (GAMEMODE:GetInfectionMul() * 0.5)) * (self:CashBonus(attacker) or 1) * math.Round(1 + (attacker.StatSalvage * 0.03), 3)
+				local xp = ent.XPReward * self.XPGainMul * math.Round(1 + (attacker.StatKnowledge * 0.03), 3)
+				local cash = ent.MoneyReward * self.CashGainMul * (self:CashBonus(attacker) or 1) * math.Round(1 + (attacker.StatSalvage * 0.03), 3)
 				GAMEMODE:Payout(attacker,
 					xp * (hasbountyhunter and isvariant and 1.1 or 1) * tonumber(math.min(dmg, ent:GetMaxHealth()) / ent:GetMaxHealth()),
 					cash * (hasbountyhunter and isvariant and 1.15 or 1) * tonumber(math.min(dmg, ent:GetMaxHealth()) / ent:GetMaxHealth())
@@ -424,8 +429,8 @@ function GM:NPCReward(ent)
 				local payxp = tonumber(math.min(v, ent:GetMaxHealth()) * ent.XPReward / ent:GetMaxHealth())
 				local paycash = tonumber(math.min(v, ent:GetMaxHealth()) * ent.MoneyReward / ent:GetMaxHealth())
 				self:Payout(pl,
-					math.Round(payxp * self.XPGainMul * self:GetInfectionMul() * (hasbountyhunter and (isvariant and 1.2 or 1.1) or 1)),
-					math.Round(paycash * self.CashGainMul * (0.5 + (GAMEMODE:GetInfectionMul() * 0.5)) * (self:CashBonus(pl) or 1) * (hasbountyhunter and (isvariant and 1.3 or 1.15) or 1))
+					math.Round(payxp * self.XPGainMul * (hasbountyhunter and (isvariant and 1.2 or 1.1) or 1)),
+					math.Round(paycash * self.CashGainMul * (self:CashBonus(pl) or 1) * (hasbountyhunter and (isvariant and 1.3 or 1.15) or 1))
 				)
 				
 				if v >= ent:GetMaxHealth()*0.05 then
@@ -549,7 +554,7 @@ function GM:TestZombies(ply, cmd, args)
 	undo.Finish()
 
 	ply:SystemMessage("Spawned zombie "..class, Color(205,255,205), true)
-	self:DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has spawned a zombie "..class.."!")
+	GAMEMODE:DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has spawned a zombie "..class.."!")
 end
 concommand.Add("tea_dev_createtestzombie", function(ply, cmd, args)
 	GAMEMODE:TestZombies(ply, cmd, args)

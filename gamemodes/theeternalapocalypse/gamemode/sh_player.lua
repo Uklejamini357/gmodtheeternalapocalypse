@@ -441,4 +441,12 @@ function meta_entity:GetEliteVariant()
 	return self:GetNWInt("TEA_ELITE_VARIANT", 0)
 end
 
+function meta_entity:SetZombieLevel(int)
+	self:SetNWInt("TEA.Zlvl", math.floor(int))
+end
+
+function meta_entity:GetZombieLevel()
+	return self:GetNWInt("TEA.Zlvl", 10)
+end
+
 

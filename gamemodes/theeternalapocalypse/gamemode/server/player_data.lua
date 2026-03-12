@@ -163,7 +163,7 @@ function GM:SavePlayer(ply, force)
 			lastsessioninfo["survivaltime"] = CurTime() - ply.SurvivalTime
 			lastsessioninfo["lastmap"] = ply.TransitioningMap or game.GetMap()
 			lastsessioninfo["lastpos"] = ply.TransitioningPos or ply:GetPos()
-			lastsessioninfo["lastang"] = ply:EyeAngles()
+			lastsessioninfo["lastang"] = ply.TransitioningAng or ply:EyeAngles()
 			lastsessioninfo["LifeStats"] = ply.LifeStats
 
 			lastsessioninfo["weapons"] = {}
@@ -178,10 +178,6 @@ function GM:SavePlayer(ply, force)
 			local activewep = ply:GetActiveWeapon()
 			if activewep:IsValid() then
 				lastsessioninfo["heldweapon"] = activewep:GetClass()
-			end
-
-			if ply.TransitioningMap and ply.TransitioningPos then
-				lastsessioninfo["transitioning"] = true
 			end
 		end
 

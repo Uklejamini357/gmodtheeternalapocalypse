@@ -62,7 +62,7 @@ function GM:ClearTraderSpawnpoints()
 end
 concommand.Add("tea_cleartraderspawns", function(ply, cmd, args)
 	if !SuperAdminCheck(ply) then
-		self:SystemMessage(ply, translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205), true)
+		ply:SystemMessage(translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205), true)
 		ply:ConCommand("playgamesound buttons/button8.wav")
 		return
 	end
@@ -70,7 +70,7 @@ concommand.Add("tea_cleartraderspawns", function(ply, cmd, args)
 	GAMEMODE:ClearTraderSpawnpoints()
 
 	ply:SendChat("Deleted all trader spawnpoints!")
-	self:DebugLog("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all trader spawnpoints!")
+	GAMEMODE:DebugLog("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all trader spawnpoints!")
 	ply:ConCommand("playgamesound buttons/button15.wav")
 end)
 

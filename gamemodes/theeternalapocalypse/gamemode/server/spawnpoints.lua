@@ -65,7 +65,7 @@ concommand.Add("tea_clearplayerspawnpoints", function(ply)
 	gamemode.Call("ClearPlayerSpawnpoints")
 
 	ply:SendChat("Deleted all player spawnpoints")
-	self:DebugLog("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all player spawnpoints!")
+	GAMEMODE:DebugLog("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all player spawnpoints!")
 end)
 
 function GM:SavePlayerSpawns()

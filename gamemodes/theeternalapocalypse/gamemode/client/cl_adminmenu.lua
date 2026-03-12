@@ -2,7 +2,7 @@
 pAdmMenuFrame = nil
 
 GM.AdminEyes = {}
-GM.EnabledAdminEyes = {}
+GM.AdminEyesEnabled = {}
 
 local PlayerListView
 local last_cursor_x,last_cursor_y
@@ -592,6 +592,39 @@ function GM:OpenAdminToolMenu(wep)
 		end
 	end
 
+	do
+		local b = vgui.Create("DForm", sidepanel)
+		b:SetLabel("Admin eyes")
+		b:Dock(TOP)
+		b:DockMargin(0, 10, 0, 0)
+		b:SetExpanded(false)
+		b.Paint = function(self, w, h)
+			surface.SetDrawColor(255,255,255,200)
+			surface.DrawOutlinedRect(0,0,w,h)
+		end
+
+		for k,v in pairs(self.AdminMapSpawnables) do
+			if v.GetAdminEyes then
+				local check = vgui.Create("DCheckBoxLabel", b)
+				check:SetText(k)
+				check:SetChecked(tobool(wep.AdminEyes and wep.AdminEyes[k]))
+				check.OnChange = function(self, val)
+					wep.AdminEyes = wep.AdminEyes or {}
+					wep.AdminEyes[k] = val
+					GAMEMODE.AdminEyesEnabled[k] = val
+
+					net.Start("tea_admin_tool")
+					net.WriteString("admineyes")
+					net.WriteString(k)
+					net.WriteBool(val)
+					net.SendToServer()
+				end
+				b:AddItem(check)
+			end
+		end
+		b:AddItem()
+	end
+
 	atm.panel = vgui.Create("EditablePanel", atm.Categories)
 	atm.panel:Dock(FILL)
 	local shtbl = atm.Categories:AddSheet("Zombies", atm.panel)
@@ -844,6 +877,7 @@ function GM:OpenAdminToolMenuOptions(wep)
 		local b1 = vgui.Create("DTextEntry", atm)
 		b1:SetTooltip("Set to an empty value to make it default.")
 		b1:SetText(optionstbl["CashReward"] or 0)
+		b1:SetUpdateOnType(true)
 		b1:Dock(TOP)
 		b1:DockMargin(0, 10, 0, 0)
 		b1.OnValueChange = function(self, newvalue)
@@ -861,6 +895,7 @@ function GM:OpenAdminToolMenuOptions(wep)
 		local b1 = vgui.Create("DTextEntry", atm)
 		b1:SetText(optionstbl["XPReward"] or 0)
 		b1:SetTooltip("Set to an empty value to make it default.")
+		b1:SetUpdateOnType(true)
 		b1:Dock(TOP)
 		b1:DockMargin(0, 10, 0, 0)
 		b1.OnValueChange = function(self, newvalue)
@@ -878,6 +913,7 @@ function GM:OpenAdminToolMenuOptions(wep)
 		local b1 = vgui.Create("DTextEntry", atm)
 		b1:SetText(optionstbl["InfectionRate"] or 0)
 		b1:SetTooltip("Set to an empty value to make it default.")
+		b1:SetUpdateOnType(true)
 		b1:Dock(TOP)
 		b1:DockMargin(0, 10, 0, 0)
 		b1.OnValueChange = function(self, newvalue)
@@ -896,6 +932,10 @@ function GM:OpenAdminToolMenuOptions(wep)
 			surface.DrawRect(0,0,w,h)
 			surface.SetDrawColor(255,255,255,200)
 			surface.DrawOutlinedRect(0,0,w,h)
+		end
+		b1.OnChange = function(self, val)
+			optionstbl["BossZombie"] = val
+			updateoptions(optionstbl)
 		end
 	end
 end
