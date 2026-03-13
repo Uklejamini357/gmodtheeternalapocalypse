@@ -92,7 +92,7 @@ function GM:CreateZombie(class, pos, ang, xp, cash, infectionrate, isboss)
 	local ent = ents.Create(class)
 	if !ent:IsValid() then return NULL end
 
-	local lvl = math.random(1+GAMEMODE:GetInfectionLevel()/7, 10+GAMEMODE:GetInfectionLevel()/5)
+	local lvl = math.random(self:GetZombieLvlMin(), self:GetZombieLvlMax())
 
 	ent:SetPos(pos)
 	ent:SetAngles(ang)

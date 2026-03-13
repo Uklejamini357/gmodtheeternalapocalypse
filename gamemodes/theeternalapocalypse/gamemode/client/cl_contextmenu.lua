@@ -144,8 +144,8 @@ function GM:CMenu()
 			end
 
 			local y = sch / 2 - 125
-			local minlvl = 1+effective/7
-			local maxlvl = 10+effective/5
+			local minlvl = self:GetZombieLvlMin()
+			local maxlvl = self:GetZombieLvlMax()
 			draw.SimpleText(Format("Zombies level: %d~%d", minlvl, maxlvl), "TEA.HUDFont", scw - 590, y, color, 0, 0)
 			y = y + 20
 			draw.SimpleText(Format("Zombies health: %s%%~%s%%", 100*math.Round(0.85+minlvl*0.015, 4), 100*math.Round(0.85+maxlvl*0.015, 4)), "TEA.HUDFontSmall", scw - 590, y, color, 0, 0)

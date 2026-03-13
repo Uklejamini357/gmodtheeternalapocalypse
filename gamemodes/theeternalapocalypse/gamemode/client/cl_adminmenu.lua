@@ -261,22 +261,6 @@ function GM:AdminMenu()
 		end
 	end
 
-	--[[
-	local CheckWeight = vgui.Create("DLabel", SpawnMenu)
-	CheckWeight:SetPos(400, 5)
-	CheckWeight:SetColor(Color(205,205,205,255))
-	CheckWeight:SetFont("TEA.HUDFontSmall")
-	CheckWeight:SetText(translate.Format("inv_weight", pl:CalculateWeight(), WEIGHT_UNIT, pl:CalculateMaxWeight(), WEIGHT_UNIT, pl:CalculateMaxWalkWeight(), WEIGHT_UNIT))
-	CheckWeight:SizeToContents()
-	CheckWeight.Think = function(this)
-		local changetxt = translate.Format("inv_weight", pl:CalculateWeight(), WEIGHT_UNIT, pl:CalculateMaxWeight(), WEIGHT_UNIT, pl:CalculateMaxWalkWeight(), WEIGHT_UNIT)
-		if changetxt == this:GetText() then return end
-		this:SetText(changetxt)
-		this:SizeToContents()
-		this:SetTextColor(pl:CalculateWeight() >= pl:CalculateMaxWalkWeight() and Color(255,0,0) or pl:CalculateWeight() >= pl:CalculateMaxWeight() and Color(255,255,0) or Color(255,255,255))
-	end
-	]]
-
 	local buypanel = {}
 	for i=1,7 do
 		buypanel[i] = vgui.Create("DPanelList")
@@ -435,14 +419,38 @@ function GM:AdminMenu()
 	MapConfig:SetSize(AdmMenuFrame:GetWide() - 20, AdmMenuFrame:GetTall() - 20)
 	MapConfig.Paint = function(self, w, h)
 		draw.RoundedBox(2, 0, 0, w, h, Color(0, 0, 0, 100))
-		surface.SetDrawColor(0, 0, 0, 0)
+	end
+
+	local click = vgui.Create("DButton", MapConfig)
+	click:SetText("Cleanup spawns...")
+	click:Dock(TOP)
+	click:DockMargin(20, 10, 20, 0)
+	click.DoClick = function()
+		local d = DermaMenu(true)
+		d:AddOption("Zombies", functon() RunConsoleCommand("tea_clearzombiespawns") end)
+		d:AddOption("Loot", functon() RunConsoleCommand("tea_clearlootspawns") end)
+		d:AddOption("Traders", functon() RunConsoleCommand("tea_cleartraderpawns") end)
+		d:AddOption("Airdrops", functon() RunConsoleCommand("tea_clearairdropspawns") end)
+		d:AddOption("Player spawnpoints", functon() RunConsoleCommand("tea_clearplayerpawns") end)
+		d:AddOption("TaskDealers", functon() RunConsoleCommand("tea_cleartaskdealerspawns") end)
+		d:AddOption("Openworld transitions", functon()
+			--Derma_Query("This may affect other maps transitions. Proceed?", "Warning", "Yes", function()
+				--RunConsoleCommand("tea_clearzombiespawns")
+			--end, "No")
+		end)
+		d:Open()
+	end
+	click.Paint = function(self,w,h)
+		surface.SetDrawColor(0, 0, 0, 100)
+		surface.DrawRect(0,0,w,h)
+		surface.SetDrawColor(255,255,255,200)
+		surface.DrawOutlinedRect(0,0,w,h)
 	end
 
 	local OpenwManager = vgui.Create("DPanel", PropertySheet)
 	OpenwManager:SetSize(AdmMenuFrame:GetWide() - 20, AdmMenuFrame:GetTall() - 20)
 	OpenwManager.Paint = function(self, w, h)
 		draw.RoundedBox(2, 0, 0, w, h, Color(0, 0, 0, 100))
-		surface.SetDrawColor(0, 0, 0, 0)
 	end
 
 	PropertySheet:AddSheet(translate.Get("admin_panel_tab_1"), PlayerList, "icon16/shield.png", false, false, translate.Get("admin_panel_tab_1_d"))

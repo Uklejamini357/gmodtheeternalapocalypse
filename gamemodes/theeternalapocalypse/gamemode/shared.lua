@@ -739,6 +739,14 @@ function GM:GetDiffCashMul()
 	return 1
 end
 
+function GM:GetZombieLvlMin()
+	return math.floor(#player.GetAll()+self:GetInfectionLevel()/5)
+end
+
+function GM:GetZombieLvlMax()
+	return math.floor(#player.GetAll()+9+self:GetInfectionLevel()/3)
+end
+
 local entmeta = FindMetaTable("Entity")
 
 function entmeta:GetStructureHealth()
