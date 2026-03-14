@@ -818,76 +818,21 @@ hook.Add("PostDrawOpaqueRenderables", "circle", function()
 end)
 
 
-local spawntypes = {
-	["zombies"] = {
-		txt = "Zombie Spawn %s",
-		col = Color(255,0,0)
-	},
+hook.Add("PostDrawTranslucentRenderables", "GM.Transitions", function(bDrawingDepth, bDrawingSkybox, isDraw3DSkybox)
+	if bDrawingSkybox or isDraw3DSkybox then return end
+	local pl = LocalPlayer()
 
-	["loots"] = {
-		txt = "Loot Spawn %s",
-		col = Color(0,255,0)
-	},
-
-	["traders"] = {
-		txt = "Trader Spawn %s",
-		col = Color(0,128,255)
-	},
-
-	["taskdealers"] = {
-		txt = "Task Dealer Spawn %s",
-		col = Color(128,0,255)
-	},
-
-	["airdrops"] = {
-		txt = "Airdrop Spawn %s",
-		col = Color(255,255,0)
-	},
-
-	["playerspawns"] = {
-		txt = "Player Spawn %s",
-		col = Color(255,255,255)
-	},
-}
-
-hook.Add("PostDrawTranslucentRenderables", "GM.Spawns", function(bDrawingDepth, bDrawingSkybox, isDraw3DSkybox)
-	if isDraw3DSkybox then return end
-	if not GAMEMODE.Spawns then return end
-	local ply = LocalPlayer()
-	if not AdminCheck(ply) then return end
-
-
-	for spawntype, spawns in pairs(GAMEMODE.Spawns) do
-		for _,v in pairs(spawns) do
-			if not spawntypes[spawntype] then continue end
-			local pos = v[1]
-			local ang = v[2]
-
-			if pos == Vector(0,0,0) then continue end
-
-			-- pos.x = math.Round(pos.x)
-			-- pos.y = math.Round(pos.y)
-			-- pos.z = math.Round(pos.z)
-
-			local txt = spawntypes[spawntype].txt
-			local col = spawntypes[spawntype].col
-			local ang = ply:EyeAngles() + Angle(0,-90,90)
-			ang.pitch = 0
-
-			-- PrintTable(pos)
-			render.DrawLine(pos + Vector(0,0,40), pos, col)
-			cam.Start3D2D(pos + Vector(0,0,60), ang, math.Clamp(ply:GetPos():Distance(pos)/500, 0.5, 5))
-			cam.IgnoreZ(true)
-			draw_DrawText(Format(txt, pos), "TEA.HUDFont", 0, 0, col, TEXT_ALIGN_CENTER)
-			cam.End3D2D()
-			cam.Start3D2D(pos + Vector(0,0,60), ang + Angle(0,180,0), math.Clamp(ply:GetPos():Distance(pos)/500, 0.5, 5))
-			draw_DrawText(Format(txt, pos), "TEA.HUDFont", 0, 0, col, TEXT_ALIGN_CENTER)
-			cam.End3D2D()
-			-- pos
-			-- local Ang = Angle(0,0,0)
-			-- cam.Start3D2D(pos + Vector(0,0,40), Ang, 0.6)
-			-- surface.DrawLine(startX, startY, endX, endY)
-		end
+	if IsValid(pl:GetActiveWeapon()) and pl:GetActiveWeapon():GetClass() == "tea_admintool" then return end
+	cam.IgnoreZ(true)
+	local ownang = pl:EyeAngles()
+	for id,v in pairs(GAMEMODE.OpenworldTransitions) do
+		local dist = pl:GetPos():Distance(v.Pos)
+		if dist > 2000 then continue end
+		local a = ((2000-dist)/2000)*255
+		cam.Start3D2D(v.Pos+Vector(0,0,20), Angle(0, ownang.yaw - 90, 90 - ownang.Pitch), math.Clamp(dist/800, 0.4, 2.5))
+		draw.DrawText("Map transition", "TEA.HUDFontSmall", 0, -40, Color(119,173,236,a), TEXT_ALIGN_CENTER)
+		draw.DrawText(math.Round(HammerUnitsToMeters(dist), 1).."m", "TEA.HUDFontSmall", 0, -20, Color(119,173,236,a), TEXT_ALIGN_CENTER)
+		cam.End3D2D()
 	end
 	cam.IgnoreZ(false)
 end)

@@ -747,6 +747,10 @@ function GM:GetZombieLvlMax()
 	return math.floor(#player.GetAll()+9+self:GetInfectionLevel()/3)
 end
 
+function HammerUnitsToMeters(units)
+	return units/52.46
+end
+
 local entmeta = FindMetaTable("Entity")
 
 function entmeta:GetStructureHealth()

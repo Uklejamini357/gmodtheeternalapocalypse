@@ -43,6 +43,7 @@ function GM:AddLootSpawnpoint(pos, ang, radius, tier)
 	table.insert(self.LootSpawnpoints, {pos, ang, radius, tier})
 
 	self:SaveLootSpawns()
+	self:UpdateAdminEyes("Loot")
 	return true
 end
 
@@ -58,6 +59,7 @@ function GM:DeleteLootSpawnpoint(id)
 	end
 
 	self:SaveLootSpawns()
+	self:UpdateAdminEyes("Loot")
 end
 
 function GM:ClearLootSpawnpoints()
@@ -66,12 +68,18 @@ function GM:ClearLootSpawnpoints()
 	if file.Exists(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/loot.txt", "DATA") then
 		file.Delete(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/loot.txt")
 	end
+	self:UpdateAdminEyes("Loot")
 end
 
 function GM:SaveLootSpawns()
 	local ftext = ""
 	for _,var in pairs(self.LootSpawnpoints) do
 		ftext = ftext..(ftext=="" and "" or "\n")..tostring(var[1])..";"..tostring(var[2])
+	end
+
+	if ftext == "" then
+		file.Delete(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/loot.txt")
+		return
 	end
 
 	file.Write(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/loot.txt", ftext)

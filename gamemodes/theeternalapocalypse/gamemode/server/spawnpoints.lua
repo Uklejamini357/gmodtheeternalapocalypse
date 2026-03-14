@@ -38,22 +38,28 @@ hook.Add("PlayerSpawn", "TEAPlayerSpawnPoints", function(ply)
 		local pos  = random[1]
 		local ang  = random[2]
 
-		ply:SetPos(pos)
-		ply:SetAngles(ang)
+		if pos then
+			ply:SetPos(pos)
+		end
+		if ang then
+			ply:SetEyeAngles(ang)
+		end
 	end
 end)
 
 function GM:AddPlayerSpawnpoint(pos, ang)
 	table.insert(self.PlayerSpawnpoints, {pos, ang})
 
-	self:SavePlayerSpawns()
+	self:SavePlayerSpawnpoints()
+	self:UpdateAdminEyes("PlayerSpawnpoint")
 end
 
 function GM:DeletePlayerSpawnpoint(id)
 	if !id or !self.PlayerSpawnpoints[id] then return end
 	self.PlayerSpawnpoints[id] = nil
 
-	self:SavePlayerSpawns()
+	self:SavePlayerSpawnpoints()
+	self:UpdateAdminEyes("PlayerSpawnpoint")
 end
 
 function GM:ClearPlayerSpawnpoints()
@@ -61,12 +67,18 @@ function GM:ClearPlayerSpawnpoints()
 	if file.Exists(self.DataFolder.."/spawns/".. string.lower(game.GetMap()) .."/players.txt", "DATA") then
 		file.Delete(self.DataFolder.."/spawns/" .. string.lower(game.GetMap()) .. "/players.txt")
 	end
+	self:UpdateAdminEyes("PlayerSpawnpoint")
 end
 
-function GM:SavePlayerSpawns()
+function GM:SavePlayerSpawnpoints()
 	local ftext = ""
 	for _,var in pairs(self.PlayerSpawnpoints) do
-		ftext = ftext..(ftext=="" and "" or "\n")..tostring(var[1])..";"..tostring(var[2])..";"..tostring(var[3])
+		ftext = ftext..(ftext=="" and "" or "\n")..tostring(var[1])..";"..tostring(var[2])
+	end
+
+	if ftext == "" then
+		file.Delete(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/players.txt")
+		return
 	end
 
 	file.Write(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/players.txt", ftext)

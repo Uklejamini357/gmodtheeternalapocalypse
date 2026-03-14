@@ -121,6 +121,8 @@ function GM:AddTaskDealerSpawnpoint(pos, ang)
 	self:SaveTaskDealerSpawns()
 
 	gamemode.Call("SpawnTaskDealers")
+
+	self:UpdateAdminEyes("TaskDealer")
 end
 
 function GM:DeleteTaskDealerSpawnpoint(id)
@@ -129,6 +131,7 @@ function GM:DeleteTaskDealerSpawnpoint(id)
 
 	self:SaveTaskDealerSpawns()
 	self:SpawnTaskDealers()
+	self:UpdateAdminEyes("TaskDealer")
 end
 
 function GM:ClearTaskDealerSpawnpoints()
@@ -139,12 +142,18 @@ function GM:ClearTaskDealerSpawnpoints()
 	for _,ent in ipairs(ents.FindByClass("tea_taskdealer")) do
 		ent:Remove()
 	end
+	self:UpdateAdminEyes("TaskDealer")
 end
 
 function GM:SaveTaskDealerSpawns()
 	local ftext = ""
 	for _,var in pairs(self.TaskDealerSpawnpoints) do
 		ftext = ftext..(ftext=="" and "" or "\n")..tostring(var[1])..";"..tostring(var[2])
+	end
+
+	if ftext == "" then
+		file.Delete(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/taskdealers.txt")
+		return
 	end
 
 	file.Write(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/taskdealers.txt", ftext)

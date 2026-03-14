@@ -475,3 +475,11 @@ i = GM:CreateItem("item_moneyprinter", {
 	ItemType = ITEMTYPE_OTHER,
     UseFunc = function(ply) ply:SendChat(translate.ClientGet("you_cant_use_this_yet")) return false end,
 })
+
+
+-- in future
+--[[
+laptop: Nowadays, laptops are only used to document important events or information. Suprisingly, this one still works.
+The trader will pay a good price for it.
+models/wick/wrbstalker/anomaly/items/dez_notebook.mdl
+]]

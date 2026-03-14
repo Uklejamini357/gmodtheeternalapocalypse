@@ -555,27 +555,41 @@ concommand.Add("tea_clearspawns", function(pl, _, args)
 				sendmsg(pl, "Deleted taskdealer spawnpoint ID #"..id..".")
 			end
 		end,
-		["transitions"] = function(pl, id)
-			if id == "all" then
-				gm:ClearTransitions(true)
-				sendmsg(pl, "Deleted ALL the transitions on ALL MAPS.")
-			elseif id == "curmaponly" then
-				gm:ClearTransitions()
-				sendmsg(pl, "Deleted all transitions on the map.")
-			elseif !tonumber(id) then
-				sendmsg(pl, "Invalid spawnpoint ID. (Not a number)")
-			elseif id then
-				if !gm.OpenworldTransitions[tonumber(id)] then
-					sendmsg(pl, "Invalid spawnpoint ID. (Invalid spawnpoint)")
-					return
-				end
-				gm:DeleteTransition(tonumber(id))
-				sendmsg(pl, "Deleted transition ID #"..id..".")
-			end
-		end,
+	-- 	["transitions"] = function(pl, id)
+	-- 		if id == "all" then
+	-- 			gm:ClearTransitions(true)
+	-- 			sendmsg(pl, "Deleted ALL the transitions on ALL MAPS.")
+	-- 		elseif id == "curmaponly" then
+	-- 			gm:ClearTransitions()
+	-- 			sendmsg(pl, "Deleted all transitions on the map.")
+	-- 		elseif !tonumber(id) then
+	-- 			sendmsg(pl, "Invalid spawnpoint ID. (Not a number)")
+	-- 		elseif id then
+	-- 			if !gm.OpenworldTransitions[tonumber(id)] then
+	-- 				sendmsg(pl, "Invalid spawnpoint ID. (Invalid spawnpoint)")
+	-- 				return
+	-- 			end
+	-- 			gm:DeleteTransition(tonumber(id))
+	-- 			sendmsg(pl, "Deleted transition ID #"..id..".")
+	-- 		end
+	-- 	end,
 	}
 
 	if !funcid or !funcs[funcid] then return end
 
 	funcs[funcid](pl, id)
 end)
+
+function GM:UpdateAdminEyes(id)
+	if !self.AdminMapSpawnables[id] then return end
+
+	for _,ply in player.Iterator() do
+		if ply.AdminEyes[id] then
+			net.Start("tea_admin_tool")
+			net.WriteString("admineyes")
+			net.WriteString(id)
+			net.WriteTable(self.AdminMapSpawnables[id].GetAdminEyes(ply))
+			net.Send(ply)
+		end
+	end
+end

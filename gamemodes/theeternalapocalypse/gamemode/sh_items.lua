@@ -253,6 +253,7 @@ end
 -- Add every file in items folder.
 -- Note: Adds support for custom made items via steam workshop!
 for k,v in pairs(file.Find(GM.FolderName.."/gamemode/items/*.lua", "LUA")) do
+	if v:sub(1,1) == "!" then continue end
 	if SERVER then
 		AddCSLuaFile("items/"..v)
 	end

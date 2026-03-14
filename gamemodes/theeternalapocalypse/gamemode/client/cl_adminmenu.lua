@@ -58,6 +58,7 @@ function GM:AdminMenu()
 	AdmMenuFrame:SetDeleteOnClose(false)
 	AdmMenuFrame:MakePopup()
 	local frame = AdmMenuFrame
+	self.AdminFrame = frame
 	frame.OnRemove = function(self)
 		hook.Remove("OnPauseMenuShow", self)
 	end
@@ -79,6 +80,7 @@ function GM:AdminMenu()
 	local PropertySheet = vgui.Create("DPropertySheet", AdmMenuFrame)
 	PropertySheet:SetPos(5, 20)
 	PropertySheet:SetSize(990, 680)
+	PropertySheet:SetFadeTime(0)
 	PropertySheet.Paint = function()
 		surface.SetDrawColor(0, 0, 0, 50)
 		surface.DrawRect(0, 0, PropertySheet:GetWide(), PropertySheet:GetTall())
@@ -196,9 +198,37 @@ function GM:AdminMenu()
 		RunConsoleCommand("tea_admin_spawnairdrop")
 	end
 
+	local clearzeds1 = vgui.Create("DButton", AdminCmds)
+	clearzeds1:SetSize(120, 30)
+	clearzeds1:SetPos(20, 155)
+	clearzeds1:SetText("Cleanup zombies")
+	clearzeds1:SetTextColor(Color(255, 255, 255, 255))
+	clearzeds1.Paint = function(panel)
+		surface.SetDrawColor(150, 150, 0 ,255)
+		surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
+		draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(0, 0, 0, 130))
+	end
+	clearzeds1.DoClick = function()
+		RunConsoleCommand("tea_admin_clearzombies")
+	end
+
+	local clearzeds2 = vgui.Create("DButton", AdminCmds)
+	clearzeds2:SetSize(120, 30)
+	clearzeds2:SetPos(150, 155)
+	clearzeds2:SetText("Cleanup AI NPC's")
+	clearzeds2:SetTextColor(Color(255, 255, 255, 255))
+	clearzeds2.Paint = function(panel)
+		surface.SetDrawColor(150, 150, 0 ,255)
+		surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
+		draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(0, 0, 0, 130))
+	end
+	clearzeds2.DoClick = function()
+		RunConsoleCommand("tea_admin_clearzombies", "force")
+	end
+
 	local clearprops = vgui.Create("DButton", AdminCmds)
 	clearprops:SetSize(120, 30)
-	clearprops:SetPos(20, 155)
+	clearprops:SetPos(20, 195)
 	clearprops:SetText("Cleanup All Props")
 	clearprops:SetToolTip("WARNING!")
 	clearprops:SetTextColor(Color(255, 255, 255, 255))
@@ -492,11 +522,60 @@ function GM:AdminMenu()
 		draw.RoundedBox(2, 0, 0, w, h, Color(0, 0, 0, 100))
 	end
 
+	TransitionsView = vgui.Create("DListView", OpenwManager)
+	TransitionsView:SetSize(OpenwManager:GetWide(), OpenwManager:GetTall() - 80)
+	TransitionsView.Paint = function(this)
+		surface.SetDrawColor(85,85,85,255)
+		surface.DrawRect(0,0,this:GetWide(), this:GetTall())
+	end
+	local column = TransitionsView:AddColumn("ID")
+	column:SetMaxWidth(70)
+	column = TransitionsView:AddColumn("Player")
+
+	local OpenwManagerButton = vgui.Create("DButton", OpenwManager)
+	OpenwManagerButton:SetSize(120, 30)
+	OpenwManagerButton:SetPos(20, OpenwManager:GetTall() - 70)
+	OpenwManagerButton:SetText("Refresh data")
+	OpenwManagerButton:SetTextColor(Color(255, 255, 255, 255))
+	OpenwManagerButton.Paint = function(panel)
+		surface.SetDrawColor(0, 0, 0, 100)
+		surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
+		surface.SetDrawColor(255,255,255, 200)
+		surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
+	end
+	OpenwManagerButton.DoClick = function()
+		net.Start("tea_openworld_level")
+		net.WriteUInt(OPENWORLD_NETTYPE_GETTRANSITIONSINFO, 4)
+		net.SendToServer()
+	end
+
 	-- PropertySheet:AddSheet(translate.Get("admin_panel_tab_1"), PlayerList, "icon16/shield.png", false, false, translate.Get("admin_panel_tab_1_d"))
 	PropertySheet:AddSheet(translate.Get("admin_panel_tab_2"), AdminCmds, "icon16/shield.png", false, false, translate.Get("admin_panel_tab_2_d"))
 	PropertySheet:AddSheet(translate.Get("admin_panel_tab_3"), SpawnMenu, "icon16/table.png", false, false, translate.Get("admin_panel_tab_3_d"))
 	PropertySheet:AddSheet(translate.Get("admin_panel_tab_4"), MapConfig, "icon16/table.png", false, false, translate.Get("admin_panel_tab_4_d"))
-	PropertySheet:AddSheet(translate.Get("admin_panel_tab_5"), OpenwManager, "icon16/table.png", false, false, translate.Get("admin_panel_tab_5_d"))
+	local pan = PropertySheet:AddSheet(translate.Get("admin_panel_tab_5"), OpenwManager, "icon16/table.png", false, false, translate.Get("admin_panel_tab_5_d"))
+	pan.Tab.DoClick = function(this)
+		PropertySheet:SetActiveTab(this)
+
+		net.Start("tea_openworld_level")
+		net.WriteUInt(OPENWORLD_NETTYPE_GETTRANSITIONSINFO, 4)
+		net.SendToServer()
+	end
+
+	frame.OnReceiveTransitionsData = function(self, tbl)
+		for id, line in ipairs(TransitionsView:GetLines()) do
+			TransitionsView:RemoveLine(id)
+		end
+		
+		for id,v in pairs(tbl) do
+			local line = TransitionsView:AddLine(id, v.Name, v.Map, v.Pos, v.AreaMin, v.AreaMax, v.StartPos, v.StartAng, v.LinkedTo, v.LinkedTo and tbl[v.LinkedTo].Map or "")
+			line.OnRightClick = function()
+				local derma = DermaMenu()
+				derma:AddOption("In progress!!", function() end)
+				derma:Open()
+			end
+		end
+	end
 end
 
 local atm
@@ -655,11 +734,9 @@ function GM:OpenAdminToolMenu(wep)
 			if v.GetAdminEyes then
 				local check = vgui.Create("DCheckBoxLabel", b)
 				check:SetText(k)
-				check:SetChecked(tobool(wep.AdminEyes and wep.AdminEyes[k]))
-				check.OnChange = function(self, val)
-					wep.AdminEyes = wep.AdminEyes or {}
-					wep.AdminEyes[k] = val
-					GAMEMODE.AdminEyesEnabled[k] = val
+				check:SetChecked(tobool(self.AdminEyesEnabled and self.AdminEyesEnabled[k]))
+				check.OnChange = function(this, val)
+					self.AdminEyesEnabled[k] = val
 
 					net.Start("tea_admin_tool")
 					net.WriteString("admineyes")
@@ -1023,7 +1100,7 @@ function GM:CreateOpenworldTransition(spawnpos, pos1, pos2)
 		net.WriteVector(pos2)
 		net.SendToServer()
 		
-		chat.AddText("placeholder")
+		chat.AddText("Creating a new transition...")
 
 		atm:Remove()
 	end

@@ -761,3 +761,52 @@ GM:CreateItem("item_stalker_kolbasa", {
     UseFunc = function(ply, targetply) local drink = UseFunc_Eat(ply, 5, 0, 3, 25, 0, 3, "sound") return drink end,
 })
 
+
+--[[
+GM:CreateItem("item_stalker_hercules", {
+    Name = "Hercules",
+    Description = "Temporarily boosts your carrying weight by +12kg for 300 seconds. Effect can be prolonged up to 600 seconds.",
+    Cost = 4000,
+    Model = "models/wick/wrbstalker/anomaly/items/dez_drug_booster.mdl",
+    Weight = 0.17,
+    Supply = -1,
+    Rarity = RARITY_SUPERRARE,
+    Category = ITEMCATEGORY_SUPPLIES,
+	ItemType = ITEMTYPE_FOOD,
+
+    ConsumableStats = {
+        UseTime = 3
+    },
+    UseSound = "sound",
+})
+
+--  Maybe in future
+
+# antirad
+models/wick/wrbstalker/anomaly/items/wick_dev_antirad.mdl
+
+# radioprotectant
+models/wick/wrbstalker/anomaly/items/dez_drug_radioprotector.mdl
+
+# sleeping pills
+
+
+# canned tomatoes
+models/wick/wrbstalker/anomaly/items/wick_dev_tomato.mdl
+
+# condensed milk
+models/wick/wrbstalker/cop/newmodels/items/wick_condensed_milk.mdl
+
+# MRE
+models/wick/wrbstalker/cop/newmodels/items/wick_mre.mdl
+
+# Snickers
+models/wick/wrbstalker/cop/newmodels/items/wick_snickers.mdl
+
+# tea
+models/wick/wrbstalker/anomaly/items/dez_drink_tea.mdl
+
+
+# rebirth?
+models/wick/wrbstalker/anomaly/items/dez_rebirth.mdl
+]]

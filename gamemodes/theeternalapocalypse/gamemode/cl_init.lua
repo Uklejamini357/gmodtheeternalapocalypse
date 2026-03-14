@@ -323,6 +323,8 @@ function GM:Initialize()
 	InventoryWeapons = {}
 	Perks = {}
 
+	self.OpenworldTransitions = {}
+
 	self.WraithAlpha = 0
 	self.tea_screenfadeout = 0
 	self.tea_deathtext_a = 0
@@ -337,8 +339,6 @@ function GM:Initialize()
 	self.MyLastSurvivalStats.BestSurvivalTime = 0
 	self.MyLastSurvivalStats.PlayerKills = 0
 	self.MyLastSurvivalStats.ZombieKills = 0
-	
-	RunConsoleCommand("refresh_inventory")
 end
 
 function GM:InitPostEntity()

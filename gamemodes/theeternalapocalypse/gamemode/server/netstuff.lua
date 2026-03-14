@@ -379,21 +379,22 @@ net.Receive("tea_admin_tool", function(len, pl)
 		local max = net.ReadVector()
 		local name = net.ReadString()
 
-		PrintMessage(3, "new transition has been made.")
+		pl:PrintMessage(3, "A new transition has been made.")
 		gamemode.Call("CreateMapTransition", name, game.GetMap(), start, min, max)
-		gamemode.Call("SaveTransitionsData")
-		gamemode.Call("SpawnLevelTransitions")
 	elseif t == "admineyes" then
 		local m = net.ReadString()
 		local v = net.ReadBool()
 
-
 		local spawnables = GAMEMODE.AdminMapSpawnables[m]
 		if spawnables.GetAdminEyes then
+			local t = spawnables.GetAdminEyes(pl)
+
+			pl.AdminEyes[m] = v
+
 			net.Start("tea_admin_tool")
 			net.WriteString("admineyes")
 			net.WriteString(m)
-			net.WriteTable(spawnables.GetAdminEyes(pl))
+			net.WriteTable(t)
 			net.Send(pl)
 		end
 	end

@@ -342,7 +342,7 @@ GM.AdminMapSpawnables = {
 
 	PlayerSpawnpoint = {
 		Spawn = function(owner, swep, tr, pos)
-			gamemode.Call("AddPlayerSpawnpoint", pos, owner:EyeAngles().yaw)
+			gamemode.Call("AddPlayerSpawnpoint", pos, Angle(0, owner:EyeAngles().yaw, 0))
 			owner:PrintMessage(3, "Added player spawnpoint")
 		end,
 		View = function(owner, var)

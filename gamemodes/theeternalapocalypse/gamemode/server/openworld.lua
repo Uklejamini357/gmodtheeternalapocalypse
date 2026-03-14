@@ -129,6 +129,10 @@ function GM:CreateMapTransition(name, map, start, min, max)
         AreaMax = max
     }
 
+    gamemode.Call("SaveTransitionsData")
+    gamemode.Call("SpawnLevelTransitions")
+    self:UpdateAdminEyes("Openworld")
+
     -- debugging
     print("Created a new transition trigger")
 end
@@ -216,6 +220,7 @@ function GM:SpawnLevelTransitions()
     end
 
     self:SendMapTransitionsInfo(player.GetAll())
+    self:UpdateAdminEyes("Openworld")
 end
 
 function GM:UpdateLevelTransitions()
@@ -241,11 +246,34 @@ function GM:UpdateLevelTransitions()
     end
 
     self:SendMapTransitionsInfo(player.GetAll())
+    self:UpdateAdminEyes("Openworld")
 end
 
 net.Receive("tea_openworld_level", function(len, pl)
-    if !pl:Alive() then return end
     local typ = net.ReadUInt(4)
+    if SuperAdminCheck(pl) then
+        if typ == OPENWORLD_NETTYPE_CLEANUPTRANSITIONS then
+            GAMEMODE:ClearTransitions()
+        elseif typ == OPENWORLD_NETTYPE_CLEANUPALLTRANSITIONS then
+            GAMEMODE:ClearTransitions(true)
+        elseif typ == OPENWORLD_NETTYPE_EDITTRANSITION then
+            local id = net.ReadUInt(8)
+            local tbl = net.ReadTable()
+
+            if !GAMEMODE.OpenworldTransitions[id] then return end
+
+            table.Merge(GAMEMODE.OpenworldTransitions[id], tbl)
+            self:SaveTransitionsData()
+            self:UpdateLevelTransitions()
+        elseif typ == OPENWORLD_NETTYPE_GETTRANSITIONSINFO then
+            net.Start("tea_openworld_level")
+            net.WriteUInt(OPENWORLD_NETTYPE_GETTRANSITIONSINFO, 4)
+            net.WriteTable(GAMEMODE.OpenworldTransitions)
+            net.Send(pl)
+        end
+    end
+
+    if !pl:Alive() then return end
 
     if typ == OPENWORLD_NETTYPE_CONFIRM then
         GAMEMODE:OpenworldPlayerJoinTransition(pl, pl.OpenworldCanTravelTo)

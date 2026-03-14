@@ -34,7 +34,7 @@ end
 
 function GM:AddAirdropSpawnpoint(pos, ang)
 	local tr = util.TraceLine({
-		start = pos,
+		start = pos + Vector(0,0,1),
 		endpos = pos + Vector(0, 0, 90000),
 		mask = MASK_SOLID_BRUSHONLY,
 	})
@@ -43,7 +43,9 @@ function GM:AddAirdropSpawnpoint(pos, ang)
 
 	table.insert(self.AirdropSpawnpoints, {pos, ang, hitp})
 
-	self:SaveAirdropSpawns()
+	self:SaveAirdropSpawnpoints()
+
+	self:UpdateAdminEyes("Airdrop")
 
 	return false
 end
@@ -54,6 +56,8 @@ function GM:DeleteAirdropSpawnpoint(id)
 
 		self:SaveAirdropSpawnpoints()
 	end
+
+	self:UpdateAdminEyes("Airdrop")
 end
 
 
@@ -62,12 +66,19 @@ function GM:ClearAirdropSpawnpoints()
 	if file.Exists(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/airdrops.txt", "DATA") then
 		file.Delete(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/airdrops.txt")
 	end
+
+	self:UpdateAdminEyes("Airdrop")
 end
 
-function GM:SaveAirdropSpawns()
+function GM:SaveAirdropSpawnpoints()
 	local ftext = ""
 	for _,var in pairs(self.AirdropSpawnpoints) do
 		ftext = ftext..(ftext=="" and "" or "\n")..tostring(var[1])..";"..tostring(var[2])
+	end
+
+	if ftext == "" then
+		file.Delete(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/airdrops.txt")
+		return
 	end
 
 	file.Write(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/airdrops.txt", ftext)

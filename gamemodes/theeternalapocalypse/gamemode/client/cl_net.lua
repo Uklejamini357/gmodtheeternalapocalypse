@@ -266,12 +266,18 @@ net.Receive("tea_openworld_level", function()
 		close.Paint = btn.Paint
 	elseif nettype == OPENWORLD_NETTYPE_SENDMAPSINFO then
 		GAMEMODE.OpenworldTransitions = net.ReadTable()
+		for _,v in pairs(GAMEMODE.OpenworldTransitions) do
+			v.Pos = (v.AreaMin + v.AreaMax)/2
+		end
 	elseif nettype == OPENWORLD_NETTYPE_UPDATEPLAYERS then
 		if !IsValid(opnwrld_ui) then return end
 		opnwrld_ui.players:UpdatePlayers(net.ReadUInt(8))
 	elseif nettype == OPENWORLD_NETTYPE_LEFTAREA then
 		if !IsValid(opnwrld_ui) then return end
 		opnwrld_ui:Remove()
+	elseif nettype == OPENWORLD_NETTYPE_GETTRANSITIONSINFO then
+		if !IsValid(GAMEMODE.AdminFrame) then return end
+		GAMEMODE.AdminFrame:OnReceiveTransitionsData(net.ReadTable())
 	end
 end)
 

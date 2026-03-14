@@ -391,16 +391,16 @@ function GM:Think()
 				if ply.DrownDamage >= 1 and not ply:HasGodMode() then
 					ply:SetHealth(ply:Health() - math.floor(ply.DrownDamage))
 					if ply:Health() < 1 then
-							ply.CauseOfDeath = "Drowned"
-							ply.DeathMessage = "drowned"
+						ply.CauseOfDeath = "Drowned"
+						ply.DeathMessage = "drowned"
 
 
-							local d = DamageInfo()
-							d:SetDamage(1)
-							d:SetDamageType(DMG_DROWN)
-							d:SetAttacker(ply)
-							d:SetInflictor(ply)
-							ply:TakeDamageInfo(d)
+						local d = DamageInfo()
+						d:SetDamage(1)
+						d:SetDamageType(DMG_DROWN)
+						d:SetAttacker(ply)
+						d:SetInflictor(ply)
+						ply:TakeDamageInfo(d)
 					end
 					ply.DrownDamage = ply.DrownDamage - math.floor(ply.DrownDamage)
 				end
@@ -932,6 +932,7 @@ function GM:PlayerInitialSpawn(ply, transition)
 	ply.AchProgress = {}
 	ply.TaskCooldowns = {}
 	ply.CharactersData = {}
+	ply.AdminEyes = {}
 
 	ply.HPRegen = 0
 	ply.SlowDown = 0
@@ -1002,6 +1003,7 @@ end
 
 function GM:PlayerReady(ply)
 	self:FullyUpdatePlayer(ply)
+	self:SendMapTransitionsInfo(ply)
 end
 
 function GM:PlayerSay(ply, text, team)

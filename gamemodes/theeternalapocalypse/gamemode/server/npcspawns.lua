@@ -40,6 +40,7 @@ function GM:AddZombieSpawnpoint(pos, yaw, radius, tier)
 	table.insert(self.ZombieSpawnpoints, {pos, Angle(0, yaw, 0), radius, tier})
 	
 	self:SaveZombieSpawnpoints()
+	self:UpdateAdminEyes("Zombie")
 	return true
 end
 
@@ -48,6 +49,7 @@ function GM:DeleteZombieSpawnpoint(id)
 		self.ZombieSpawnpoints[id] = nil
 
 		self:SaveZombieSpawnpoints()
+		self:UpdateAdminEyes("Zombie")
 	end
 end
 
@@ -56,12 +58,18 @@ function GM:ClearZombieSpawnpoints()
 	if file.Exists(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/zombies.txt", "DATA") then
 		file.Delete(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/zombies.txt")
 	end
+	self:UpdateAdminEyes("Zombie")
 end
 
 function GM:SaveZombieSpawnpoints()
 	local ftext = ""
 	for _,var in pairs(self.ZombieSpawnpoints) do
 		ftext = ftext..(ftext=="" and "" or "\n")..tostring(var[1])..";"..tostring(var[2])
+	end
+
+	if ftext == "" then
+		file.Delete(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/zombies.txt")
+		return
 	end
 
 	file.Write(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/zombies.txt", ftext)

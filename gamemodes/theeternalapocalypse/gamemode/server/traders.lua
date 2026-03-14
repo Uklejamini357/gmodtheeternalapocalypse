@@ -46,9 +46,10 @@ end
 function GM:AddTraderSpawnpoint(pos, ang)
 	table.insert(self.TraderSpawnpoints, {pos, ang})
 
-	self:SaveTraderSpawns()
+	self:SaveTraderSpawnpoints()
 
 	gamemode.Call("SpawnTraders")
+	self:UpdateAdminEyes("Trader")
 end
 
 function GM:DeleteTraderSpawnpoint(id)
@@ -57,6 +58,7 @@ function GM:DeleteTraderSpawnpoint(id)
 
 	self:SaveTraderSpawnpoints()
 	self:SpawnTraders()
+	self:UpdateAdminEyes("Trader")
 end
 
 function GM:ClearTraderSpawnpoints()
@@ -67,12 +69,18 @@ function GM:ClearTraderSpawnpoints()
 	for _,ent in ipairs(ents.FindByClass("tea_trader")) do
 		ent:Remove()
 	end
+	self:UpdateAdminEyes("Trader")
 end
 
-function GM:SaveTraderSpawns()
+function GM:SaveTraderSpawnpoints()
 	local ftext = ""
 	for _,var in pairs(self.TraderSpawnpoints) do
 		ftext = ftext..(ftext=="" and "" or "\n")..tostring(var[1])..";"..tostring(var[2])
+	end
+
+	if ftext == "" then
+		file.Delete(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/traders.txt")
+		return
 	end
 
 	file.Write(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/traders.txt", ftext)
