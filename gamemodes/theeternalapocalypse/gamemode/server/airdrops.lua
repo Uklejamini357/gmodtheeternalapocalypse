@@ -57,7 +57,7 @@ function GM:DeleteAirdropSpawnpoint(id)
 end
 
 
-function GM:ClearAirdropSpawns()
+function GM:ClearAirdropSpawnpoints()
 	self.AirdropSpawnpoints = {}
 	if file.Exists(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/airdrops.txt", "DATA") then
 		file.Delete(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/airdrops.txt")
