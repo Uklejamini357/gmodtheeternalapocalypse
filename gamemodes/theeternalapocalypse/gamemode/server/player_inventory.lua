@@ -263,34 +263,34 @@ function GM:UseItem(ply, item, use, targetply)
 			else
 				if ref.WeaponType and !ref.IsGrenade then
 					ply:InvStripWeapon(ref.WeaponType)
-				elseif ref.ArmorStats then
-					local armor = ref.Category == ITEMCATEGORY_ARMOR
-					local hasmorethan1 = ply.Inventory[item] > 1
-					if armor and !hasmorethan1 and !timer.Exists("Plywantstodropequippedarmor"..ply:EntIndex()) and ply:GetNWString("ArmorType") == item then
-						ply:SendChat(translate.ClientFormat(ply, "warning_about_to_drop_equipped_armor", 10))
-						timer.Create("Plywantstodropequippedarmor"..ply:EntIndex(), 10, 1, function() end)
-						return false
-					end
+				end
+				
+				local armor = ref.ArmorStats and ref.Category == ITEMCATEGORY_ARMOR
+				local hasmorethan1 = ply.Inventory[item] > 1
+				if armor and !hasmorethan1 and !timer.Exists("Plywantstodropequippedarmor"..ply:EntIndex()) and ply:GetNWString("ArmorType") == item then
+					ply:SendChat(translate.ClientFormat(ply, "warning_about_to_drop_equipped_armor", 10))
+					timer.Create("Plywantstodropequippedarmor"..ply:EntIndex(), 10, 1, function() end)
+					return false
+				end
 
-					GAMEMODE:SystemRemoveItem(ply, item, false)
+				GAMEMODE:SystemRemoveItem(ply, item, false)
 
-					local vStart, vForward = ply:GetShootPos(), ply:GetAimVector()
-					local tr = util.TraceLine({
-						start = vStart,
-						endpos = vStart + vForward * 70,
-						filter = ply
-					})
-					local ent = ents.Create("ate_droppeditem")
-					ent:SetPos(tr.HitPos)
-					ent:SetAngles(Angle(0, ply:EyeAngles().yaw, 0))
-					ent:SetModel(armor and "models/props/cs_office/cardboard_box01.mdl" or GAMEMODE.ItemsList[item].Model)
-					ent:SetNWString("ItemClass", item)
-					ent:Spawn()
-					ent:Activate()
+				local vStart, vForward = ply:GetShootPos(), ply:GetAimVector()
+				local tr = util.TraceLine({
+					start = vStart,
+					endpos = vStart + vForward * 70,
+					filter = ply
+				})
+				local ent = ents.Create("ate_droppeditem")
+				ent:SetPos(tr.HitPos)
+				ent:SetAngles(Angle(0, ply:EyeAngles().yaw, 0))
+				ent:SetModel(armor and "models/props/cs_office/cardboard_box01.mdl" or GAMEMODE.ItemsList[item].Model)
+				ent:SetNWString("ItemClass", item)
+				ent:Spawn()
+				ent:Activate()
 
-					if !hasmorethan1 and armor and ply.EquippedArmor == tostring(item) then
-						ply:ArmorUnequip()
-					end
+				if !hasmorethan1 and armor and ply.EquippedArmor == tostring(item) then
+					ply:ArmorUnequip()
 				end
 			end
 
@@ -410,7 +410,7 @@ end)
 function meta:InvStripWeapon(item)
 	local wep = self:GetWeapon(item)
 	local itemtbl = GAMEMODE.ItemsList[item]
-	if wep and wep:IsValid() and (not self.Inventory[item] or self.Inventory[item] < 2) and not itemtbl.IsGrenade then
+	if wep and wep:IsValid() and (not self.Inventory[item] or self.Inventory[item] <= 1) and not itemtbl.IsGrenade then
 		if IsValid(wep) and wep:IsWeapon() then
 			local clip1 = tonumber(wep:Clip1()) or 0
 			local clip2 = tonumber(wep:Clip2()) or 0
