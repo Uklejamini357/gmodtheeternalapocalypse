@@ -48,27 +48,21 @@ function GM:AddAirdropSpawnpoint(pos, ang)
 	return false
 end
 
+function GM:DeleteAirdropSpawnpoint(id)
+	if self.AirdropSpawnpoints[id] then
+		self.AirdropSpawnpoints[id] = nil
+
+		self:SaveAirdropSpawnpoints()
+	end
+end
+
+
 function GM:ClearAirdropSpawns()
 	self.AirdropSpawnpoints = {}
 	if file.Exists(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/airdrops.txt", "DATA") then
 		file.Delete(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/airdrops.txt")
 	end
 end
-
-
-concommand.Add("tea_clearairdropspawns", function(ply, cmd, args)
-	if !SuperAdminCheck(ply) then 
-		ply:SystemMessage(translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205,255), true)
-		ply:ConCommand("playgamesound buttons/button8.wav")
-		return
-	end
-
-	GAMEMODE:ClearAirdropSpawns()
-
-	ply:SendChat("Deleted all airdrop spawnpoints")
-	GAMEMODE:DebugLog("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all airdrop spawnpoints!")
-	ply:ConCommand("playgamesound buttons/button15.wav")
-end)
 
 function GM:SaveAirdropSpawns()
 	local ftext = ""
@@ -118,9 +112,8 @@ function GM:SpawnAirdrop(plycountoverride, silent, delay)
 	if table.Count(self.AirdropSpawnpoints) == 0 then return end
 
 	local random = table.Random(self.AirdropSpawnpoints)
-	local pos = random[1]
+	local pos = random[3] -- hitpos
 	local ang = random[2]
-	local hitpos = random[3]
 
 	local dropent = ents.Create("airdrop_cache")
 	dropent:SetPos(pos)

@@ -51,6 +51,14 @@ function GM:AddTraderSpawnpoint(pos, ang)
 	gamemode.Call("SpawnTraders")
 end
 
+function GM:DeleteTraderSpawnpoint(id)
+	if !id or !self.TraderSpawnpoints[id] then return end
+	self.TraderSpawnpoints[id] = nil
+
+	self:SaveTraderSpawnpoints()
+	self:SpawnTraders()
+end
+
 function GM:ClearTraderSpawnpoints()
 	self.TraderSpawnpoints = {}
 	if file.Exists(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/traders.txt", "DATA") then
@@ -60,19 +68,6 @@ function GM:ClearTraderSpawnpoints()
 		ent:Remove()
 	end
 end
-concommand.Add("tea_cleartraderspawns", function(ply, cmd, args)
-	if !SuperAdminCheck(ply) then
-		ply:SystemMessage(translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205), true)
-		ply:ConCommand("playgamesound buttons/button8.wav")
-		return
-	end
-
-	GAMEMODE:ClearTraderSpawnpoints()
-
-	ply:SendChat("Deleted all trader spawnpoints!")
-	GAMEMODE:DebugLog("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all trader spawnpoints!")
-	ply:ConCommand("playgamesound buttons/button15.wav")
-end)
 
 function GM:SaveTraderSpawns()
 	local ftext = ""
@@ -91,11 +86,6 @@ function GM:RefreshTraders(ply, cmd, args)
 	end
 
 	if gamemode.Call("LoadTraders") then
-		timer.Simple(1, function()
-			gamemode.Call("SpawnTraders")
-		end)
+		gamemode.Call("SpawnTraders")
 	end
 end
-concommand.Add("tea_refreshtraders", function(ply, cmd, args)
-	gamemode.Call("RefreshTraders", ply, cmd, args)
-end)

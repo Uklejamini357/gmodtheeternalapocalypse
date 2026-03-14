@@ -40,7 +40,14 @@ local function DoLootPanel(canstore)
 		surface.SetDrawColor(150, 150, 0 ,255)
 		surface.DrawOutlinedRect(0, 0, w, h)
 	end
-
+	lootpanel.Think = function(this)
+		if input.IsKeyDown(KEY_ESCAPE) and gui.IsGameUIVisible() then
+			timer.Simple(0, function()
+				this:Remove()
+			end)
+			gui.HideGameUI()
+		end
+	end
 	local PropertySheet = vgui.Create("DPropertySheet", lootpanel)
 	PropertySheet:SetPos(10, 20)
 	PropertySheet:SetSize(580, lootpanel:GetTall() - 35)

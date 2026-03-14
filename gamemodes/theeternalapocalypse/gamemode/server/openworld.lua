@@ -104,7 +104,11 @@ function GM:SendMapTransitionsInfo(pl)
 	local tbl = {}
 	for _,map in pairs(self.OpenworldTransitions) do
 		if map.Map == game.GetMap() then
-			table.insert(tbl, map)
+			table.insert(tbl, {
+                Map = map.Map,
+                AreaMin = map.AreaMin,
+                AreaMax = map.AreaMax
+            })
 		end
 	end 
 
@@ -120,6 +124,7 @@ function GM:CreateMapTransition(name, map, start, min, max)
         Name = name,
         Map = map,
         StartPos = start,
+        StartAng = startang,
         AreaMin = min,
         AreaMax = max
     }
@@ -129,13 +134,57 @@ function GM:CreateMapTransition(name, map, start, min, max)
 end
 
 function GM:CreateMapTransitionLink(id1, id2)
-	if !self.OpenworldTransitions[id1] then print("invalid transition (arg #1)") return end
-	if !self.OpenworldTransitions[id2] then print("invalid transition (arg #2)") return end
+	if !id1 or !self.OpenworldTransitions[id1] then print("invalid transition (arg #1)") return end
+	if !id2 or !self.OpenworldTransitions[id2] then print("invalid transition (arg #2)") return end
 
 	self.OpenworldTransitions[id1].LinkedTo = id2
     self:UpdateLevelTransitions()
 
 	print("Created a link to a map")
+end
+
+function GM:DeleteTransition(id)
+    if !id or !self.OpenworldTransitions[id] then return end
+    self.OpenworldTransitions[id] = nil
+    for _,v in pairs(self.OpenworldTransitions) do
+        if v.LinkedTo ~= id then continue end
+        v.LinkedTo = nil
+    end
+
+    self:SaveTransitionsData()
+end
+
+function GM:ClearTransitions(all)
+    if all then
+        self.OpenworldTransitions = {}
+        if file.Exists(self.DataFolder.."/openworlddata.txt", "DATA") then
+            file.Delete(self.DataFolder.."/openworlddata.txt")
+        end
+
+        self:SpawnLevelTransitions()
+        return
+    end
+
+    for id,v in pairs(self.OpenworldTransitions) do
+        if v.Map ~= game.GetMap() then continue end
+
+        self.OpenworldTransitions[id] = nil
+    end
+
+    if table.Count(self.OpenworldTransitions) == 0 then
+        if file.Exists(self.DataFolder.."/openworlddata.txt", "DATA") then
+            file.Delete(self.DataFolder.."/openworlddata.txt")
+        end
+    else
+        self:SaveTransitionsData()
+    end
+    self:SpawnLevelTransitions()
+end
+
+
+function GM:SaveTransitionsData()
+	local method = self.Config.SFS and sfs.encode or util.TableToJSON
+    file.Write(self.DataFolder.."/openworlddata.txt", method(self.OpenworldTransitions, self.Config.SFS and 50000 or true))
 end
 
 function GM:LoadTransitionsData()
@@ -161,6 +210,7 @@ function GM:SpawnLevelTransitions()
         transition.ID = id
         transition.LinkedTo = v.LinkedTo
         transition.StartPos = v.StartPos
+        transition.StartAng = v.StartAng
         transition:SetPos((v.AreaMin + v.AreaMax) / 2)
         transition:Spawn()
     end
@@ -178,6 +228,7 @@ function GM:UpdateLevelTransitions()
         ent.max = data.AreaMax
         ent.LinkedTo = data.LinkedTo
         ent.StartPos = data.StartPos
+        ent.StartAng = data.StartAng
         ent:SetPos((data.AreaMin + data.AreaMax) / 2)
 
     	local w = self.max.x - self.min.x
@@ -192,12 +243,8 @@ function GM:UpdateLevelTransitions()
     self:SendMapTransitionsInfo(player.GetAll())
 end
 
-function GM:SaveTransitionsData()
-	local method = self.Config.SFS and sfs.encode or util.TableToJSON
-    file.Write(self.DataFolder.."/openworlddata.txt", method(self.OpenworldTransitions, self.Config.SFS and 50000 or true))
-end
-
 net.Receive("tea_openworld_level", function(len, pl)
+    if !pl:Alive() then return end
     local typ = net.ReadUInt(4)
 
     if typ == OPENWORLD_NETTYPE_CONFIRM then

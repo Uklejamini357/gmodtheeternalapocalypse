@@ -411,15 +411,16 @@ GM.AdminMapSpawnables = {
 		Spawn = function(owner, swep, tr, pos)
 			if !swep.OpenworldStartPos then
 				swep.OpenworldStartPos = pos
+				swep.OpenworldStartAng = Angle(0, owner:EyeAngles().yaw, 0)
 				owner:PrintMessage(3, tostring(pos))
-				owner:PrintMessage(3, "Now its time to create an area where players can to transition between maps! Select a starting area")
+				owner:PrintMessage(3, "Select starting area for triggering transition sequence")
 				return
 			end
 
 			if !swep.OpenworldPos1 then
 				swep.OpenworldPos1 = pos
 				owner:PrintMessage(3, tostring(pos))
-				owner:PrintMessage(3, "Now select an end area.")
+				owner:PrintMessage(3, "Select ending area")
 				return
 			end
 
@@ -438,7 +439,7 @@ GM.AdminMapSpawnables = {
 			swep.OpenworldPos2 = nil
 		end,
 		OnSelect = function(owner, swep)
-			owner:PrintMessage(3, "Select the position where a player would start when transitioning back here..")
+			owner:PrintMessage(3, "Select where a player would spawn when transitioning back here. The player would also point where you point at horizontally.")
 
 			swep.OpenworldStartPos = nil
 			swep.OpenworldPos1 = nil
@@ -449,7 +450,7 @@ GM.AdminMapSpawnables = {
 			local ownang = owner:EyeAngles()
 			for id,v in pairs(var) do
 				render.DrawBox(v.Pos, angle_zero, v.AreaMin-v.Pos, v.AreaMax-v.Pos, color_blue)
-				render.DrawBox(v.Pos, angle_zero, v.AreaMax-v.Pos, v.AreaMin-v.Pos, color_blue)
+				render.DrawWireframeBox(v.Pos, angle_zero, v.AreaMax-v.Pos, v.AreaMin-v.Pos, color_blue)
 				cam.Start3D2D(v.Pos+Vector(0,0,80), Angle(0, ownang.yaw - 90, 90 - ownang.Pitch), math.Clamp(owner:GetPos():Distance(v.Pos)/750, 0.3, 5))
 				draw.DrawText("Transition #"..id, "TEA.HUDFont", 0, -40, tcolor_blue, TEXT_ALIGN_CENTER)
 				draw.DrawText("StartPos: "..tostring(v.StartPos), "TEA.HUDFont", 0, -20, tcolor_blue, TEXT_ALIGN_CENTER)

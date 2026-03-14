@@ -49,24 +49,19 @@ function GM:AddPlayerSpawnpoint(pos, ang)
 	self:SavePlayerSpawns()
 end
 
+function GM:DeletePlayerSpawnpoint(id)
+	if !id or !self.PlayerSpawnpoints[id] then return end
+	self.PlayerSpawnpoints[id] = nil
+
+	self:SavePlayerSpawns()
+end
+
 function GM:ClearPlayerSpawnpoints()
 	self.PlayerSpawnpoints = {}
 	if file.Exists(self.DataFolder.."/spawns/".. string.lower(game.GetMap()) .."/players.txt", "DATA") then
 		file.Delete(self.DataFolder.."/spawns/" .. string.lower(game.GetMap()) .. "/players.txt")
 	end
 end
-concommand.Add("tea_clearplayerspawnpoints", function(ply)
-	if !SuperAdminCheck(ply) then 
-		ply:SystemMessage(translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205), true)
-		ply:ConCommand("playgamesound buttons/button8.wav")
-		return
-	end
-
-	gamemode.Call("ClearPlayerSpawnpoints")
-
-	ply:SendChat("Deleted all player spawnpoints")
-	GAMEMODE:DebugLog("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all player spawnpoints!")
-end)
 
 function GM:SavePlayerSpawns()
 	local ftext = ""

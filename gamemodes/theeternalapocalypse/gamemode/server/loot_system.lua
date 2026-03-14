@@ -68,21 +68,6 @@ function GM:ClearLootSpawnpoints()
 	end
 end
 
-
-concommand.Add("tea_clearlootspawns", function(ply, cmd, args)
-	if !SuperAdminCheck(ply) then 
-		ply:SystemMessage(translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205,255), true)
-		ply:ConCommand("playgamesound buttons/button8.wav")
-		return
-	end
-
-	GAMEMODE:ClearLootSpawnpoints()
-
-	ply:SendChat("Deleted all loot spawnpoints")
-	GAMEMODE:DebugLog("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all loot spawnpoints!")
-	ply:ConCommand("playgamesound buttons/button15.wav")
-end)
-
 function GM:SaveLootSpawns()
 	local ftext = ""
 	for _,var in pairs(self.LootSpawnpoints) do

@@ -264,6 +264,8 @@ net.Receive("tea_openworld_level", function()
 			opnwrld_ui:Remove()
 		end
 		close.Paint = btn.Paint
+	elseif nettype == OPENWORLD_NETTYPE_SENDMAPSINFO then
+		GAMEMODE.OpenworldTransitions = net.ReadTable()
 	elseif nettype == OPENWORLD_NETTYPE_UPDATEPLAYERS then
 		if !IsValid(opnwrld_ui) then return end
 		opnwrld_ui.players:UpdatePlayers(net.ReadUInt(8))

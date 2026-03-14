@@ -448,3 +448,134 @@ concommand.Add("tea_sadmin_adminmode", function(ply, cmd, args)
 	gamemode.Call("AdminCmds_ToggleAdminMode", ply, cmd, args)
 end, nil, "Toggles Admin Mode. Enabling it saves your progress and disables further auto save too.")
 
+
+concommand.Add("tea_clearspawns", function(pl, _, args)
+	local funcid = args[1]
+	if !funcid then return end
+	local id = args[2]
+
+	local gm = GAMEMODE
+
+	local sendmsg = function(pl, msg)
+		if IsValid(pl) then
+			pl:PrintMessage(3, msg)
+		else
+			print(msg)
+		end
+	end
+
+	local funcs = {
+		["zombies"] = function(pl, id)
+			if id == "all" then
+				gm:ClearZombieSpawnpoints()
+				sendmsg(pl, "Deleted all the zombie spawnpoints on this map.")
+			elseif !tonumber(id) then
+				sendmsg(pl, "Invalid spawnpoint ID. (Not a number)")
+			elseif id then
+				if !gm.ZombieSpawnpoints[tonumber(id)] then
+					sendmsg(pl, "Invalid spawnpoint ID. (Invalid spawnpoint)")
+					return
+				end
+				gm:DeleteZombieSpawnpoint(tonumber(id))
+				sendmsg(pl, "Deleted zombie spawnpoint ID #"..id..".")
+			end
+		end,
+		["loot"] = function(pl, id)
+			if id == "all" then
+				gm:ClearLootSpawnpoints()
+				sendmsg(pl, "Deleted all the loot spawnpoints on this map.")
+			elseif !tonumber(id) then
+				sendmsg(pl, "Invalid spawnpoint ID. (Not a number)")
+			elseif id then
+				if !gm.LootSpawnpoints[tonumber(id)] then
+					sendmsg(pl, "Invalid spawnpoint ID. (Invalid spawnpoint)")
+					return
+				end
+				gm:DeleteLootSpawnpoint(tonumber(id))
+				sendmsg(pl, "Deleted loot spawnpoint ID #"..id..".")
+			end
+		end,
+		["traders"] = function(pl, id)
+			if id == "all" then
+				gm:ClearTraderSpawnpoints()
+				sendmsg(pl, "Deleted all the trader spawnpoints on this map.")
+			elseif !tonumber(id) then
+				sendmsg(pl, "Invalid spawnpoint ID. (Not a number)")
+			elseif id then
+				if !gm.TraderSpawnpoints[tonumber(id)] then
+					sendmsg(pl, "Invalid spawnpoint ID. (Invalid spawnpoint)")
+					return
+				end
+				gm:DeleteTraderSpawnpoint(tonumber(id))
+				sendmsg(pl, "Deleted trader spawnpoint ID #"..id..".")
+			end
+		end,
+		["airdrops"] = function(pl, id)
+			if id == "all" then
+				gm:ClearAirdropSpawnpoints()
+				sendmsg(pl, "Deleted all the airdrop spawnpoints on this map.")
+			elseif !tonumber(id) then
+				sendmsg(pl, "Invalid spawnpoint ID. (Not a number)")
+			elseif id then
+				if !gm.AirdropSpawnpoints[tonumber(id)] then
+					sendmsg(pl, "Invalid spawnpoint ID. (Invalid spawnpoint)")
+					return
+				end
+				gm:DeleteAirdropSpawnpoint(tonumber(id))
+				sendmsg(pl, "Deleted airdrop spawnpoint ID #"..id..".")
+			end
+		end,
+		["playerspawns"] = function(pl, id)
+			if id == "all" then
+				gm:ClearPlayerSpawnpoints()
+				sendmsg(pl, "Deleted all the player spawnpoints on this map.")
+			elseif !tonumber(id) then
+				sendmsg(pl, "Invalid spawnpoint ID. (Not a number)")
+			elseif id then
+				if !gm.PlayerSpawnpoints[tonumber(id)] then
+					sendmsg(pl, "Invalid spawnpoint ID. (Invalid spawnpoint)")
+					return
+				end
+				gm:DeletePlayerSpawnpoint(tonumber(id))
+				sendmsg(pl, "Deleted player spawnpoint ID #"..id..".")
+			end
+		end,
+		["taskdealers"] = function(pl, id)
+			if id == "all" then
+				gm:ClearTaskDealerSpawnpoints()
+				sendmsg(pl, "Deleted all the taskdealer spawnpoints on this map.")
+			elseif !tonumber(id) then
+				sendmsg(pl, "Invalid spawnpoint ID. (Not a number)")
+			elseif id then
+				if !gm.TaskDealerSpawnpoints[tonumber(id)] then
+					sendmsg(pl, "Invalid spawnpoint ID. (Invalid spawnpoint)")
+					return
+				end
+				gm:DeleteTaskDealerSpawnpoint(tonumber(id))
+				sendmsg(pl, "Deleted taskdealer spawnpoint ID #"..id..".")
+			end
+		end,
+		["transitions"] = function(pl, id)
+			if id == "all" then
+				gm:ClearTransitions(true)
+				sendmsg(pl, "Deleted ALL the transitions on ALL MAPS.")
+			elseif id == "curmaponly" then
+				gm:ClearTransitions()
+				sendmsg(pl, "Deleted all transitions on the map.")
+			elseif !tonumber(id) then
+				sendmsg(pl, "Invalid spawnpoint ID. (Not a number)")
+			elseif id then
+				if !gm.OpenworldTransitions[tonumber(id)] then
+					sendmsg(pl, "Invalid spawnpoint ID. (Invalid spawnpoint)")
+					return
+				end
+				gm:DeleteTransition(tonumber(id))
+				sendmsg(pl, "Deleted transition ID #"..id..".")
+			end
+		end,
+	}
+
+	if !funcid or !funcs[funcid] then return end
+
+	funcs[funcid](pl, id)
+end)

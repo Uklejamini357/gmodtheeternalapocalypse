@@ -12,6 +12,7 @@ function GM:AdminMenu()
 	local pl = LocalPlayer()
 
 	local function RefreshPanel()
+		if not (PlayerListView and PlayerListView:IsValid()) then return end
 		for id, line in ipairs(PlayerListView:GetLines()) do
 			PlayerListView:RemoveLine(id)
 		end
@@ -89,7 +90,7 @@ function GM:AdminMenu()
 			end
 		end
 	end
-
+--[[
 	local PlayerList = vgui.Create("DPanel", PropertySheet)
 	PlayerList:SetSize(AdmMenuFrame:GetWide() - 20, AdmMenuFrame:GetTall() - 20)
 	PlayerList.Paint = function(self, w, h)
@@ -102,7 +103,7 @@ function GM:AdminMenu()
 	PlayerListView.Paint = function(this)
 		surface.SetDrawColor(85,85,85,255)
 		surface.DrawRect(0,0,this:GetWide(), this:GetTall())
-	end--SetColor(Color(0,0,0,255))
+	end
 	local column = PlayerListView:AddColumn("Ent Index")
 	column:SetMaxWidth(70)
 	column = PlayerListView:AddColumn("Player")
@@ -129,6 +130,7 @@ function GM:AdminMenu()
 	PlayerListButton.DoClick = function()
 		RefreshPanel()
 	end
+]]
 
 	
 	local AdminCmds = vgui.Create("DPanel", PropertySheet)
@@ -141,21 +143,21 @@ function GM:AdminMenu()
 	local text1 = vgui.Create("DLabel", AdminCmds)
 	text1:SetFont("TEA.HUDFontSmall")
 	text1:SetColor(Color(205,205,205,255))
-	text1:SetText("Zombies")
+	text1:SetText("Admin")
 	text1:SizeToContents()
 	text1:SetPos(20, 20)
 
 	local text2 = vgui.Create("DLabel", AdminCmds)
 	text2:SetFont("TEA.HUDFontSmall")
 	text2:SetColor(Color(205,205,205,255))
-	text2:SetText("Spawn Boss/Airdrop")
+	text2:SetText("Actions")
 	text2:SizeToContents()
 	text2:SetPos(20, 90)
 
 	local button1 = vgui.Create("DButton", AdminCmds)
 	button1:SetSize(120, 30)
 	button1:SetPos(20, 45)
-	button1:SetText("Cleanup Zombies")
+	button1:SetText("Toggle Admin Mode")
 	button1:SetTextColor(Color(255, 255, 255, 255))
 	button1.Paint = function(panel)
 		surface.SetDrawColor(150, 150, 0 ,255)
@@ -163,62 +165,40 @@ function GM:AdminMenu()
 		draw.RoundedBox(2, 0, 0, button1:GetWide(), button1:GetTall(), Color(0, 0, 0, 130))
 	end
 		button1.DoClick = function()
-		RunConsoleCommand("tea_admin_clearzombies")
+		RunConsoleCommand("tea_sadmin_adminmode")
 	end
 
 	local button2 = vgui.Create("DButton", AdminCmds)
 	button2:SetSize(120, 30)
-	button2:SetPos(150, 45)
-	button2:SetText("Cleanup All Zombies")
+	button2:SetPos(20, 115)
+	button2:SetText("Spawn Boss")
 	button2:SetTextColor(Color(255, 255, 255, 255))
 	button2.Paint = function(panel)
 		surface.SetDrawColor(150, 150, 0 ,255)
-		surface.DrawOutlinedRect(0, 0, button2:GetWide(), button2:GetTall())
-		draw.RoundedBox(2, 0, 0, button2:GetWide(), button2:GetTall(), Color(0, 0, 0, 130))
+		surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
+		draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(0, 0, 0, 130))
 	end
 	button2.DoClick = function()
-		RunConsoleCommand("tea_admin_clearzombies", "force")
+		RunConsoleCommand("tea_admin_spawnboss")
 	end
 
 	local button3 = vgui.Create("DButton", AdminCmds)
 	button3:SetSize(120, 30)
-	button3:SetPos(20, 115)
-	button3:SetText("Spawn Boss")
+	button3:SetPos(150, 115)
+	button3:SetText("Spawn Airdrop")
 	button3:SetTextColor(Color(255, 255, 255, 255))
 	button3.Paint = function(panel)
 		surface.SetDrawColor(150, 150, 0 ,255)
-		surface.DrawOutlinedRect(0, 0, button3:GetWide(), button3:GetTall())
-		draw.RoundedBox(2, 0, 0, button3:GetWide(), button3:GetTall(), Color(0, 0, 0, 130))
+		surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
+		draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(0, 0, 0, 130))
 	end
 	button3.DoClick = function()
-		RunConsoleCommand("tea_admin_spawnboss")
-	end
-
-	local button4 = vgui.Create("DButton", AdminCmds)
-	button4:SetSize(120, 30)
-	button4:SetPos(150, 115)
-	button4:SetText("Spawn Airdrop")
-	button4:SetTextColor(Color(255, 255, 255, 255))
-	button4.Paint = function(panel)
-		surface.SetDrawColor(150, 150, 0 ,255)
-		surface.DrawOutlinedRect(0, 0, button4:GetWide(), button4:GetTall())
-		draw.RoundedBox(2, 0, 0, button4:GetWide(), button4:GetTall(), Color(0, 0, 0, 130))
-	end
-	button4.DoClick = function()
 		RunConsoleCommand("tea_admin_spawnairdrop")
 	end
 
-
-	local text3 = vgui.Create("DLabel", AdminCmds)
-	text3:SetFont("TEA.HUDFontSmall")
-	text3:SetColor(Color(205,205,205,255))
-	text3:SetText("Misc")
-	text3:SizeToContents()
-	text3:SetPos(20, 150)
-
 	local clearprops = vgui.Create("DButton", AdminCmds)
 	clearprops:SetSize(120, 30)
-	clearprops:SetPos(20, 175)
+	clearprops:SetPos(20, 155)
 	clearprops:SetText("Cleanup All Props")
 	clearprops:SetToolTip("WARNING!")
 	clearprops:SetTextColor(Color(255, 255, 255, 255))
@@ -421,27 +401,86 @@ function GM:AdminMenu()
 		draw.RoundedBox(2, 0, 0, w, h, Color(0, 0, 0, 100))
 	end
 
+	local text = vgui.Create("DLabel", MapConfig)
+	text:SetText("These buttons below cannot be reversed. Select which spawns you want to cleanup carefully. You have been warned.")
+	text:SetFont("TEA.HUDFontSmall")
+	text:SetContentAlignment(5)
+	text:Dock(TOP)
+	text:DockMargin(5, 10, 50, 0)
+
 	local click = vgui.Create("DButton", MapConfig)
-	click:SetText("Cleanup spawns...")
+	click:SetText("Cleanup spawns")
+	click:SetFont("TEA.HUDFont")
 	click:Dock(TOP)
 	click:DockMargin(20, 10, 20, 0)
 	click.DoClick = function()
 		local d = DermaMenu(true)
-		d:AddOption("Zombies", function() RunConsoleCommand("tea_clearzombiespawns") end)
-		d:AddOption("Loot", function() RunConsoleCommand("tea_clearlootspawns") end)
-		d:AddOption("Traders", function() RunConsoleCommand("tea_cleartraderpawns") end)
-		d:AddOption("Airdrops", function() RunConsoleCommand("tea_clearairdropspawns") end)
-		d:AddOption("Player spawnpoints", function() RunConsoleCommand("tea_clearplayerpawns") end)
-		d:AddOption("TaskDealers", function() RunConsoleCommand("tea_cleartaskdealerspawns") end)
+		d:AddOption("Zombies", function() RunConsoleCommand("tea_clearspawns", "zombies", "all") end)
+		d:AddOption("Loot", function() RunConsoleCommand("tea_clearspawns", "loot", "all") end)
+		d:AddOption("Traders", function() RunConsoleCommand("tea_clearspawns", "traders", "all") end)
+		d:AddOption("Airdrops", function() RunConsoleCommand("tea_clearspawns", "airdrops", "all") end)
+		d:AddOption("Player spawnpoints", function() RunConsoleCommand("tea_clearspawns", "playerspawns", "all") end)
+		d:AddOption("TaskDealers", function() RunConsoleCommand("tea_clearspawns", "taskdealers", "all") end)
 		d:AddOption("Openworld transitions", function()
-			--Derma_Query("This may affect other maps transitions. Proceed?", "Warning", "Yes", function()
-				--RunConsoleCommand("tea_clearzombiespawns")
-			--end, "No")
+			Derma_Query("This may affect other maps transitions. Proceed?", "Warning", "Yes", function()
+				RunConsoleCommand("tea_clearspawns", "transitions", "curmaponly")
+			end, "No")
 		end)
 		d:Open()
 	end
 	click.Paint = function(self,w,h)
-		surface.SetDrawColor(0, 0, 0, 100)
+		surface.SetDrawColor(0,0,0,50)
+		surface.DrawRect(0,0,w,h)
+		surface.SetDrawColor(255,255,255,200)
+		surface.DrawOutlinedRect(0,0,w,h)
+	end
+
+	local click2 = vgui.Create("DButton", MapConfig)
+	click2:SetText("Remove a specific spawnpoint")
+	click2:SetFont("TEA.HUDFont")
+	click2:Dock(TOP)
+	click2:DockMargin(20, 10, 20, 0)
+	click2.DoClick = function()
+		local d = DermaMenu(true)
+		d:AddOption("Zombies", function()
+			Derma_StringRequest("Warning", "Select zombie spawnpoint ID to remove", "", function(id)
+				RunConsoleCommand("tea_clearspawns", "zombies", id)
+			end)
+		end)
+		d:AddOption("Loot", function()
+			Derma_StringRequest("Warning", "Select loot spawnpoint ID to remove", "", function(id)
+				RunConsoleCommand("tea_clearspawns", "loot", id)
+			end)
+		end)
+		d:AddOption("Traders", function()
+			Derma_StringRequest("Warning", "Select trader spawnpoint ID to remove", "", function(id)
+				RunConsoleCommand("tea_clearspawns", "traders", id)
+			end)
+		end)
+		d:AddOption("Airdrops", function()
+			Derma_StringRequest("Warning", "Select airdrop spawnpoint ID to remove", "", function(id)
+				RunConsoleCommand("tea_clearspawns", "airdrops", id)
+			end)
+		end)
+		d:AddOption("Player Spawnpoints", function()
+			Derma_StringRequest("Warning", "Select player spawnpoint ID to remove", "", function(id)
+				RunConsoleCommand("tea_clearspawns", "playerspawns", id)
+			end)
+		end)
+		d:AddOption("TaskDealers", function()
+			Derma_StringRequest("Warning", "Select taskdealer spawnpoint ID to remove", "", function(id)
+				RunConsoleCommand("tea_clearspawns", "taskdealers", id)
+			end)
+		end)
+		d:AddOption("Openworld transitions", function()
+			Derma_StringRequest("Warning", "Select transition ID to remove.\nWarning! This can also remove transitions outside this map!", "", function(id)
+				RunConsoleCommand("tea_clearspawns", "transitions", id)
+			end)
+		end)
+		d:Open()
+	end
+	click2.Paint = function(self,w,h)
+		surface.SetDrawColor(0,0,0,50)
 		surface.DrawRect(0,0,w,h)
 		surface.SetDrawColor(255,255,255,200)
 		surface.DrawOutlinedRect(0,0,w,h)
@@ -453,7 +492,7 @@ function GM:AdminMenu()
 		draw.RoundedBox(2, 0, 0, w, h, Color(0, 0, 0, 100))
 	end
 
-	PropertySheet:AddSheet(translate.Get("admin_panel_tab_1"), PlayerList, "icon16/shield.png", false, false, translate.Get("admin_panel_tab_1_d"))
+	-- PropertySheet:AddSheet(translate.Get("admin_panel_tab_1"), PlayerList, "icon16/shield.png", false, false, translate.Get("admin_panel_tab_1_d"))
 	PropertySheet:AddSheet(translate.Get("admin_panel_tab_2"), AdminCmds, "icon16/shield.png", false, false, translate.Get("admin_panel_tab_2_d"))
 	PropertySheet:AddSheet(translate.Get("admin_panel_tab_3"), SpawnMenu, "icon16/table.png", false, false, translate.Get("admin_panel_tab_3_d"))
 	PropertySheet:AddSheet(translate.Get("admin_panel_tab_4"), MapConfig, "icon16/table.png", false, false, translate.Get("admin_panel_tab_4_d"))
@@ -473,6 +512,12 @@ local function updateoptions(tbl)
 	net.WriteString("setoptions")
 	net.WriteTable(tbl)
 	net.SendToServer()
+end
+local function paint(self, w, h)
+	surface.SetDrawColor(0,0,0,50)
+	surface.DrawRect(0,0,w,h)
+	surface.SetDrawColor(255,255,255,200)
+	surface.DrawOutlinedRect(0,0,w,h)
 end
 function GM:OpenAdminToolMenu(wep)
 	if atm and IsValid(atm) then
@@ -551,12 +596,7 @@ function GM:OpenAdminToolMenu(wep)
 	atm.Categories:SetWide(ScrW())
 	atm.Categories:SetTall(ScrH()-72)
 	atm.Categories:SetPos(0, 72)
-	atm.Categories.Paint = function(self, w, h)
-		surface.SetDrawColor(0,0,0,50)
-		surface.DrawRect(0,0,w,h)
-		surface.SetDrawColor(255,255,255,200)
-		surface.DrawOutlinedRect(0,0,w,h)
-	end
+	atm.Categories.Paint = paint
 
 	local sidepanel = vgui.Create("EditablePanel", atm.Categories)
 	sidepanel:SetSize(400, 300)
@@ -578,7 +618,7 @@ function GM:OpenAdminToolMenu(wep)
 		b:SetFont("TEA.HUDFont")
 		b:SetTextColor(color_white)
 		b:Dock(TOP)
-		b:DockMargin(0, 10, 0, 0)
+		b:DockMargin(5, 10, 5, 0)
 		b.DoClick = function()
 			net.Start("tea_admin_tool")
 			net.WriteString("toggleremover")
@@ -604,7 +644,7 @@ function GM:OpenAdminToolMenu(wep)
 		local b = vgui.Create("DForm", sidepanel)
 		b:SetLabel("Admin eyes")
 		b:Dock(TOP)
-		b:DockMargin(0, 10, 0, 0)
+		b:DockMargin(5, 10, 5, 0)
 		b:SetExpanded(false)
 		b.Paint = function(self, w, h)
 			surface.SetDrawColor(255,255,255,200)
@@ -640,6 +680,21 @@ function GM:OpenAdminToolMenu(wep)
 	shtbl.Button:SetTextColor(color_white)
 	shtbl.Button:SetTooltip(shtbl.Button:GetText())
 
+	local function makezmpanel(class, tbl, boss)
+		local button = vgui.Create("DButton", atm.panel)
+		button:SetContentAlignment(4)
+		button:SetText(tbl.Name or scripted_ents.Get(class) and scripted_ents.Get(class).PrintName or "[NAME NOT FOUND]")
+		button:SetTextColor(boss and Color(255,120,120) or tbl.Miniboss and Color(204,144,254) or color_white)
+		button:SetFont("TEA.HUDFont")
+		button:SizeToContents()
+		button:SetTall(32)
+		button:Dock(TOP)
+		button:DockMargin(5, 10, 5, 0)
+		button.Paint = paint
+		button.DoClick = btnspawning
+		button.SpawningID = class
+	end
+
 	atm.panel.Text = vgui.Create("DLabel", atm.panel)
 	atm.panel.Text:Dock(TOP)
 	atm.panel.Text:SetText("Normal Zombies")
@@ -647,23 +702,19 @@ function GM:OpenAdminToolMenu(wep)
 	atm.panel.Text:SizeToContents()
 
 	for class,tbl in SortedPairs(self.Config["ZombieClasses"]) do
-		local button = vgui.Create("DButton", atm.panel)
-		button:SetContentAlignment(4)
-		button:SetText(tbl.Name or scripted_ents.Get(class) and scripted_ents.Get(class).PrintName or "[NAME NOT FOUND]")
-		button:SetTextColor(color_white)
-		button:SetFont("TEA.HUDFont")
-		button:SizeToContents()
-		button:SetTall(30)
-		button:Dock(TOP)
-		button:DockMargin(0, 10, 0, 0)
-		button.Paint = function(self,w,h)
-			surface.SetDrawColor(0,0,0,200)
-			surface.DrawRect(0,0,w,h)
-			surface.SetDrawColor(255,255,255,200)
-			surface.DrawOutlinedRect(0,0,w,h)
-		end
-		button.DoClick = btnspawning
-		button.SpawningID = class
+		if tbl.Miniboss then continue end
+		makezmpanel(class, tbl)
+	end
+
+	atm.panel.Text = vgui.Create("DLabel", atm.panel)
+	atm.panel.Text:Dock(TOP)
+	atm.panel.Text:SetText("Miniboss Zombies")
+	atm.panel.Text:SetFont("TEA.HUDFont")
+	atm.panel.Text:SizeToContents()
+
+	for class,tbl in SortedPairs(self.Config["ZombieClasses"]) do
+		if !tbl.Miniboss then continue end
+		makezmpanel(class, tbl)
 	end
 
 	atm.panel.Text = vgui.Create("DLabel", atm.panel)
@@ -673,23 +724,7 @@ function GM:OpenAdminToolMenu(wep)
 	atm.panel.Text:SizeToContents()
 
 	for class,tbl in SortedPairs(self.Config["BossClasses"]) do
-		local button = vgui.Create("DButton", atm.panel)
-		button:SetContentAlignment(4)
-		button:SetText(tbl.Name or scripted_ents.Get(class) and scripted_ents.Get(class).PrintName or "[NAME NOT FOUND]")
-		button:SetTextColor(color_white)
-		button:SetFont("TEA.HUDFont")
-		button:SizeToContents()
-		button:SetTall(30)
-		button:Dock(TOP)
-		button:DockMargin(0, 10, 0, 0)
-		button.Paint = function(self,w,h)
-			surface.SetDrawColor(0,0,0,200)
-			surface.DrawRect(0,0,w,h)
-			surface.SetDrawColor(255,255,255,200)
-			surface.DrawOutlinedRect(0,0,w,h)
-		end
-		button.DoClick = btnspawning
-		button.SpawningID = class
+		makezmpanel(class, tbl, true)
 	end
 
 
@@ -715,12 +750,7 @@ function GM:OpenAdminToolMenu(wep)
 		button:SetTooltip((tbl.Name or "").."\nToughness: ".. tbl.Toughness*500 .."hp")
 		button:SetFont("TEA.HUDFont")
 		button:SetSize(128, 128)
-		button.Paint = function(self,w,h)
-			surface.SetDrawColor(0,0,0,200)
-			surface.DrawRect(0,0,w,h)
-			surface.SetDrawColor(255,255,255,200)
-			surface.DrawOutlinedRect(0,0,w,h)
-		end
+		button.Paint = paint
 		button.DoClick = btnspawning
 		button.SpawningID = model
 
@@ -747,12 +777,7 @@ function GM:OpenAdminToolMenu(wep)
 		button:SetTooltip((tbl.Name or "").."\nToughness: ".. tbl.Toughness*500 .."hp")
 		button:SetFont("TEA.HUDFont")
 		button:SetSize(128, 128)
-		button.Paint = function(self,w,h)
-			surface.SetDrawColor(0,0,0,200)
-			surface.DrawRect(0,0,w,h)
-			surface.SetDrawColor(255,255,255,200)
-			surface.DrawOutlinedRect(0,0,w,h)
-		end
+		button.Paint = paint
 		button.DoClick = btnspawning
 		button.SpawningID = class
 
@@ -779,12 +804,7 @@ function GM:OpenAdminToolMenu(wep)
 		button:SetTooltip((tbl.Name or "").."\nDescription: ".. tbl.Description .."hp")
 		button:SetFont("TEA.HUDFont")
 		button:SetSize(128, 128)
-		button.Paint = function(self,w,h)
-			surface.SetDrawColor(0,0,0,200)
-			surface.DrawRect(0,0,w,h)
-			surface.SetDrawColor(255,255,255,200)
-			surface.DrawOutlinedRect(0,0,w,h)
-		end
+		button.Paint = paint
 		button.DoClick = btnspawning
 		button.SpawningID = class
 
@@ -812,13 +832,8 @@ function GM:OpenAdminToolMenu(wep)
 		button:SizeToContents()
 		button:SetTall(30)
 		button:Dock(TOP)
-		button:DockMargin(0, 10, 0, 0)
-		button.Paint = function(self,w,h)
-			surface.SetDrawColor(0,0,0,200)
-			surface.DrawRect(0,0,w,h)
-			surface.SetDrawColor(255,255,255,200)
-			surface.DrawOutlinedRect(0,0,w,h)
-		end
+		button:DockMargin(5, 10, 5, 0)
+		button.Paint = paint
 		button.DoClick = btnspawning
 		button.SpawningID = class
 	end
@@ -840,13 +855,8 @@ function GM:OpenAdminToolMenu(wep)
 		button:SizeToContents()
 		button:SetTall(30)
 		button:Dock(TOP)
-		button:DockMargin(0, 10, 0, 0)
-		button.Paint = function(self,w,h)
-			surface.SetDrawColor(0,0,0,200)
-			surface.DrawRect(0,0,w,h)
-			surface.SetDrawColor(255,255,255,200)
-			surface.DrawOutlinedRect(0,0,w,h)
-		end
+		button:DockMargin(5, 10, 5, 0)
+		button.Paint = paint
 		button.DoClick = btnspawning
 		button.SpawningID = class
 	end
@@ -887,7 +897,7 @@ function GM:OpenAdminToolMenuOptions(wep)
 		b1:SetText(optionstbl["CashReward"] or 0)
 		b1:SetUpdateOnType(true)
 		b1:Dock(TOP)
-		b1:DockMargin(0, 10, 0, 0)
+		b1:DockMargin(5, 10, 5, 0)
 		b1.OnValueChange = function(self, newvalue)
 			optionstbl["CashReward"] = tonumber(newvalue)
 			updateoptions(optionstbl)
@@ -905,7 +915,7 @@ function GM:OpenAdminToolMenuOptions(wep)
 		b1:SetTooltip("Set to an empty value to make it default.")
 		b1:SetUpdateOnType(true)
 		b1:Dock(TOP)
-		b1:DockMargin(0, 10, 0, 0)
+		b1:DockMargin(5, 10, 5, 0)
 		b1.OnValueChange = function(self, newvalue)
 			optionstbl["XPReward"] = tonumber(newvalue)
 			updateoptions(optionstbl)
@@ -923,7 +933,7 @@ function GM:OpenAdminToolMenuOptions(wep)
 		b1:SetTooltip("Set to an empty value to make it default.")
 		b1:SetUpdateOnType(true)
 		b1:Dock(TOP)
-		b1:DockMargin(0, 10, 0, 0)
+		b1:DockMargin(5, 10, 5, 0)
 		b1.OnValueChange = function(self, newvalue)
 			optionstbl["InfectionRate"] = tonumber(newvalue)
 			updateoptions(optionstbl)
@@ -979,7 +989,7 @@ function GM:CreateOpenworldTransition(spawnpos, pos1, pos2)
 	mapname:SetText("")
 	mapname:SetTextColor(color_black)
 	mapname:Dock(TOP)
-	mapname:DockMargin(0, 10, 0, 0)
+	mapname:DockMargin(5, 10, 5, 0)
 
 	local map = vgui.Create("DLabel", atm)
 	map:SetText("Map: "..game.GetMap())

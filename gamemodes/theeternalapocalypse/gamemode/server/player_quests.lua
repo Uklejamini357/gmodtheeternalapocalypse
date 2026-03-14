@@ -123,7 +123,15 @@ function GM:AddTaskDealerSpawnpoint(pos, ang)
 	gamemode.Call("SpawnTaskDealers")
 end
 
-function GM:ClearTaskDealers()
+function GM:DeleteTaskDealerSpawnpoint(id)
+	if !id or !self.TaskDealerSpawnpoints[id] then return end
+	self.TaskDealerSpawnpoints[id] = nil
+
+	self:SaveTaskDealerSpawns()
+	self:SpawnTaskDealers()
+end
+
+function GM:ClearTaskDealerSpawnpoints()
 	self.TaskDealerSpawnpoints = {}
 	if file.Exists(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/taskdealers.txt", "DATA") then
 		file.Delete(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/taskdealers.txt")
@@ -132,37 +140,6 @@ function GM:ClearTaskDealers()
 		ent:Remove()
 	end
 end
-concommand.Add("tea_cleartaskdealerspawns", function(ply, cmd, args)
-	if !SuperAdminCheck(ply) then
-		GAMEMODE:SystemMessage(ply, translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205,255), true)
-		ply:ConCommand("playgamesound buttons/button8.wav")
-		return
-	end
-
-	GAMEMODE:ClearTaskDealers()
-
-	ply:SendChat("Deleted all task dealer spawnpoints!")
-	GAMEMODE:DebugLog("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all task dealer spawnpoints!")
-	ply:ConCommand("playgamesound buttons/button15.wav")
-end)
-
-function GM:RefreshTaskDealers(ply, cmd, args)
-	if !SuperAdminCheck(ply) then 
-		self:SystemMessage(ply, translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205,255), true)
-		ply:ConCommand("playgamesound buttons/button8.wav")
-		return
-	end
-
-	if gamemode.Call("LoadTaskDealers") then
-		timer.Simple(1, function()
-			gamemode.Call("SpawnTaskDealers")
-		end)
-	end
-end
-concommand.Add("tea_refreshtaskdealers", function(ply, cmd, args)
-	gamemode.Call("RefreshTaskDealers", ply, cmd, args)
-end)
-
 
 function GM:SaveTaskDealerSpawns()
 	local ftext = ""

@@ -369,10 +369,6 @@ net.Receive("tea_perksreset", function(len, pl)
 	GAMEMODE:NetUpdatePeriodicStats(pl)
 end)
 
-
-function GM:SendSpawnsToPlayer(pl, spawn)
-end
-
 net.Receive("tea_admin_tool", function(len, pl)
 	if !SuperAdminCheck(pl) then return end
 	local t = net.ReadString()
@@ -433,8 +429,8 @@ net.Receive("tea_admin_tool", function(len, pl)
 				at.OnSelect(owner, wep)
 			end
 		end
+		wep:SetMode(ADMINTOOL_MODE_SPAWNER)
 		wep:SetSpawning(spawning)
-
 	elseif t == "setoptions" then
 		local tbl = net.ReadTable()
 		table.Merge(wep.SetOptions, tbl)
@@ -443,15 +439,6 @@ net.Receive("tea_admin_tool", function(len, pl)
 	end
 end)
 
-
-function GM:SendAllSpawnsToPlayer(pl)
-	self:SendSpawnsToPlayer(pl, "zombies")
-	self:SendSpawnsToPlayer(pl, "loots")
-	self:SendSpawnsToPlayer(pl, "traders")
-	self:SendSpawnsToPlayer(pl, "taskdealers")
-	self:SendSpawnsToPlayer(pl, "airdrops")
-	self:SendSpawnsToPlayer(pl, "playerspawns")
-end
 
 local meta = FindMetaTable("Player")
 if not meta then return end

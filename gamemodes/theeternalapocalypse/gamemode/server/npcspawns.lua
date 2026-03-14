@@ -43,25 +43,20 @@ function GM:AddZombieSpawnpoint(pos, yaw, radius, tier)
 	return true
 end
 
+function GM:DeleteZombieSpawnpoint(id)
+	if self.ZombieSpawnpoints[id] then
+		self.ZombieSpawnpoints[id] = nil
+
+		self:SaveZombieSpawnpoints()
+	end
+end
+
 function GM:ClearZombieSpawnpoints()
 	self.ZombieSpawnpoints = {}
 	if file.Exists(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/zombies.txt", "DATA") then
 		file.Delete(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/zombies.txt")
 	end
 end
-concommand.Add("tea_clearzombiespawns", function(ply, cmd, args, str)
-	if !SuperAdminCheck(ply) then 
-		ply:SystemMessage(translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205), true)
-		ply:ConCommand("playgamesound buttons/button8.wav")
-		return
-	end
-
-	GAMEMODE:ClearZombieSpawnpoints()
-
-	ply:SendChat("Deleted all zombie spawnpoints")
-	GAMEMODE:DebugLog("[SPAWNPOINTS REMOVED] "..ply:Nick().." has deleted all zombie spawnpoints!")
-	ply:ConCommand("playgamesound buttons/button15.wav")
-end)
 
 function GM:SaveZombieSpawnpoints()
 	local ftext = ""
