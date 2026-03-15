@@ -152,36 +152,6 @@ concommand.Add("tea_dev_spawnairdropcache", function(ply, cmd, args)
 	gamemode.Call("DevCmds_SpawnAirdropCache", ply, cmd, args)
 end, nil, "Spawns an airdrop cache in front of you")
 
-function GM:DevCmds_SpawnBoss(ply) 
-    if !ply:IsValid() then return false end
-    
-    if !TEADevCheck(ply) then 
-        ply:SystemMessage(translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
-        ply:ConCommand("playgamesound buttons/button8.wav")
-        return
-    end
-    
-    local vStart = ply:GetShootPos()
-    local vForward = ply:GetAimVector()
-    local trace = {}
-    trace.start = vStart
-    trace.endpos = vStart + (vForward * 500)
-    trace.filter = ply
-    local tr = util.TraceLine(trace)
-	local dice = math.random(0, 100)
-	local total = 0
-	for k, v in pairs(GAMEMODE.Config["BossClasses"]) do
-		total = total + v["SpawnChance"]
-		if total >= dice then
-			gamemode.Call("CreateZombie", k, tr.HitPos, Angle(0,0,0), v.XPReward, v.MoneyReward, v.InfectionRate, true)
-			break
-		end
-	end
-end
-concommand.Add("tea_dev_spawnboss", function(ply, cmd, args)
-	gamemode.Call("DevCmds_SpawnBoss", ply, cmd, args)
-end, nil, "Spawns a random boss in your direction")
-
 function GM:DevCmds_RefillStats(ply, cmd)
 	if !ply:IsValid() then return false end
 	if !TEADevCheck(ply) then 

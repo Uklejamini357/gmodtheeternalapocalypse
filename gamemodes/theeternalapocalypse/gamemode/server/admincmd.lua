@@ -229,6 +229,11 @@ function GM:AdminCmds_SpawnAirdrop(ply)
 		return
 	end
 
+	if #self.AirdropSpawnpoints == 0 then
+		ply:SystemMessage("No airdrop spawnpoints found, cannot spawn airdrop!", Color(255,205,205,255), true)
+		return
+	end
+
 	gamemode.Call("CallAirdrop")
 	ply:SystemMessage("Command received, airdrop will arrive soon.", Color(155,255,155,255), true)
 	self:DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has used spawn airdrop command!")

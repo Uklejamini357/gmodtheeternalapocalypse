@@ -22,7 +22,7 @@ end
 
 function GM:OpenworldPlayerJoinTransition(ply, ent)
 	if !ent.LinkedTo then return end
-    if CurTime() < 300 then
+    if not self.TestMode and CurTime() < 300 then
         ply:PrintMessage(3, "Whoa slow down, you cannot go to another map yet!")
         net.Start("tea_openworld_level")
         net.WriteUInt(OPENWORLD_NETTYPE_LEFTAREA, 4)
@@ -118,12 +118,12 @@ function GM:SendMapTransitionsInfo(pl)
 	net.Send(pl)
 end
 
-function GM:CreateMapTransition(name, map, start, min, max)
+function GM:CreateMapTransition(name, map, startpos, startang, min, max)
 	local id = #self.OpenworldTransitions + 1
     self.OpenworldTransitions[id] = {
         Name = name,
         Map = map,
-        StartPos = start,
+        StartPos = startpos,
         StartAng = startang,
         AreaMin = min,
         AreaMax = max
@@ -149,6 +149,7 @@ end
 
 function GM:DeleteTransition(id)
     if !id or !self.OpenworldTransitions[id] then return end
+    local thismap = self.OpenworldTransitions[id].Map == game.GetMap()
     self.OpenworldTransitions[id] = nil
     for _,v in pairs(self.OpenworldTransitions) do
         if v.LinkedTo ~= id then continue end
@@ -156,6 +157,9 @@ function GM:DeleteTransition(id)
     end
 
     self:SaveTransitionsData()
+    if thismap then
+        self:SpawnLevelTransitions()
+    end
 end
 
 function GM:ClearTransitions(all)
@@ -236,13 +240,14 @@ function GM:UpdateLevelTransitions()
         ent.StartAng = data.StartAng
         ent:SetPos((data.AreaMin + data.AreaMax) / 2)
 
-    	local w = self.max.x - self.min.x
-    	local l = self.max.y - self.min.y
-    	local h = self.max.z - self.min.z
+    	local w = ent.max.x - ent.min.x
+    	local l = ent.max.y - ent.min.y
+    	local h = ent.max.z - ent.min.z
 
     	local min = Vector(-(w/2), -(l/2), -(h/2))
     	local max = Vector(w/2, l/2, h/2)
-        ent:SetCollisionBounds(ent.min, ent.max)
+        print(min, max)
+        ent:SetCollisionBounds(min, max)
     end
 
     self:SendMapTransitionsInfo(player.GetAll())
@@ -258,18 +263,38 @@ net.Receive("tea_openworld_level", function(len, pl)
             GAMEMODE:ClearTransitions(true)
         elseif typ == OPENWORLD_NETTYPE_EDITTRANSITION then
             local id = net.ReadUInt(8)
-            local tbl = net.ReadTable()
+            local var = net.ReadString()
 
             if !GAMEMODE.OpenworldTransitions[id] then return end
+            if var == "LinkedTo" then
+                local value = net.ReadUInt(8)
 
-            table.Merge(GAMEMODE.OpenworldTransitions[id], tbl)
-            self:SaveTransitionsData()
-            self:UpdateLevelTransitions()
+                if value == 0 then
+                    GAMEMODE.OpenworldTransitions[id][var] = nil
+                else
+                    GAMEMODE.OpenworldTransitions[id][var] = value
+                end
+            elseif var == "Name" then
+                GAMEMODE.OpenworldTransitions[id].Name = net.ReadString()
+            elseif var == "AreaMin" or var == "AreaMax" or var == "StartPos" then
+                GAMEMODE.OpenworldTransitions[id][var] = net.ReadVector()
+            elseif var == "StartAng" then
+                GAMEMODE.OpenworldTransitions[id][var] = net.ReadAngle()
+            end
+
+            GAMEMODE:SaveTransitionsData()
+            GAMEMODE:UpdateLevelTransitions()
         elseif typ == OPENWORLD_NETTYPE_GETTRANSITIONSINFO then
             net.Start("tea_openworld_level")
             net.WriteUInt(OPENWORLD_NETTYPE_GETTRANSITIONSINFO, 4)
             net.WriteTable(GAMEMODE.OpenworldTransitions)
             net.Send(pl)
+        elseif typ == OPENWORLD_NETTYPE_DELTRANSITION then
+            local id = net.ReadUInt(8)
+            if !GAMEMODE.OpenworldTransitions[id] then pl:PrintMessage(3, "Transition does not exist.") return end
+            
+            GAMEMODE:DeleteTransition(id)
+            pl:PrintMessage(3, "Deleted transition ID #"..id..".")
         end
     end
 

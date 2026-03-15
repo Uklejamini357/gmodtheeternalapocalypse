@@ -85,6 +85,7 @@ function ENT:SetUpStats()
 	self.DoorBreak = Sound("npc/zombie/zombie_pound_door.wav")
 
 	self.Hit = Sound("npc/zombie/zombie_hit.wav")
+	self.HitProp = Sound("npc/zombie/zombie_hit.wav")
 	self.Miss = Sound("npc/zombie/claw_miss1.wav")
 
 	self.Ability1CD = CurTime()

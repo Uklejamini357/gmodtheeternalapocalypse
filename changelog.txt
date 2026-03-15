@@ -1,5 +1,12 @@
 There's been a lot missed out...
 
+-------- v0.12.0 FULL CHANGELOG --------
+
+Nope.
+
+--------  --------
+
+
 +- Added and removed some background images whilst in the main menu
 + Added Propane. It explodes with 500 damage and 450 radius upon a hard impact or if it's shot.
 + Some new death messages

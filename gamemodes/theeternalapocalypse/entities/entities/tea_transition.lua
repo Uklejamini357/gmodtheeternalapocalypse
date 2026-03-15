@@ -21,8 +21,11 @@ end
 
 function ENT:StartTouch(ent)
 	if not (ent:IsPlayer() and ent:Alive()) then return end
+	if ent:GetMoveType() == MOVETYPE_NOCLIP then return end
+	if ent.DisallowTransitioning then return end -- this is only for when transitioning from another map, soo
 
-    if CurTime() < 300 then
+	if !self.LinkedTo then return end
+    if not GAMEMODE.TestMode and CurTime() < 300 then
         ent:PrintMessage(3, "Whoa slow down, you cannot go to another map yet!")
         return
     end

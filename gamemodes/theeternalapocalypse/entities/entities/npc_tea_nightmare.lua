@@ -14,6 +14,7 @@ list.Set("NPC", "npc_tea_nightmare", {
 
 
 function ENT:SetUpStats()
+    self:SetColor(color_black)
 
 -- animations for the StartActivity function
     self.AttackAnim = ACT_MELEE_ATTACK1
@@ -32,14 +33,14 @@ function ENT:SetUpStats()
         ["Damage"] = 31,
         ["PropDamage"] = 40,
         ["Force"] = 400,
-        ["Infection"] = 8,
+        ["Infection"] = 666,
         ["Reach"] = 60,
         ["StrikeDelay"] = 0.8,
         ["AfterStrikeDelay"] = 1,
 
-        ["Health"] = 180,
+        ["Health"] = 550,
         ["MoveSpeedWalk"] = 50,
-        ["MoveSpeedRun"] = 225,
+        ["MoveSpeedRun"] = 125,
         ["VisionRange"] = 1200,
         ["LoseTargetRange"] = 1500,
 
@@ -90,7 +91,12 @@ function ENT:SetUpStats()
 
     self.DoorBreak = Sound("npc/zombie/zombie_pound_door.wav")
 
-    self.Hit = Sound("npc/zombie/zombie_hit.wav")
+	self.Hit = {
+		"npc/zombie/claw_strike1.wav",
+		"npc/zombie/claw_strike2.wav",
+		"npc/zombie/claw_strike3.wav"
+	}
+	self.HitProp = Sound("npc/zombie/zombie_hit.wav")
     self.Miss = Sound("npc/zombie/claw_miss1.wav")
 
     self.CanScream = true

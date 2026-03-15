@@ -374,13 +374,14 @@ net.Receive("tea_admin_tool", function(len, pl)
 	local t = net.ReadString()
 	
 	if t == "createopenworldtransition" then
-		local start = net.ReadVector()
+		local startpos = net.ReadVector()
+		local startang = net.ReadAngle()
 		local min = net.ReadVector()
 		local max = net.ReadVector()
 		local name = net.ReadString()
 
 		pl:PrintMessage(3, "A new transition has been made.")
-		gamemode.Call("CreateMapTransition", name, game.GetMap(), start, min, max)
+		gamemode.Call("CreateMapTransition", name, game.GetMap(), startpos, startang, min, max)
 	elseif t == "admineyes" then
 		local m = net.ReadString()
 		local v = net.ReadBool()

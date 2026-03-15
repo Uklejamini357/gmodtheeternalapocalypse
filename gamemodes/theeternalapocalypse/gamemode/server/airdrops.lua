@@ -12,16 +12,9 @@ function GM:LoadAD()
 			local v = string.Explode(";", str)
 			local pos = util.StringToType(v[1], "Vector")
 			local ang = util.StringToType(v[2], "Angle")
+			local hitpos = util.StringToType(v[3], "Vector")
 
-			local tr = util.TraceLine({
-				start = pos,
-				endpos = pos + Vector(0, 0, 90000),
-				mask = MASK_SOLID_BRUSHONLY,
-			})
-			-- if !tr.HitSky then ply:SystemMessage("You can only place airdrop spawns in areas that are visible to the skybox!", Color(255,205,205,255), true) return end
-			local hitp = tr.HitPos - Vector(0, 0, 80)
-
-			table.insert(tbl, {pos, ang, hitp})
+			table.insert(tbl, {pos, ang, hitpos})
 		end
 		self.AirdropSpawnpoints = tbl
 

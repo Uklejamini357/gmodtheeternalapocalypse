@@ -107,7 +107,7 @@ function SWEP:SpawnIn(spawning, owner, tr, ang)
     if CLIENT then return end
     if self:GetSpawningType() == ADMINTOOL_SPAWNTYPE_ZOMBIE then
         local zm = GAMEMODE.Config["ZombieClasses"][spawning] or GAMEMODE.Config["BossClasses"][spawning]
-        local ent = GAMEMODE:CreateZombie(spawning, RoundPos(tr.HitPos), Angle(0,ang.yaw,0), self.SetOptions.XPReward or zm.XPReward, self.SetOptions.CashReward or zm.MoneyReward, self.SetOptions.InfectionRate or zm.InfectionRate, self.SetOptions.BossZombie)
+        local ent = GAMEMODE:CreateZombie(spawning, RoundPos(tr.HitPos), Angle(0,ang.yaw,0), self.SetOptions.XPReward or zm.XPReward, self.SetOptions.CashReward or zm.MoneyReward, self.SetOptions.InfectionRate or zm.InfectionRate, self.SetOptions.ForceLevel, self.SetOptions.BossZombie)
         if ent and ent:IsValid() then
             ent:SetPos(ent:GetPos() + Vector(0,0,8))
             ent:DropToFloor()
@@ -231,8 +231,8 @@ end
 
 local mat = Material("color")
 if CLIENT then
-    hook.Add("PostDrawOpaqueRenderables", "TEA.AdminTool.Render", function(_, bDrawingSkybox, _)
-        if bDrawingSkybox then return end
+    hook.Add("PostDrawOpaqueRenderables", "TEA.AdminTool.Render", function(_, bDrawingSkybox, b3dskybox)
+        if b3dskybox then return end
         local pl = LocalPlayer()
         local wep = pl.GetActiveWeapon and pl:GetActiveWeapon()
         if wep and wep:IsValid() and wep:GetClass() == "tea_admintool" then

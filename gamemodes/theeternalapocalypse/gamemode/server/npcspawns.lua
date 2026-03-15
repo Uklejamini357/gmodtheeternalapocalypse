@@ -4,7 +4,7 @@
 function GM:ZombieCount()
 	local AliveZombies = 0
 	for k, v in pairs(self.Config["ZombieClasses"]) do
-		for _, ent in pairs(ents.FindByClass(k)) do AliveZombies = AliveZombies + 1 end
+		for _, ent in ipairs(ents.FindByClass(k)) do AliveZombies = AliveZombies + 1 end
 	end
 
 	return AliveZombies
@@ -88,14 +88,14 @@ function GM:GetRandomZombieSpawn()
 end
 
 -- note: added the ability to create bosses with this function, setting isboss to true will make the monster distribute its xp reward to all attackers and announce its death
-function GM:CreateZombie(class, pos, ang, xp, cash, infectionrate, isboss)
+function GM:CreateZombie(class, pos, ang, xp, cash, infectionrate, forcelevel, isboss)
 	local isboss = isboss or false
 	local class = tostring(class)
 
 	local ent = ents.Create(class)
 	if !ent:IsValid() then return NULL end
 
-	local lvl = math.random(self:GetZombieLvlMin(), self:GetZombieLvlMax())
+	local lvl = forcelevel or math.random(self:GetZombieLvlMin(), self:GetZombieLvlMax())
 
 	ent:SetPos(pos)
 	ent:SetAngles(ang)
@@ -118,7 +118,7 @@ end
 
 timer.Create("TEARemoveLonelyZombies", 30, 0, function()
 	for k, v in pairs(GAMEMODE.Config["ZombieClasses"]) do
-		for _, ent in pairs(ents.FindByClass(k)) do GAMEMODE:CheckIfDesertedArea(ent) end
+		for _, ent in ipairs(ents.FindByClass(k)) do GAMEMODE:CheckIfDesertedArea(ent) end
 	end
 end)
 
@@ -128,7 +128,7 @@ function GM:CheckIfDesertedArea(ent)
 
 	local deserted = true
 	local plycheck = ents.FindInSphere(ent:GetPos(), tonumber(self.MaxZombieWanderingDistance))
-	for k, v in pairs(plycheck) do
+	for k, v in ipairs(plycheck) do
 		if v:IsPlayer() then deserted = false end
 	end
 	if deserted then
@@ -153,7 +153,7 @@ function GM:SpawnRandomZombie(pos, ang)
 
 			local elitechance = math.Rand(0, 100)
 			local elite = elitechance ~= 0 and elitechance <= self:GetEliteVariantSpawnChance(false)
-			local ent = self:CreateZombie(k, pos, ang, v.XPReward * self:GetDiffXPMul(), v.MoneyReward * self:GetDiffCashMul(), v.InfectionRate, false)
+			local ent = self:CreateZombie(k, pos, ang, v.XPReward * self:GetDiffXPMul(), v.MoneyReward * self:GetDiffCashMul(), v.InfectionRate, nil, false)
 
 			if elite and v.AllowEliteVariants then
 				local elite_variant = math.random(8)
@@ -218,7 +218,7 @@ function GM:SpawnRandomBoss(pos, ang, plycountoverride, nonotify)
 
 				local elitechance = math.Rand(0, 100)
 				local elite = elitechance ~= 0 and elitechance <= self:GetEliteVariantSpawnChance(true)
-				local ent = self:CreateZombie(k, pos, ang, v.XPReward * self:GetDiffXPMul(), v.MoneyReward * self:GetDiffCashMul(), v.InfectionRate, true)
+				local ent = self:CreateZombie(k, pos, ang, v.XPReward * self:GetDiffXPMul(), v.MoneyReward * self:GetDiffCashMul(), v.InfectionRate, nil, true)
 
 				if elite and v.AllowEliteVariants then
 					local elite_variant = 8--math.random(8)
@@ -299,7 +299,7 @@ function GM:SpawnZombies()
 			)
 
 			local zeds = ents.FindInSphere(spawnpos, 1000)
-			for k, v in pairs(zeds) do
+			for k, v in ipairs(zeds) do
 				if v:IsNextBot() or v:IsNPC() or v:IsPlayer() then canspawn = false break end
 			end
 
@@ -522,95 +522,6 @@ function GM:Payout(ply, xp, cash)
 	self:NetUpdatePeriodicStats(ply)
 	return TXPGain, TMoneyGain
 end
-
-function GM:TestZombies(ply, cmd, args)
-	if !ply:IsValid() then return end
-	if !SuperAdminCheck(ply) then 
-		ply:SystemMessage(translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205), true)
-		ply:ConCommand("playgamesound buttons/button8.wav")
-		return
-	end
-
-	local class = tostring(args[1]) or "npc_ate_basic"
-	local vStart = ply:GetShootPos()
-	local vForward = ply:GetAimVector()
-	local trace = {}
-	trace.start = vStart
-	trace.endpos = vStart + (vForward * 5000)
-	trace.filter = ply
-	local tr = util.TraceLine(trace)
-
-	local ent = ents.Create(class)
-	if !IsValid(ent) then ply:SystemMessage("WARNING! Tried to spawn an invalid entity!", Color(255,205,205), true) return end
-	ent:SetPos(tr.HitPos)
-	ent:SetAngles(Angle(0, 0, 0))
-	ent.XPMin = 1
-	ent.XPMax = 1
-	ent.MoneyMin = 1
-	ent.MoneyMax = 1
-	ent:Spawn()
-	ent:Activate()
-
-	undo.Create("Test Zombie")
-	undo.AddEntity(ent)
-	undo.SetPlayer(ply)
-	undo.Finish()
-
-	ply:SystemMessage("Spawned zombie "..class, Color(205,255,205), true)
-	GAMEMODE:DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has spawned a zombie "..class.."!")
-end
-concommand.Add("tea_dev_createtestzombie", function(ply, cmd, args)
-	GAMEMODE:TestZombies(ply, cmd, args)
-end)
-
-function GM:SpawnZombie(ply, cmd, args)
-	if !ply:IsValid() then return end
-	if !TEADevCheck(ply) then 
-		ply:SystemMessage(translate.ClientGet(ply, "devcheckfail"), Color(255,205,205), true)
-		ply:ConCommand("playgamesound buttons/button8.wav")
-		return
-	end
-
-	local class = tostring(args[1]) or "npc_ate_basic"
-	local xp = tonumber(args[2])
-	if !xp or xp == -1 then
-		xp = GAMEMODE.Config["ZombieClasses"][class] and GAMEMODE.Config["ZombieClasses"][class].XPReward or GAMEMODE.Config["BossClasses"][class] and GAMEMODE.Config["BossClasses"][class].XPReward or 100
-	end
-	local cash = tonumber(args[3]) or 50
-	if !cash or cash == -1 then
-		cash = GAMEMODE.Config["ZombieClasses"][class] and GAMEMODE.Config["ZombieClasses"][class].MoneyReward or GAMEMODE.Config["BossClasses"][class] and GAMEMODE.Config["BossClasses"][class].MoneyReward or 50
-	end
-	local infectionrate = tonumber(args[4]) or 0.01
-	if !infectionrate or infectionrate == -1 then
-		infectionrate = GAMEMODE.Config["ZombieClasses"][class] and GAMEMODE.Config["ZombieClasses"][class].InfectionRate or GAMEMODE.Config["BossClasses"][class] and GAMEMODE.Config["BossClasses"][class].InfectionRate or 0.05
-	end
-	local isboss = tobool(args[5]) or false
-	if !isboss or isboss == -1 then
-		isboss = tobool(GAMEMODE.Config["BossClasses"][class])
-	end
-	local shouldsendchat = tonumber(args[6]) or 1
-	
-	local vStart = ply:GetShootPos()
-	local vForward = ply:GetAimVector()
-	local trace = {}
-	trace.start = vStart
-	trace.endpos = vStart + (vForward * 5000)
-	trace.filter = ply
-	local tr = util.TraceLine(trace)
-
-	local ent = self:CreateZombie(class, tr.HitPos, Angle(0,0,0), xp, cash, infectionrate, isboss)
-	if !ent:IsValid() then ply:SystemMessage("ERROR! Tried to spawn in invalid entity!", Color(255,205,205), true) return end
-
-	undo.Create("Zombie")
-	undo.AddEntity(ent)
-	undo.SetPlayer(ply)
-	undo.Finish()
-
-	if shouldsendchat >= 1 then ply:SystemMessage("Spawned zombie "..class.." with reward of "..xp.." XP and "..cash.." cash! (Is boss zombie: "..tostring(isboss)..")", Color(205,255,205), true) end
-end
-concommand.Add("tea_dev_spawnzombie", function(ply, cmd, args)
-	GAMEMODE:SpawnZombie(ply, cmd, args)
-end)
 
 function GM:StartSpawningZombiesNearPlayer()
 	if GetGlobalBool("GM.ZombieSpawnNearPlayer") then return end

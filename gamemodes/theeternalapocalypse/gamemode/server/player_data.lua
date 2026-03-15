@@ -179,6 +179,10 @@ function GM:SavePlayer(ply, force)
 			if activewep:IsValid() then
 				lastsessioninfo["heldweapon"] = activewep:GetClass()
 			end
+
+			if ply.TransitioningMap and ply.TransitioningPos then
+				lastsessioninfo["istransitioning"] = true
+			end
 		end
 
 		Data["LastSessionInfo"] = ply.LastSessionInfo or lastsessioninfo
@@ -823,6 +827,14 @@ function meta:LoadLastSession()
 		local lastmap = self.LastSessionInfo["lastmap"]
 
 		if lastmap == game.GetMap() then
+			if self.LastSessionInfo["istransitioning"] then
+				self.DisallowTransitioning = true
+				timer.Simple(10, function()
+					if !self:IsValid() then return end
+					self.DisallowTransitioning = nil
+				end)
+			end
+
 			if self.LastSessionInfo["lastpos"] then
 				self:SetPos(self.LastSessionInfo["lastpos"])
 			end

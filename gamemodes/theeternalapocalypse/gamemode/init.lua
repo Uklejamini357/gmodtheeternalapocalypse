@@ -152,7 +152,7 @@ function GM:Think()
 
 		if ct > tonumber(self.NextAirdropSpawn) then
 			self.NextAirdropSpawn = ct + tonumber(self.Config["AirdropSpawnRate"]) 
-			if plycount >= self.MinPlayersAirdropRequired then
+			if plycount >= self.MinPlayersAirdropRequired and #self.AirdropSpawnpoints ~= 0 then
 				gamemode.Call("CallAirdrop")
 			end
 		end
@@ -325,7 +325,7 @@ function GM:Think()
 				if thirstdying then dmg = dmg + 2*ft end
 				if fatiguedying then dmg = dmg + 2*ft end
 				if infectiondying then
-					dmg = dmg + (self.GameplayDifficulty == DIFFICULTY_GAMEPLAY_IMPOSSIBLE and math.min(2, (ply.Infection-1000)/2000))*ft
+					dmg = dmg + (self.GameplayDifficulty == DIFFICULTY_GAMEPLAY_IMPOSSIBLE and math.min(2, (ply.Infection-1000)/2000) or 2)*ft
 				end
 				dmg = dmg + 1*ft
 

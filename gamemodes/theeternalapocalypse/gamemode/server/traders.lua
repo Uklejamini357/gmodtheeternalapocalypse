@@ -11,7 +11,7 @@ function GM:LoadTraders()
 		for _,str in pairs(string.Explode("\n", self.TraderSpawnpoints)) do
 			local v = string.Explode(";", str)
 			local pos = util.StringToType(v[1], "Vector")
-			local ang = Angle(0, v[2], 0)
+			local ang = util.StringToType(v[2], "Angle")
 
 			table.insert(tbl, {pos, ang})
 		end

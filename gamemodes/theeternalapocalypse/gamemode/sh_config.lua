@@ -240,6 +240,11 @@ end
 
 -----------------------------ZOMBIE CLASSES-----------------------------
 
+local unknown_name = ""
+for i=1,10 do
+	unknown_name = unknown_name..utf8.char(math.random(60, 1000))
+end
+
 GM.Config["ZombieClasses"] = {
 	["npc_tea_basic"] = {		-- table name must be the entclass name of the zombie, see garrysmod/gamemodes/theeternalapocalypse/entities for entclasses (or you can add other zombie types by yourself)
 		Name = "Shambler Zombie",	-- Name for the zombie, used in death notice/killfeed
@@ -345,6 +350,52 @@ GM.Config["ZombieClasses"] = {
 		AllowEliteVariants = true,
 		Miniboss = true,
 		Tier = 4,
+	},
+
+	-- Not ready yet.
+
+	["npc_tea_ghoul"] = {
+		Name = "Ghoul Zombie",
+		SpawnChance = 0,
+		XPReward = 220,
+		MoneyReward = 150,
+		InfectionRate = 0.125,
+		AllowEliteVariants = true,
+		Tier = 3,
+		Disabled = true
+	},
+
+	["npc_tea_nightmare"] = {
+		Name = "Nightmare",
+		SpawnChance = 0,
+		XPReward = 220,
+		MoneyReward = 150,
+		InfectionRate = 0.125,
+		AllowEliteVariants = true,
+		Tier = 3,
+		Disabled = true
+	},
+
+	["npc_tea_unknown"] = {
+		Name = unknown_name,
+		SpawnChance = 0,--0.0001, -- 1 in a million!!
+		XPReward = 66666,
+		MoneyReward = 666,
+		InfectionRate = 6.66,
+		AllowEliteVariants = false,
+		Tier = 666,
+		Disabled = true
+	},
+
+	["npc_tea_zombine"] = {
+		Name = "Zombine",
+		SpawnChance = 0,
+		XPReward = 220,
+		MoneyReward = 150,
+		InfectionRate = 0.125,
+		AllowEliteVariants = true,
+		Tier = 3,
+		Disabled = true
 	},
 
 }

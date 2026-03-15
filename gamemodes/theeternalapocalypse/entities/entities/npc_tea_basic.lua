@@ -87,7 +87,12 @@ function ENT:SetUpStats()
 
 	self.DoorBreak = Sound("npc/zombie/zombie_pound_door.wav")
 
-	self.Hit = Sound("npc/zombie/zombie_hit.wav")
+	self.Hit = {
+		"npc/zombie/claw_strike1.wav",
+		"npc/zombie/claw_strike2.wav",
+		"npc/zombie/claw_strike3.wav"
+	}
+	self.HitProp = Sound("npc/zombie/zombie_hit.wav")
 	self.Miss = Sound("npc/zombie/claw_miss1.wav")
 
 	self.CanScream = true
@@ -128,6 +133,7 @@ end
 local ai_disabled = GetConVar("ai_disabled")
 
 function ENT:Initialize()
+	self:PhysicsInitShadow()
 	if CLIENT then return end
 	self:SetUpStats()
 	self:SetModel(self.ZombieStats["Model"])
@@ -142,7 +148,6 @@ function ENT:Initialize()
 	self:SetLagCompensated(true)
 	self.NxtTick = 5
 	self.NextPainSound = CurTime()
-	self:PhysicsInitShadow()
 
 	if not ai_disabled:GetBool() then
 		self:FindTarget()
@@ -391,7 +396,12 @@ function ENT:GotoPos(pos)
 end
 
 function ENT:OnLandOnGround()
-	self:EmitSound("physics/flesh/flesh_impact_hard"..math.random(1, 6)..".wav")
+	if self.LandingSounds then
+		local snd = table.Random(self.LandingSounds)
+		self:EmitSound(snd)
+	else
+		self:EmitSound("physics/flesh/flesh_impact_hard"..math.random(1, 6)..".wav")
+	end
 end
 
 
@@ -471,8 +481,10 @@ function ENT:AttackProp(target)
 	if !target:IsValid() then return end
 	local phys = target:GetPhysicsObject()
 	if (phys != nil && phys != NULL && phys:IsValid()) then
+		local snd = istable(self.HitProp) and table.Random(self.HitProp) or self.HitProp
+
 		phys:ApplyForceCenter(self:GetForward():GetNormalized()*30000 + Vector(0, 0, 2))
-		target:EmitSound(self.Hit, 100, math.random(80, 110))
+		target:EmitSound(snd, 100, math.random(80, 110))
 		target:EmitSound(self.DoorBreak)
 		target:TakeDamage(self.ZombieStats["PropDamage"] or self.ZombieStats["Damage"], self)	
 		util.ScreenShake(target:GetPos(), 5, 5, math.Rand(0.2, 0.4), 300)
@@ -498,7 +510,8 @@ function ENT:AttackDoor(target)
 		return
 	end
 
-	target:EmitSound(self.Hit, 100, math.random(80, 110))
+	local snd = istable(self.HitProp) and table.Random(self.HitProp) or self.HitProp
+	target:EmitSound(snd, 100, math.random(80, 110))
 	target.doorhealth = target.doorhealth - (self.ZombieStats["PropDamage"] or self.ZombieStats["Damage"])
 	
 	if target.doorhealth >= 0 then
@@ -570,12 +583,13 @@ function ENT:ApplyPlayerDamage(ply, damage, hitforce, infection)
 	damageInfo:SetDamageForce(force)
 
 	ply:TakeDamageInfo(damageInfo)
-	ply:EmitSound(self.Hit, 100, math.random(80, 110))
+	local snd = istable(self.Hit) and table.Random(self.Hit) or self.Hit
+	ply:EmitSound(snd, 100, math.random(80, 110))
 	ply:SetVelocity(force)
 	if ply:IsPlayer() then
 		ply:ViewPunch(VectorRand():Angle() * 0.05)
 		if math.random(0, 100) < infection then
-			ply:AddInfection(math.random(60,300))
+			ply:AddInfection(math.random(60,300) * math.max(infection/100, 1))
 		end
 	end
 end

@@ -1,6 +1,7 @@
 -- this is mostly c+p from sandbox and still needs to be finished (in a different way)
 
-local tea_cl_deathnoticetime = CreateClientConVar("tea_cl_deathnoticetime", "7", true, false, "Amount of time to show death notice", 4, 12)
+local tea_cl_killfeed = CreateClientConVar("tea_cl_killfeed", "1", true, false, "Enable killfeed?", 0, 1)
+local tea_cl_killfeedtime = CreateClientConVar("tea_cl_killfeedtime", "7", true, false, "Amount of time to show death notice", 4, 12)
 
 -- These are our kill icons
 local Color_Icon = Color(255, 80, 0, 255)
@@ -247,7 +248,7 @@ function GM:AddDeathNotice( Victim, team1, Inflictor, Attacker, team2, dmg, dmgt
 	Death.damage	= dmg
 	Death.dmgtype	= dmgtype
 	Death.time		= RealTime()
-	Death.dur		= tea_cl_deathnoticetime:GetFloat()
+	Death.dur		= tea_cl_killfeedtime:GetFloat()
 	Death.Message	= table.Random(RDtext)
 	Death.SMessage	= table.Random(RDStext)
 	Death.Time		= RealTime()
@@ -305,14 +306,15 @@ function GM:AddDeathNotice( Victim, team1, Inflictor, Attacker, team2, dmg, dmgt
 	end
 	MsgC(Color(255,190,50), Death.displaytext.."\n")
 	
+	if !tea_cl_killfeed:GetBool() then return end
 	table.insert( Deaths, Death )
 end
 
-local function DrawDeath(x, y, death, tea_cl_deathnoticetime)
+local function DrawDeath(x, y, death, time)
 	local w, h = 50, 50
-	if (!w || !h) then return end
+	if !w or !h then return end
 	
-	local fadeout = ( death.time + tea_cl_deathnoticetime ) - RealTime()
+	local fadeout = (death.time + time) - RealTime()
 	
 	local alpha = math.Clamp( fadeout * 255, 0, 255 )
 	death.color1.a = alpha

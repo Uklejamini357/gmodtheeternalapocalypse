@@ -143,13 +143,13 @@ GM.SpecialStructureSpawns = {
 		Max = 1,
 	},
 
-	["structure_base_ammopile_advanced"] = {
-		Name = "Advanced Ammo Pile",
-		Cost = 11500,
-		Model = "models/props/de_prodigy/ammo_can_01.mdl",
-		Description = "A structure that will refill your ammo for free. ",
-		Max = 1,
-	},
+	-- ["structure_base_ammopile_advanced"] = {
+	-- 	Name = "Advanced Ammo Pile",
+	-- 	Cost = 11500,
+	-- 	Model = "models/props/de_prodigy/ammo_can_01.mdl",
+	-- 	Description = "A structure that will refill your ammo for free. ",
+	-- 	Max = 1,
+	-- },
 
 
 	["structure_base_fridge"] = {
@@ -430,11 +430,13 @@ GM.AdminMapSpawnables = {
 			net.Start("tea_admin_tool")
 			net.WriteString("openworldcreate")
 			net.WriteVector(swep.OpenworldStartPos)
+			net.WriteAngle(swep.OpenworldStartAng)
 			net.WriteVector(swep.OpenworldPos1)
 			net.WriteVector(swep.OpenworldPos2)
 			net.Send(owner)
 
 			swep.OpenworldStartPos = nil
+			swep.OpenworldStartAng = nil
 			swep.OpenworldPos1 = nil
 			swep.OpenworldPos2 = nil
 		end,
@@ -442,6 +444,7 @@ GM.AdminMapSpawnables = {
 			owner:PrintMessage(3, "Select where a player would spawn when transitioning back here. The player would also point where you point at horizontally.")
 
 			swep.OpenworldStartPos = nil
+			swep.OpenworldStartAng = nil
 			swep.OpenworldPos1 = nil
 			swep.OpenworldPos2 = nil
 		end,
@@ -480,6 +483,7 @@ GM.AdminMapSpawnables = {
 					AreaMin = v.AreaMin,
 					AreaMax = v.AreaMax,
 					StartPos = v.StartPos,
+					StartAng = v.StartAng,
 					LinkedTo = v.LinkedTo
 				}
 

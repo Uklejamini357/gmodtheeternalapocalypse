@@ -105,11 +105,13 @@ function GM:MakeOptions()
 	check = CreateCheckLabel(pan, list, "Don't display Inventory Weight on HUD", "tea_cl_noinvweighthuddisplay")
 	-- check:SetToolTip(".")
 
+	check = CreateCheckLabel(pan, list, "Display killfeed", "tea_cl_killfeed")
+
 	local slider = CreateSlider(pan, list, "Death sound effect volume", "tea_cl_deathsfx_vol")
 	slider:SetDecimals(2)
 	slider:SetToolTip("Death sound effect varies on game volume and this value.")
 	
-	slider = CreateSlider(pan, list, "Deathnotice time (in seconds)", "tea_cl_deathnoticetime")
+	slider = CreateSlider(pan, list, "Killfeed display time", "tea_cl_killfeedtime")
 	slider:SetDecimals(2)
 
 	slider = CreateSlider(pan, list, "Hitsound Volume (on damage NPC)", "tea_cl_hitsounds_volnpc")
