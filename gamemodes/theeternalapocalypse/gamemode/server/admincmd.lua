@@ -31,11 +31,6 @@ function GM:AdminCmds_GiveItem(ply, cmd, args)
 		ply:SystemMessage("Instructions: tea_sadmin_giveitem [item id] [amount of items]", Color(255,230,230))
 	return false end
 
-	if !item or (!TEADevCheck(ply) and item.IsSecret) then
-		ply:SystemMessage(translate.ClientGet(ply, "itemnonexistant"), Color(255,205,205,255), true) 
-		ply:ConCommand("playgamesound buttons/button8.wav")
-	return false end
-
 	gamemode.Call("SystemGiveItem", ply, name, addqty)
 
 	self:DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." gave themselves "..addqty.."x "..GAMEMODE:GetItemName(name))
@@ -392,7 +387,7 @@ end, nil, "Toggles option, whether zombies should spawn or not")
 
 function GM:AdminCmds_SetConVarValue(ply, cmd, args)
 	if !ply:IsValid() then return false end
-	if !TEADevCheck(ply) then 
+	if !SuperAdminCheck(ply) then 
 		ply:SystemMessage(translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
 		ply:ConCommand("playgamesound buttons/button8.wav")
 		return
@@ -403,7 +398,7 @@ function GM:AdminCmds_SetConVarValue(ply, cmd, args)
 
 	if !convar or convar == "" then ply:SystemMessage("Usage: tea_sadmin_setconvarvalue {convar} [value]\nNOTE: Cannot set convar value NOT created by lua.", Color(255,255,255), false) return end
 	if !GetConVar(convar) then ply:SystemMessage("Did you just tried to set value on invalid convar?", Color(255,0,0), false) return end
-	if !value then ply:SystemMessage("What about convar value?!?!?", Color(255,0,0), false) return end
+	if !value then ply:SystemMessage("What about the convar value?!?!?", Color(255,0,0), false) return end
 
 	GetConVar(convar):SetString(value)
 	ply:SystemMessage("You set convar "..convar.." value to '"..GetConVar(convar):GetString().."'!", Color(155,255,155,255), true)

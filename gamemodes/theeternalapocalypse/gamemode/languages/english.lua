@@ -82,12 +82,12 @@ LANG.wep_class = "Weapon class: %s"
 
 --Prop Menu
 
-LANG.propsheet1 = "Flimsy Props"
-LANG.propsheet1_d = "Flimsy props aren't particularly strong and can be damaged by everything. On the upside they are quite cheap."
-LANG.propsheet2 = "Strong Props"
-LANG.propsheet2_d = "Strong props are a stronger version of flimsy props, receives half of the damage and has maximal resistance from bullet damage.\nOn the downside, you need to be in a faction to place them and they are more costly than flimsy props, though."
-LANG.propsheet3 = "Faction Structures"
-LANG.propsheet3_d = "This menu contains special structures such as functional doors, base components etc. They are very expensive to afford them."
+LANG.flimsy_props = "Flimsy Props"
+LANG.flimsy_props_d = "Flimsy props aren't particularly strong and can be damaged by everything. On the upside they are quite cheap."
+LANG.strong_props = "Strong Props"
+LANG.strong_props_d = "Strong props are a stronger version of flimsy props, receives half of the damage and has maximal resistance from bullet damage.\nOn the downside, you need to be in a faction to place them and they are more costly than flimsy props, though."
+LANG.faction_structures = "Faction Structures"
+LANG.faction_structures_d = "This menu contains special structures such as functional doors, base components etc. They are very expensive to afford them."
 LANG.placeblueprint = "Place Blueprint"
 
 
@@ -191,8 +191,70 @@ LANG.loottaken = "Loot Taken: %s"
 LANG.tr_itemsold = "Sold item '%s' (%dx) for %d %ss!"
 LANG.tr_itembought = "Purchased item '%s' for %d %ss!"
 
+--Admin menu
+LANG.admin_panel = "Admin Panel"
+LANG.toggle_admin_mode = "Toggle Admin Mode"
+LANG.spawn_boss = "Spawn Boss"
+LANG.spawn_airdrop = "Spawn Airdrop"
+LANG.cleanup_zombies = "Cleanup zombies"
+LANG.cleanup_zombies_all = "Cleanup AI NPC's"
+LANG.toggle_zspawns = "Toggle zombie spawning"
+LANG.cleanup_props = "Cleanup All Props"
+LANG.admin_cleanup_warning = "These 2 buttons below are used for cleaning up spawnpoints. This action cannot be reversed. You have been warned."
+LANG.admin_cleanup_spawnpoints = "Cleanup spawnpoints"
+LANG.admin_remove_spawnpoint = "Remove a specific spawnpoint"
 
---Items (too much to do, adding translates for this was literally a lot harder than i thought)
+LANG.select_zmid_remove = "Select zombie spawnpoint ID to remove"
+LANG.select_lootid_remove = "Select loot spawnpoint ID to remove"
+LANG.select_traderid_remove = "Select trader spawnpoint ID to remove"
+LANG.select_adid_remove = "Select airdrop spawnpoint ID to remove"
+LANG.select_plrid_remove = "Select player spawnpoint ID to remove"
+LANG.select_taskdealerid_remove = "Select taskdealer spawnpoint ID to remove"
+
+
+LANG.ow_linkedto = "Linked To"
+LANG.ow_map = "Map"
+LANG.ow_linkedmap = "Linked Map"
+LANG.ow_name = "Name"
+LANG.ow_refreshdata = "Refresh data"
+
+LANG.ow_unlink_transition = "Unlink from another transition"
+LANG.ow_delete_link = "Delete the link from ID #%d?"
+LANG.ow_linkto = "Link to..."
+LANG.ow_linktransition = "Link transition"
+LANG.ow_linktransition_inputid = "Input transition id to link the map transitions with each other"
+LANG.ow_renametransition = "Rename transition"
+LANG.ow_renametransition_prompt = "Rename transition name for ID #%d to..."
+LANG.ow_deletetransition = "Delete transition"
+LANG.ow_deletetransition_prompt = "This action cannot be reversed. Are you sure?"
+
+--Admintool
+LANG.remover = "Remover"
+LANG.admineyes = "Admin eyes"
+
+--Misc
+LANG.admin = "Admin"
+LANG.actions = "Actions"
+LANG.warning = "Warning"
+
+LANG.zombies = "Zombies"
+LANG.loot = "Loot"
+LANG.traders = "Traders"
+LANG.airdrops = "Airdrops"
+LANG.player_spawnpoints = "Player spawnpoints"
+LANG.taskdealers = "Taskdealers"
+LANG.ow_transitions = "Transitions"
+LANG.rename = "Rename"
+
+LANG.zombies_n = "Normal Zombies"
+LANG.zombies_mb = "Miniboss Zombies"
+LANG.zombies_b = "Boss Zombies"
+
+LANG.yes = "Yes"
+LANG.no = "Mo"
+
+
+--Items
 
 LANG.item_bandage_n = "Bandage"
 LANG.item_bandage_d = "A rolled up bandage that can be used to stop bleeding or to splint broken limbs."
@@ -771,7 +833,6 @@ LANG.the_eternal_apocalypse_character = "Choose your character to play."
 LANG.play = "Play"
 LANG.disconnect = "Disconnect"
 LANG.loading = "Loading..."
-LANG.admin_panel = "Administration Panel"
 LANG.refresh_player_list = "Refresh player list"
 LANG.spawn = "Spawn"
 LANG.give = "Give"

@@ -202,6 +202,7 @@ local tcolor_purple = Color(205,53,255,255)
 local tcolor_blue = Color(93,123,255,255)
 GM.AdminMapSpawnables = {
 	Zombie = {
+		Name = "zombies",
 		Spawn = function(owner, swep, tr, pos)
 			gamemode.Call("AddZombieSpawnpoint", pos, owner:EyeAngles().yaw, 0, 0)
 			owner:PrintMessage(3, "Added zombie spawnpoint")
@@ -238,6 +239,7 @@ GM.AdminMapSpawnables = {
 	},
 
 	Loot = {
+		Name = "loot",
 		Spawn = function(owner, swep, tr, pos)
 			gamemode.Call("AddLootSpawnpoint", pos, Angle(0, owner:EyeAngles().yaw, 0), 0, 0)
 			owner:PrintMessage(3, "Added loot spawnpoint")
@@ -272,6 +274,7 @@ GM.AdminMapSpawnables = {
 	},
 
 	Airdrop = {
+		Name = "airdrops",
 		Spawn = function(owner, swep, tr, pos)
 			local err,msg = gamemode.Call("AddAirdropSpawnpoint", pos, Angle(0, owner:EyeAngles().yaw, 0))
 			if err and msg then
@@ -309,6 +312,7 @@ GM.AdminMapSpawnables = {
 	},
 
 	Trader = {
+		Name = "traders",
 		Spawn = function(owner, swep, tr, pos)
 			gamemode.Call("AddTraderSpawnpoint", pos, Angle(0, owner:EyeAngles().yaw, 0), 0, 0)
 			owner:PrintMessage(3, "Added trader spawnpoint")
@@ -341,6 +345,7 @@ GM.AdminMapSpawnables = {
 	},
 
 	PlayerSpawnpoint = {
+		Name = "player_spawnpoints",
 		Spawn = function(owner, swep, tr, pos)
 			gamemode.Call("AddPlayerSpawnpoint", pos, Angle(0, owner:EyeAngles().yaw, 0))
 			owner:PrintMessage(3, "Added player spawnpoint")
@@ -375,6 +380,7 @@ GM.AdminMapSpawnables = {
 	},
 
 	TaskDealer = {
+		Name = "taskdealers",
 		Spawn = function(owner, swep, tr, pos)
 			gamemode.Call("AddTaskDealerSpawnpoint", pos, Angle(0, owner:EyeAngles().yaw, 0))
 			owner:PrintMessage(3, "Added taskdealer spawnpoint")
@@ -407,7 +413,7 @@ GM.AdminMapSpawnables = {
 	},
 
 	Openworld = {
-		Name = "Create transition",
+		Name = "ow_transitions",
 		Spawn = function(owner, swep, tr, pos)
 			if !swep.OpenworldStartPos then
 				swep.OpenworldStartPos = pos

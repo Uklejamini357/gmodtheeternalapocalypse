@@ -108,19 +108,20 @@ end
 local ai_disabled = GetConVar("ai_disabled")
 
 function ENT:Initialize()
-	if CLIENT then return end
+	self:SetCollisionBounds(Vector(-34,-34, 0), Vector(34, 34, 84))
 	self:SetModel("models/sin/quadralex.mdl")
+	self:PhysicsInitShadow(true)
+	if CLIENT then return end
 --	self.breathing = CreateSound(self, "npc/zombie_poison/pz_breathe_loop1.wav")
 --	self.breathing:Play()
 --	self.breathing:ChangePitch(60, 0)
 --	self.breathing:ChangeVolume(0.3, 0)
 	self.loco:SetDeathDropHeight(700)
 	self.loco:SetAcceleration(800)
-	self:SetHealth(21500) --18000
-	self:SetMaxHealth(21500) --18000
+	self:SetHealth(21500)
+	self:SetMaxHealth(21500)
 	self.IsEnraged = false
 	self:SetModelScale(0.8, 0)
-	self:SetCollisionBounds(Vector(-34,-34, 0), Vector(34, 34, 84))
 	self:SetLagCompensated(true)
 --	self:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
 --	self:SetSkin(math.random(0, self:SkinCount() - 1))

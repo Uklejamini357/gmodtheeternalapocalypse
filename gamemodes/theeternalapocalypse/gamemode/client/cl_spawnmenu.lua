@@ -1088,9 +1088,9 @@ function GM:PropMenu()
 		end
 	end
 
-	propSheet:AddSheet(translate.Get("propsheet1"), FlimsyPanel, "icon16/bin.png", false, false, translate.Get("propsheet1_d"))
-	propSheet:AddSheet(translate.Get("propsheet2"), StrongPanel, "icon16/shield.png", false, false, translate.Get("propsheet2_d"))
-	propSheet:AddSheet(translate.Get("propsheet3"), SpecialPanel, "icon16/brick.png", false, false, translate.Get("propsheet3_d"))
+	propSheet:AddSheet(translate.Get("flimsy_props"), FlimsyPanel, "icon16/bin.png", false, false, translate.Get("flimsy_props_d"))
+	propSheet:AddSheet(translate.Get("strong_props"), StrongPanel, "icon16/shield.png", false, false, translate.Get("strong_props_d"))
+	propSheet:AddSheet(translate.Get("faction_structures"), SpecialPanel, "icon16/brick.png", false, false, translate.Get("faction_structures_d"))
 
 	return pPropPanel
 end

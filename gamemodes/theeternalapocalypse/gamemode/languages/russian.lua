@@ -74,12 +74,12 @@ LANG.wep_class = "Класс оружия: %s"
 
 --Prop Menu
 
-LANG.propsheet1 = "Хлипкие объекты"
-LANG.propsheet1_d = "Хлипкие объекты не отличаются особой прочностью и могут быть повреждены всем, чем угодно. Из плюсов - они довольно дешёвые."
-LANG.propsheet2 = "Крепкие объекты"
-LANG.propsheet2_d = "Крепкие объекты - это более прочная версия хлипких объектов, они получают половину урона и имеют максимальную стойкость к пулевому урону.\nОднако, чтобы их поставить, нужно быть во фракции, и стоят они дороже, чем хлипкие объекты."
-LANG.propsheet3 = "Объекты фракции"
-LANG.propsheet3_d = "Эти постройки включают в себя особые постройки, которые стоят очень дорого!"
+LANG.flimsy_props = "Хлипкие объекты"
+LANG.flimsy_props_d = "Хлипкие объекты не отличаются особой прочностью и могут быть повреждены всем, чем угодно. Из плюсов - они довольно дешёвые."
+LANG.strong_props = "Крепкие объекты"
+LANG.strong_props_d = "Крепкие объекты - это более прочная версия хлипких объектов, они получают половину урона и имеют максимальную стойкость к пулевому урону.\nОднако, чтобы их поставить, нужно быть во фракции, и стоят они дороже, чем хлипкие объекты."
+LANG.faction_structures = "Объекты фракции"
+LANG.faction_structures_d = "Эти постройки включают в себя особые постройки, которые стоят очень дорого!"
 LANG.placeblueprint = "Поставить чертёж"
 
 
@@ -183,8 +183,70 @@ LANG.loottaken = "Найден предмет: %s"
 LANG.tr_itemsold = "Продан предмет \"%s\" (%dx) за %d (%ss)!"
 LANG.tr_itembought = "Куплен предмет \"%s\" за %d (%ss)!"
 
+--Admin menu
+LANG.admin_panel = "Admin Panel"
+LANG.toggle_admin_mode = "Toggle Admin Mode"
+LANG.spawn_boss = "Spawn Boss"
+LANG.spawn_airdrop = "Spawn Airdrop"
+LANG.cleanup_zombies = "Cleanup zombies"
+LANG.cleanup_zombies_all = "Cleanup AI NPC's"
+LANG.toggle_zspawns = "Toggle zombie spawning"
+LANG.cleanup_props = "Cleanup All Props"
+LANG.admin_cleanup_warning = "These 2 buttons below are used for cleaning up spawnpoints. This action cannot be reversed. You have been warned."
+LANG.admin_cleanup_spawnpoints = "Cleanup spawnpoints"
+LANG.admin_remove_spawnpoint = "Remove a specific spawnpoint"
 
---Items (too much to do, adding translates for this was literally a lot harder than i thought)
+LANG.select_zmid_remove = "Select zombie spawnpoint ID to remove"
+LANG.select_lootid_remove = "Select loot spawnpoint ID to remove"
+LANG.select_traderid_remove = "Select trader spawnpoint ID to remove"
+LANG.select_adid_remove = "Select airdrop spawnpoint ID to remove"
+LANG.select_plrid_remove = "Select player spawnpoint ID to remove"
+LANG.select_taskdealerid_remove = "Select taskdealer spawnpoint ID to remove"
+
+
+LANG.ow_linkedto = "Linked To"
+LANG.ow_map = "Map"
+LANG.ow_linkedmap = "Linked Map"
+LANG.ow_name = "Name"
+LANG.ow_refreshdata = "Refresh data"
+
+LANG.ow_unlink_transition = "Unlink from another transition"
+LANG.ow_delete_link = "Delete the link from ID #%d?"
+LANG.ow_linkto = "Link to..."
+LANG.ow_linktransition = "Link transition"
+LANG.ow_linktransition_inputid = "Input transition id to link the map transitions with each other"
+LANG.ow_renametransition = "Rename transition"
+LANG.ow_renametransition_prompt = "Rename transition name for ID #%d to..."
+LANG.ow_deletetransition = "Delete transition"
+LANG.ow_deletetransition_prompt = "This action cannot be reversed. Are you sure?"
+
+--Admintool
+LANG.remover = "Remover"
+LANG.admineyes = "Admin eyes"
+
+--Misc
+LANG.admin = "Admin"
+LANG.actions = "Actions"
+LANG.warning = "Warning"
+
+LANG.zombies = "Zombies"
+LANG.loot = "Loot"
+LANG.traders = "Traders"
+LANG.airdrops = "Airdrops"
+LANG.player_spawnpoints = "Player spawnpoints"
+LANG.taskdealers = "Taskdealers"
+LANG.ow_transitions = "Transitions"
+LANG.rename = "Rename"
+
+LANG.zombies_n = "Normal Zombies"
+LANG.zombies_mb = "Miniboss Zombies"
+LANG.zombies_b = "Boss Zombies"
+
+LANG.yes = "Yes"
+LANG.no = "Mo"
+
+
+--Items
 
 LANG.item_bandage_n = "Бинт"
 LANG.item_bandage_d = "Свёрнутый бинт, который можно использовать для остановки кровотечения или для шинирования сломанных конечностей."
@@ -747,7 +809,6 @@ LANG.the_eternal_apocalypse_character = "Choose your character to play."
 LANG.play = "Играть"
 LANG.disconnect = "Отключиться"
 LANG.loading = "Загрузка..."
-LANG.admin_panel = "Панель администратора"
 LANG.refresh_player_list = "Обновить список игроков"
 LANG.spawn = "Появиться"
 LANG.give = "Дать"

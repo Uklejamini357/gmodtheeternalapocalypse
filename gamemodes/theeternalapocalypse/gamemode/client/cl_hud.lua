@@ -544,14 +544,14 @@ function GM:RenderScreenspaceEffects()
 	local contrast = 1
 	local hp = (((ply:GetMaxHealth() * 0.4) - ply:Health()) * (1 / (ply:GetMaxHealth() * 0.4)))
 	
-	if (ply:Health() < (ply:GetMaxHealth() * 0.4)) then
+	if (ply:Health() < ply:GetMaxHealth() * 0.4) then
 		if (ply:Alive()) then
-			color = math.Clamp(color - hp, 0, color)
+			color = math.min(color - hp, color)
 		else
 			color = 0
 		end
 
-		DrawMotionBlur(math.Clamp(1 - hp, 0.1, 1), 1, 0)
+		DrawMotionBlur(math.Clamp(1 - hp, 0.15, 1), 1, 0)
 	end
 
 	if self.SleepVisionAffect ~= 0 then

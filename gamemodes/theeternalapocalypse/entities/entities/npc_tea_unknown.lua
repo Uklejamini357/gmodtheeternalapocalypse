@@ -11,6 +11,7 @@ list.Set("NPC", "npc_tea_unknown", {
 	Class = "npc_tea_unknown",
 	Category = ENT.Category
 })
+ENT.Model = "models/zombie/classic.mdl"
 
 
 
@@ -26,8 +27,6 @@ function ENT:SetUpStats()
 	self.FallAnim = ACT_IDLE_ON_FIRE
 
 	self.ZombieStats = {
-		["Model"] = "models/zombie/classic.mdl",
-
 		["Damage"] = 90,
 		["PropDamage"] = 150,
 		["Force"] = 300,

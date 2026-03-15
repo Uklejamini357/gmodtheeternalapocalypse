@@ -11,7 +11,7 @@ list.Set("NPC", "npc_tea_heavy_tank", {
 	Class = "npc_tea_heavy_tank",
 	Category = ENT.Category
 })
-
+ENT.Model = "models/zombie/poison.mdl"
 
 function ENT:SetUpStats()
     self:SetModelScale(1.2, 0)
@@ -31,8 +31,6 @@ function ENT:SetUpStats()
 
 
     self.ZombieStats = {
-        ["Model"] = "models/zombie/poison.mdl",
-
         --refer to entites/entities/npc_tea_basic.lua
         ["Damage"] = 65,
         ["PropDamage"] = 120,

@@ -604,6 +604,7 @@ function GM:ShutDown()
 end
 
 function GM:SetupProp(ent)
+	if ent:GetModel() == "models/props_junk/harpoon002a.mdl" then return end -- impaling with a destroyed harpoon can crash the game
 	local phys = ent:GetPhysicsObject()
 	local mass, volume = 100,100
 	if phys:IsValid() then

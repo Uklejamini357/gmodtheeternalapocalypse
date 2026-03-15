@@ -8,6 +8,8 @@ ENT.Author = "Uklejamini"
 ENT.Spawnable = false
 ENT.AdminOnly = false
 
+ENT.Model = "models/zombie/classic.mdl"
+
 list.Set("NPC", "npc_tea_basic", {
 	Name = ENT.PrintName,
 	Class = "npc_tea_basic",
@@ -27,8 +29,6 @@ function ENT:SetUpStats()
 
 
 	self.ZombieStats = {
-		["Model"] = "models/zombie/classic.mdl",
-
 		["Damage"] = 31, -- how much damage per strike?
 		["PropDamage"] = 35, -- damage done to props per attack (normal damage is not impacted)
 		["Force"] = 400, -- how far to knock the player back upon striking them
@@ -121,7 +121,7 @@ end
 function ENT:Precache()
 
 --Models--
-	util.PrecacheModel(self.ZombieStats["Model"])
+	util.PrecacheModel(self.Model)
 
 end
 
@@ -133,18 +133,21 @@ end
 local ai_disabled = GetConVar("ai_disabled")
 
 function ENT:Initialize()
-	self:PhysicsInitShadow()
+	self:SetCollisionBounds(Vector(-12,-12, 0), Vector(12, 12, 64))
+	self:SetModel(self.Model)
+	self:PhysicsInitShadow(true)
+	local phys = self:GetPhysicsObject()
+	if phys and phys:IsValid() then
+		phys:EnableMotion(false)
+	end
 	if CLIENT then return end
 	self:SetUpStats()
-	self:SetModel(self.ZombieStats["Model"])
 	self.NextVehicleCollide = CurTime()
 	self.loco:SetDeathDropHeight(700)
 	self.loco:SetStepHeight(32)
 	self.loco:SetClimbAllowed(false)
 	self:SetHealth(self.ZombieStats["Health"])
 	self:SetMaxHealth(self.ZombieStats["Health"])
-	self:SetCollisionBounds(Vector(-12,-12, 0), Vector(12, 12, 64))
-	self:SetCollisionGroup(COLLISION_GROUP_NONE)
 	self:SetLagCompensated(true)
 	self.NxtTick = 5
 	self.NextPainSound = CurTime()

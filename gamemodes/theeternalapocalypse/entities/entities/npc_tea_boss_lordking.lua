@@ -111,17 +111,19 @@ end
 local ai_disabled = GetConVar("ai_disabled")
 
 function ENT:Initialize()
-	if CLIENT then return end
+	self:SetCollisionBounds(Vector(-34,-34, 0), Vector(34, 34, 84))
 	self:SetModel("models/undead/undead.mdl")
+	self:PhysicsInitShadow(true)
+
+	if CLIENT then return end
 	self.loco:SetDeathDropHeight(700)
 	self.loco:SetAcceleration(800)
 	self.loco:SetJumpHeight(240)
-	self:SetHealth(19500) --15500
-	self:SetMaxHealth(19500) --15500
+	self:SetHealth(19500)
+	self:SetMaxHealth(19500)
 	self:SetUpStats()
 	self:SetModelScale(1.4, 0)
 	self:SetColor(Color(127,127,255))
-	self:SetCollisionBounds(Vector(-34,-34, 0), Vector(34, 34, 84))
 	self:SetLagCompensated(true)
 --	self:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
 --	self:SetSkin(math.random(0, self:SkinCount() - 1))
