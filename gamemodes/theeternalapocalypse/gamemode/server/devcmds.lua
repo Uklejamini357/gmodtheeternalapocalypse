@@ -17,105 +17,11 @@ function GM:DevCmds_SpawnLoot(ply)
     trace.endpos = vStart + (vForward * 70)
     trace.filter = ply
     local tr = util.TraceLine(trace)
-	self:SpawnLootCache("loot_cache", tr.HitPos, Angle(0,0,0))
-
+	self:SpawnLootCache(LOOTTYPE_NORMAL, tr.HitPos, Angle(0,0,0))
 end
 concommand.Add("tea_dev_spawnloot", function(ply, cmd, args)
 	gamemode.Call("DevCmds_SpawnLoot", ply, cmd, args)
 end, nil, "Spawns a loot cache in front of you")
-
-function GM:DevCmds_SpawnLootWeapon(ply) 
-    if !ply:IsValid() then return false end
-    
-    if !TEADevCheck(ply) then 
-        ply:SystemMessage(translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
-        ply:ConCommand("playgamesound buttons/button8.wav")
-        return
-    end
-    
-    local vStart = ply:GetShootPos()
-    local vForward = ply:GetAimVector()
-    local trace = {}
-    trace.start = vStart
-    trace.endpos = vStart + (vForward * 70)
-    trace.filter = ply
-    local tr = util.TraceLine(trace)
-	self:SpawnLootCache("loot_cache_weapon", tr.HitPos, Angle(0,0,0))
-    
-end
-concommand.Add("tea_dev_spawnlootweapon", function(ply, cmd, args)
-	gamemode.Call("DevCmds_SpawnLootWeapon", ply, cmd, args)
-end, nil, "Spawns a weapon loot cache in front of you")
-
-function GM:DevCmds_SpawnLootRare(ply)
-    if !ply:IsValid() then return false end
-    
-    if !TEADevCheck(ply) then 
-        ply:SystemMessage(translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
-        ply:ConCommand("playgamesound buttons/button8.wav")
-        return
-    end
-    
-    local vStart = ply:GetShootPos()
-    local vForward = ply:GetAimVector()
-    local trace = {}
-    trace.start = vStart
-    trace.endpos = vStart + (vForward * 70)
-    trace.filter = ply
-    local tr = util.TraceLine(trace)
-	self:SpawnLootCache("loot_cache_special", tr.HitPos, Angle(0,0,0))
-    
-end
-concommand.Add("tea_dev_spawnlootrare", function(ply, cmd, args)
-	gamemode.Call("DevCmds_SpawnLootRare", ply, cmd, args)
-end, nil, "Spawns a rare cache in front of you")
-
-
-function GM:DevCmds_SpawnLootFaction(ply) 
-    if !ply:IsValid() then return false end
-    
-    if !TEADevCheck(ply) then 
-        ply:SystemMessage(translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
-        ply:ConCommand("playgamesound buttons/button8.wav")
-        return
-    end
-    
-    local vStart = ply:GetShootPos()
-    local vForward = ply:GetAimVector()
-    local trace = {}
-    trace.start = vStart
-    trace.endpos = vStart + (vForward * 70)
-    trace.filter = ply
-    local tr = util.TraceLine(trace)
-	self:SpawnLootCache("loot_cache_faction", tr.HitPos, Angle(0,0,0))
-    
-end
-concommand.Add("tea_dev_spawnlootfaction", function(ply, cmd, args)
-	gamemode.Call("DevCmds_SpawnLootFaction", ply, cmd, args)
-end, nil, "Spawns a faction loot cache in front of you")
-
-function GM:DevCmds_SpawnLootBoss(ply) 
-    if !ply:IsValid() then return false end
-    
-    if !TEADevCheck(ply) then 
-        ply:SystemMessage(translate.ClientGet(ply, "devcheckfail"), Color(255,205,205,255), true)
-        ply:ConCommand("playgamesound buttons/button8.wav")
-        return
-    end
-    
-    local vStart = ply:GetShootPos()
-    local vForward = ply:GetAimVector()
-    local trace = {}
-    trace.start = vStart
-    trace.endpos = vStart + (vForward * 70)
-    trace.filter = ply
-    local tr = util.TraceLine(trace)
-	self:SpawnLootCache("loot_cache_boss", tr.HitPos, Angle(0,0,0))
-    
-end
-concommand.Add("tea_dev_spawnlootboss", function(ply, cmd, args)
-	gamemode.Call("DevCmds_SpawnLootBoss", ply, cmd, args)
-end, nil, "Spawns a boss cache in front of you")
 
 function GM:DevCmds_SpawnAirdropCache(ply, cmd, args)
     if !ply:IsValid() then return false end

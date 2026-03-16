@@ -60,6 +60,7 @@ util.AddNetworkString("tea_perksreset")
 
 -- Misc network strings
 util.AddNetworkString("tea_plyevent_vaultupdate")
+util.AddNetworkString("tea_lootpickup")
 util.AddNetworkString("tea_player_sendcharacters")
 util.AddNetworkString("tea_openworld_level")
 

@@ -1,400 +1,106 @@
 -- tier 1 loot aka junk
 
-GM.LootTable1 = {
-	["item_bandage"] = {
-		["Qty"] = 2, -- amount of items need to be in loot cache
-		["Chance"] = 100, -- Chance for the loot cache with these items inside to spawn (Not finished yet!!)
-		["Class"] = "item_bandage", -- which item should be used
-	},
+function GM:AddItemLootTable(tbl, rarity, class, qty)
+	if tbl == self.LootTable then
+		tbl[rarity].Items[#tbl[rarity].Items + 1] = {Class = class, Qty = qty}
+	else
+		tbl[#tbl+1] = {Class = class, Qty = qty}
+	end
+end
 
-	["item_medkit"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "item_medkit",
-	},
 
-	["item_antidote"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "item_antidote",
+GM.LootTable = {
+	[LOOTRARITY_COMMON] = {
+		Rarity = 1,
+		Items = {}
 	},
-
-	["item_soda"] = {
-		["Qty"] = 2,
-		["Chance"] = 0,
-		["Class"] = "item_soda",
+	[LOOTRARITY_UNCOMMON] = {
+		Rarity = 4,
+		Items = {}
 	},
-
-	["item_tinnedfood"] = {
-		["Qty"] = 2,
-		["Chance"] = 0,
-		["Class"] = "item_tinnedfood",
+	[LOOTRARITY_RARE] = {
+		Rarity = 10,
+		Items = {}
 	},
-
-	["item_melon"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "item_melon",
+	[LOOTRARITY_EPIC] = {
+		Rarity = 50,
+		Items = {}
 	},
-
-	["item_pistolammo"] = {
-		["Qty"] = 2,
-		["Chance"] = 0,
-		["Class"] = "item_pistolammo",
-	},
-
-	["item_magammo"] = {
-		["Qty"] = 2,
-		["Chance"] = 0,
-		["Class"] = "item_magammo",
-	},
-
-	["item_buckshotammo"] = {
-		["Qty"] = 2,
-		["Chance"] = 0,
-		["Class"] = "item_buckshotammo",
-	},
-
-	["item_rifleammo"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "item_rifleammo",
-	},
-
-	["item_sniperammo"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "item_sniperammo",
-	},
-
-	["item_m9k_smgammo"] = {
-		["Qty"] = 2,
-		["Chance"] = 0,
-		["Class"] = "item_m9k_smgammo",
-	},
-
-	["item_m9k_assaultammo"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "item_m9k_assaultammo",
-	},
-
-	["weapon_tea_pigsticker"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "weapon_tea_pigsticker",
-	},
-
-	["item_scrap"] = {
-		["Qty"] = 2,
-		["Chance"] = 0,
-		["Class"] = "item_scrap",
-	},
-
-	["item_chems"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "item_chems",
-	},
-
-	["weapon_tea_grenade_pipe"] = {
-		["Qty"] = 2,
-		["Chance"] = 0,
-		["Class"] = "weapon_tea_grenade_pipe",
-	},
-
-	["weapon_tea_grenade_flare"] = {
-		["Qty"] = 2,
-		["Chance"] = 0,
-		["Class"] = "weapon_tea_grenade_flare",
-	},
-
-	["weapon_tea_grenade_frag"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "weapon_tea_grenade_frag",
-	},
-	
-	["item_craft_battery"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "item_craft_battery",
-	},
-
-}
-
--- Weapon loot caches
-GM.LootTable2 = {
-	["item_rocketammo"] = {
-		["Qty"] = 2,
-		["Chance"] = 0,
-		["Class"] = "item_rocketammo"
-	},
-	
-	["item_sleepingbag"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "item_sleepingbag",
-	},
-
-	["item_armorbattery"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "item_armorbattery",
-	},
-
-	["weapon_tea_axe"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "weapon_tea_axe",
-	},
-
-	["weapon_tea_falcon"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "weapon_tea_falcon",
-	},
-
-	["weapon_tea_dual"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "weapon_tea_dual",
-	},
-
-	["weapon_tea_shredder"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "weapon_tea_shredder",
-	},
-
-	["weapon_tea_satan"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "weapon_tea_satan",
-	},
-
-	["weapon_tea_k8c"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "weapon_tea_k8c",
-	},
-
-	["item_tv"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "item_tv",
-	},
-
-	["item_beer"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "item_beer",
-	},
-
-	["item_hamradio"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "item_hamradio",
-	},
-
-	["item_computer"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "item_computer",
-	},
-
-	["weapon_tea_grenade_frag"] = {
-		["Qty"] = 3,
-		["Chance"] = 0,
-		["Class"] = "weapon_tea_grenade_frag",
-	},
-
-	["weapon_tea_807"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "weapon_tea_807",
-	},
-
-	["m9k_model500"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "m9k_model500",
-	},
-
-}
-
--- Rare Loot Caches
-GM.LootTable3 = {
-	["weapon_tea_scrapsword"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "weapon_tea_scrapsword"
-	},
-
-	["weapon_tea_blackhawk"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "weapon_tea_blackhawk",
-	},
-
-	["weapon_tea_grenade_frag"] = {
-		["Qty"] = 5,
-		["Chance"] = 0,
-		["Class"] = "weapon_tea_grenade_frag",
-	},
-
-	["weapon_tea_combinepistol"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "weapon_tea_combinepistol",
-	},
-	
-	["item_armor_jacket_leather"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "item_armor_jacket_leather",
-	},
-
-	["weapon_tea_l303"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "weapon_tea_l303",
+	[LOOTRARITY_LEGENDARY] = {
+		Rarity = 400,
+		Items = {}
 	},
 }
+GM.LootTableBoss = {}
+GM.LootTableFaction = {}
+
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_COMMON, "item_bandage", 2)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_COMMON, "item_medkit", 1)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_COMMON, "item_antidote", 1)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_COMMON, "item_soda", 2)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_COMMON, "item_tinnedfood", 2)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_COMMON, "item_melon", 1)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_COMMON, "item_pistolammo", 2)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_COMMON, "item_magammo", 2)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_COMMON, "item_buckshotammo", 2)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_COMMON, "item_rifleammo", 1)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_COMMON, "item_sniperammo", 1)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_COMMON, "item_m9k_smgammo", 2)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_COMMON, "item_m9k_assaultammo", 1)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_COMMON, "weapon_tea_pigsticker", 1)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_COMMON, "item_scrap", 2)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_COMMON, "item_chems", 1)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_COMMON, "weapon_tea_grenade_pipe", 2)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_COMMON, "weapon_tea_grenade_flare", 2)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_COMMON, "weapon_tea_grenade_frag", 1)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_COMMON, "item_craft_battery", 1)
+
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_UNCOMMON, "item_rocketammo", 2)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_UNCOMMON, "item_sleepingbag", 1)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_UNCOMMON, "item_armorbattery", 1)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_UNCOMMON, "weapon_tea_axe", 1)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_UNCOMMON, "weapon_tea_falcon", 1)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_UNCOMMON, "weapon_tea_dual", 1)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_UNCOMMON, "weapon_tea_shredder", 1)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_UNCOMMON, "weapon_tea_satan", 1)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_UNCOMMON, "weapon_tea_k8c", 1)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_UNCOMMON, "item_tv", 1)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_UNCOMMON, "item_beer", 1)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_UNCOMMON, "item_hamradio", 1)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_UNCOMMON, "item_computer", 1)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_UNCOMMON, "weapon_tea_grenade_frag", 3)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_UNCOMMON, "weapon_tea_807", 1)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_UNCOMMON, "m9k_model500", 1)
+
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_RARE, "weapon_tea_scrapsword", 1)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_RARE, "weapon_tea_blackhawk", 1)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_RARE, "weapon_tea_grenade_frag", 5)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_RARE, "weapon_tea_combinepistol", 1)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_RARE, "item_armor_jacket_leather", 1)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_RARE, "weapon_tea_l303", 1)
+
+-- placeholders
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_EPIC, "weapon_tea_l303", 1)
+
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_LEGENDARY, "weapon_tea_l303", 1)
 
 
-GM.LootTableBoss = {
-	["weapon_tea_scar"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "weapon_tea_scar",
-	},
+GM:AddItemLootTable(GM.LootTableBoss, nil, "weapon_tea_scar", 1)
+GM:AddItemLootTable(GM.LootTableBoss, nil, "weapon_tea_minigun", 1)
+GM:AddItemLootTable(GM.LootTableBoss, nil, "weapon_tea_scrapcrossbow", 1)
+GM:AddItemLootTable(GM.LootTableBoss, nil, "weapon_tea_punisher", 1)
+GM:AddItemLootTable(GM.LootTableBoss, nil, "weapon_tea_blackhawk", 1)
+GM:AddItemLootTable(GM.LootTableBoss, nil, "item_burger", 1)
+GM:AddItemLootTable(GM.LootTableBoss, nil, "weapon_tea_germanator", 1)
 
-	["weapon_tea_minigun"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "weapon_tea_minigun",
-	},
-
-	["weapon_tea_scrapcrossbow"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "weapon_tea_scrapcrossbow",
-	},
-
-	["weapon_tea_punisher"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "weapon_tea_punisher",
-	},
-
-	["weapon_tea_blackhawk"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "weapon_tea_blackhawk",
-	},
-
-	["weapon_tea_grenade_frag"] = {
-		["Qty"] = 10,
-		["Chance"] = 0,
-		["Class"] = "weapon_tea_grenade_frag",
-	},
-
-	["item_burger"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "item_burger",
-	},
-
-	["weapon_tea_k8c"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "weapon_tea_k8c",
-	},
-
-	["weapon_tea_germanator"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "weapon_tea_germanator",
-	},
-
-}
+GM:AddItemLootTable(GM.LootTableFaction, nil, "weapon_tea_perrin", 1)
+GM:AddItemLootTable(GM.LootTableFaction, nil, "weapon_tea_winchester", 1)
+GM:AddItemLootTable(GM.LootTableFaction, nil, "weapon_tea_dammerung", 1)
+GM:AddItemLootTable(GM.LootTableFaction, nil, "item_money", 3000)
 
 
-GM.LootTableFaction = {
-	["weapon_tea_perrin"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "weapon_tea_perrin",
-	},
-
-	["weapon_tea_winchester"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "weapon_tea_winchester",
-	},
-
-	["weapon_tea_dammerung"] = {
-		["Qty"] = 1,
-		["Chance"] = 0,
-		["Class"] = "weapon_tea_dammerung",
-	},
-
-	["item_money"] = {
-		["Qty"] = 3000,
-		["Chance"] = 0,
-		["Class"] = "item_money",
-	},
-
-}
-
--- items you can get from Scavenging skill bonus (It does not work yet.)
-GM.BonusLoot = {}
-GM.BonusLoot.Normal = {
-	["item_soda"] = {
-		["Qty"] = 1,
-		["Chance"] = 100,
-		["Class"] = "item_soda",
-	},
-}
-
-GM.BonusLoot.Weapon = {
-	["item_soda"] = {
-		["Qty"] = 1,
-		["Chance"] = 100,
-		["Class"] = "item_soda",
-	},
-}
-
-GM.BonusLoot.Rare = {
-	["item_soda"] = {
-		["Qty"] = 1,
-		["Chance"] = 100,
-		["Class"] = "item_soda",
-	},
-}
-
-GM.BonusLoot.Boss = {
-	["item_soda"] = {
-		["Qty"] = 1,
-		["Chance"] = 100,
-		["Class"] = "item_soda",
-	},
-}
-
-GM.BonusLoot.Faction = {
-	["item_soda"] = {
-		["Qty"] = 1,
-		["Chance"] = 100,
-		["Class"] = "item_soda",
-	},
-}
-
-
---i will try to add m9k's to loot tables
-
-GM.LootTable = {}
-GM.LootTable.Junk = {
+GM.AirdropLootTable = {}
+GM.AirdropLootTable.Junk = {
 	"item_junk_tin",
 	"item_junk_boot",
 	"item_junk_paper",
@@ -408,7 +114,7 @@ GM.LootTable.Junk = {
 	"item_junk_keyboard",
 }
 
-GM.LootTable.Food = {
+GM.AirdropLootTable.Food = {
 	"item_soda",
 	"item_milk",
 	"item_beerbottle",
@@ -425,7 +131,7 @@ GM.LootTable.Food = {
 	"item_hotdog",
 }
 
-GM.LootTable.Meds = {
+GM.AirdropLootTable.Meds = {
 	"item_bandage",
 	"item_medkit",
 	"item_armymedkit",
@@ -433,7 +139,7 @@ GM.LootTable.Meds = {
 	"item_antidote",
 }
 
-GM.LootTable.Sellables = {
+GM.AirdropLootTable.Sellables = {
 	"item_radio",
 	"item_scrap",
 	"item_chems",
@@ -443,7 +149,7 @@ GM.LootTable.Sellables = {
 	"item_computer",
 }
 
-GM.LootTable.Ammo = {
+GM.AirdropLootTable.Ammo = {
 	"item_pistolammo",
 	"item_magammo",
 	"item_buckshotammo",
@@ -459,7 +165,7 @@ GM.LootTable.Ammo = {
 }
 
 -- 100% to get one of the following weapons.
-GM.LootTable.NewbieWeapons = {
+GM.AirdropLootTable.NewbieWeapons = {
 	"weapon_tea_pigsticker",
 	"weapon_tea_axe",
 	"weapon_tea_wrench",
@@ -472,7 +178,7 @@ GM.LootTable.NewbieWeapons = {
 }
 
 -- the stuff you get from killing the tyrant boss
-GM.LootTable.TyrantWeapons = {
+GM.AirdropLootTable.TyrantWeapons = {
 	"weapon_tea_scar",
 	"weapon_tea_minigun",
 	"weapon_tea_scrapcrossbow",
@@ -484,7 +190,7 @@ GM.LootTable.TyrantWeapons = {
 }
 
 -- faction weapons are acquired from destroying enemy faction bases
-GM.LootTable.FactionWeapons = {
+GM.AirdropLootTable.FactionWeapons = {
 	"weapon_tea_perrin",
 	"weapon_tea_winchester",
 	"weapon_tea_dammerung",
@@ -492,13 +198,13 @@ GM.LootTable.FactionWeapons = {
 }
 
 -- special weapons are acquired only from the airdrop and nothing else, rare chance to appear (airdrop-exclusive items)
-GM.LootTable.SpecialWeapons = {
+GM.AirdropLootTable.SpecialWeapons = {
 	"weapon_tea_crowbar", -- to get this thing you need to get lucky
 	"weapon_tea_fuckinator",
 }
 
 -- Rare weapons, only 10% chance to get one of those
-GM.LootTable.RareWeapons = {
+GM.AirdropLootTable.RareWeapons = {
 	"weapon_tea_ar2",
 	"m9k_vector",
 	"m9k_mp9",

@@ -672,7 +672,8 @@ function GM:EntityRemoved(ent)
 	end
 
 	if ent.BossMonster and ent.DamagedBy and table.Count(ent.DamagedBy) > 0 then
-		local loot = ents.Create("loot_cache_boss")
+		local loot = self:SpawnLootCache(LOOTTYPE_BOSS, ent:GetPos() + Vector(0, 0, 50), ent:GetAngles())
+		if !loot or !loot:IsValid() then return end
 		local killer = ent.TEA_KilledByPlayer
 		if killer and killer:IsValid() and killer:IsPlayer() then
 			loot:SetNWEntity("pickup", killer)
@@ -680,14 +681,9 @@ function GM:EntityRemoved(ent)
 		end
 		timer.Simple(300, function()
 			if loot:IsValid() and loot:GetNWEntity("pickup"):IsValid() then
-				loot:SetNWEntity("pickup", ent.TEA_KilledByPlayer)
+				loot:SetNWEntity("pickup", NULL)
 			end
 		end)
-		loot:SetPos(ent:GetPos() + Vector(0, 0, 50))
-		loot:SetAngles(ent:GetAngles())
-		loot.LootType = table.Random(self.LootTableBoss)["Class"]
-		loot:Spawn()
-		loot:Activate()
 	end
 
 end

@@ -144,34 +144,11 @@ function GM:AdminCmds_ClearLoots(ply, cmd, args)
 		return
 	end
 
-	if args[1] == "force" then
-		if !SuperAdminCheck(ply) then
-			ply:SystemMessage(translate.ClientGet(ply, "superadmincheckfail"), Color(255,205,205,255), true)
-			ply:ConCommand("playgamesound buttons/button8.wav")
-			return
-		end
-		for k, v in pairs(ents.FindByClass("loot_cache_boss")) do
-			v:Remove()
-		end
-		for k, v in pairs(ents.FindByClass("loot_cache_faction")) do
-			v:Remove()
-		end
-		for k, v in pairs(ents.FindByClass("loot_cache_special")) do
-			v:Remove()
-		end
-		self:DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has cleaned up all loot caches!")
-		ply:SystemMessage("Cleaned up all loot caches!", Color(155,255,155,255), true)
-	else
-		self:DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has cleaned up loot caches!")
-		ply:SystemMessage("Cleaned up loot caches!", Color(155,255,155,255), true)
-	end
+	self:DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has cleaned up loot caches!")
+	ply:SystemMessage("Cleaned up loot caches!", Color(155,255,155,255), true)
 	for k, v in pairs(ents.FindByClass("loot_cache")) do
 		v:Remove()
 	end
-	for k, v in pairs(ents.FindByClass("loot_cache_weapon")) do
-		v:Remove()
-	end
-
 end
 concommand.Add("tea_admin_clearloots", function(ply, cmd, args)
 	gamemode.Call("AdminCmds_ClearLoots", ply, cmd, args)

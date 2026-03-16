@@ -161,12 +161,7 @@ function ENT:OnTakeDamage( dmg )
 		self.Entity:EmitSound("npc/dog/car_impact1.wav", 120, 100)
 		GAMEMODE:SystemBroadcast("The "..team.GetName(owner:Team()).."'s base has been destroyed!", Color(205,205,255,255), true)
 		if self.IsBuilt then
-			local ent = ents.Create( "loot_cache_faction" )
-			ent:SetPos( self:GetPos() + Vector(0, 0, 30) )
-			ent:SetAngles( self:GetAngles() )
-			ent.LootType = table.Random(GAMEMODE.LootTableFaction)["Class"]
-			ent:Spawn()
-			ent:Activate()
+			local ent = GAMEMODE:SpawnLootCache(LOOTTYPE_FACTION, self:GetPos() + Vector(0, 0, 30), self:GetAngles())
 
 			if attacker:IsPlayer() then
 				GAMEMODE:Payout(attacker, 4500, 5000)

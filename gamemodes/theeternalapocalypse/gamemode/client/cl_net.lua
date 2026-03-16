@@ -296,3 +296,62 @@ net.Receive("tea_admin_tool", function()
 		gamemode.Call("CreateOpenworldTransition", startpos, startang, box[1], box[2])
 	end
 end)
+
+local itemcol = Color(171,232,249)
+net.Receive("tea_lootpickup", function(len)
+	local pl = net.ReadEntity()
+	local ltype = net.ReadUInt(4)
+	local lrarity = net.ReadUInt(4)
+	local item = net.ReadString()
+	local qty = net.ReadUInt(8) -- only 0-255.
+
+
+	local me = LocalPlayer()
+	if pl == me then
+		if ltype == LOOTTYPE_NORMAL then
+			if qty ~= 1 then
+				chat.AddText(color_white, "[", GAMEMODE:GetLootRarityColor(lrarity), GAMEMODE:GetLootRarityName(lrarity), color_white, "] ",
+				"You picked up a loot cache containing ", itemcol, GAMEMODE:GetItemName(item, me), color_white, " (x", GAMEMODE:GetLootRarityColor(lrarity), qty, color_white, ")")
+			else
+				chat.AddText(color_white, "[", GAMEMODE:GetLootRarityColor(lrarity), GAMEMODE:GetLootRarityName(lrarity), color_white, "] ",
+				"You picked up a loot cache containing ", itemcol, GAMEMODE:GetItemName(item, me))
+			end
+		elseif ltype == LOOTTYPE_BOSS then
+			if qty ~= 1 then
+				chat.AddText("You picked up a boss loot cache containing ", itemcol, GAMEMODE:GetItemName(item, me), color_white, " (x", qty, ")")
+			else
+				chat.AddText("You picked up a boss loot cache containing ", itemcol, GAMEMODE:GetItemName(item, me))
+			end
+		elseif ltype == LOOTTYPE_FACTION then
+			if qty ~= 1 then
+				chat.AddText("You picked up a boss loot cache containing ", itemcol, GAMEMODE:GetItemName(item, me), color_white, " (x", qty, ")")
+			else
+				chat.AddText("You picked up a boss loot cache containing ", itemcol, GAMEMODE:GetItemName(item, me))
+			end
+		end
+	end
+
+	if ltype == LOOTTYPE_NORMAL and lrarity < LOOTRARITY_EPIC then return end
+
+	if ltype == LOOTTYPE_NORMAL then
+		if qty ~= 1 then
+			chat.AddText(color_white, "[", GAMEMODE:GetLootRarityColor(lrarity), GAMEMODE:GetLootRarityName(lrarity), color_white, "] ",
+			string.format("%s picked up a loot cache containing ", pl:Nick()), itemcol, GAMEMODE:GetItemName(item, me), color_white, " (x", GAMEMODE:GetLootRarityColor(lrarity), qty, color_white, ")")
+		else
+			chat.AddText(color_white, "[", GAMEMODE:GetLootRarityColor(lrarity), GAMEMODE:GetLootRarityName(lrarity), color_white, "] ",
+			string.format("%s picked up a loot cache containing ", pl:Nick()), itemcol, GAMEMODE:GetItemName(item, me))
+		end
+	elseif ltype == LOOTTYPE_BOSS then
+		if qty ~= 1 then
+			chat.AddText(string.format("%s picked up a boss loot cache containing ", pl:Nick()), itemcol, GAMEMODE:GetItemName(item, me), color_white, " (x", qty, ")")
+		else
+			chat.AddText(string.format("%s picked up a boss loot cache containing ", pl:Nick()), itemcol, GAMEMODE:GetItemName(item, me))
+		end
+	elseif ltype == LOOTTYPE_FACTION then
+		if qty ~= 1 then
+			chat.AddText(string.format("%s picked up a boss loot cache containing ", pl:Nick()), itemcol, GAMEMODE:GetItemName(item, me), color_white, " (x", qty, ")")
+		else
+			chat.AddText(string.format("%s picked up a boss loot cache containing ", pl:Nick()), itemcol, GAMEMODE:GetItemName(item, me))
+		end
+	end
+end)

@@ -203,8 +203,8 @@ local tcolor_blue = Color(93,123,255,255)
 GM.AdminMapSpawnables = {
 	Zombie = {
 		Name = "zombies",
-		Spawn = function(owner, swep, tr, pos)
-			gamemode.Call("AddZombieSpawnpoint", pos, owner:EyeAngles().yaw, 0, 0)
+		Spawn = function(owner, swep, tr, pos, options)
+			gamemode.Call("AddZombieSpawnpoint", pos, owner:EyeAngles().yaw, options.Tier)
 			owner:PrintMessage(3, "Added zombie spawnpoint")
 		end,
 		View = function(owner, var)
@@ -214,8 +214,7 @@ GM.AdminMapSpawnables = {
 				render.DrawLine(v.Pos+Vector(0,0,80), v.Pos,tcolor_red,true)
 				cam.Start3D2D(v.Pos+Vector(0,0,80), Angle(0, ownang.yaw - 90, 90 - ownang.Pitch), math.Clamp(owner:GetPos():Distance(v.Pos)/750, 0.5, 5))
 				draw.DrawText("Zombie spawn #"..id, "TEA.HUDFont", 0, 0, tcolor_red, TEXT_ALIGN_LEFT)
-				-- draw.DrawText("Radius: "..v.Radius, "TEA.HUDFont", 0, 20, tcolor_red, TEXT_ALIGN_LEFT)
-				-- draw.DrawText("Tier: "..v.Tier, "TEA.HUDFont", 0, 40, tcolor_red, TEXT_ALIGN_LEFT)
+				draw.DrawText("Tier: "..v.Tier, "TEA.HUDFontSmall", 0, 20, tcolor_red, TEXT_ALIGN_LEFT)
 				cam.End3D2D()
 			end
 			cam.IgnoreZ(false)
@@ -229,19 +228,33 @@ GM.AdminMapSpawnables = {
 				tbl[id] = {
 					Pos = v[1],
 					Ang = v[2],
-					Radius = v[3],
-					Tier = v[4]
+					Tier = v[3]
 				}
 			end
 
 			return tbl
-		end
+		end,
+		Options = {
+			Tier = {
+				Type = "number",
+				Min = 1,
+				Max = 5,
+			},
+
+			Radius = {
+				Name = "Radius [NOT FUNCTIONAL]",
+				Type = "number",
+				Min = 0,
+				Max = 2000,
+			}
+		}
+
 	},
 
 	Loot = {
 		Name = "loot",
-		Spawn = function(owner, swep, tr, pos)
-			gamemode.Call("AddLootSpawnpoint", pos, Angle(0, owner:EyeAngles().yaw, 0), 0, 0)
+		Spawn = function(owner, swep, tr, pos, options)
+			gamemode.Call("AddLootSpawnpoint", pos, Angle(0, owner:EyeAngles().yaw, 0), options.Tier or 1)
 			owner:PrintMessage(3, "Added loot spawnpoint")
 		end,
 		View = function(owner, var)
@@ -251,7 +264,7 @@ GM.AdminMapSpawnables = {
 				render.DrawLine(v.Pos+Vector(0,0,80), v.Pos,color_yellow,true)
 				cam.Start3D2D(v.Pos+Vector(0,0,80), Angle(0, ownang.yaw - 90, 90 - ownang.Pitch), math.Clamp(owner:GetPos():Distance(v.Pos)/750, 0.5, 5))
 				draw.DrawText("Loot spawn #"..id, "TEA.HUDFont", 0, 0, tcolor_yellow, TEXT_ALIGN_LEFT)
-				-- draw.DrawText("Tier: "..v.Tier, "TEA.HUDFont", 0, 20, tcolor_yellow, TEXT_ALIGN_LEFT)
+				draw.DrawText("Tier: "..v.Tier, "TEA.HUDFontSmall", 0, 20, tcolor_yellow, TEXT_ALIGN_LEFT)
 				cam.End3D2D()
 			end
 			cam.IgnoreZ(false)
@@ -270,12 +283,19 @@ GM.AdminMapSpawnables = {
 			end
 
 			return tbl
-		end
+		end,
+		Options = {
+			Tier = {
+				Type = "number",
+				Min = 1,
+				Max = 5,
+			}
+		}
 	},
 
 	Airdrop = {
 		Name = "airdrops",
-		Spawn = function(owner, swep, tr, pos)
+		Spawn = function(owner, swep, tr, pos, options)
 			local err,msg = gamemode.Call("AddAirdropSpawnpoint", pos, Angle(0, owner:EyeAngles().yaw, 0))
 			if err and msg then
 				owner:PrintMessage(3, "Error: "..msg)
@@ -313,7 +333,7 @@ GM.AdminMapSpawnables = {
 
 	Trader = {
 		Name = "traders",
-		Spawn = function(owner, swep, tr, pos)
+		Spawn = function(owner, swep, tr, pos, options)
 			gamemode.Call("AddTraderSpawnpoint", pos, Angle(0, owner:EyeAngles().yaw, 0), 0, 0)
 			owner:PrintMessage(3, "Added trader spawnpoint")
 		end,
@@ -346,7 +366,7 @@ GM.AdminMapSpawnables = {
 
 	PlayerSpawnpoint = {
 		Name = "player_spawnpoints",
-		Spawn = function(owner, swep, tr, pos)
+		Spawn = function(owner, swep, tr, pos, options)
 			gamemode.Call("AddPlayerSpawnpoint", pos, Angle(0, owner:EyeAngles().yaw, 0))
 			owner:PrintMessage(3, "Added player spawnpoint")
 		end,
@@ -381,7 +401,7 @@ GM.AdminMapSpawnables = {
 
 	TaskDealer = {
 		Name = "taskdealers",
-		Spawn = function(owner, swep, tr, pos)
+		Spawn = function(owner, swep, tr, pos, options)
 			gamemode.Call("AddTaskDealerSpawnpoint", pos, Angle(0, owner:EyeAngles().yaw, 0))
 			owner:PrintMessage(3, "Added taskdealer spawnpoint")
 		end,
@@ -414,7 +434,7 @@ GM.AdminMapSpawnables = {
 
 	Openworld = {
 		Name = "ow_transitions",
-		Spawn = function(owner, swep, tr, pos)
+		Spawn = function(owner, swep, tr, pos, options)
 			if !swep.OpenworldStartPos then
 				swep.OpenworldStartPos = pos
 				swep.OpenworldStartAng = Angle(0, owner:EyeAngles().yaw, 0)

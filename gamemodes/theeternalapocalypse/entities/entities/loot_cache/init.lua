@@ -5,12 +5,14 @@ include("shared.lua")
 
 
 function ENT:Initialize()
-	self.Entity:SetModel( "models/props/cs_office/cardboard_box03.mdl" )
- 	self.Entity:PhysicsInit( SOLID_VPHYSICS )
-	self.Entity:SetMoveType( MOVETYPE_VPHYSICS )
-	self.Entity:SetSolid( SOLID_VPHYSICS )
- 	self.Entity:SetColor( Color(255, 255, 255, 255) )
-	self.Entity:SetUseType( SIMPLE_USE )
+	-- self:SetModel( "models/props/cs_office/cardboard_box03.mdl" )
+	-- boss: models/props/de_prodigy/ammo_can_02.mdl
+	-- rare: models/Items/item_item_crate.mdl
+ 	self:PhysicsInit( SOLID_VPHYSICS )
+	self:SetMoveType( MOVETYPE_VPHYSICS )
+	self:SetSolid( SOLID_VPHYSICS )
+ 	self:SetColor( Color(255, 255, 255, 255) )
+	self:SetUseType( SIMPLE_USE )
 	
 	local PhysAwake = self.Entity:GetPhysicsObject()
 	if (PhysAwake:IsValid()) then
@@ -21,24 +23,47 @@ end
 function ENT:SpawnFunction(userid, tr)
 end
 
-function ENT:Use( activator, caller )
-	if !caller:IsValid() or !caller:IsPlayer() or !self.LootType or !caller:Alive() then self:Remove() return false end
-	local name = self.LootType
-	local item = GAMEMODE.ItemsList[name]
-	local itemweight = item["Weight"]
-	local itemname = GAMEMODE:GetItemName(name, caller)
+function ENT:Use(activator, caller)
+	if !caller:IsValid() or !caller:IsPlayer() or !caller:Alive() then return false end
 
-	local qty = self.LootQuantity or GAMEMODE.LootTable1[name]["Qty"]
+	local loottype = self:GetNWInt("loottype", 1)
+	local lootrarity = self:GetNWInt("lootrarity", 1)
 
-	if !name or !item or !qty then caller:SendChat(translate.ClientGet(caller, "buggedcache")) self:Remove() return false end
+	if self:GetNWEntity("pickup") and self:GetNWEntity("pickup"):IsValid() and self:GetNWEntity("pickup"):IsPlayer() and self:GetNWEntity("pickup") != caller then
+		caller:SystemMessage(Format("You aren't permitted to pick up the boss cache!", self:GetNWEntity("pickup"):Nick()), Color(255,205,205), true)
+		return false
+	end
 
-	if !item then return false end
+	
+	local id = self.LootType
+	local qty = self.LootQuantity or 1
+	
+	if !id or !qty then caller:SendChat(translate.ClientGet(caller, "buggedcache")) self:Remove() return false end
+	
+	local item = GAMEMODE.ItemsList[id]
+	if !item then caller:SendChat(translate.ClientGet(caller, "buggedcache")) self:Remove() return false end
 
-	gamemode.Call("SystemGiveItem", caller, name, qty)
+	gamemode.Call("SystemGiveItem", caller, id, qty)
 	gamemode.Call("GiveTaskProgress", caller, "loot_finder", 1)
 
-	caller:SendChat(translate.ClientFormat(caller, "you_picked_up_a_lootcache", qty, itemname))
-	-- if math.random(0,100) >= ply.
+	net.Start("tea_lootpickup")
+	net.WriteEntity(caller)
+	net.WriteUInt(loottype, 4)
+	net.WriteUInt(lootrarity or 1, 4)
+	net.WriteString(id)
+	net.WriteUInt(qty, 8) -- only 0-255.
+	if ltype == LOOTTYPE_NORMAL and lrarity < LOOTRARITY_EPIC then
+		net.Send(caller)
+	else
+		net.Broadcast()
+	end
+	-- caller:SendChat("You picked up a faction loot cache containing [ "..qty.."x "..GAMEMODE:GetItemName(name, caller).." ]")
+	-- caller:SendChat(translate.ClientFormat(caller, "you_picked_up_a_lootcache_faction", qty, GAMEMODE:GetItemName(name, caller)))
+	-- for _,ply in pairs(player.GetAll()) do
+		-- ply:SystemMessage(caller:Nick().." has found a faction loot cache containing "..qty.."x "..GAMEMODE:GetItemName(name, ply).."!", Color(255,255,255,255), true)
+		-- ply:SystemMessage(translate.ClientFormat(ply, "player_found_lootcache_faction", caller:Nick(), qty, GAMEMODE:GetItemName(name, caller)), Color(255,255,255), true)
+	-- end
+
 	GAMEMODE:SendInventory(caller)
 	caller:EmitSound("items/ammopickup.wav", 100, 100)
 	self:Remove()

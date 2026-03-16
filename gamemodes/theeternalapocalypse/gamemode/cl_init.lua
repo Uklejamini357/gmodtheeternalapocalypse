@@ -283,7 +283,7 @@ function GM:SetupFonts()
 
 	surface.CreateFont("TEA.HUDFontSmaller", {
 		font = font,
-		size = 12,
+		size = 11,
 		weight = 600,
 		blursize = 0,
 		scanlines = 0,

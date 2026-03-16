@@ -580,7 +580,7 @@ end
 
 function GM:DrawMiscThings()
 	local me = LocalPlayer()
-	for _, ent in pairs (ents.FindByClass("structure_base_core")) do
+	for _, ent in ipairs(ents.FindByClass("structure_base_core")) do
 		if ent:GetPos():DistToSqr(me:GetPos()) < 810000 and ent:GetNWEntity("owner"):IsValid() and ent:GetMaterial() != "models/wireframe" then --900^2
 			local t2 = ScrW() / 2 - 175
 			local s2 = 85
@@ -602,8 +602,8 @@ function GM:DrawMiscThings()
 	end
 
 
-	for _, ent in pairs (ents.FindByClass("airdrop_cache")) do
-		if ent:GetPos():DistToSqr(me:GetPos()) < 1440000 and ent:GetNWBool("ADActive") then --1200^2
+	for _, ent in ipairs(ents.FindByClass("airdrop_cache")) do
+		if ent:GetPos():DistToSqr(me:GetPos()) > 1440000 or !ent:GetNWBool("ADActive") then continue end --1200^2
 		local t2 = ScrW() / 2 - 175
 		local s2 = 25
 		surface_SetDrawColor(255, 255, 0)
@@ -612,7 +612,6 @@ function GM:DrawMiscThings()
 		surface_DrawRect(t2, s2, 350, 45)
 		draw_DrawText("You are in an active airdrop zone!", "TEA.HUDFont", t2 + 42, s2 + 4, Color(255, 205, 205))
 		draw_DrawText("PvP is forced, beware of other survivors!", "TEA.HUDFont", t2 + 15, s2 + 22, Color(255, 205, 205))
-		end
 	end
 
 
@@ -629,8 +628,10 @@ function GM:DrawMiscThings()
 	local ent = tr.Entity
 	if !ent:IsValid() then return false end
 
+	local class = ent:GetClass()
 
-	if ent:GetClass() == "prop_flimsy" or ent:GetClass() == "prop_strong" or self.SpecialStructureSpawns[ent:GetClass()] then 
+
+	if class == "prop_flimsy" or class == "prop_strong" or self.SpecialStructureSpawns[class] then 
 		local owner = ent:GetNWEntity("owner")
 		if !owner or !owner:IsValid() then return false end
 		local t = ScrW() / 2 - 175
@@ -639,9 +640,9 @@ function GM:DrawMiscThings()
 		surface_DrawOutlinedRect(t, s, 350, 65)
 		surface_SetDrawColor(0, 0, 0, 200)
 		surface_DrawRect(t, s, 350, 65)
-		draw_DrawText(ent.PrintName, "TEA.HUDFont", t + 5, s + 4, Color(255, 255, 255, 255))
-		draw_DrawText("Owner: ".. owner:Nick(), "TEA.HUDFont", t + 5, s + 22, Color(255, 255, 255, 255))
-		draw_DrawText("Faction:", "TEA.HUDFont", t + 5, s + 40, Color(255, 255, 255, 255))
+		draw_DrawText(ent.PrintName, "TEA.HUDFont", t + 5, s + 4, Color(255, 255, 255))
+		draw_DrawText("Owner: ".. owner:Nick(), "TEA.HUDFont", t + 5, s + 22, Color(255, 255, 255))
+		draw_DrawText("Faction:", "TEA.HUDFont", t + 5, s + 40, Color(255, 255, 255))
 		draw_DrawText(team.GetName(owner:Team()), "TEA.HUDFont", t + 72, s + 40, team.GetColor(owner:Team()))
 
 
@@ -661,13 +662,10 @@ function GM:DrawMiscThings()
 		surface_SetDrawColor(150, 0, 0, 200)
 		surface_DrawOutlinedRect(dix.x - 75, dix.y, 150, 25)
 		draw_DrawText(math.Round(fraction * 10000) / 100 .."%", "TEA.HUDFont", dix.x, dix.y + 4, Color(255, 255, 255, 155), 1)
-	end
-	
-
-	if ent:GetClass() == "ate_droppeditem" then 
-
+	elseif class == "ate_droppeditem" then 
 		local name = ent:GetNWString("ItemClass")
 
+		if !name then return false end
 		local itemtable = self.ItemsList[name]
 		if !itemtable then return false end
 		local rarity = itemtable.Rarity
@@ -680,57 +678,31 @@ function GM:DrawMiscThings()
 		surface_DrawOutlinedRect(t, s, 200, 65)
 		surface_SetDrawColor(0, 0, 0, 200)
 		surface_DrawRect(t, s, 200, 65)
-		draw_DrawText(GAMEMODE:GetItemName(name), "TEA.HUDFont", t + 5, s + 4, Color(255, 255, 255, 255))
-		draw_DrawText(itemtable.Weight.."kg", "TEA.HUDFont", t + 5, s + 22, Color(255, 255, 155, 255))
+		draw_DrawText(GAMEMODE:GetItemName(name), "TEA.HUDFont", t + 5, s + 4, Color(255, 255, 255))
+		draw_DrawText(itemtable.Weight.."kg", "TEA.HUDFont", t + 5, s + 22, Color(255, 255, 155))
 		draw_DrawText("Rarity: "..raretbl.text, "TEA.HUDFont", t + 5, s + 40, raretbl.col)
-	end
-
-	if ent:GetClass() == "loot_cache" or ent:GetClass() == "loot_cache_weapon" then 
+	elseif class == "loot_cache" then 
 		local t = ScrW() / 2 - 75
 		local s = ScrH() / 2 + 100
 		surface_SetDrawColor(255, 255, 0, 255)
 		surface_DrawOutlinedRect(t, s, 150, 45)
 		surface_SetDrawColor(0, 0, 0, 200)
 		surface_DrawRect(t, s, 150, 45)
-		draw_DrawText("Loot Cache", "TEA.HUDFont", t + 5, s + 4, Color(255, 255, 255, 255))
-		draw_DrawText("Press E to pick up", "TEA.HUDFont", t + 5, s + 22, Color(255, 255, 255, 255))
-	end
 
-	if ent:GetClass() == "loot_cache_special" then 
-		local t = ScrW() / 2 - 75
-		local s = ScrH() / 2 + 100
-		surface_SetDrawColor(255, 255, 0, 255)
-		surface_DrawOutlinedRect(t, s, 150, 45)
-		surface_SetDrawColor(0, 0, 0, 200)
-		surface_DrawRect(t, s, 150, 45)
-		draw_DrawText("Rare Cache", "TEA.HUDFont", t + 5, s + 4, Color(255,255,255,255))
-		draw_DrawText("Press E to pick up", "TEA.HUDFont", t + 5, s + 22, Color(255,255,255,255))
-	end
+		local lrarity = ent:GetNWInt("lootrarity")
+		local pickup = ent:GetNWEntity("pickup")
 
-	if ent:GetClass() == "loot_cache_boss" then 
-		local t = ScrW() / 2 - 75
-		local s = ScrH() / 2 + 100
-		surface_SetDrawColor(255, 255, 0, 255)
-		surface_DrawOutlinedRect(t, s, 150, 45)
-		surface_SetDrawColor(0, 0, 0, 200)
-		surface_DrawRect(t, s, 150, 45)
-		draw_DrawText("Boss Cache", "TEA.HUDFont", t + 5, s + 4, Color(255, 255, 255, 255))
-		draw_DrawText(ent:GetNWEntity("pickup"):IsValid() and ent:GetNWEntity("pickup"):IsPlayer() and ent:GetNWEntity("pickup") != me and "Can't pick up" or "Can pick up", "TEA.HUDFont", t + 5, s + 22, Color(255, 255, 255, 255))
-	end
+		local typ = ent:GetNWInt("loottype")
+		local col = typ == LOOTTYPE_BOSS and Color(125,23,23) or typ == LOOTTYPE_FACTION and Color(240,120,172) or self:GetLootRarityColor(ent:GetNWInt("lootrarity"))
+		local name = self:GetLootRarityName(ent:GetNWInt("lootrarity"))
+		local canpick = !pickup or !pickup:IsValid() or !pickup:IsPlayer() or pickup == me
 
-	if ent:GetClass() == "loot_cache_faction" then 
-		local t = ScrW() / 2 - 75
-		local s = ScrH() / 2 + 100
-		surface_SetDrawColor(255, 255, 0, 255)
-		surface_DrawOutlinedRect(t, s, 150, 45)
-		surface_SetDrawColor(0, 0, 0, 200)
-		surface_DrawRect(t, s, 150, 45)
-		draw_DrawText("Faction Loot Cache", "TEA.HUDFont", t + 5, s + 4, Color(255, 255, 255, 255))
-		draw_DrawText("Press E to pick up", "TEA.HUDFont", t + 5, s + 22, Color(255, 255, 255, 255))
-	end
-
-
-	if ent:GetClass() == "ate_cash" then 
+		draw_DrawText(self:GetLootTypeName(typ), "TEA.HUDFont", t + 5, s + 4, col, TEXT_ALIGN_LEFT)
+		-- if typ == LOOTTYPE_NORMAL then
+			-- draw_DrawText(name, "TEA.HUDFontSmaller", t + 145, s + 4, col, TEXT_ALIGN_RIGHT)
+		-- end
+		draw_DrawText(canpick and "Press E to pick up" or "Can't pick up", "TEA.HUDFont", t + 5, s + 22, color_white)
+	elseif class == "ate_cash" then
 		if !ent:GetNWInt("CashAmount") then return false end
 		local t = ScrW() / 2 - 75
 		local s = ScrH() / 2 + 100
@@ -738,8 +710,8 @@ function GM:DrawMiscThings()
 		surface_DrawOutlinedRect(t, s, 150, 45)
 		surface_SetDrawColor(0, 0, 0, 200)
 		surface_DrawRect(t, s, 150, 45)
-		draw_DrawText(ent:GetNWInt("CashAmount").." "..self.Config["Currency"].."(s)", "TEA.HUDFont", t + 5, s + 4, Color(255, 255, 255, 255))
-		draw_DrawText("Press E to pick up", "TEA.HUDFont", t + 5, s + 22, Color(255, 255, 255, 255))
+		draw_DrawText(ent:GetNWInt("CashAmount").." "..self.Config["Currency"].."(s)", "TEA.HUDFont", t + 5, s + 4, Color(255, 255, 255))
+		draw_DrawText("Press E to pick up", "TEA.HUDFont", t + 5, s + 22, Color(255, 255, 255))
 	end
 end
 

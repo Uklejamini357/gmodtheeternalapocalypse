@@ -4,13 +4,8 @@ util.AddNetworkString("UseCrate")
 
 function GM:LootCount()
 	local LootBoxes = 0
-	for k, v in pairs(ents.FindByClass("loot_cache")) do
-		LootBoxes = LootBoxes + 1
-	end
-	for k, v in pairs(ents.FindByClass("loot_cache_weapon")) do
-		LootBoxes = LootBoxes + 1
-	end
-	for k, v in pairs(ents.FindByClass("loot_cache_special")) do
+	for _,ent in ipairs(ents.FindByClass("loot_cache")) do
+		if ent:GetNWInt("loottype") ~= LOOTTYPE_NORMAL then continue end
 		LootBoxes = LootBoxes + 1
 	end
 	return LootBoxes
@@ -28,8 +23,9 @@ function GM:LoadLoot()
 			local v = string.Explode(";", str)
 			local pos = util.StringToType(v[1], "Vector")
 			local ang = util.StringToType(v[2], "Angle")
+			local tier = tonumber(v[3] or 1) or 1
 
-			table.insert(tbl, {pos, ang})
+			table.insert(tbl, {pos, ang, tier})
 		end
 		self.LootSpawnpoints = tbl
 
@@ -39,8 +35,8 @@ function GM:LoadLoot()
 	end
 end
 
-function GM:AddLootSpawnpoint(pos, ang, radius, tier)
-	table.insert(self.LootSpawnpoints, {pos, ang, radius, tier})
+function GM:AddLootSpawnpoint(pos, ang, tier)
+	table.insert(self.LootSpawnpoints, {pos, ang, tier or 1})
 
 	self:SaveLootSpawns()
 	self:UpdateAdminEyes("Loot")
@@ -74,7 +70,7 @@ end
 function GM:SaveLootSpawns()
 	local ftext = ""
 	for _,var in pairs(self.LootSpawnpoints) do
-		ftext = ftext..(ftext=="" and "" or "\n")..tostring(var[1])..";"..tostring(var[2])
+		ftext = ftext..(ftext=="" and "" or "\n")..tostring(var[1])..";"..tostring(var[2])..";"..tonumber(var[3] or 1)
 	end
 
 	if ftext == "" then
@@ -85,82 +81,87 @@ function GM:SaveLootSpawns()
 	file.Write(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/loot.txt", ftext)
 end
 
-function GM:SpawnLootCache(ltype, pos, ang)
-	local ent
-	if ltype == "loot_cache" then
-		ent = ents.Create(ltype)
-	elseif ltype == "loot_cache_weapon" then
-		ent = ents.Create(ltype)
-	elseif ltype == "loot_cache_special" then
-		ent = ents.Create(ltype)
-	elseif ltype == "loot_cache_faction" then
-		ent = ents.Create(ltype)
-	elseif ltype == "loot_cache_boss" then
-		ent = ents.Create(ltype)
-	end
+function GM:SpawnLootCache(ltype, pos, ang, tier)
+	local ent = ents.Create("loot_cache")
+
+	if !tier then tier = 1 end
 	if !ent:IsValid() then return end
+	ent:SetNWInt("loottype", ltype)
+	ent:SetNWInt("lootrarity", self:RandomizeLootRarity(tier))
 	ent:SetPos(pos)
 	ent:SetAngles(ang)
+	if ltype == LOOTTYPE_BOSS or ltype == LOOTTYPE_FACTION then
+		ent:SetModel("models/props/de_prodigy/ammo_can_02.mdl")
+	else
+		ent:SetModel("models/props/cs_office/cardboard_box03.mdl")
+	end
 	self:RandomizeEntityLoot(ent)
 	ent:Spawn()
-	ent:Activate()
+
 	if self:GetDebug() >= DEBUGGING_ADVANCED then
-		if ltype == "loot_cache" then
-			print("Loot cache spawned:", "\n"..ent:GetClass(), pos, ang, "Loot Type: "..ent.LootType)
-		end
+		local l,r = self:GetLootTypeName(ent:GetNWInt("loottype")), self:GetLootRarityName(ent:GetNWInt("lootrarity"))
+		print("Loot spawned:", l, "Rarity: ", r, pos, ang)
 	end
 
 	return ent
 end
 
-function GM:RandomizeEntityLoot(ent, forceloottype)
-	local loottype = forceloottype or ent:GetClass()
-	local loot
-	if loottype == "loot_cache" then
-		loot = table.Random(self.LootTable1)
-		ent.LootType = loot.Class
-		ent.LootQuantity = loot.Qty or 1
-	elseif loottype == "loot_cache_weapon" then
-		loot = table.Random(self.LootTable2)
-		ent.LootType = loot.Class
-		ent.LootQuantity = loot.Qty or 1
-	elseif loottype == "loot_cache_special" then
-		loot = table.Random(self.LootTable3)
-		ent.LootType = loot.Class
-		ent.LootQuantity = loot.Qty or 1
-	elseif loottype == "loot_cache_faction" then
-		loot = table.Random(self.LootTableFaction)
-		ent.LootType = loot.Class
-		ent.LootQuantity = loot.Qty or 1
-	elseif loottype == "loot_cache_boss" then
-		loot = table.Random(self.LootTableBoss)
-		ent.LootType = loot.Class
-		ent.LootQuantity = loot.Qty or 1
+function GM:RandomizeLootRarity(tier)
+	local rng = 1 / math.Rand(0, 1) -- float/double value between 0 and 1, and then reverse it to a much larger value 
+	if rng > 1e6 then rng = 1e6 end -- if it somehow ends up being larger than 1mil, just reset it.
+	if !tier then tier = 1 end
+
+	local rare = LOOTRARITY_COMMON
+	local prevrarity = 1
+	for i,loot in ipairs(self.LootTable) do
+		if !loot.Rarity then continue end
+
+		print(i, rng, loot.Rarity)
+		if loot.Rarity < rng then
+			rare = i
+			prevrarity = loot.Rarity
+		elseif loot.Rarity >= rng then
+			rare = rare + ((rng-prevrarity) / (loot.Rarity-prevrarity))
+			break
+		end
 	end
 
+	return math.floor(math.min(#self.LootTable, rare + (tier-1)*0.1))
+end
+
+function GM:RandomizeEntityLoot(ent, forceloottype)
+	local loottype = forceloottype or ent:GetNWInt("loottype")
+	local loot
+	if loottype == LOOTTYPE_NORMAL then
+		loot = self.LootTable[ent:GetNWInt("lootrarity")].Items
+	elseif loottype == LOOTTYPE_BOSS then
+		loot = self.LootTableBoss
+	elseif loottype == LOOTTYPE_FACTION then
+		loot = self.LootTableFaction
+	end
+	if !loot then error("oh no, something went wrong with randomizing loot tables.") return end
+	loot = table.Random(loot)
+
+	ent.LootType = loot.Class
+	ent.LootQuantity = loot.Qty or 1
 	return loot
 end
 
 function GM:SpawnLoot()
-	if (self.LootCount() >= self.MaxCaches) then return false end -- dont even bother running any checks if theres already too much loot
+	local lootcount = self:LootCount()
+	if lootcount >= self.MaxCaches then return false end -- dont even bother running any checks if theres already too much loot
 	if table.Count(self.LootSpawnpoints) == 0 then return end
 
 	local spawned = 0
 	for k, v in RandomPairs(self.LootSpawnpoints) do
-		if (self.LootCount() >= self.MaxCaches) then break end
+		if lootcount+spawned >= self.MaxCaches then break end
 		local ent
 
 		local pos = v[1]
 		local ang = v[2]
+		local tier = v[3]
 
-		local rng = math.Rand(0,100)
-		if rng > 14 then
-			self:SpawnLootCache("loot_cache", pos, ang)
-		elseif rng > 2 then
-			self:SpawnLootCache("loot_cache_weapon", pos, ang)
-		else
-			self:SpawnLootCache("loot_cache_special", pos, ang)
-		end
+		self:SpawnLootCache(LOOTTYPE_NORMAL, pos, ang, tier)
 		spawned = spawned + 1
 		if spawned >= 3 then break end
 	end
@@ -291,10 +292,10 @@ function GM:RollLootTable(params, maxrolls)
 	local rolls = 0
 	local rolled = {}
 	for k, v in pairs(params) do
-		if !self.LootTable[k] then ErrorNoHalt("---=== FUNCTION RollLootTable ERROR: ===---\n"..k.." IS NOT A VALID LOOT TABLE! See gamemode/sh_loot.lua for more info\n---======---\n") continue end
+		if !self.AirdropLootTable[k] then ErrorNoHalt("---=== FUNCTION RollLootTable ERROR: ===---\n"..k.." IS NOT A VALID LOOT TABLE! See gamemode/sh_loot.lua for more info\n---======---\n") continue end
 		if rolls >= maxrolls and maxrolls >= 0 then continue end
 		for i = 1, v[1] do
-			local item = table.Random(self.LootTable[k])
+			local item = table.Random(self.AirdropLootTable[k])
 			local qty = math.random(v[2], v[3])
 
 			if rolls >= maxrolls and maxrolls >= 0 then continue end

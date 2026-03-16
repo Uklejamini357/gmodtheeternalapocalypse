@@ -23,10 +23,9 @@ function GM:LoadZombies()
 			local v = string.Explode(";", str)
 			local pos = util.StringToType(v[1], "Vector")
 			local ang = util.StringToType(v[2], "Angle")
-			local radius = tonumber(v[3] or 0)
-			local tier = tonumber(v[4] or 1)
+			local tier = tonumber(v[3] or 1)
 
-			table.insert(tbl, {pos, ang, radius, tier})
+			table.insert(tbl, {pos, ang, tier})
 		end
 		self.ZombieSpawnpoints = tbl
 
@@ -36,8 +35,8 @@ function GM:LoadZombies()
 	end
 end
 
-function GM:AddZombieSpawnpoint(pos, yaw, radius, tier)
-	table.insert(self.ZombieSpawnpoints, {pos, Angle(0, yaw, 0), radius, tier})
+function GM:AddZombieSpawnpoint(pos, yaw, tier)
+	table.insert(self.ZombieSpawnpoints, {pos, Angle(0, yaw, 0), tier})
 	
 	self:SaveZombieSpawnpoints()
 	self:UpdateAdminEyes("Zombie")
@@ -64,7 +63,7 @@ end
 function GM:SaveZombieSpawnpoints()
 	local ftext = ""
 	for _,var in pairs(self.ZombieSpawnpoints) do
-		ftext = ftext..(ftext=="" and "" or "\n")..tostring(var[1])..";"..tostring(var[2])
+		ftext = ftext..(ftext=="" and "" or "\n")..tostring(var[1])..";"..tostring(var[2])..";"..(var[3] or 1)
 	end
 
 	if ftext == "" then
@@ -326,6 +325,7 @@ function GM:SpawnZombies()
 
 		local pos = v[1] + Vector(0, 0, 5)
 		local ang = v[2]
+		local tier = v[3]
 
 		local inzedrange = true
 		for _, v in ipairs(ents.FindInSphere(pos, 200)) do

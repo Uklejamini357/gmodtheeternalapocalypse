@@ -1050,92 +1050,83 @@ function GM:OpenAdminToolMenuOptions(wep)
 
 
 
-	do
-		local b2 = vgui.Create("DLabel", atm)
-		b2:SetText("Cash gain")
-		b2:Dock(TOP)
-		b2:SizeToContents()
+	local tbl = {}
+	if wep:GetSpawningType() == ADMINTOOL_SPAWNTYPE_ZOMBIE then
+		tbl = {
+			CashReward = {
+				Name = "Cash gain",
+				Type = "number"
+			},
+			XPReward = {
+				Name = "XP gain",
+				Type = "number"
+			},
+			InfectionRate = {
+				Name = "Infection level gainrate",
+				Type = "number"
+			},
+			ForceLevel = {
+				Name = "Force level",
+				Type = "number"
+			},
+			BossZombie = {
+				Name = "Boss zombie",
+				Type = "bool"
+			},
+		}
+	elseif wep:GetSpawningType() == ADMINTOOL_SPAWNTYPE_MAPSPAWNS then
+		tbl = GAMEMODE.AdminMapSpawnables[wep:GetSpawning()].Options
+	end
 
-		local b1 = vgui.Create("DTextEntry", atm)
-		b1:SetTooltip("Set to an empty value to make it default.")
-		b1:SetText(optionstbl["CashReward"] or "")
-		b1:SetUpdateOnType(true)
-		b1:Dock(TOP)
-		b1:DockMargin(5, 10, 5, 0)
-		b1.OnValueChange = function(self, newvalue)
-			optionstbl["CashReward"] = tonumber(newvalue)
-			updateoptions(optionstbl)
+
+	local function thing(id, v)
+		if v.Type == "number" then
+			local b2 = vgui.Create("DLabel", atm)
+			b2:SetText(v.Name or id)
+			b2:Dock(TOP)
+			b2:SizeToContents()
+
+			local b1 = vgui.Create("DTextEntry", atm)
+			b1:SetTooltip("Set to an empty value to make it default.")
+			b1:SetText(optionstbl[id] or "")
+			b1:SetUpdateOnType(true)
+			b1:Dock(TOP)
+			b1:DockMargin(5, 10, 5, 0)
+			b1.OnValueChange = function(self, newvalue)
+				optionstbl[id] = tonumber(newvalue)
+				updateoptions(optionstbl)
+			end
+		elseif v.Type == "bool" then
+			local b1 = vgui.Create("DCheckBoxLabel", atm)
+			b1:SetText(v.Name or id)
+			b1:Dock(TOP)
+			b1:DockMargin(5,0,0,0)
+			b1.Paint = function(self,w,h)
+				surface.SetDrawColor(0,0,0,100)
+				surface.DrawRect(0,0,w,h)
+				surface.SetDrawColor(255,255,255,200)
+				surface.DrawOutlinedRect(0,0,w,h)
+			end
+			b1.OnChange = function(self, val)
+				optionstbl[id] = val
+				updateoptions(optionstbl)
+			end
 		end
 	end
 
-	do
-		local b2 = vgui.Create("DLabel", atm)
-		b2:SetText("XP gain")
-		b2:Dock(TOP)
-		b2:SizeToContents()
-
-		local b1 = vgui.Create("DTextEntry", atm)
-		b1:SetText(optionstbl["XPReward"] or "")
-		b1:SetTooltip("Set to an empty value to make it default.")
-		b1:SetUpdateOnType(true)
-		b1:Dock(TOP)
-		b1:DockMargin(5, 10, 5, 0)
-		b1.OnValueChange = function(self, newvalue)
-			optionstbl["XPReward"] = tonumber(newvalue)
-			updateoptions(optionstbl)
-		end
-	end
-
-	do
-		local b2 = vgui.Create("DLabel", atm)
-		b2:SetText("Infection level gainrate")
-		b2:Dock(TOP)
-		b2:SizeToContents()
-
-		local b1 = vgui.Create("DTextEntry", atm)
-		b1:SetText(optionstbl["InfectionRate"] or "")
-		b1:SetTooltip("Set to an empty value to make it default.")
-		b1:SetUpdateOnType(true)
-		b1:Dock(TOP)
-		b1:DockMargin(5, 10, 5, 0)
-		b1.OnValueChange = function(self, newvalue)
-			optionstbl["InfectionRate"] = tonumber(newvalue)
-			updateoptions(optionstbl)
-		end
-	end
-
-	do
-		local b2 = vgui.Create("DLabel", atm)
-		b2:SetText("Force level")
-		b2:Dock(TOP)
-		b2:SizeToContents()
-
-		local b1 = vgui.Create("DTextEntry", atm)
-		b1:SetText(optionstbl["ForceLevel"] or "")
-		b1:SetTooltip("Set to an empty value to make it default.")
-		b1:SetUpdateOnType(true)
-		b1:Dock(TOP)
-		b1:DockMargin(5, 10, 5, 0)
-		b1.OnValueChange = function(self, newvalue)
-			optionstbl["ForceLevel"] = tonumber(newvalue)
-			updateoptions(optionstbl)
-		end
-	end
-
-	do
-		local b1 = vgui.Create("DCheckBoxLabel", atm)
-		b1:SetText("Boss zombie")
+	if table.Count(tbl) == 0 then
+		local b1 = vgui.Create("DLabel", atm)
+		b1:SetText("No options found!")
 		b1:Dock(TOP)
 		b1:DockMargin(5,0,0,0)
-		b1.Paint = function(self,w,h)
-			surface.SetDrawColor(0,0,0,100)
-			surface.DrawRect(0,0,w,h)
-			surface.SetDrawColor(255,255,255,200)
-			surface.DrawOutlinedRect(0,0,w,h)
+	else
+		for id,v in pairs(tbl) do
+			if v.Type ~= "number" then continue end
+			thing(id, v)
 		end
-		b1.OnChange = function(self, val)
-			optionstbl["BossZombie"] = val
-			updateoptions(optionstbl)
+		for id,v in pairs(tbl) do
+			if v.Type ~= "bool" then continue end
+			thing(id, v)
 		end
 	end
 end

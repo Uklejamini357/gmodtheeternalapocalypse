@@ -3,8 +3,8 @@ GM.AltName	= "After The End Reborn"
 GM.Author	= "Uklejamini"
 GM.Email	= ""
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.12.0b7" -- very close to 0.12.0. now for reworking the loots, and writing all the changelog notes.
-GM.DateVer	= "15.03.2026" -- Follows the DD.MM.YYYY format.
+GM.Version	= "0.12.0b8" -- very close to 0.12.0. now for reworking the loots, and writing all the changelog notes.
+GM.DateVer	= "16.03.2026" -- Follows the DD.MM.YYYY format.
 GM.Credits = {
 	-- Assets
 	{"GSC Game World",			"For all the S.T.A.L.K.E.R. content",										""},
@@ -745,6 +745,44 @@ end
 
 function GM:GetZombieLvlMax()
 	return math.floor(#player.GetAll()+9+self:GetInfectionLevel()/3)
+end
+
+function GM:GetLootTypeName(id)
+	if id == LOOTTYPE_NORMAL then
+		return "Loot cache"
+	elseif id == LOOTTYPE_BOSS then
+		return "Boss loot cache"
+	elseif id == LOOTTYPE_FACTION then
+		return "Faction loot cache"
+	end
+end
+
+function GM:GetLootRarityColor(id)
+	if id == LOOTRARITY_COMMON then
+		return color_white
+	elseif id == LOOTRARITY_UNCOMMON then
+		return Color(188,237,168)
+	elseif id == LOOTRARITY_RARE then
+		return Color(120,203,236)
+	elseif id == LOOTRARITY_EPIC then
+		return Color(188,107,232)
+	elseif id == LOOTRARITY_LEGENDARY then
+		return Color(251,240,168)
+	end
+end
+
+function GM:GetLootRarityName(id)
+	if id == LOOTRARITY_COMMON then
+		return "Common"
+	elseif id == LOOTRARITY_UNCOMMON then
+		return "Uncommon"
+	elseif id == LOOTRARITY_RARE then
+		return "Rare"
+	elseif id == LOOTRARITY_EPIC then
+		return "Epic"
+	elseif id == LOOTRARITY_LEGENDARY then
+		return "Legendary"
+	end
 end
 
 function HammerUnitsToMeters(units)
