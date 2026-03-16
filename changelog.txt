@@ -1,10 +1,22 @@
 There's been a lot missed out...
+WORKING ON THIS CURRENTLY
 
 -------- v0.12.0 FULL CHANGELOG --------
 
 Nope.
 
---------  --------
+
+-------- v0.12.0b7 of 15th March 2026 --------
+-------- v0.12.0b6 of 15th March 2026 --------
+-------- v0.12.0b5 of 14th March 2026 --------
+-------- v0.12.0b4 of 12th March 2026 --------
+-------- v0.12.0b3 of 11th March 2026 --------
+-------- v0.12.0b2 of 8th March 2026 --------
+-------- v0.12.0b1 of 8th March 2026 --------
+
+-------- v0.11.4a of 24th August 2025 --------
+
+-------- v0.11.4 of 5th August 2025 --------
 
 
 +- Added and removed some background images whilst in the main menu
@@ -29,9 +41,80 @@ Nope.
 * Fix death messages for thirst, hunger, fatigue, infection.
 * Fix some death sounds
 
--------- Missing since v0.11.2 --------
+-------- v0.11.3b of 7th June 2025 --------
+-------- v0.11.3a of 28th January 2025 --------
+-------- v0.11.3 of 7th January 2025 --------
+-------- v0.11.2e of 5th January 2025 --------
+-------- v0.11.2d of 5th January 2025 --------
+-------- v0.11.2c of 5th January 2025 --------
+-------- v0.11.2b of 5th January 2025 --------
+-------- v0.11.2a of 2nd January 2025 --------
+-------- v0.11.2 of 30th December 2024 --------
 
-??????
+-------- v0.11.2 beta of 1st June 2024 --------
+
+
+
+
+-------- Ver. 0.11.1c of 25 February 2024 --------
+
++ Added 1 new tip
++ Added new tip in perks menu
++ Added debug command for testing log
++ You can now sell and put in vault multiple items at once.
+
+/ Changed shake function for rpg explosion
+/ Changed zombie path time in order to hopefully reduce lag on larger paths
+/ Edited help menu
+/ Change drawing zombie info
+/ CHudDamageIndicator no longer shows if not alive
+/ No longer lose xp on death by default
+/ Tyrant spawn chance 60% -> 70%
+/ Zombie Lord King spawn chance 40% -> 30%
+
+= Nerfed shambler zombie runspeed 75 -> 65
+= Zombie Lord King changes:
+> Health reduced 22000 -> 19500
+> Range increased 80 -> 100
+= Tyrant health reduced 25000 -> 21500
+= Leaper changes:
+> Runspeed reduced 214 -> 198
+> Hit delay increased 0.15s -> 0.25s
+> Attack delay increased 0.3s -> 0.35s
+= Axe stamina reduction reduced 4.5% -> 3.25%
+= Deadly axe changes:
+> Reduced stamina reduction 13.5% -> 11.5%
+> Increased range 55 -> 75
+= Pig Sticker changes:
+> Slash stamina reduction 2% -> 1.65%
+> Stabbing stamina reduction 3% -> 2.55%
+= Scrap sword stamina reduction 7.75% -> 5.35%
+= Decreased infection level reduction by 10%
+= Reduced minimum players required for the boss to spawn 3 -> 2
+= Starting inventory: Medkits 1x -> 2x
+= Starting vault: 1x Soda -> 2x Soda, 1 Potato
+= Reduced cost for all armor
+= Reduced xp level requirement
+
+= Xp gain boost I perk changes:
+> Prestige required: 6 -> 5
+> Perk points cost: 3 -> 2
+= Xp gain boost II perk changes:
+> Prestige required: 16 -> 13
+> Perk points cost: 5 -> 
+= Bonus skill points I perk changes:
+> Now gives 5 skill points instead of 3
+> Effect now applies upon unlocking the perk instead of next prestige
+= Bonus skill points II perk changes:
+> Cost 3 -> 2
+> Prestige required 11 -> 10
+> Now gives skill points equal to your current prestige
+> Effect applies immediately upon unlocking the perk
+= Critical damage perk prestige requirement 5 -> 4
+= Damage Resistance perk changes:
+> Cost 2 -> 1
+> Prestige required 7 -> 6
+
 
 -------- Ver. 0.11.1b of 04 September 2023 --------
 
