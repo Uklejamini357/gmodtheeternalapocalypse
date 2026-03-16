@@ -187,7 +187,7 @@ GM:CreateItem("item_egg", {
     Model = "models/props_phx/misc/egg.mdl",
     Weight = 0.08,
     Supply = 0,
-    Rarity = RARITY_TRASH,
+    Rarity = RARITY_GARBAGE,
     Category = ITEMCATEGORY_SUPPLIES,
 	ItemType = ITEMTYPE_FOOD,
 

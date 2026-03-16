@@ -827,7 +827,7 @@ LANG.Tip19 = "Keep an eye on infection level. Zombies become more dangerous, but
 
 -- New ?????
 
-LANG.the_eternal_apocalypse = "The Eternal Apocalypse" -- ?????
+LANG.the_eternal_apocalypse = "The Eternal Apocalypse"
 LANG.the_eternal_apocalypse_desc = "An apocalyptic survival-based gamemode. The zombies are waiting for you."
 LANG.the_eternal_apocalypse_character = "Choose your character to play."
 LANG.play = "Play"
@@ -876,6 +876,20 @@ LANG.not_in_faction = "You are not in a faction!"
 LANG.must_be_at_least_level_x_to_prestige = "You must be at least level %d to prestige!"
 LANG.this_player_doesnt_exist = "This player doesn't exist!"
 LANG.required_items_to_craft = "Required Items to craft item '%s':"
+
+LANG.garbage = "Garbage"
+LANG.junk = "Junk"
+LANG.common = "Common"
+LANG.uncommon = "Uncommon"
+LANG.rare = "Rare"
+LANG.super_rare = "Super rare"
+LANG.epic = "Epic"
+LANG.legendary = "Legendary"
+LANG.mythic = "Mythic"
+LANG.godly = "Godly"
+LANG.event = "Event"
+LANG.unobtainable = "Unobtainable"
+LANG.uncategorized = "Uncategorized"
 
 -- Separated Translation Strings
 -- Sometimes, some strings must be separated, i.e.
@@ -938,13 +952,12 @@ LANG.sleep_bedobstructed = "This bed is obstructed!"
 LANG.sleep_now_sleeping = "You are now asleep."
 LANG.opening_airdrop = "Opening airdrop crate... It will take %d seconds to open."
 
-LANG.you_picked_up_a_lootcache = "You picked up a loot cache containing [%dx %s]"
-LANG.you_picked_up_a_lootcache_boss = "You picked up a boss drop cache containing [%dx %s]"
-LANG.you_picked_up_a_lootcache_faction = "You picked up a faction loot cache containing [%dx %s]"
-LANG.you_picked_up_a_lootcache_rare = "You picked up a rare cache containing [%dx %s]"
-LANG.player_found_lootcache_boss = "%s has found a boss cache containing %dx %s!"
-LANG.player_found_lootcache_faction = "%s has found a faction loot cache containing %dx %s!"
-LANG.player_found_lootcache_rare = "%s has found a rare cache containing %dx %s!"
+LANG.you_picked_up_a_lootcache = "You picked up a loot cache containing %s"
+LANG.you_picked_up_a_lootcache_boss = "You picked up a boss loot cache containing %s"
+LANG.you_picked_up_a_lootcache_faction = "You picked up a faction loot cache containing %s"
+LANG.plr_picked_up_a_lootcache = "%s picked up a loot cache containing %s"
+LANG.plr_picked_up_a_lootcache_boss = "%s picked up a boss loot cache containing %s"
+LANG.plr_picked_up_a_lootcache_faction = "%s picked up a faction loot cache containing %s"
 
 LANG.wakeup_cause_thirst = "You wake up with a very strong feeling of dehydration."
 LANG.wakeup_cause_hunger = "You wake up with a very strong feeling of imminent starvation."

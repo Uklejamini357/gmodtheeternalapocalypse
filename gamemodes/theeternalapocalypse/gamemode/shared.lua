@@ -171,47 +171,47 @@ end
 function GM:CheckItemRarity(rarity)
 	local tbl = {}
 
-	if rarity == 0 then
+	if rarity == RARITY_GARBAGE then
 		tbl.col = Color(155,155,155)
-		tbl.text = "Trash"
-	elseif rarity == 1 then
+		tbl.text = translate.Get("garbage")
+	elseif rarity == RARITY_JUNK then
 		tbl.col = Color(205,205,205)
-		tbl.text = "Junk"
-	elseif rarity == 2 then
+		tbl.text = translate.Get("junk")
+	elseif rarity == RARITY_COMMON then
 		tbl.col = Color(230,230,230)
-		tbl.text = "Common"
-	elseif rarity == 3 then
+		tbl.text = translate.Get("common")
+	elseif rarity == RARITY_UNCOMMON then
 		tbl.col = Color(205,255,205)
-		tbl.text = "Uncommon"
-	elseif rarity == 4 then
+		tbl.text = translate.Get("uncommon")
+	elseif rarity == RARITY_RARE then
 		tbl.col = Color(155,155,255)
-		tbl.text = "Rare"
-	elseif rarity == 5 then
+		tbl.text = translate.Get("rare")
+	elseif rarity == RARITY_SUPERRARE then
 		tbl.col = Color(255,205,0)
-		tbl.text = "Super Rare"
-	elseif rarity == 6 then
+		tbl.text = translate.Get("super_rare")
+	elseif rarity == RARITY_EPIC then
 		tbl.col = Color(255,155,255)
-		tbl.text = "Epic"
-	elseif rarity == 7 then
+		tbl.text = translate.Get("epic")
+	elseif rarity == RARITY_LEGENDARY then
 		tbl.col = Color(255,130,251)
-		tbl.text = "Legendary"
-	elseif rarity == 8 then
+		tbl.text = translate.Get("legendary")
+	elseif rarity == RARITY_MYTHIC then
 		tbl.col = Color(252,98,56)
-		tbl.text = "Mythic"
-	elseif rarity == 9 then
+		tbl.text = translate.Get("mythic")
+	elseif rarity == RARITY_GODLY then
 		tbl.col = Color(math.abs(math.sin(SysTime()))*255,0,155)
-		tbl.text = "Godly"
+		tbl.text = translate.Get("godly")
 		tbl.keeprefresh = true
-	elseif rarity == 10 then
+	elseif rarity == RARITY_EVENT then
 		tbl.col = Color(55,55,155+math.abs(math.sin(SysTime()))*100)
-		tbl.text = "Event"
+		tbl.text = translate.Get("event")
 		tbl.keeprefresh = true
-	elseif rarity == 11 then
+	elseif rarity == RARITY_UNOBTAINABLE then
 		tbl.col = Color(255,255,255)
-		tbl.text = "Unobtainable"
+		tbl.text = translate.Get("unobtainable")
 	else
 		tbl.col = Color(96,96,96)
-		tbl.text = "Uncategorized"
+		tbl.text = translate.Get("uncategorized")
 	end
 
 	return tbl

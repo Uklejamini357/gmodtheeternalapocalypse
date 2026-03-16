@@ -311,22 +311,22 @@ net.Receive("tea_lootpickup", function(len)
 		if ltype == LOOTTYPE_NORMAL then
 			if qty ~= 1 then
 				chat.AddText(color_white, "[", GAMEMODE:GetLootRarityColor(lrarity), GAMEMODE:GetLootRarityName(lrarity), color_white, "] ",
-				"You picked up a loot cache containing ", itemcol, GAMEMODE:GetItemName(item, me), color_white, " (x", GAMEMODE:GetLootRarityColor(lrarity), qty, color_white, ")")
+				translate.Get("you_picked_up_a_lootcache").." ", itemcol, GAMEMODE:GetItemName(item, me), color_white, " (x", GAMEMODE:GetLootRarityColor(lrarity), qty, color_white, ")")
 			else
 				chat.AddText(color_white, "[", GAMEMODE:GetLootRarityColor(lrarity), GAMEMODE:GetLootRarityName(lrarity), color_white, "] ",
-				"You picked up a loot cache containing ", itemcol, GAMEMODE:GetItemName(item, me))
+				translate.Get("you_picked_up_a_lootcache").." ", itemcol, GAMEMODE:GetItemName(item, me))
 			end
 		elseif ltype == LOOTTYPE_BOSS then
 			if qty ~= 1 then
-				chat.AddText("You picked up a boss loot cache containing ", itemcol, GAMEMODE:GetItemName(item, me), color_white, " (x", qty, ")")
+				chat.AddText(translate.Get("you_picked_up_a_lootcache_boss").." ", itemcol, GAMEMODE:GetItemName(item, me), color_white, " (x", qty, ")")
 			else
-				chat.AddText("You picked up a boss loot cache containing ", itemcol, GAMEMODE:GetItemName(item, me))
+				chat.AddText(translate.Get("you_picked_up_a_lootcache_boss").." ", itemcol, GAMEMODE:GetItemName(item, me))
 			end
 		elseif ltype == LOOTTYPE_FACTION then
 			if qty ~= 1 then
-				chat.AddText("You picked up a boss loot cache containing ", itemcol, GAMEMODE:GetItemName(item, me), color_white, " (x", qty, ")")
+				chat.AddText(translate.Get("you_picked_up_a_lootcache_faction"), itemcol, GAMEMODE:GetItemName(item, me), color_white, " (x", qty, ")")
 			else
-				chat.AddText("You picked up a boss loot cache containing ", itemcol, GAMEMODE:GetItemName(item, me))
+				chat.AddText(translate.Get("you_picked_up_a_lootcache_faction"), itemcol, GAMEMODE:GetItemName(item, me))
 			end
 		end
 	end
@@ -336,22 +336,22 @@ net.Receive("tea_lootpickup", function(len)
 	if ltype == LOOTTYPE_NORMAL then
 		if qty ~= 1 then
 			chat.AddText(color_white, "[", GAMEMODE:GetLootRarityColor(lrarity), GAMEMODE:GetLootRarityName(lrarity), color_white, "] ",
-			string.format("%s picked up a loot cache containing ", pl:Nick()), itemcol, GAMEMODE:GetItemName(item, me), color_white, " (x", GAMEMODE:GetLootRarityColor(lrarity), qty, color_white, ")")
+			translate.Format("plr_picked_up_a_lootcache", pl:Nick()).." ", itemcol, GAMEMODE:GetItemName(item, me), color_white, " (x", GAMEMODE:GetLootRarityColor(lrarity), qty, color_white, ")")
 		else
 			chat.AddText(color_white, "[", GAMEMODE:GetLootRarityColor(lrarity), GAMEMODE:GetLootRarityName(lrarity), color_white, "] ",
-			string.format("%s picked up a loot cache containing ", pl:Nick()), itemcol, GAMEMODE:GetItemName(item, me))
+			translate.Format("plr_picked_up_a_lootcache", pl:Nick()).." ", itemcol, GAMEMODE:GetItemName(item, me))
 		end
 	elseif ltype == LOOTTYPE_BOSS then
 		if qty ~= 1 then
-			chat.AddText(string.format("%s picked up a boss loot cache containing ", pl:Nick()), itemcol, GAMEMODE:GetItemName(item, me), color_white, " (x", qty, ")")
+			chat.AddText(translate.Format("plr_picked_up_a_lootcache_boss", pl:Nick()).." ", itemcol, GAMEMODE:GetItemName(item, me), color_white, " (x", qty, ")")
 		else
-			chat.AddText(string.format("%s picked up a boss loot cache containing ", pl:Nick()), itemcol, GAMEMODE:GetItemName(item, me))
+			chat.AddText(translate.Format("plr_picked_up_a_lootcache_boss", pl:Nick()).." ", itemcol, GAMEMODE:GetItemName(item, me))
 		end
 	elseif ltype == LOOTTYPE_FACTION then
 		if qty ~= 1 then
-			chat.AddText(string.format("%s picked up a boss loot cache containing ", pl:Nick()), itemcol, GAMEMODE:GetItemName(item, me), color_white, " (x", qty, ")")
+			chat.AddText(translate.Format("plr_picked_up_a_lootcache_faction", pl:Nick()).." ", itemcol, GAMEMODE:GetItemName(item, me), color_white, " (x", qty, ")")
 		else
-			chat.AddText(string.format("%s picked up a boss loot cache containing ", pl:Nick()), itemcol, GAMEMODE:GetItemName(item, me))
+			chat.AddText(translate.Format("plr_picked_up_a_lootcache_faction", pl:Nick()).." ", itemcol, GAMEMODE:GetItemName(item, me))
 		end
 	end
 end)
