@@ -204,7 +204,7 @@ GM.AdminMapSpawnables = {
 	Zombie = {
 		Name = "zombies",
 		Spawn = function(owner, swep, tr, pos, options)
-			gamemode.Call("AddZombieSpawnpoint", pos, owner:EyeAngles().yaw, options.Tier)
+			gamemode.Call("AddZombieSpawnpoint", pos, owner:EyeAngles().yaw, options.Tier or 1)
 			owner:PrintMessage(3, "Added zombie spawnpoint")
 		end,
 		View = function(owner, var)

@@ -1118,7 +1118,7 @@ function GM:OpenAdminToolMenuOptions(wep)
 		end
 	end
 
-	if table.Count(tbl) == 0 then
+	if !tbl or table.Count(tbl) == 0 then
 		local b1 = vgui.Create("DLabel", atm)
 		b1:SetText("No options found!")
 		b1:Dock(TOP)
