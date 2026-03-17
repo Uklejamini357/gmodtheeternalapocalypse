@@ -205,8 +205,6 @@ i = GM:CreateItem("item_craft_engine_large", {
 
 
 i = GM:CreateItem("item_propane", {
-    Name = "Propane",
-    Description = "An explosive propane. Handle with caution! Explodes violently upon being shot at or if it hits the ground too hard.",
     Cost = 5000,
     Model = "models/props_junk/PropaneCanister001a.mdl",
     Weight = 5.6,
@@ -304,8 +302,6 @@ i = GM:CreateItem("item_difficulty_shard", {
 })
 
 i = GM:CreateItem("item_oxygentank", {
-    Name = "Oxygen Tank",
-    Description = "An air tank filled with Oxygen. For use in underwater explorations, in case of running out of oxygen to quickly refill oxygen.\nBest use with Closed-Cycle Respiration suits.",
     Cost = 1500,
     Model = "models/props_c17/canister01a.mdl",
     Weight = 1.8,
@@ -321,8 +317,6 @@ i = GM:CreateItem("item_oxygentank", {
 })
 
 i = GM:CreateItem("item_airdropradio", {
-    Name = "Airdrop Radio",
-    Description = "Calls an airdrop.",
     Cost = 30000,
     Model = "models/wick/wrbstalker/anomaly/items/wick_dev_detector_09.mdl",
     Weight = 0.7,
@@ -346,8 +340,6 @@ i = GM:CreateItem("item_airdropradio", {
 })
 
 i = GM:CreateItem("item_bossdetector", {
-    Name = "Boss Detector",
-    Description = "Can detect any nearby boss zombies. On use drains 50% of your battery.\nEffective range: ~350m",
     Cost = 30000,
     Model = "models/wick/wrbstalker/anomaly/items/wick_dev_detector_8.mdl",
     Weight = 0.55,
@@ -405,8 +397,6 @@ i = GM:CreateItem("item_bossdetector", {
 })
 
 i = GM:CreateItem("item_airdropdetector", {
-    Name = "Airdrop Detector",
-    Description = "This IFF Jammer detector can detect any dropped airdrop that is left untouched. On use drains 40% of your battery.\nEffective range: ~300m",
     Cost = 35000,
     Model = "models/wick/wrbstalker/anomaly/items/wick_dev_detector_8.mdl",
     Weight = 0.55,

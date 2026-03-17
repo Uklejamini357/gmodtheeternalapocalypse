@@ -286,15 +286,15 @@ function GM:InvMenu()
 			draw.SimpleText(translate.Format("armorprot", prot, protdef), "TEA.HUDFontSmall", panel:GetWide() - 255, 250, Color(205,255,205,255))
 			draw.SimpleText(translate.Format("armor_envprot", env_prot, env_protdef), "TEA.HUDFontSmall", panel:GetWide() - 255, 265, Color(255,230,255,255))
 			draw.SimpleText(translate.Get("armorspeed")..": "..ply:GetArmorSpeedMultiplier().."%", "TEA.HUDFontSmall", panel:GetWide() - 255, 280, Color(205,205,255,255))
-			draw.SimpleText(armorcarryweight >= 0 and translate.Format("armormaxweight", "+", armorcarryweight) or translate.Format("armormaxweight", "", armorcarryweight), "TEA.HUDFontSmall", panel:GetWide() - 255, 295, Color(255,255,175,255))
+			draw.SimpleText(translate.Format("armor_max_weight", armorcarryweight >= 0 and "+" or "", armorcarryweight), "TEA.HUDFontSmall", panel:GetWide() - 255, 295, Color(255,255,175,255))
 		else
-			draw.SimpleText(translate.Get("noarmor"), "TEA.HUDFontSmall", panel:GetWide() - 255, 235, Color(255,255,255,255))
-			draw.SimpleText(translate.Format("armorprot", 0, protdef), "TEA.HUDFontSmall", panel:GetWide() - 255, 250, Color(205,255,205,255))
-			draw.SimpleText(translate.Format("armor_envprot", 0, env_protdef), "TEA.HUDFontSmall", panel:GetWide() - 255, 265, Color(255,230,255,255))
-			draw.SimpleText(translate.Get("armorspeed")..": None", "TEA.HUDFontSmall", panel:GetWide() - 255, 280, Color(205,205,255,255))
-			draw.SimpleText(translate.Format("armormaxweight", "+", "0"), "TEA.HUDFontSmall", panel:GetWide() - 255, 295, Color(255,235,205,255))
+			draw.SimpleText(translate.Get("noarmor"), "TEA.HUDFontSmall", panel:GetWide() - 255, 235, Color(255,255,255))
+			draw.SimpleText(translate.Format("armorprot", 0, protdef), "TEA.HUDFontSmall", panel:GetWide() - 255, 250, Color(205,255,205))
+			draw.SimpleText(translate.Format("armor_envprot", 0, env_protdef), "TEA.HUDFontSmall", panel:GetWide() - 255, 265, Color(255,230,255))
+			draw.SimpleText(translate.Get("armorspeed")..": None", "TEA.HUDFontSmall", panel:GetWide() - 255, 280, Color(205,205,255))
+			draw.SimpleText(translate.Format("armor_max_weight", "+", "0"), "TEA.HUDFontSmall", panel:GetWide() - 255, 295, Color(255,235,205))
 		end
-		draw.SimpleText( translate.Format("skillpoints", math.floor(MySP)), "TEA.HUDFontSmall", panel:GetWide() - 255, 310, Color(205, 205, 205, 255))
+		draw.SimpleText(translate.Format("skillpoints", math.floor(MySP)), "TEA.HUDFontSmall", panel:GetWide() - 255, 310, Color(205, 205, 205))
 	end
 	pInvPanel.Think = function()
 	end
@@ -738,10 +738,10 @@ function GM:InvMenu()
 	local props = vgui.Create("Panel", InvSheet1)
 	props:SetSize(0,0)
 	
-	InvSheet1:AddSheet(translate.Get("sb_sheet1"), InvForm, "icon16/basket.png", false, false, translate.Get("sb_sheet1_d"))
-	InvSheet1:AddSheet(translate.Get("sb_sheet5"), CraftForm, "icon16/wrench_orange.png", false, false, translate.Get("sb_sheet5_d"))
-	InvSheet1:AddSheet(translate.Get("sb_sheet6"), StatisticsForm, "icon16/user.png", false, false, translate.Get("sb_sheet6_d"))
-	local tab = InvSheet1:AddSheet("Props", props, "icon16/brick.png", false, false, "Props!")
+	InvSheet1:AddSheet(translate.Get("inventory"), InvForm, "icon16/basket.png", false, false, translate.Get("inventory_d"))
+	InvSheet1:AddSheet(translate.Get("crafting"), CraftForm, "icon16/wrench_orange.png", false, false, translate.Get("crafting_d"))
+	InvSheet1:AddSheet(translate.Get("statistics"), StatisticsForm, "icon16/user.png", false, false, translate.Get("statistics_d"))
+	local tab = InvSheet1:AddSheet(translate.Get("props"), props, "icon16/brick.png", false, false, translate.Get("props_d"))
 	tab.Tab.DoClick = function()
 		self:CloseInvMenu()
 		self:OpenPropMenu()
@@ -749,7 +749,7 @@ function GM:InvMenu()
 
 
 
-	InvSheet2:AddSheet(translate.Get("sb_sheet1_1"), invStats, "icon16/heart.png", false, false, translate.Get("sb_sheet1_1_d"))
+	InvSheet2:AddSheet(translate.Get("my_skills"), invStats, "icon16/heart.png", false, false, translate.Get("my_skills_d"))
 
 	return pInvPanel
 end

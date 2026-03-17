@@ -193,7 +193,7 @@ end)
 net.Receive("ChangeModel", function(len, ply)
 	if !ply:IsValid() or !ply:Alive() then return false end
 	if (ply.NxtModelChange or 0) > CurTime() then
-		ply:SystemMessage(Format("You can't change your playermodel now! Try again in %d seconds!", math.floor(ply.NxtModelChange - CurTime())), Color(255,155,155), true)
+		ply:SystemMessage(translate.ClientFormat(ply, "playermodel_change_on_cooldown", math.floor(ply.NxtModelChange - CurTime())), Color(255,155,155), true)
 		return false
 	end
 	local model = net.ReadString()

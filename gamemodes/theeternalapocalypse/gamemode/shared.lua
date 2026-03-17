@@ -445,27 +445,27 @@ function GM:GetItemDescription(id, ply) -- ply is for the server
 	local armorstats = item.ArmorStats
 	if armorstats then
 		if armorstats.reduction then
-			desc = desc.."\n"..Format("Protection: %s%%", armorstats.reduction)
+			desc = desc.."\n"..translate.ClientFormat(ply, "armor_prot", armorstats.reduction)
 		end
 
 		if armorstats.env_reduction then
-			desc = desc.."\n"..Format("Environmental Protection: %s%%", armorstats.env_reduction)
+			desc = desc.."\n"..translate.ClientFormat(ply, "armor_env_prot", armorstats.env_reduction)
 		end
 
 		if armorstats.speedloss_percent then
-			desc = desc.."\n"..Format("Speed: %s%%", 100 - armorstats.speedloss_percent)
+			desc = desc.."\n"..translate.ClientFormat(ply, "armor_speed", 100 - armorstats.speedloss_percent)
 		end
 
 		if armorstats.slots then
-			desc = desc.."\n"..Format("Attachment Slots: %s", armorstats.slots)
+			desc = desc.."\n"..translate.ClientFormat(ply, "armor_att_slots", armorstats.slots)
 		end
 
 		if armorstats.battery then
-			desc = desc.."\n"..Format("Battery: %s", armorstats.battery)
+			desc = desc.."\n"..translate.ClientFormat(ply, "armor_battery", armorstats.battery)
 		end
 
 		if armorstats.carryweight then
-			desc = desc.."\n"..Format("Max Carry Weight: +%skg", armorstats.carryweight)
+			desc = desc.."\n"..translate.ClientFormat(ply, "armor_max_weight", armorstats.carryweight)
 		end
 	end
 

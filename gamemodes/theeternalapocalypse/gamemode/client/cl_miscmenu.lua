@@ -3,6 +3,7 @@ local PrinterPanel
 
 function GM:MakeMoneyPrinterPanel(ent)
 	if IsValid(PrinterPanel) then PrinterPanel:Remove() end
+	local pl = LocalPlayer()
 	PrinterPanel = vgui.Create("DFrame")
 	PrinterPanel:SetSize(500, 400)
 	PrinterPanel:Center()
@@ -57,7 +58,7 @@ function GM:MakeMoneyPrinterPanel(ent)
 	cash:SetColor(Color(155,255,155,255))
 	cash:SizeToContents()
 	cash.Think = function()
-		local txt = "My Wallet: "..math.floor(MyMoney).."\nMy bounty: "..math.floor(MyBounty)
+		local txt = "My Wallet: "..math.floor(pl.Money).."\nMy bounty: "..math.floor(MyBounty)
 		if cash:GetText() == txt then return end
 		cash:SetText(txt)
 	end

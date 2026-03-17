@@ -192,11 +192,11 @@ function GM:UseItem(ply, item, use, targetply)
 
 					if consum.UseTime then
 						local str = {
-							[ITEMTYPE_MED] = "Healing "..(targetply and targetply ~= ply and targetply:Nick() or "").."...",
-							[ITEMTYPE_MEDANTIDOTE] = "Healing Infection...",
-							[ITEMTYPE_ARMOR] = "Reinforcing armor...",
-							[ITEMTYPE_FOOD] = "Eating food...",
-							[ITEMTYPE_DRINK] = "Drinking...",
+							[ITEMTYPE_MED] = targetply and targetply ~= ply and translate.ClientFormat(ply, "healing_target" targetply:Nick()) or translate.ClientGet(ply, "healing"),
+							[ITEMTYPE_MEDANTIDOTE] = translate.ClientGet(ply, "healing_infection"),
+							[ITEMTYPE_ARMOR] = translate.ClientGet(ply, "reinforcing_armor"),
+							[ITEMTYPE_FOOD] = translate.ClientGet(ply, "eating"),
+							[ITEMTYPE_DRINK] = translate.ClientGet(ply, "drinking"),
 						}
 
 						ply:SendUseDelay(consum.UseTime, str[itemtype] or "Using an item", nil, consum.FastUsable)
@@ -326,25 +326,18 @@ net.Receive("BuyItem", function(length, ply)
 	local str = net.ReadString()
 	if ply:IsValid() and ply:Alive() and ply:IsPvPGuarded() then -- if they aren't pvp guarded then they aren't near a trader and are therefore trying to hack
 		ply:BuyItem(str)
-	elseif !ply:IsPvPGuarded() then
-		ply:SystemMessage(translate.ClientGet(ply, "antihack_roast_hack_buy_nonpvpguarded"), Color(255,205,205,255), true)
 	end
 end)
 
 
 function meta:BuyItem(str)
-	--if !ply.CanBuy then self:SendChat("Hey calm down there bud, don't rush the system") return false end -- cancel the function if they are spamming net messages
-	if !GAMEMODE.ItemsList[str] then self:SendChat(translate.ClientGet(self, "itemnonexistant")) return end -- if the item doenst exist
-
 	local item = GAMEMODE.ItemsList[str]
-	local stockcheck = GAMEMODE.ItemsList[str]["Supply"]
+	if !item then self:SendChat(translate.ClientGet(self, "itemnonexistant")) return end -- if the item doenst exist
+
+	local stockcheck = item.Supply
 	local buyprice = item.Cost * self:GetItemBuyCostMul(item)
 
-	if stockcheck <= -1 then
-		self:SendChat(translate.ClientGet(self, "antihack_roast_hack_buy"))
-		print(self:Nick().." ("..self:SteamID()..") attempted to buy an item that trader doesn't sell!")
-		return
-	end
+	if !stockcheck or stockcheck <= -1 then return end
 
 	local cash = tonumber(self.Money)
 
@@ -368,10 +361,7 @@ net.Receive("SellItem", function(len, ply)
 	local amt = net.ReadUInt(32)
 
 	if !GAMEMODE.ItemsList[str] then ply:SendChat(translate.ClientGet(ply, "itemnonexistant")) return false end -- if the item doenst exist
-	if timer.Exists("Isplyequippingarmor"..ply:EntIndex().."_"..str) then
-		ply:SystemMessage(translate.ClientGet(ply, "antihack_roast_hack_sell_equipping_armor"), Color(255,155,155,255), true)
-		return false
-	end
+	if timer.Exists("Isplyequippingarmor"..ply:EntIndex().."_"..str) then return false end
 	if amt < 1 or !ply.Inventory[str] or ply.Inventory[str] < amt then return end
 
 	local item = GAMEMODE.ItemsList[str]

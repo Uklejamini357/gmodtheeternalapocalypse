@@ -121,7 +121,7 @@ function HUD:DrawHealth(pl, w, h, swep)
 ----------------Levels, cash, prestige & time survived----------------
     draw_SimpleText(translate.Format("prestige", math.floor(pl:GetTEAPrestige())), "TEA.HUDFontSmall", 270, h - 140, Color(205,205,205,255), 0, 1)
     draw_SimpleText(translate.Format("level", math.floor(pl:GetTEALevel())), "TEA.HUDFontSmall", 270, h - 122, Color(205,205,205,255), 0, 1)
-    draw_SimpleText(translate.Format("money", math.floor(MyMoney)), "TEA.HUDFontSmall", 270, h - 104, Color(205,205,205,255), 0, 1)
+    draw_SimpleText(translate.Format("money", math.floor(pl.Money)), "TEA.HUDFontSmall", 270, h - 104, Color(205,205,205,255), 0, 1)
     draw_SimpleText(translate.Format("bounty", math.floor(MyBounty)), "TEA.HUDFontSmall", 270, h - 86, Color(205, 205, 205, 255), 0, 1)
 end
 

@@ -37,7 +37,7 @@ net.Receive("UpdatePeriodicStats", function(len) -- this net message is only rec
 	local pl = LocalPlayer()
 
 	if not pl:IsValid() then return end
-	MyMoney = net.ReadFloat()
+	pl.Money = net.ReadFloat()
 	MyXP = net.ReadFloat()
 	MySP = net.ReadFloat()
 	MyPerkPoints = net.ReadFloat()
@@ -693,6 +693,7 @@ function GM:DrawMiscThings()
 		local pickup = ent:GetNWEntity("pickup")
 
 		local typ = ent:GetNWInt("loottype")
+		if !typ or typ == 0 then return end
 		local col = typ == LOOTTYPE_BOSS and Color(125,23,23) or typ == LOOTTYPE_FACTION and Color(240,120,172) or self:GetLootRarityColor(ent:GetNWInt("lootrarity"))
 		local name = self:GetLootRarityName(ent:GetNWInt("lootrarity"))
 		local canpick = !pickup or !pickup:IsValid() or !pickup:IsPlayer() or pickup == me

@@ -362,7 +362,7 @@ function GM:InitializeLocalPlayer()
 	pl.Infection = 0
 	MySurvivaltime = 0
 	pl.Battery = 0
-	MyMoney = 0
+	pl.Money = 0
 	MyXP = 0
 	MySP = 0
 	MyBounty = 0

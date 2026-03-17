@@ -21,7 +21,7 @@ function HUD:DrawHealth(pl, w, h, swep)
 
     draw_SimpleText(translate.Format("prestige", math.floor(pl:GetTEAPrestige())), "TEA.HUDFontSmall", 21, h - 60, Color(255,255,255), 0, 1)
     draw_SimpleText(translate.Format("level", math.floor(pl:GetTEALevel())), "TEA.HUDFontSmall", 21, h - 44, Color(255,255,255), 0, 1)
-    draw_SimpleText(translate.Format("money", math.floor(MyMoney)), "TEA.HUDFontSmall", 21, h - 28, Color(255,255,255), 0, 1)
+    draw_SimpleText(translate.Format("money", math.floor(pl.Money)), "TEA.HUDFontSmall", 21, h - 28, Color(255,255,255), 0, 1)
 
     surface_DrawRectColor(216, h - 108, 192, 100, Color(255,255,255,65))
     surface_DrawRectColor(w - 208, h - 108, 192, 100, Color(255,255,255,65))

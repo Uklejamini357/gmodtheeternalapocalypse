@@ -319,8 +319,12 @@ function GM:AdminMenu()
 			ItemDisplay.PaintOver = function()
 				return
 			end
-			ItemDisplay.OnMousePressed = function()
-				return false
+			ItemDisplay.OnMousePressed = function(self, mc)
+				if mc == MOUSE_RIGHT then
+					local d = DermaMenu()
+					d:AddOption("Copy item ID", function() SetClipboardText(k) end)
+					d:Open()
+				end
 			end
 		
 			local ItemName = vgui.Create("DLabel", ItemBackground)

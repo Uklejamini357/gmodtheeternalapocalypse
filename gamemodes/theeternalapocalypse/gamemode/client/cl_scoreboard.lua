@@ -391,7 +391,7 @@ function GM:CreateScoreboardInv()
 		fPublic:SetPos(500, 12)
 		fPublic:SetFont("TEA.HUDFontSmall")
 		fPublic:SetColor(Color(255,255,255))
-		fPublic:SetText(translate.Get(v.public and "faction_public" or "faction_public_no"))
+		fPublic:SetText(translate.Format("faction_public", v.public and translate.Get("yes") or translate.Get("no")))
 		fPublic:SizeToContents()
 
 		local fJoin = vgui.Create("DButton", pFaction)
@@ -485,10 +485,10 @@ function GM:CreateScoreboardInv()
 	DoAchievementsList()
 */
 ------------------------------------Sheets----------------------------------------
-	PropertySheet:AddSheet(translate.Get("sb_sheet3"), Scores, "icon16/group.png", false, false, translate.Get("sb_sheet3_d"))
-	PropertySheet:AddSheet(translate.Get("sb_sheet2"), sFactions, "icon16/user_red.png", false, false, translate.Get("sb_sheet2_d"))
-	PropertySheet:AddSheet(translate.Get("sb_sheet4"), HelpForm, "icon16/note.png", false, false, translate.Get("sb_sheet4_d"))
---	PropertySheet:AddSheet(translate.Get("sb_sheet7"), AchsForm, "icon16/award_star_silver_3.png", false, false, translate.Get("sb_sheet7_d"))
+	PropertySheet:AddSheet(translate.Get("scoreboard"), Scores, "icon16/group.png", false, false, translate.Get("scoreboard_d"))
+	PropertySheet:AddSheet(translate.Get("factions"), sFactions, "icon16/user_red.png", false, false, translate.Get("factions_d"))
+	PropertySheet:AddSheet(translate.Get("help"), HelpForm, "icon16/note.png", false, false, translate.Get("help_d"))
+--	PropertySheet:AddSheet(translate.Get("achievements"), AchsForm, "icon16/award_star_silver_3.png", false, false, translate.Get("achievements_d"))
 
 
 	return pScoreBoard

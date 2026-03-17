@@ -530,8 +530,6 @@ GM:CreateItem("item_armor_cs2_goggles", {
 
 
 GM:CreateItem("item_armor_beril5m", {
-	Name = "Beril-5M Military Armor",
-	Description = "A Berill-5M special forces suit modified for the Zone environment. It includes a PSZ-9a military bulletproof vest with beryllium coating and a Sphere-08 helmet.\nIt is designed for assault operations in areas with high background radiation. Its level of environmental protection is low.",
 	Cost = 70000,
 	Model = "models/stalkertnb/beri_mili.mdl",
 	Weight = 9,
@@ -552,8 +550,6 @@ GM:CreateItem("item_armor_beril5m", {
 
 
 GM:CreateItem("item_armor_merc_sunrise", {
-	Name = "Mercenary Sunrise Armor",
-	Description = "Mercenary Sunrise Armor, made by the mercenaries which have been inspired by the stalkers armor, became popular in use by the mercenaries.\nHas a decent protection from the cuts and bullets, as well as from the environmental hazards.",
 	Cost = 65000,
 	Model = "models/stalkertnb/sunrise_merc.mdl",
 	Weight = 6.7,
@@ -573,8 +569,6 @@ GM:CreateItem("item_armor_merc_sunrise", {
 })
 
 GM:CreateItem("item_armor_army_seva", {
-	Name = "Military SEVA Protection Suit",
-	Description = "",
 	Cost = 140000,
 	Model = "models/stalkertnb/beri_seva.mdl",
 	Weight = 13,
@@ -595,8 +589,6 @@ GM:CreateItem("item_armor_army_seva", {
 })
 
 GM:CreateItem("item_armor_stalker_seva", {
-	Name = "SEVA Protection Suit",
-	Description = "",
 	Cost = 125000,
 	Model = "models/stalkertnb/seva_lone.mdl",
 	Weight = 10,
@@ -617,8 +609,6 @@ GM:CreateItem("item_armor_stalker_seva", {
 })
 
 GM:CreateItem("item_armor_svoboda_seva", {
-	Name = "Freedom SEVA Protection Suit",
-	Description = "",
 	Cost = 125000,
 	Model = "models/stalkertnb/seva_free.mdl",
 	Weight = 10,
@@ -639,8 +629,6 @@ GM:CreateItem("item_armor_svoboda_seva", {
 })
 
 GM:CreateItem("item_armor_dolg_seva", {
-	Name = "Duty SEVA Protection Suit",
-	Description = "",
 	Cost = 130000,
 	Model = "models/stalkertnb/seva_duty.mdl",
 	Weight = 10,
@@ -661,8 +649,6 @@ GM:CreateItem("item_armor_dolg_seva", {
 })
 
 GM:CreateItem("item_armor_monolith_seva_heavy", {
-	Name = "Monolith Heavy SEVA Protection Suit",
-	Description = "",
 	Cost = 195000,
 	Model = "models/stalkertnb/seva_monolith_heavy.mdl",
 	Weight = 16.5,
@@ -683,8 +669,6 @@ GM:CreateItem("item_armor_monolith_seva_heavy", {
 })
 
 GM:CreateItem("item_armor_exo_dolg_heavy", {
-	Name = "Duty Heavy SKAT Exoskeleton",
-	Description = "This armor used by Duty Legends is not only very expensive but also incredibly bulky! Designed for top level military operations.",
 	Cost = 475000,
 	Model = "models/stalkertnb/exo_skat_duty_heavy.mdl",
 	Weight = 35,
@@ -704,8 +688,6 @@ GM:CreateItem("item_armor_exo_dolg_heavy", {
 })
 
 GM:CreateItem("item_armor_rad_svoboda", {
-	Name = "Freedom Radiation Suit",
-	Description = "",
 	Cost = 130000,
 	Model = "models/stalkertnb/rad_free.mdl",
 	Weight = 18,
@@ -725,8 +707,6 @@ GM:CreateItem("item_armor_rad_svoboda", {
 })
 
 GM:CreateItem("item_armor_rad_monolith_boss", {
-	Name = "Heavy Monolith Radiation Suit",
-	Description = "",
 	Cost = 250000,
 	Model = "models/stalkertnb/rad_monoboss.mdl",
 	Weight = 23,

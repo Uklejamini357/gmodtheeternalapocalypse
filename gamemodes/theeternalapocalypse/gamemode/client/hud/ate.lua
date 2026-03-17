@@ -37,9 +37,9 @@ function HUD:DrawHealth(pl, w, h, swep)
         draw_RoundedBox(4,20, h - 36, armorbarclamp,10,Color(0,0,150,160))
     end
 
-    surface_DrawRectColor(58, h - 36,4,20, Color(0,0,0,255))
-    surface_DrawRectColor(98, h - 36,4,20, Color(0,0,0,255))
-    surface_DrawRectColor(138, h - 36,4,20, Color(0,0,0,255))
+    surface_DrawRectColor(58, h - 36,4,20, color_black)
+    surface_DrawRectColor(98, h - 36,4,20, color_black)
+    surface_DrawRectColor(138, h - 36,4,20, color_black)
     surface_DrawOutlinedRect(20, h - 36,160,20)
     surface_DrawOutlinedRect(19, h - 37,162,22)
 
@@ -111,7 +111,7 @@ function HUD:DrawHealth(pl, w, h, swep)
     draw_SimpleText(translate.Format("bounty", math.floor(MyBounty)), "TEA.HUDFontSmall", 20, h - 187, Color(155, math.Clamp(127 - (MyBounty / 60), 0, 255), math.Clamp(255 - (MyBounty / 30), 0, 255)), 0, 1)
     draw_SimpleText(translate.Format("prestige", math.floor(pl:GetTEAPrestige())), "TEA.HUDFontSmall", 20, h - 168, Color(205,155,255), 0, 1)
     draw_SimpleText(translate.Format("level", math.floor(pl:GetTEALevel())), "TEA.HUDFontSmall", 20, h - 149, Color(200,200,200), 0, 1)
-    draw_SimpleText(translate.Format("money", math.floor(MyMoney)), "TEA.HUDFontSmall", 20, h - 130, Color(0,255,255), 0, 1)
+    draw_SimpleText(translate.Format("money", math.floor(pl.Money)), "TEA.HUDFontSmall", 20, h - 130, Color(0,255,255), 0, 1)
 end
 
 function HUD:DrawSwep(pl, w, h, swep)
@@ -153,7 +153,7 @@ function HUD:DrawSwep(pl, w, h, swep)
 end
 
 function HUD:DrawPVP(pl, state, w, h)
-    if state == 4 or state == 5 then    
+    if state >= 4 then    
         surface_SetDrawColor(100,0,0,175)
     else
         surface_SetDrawColor(0,0,0,200)
@@ -163,9 +163,9 @@ function HUD:DrawPVP(pl, state, w, h)
     surface_DrawOutlinedRect(140, 80, 180, 27)
 
     draw_SimpleText("PvP: "..translate.Get("pvp_state"..state), "TEA.HUDFontSmall", 180, 86, Color(205,205,205), 0, 0)
-    if state == 2 or state == 3 or state == 4 then
+    if state > 2 then
         draw_SimpleTextOutlined("C", "CSSTextFont", 135, 85, Color(255, 50, 0), 0, 0, 2, Color(50, 0, 0))
-    elseif state == 1 then
+    elseif state == 2 then
         draw_SimpleTextOutlined("p", "CSSTextFont", 145, 83, Color(50, 250, 0), 0, 0, 2, Color(0, 50, 0))
     else
         draw_SimpleTextOutlined("C", "CSSTextFont", 135, 85, Color(50, 50, 50), 0, 0, 2, Color(20, 0, 0))

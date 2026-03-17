@@ -21,6 +21,8 @@ end)
 
 function GM:OpenTraderMenu()
 	if IsValid(TraderMenu) then TraderMenu:Remove() end
+	local pl = LocalPlayer()
+
 	TraderMenu = vgui.Create("DFrame")
 	TraderMenu:SetSize(400, 300)
 	TraderMenu:Center()
@@ -68,11 +70,11 @@ function GM:OpenTraderMenu()
 	local cash = vgui.Create("DLabel", TraderMenu)
 	cash:SetFont("TEA.HUDFont")
 	cash:SetPos(100, 190)
-	cash:SetText("My Wallet: "..math.floor(MyMoney).."\nMy bounty: "..math.floor(MyBounty))
+	cash:SetText("My Wallet: "..math.floor(pl.Money).."\nMy bounty: "..math.floor(MyBounty))
 	cash:SetColor(Color(155,255,155,255))
 	cash:SizeToContents()
 	cash.Think = function()
-		local txt = "My Wallet: "..math.floor(MyMoney).."\nMy bounty: "..math.floor(MyBounty)
+		local txt = "My Wallet: "..math.floor(pl.Money).."\nMy bounty: "..math.floor(MyBounty)
 		if cash:GetText() == txt then return end
 		cash:SetText(txt)
 	end
@@ -187,32 +189,14 @@ function GM:TraderMenu()
 	LMoney:SetFont("TEA.HUDFont")
 	LMoney:SetPos(400, TraderFrame:GetTall() - 42)
 	LMoney:SetColor(Color(155,255,155,255))
-	LMoney:SetText("My Wallet: "..math.floor(MyMoney))
+	LMoney:SetText("My Wallet: "..math.floor(ply.Money))
 	LMoney:SizeToContents()
 	LMoney.Think = function(this)
-		local txt = "My Wallet: "..math.floor(MyMoney)
+		local txt = "My Wallet: "..math.floor(ply.Money)
 		if this:GetText() == txt then return end
 		this:SetText(txt)
 		this:SizeToContents()
 	end
-
-/*
-	local CastBounty = vgui.Create("DButton", TraderFrame)
-	CastBounty:SetSize(120, 45)
-	CastBounty:SetPos(540, TraderFrame:GetTall() - 52)
-	CastBounty:SetText("Cash my bounty in!")
-	CastBounty:SetTextColor(Color(255, 255, 255, 255))
-	CastBounty.Paint = function(panel, w, h)
-		surface.SetDrawColor(0, 150, 0,255)
-		surface.DrawOutlinedRect(0, 0, w, h)
-		draw.RoundedBox(2, 0, 0, w, h, Color(0, 50, 0, 130))
-	end
-	CastBounty.DoClick = function()
-		net.Start("CashBounty")
-		net.SendToServer()
-		timer.Simple(0.3, function() LMoney:SetText("My Wallet: "..math.floor(MyMoney).."\nMy bounty: "..math.floor(MyBounty)) end)
-	end
-*/
 
 	LVaultWeight = vgui.Create("DLabel", TraderFrame)
 	LVaultWeight:SetFont("TEA.HUDFontSmall")
