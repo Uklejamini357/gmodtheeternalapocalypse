@@ -465,7 +465,7 @@ function GM:GetItemDescription(id, ply) -- ply is for the server
 		end
 
 		if armorstats.carryweight then
-			desc = desc.."\n"..translate.ClientFormat(ply, "armor_max_weight", armorstats.carryweight)
+			desc = desc.."\n"..translate.ClientFormat(ply, "armor_max_weight", armorstats.carryweight >= 0 and "+" or "", armorstats.carryweight)
 		end
 	end
 

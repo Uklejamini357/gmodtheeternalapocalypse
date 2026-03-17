@@ -18,19 +18,19 @@ GM.LootTable = {
 		Items = {}
 	},
 	[LOOTRARITY_UNCOMMON] = {
-		Rarity = 4,
+		Rarity = 3,
 		Items = {}
 	},
 	[LOOTRARITY_RARE] = {
-		Rarity = 15,
+		Rarity = 10,
 		Items = {}
 	},
 	[LOOTRARITY_EPIC] = {
-		Rarity = 75,
+		Rarity = 40,
 		Items = {}
 	},
 	[LOOTRARITY_LEGENDARY] = {
-		Rarity = 500,
+		Rarity = 150,
 		Items = {}
 	},
 }

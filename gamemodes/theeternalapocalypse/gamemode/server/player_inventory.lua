@@ -192,7 +192,7 @@ function GM:UseItem(ply, item, use, targetply)
 
 					if consum.UseTime then
 						local str = {
-							[ITEMTYPE_MED] = targetply and targetply ~= ply and translate.ClientFormat(ply, "healing_target" targetply:Nick()) or translate.ClientGet(ply, "healing"),
+							[ITEMTYPE_MED] = targetply and targetply ~= ply and translate.ClientFormat(ply, "healing_target", targetply:Nick()) or translate.ClientGet(ply, "healing"),
 							[ITEMTYPE_MEDANTIDOTE] = translate.ClientGet(ply, "healing_infection"),
 							[ITEMTYPE_ARMOR] = translate.ClientGet(ply, "reinforcing_armor"),
 							[ITEMTYPE_FOOD] = translate.ClientGet(ply, "eating"),

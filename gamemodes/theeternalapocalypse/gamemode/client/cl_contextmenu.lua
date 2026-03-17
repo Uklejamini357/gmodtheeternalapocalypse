@@ -140,7 +140,7 @@ function GM:CMenu()
 			if effective == infection then
 				draw.SimpleText(translate.Format("infection_level", infection).." ("..text..")", "TEA.HUDFont", scw - 590, sch / 2 - 145, color, 0, 0)
 			else
-				draw.SimpleText(translate.Format("infection_level", infection).." ("..translate.Format("infection_level_effective")..")", infection), "TEA.HUDFont", scw - 590, sch / 2 - 145, color, 0, 0)
+				draw.SimpleText(translate.Format("infection_level", infection).." ("..translate.Format("infection_level_effective", effective)..")", "TEA.HUDFont", scw - 590, sch / 2 - 145, color, 0, 0)
 			end
 
 			local y = sch / 2 - 125
