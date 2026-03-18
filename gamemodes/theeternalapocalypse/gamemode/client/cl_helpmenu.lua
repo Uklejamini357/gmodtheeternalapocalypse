@@ -13,10 +13,10 @@ function GM:HelpMenu()
     HelpFrame:AlphaTo(255, 0.5, 0)
     HelpFrame:ShowCloseButton(true)
     HelpFrame:MakePopup()
-    HelpFrame.Paint = function()
-        draw.RoundedBox(2, 0, 0, HelpFrame:GetWide(), HelpFrame:GetTall(), Color(0, 0, 0, 230))
-        surface.SetDrawColor(150, 150, 0 ,255)
-        surface.DrawOutlinedRect(0, 0, HelpFrame:GetWide(), HelpFrame:GetTall())
+    HelpFrame.Paint = function(panel)
+        draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(0, 0, 0, 230))
+        surface.SetDrawColor(255,255,255, 255)
+        surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
     end
 
 	local helpList = vgui.Create("DPropertySheet", HelpFrame)
@@ -33,179 +33,179 @@ function GM:HelpMenu()
 		end
 	end
 
-    local function MakeList(panel)
-        local list = vgui.Create("DPanelList", panel)
-        list:EnableVerticalScrollbar()
-        list:EnableHorizontal(false)
-        list:SetSize(panel:GetWide() - 10, panel:GetTall() - 10)
-        list:SetPos(12, 32)
-        list:SetPadding(8)
-        list:SetSpacing(4)
-        return list    
-    end
+    local htmlpanel = vgui.Create("DHTML", helpList)
+    htmlpanel:StretchToParent(4, 4, 4, 24)
+    htmlpanel:SetHTML([[<html>
+    <head>
+    <style type="text/css">
+    body
+    {
+        font-family:tahoma;
+        font-size:16px;
+        color:white;
+        background-color: #00000020;
+        width:]].. htmlpanel:GetWide() - 48 ..[[px;
+    }
+    div p
+    {
+        margin:10px;
+        padding:2px;
+    }
 
-    local H1List = MakeList(HelpFrame)
-    local H2List = MakeList(HelpFrame)
-    local H3List = MakeList(HelpFrame)
-    local H4List = MakeList(HelpFrame)
-    local H5List = MakeList(HelpFrame)
-    local H6List = MakeList(HelpFrame)
-    local H7List = MakeList(HelpFrame)
-    local H8List = MakeList(HelpFrame)
+    h1 {
+        color: maroon
+    }
+
+    h2 {
+        color: maroon
+    }
+
+    a {
+        color: green
+    }
     
-    local function MakeText(panel, text, font)
-        local lab = EasyLabel(panel, text, font)
-        return lab
-    end
+    a:hover {
+        color: yellow;
+    }
+    </style>
+    </head>
 
-    H1List:AddItem(MakeText(HelpFrame, "Welcome to "..self.Name..". Also known as After The End Reborn.", "TEA.HUDFont"))
-    H1List:AddItem(MakeText(HelpFrame, Format("Gamemode made by %s, version %s.\n", self.Author, self.Version), "TEA.HUDFont"))
-    H1List:AddItem(MakeText(HelpFrame, "PvE-Based Survival gamemode, with RPG elements, leveling, prestige and much more.\
-Remade from After The End, original creator: LegendofRobbo\n", "Trebuchet18"))
-    H1List:AddItem(MakeText(HelpFrame, "This gamemode is a more difficult version of After the End (Zombie Survival RPG), bringing new functions.", "Trebuchet18"))
-    H1List:AddItem(MakeText(HelpFrame, "F1 (gm_showhelp): Show this menu\
-F2 (gm_showteam): Open Administration Panel (admin only)\
-F3 (gm_showspare1): [Doesn't do anything as of now]\
-F4 (gm_showspare2): Open Options\n\n", "TEA.HUDFontSmall"))
+    <body>
+    <h1> Welcome to The Eternal Apocalypse!</h1>
+<p>A gamemode based on a survival gamemode from 2015 made by LegendOfRobbo, with expanded ideas.<br>
+</p>
+
+<ul>
+<li><a href="#Differences">Differences</a></li>
+<li><a href="#How to play">How to play</a></li>
+<li><a href="#Your character">Your character</a></li>
+<li><a href="#Zombies">Zombies</a></li>
+<li><a href="#Traders">Traders</a></li>
+<li><a href="#Loot">Loot</a></li>
+<li><a href="#Levels and Skills">Levels and Skills</a></li>
+<li><a href="#Prestige and Perks">Prestige and Perks</a></li>
+<li><a href="#Props and Barricading">Props and Barricading</a></li>
+<li><a href="#PVP">PVP</a></li>
+<li><a href="#Factions">Factions</a></li>
+<li><a href="#Infection Level and Zombie levels">Infection Level and Zombie levels</a></li>
+</ul>
+
+<h2 id="Differences">Differences</h2>
+<p>This gamemode is pretty much the same as the original. Survive, shoot zombies, find loot, level up, become stronger. However, many new mechanics that alter the gameplay have been introduced, such as:</p>
+<ul>
+<li>Thirst bar</li>
+<li>Zombie Levels, Elite Variants and Minibosses</li>
+<li>Reworked Inventory system</li>
+<li>Tasks system</li>
+<li>Prestige and Perks</li>
+<li>Mastery system</li>
+<li>New zombies</li>
+<li>And many more. There's a lot to discover!</li>
+</ul>
+
+<h2 id="How to play">How to play</h2>
+<p>This section is probably the most important. The gameplay at first may be confusing, however it's suprisingly easy to learn how to play!</p>
+<p>Once you spawn in, your first priority is to get a weapon equipped so you have something you can defend yourself with. To do so, open your inventory by pressing Q, or any spawn menu key and clicking on the item. Weapons need ammo, and in order to get ammo, you can use the ammo items as well.</p>
+<p>After that, you will want to shoot the zombies in order to gain cash and experience. You gain experience instantly, however the cash goes through bounty. You can cash in your bounty at traders in order to gain cash. However if you end up dying with the bounty on you, you end up dropping your bounty as cash, along with the rest of your bounty being lost forever.</p>
+<p>Traders act as a shop where you can stop by to buy stronger equipment, or to refill your supplies. You also gain a slight damage resistance against zombies when you are near traders.</p>
+<p>And that's pretty much it! The rest of the content can be discovered through gameplay. However, you may continue reading the rest of the sections below to have better understanding for this gamemode.</p>
+
+<h2 id="Your character">Your character</h2>
+<p>Just like in other survival games, you can't just survive without having any supplies. If you go long without supplies, you die.</p>
+<p>There are several notable stats to keep track of:</p>
+<ul>
+<li>Health: Self-explanatory. If it reaches 0, you die.</li>
+<li>Armor: Absorbs 80% of damage, some of the damage types is ignored.</li>
+<li>Stamina: Determines your character's remaining strength. Regenrates constantly. Drained by movement and melee attacks. Lower stamina </li>
+<li>Hunger: Determines if a character is well-fed. If it reaches 0%, you start losing health and then die.</li>
+<li>Thirst: Defines if a character is hydrated. If it reaches 0%, you start dying.</li>
+<li>Fatigue: Determines if character needs to sleep. Unless you are sleeping, fatigue gradually increases. If it reaches 100%, you start dying.</li>
+<li>Infection: Determines if a character has infection and needs a cure. Only increases if you are infected. If it reaches 100%, you start dying.</li>
+</ul>
+<p>If you end up succumbing to zombies or dying, you will drop 30-40% of your bounty along with your currently held weapon.</p>
+
+<h2 id="Zombies">Zombies</h2>
+<p>As you play, you will discover different zombies with different abilities. These zombies can range from being weak and with almost no danger to being tough and very dangerous.</p>
+<p>The list below is the list of the zombies you'll certainly encounter.</p>
+
+<ol>
+<li>Tier 1</li>
+<ul>
+<li>Shambler zombie: A normal zombie. Has no unique abilities.</li>
+<li>Leaper zombie: A fast, but weak zombie. Can leap high up into air from the ground.</li>
+<li>Wraith Zombie: A fast, but weakest zombie of all. Hard to see when not attacking and can temporarily blind survivors.</li>
+</ul>
+<li>Tier 2</li>
+<ul>
+<li>Tank Zombie: Tough, but slow zombie. Has no unique abilities.</li>
+<li>Puker Zombie: Pukes poison at target. On death poisons nearby targets.</li>
+</ul>
+<li>Tier 3:</li>
+<ul>
+<li>Tormented Wraith: Same as Wraith zombie, but stronger. Gradually gains speed when seeing target.</li>
+<li>Lord Zombie: The lord of zombies. Has high health, can knock targets far away. The zombie teleports randomly if it takes too much damage. The zombie can also grant buff nearby zombies in mid range.</li>
+</ul>
+<li>Tier 4 (Minibosses):</li>
+<ul>
+<li>Superlord Zombie: Same as Lord Zombie, but stronger! Enrages if it reaches low health, causing it to be more aggressive!</li>
+<li>Heavy Tank Zombie: Very slow, but also very strong zombie. Its hits pack a hard punch. Can reflect melee damage back to its attacker.</li>
+<li>Hunter Zombie: Very agile and highly dangerous zombie. Many survivors are lost by this zombie, don't let it hunt you!</li>
+</ul>
+<li>Bosses:</li>
+<ul>
+<li>The Tyrant: A highly dangerous and fast boss zombie. Has extremely high health, throws rocks that can damage nearby players, can cause shockwave that damages nearby survivors on ground. After reaching <30% health, the boss enrages, causing its attacks to be more aggressive.</li>
+<li>Zombie Lord King: The lord of all the zombies. Has extremely high health. Its attacks knock back survivors far and slows them down. Teleports upon taking a significant damage. Can buff and randomly teleport nearby zombies. Upon reaching <30% health, the boss enrages, making it able to jump every several seconds, teleporting more often, inflicting stronger hits and slowing down even harder.</li>
+</ul>
+</ol>
 
 
 
+<h2 id="Loot">Loot</h2>
+<p>Around the map, you will find loot caches. Loot caches contain items, from commonly found supplies to rare weapons. Loot caches vary between their types, so each loot cache may be different.</p>
+<p>First is the normal loot caches. They vary between 5 rarities, from Common to Legendary. Higher rarity loot means higher</p>
+<p>Second type is the boss loot cache. They're dropped by the defeated bosses and contain very rare weapons that aren't found elsewhere.</p>
+<p>And the last one is the faction loot cache. They only drop by destroying other faction's base cores.</p>
 
-/*
-- You can change your HUD Style you like with client ConVar tea_cl_hudstyle"
-- Gamemode works the same as ZsRPG and AtE, but most of its' functions are changed"
-- SELECTING BUILD TOOL FOR FIRST TIME IN SESSION HAS A CHANCE TO CRASH YOUR GAME!!"
-(Couldn't fix, but more likely to happen later, so equip that weapon on joining)"
-- If you encounter any problem, error, or any kind of mistranslation, report it to the dev."
-*/
+<h2 id="Traders">Traders</h2>
+<p>Traders can be found across the map. They sell supplies to you for money, but they can also buy stuff from you.</p>
+<p>You can also cash in your bounty at traders. Traders will pay you money from the bounty you had.</p>
+<p>They also act as a PVP protection. When you are close to traders, your pvp is set to guarded. Therefore, any players near it cannot be damaged by other players in any circumstances.</p>
+<p>Additionally, you take 10% less damage from zombies when you are near traders.</p>
 
-    if #self.ServerRules >= 1 then
-        local txt = MakeText(HelpFrame, "Server Rules (Yes, there are server rules!):", "Trebuchet24")
-        txt:SetTextColor(Color(255,255,127))
-        H1List:AddItem(txt)
-        for count,rule in pairs(self.ServerRules) do
-            local txt = MakeText(HelpFrame, count..". "..rule, "TEA.HUDFontSmall")
-            txt:SetTextColor(Color(255,255,191))
-            H1List:AddItem(txt)
-        end
-        H1List:AddItem(MakeText(HelpFrame, " ", "TEA.HUDFontSmall"))
-    end
+<h2 id="Levels and Skills">Levels and Skills</h2>
+<p>After reaching a certain amount of XP, you will level up and receive a new skill point!</p>
+<p>Skill points can be assigned to skills to increase your stats and potentially.</p>
+<p>After reaching level 30, you will start to gain 2 skill points for each level and after level 55, you gain 3 skill points per level.</p>
+<p>Max level has a limit. Once you reach it, you cannot level up anymore and you must prestige to go further. Prestiging will also slightly increase max level.</p>
 
+<h2 id="Prestige and Perks">Prestige and Perks</h2>
+<p>Prestige is a "Reset" functionality that adds more progression to the gamemode. Prestiging is possible after reaching certain level.</p>
+<p>Upon prestiging, you will lose all levels, skills, and skill points, but you will gain an extra perk point.</p>
+<p>Prestiges have no limit, so try to reach as far as possible!</p>
+<p>Perks are technically skills that grant unique buffs to your character. However, instead of skill points, they cost perk points instead.</p>
+<p>For each perk, to be able to unlock it you need to reach certain prestige. Additionally, more powerful perks cost more perk points, so plan accordingly!</p>
+<p>Perks can be reset, however you need to spend your cash in order to reset your perks. The cost is added for each perk point spent.</p>
 
-    H1List:AddItem(MakeText(HelpFrame, "General Help:\n", "Trebuchet24"))
-    H1List:AddItem(MakeText(HelpFrame, "When you spawn in, you get fists and build tool. The goal is to survive with other\
-survivors, not to get killed by zombies, find loot, level up and prestige in order to gain more\
-rewards. By killing zombies, you gain XP in an instant, but cash goes into your Bounty, so you have\
-to cash in your bounty at traders to get money. The more XP you gain, the more levels you can get\
-to. By the time you level up, you get a skill point and some money. Use your skill points strategically,\
-in order to gain more advantage in surviving this post-apocalyptic world.\n", "TEA.HUDFontSmall"))
-    H1List:AddItem(MakeText(HelpFrame, [[Note: If you are new to the server below level 10 and prestige 0,
-you gain following buffs to get started:
-• -10% damage taken from zombies
-• +15% damage dealt to zombies
-• Spawn with more ammo (there is a perk that will grant you even more ammo on spawn,
-however it will be obtainable later in the game)
-• Wraith blind effect decreased by 20%.
-Later you will have to manage on your own.
+<h2 id="Props and Barricading">Props and Barricading</h2>
+<p>Sometimes, you might want to make a base so you can rest. Fortunately enough, you are able to build props!</p>
+<p>All you need is some money and a builder's wrench. Then spawn in a prop with your build tool and swing with the wrench to build it!</p>
+<p>And that's pretty much it! </p>
+<p>Props can be found under 4th category "Props", found in the inventory menu.</p>
+<p style="color:red">Warning: All built props disappear when you leave the game.</p>
 
-]], "TEA.HUDFontSmall"))
+<h2 id="PVP">PVP</h2>
+<p>The Eternal Apocalypse is not only about PvE. PVP also exists!</p>
 
-    local changelog = vgui.Create("DButton", ContextMenu)
-	changelog:SetText("Changelogs")
-	changelog:SetTextColor(Color(255, 255, 255, 255))
-	changelog.Paint = function(panel)
-		surface.SetDrawColor(150, 250, 0, 255)
-		surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
-		draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(0, 0, 0, 130))
-	end
-	changelog.DoClick = function(panel)
-		RunConsoleCommand("-menu_context")
-		gamemode.Call("MakeChangeLogs")
-	end
-    H1List:AddItem(changelog)
-	changelog:SetSize(120, 40)
+<h2 id="Factions">Factions</h2>
+<p></p>
 
-    H2List:AddItem(MakeText(HelpFrame, "Press and hold Q menu (spawnmenu key) to open your inventory.\
-If you have just started, you will find starting items for your survival here.\
-Put them to good use!", "TEA.HUDFontSmall"))
-    H2List:AddItem(MakeText(HelpFrame, "Factions system is a feature to the gamemode, technically makes it able to create teams.\n", "TEA.HUDFontSmall"))
-    H2List:AddItem(MakeText(HelpFrame, "Hint: Right-Clicking on Sell item button will quickly sell 1 item without confirmation.\
-Holding SHIFT while Right-Clicking on the button will sell all items of a selected item.", "TEA.HUDFontSmall"))
-    H2List:AddItem(MakeText(HelpFrame, "This section is work in progress.", "TEA.HUDFontSmall"))
-    
-    H3List:AddItem(MakeText(HelpFrame, "There are around 7 types of normal zombies. Each of them have different abilities.", "TEA.HUDFontSmall"))
-    H3List:AddItem(MakeText(HelpFrame, "Killing them gives XP and cash. You gain XP in an instant, however cash goes through bounty. To receive cash,\
-go to trader and cash your bounty in. Otherwise, if you die, you will drop 30-40% of your bounty pool.", "TEA.HUDFontSmall"))
-    H3List:AddItem(MakeText(HelpFrame, "There are Minibosses. They only spawn if Infection Level is above 25% or if player count is 3 or more.\
-Be careful while dealing with them, as sometimes they might have unique abilities! Hunter Zombie is currently the most dangerous,\
-Heavy Tank zombie is the toughest, whilst Superlord zombie is a tough support zombie.", "TEA.HUDFontSmall"))
-    H3List:AddItem(MakeText(HelpFrame, "There are also 2 bosses. Killing a boss grants you Cash and XP, whatever amount of damage you did to the boss.\
-Dealing higher damage can grant you more cash and XP, when also dealt highest amount of damage,\
-grants you being able to pickup the boss loot.", "TEA.HUDFontSmall"))
-    local txt = MakeText(HelpFrame, "Note, that there are also factors for the bosses, such as player count!\
-If player count is more while the boss is spawning, the boss may be slightly tougher, but grant more XP and cash.\n", "TEA.HUDFontSmall")
-    txt:SetTextColor(Color(255,155,155))
-    H3List:AddItem(txt)
+<h2 id="Infection Level and Zombie levels">Infection Level and Zombie levels</h2>
+<p></p>
 
-    H3List:AddItem(MakeText(HelpFrame, "Beware of the zombies! If you die to a zombie, you will lose 1% of your XP, or 0.4% if it's a boss zombie, this only\
-happens if you have less than level 10 and prestige 0.\
-Max possible value of losing XP is 250. This feature is currently "..(self.PlayerLoseXPOnDeath and "enabled" or "disabled")..".\
-Note that infection level doesn't decrease when new players are killed by zombies!", "TEA.HUDFontSmall"))
+</body>
+</html>]])
 
-    H4List:AddItem(MakeText(HelpFrame, "Factions system is a feature to the gamemode, being able to make teams.", "TEA.HUDFontSmall"))
-    H4List:AddItem(MakeText(HelpFrame, "Creating a faction is not that hard. Open scoreboard (TAB key), navigate to factions\
-category, then Create faction.", "TEA.HUDFontSmall"))
-    H4List:AddItem(MakeText(HelpFrame, "Note, that you need some money to create a faction.\n", "TEA.HUDFontSmall"))
-    H4List:AddItem(MakeText(HelpFrame, "This section is work in progress.", "TEA.HUDFontSmall"))
-
-    H5List:AddItem(MakeText(HelpFrame, "Want to fight for loot? Make competition? Toggle PVP and annihilate your enemies!", "TEA.HUDFontSmall"))
-    H5List:AddItem(MakeText(HelpFrame, "PVP is a feature in this gamemode where you fight against other survivors. Beware,\
-if you die while holding a weapon, you drop it. This does not count for some weapons. When you get damaged by, or damage a\
-player, you will not be able to disable your PVP for certain amount of time. (60 seconds)", "TEA.HUDFontSmall"))
-
-    H6List:AddItem(MakeText(HelpFrame, "One of the features in this gamemode that has been missing, is the crafting system.", "TEA.HUDFontSmall"))
-    H6List:AddItem(MakeText(HelpFrame, "Crafting allows you to combine certain resources into a specified item.", "TEA.HUDFontSmall"))
-    H6List:AddItem(MakeText(HelpFrame, "However, there aren't too many item recipes at the time,\
-and this feature is still in progress.", "TEA.HUDFontSmall"))
-
-    H7List:AddItem(MakeText(HelpFrame, "Infection Level:\n", "TEA.HUDFont"))
-    H7List:AddItem(MakeText(HelpFrame, "Also known as dynamic difficulty. As Infection Level goes up, some things change.", "TEA.HUDFontSmall"))
-    txt = MakeText(HelpFrame, "Not to be confused with \"Infection\" and \"Infection Level\", as these function separately.", "TEA.HUDFontSmall")
-    txt:SetTextColor(Color(255,155,155))
-    H7List:AddItem(txt)
-    H7List:AddItem(MakeText(HelpFrame, "- More XP gained from killing zombies\
-- More Cash gained from killing zombies, but 50% less effects than XP\
-- Zombies take less damage\
-- Zombies deal more damage to players and barricades\
-- Zombies speed (TEA zombies only!)\n", "TEA.HUDFontSmall"))
-    H7List:AddItem(MakeText(HelpFrame, "DISCLAIMER: The features below are only concepts and aren't in the actual gamemode yet!", "TEA.HUDFontSmall"))
-    H7List:AddItem(MakeText(HelpFrame, "\nPlayer Voting Difficulty scaling: (Difficulty: Low, Medium, Hard, etc.)\
-- Players will be able to vote for difficulty they want.\n", "TEA.HUDFontSmall"))
-    H7List:AddItem(MakeText(HelpFrame, "\nPlayer Count Difficulty scaling:\
-- Zombies become harder the more players are on.\n", "TEA.HUDFontSmall"))
-
-    H8List:AddItem(MakeText(HelpFrame, "(WORK IN PROGRESS) Seasonal Events:", "TEA.HUDFont"))
-    H8List:AddItem(MakeText(HelpFrame, "[Halloween Event] 25th October (25/10) -- 3rd November (3/11)\
-- All zombies give 25% more XP\
-- There is a higher chance of elite zombies making an appearance!\
-Lasts for 10 days", "TEA.HUDFontSmall"))
-    H8List:AddItem(MakeText(HelpFrame, "[Christmas Event] 19th December (19/12) -- 3rd January (3/1)\
-- All zombies give 15% more XP\
-- Zombies have chance to spawn gift when killed (2% chance), Elite Zombies have higher chance to drop gifts, 10% chance!\
-Bosses have 33.3% chance to drop gift (33.3% chance), gifts from bosses have much higher quality loot from gift!\
-Gifts from Elite Boss Zombies are 100%!\
-Lasts for 15 days", "TEA.HUDFontSmall"))
-    H8List:AddItem(MakeText(HelpFrame, "placeholder", "TEA.HUDFontSmall"))
-
-    helpList:AddSheet("About this gamemode", H1List, nil, false, false, "Section to let you know and what to do in this gamemode\
-Along with survival basics in the post-apocalyptic world")
-    helpList:AddSheet("Inventory and Traders", H2List, nil, false, false, "How to manage your inventory and how traders work")
-    helpList:AddSheet("Zombies", H3List, nil, false, false, "What zombies do and what they give when you kill them")
-    helpList:AddSheet("Factions", H4List, nil, false, false, "Creating a faction, managing it and its' functions")
-    helpList:AddSheet("PvP", H5List, nil, false, false, "Learn tactics of fighting against players and how it works")
-    helpList:AddSheet("Crafting", H6List, nil, false, false, "How crafting works")
-    helpList:AddSheet("Infection Level", H7List, nil, false, false, "Learn about Infection Level. How to increase it and how it works.")
-    helpList:AddSheet("Other", H8List, nil, false, false, "Anything else.")
+    helpList:AddSheet("Help", htmlpanel, nil, false, false, "Guide you might want to read if you're starting out.")
 
 end
 
