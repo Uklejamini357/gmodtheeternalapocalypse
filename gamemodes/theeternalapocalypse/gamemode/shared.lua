@@ -20,6 +20,7 @@ GM.Credits = {
 
 	-- Translators
 	{"BlueBerryy",				"Russian Translator",														""},
+	{"Sirtlan",					"Spanish Translator",														""},
 
 	-- Other
 	{"Anyone else I forgot",	"Various contributions",													""},
