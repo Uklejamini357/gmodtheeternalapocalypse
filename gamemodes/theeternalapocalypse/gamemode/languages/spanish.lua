@@ -133,8 +133,8 @@ LANG.my_skills = "Mis Habilidades"
 LANG.my_skills_d = "Mejora tus estadísticas"
 LANG.flimsy_props = "Props endebles"
 LANG.flimsy_props_d = "Los props endebles no son particularmente fuertes y pueden ser dañados por todo. Por el lado bueno son bastante baratos."
-LANG.strong.props = "Props fuertes
-LANG.strong.props_d = "Los props fuertes son una versión más fuerte de los props endebles, reciben la mitad del daño y tienen resistencia máxima del daño de bala.\nPor contra, necesitas estar en una facción para colocarlos y son más costosos que los props endebles.
+LANG.strong_props = "Props fuertes"
+LANG.strong_props_d = "Los props fuertes son una versión más fuerte de los props endebles, reciben la mitad del daño y tienen resistencia máxima del daño de bala.\nPor contra, necesitas estar en una facción para colocarlos y son más costosos que los props endebles."
 LANG.faction_structures = "Estructuras de Facción"
 LANG.faction_structures_d = "Este menú contiene estructuras especiales como puertas funcionales, componentes de base etc. Son muy caras de pagar."
 

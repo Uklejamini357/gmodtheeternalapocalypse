@@ -25,7 +25,40 @@ local function CreateSlider(panel, list, text, cvar)
 	return slider
 end
 
+local function CreateDropdown(name, cvar, default, tbl, addoptions)
+	local convar = GetConVar(cvar)
 
+	local label = vgui.Create("DLabel", Window)
+	label:SetText(name)
+	label:SetTextColor(Color(190,255,220))
+	label:SizeToContents()
+
+	local dropdown = vgui.Create("DComboBox", Window)
+	local var = convar:GetString()
+	local name = tbl[var]
+	dropdown:SetText(var == default[1] and default[2] or name or "???")
+	dropdown.OnSelect = function(_, _, value)
+		if value == default[2] then
+			value = default[1]
+		else
+			for id,var in pairs(tbl) do
+				if var == value then
+					value = id
+					break
+				end
+			end
+		end
+
+		RunConsoleCommand(cvar, value)
+	end
+
+	dropdown:AddChoice(defaultname)
+	for id, var in pairs(tbl) do
+		dropdown:AddChoice(var)
+	end
+
+	return label, dropdown
+end
 
 function GM:MakeOptions()
 	if IsValid(pOptions) and pOptions then
@@ -154,7 +187,12 @@ function GM:MakeOptions()
 	textentry:SetToolTip("The following sound is played on death\nTip: Use string '*#' at the start of a string to play the sound as music")
 	textentry:SetEnterAllowed(true)
 	list:AddItem(textentry)
-	
+
+	local label, dropdown = CreateDropdown("Override current language", "tea_cl_languageoverride", {"default", "Default"}, translate.Languages)
+	list:AddItem(label)
+	dropdown:SetTooltip("Rejoin is recommended for the language to apply in 100%.")
+	list:AddItem(dropdown)
+
 	if AdminCheck(LocalPlayer()) then
 
 		local button = vgui.Create("DButton", pan)
@@ -165,8 +203,6 @@ function GM:MakeOptions()
 			pan:SetVisible(false)
 		end
 		list:AddItem(button)
-
-
 	end
 
 /*

@@ -3,8 +3,8 @@ GM.AltName	= "After The End Reborn"
 GM.Author	= "Uklejamini"
 GM.Email	= ""
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.12.0b8" -- very close to 0.12.0. now for reworking the loots, and writing all the changelog notes.
-GM.DateVer	= "16.03.2026" -- Follows the DD.MM.YYYY format.
+GM.Version	= "0.12.0" -- very close to 0.12.0. now for reworking the loots, and writing all the changelog notes.
+GM.DateVer	= "23.03.2026" -- Follows the DD.MM.YYYY format.
 GM.Credits = {
 	-- Assets
 	{"GSC Game World",			"For all the S.T.A.L.K.E.R. content",										""},

@@ -284,7 +284,7 @@ function GM:AdminMenu()
 	end
 
 	local buypanel = {}
-	for i=1,7 do
+	for i=1,6 do
 		buypanel[i] = vgui.Create("DPanelList")
 		buypanel[i]:SetSize(wide-110, tall-65)
 		buypanel[i]:SetPos(5, 25)
@@ -428,7 +428,7 @@ function GM:AdminMenu()
 			end
 		end
 	end
-	for i=1,7 do
+	for i=1,6 do
 		RefreshItemList(i, buypanel[i])
 	end
 	RefreshPanel()
@@ -439,7 +439,7 @@ function GM:AdminMenu()
 	SpawnMenuProperties:AddSheet(translate.Get("items_category_4"), buypanel[4], "icon16/shield.png", false, false, translate.Get("items_category_4_d"))
 	SpawnMenuProperties:AddSheet(translate.Get("items_category_5"), buypanel[5], "icon16/bin.png", false, false, translate.Get("items_category_5_d"))
 	SpawnMenuProperties:AddSheet(translate.Get("items_category_6"), buypanel[6], "icon16/basket.png", false, false, translate.Get("items_category_6_d"))
-	SpawnMenuProperties:AddSheet(translate.Get("items_category_7"), buypanel[7], "icon16/basket.png", false, false, translate.Get("items_category_7_d"))
+	-- SpawnMenuProperties:AddSheet(translate.Get("items_category_7"), buypanel[7], "icon16/basket.png", false, false, translate.Get("items_category_7_d"))
 
 	local MapConfig = vgui.Create("DPanel", PropertySheet)
 	MapConfig:SetSize(AdmMenuFrame:GetWide() - 20, AdmMenuFrame:GetTall() - 20)

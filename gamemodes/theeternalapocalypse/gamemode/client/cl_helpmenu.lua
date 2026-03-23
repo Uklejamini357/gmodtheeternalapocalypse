@@ -28,7 +28,7 @@ function GM:HelpMenu()
 		for k, v in pairs(panel.Items) do
 			if (!v.Tab) then continue end
 			v.Tab.Paint = function(self,w,h)
-				draw.RoundedBox(0, 0, 0, w, h, Color(50,50,25,205))
+				draw.RoundedBox(0, 0, 0, w, h, Color(0,0,0,205))
 			end
 		end
 	end
@@ -72,8 +72,9 @@ function GM:HelpMenu()
 
     <body>
     <h1> Welcome to The Eternal Apocalypse!</h1>
-<p>A gamemode based on a survival gamemode from 2015 made by LegendOfRobbo, with expanded ideas.<br>
-</p>
+<p>A remake of an old zombie survival gamemode from 2015 made by LegendOfRobbo, with concepts of zombified world and STALKER.<br>
+Development began in early 2022, with support up to today.<br>
+Remade by Uklejamini. For fun and enjoyment.</p>
 
 <ul>
 <li><a href="#Differences">Differences</a></li>
@@ -82,12 +83,14 @@ function GM:HelpMenu()
 <li><a href="#Zombies">Zombies</a></li>
 <li><a href="#Traders">Traders</a></li>
 <li><a href="#Loot">Loot</a></li>
+<li><a href="#Bosses">Bosses</a></li>
+<li><a href="#Airdrops">Airdrops</a></li>
 <li><a href="#Levels and Skills">Levels and Skills</a></li>
 <li><a href="#Prestige and Perks">Prestige and Perks</a></li>
 <li><a href="#Props and Barricading">Props and Barricading</a></li>
 <li><a href="#PVP">PVP</a></li>
 <li><a href="#Factions">Factions</a></li>
-<li><a href="#Infection Level and Zombie levels">Infection Level and Zombie levels</a></li>
+<li><a href="#Zombie Levels and Infection Level">Zombie Levels and Infection Level</a></li>
 </ul>
 
 <h2 id="Differences">Differences</h2>
@@ -126,6 +129,7 @@ function GM:HelpMenu()
 
 <h2 id="Zombies">Zombies</h2>
 <p>As you play, you will discover different zombies with different abilities. These zombies can range from being weak and with almost no danger to being tough and very dangerous.</p>
+<p>Killing zombies gives XP and cash. Rewards are split between players who attacked it, varies with total damage dealt to it. Full damage always grants full rewards.</p>
 <p>The list below is the list of the zombies you'll certainly encounter.</p>
 
 <ol>
@@ -166,6 +170,14 @@ function GM:HelpMenu()
 <p>Second type is the boss loot cache. They're dropped by the defeated bosses and contain very rare weapons that aren't found elsewhere.</p>
 <p>And the last one is the faction loot cache. They only drop by destroying other faction's base cores.</p>
 
+<h2 id="Bosses">Bosses</h2>
+<p>Bosses are very powerful zombies that appear once every ~53 minutes. They can only spawn when there are at least 2 players online.</p>
+<p>They have different abilities as mentioned above. For each boss defeated, drops a boss cache.</p>
+
+<h2 id="Airdrops">Airdrops</h2>
+<p>Airdrops appear once every ~1h6m.</p>
+<p>They come with lots of loot, including ammo, supplies, weapons and even unique stuff. Even junk items which are completely useless!</p>
+
 <h2 id="Traders">Traders</h2>
 <p>Traders can be found across the map. They sell supplies to you for money, but they can also buy stuff from you.</p>
 <p>You can also cash in your bounty at traders. Traders will pay you money from the bounty you had.</p>
@@ -191,16 +203,33 @@ function GM:HelpMenu()
 <p>All you need is some money and a builder's wrench. Then spawn in a prop with your build tool and swing with the wrench to build it!</p>
 <p>And that's pretty much it! </p>
 <p>Props can be found under 4th category "Props", found in the inventory menu.</p>
+<p>Note that players in Loner faction are limited to Flimsy Props only.</p>
 <p style="color:red">Warning: All built props disappear when you leave the game.</p>
 
 <h2 id="PVP">PVP</h2>
 <p>The Eternal Apocalypse is not only about PvE. PVP also exists!</p>
+<p>PVP lets you fight against other players for their loot. To toggle PVP, open C menu and click on the \"Toggle PVP\" button!</p>
+<p>Note that toggling PVP makes your PVP forced. PVP forced makes you able to take damage from any player, even if their PVP is disabled!</p>
+<p>Forced PVP also applies when near active airdrops. Be wary!</p>
+<p>Upon inflicting or taking damage, you will be unable to toggle your PVP in the next 60 seconds.</p>
 
 <h2 id="Factions">Factions</h2>
-<p></p>
+<p>Factions are pretty much like player teams.</p>
+<p>You can create your own factions, but it costs money to do so. You can put in your faction a name, color and even decide whether to make it public or not.</p>
+<p>As a faction leader, you can invite your fellow friends or players to build your faction stronger! You may also kick other or set leader</p>
+<p>While in a faction, your pvp is enabled and you cannot disable it. While in a faction, you cannot damage your factionmates under any circumstances.</p>
+<p>Players in faction can also build strong props and faction structures. Note that the faction base core is only buildable by the faction leader!</p>
+<p>Keep in mind that empty factions are automatically disbanded. Whether it be by leaving the faction, leaving the game, joining another faction, and so on.</p>
+<p>Players that are in Loner faction are not to be considered in a faction.</p>
 
-<h2 id="Infection Level and Zombie levels">Infection Level and Zombie levels</h2>
-<p></p>
+<h2 id="Zombie Levels and Infection Level">Zombie Levels and Infection Level</h2>
+<p>You may notice that some zombies are the same but have different health. They differ because they have different levels.</p>
+<p>Zombie levels are assigned randomly. It depends mostly on infection level, but also player count.</p>
+<p>Zombies with level 10 are normal. Additionally, Killed zombies with higher levels also grant more XP and cash.</p>
+<p>Infection level acts like a dynamic difficulty scaling. It is gained by killing zombies.</p>
+<p>It also gradually decreases whenever no zombie is killed for some time, or if a player dies.</p>
+<p>Infection level gain mult. is also lower whenever there are more players and/or infection level is higher.</p>
+
 
 </body>
 </html>]])
