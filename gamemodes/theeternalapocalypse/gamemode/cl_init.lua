@@ -247,6 +247,23 @@ function GM:SetupFonts()
 		outline = false,
 	} )
 
+	surface.CreateFont("TEA.HUDFontLarge", {
+		font = font,
+		size = 28,
+		weight = 600,
+		blursize = 0,
+		scanlines = 0,
+		antialias = antialias,
+		underline = false,
+		italic = false,
+		strikeout = false,
+		symbol = false,
+		rotary = false,
+		shadow = false,
+		additive = false,
+		outline = true,
+	} )
+
 	surface.CreateFont("TEA.HUDFont", {
 		font = font,
 		size = 20,

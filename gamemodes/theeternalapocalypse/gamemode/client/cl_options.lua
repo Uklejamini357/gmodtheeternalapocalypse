@@ -3,7 +3,7 @@ local pSVOptions
 
 local function CreateCheckLabel(panel, list, text, cvar)
 	check = vgui.Create("DCheckBoxLabel", panel)
-	check:SetFont("TEA.HUDFontSmaller")
+	check:SetFont("TEA.HUDFontSmall")
 	check:SetText(text)
 	check:SetTextColor(color_white)
 	check:SetConVar(cvar)
@@ -125,6 +125,9 @@ function GM:MakeOptions()
 
 	check = CreateCheckLabel(pan, list, "Disable tips", "tea_cl_notips")
 	check:SetToolTip("Disables tips being displayed in chat.")
+
+	check = CreateCheckLabel(pan, list, "Disable hints", "tea_cl_nohints")
+	check:SetToolTip("Disables displaying hints on screen")
 
 	check = CreateCheckLabel(pan, list, "Draw zombie info", "tea_cl_drawzinfo")
 	check:SetToolTip("Draws zombie information (Name, health and its' purpose (or what it is meant to do))")

@@ -450,6 +450,7 @@ function GM:HUDPaint()
 		mouthbreather:Stop()
 	end
 */
+	local pl = LocalPlayer()
 
 	self.BaseClass:HUDPaint()
 
@@ -457,6 +458,27 @@ function GM:HUDPaint()
 	self:DrawNames()
 	if LocalPlayer():Alive() then
 		self:DrawMiscThings()
+	end
+
+	if !self.DisableHints and self.SysTimeStarted and self.SysTimeStarted+30 > SysTime() then
+		local col = Color(255,255,255,255*(self.SysTimeStarted+30-SysTime())/1.5)
+		local tbl = {
+			{"Open Inventory", "+menu"},
+			{"Scoreboard and Factions", "+showscores"},
+			{"Actions menu", "+menu_context"},
+			{"Help", "gm_showhelp"},
+			{"Admin Menu", "gm_showteam"},
+			{"Options", "gm_showspare2"},
+		}
+
+		local y = ScrH()/2.5
+		
+		draw.SimpleText("Keybinds:", "TEA.HUDFontLarge", 10, y, col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+		for _,t in ipairs(tbl) do
+			if !AdminCheck(pl) and t[2] == "gm_showteam" then continue end
+			y = y + 34
+			draw.SimpleText((t[2] and string.upper(input.LookupBinding(t[2]) or "[NOT BOUND]").." - "..t[1]) or t[1], "TEA.HUDFontLarge", 10, y, col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+		end
 	end
 
 	if self.ShowInfectionLevelHUD then

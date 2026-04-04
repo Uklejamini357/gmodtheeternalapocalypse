@@ -53,6 +53,8 @@ net.Receive("tea_player_ready_spawn", function()
 			chat.AddText(Color(255,255,155), f4..": Options")
 		end)
 	end
+
+	GAMEMODE.SysTimeStarted = SysTime()
 end)
 
 net.Receive("tea_player_sendcharacters", function()
