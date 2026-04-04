@@ -187,10 +187,11 @@ function GM:LoadMainMenu()
 		{"Added map transitions.", Color(255,255,210)},
 		{"Introducing Zombines.", Color(255,255,210)},
 		{"Reworked loot caches and their rarity.", Color(255,255,210)},
-		{"Loot spawns now have tier attribute.", Color(255,255,210)},
-		{"Which meanas different spawns can have higher quality loot.", Color(255,255,210)},
+		{"Loot spawns now have Tier attribute.", Color(255,255,210)},
+		{"Which means different spawns can have higher quality loot.", Color(255,255,210)},
 		{"Added Spanish translation - thanks Sirtlan :)", Color(210,255,210)},
 		{"There are more changes but you can discover them yourself!", Color(255,255,210)},
+		{"(04.04.2026) 0.12.1: Made Scavenging skill work and patches", Color(210,255,210)},
 	}
 
 	local y = 40
