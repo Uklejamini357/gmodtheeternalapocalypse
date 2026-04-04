@@ -156,13 +156,46 @@ GM.EconomyDifficultyAffectsXPGain = true
 
 
 
--- The 2 settings below are only for when you want the selling/buying have no money. Highly recommended to have reasonable limits when Inflation setting is enabled.
+-- The 2 settings below are only for when you want the selling/buying not have exploit where u could gain money by just buying and selling over and over again.
+-- Highly recommended to have reasonable limits when Inflation setting is enabled.
 
 -- Max sell cost mul
 GM.MaxSellCostMul = 0.3
 
 -- Min buy cost mul
 GM.MinBuyCostMul = 0.5
+
+-- Work in progress!
+--[[
+-- Time it takes after entering the safezone for the protection to fully apply. Spawning inside the safezone applies protection measures immediately.
+GM.SafezoneProtectionDelay = 10
+
+-- Pauses stats from progressing for players including survival time while safezone protection is enabled.
+GM.SafezonePauseStats = true
+
+-- While safezones make it possible for players to take a break without disconnecting or having to die. However, safezones are meant to be a safe area from zombies. To fix this, any grinding inside safezone is impossible.
+-- Set to 1 to make zombies outside the safezone unkillable in any way while inside the safezone.
+-- Set to 2 to make zombies killable while inside the safezone, but killing them does not gain you anything.
+-- Otherwise, setting this variable to 0 will not affect zombies vs player inside safezones.
+GM.SafezoneGrindingPrevention = 1
+
+-- Obviously, zombies shouldn't be inside the safezone. The option below will determine how to handle the zombies entering the door.
+-- Set to 1 to make zombies entering the safezone be teleported to the nearest zombie spawnpoint.
+-- Set to 2 to make zombies entering the safezone be removed from their existence.
+-- Or just set to 0 to not do anything to the zombies.
+GM.SafezoneZombiesAction = 1
+
+-- For the both options above, you do NOT want to set these options to 1 and 0 respectively. Because that will make zombies inside safezone a PAIN to deal with.
+
+-- Turn this on if you are making a server adapted to openworld. This option will adapt the gamemode to openworld experience by applying a few changes.
+-- Factions, props and structures saved through sessions.
+GM.OpenworldAdaption = false
+
+-- Makes the gamemode use global configuration rather than map configuration (max zombies, loots, zombie spawnrate, etc.).
+GM.UseGlobalMapSettings = false
+
+
+]]
 
 -------- CONFIG --------
 

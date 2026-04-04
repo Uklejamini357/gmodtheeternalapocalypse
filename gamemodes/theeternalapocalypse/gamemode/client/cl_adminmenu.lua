@@ -769,7 +769,6 @@ function GM:OpenAdminToolMenu(wep)
 	atm.Categories.Paint = paint
 
 	local sidepanel = vgui.Create("EditablePanel", atm.Categories)
-	sidepanel:SetSize(400, 300)
 	sidepanel.Paint = function(self, w, h)
 		surface.SetDrawColor(0,0,0,100)
 		surface.DrawRect(0,0,w,h)
@@ -780,7 +779,7 @@ function GM:OpenAdminToolMenu(wep)
 		surface.DrawLine(0,0,0,h)
 	end
 	sidepanel:Dock(RIGHT)
-	sidepanel:SetWide(ScrH()*0.15)
+	sidepanel:SetWide(math.max(200, ScrH()*0.15))
 
 	do
 		local b = vgui.Create("DButton", sidepanel)
@@ -839,6 +838,28 @@ function GM:OpenAdminToolMenu(wep)
 			end
 		end
 		b:AddItem()
+	end
+
+	do
+		local b = vgui.Create("DCheckBoxLabel", sidepanel)
+		b:SetText("AdminTool hud")
+		b:SetChecked(!self.DisableAdminToolHUD)
+		b:Dock(TOP)
+		b:DockMargin(5, 10, 5, 0)
+		b.OnChange = function(this, val)
+			self.DisableAdminToolHUD = !val
+		end
+	end
+
+	do
+		local b = vgui.Create("DCheckBoxLabel", sidepanel)
+		b:SetText("Draw Sphere")
+		b:SetChecked(!self.DisableAdminToolDrawSphere)
+		b:Dock(TOP)
+		b:DockMargin(5, 10, 5, 0)
+		b.OnChange = function(this, val)
+			self.DisableAdminToolDrawSphere = !val
+		end
 	end
 
 	atm.panel = vgui.Create("EditablePanel", atm.Categories)

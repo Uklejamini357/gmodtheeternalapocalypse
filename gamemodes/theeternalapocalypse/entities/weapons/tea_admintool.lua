@@ -46,6 +46,7 @@ local name = {
 }
 local color_red = Color(255,0,0)
 function SWEP:DrawHUD()
+    if GAMEMODE.DisableAdminToolHUD then return end
     draw.DrawText("ADMIN TOOL", "TEA.HUDFont", ScrW()/2, ScrH()*0.2, color_white, TEXT_ALIGN_CENTER)
     draw.DrawText("Mode: "..name[self:GetMode()], "TEA.HUDFont", ScrW()/2, ScrH()*0.2 + 20, self:GetMode() ~= ADMINTOOL_MODE_SPAWNER and color_red or color_white, TEXT_ALIGN_CENTER)
 end
@@ -239,7 +240,9 @@ if CLIENT then
             local pos = wep:GetAimPos()
 
             render.SetMaterial(mat)
-            render.DrawSphere(pos, 4, 8, 8, Color(255,0,0,200))
+            if !GAMEMODE.DisableAdminToolDrawSphere then
+                render.DrawSphere(pos, 4, 8, 8, Color(255,0,0,200))
+            end
 
             for t,var in pairs(GAMEMODE.AdminEyes) do
                 if GAMEMODE.AdminEyesEnabled[t] and GAMEMODE.AdminMapSpawnables[t] and GAMEMODE.AdminMapSpawnables[t].View then

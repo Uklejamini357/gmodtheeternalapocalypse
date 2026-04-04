@@ -5,6 +5,21 @@ include("shared.lua")
 
 
 function ENT:Initialize()
+	local ltype = self:GetNWInt("loottype", 1)
+	if ltype == LOOTTYPE_BOSS or ltype == LOOTTYPE_FACTION then
+		self:SetModel("models/props/de_prodigy/ammo_can_02.mdl")
+	else
+		self:SetModel("models/props/cs_office/cardboard_box03.mdl")
+	end
+
+	-- Just in case.
+	if self:GetNWInt("loottype", 0) == 0 then
+		self:SetNWInt("loottype", LOOTTYPE_NORMAL)
+	end
+	if self:GetNWFloat("lootrarity", 0) == 0 then
+		self:SetNWFloat("lootrarity", LOOTRARITY_COMMON)
+	end
+
 	-- self:SetModel( "models/props/cs_office/cardboard_box03.mdl" )
 	-- boss: models/props/de_prodigy/ammo_can_02.mdl
 	-- rare: models/Items/item_item_crate.mdl
@@ -27,7 +42,10 @@ function ENT:Use(activator, caller)
 	if !caller:IsValid() or !caller:IsPlayer() or !caller:Alive() then return false end
 
 	local loottype = self:GetNWInt("loottype", 1)
-	local lootrarity = self:GetNWInt("lootrarity", 1)
+	local lootrarity = math.Clamp(self:GetNWFloat("lootrarity", 1) + caller.StatScavenging*0.01, 1, #GAMEMODE.LootTable)
+	self:SetNWInt("lootrarity", lootrarity)
+
+	GAMEMODE:RandomizeEntityLoot(self)
 
 	if self:GetNWEntity("pickup") and self:GetNWEntity("pickup"):IsValid() and self:GetNWEntity("pickup"):IsPlayer() and self:GetNWEntity("pickup") != caller then
 		caller:SystemMessage(Format("You aren't permitted to pick up the boss cache!", self:GetNWEntity("pickup"):Nick()), Color(255,205,205), true)

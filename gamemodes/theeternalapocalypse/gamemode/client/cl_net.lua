@@ -318,15 +318,15 @@ net.Receive("tea_lootpickup", function(len)
 			end
 		elseif ltype == LOOTTYPE_BOSS then
 			if qty ~= 1 then
-				chat.AddText(translate.Get("you_picked_up_a_lootcache_boss").." ", itemcol, GAMEMODE:GetItemName(item, me), color_white, " (x", qty, ")")
+				chat.AddText(color_white, translate.Get("you_picked_up_a_lootcache_boss").." ", itemcol, GAMEMODE:GetItemName(item, me), color_white, " (x", qty, ")")
 			else
-				chat.AddText(translate.Get("you_picked_up_a_lootcache_boss").." ", itemcol, GAMEMODE:GetItemName(item, me))
+				chat.AddText(color_white, translate.Get("you_picked_up_a_lootcache_boss").." ", itemcol, GAMEMODE:GetItemName(item, me))
 			end
 		elseif ltype == LOOTTYPE_FACTION then
 			if qty ~= 1 then
-				chat.AddText(translate.Get("you_picked_up_a_lootcache_faction"), itemcol, GAMEMODE:GetItemName(item, me), color_white, " (x", qty, ")")
+				chat.AddText(color_white, translate.Get("you_picked_up_a_lootcache_faction"), itemcol, GAMEMODE:GetItemName(item, me), color_white, " (x", qty, ")")
 			else
-				chat.AddText(translate.Get("you_picked_up_a_lootcache_faction"), itemcol, GAMEMODE:GetItemName(item, me))
+				chat.AddText(color_white, translate.Get("you_picked_up_a_lootcache_faction"), itemcol, GAMEMODE:GetItemName(item, me))
 			end
 		end
 	end
@@ -343,15 +343,15 @@ net.Receive("tea_lootpickup", function(len)
 		end
 	elseif ltype == LOOTTYPE_BOSS then
 		if qty ~= 1 then
-			chat.AddText(translate.Format("plr_picked_up_a_lootcache_boss", pl:Nick()).." ", itemcol, GAMEMODE:GetItemName(item, me), color_white, " (x", qty, ")")
+			chat.AddText(color_white, translate.Format("plr_picked_up_a_lootcache_boss", pl:Nick()).." ", itemcol, GAMEMODE:GetItemName(item, me), color_white, " (x", qty, ")")
 		else
-			chat.AddText(translate.Format("plr_picked_up_a_lootcache_boss", pl:Nick()).." ", itemcol, GAMEMODE:GetItemName(item, me))
+			chat.AddText(color_white, translate.Format("plr_picked_up_a_lootcache_boss", pl:Nick()).." ", itemcol, GAMEMODE:GetItemName(item, me))
 		end
 	elseif ltype == LOOTTYPE_FACTION then
 		if qty ~= 1 then
-			chat.AddText(translate.Format("plr_picked_up_a_lootcache_faction", pl:Nick()).." ", itemcol, GAMEMODE:GetItemName(item, me), color_white, " (x", qty, ")")
+			chat.AddText(color_white, translate.Format("plr_picked_up_a_lootcache_faction", pl:Nick()).." ", itemcol, GAMEMODE:GetItemName(item, me), color_white, " (x", qty, ")")
 		else
-			chat.AddText(translate.Format("plr_picked_up_a_lootcache_faction", pl:Nick()).." ", itemcol, GAMEMODE:GetItemName(item, me))
+			chat.AddText(color_white, translate.Format("plr_picked_up_a_lootcache_faction", pl:Nick()).." ", itemcol, GAMEMODE:GetItemName(item, me))
 		end
 	end
 end)

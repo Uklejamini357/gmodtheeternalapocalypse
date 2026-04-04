@@ -122,8 +122,8 @@ function ENT:SpecialSkill1()
 	return true
 end
 
-function ENT:OnKilled(damageInfo)
-	local attacker = damageInfo:GetAttacker()
+function ENT:OnKilled(dmginfo)
+	local attacker = dmginfo:GetAttacker()
 
 	local nerds = ents.FindInSphere(self:GetPos(), 120)
 
@@ -141,5 +141,5 @@ function ENT:OnKilled(damageInfo)
 	util.Effect("Explosion", effectdata)
 
 	self:Remove()
-	gamemode.Call("OnNPCKilled", self, damageInfo:GetAttacker(), damageInfo:GetInflictor())
+	gamemode.Call("OnNPCKilled", self, dmginfo:GetAttacker(), dmginfo:GetInflictor())
 end

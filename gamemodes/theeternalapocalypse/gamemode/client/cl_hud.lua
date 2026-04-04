@@ -689,13 +689,13 @@ function GM:DrawMiscThings()
 		surface_SetDrawColor(0, 0, 0, 200)
 		surface_DrawRect(t, s, 150, 45)
 
-		local lrarity = ent:GetNWInt("lootrarity")
+		local lrarity = math.floor(ent:GetNWFloat("lootrarity") + (me.StatScavenging or 0)*0.01)
 		local pickup = ent:GetNWEntity("pickup")
 
 		local typ = ent:GetNWInt("loottype")
 		if !typ or typ == 0 then return end
-		local col = typ == LOOTTYPE_BOSS and Color(125,23,23) or typ == LOOTTYPE_FACTION and Color(240,120,172) or self:GetLootRarityColor(ent:GetNWInt("lootrarity"))
-		local name = self:GetLootRarityName(ent:GetNWInt("lootrarity"))
+		local col = typ == LOOTTYPE_BOSS and Color(125,23,23) or typ == LOOTTYPE_FACTION and Color(240,120,172) or self:GetLootRarityColor(lrarity)
+		local name = self:GetLootRarityName(lrarity)
 		local canpick = !pickup or !pickup:IsValid() or !pickup:IsPlayer() or pickup == me
 
 		draw_DrawText(self:GetLootTypeName(typ), "TEA.HUDFont", t + 5, s + 4, col, TEXT_ALIGN_LEFT)

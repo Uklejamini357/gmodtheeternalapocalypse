@@ -87,19 +87,14 @@ function GM:SpawnLootCache(ltype, pos, ang, tier)
 	if !tier then tier = 1 end
 	if !ent:IsValid() then return end
 	ent:SetNWInt("loottype", ltype)
-	ent:SetNWInt("lootrarity", self:RandomizeLootRarity(tier))
+	ent:SetNWFloat("lootrarity", self:RandomizeLootRarity(tier))
 	ent:SetPos(pos)
 	ent:SetAngles(ang)
-	if ltype == LOOTTYPE_BOSS or ltype == LOOTTYPE_FACTION then
-		ent:SetModel("models/props/de_prodigy/ammo_can_02.mdl")
-	else
-		ent:SetModel("models/props/cs_office/cardboard_box03.mdl")
-	end
-	self:RandomizeEntityLoot(ent)
+	-- self:RandomizeEntityLoot(ent)
 	ent:Spawn()
 
 	if self:GetDebug() >= DEBUGGING_ADVANCED then
-		local l,r = self:GetLootTypeName(ent:GetNWInt("loottype")), self:GetLootRarityName(ent:GetNWInt("lootrarity"))
+		local l,r = self:GetLootTypeName(ent:GetNWInt("loottype")), self:GetLootRarityName(ent:GetNWFloat("lootrarity"))
 		print("Loot spawned:", l, "Rarity: ", r, pos, ang)
 	end
 
@@ -126,14 +121,14 @@ function GM:RandomizeLootRarity(tier)
 		end
 	end
 
-	return math.floor(math.min(#self.LootTable, rare + (tier-1)*0.1))
+	return math.min(#self.LootTable, rare + (tier-1)*0.1)
 end
 
-function GM:RandomizeEntityLoot(ent, forceloottype)
+function GM:RandomizeEntityLoot(ent, forceloottype, forcelootrarity)
 	local loottype = forceloottype or ent:GetNWInt("loottype")
 	local loot
 	if loottype == LOOTTYPE_NORMAL then
-		loot = self.LootTable[ent:GetNWInt("lootrarity")].Items
+		loot = self.LootTable[math.floor(forcelootrarity or ent:GetNWFloat("lootrarity", 1))].Items
 	elseif loottype == LOOTTYPE_BOSS then
 		loot = self.LootTableBoss
 	elseif loottype == LOOTTYPE_FACTION then

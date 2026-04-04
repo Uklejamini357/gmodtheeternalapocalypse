@@ -111,6 +111,11 @@ function ENT:Initialize()
 	self:SetCollisionBounds(Vector(-34,-34, 0), Vector(34, 34, 84))
 	self:SetModel("models/sin/quadralex.mdl")
 	self:PhysicsInitShadow(true)
+	local phys = self:GetPhysicsObject()
+	if phys and phys:IsValid() then
+		phys:EnableMotion(false)
+	end
+
 	if CLIENT then return end
 --	self.breathing = CreateSound(self, "npc/zombie_poison/pz_breathe_loop1.wav")
 --	self.breathing:Play()
@@ -235,12 +240,13 @@ function ENT:RunBehaviour()
 
 					for k, v in pairs(slammed) do
 						if v:IsPlayer() and v:Alive() and v:IsOnGround() then 
-							local damageInfo = DamageInfo()
-							damageInfo:SetAttacker(self)
-							damageInfo:SetDamage((self.IsEnraged and 65 or 50) * v:GetArmorDamageMultiplier())
-							damageInfo:SetDamageType(DMG_CLUB)
+							local dmginfo = DamageInfo()
+							dmginfo:SetAttacker(self)
+							dmginfo:SetInflictor(self)
+							dmginfo:SetDamage((self.IsEnraged and 65 or 50) * v:GetArmorDamageMultiplier())
+							dmginfo:SetDamageType(DMG_CLUB)
 
-							v:TakeDamageInfo(damageInfo)
+							v:TakeDamageInfo(dmginfo)
 							v:SetVelocity(Vector(math.random(-100, 100),math.random(-100, 100),self.IsEnraged and 325 or 300))
 
 						elseif v:GetPhysicsObject():IsValid() then
@@ -291,16 +297,17 @@ function ENT:RunBehaviour()
 					if not (self:IsValid() && self:Health() > 0) then return end
 					
 					if (IsValid(target) and self:GetRangeTo(target) <= 155) and target:Alive() then
-						local damageInfo = DamageInfo()
-						damageInfo:SetAttacker(self)
-						damageInfo:SetDamage((self.IsEnraged and math.random(45, 70) or math.random(40, 55)) * target:GetArmorDamageMultiplier())
-						damageInfo:SetDamageType(DMG_CLUB)
+						local dmginfo = DamageInfo()
+						dmginfo:SetAttacker(self)
+						dmginfo:SetInflictor(self)
+						dmginfo:SetDamage((self.IsEnraged and math.random(45, 70) or math.random(40, 55)) * target:GetArmorDamageMultiplier())
+						dmginfo:SetDamageType(DMG_CLUB)
 
 						local force = target:GetAimVector() * -600
 						force.z = 180
 
-						damageInfo:SetDamageForce(force)
-						target:TakeDamageInfo(damageInfo)
+						dmginfo:SetDamageForce(force)
+						target:TakeDamageInfo(dmginfo)
 						target:EmitSound("npc/zombie/zombie_hit.wav", 100, math.random(60, 80))
 						target:ViewPunch(VectorRand():Angle() * 0.05)
 						target:SetVelocity(force)
@@ -449,8 +456,8 @@ local deathSounds = {
 }
 
 
-function ENT:OnKilled(damageInfo)
-	local attacker = damageInfo:GetAttacker()
+function ENT:OnKilled(dmginfo)
+	local attacker = dmginfo:GetAttacker()
 
 	if attacker:IsPlayer() then
 		GAMEMODE:SystemBroadcast("[BOSS]: "..attacker:Nick().." has slain the Tyrant!", Color(255,105,105,255), false)
@@ -476,8 +483,8 @@ function ENT:OnKilled(damageInfo)
 */
 
 	self:EmitSound(table.Random(deathSounds), 100, math.random(95, 105))
-	self:BecomeRagdoll(damageInfo)
-	gamemode.Call("OnNPCKilled", self, damageInfo:GetAttacker(), damageInfo:GetInflictor())
+	self:BecomeRagdoll(dmginfo)
+	gamemode.Call("OnNPCKilled", self, dmginfo:GetAttacker(), dmginfo:GetInflictor())
 end
 
 function ENT:OnRemove()
@@ -493,12 +500,12 @@ local painSounds = {
 	"npc/antlion_guard/antlion_guard_pain2.wav",
 }
 
-function ENT:OnInjured(damageInfo)
-	local attacker = damageInfo:GetAttacker()
-	local dmg = damageInfo:GetDamage()
+function ENT:OnInjured(dmginfo)
+	local attacker = dmginfo:GetAttacker()
+	local dmg = dmginfo:GetDamage()
 	local range = self:GetRangeTo(attacker)
 
-	if self.NextPainSound < CurTime() and damageInfo:GetDamage() < self:Health() then
+	if self.NextPainSound < CurTime() and dmginfo:GetDamage() < self:Health() then
 		self.NextPainSound = CurTime() + 0.8
 		self:EmitSound(table.Random(painSounds), 100, math.random(50, 80))
 	end

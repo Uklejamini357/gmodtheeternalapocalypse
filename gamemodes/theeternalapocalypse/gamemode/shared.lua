@@ -3,8 +3,8 @@ GM.AltName	= "After The End Reborn"
 GM.Author	= "Uklejamini"
 GM.Email	= ""
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.12.0" -- very close to 0.12.0. now for reworking the loots, and writing all the changelog notes.
-GM.DateVer	= "23.03.2026" -- Follows the DD.MM.YYYY format.
+GM.Version	= "0.12.1"
+GM.DateVer	= "04.04.2026" -- Follows the DD.MM.YYYY format.
 GM.Credits = {
 	-- Assets
 	{"GSC Game World",			"For all the S.T.A.L.K.E.R. content",										""},
@@ -759,6 +759,7 @@ function GM:GetLootTypeName(id)
 end
 
 function GM:GetLootRarityColor(id)
+	id = math.floor(id)
 	if id == LOOTRARITY_COMMON then
 		return color_white
 	elseif id == LOOTRARITY_UNCOMMON then
@@ -767,12 +768,13 @@ function GM:GetLootRarityColor(id)
 		return Color(120,203,236)
 	elseif id == LOOTRARITY_EPIC then
 		return Color(188,107,232)
-	elseif id == LOOTRARITY_LEGENDARY then
+	elseif id >= LOOTRARITY_LEGENDARY then
 		return Color(251,240,168)
 	end
 end
 
 function GM:GetLootRarityName(id)
+	id = math.floor(id)
 	if id == LOOTRARITY_COMMON then
 		return "Common"
 	elseif id == LOOTRARITY_UNCOMMON then
@@ -781,7 +783,7 @@ function GM:GetLootRarityName(id)
 		return "Rare"
 	elseif id == LOOTRARITY_EPIC then
 		return "Epic"
-	elseif id == LOOTRARITY_LEGENDARY then
+	elseif id >= LOOTRARITY_LEGENDARY then
 		return "Legendary"
 	end
 end

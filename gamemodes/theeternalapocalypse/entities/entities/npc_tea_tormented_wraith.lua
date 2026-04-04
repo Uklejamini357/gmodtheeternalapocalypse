@@ -150,9 +150,9 @@ end)
 return false
 end
 
-function ENT:OnKilled(damageInfo)
-	local attacker = damageInfo:GetAttacker()
+function ENT:OnKilled(dmginfo)
+	local attacker = dmginfo:GetAttacker()
 	self:EmitSound(table.Random(self.DieSounds), 100, math.Rand(90, 100))
-	self:BecomeRagdoll(damageInfo)
-	gamemode.Call("OnNPCKilled", self, damageInfo:GetAttacker(), damageInfo:GetInflictor())
+	self:BecomeRagdoll(dmginfo)
+	gamemode.Call("OnNPCKilled", self, dmginfo:GetAttacker(), dmginfo:GetInflictor())
 end

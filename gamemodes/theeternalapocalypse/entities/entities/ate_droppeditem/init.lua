@@ -12,7 +12,6 @@ function ENT:Initialize()
 	self:SetMoveType(MOVETYPE_VPHYSICS)
 	self:SetCollisionGroup(COLLISION_GROUP_PASSABLE_DOOR) -- don't let the player collide with the dropped item
 	self:SetSolid(SOLID_VPHYSICS)
- 	self:SetColor(Color(255, 255, 255, 255))
 	self:SetUseType(SIMPLE_USE)
 --	self:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
 

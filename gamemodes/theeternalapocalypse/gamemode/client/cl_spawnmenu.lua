@@ -50,7 +50,8 @@ local function DoInvPanel()
 			itIcon:SetColor(v.ModelColor)
 		end
 		itIcon:SetSize(60,60)
-		itIcon.PaintOver = function() return end
+		itIcon.PaintOver = function(self, w, h)
+		end
 		itIcon.OnMousePressed = function(this, mc) return false end
 
 		local itName = vgui.Create("DLabel", itPanel)

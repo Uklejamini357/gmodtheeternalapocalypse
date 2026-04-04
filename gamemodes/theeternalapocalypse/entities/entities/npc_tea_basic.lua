@@ -173,14 +173,14 @@ function ENT:OnContact(ent)
 
 		local ded2 = DamageInfo()
 		ded2:SetDamage(0)
-		print("taken: "..math.min((self:Health() / 4), ent:GetVelocity():Length() / 28).." | dealt: "..ent:GetVelocity():Length() / 2.5)
 		ded2:SetDamageType(DMG_VEHICLE)
 		local f = (ent:GetPos() - self:GetPos() * 200) * ent:GetVelocity():Length() / 3000
 		ded2:SetDamageForce(f)
 		ent:TakeDamageInfo(ded2)
 
-		local ded = DamageInfo()
+		-- print("taken: "..math.min((self:Health() / 4), ent:GetVelocity():Length() / 28).." | dealt: "..ent:GetVelocity():Length() / 2.5)
 
+		local ded = DamageInfo()
 		ded:SetDamage(ent:GetVelocity():Length())
 		ded:SetDamageType(DMG_VEHICLE)
 		if ent:GetDriver():IsValid() then ded:SetAttacker(ent:GetDriver()) else ded:SetAttacker(game.GetWorld()) end
@@ -206,6 +206,7 @@ function ENT:Think()
 		drown:SetDamage(math.Clamp(self:GetMaxHealth() * 0.005, 1, 10))
 		drown:SetDamageType(DMG_DIRECT + DMG_DROWN)
 		drown:SetAttacker(game.GetWorld())
+		drown:SetInflictor(game.GetWorld())
 		drown:SetDamageForce(Vector(0, 0, 0))
 		self:TakeDamageInfo(drown)
 		self.LastAttacker = nil -- if you try killing zombies by water, don't think about it.
@@ -573,19 +574,20 @@ end
 
 function ENT:ApplyPlayerDamage(ply, damage, hitforce, infection)
 	if !ply:IsValid() or !ply:IsPlayer() and ply:Health() <= 0 or ply:IsPlayer() and !ply:Alive() then return end
-	local damageInfo = DamageInfo()
 	local dmg1 = tonumber(damage)
-
-	damageInfo:SetAttacker(self)
-	damageInfo:SetDamage(ply:IsPlayer() and dmg1 * ply:GetArmorDamageMultiplier() or dmg1)
-	damageInfo:SetDamageType(DMG_CLUB)
+	
+	local dmginfo = DamageInfo()
+	dmginfo:SetAttacker(self)
+	dmginfo:SetInflictor(self)
+	dmginfo:SetDamage(ply:IsPlayer() and dmg1 * ply:GetArmorDamageMultiplier() or dmg1)
+	dmginfo:SetDamageType(DMG_CLUB)
 
 	local distancevector = self:GetPos() - ply:GetPos()
 	local force = (distancevector / distancevector:Length()) * hitforce
 	force.z = 32
-	damageInfo:SetDamageForce(force)
+	dmginfo:SetDamageForce(force)
 
-	ply:TakeDamageInfo(damageInfo)
+	ply:TakeDamageInfo(dmginfo)
 	local snd = istable(self.Hit) and table.Random(self.Hit) or self.Hit
 	ply:EmitSound(snd, 100, math.random(80, 110))
 	ply:SetVelocity(force)

@@ -254,20 +254,21 @@ function GM:AdminCmds_SpawnItem(ply, cmd, args)
 
 	local vStart = ply:GetShootPos()
 	local vForward = ply:GetAimVector()
-	local trace = {}
-	trace.start = vStart
-	trace.endpos = vStart + (vForward * 70)
-	trace.filter = ply
+	local trace = {
+		start = vStart,
+		endpos = vStart + (vForward * 70),
+		filter = ply
+	}
 	local tr = util.TraceLine(trace)
-	local EntDrop = ents.Create("ate_droppeditem")
-	EntDrop:SetPos(tr.HitPos)
-	EntDrop:SetAngles(Angle(0, 0, 0))
+
+	local ent = ents.Create("ate_droppeditem")
+	ent:SetPos(tr.HitPos)
+	ent:SetAngles(Angle(0, 0, 0))
 	--if item category is 4 (armor category), it will detect that it is an armor, as long as it doesn't have flaws it should work fine
-	EntDrop:SetModel(item.Category == ITEMCATEGORY_ARMOR and "models/props/cs_office/cardboard_box01.mdl" or self.ItemsList[name]["Model"])
-	EntDrop:SetNWString("ItemClass", name)
-	EntDrop:Spawn()
-	EntDrop:Activate()
-	EntDrop:SetVelocity(ply:GetForward() * 80 + Vector(0,0,50))
+	ent:SetModel(item.Category == ITEMCATEGORY_ARMOR and "models/props/cs_office/cardboard_box01.mdl" or self.ItemsList[name]["Model"])
+	ent:SetNWString("ItemClass", name)
+	ent:Spawn()
+	ent:Activate()
 
 	self:DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." spawned a dropped item: "..GAMEMODE:GetItemName(name))
 	ply:SystemMessage("You spawned a dropped item: "..GAMEMODE:GetItemName(name, ply).."!", Color(155,255,155,255), true)

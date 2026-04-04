@@ -115,24 +115,25 @@ end
 
 function ENT:ApplyPlayerDamage(ply, damage, hitforce, infection)
 	if !ply:Alive() then return end
-	local damageInfo = DamageInfo()
 	local dmg1 = tonumber(damage)
-
-	damageInfo:SetAttacker(self)
-	damageInfo:SetDamage(dmg1 * ply:GetArmorDamageMultiplier())
-	damageInfo:SetDamageType(DMG_CLUB)
+	
+	local dmginfo = DamageInfo()
+	dmginfo:SetAttacker(self)
+	dmginfo:SetInflictor(self)
+	dmginfo:SetDamage(dmg1 * ply:GetArmorDamageMultiplier())
+	dmginfo:SetDamageType(DMG_CLUB)
 
 	local distancevector = self:GetPos() - ply:GetPos()
 	local force = (distancevector / distancevector:Length()) * hitforce
 	force.z = 300
-	damageInfo:SetDamageForce(force)
+	dmginfo:SetDamageForce(force)
+	ply:TakeDamageInfo(dmginfo)
 
 	self:EmitSound("ambient/energy/zap9.wav", 100, 80)
 	local effectdata = EffectData()
 	effectdata:SetOrigin(self:GetPos() + Vector(0, 0, 60))
 	util.Effect("zw_master_strike", effectdata)
 
-	ply:TakeDamageInfo(damageInfo)
 --ply:EmitSound(self.Hit, 100, math.random(80, 110))
 	ply:ViewPunch(VectorRand():Angle() * 0.05)
 	ply:SetVelocity(force)
@@ -142,10 +143,10 @@ function ENT:ApplyPlayerDamage(ply, damage, hitforce, infection)
 end
 
 
-function ENT:OnInjured(damageInfo)
-	local attacker = damageInfo:GetAttacker()
+function ENT:OnInjured(dmginfo)
+	local attacker = dmginfo:GetAttacker()
 	local range = self:GetRangeTo(attacker)
-	local dmg = damageInfo:GetDamage()
+	local dmg = dmginfo:GetDamage()
 
 	self.Ouchies = (self.Ouchies or 0) + dmg
 	if self.NextPainSound < CurTime() and dmg < self:Health() then

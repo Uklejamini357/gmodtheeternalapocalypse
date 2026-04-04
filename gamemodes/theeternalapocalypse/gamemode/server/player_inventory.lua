@@ -278,16 +278,26 @@ function GM:UseItem(ply, item, use, targetply)
 				local vStart, vForward = ply:GetShootPos(), ply:GetAimVector()
 				local tr = util.TraceLine({
 					start = vStart,
-					endpos = vStart + vForward * 70,
+					endpos = vStart + vForward * 50,
 					filter = ply
 				})
+
+				local itm = GAMEMODE.ItemsList[item]
 				local ent = ents.Create("ate_droppeditem")
 				ent:SetPos(tr.HitPos)
 				ent:SetAngles(Angle(0, ply:EyeAngles().yaw, 0))
-				ent:SetModel(armor and "models/props/cs_office/cardboard_box01.mdl" or GAMEMODE.ItemsList[item].Model)
+				ent:SetModel(armor and "models/props/cs_office/cardboard_box01.mdl" or itm.Model)
 				ent:SetNWString("ItemClass", item)
+				if itm.ModelColor then
+					print(itm.ModelColor)
+					ent:SetColor(itm.ModelColor)
+				end
 				ent:Spawn()
 				ent:Activate()
+				local phys = ent:GetPhysicsObject()
+				if phys and phys:IsValid() then
+					phys:AddVelocity(ply:GetVelocity() + ply:GetAimVector()*60 + Vector(0,0,60))
+				end
 
 				if !hasmorethan1 and armor and ply.EquippedArmor == tostring(item) then
 					ply:ArmorUnequip()

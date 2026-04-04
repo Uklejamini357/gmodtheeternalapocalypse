@@ -177,60 +177,33 @@ function GM:LoadMainMenu()
 	local p = {}
 	p.maintext = vgui.Create("DLabel", titlepan)
 	p.maintext:SetPos(0, 0)
-	p.maintext:SetText("(20.08.2025) 0.11.4:")
+	p.maintext:SetText("(23.03.2026) 0.12.0:")
 	p.maintext:SetTextColor(Color(255,255,210))
 	p.maintext:SetFont("Trebuchet24")
 	p.maintext:SizeToContents()
 
+	local texts = {
+		{"A lot of changes were introduced.", Color(255,255,210)},
+		{"Added map transitions.", Color(255,255,210)},
+		{"Introducing Zombines.", Color(255,255,210)},
+		{"Reworked loot caches and their rarity.", Color(255,255,210)},
+		{"Loot spawns now have tier attribute.", Color(255,255,210)},
+		{"Which meanas different spawns can have higher quality loot.", Color(255,255,210)},
+		{"Added Spanish translation - thanks Sirtlan :)", Color(210,255,210)},
+		{"There are more changes but you can discover them yourself!", Color(255,255,210)},
+	}
+
 	local y = 40
-	p.text1 = vgui.Create("DLabel", titlepan)
-	p.text1:SetPos(0, y)
-	p.text1:SetText("Inventory is moved to Q Menu")
-	p.text1:SetTextColor(Color(255,255,210))
-	p.text1:SetFont("Trebuchet18")
-	p.text1:SizeToContents()
-	y = y + 30
-
-	p.text2 = vgui.Create("DLabel", titlepan)
-	p.text2:SetPos(0, y)
-	p.text2:SetText("Scoreboard is now on first category on TAB menu by default.")
-	p.text2:SetTextColor(Color(255,255,210))
-	p.text2:SetFont("Trebuchet18")
-	p.text2:SizeToContents()
-	y = y + 30
-
-	p.text3 = vgui.Create("DLabel", titlepan)
-	p.text3:SetPos(0, y)
-	p.text3:SetText("Using items is now very much reworked.")
-	p.text3:SetTextColor(Color(255,255,210))
-	p.text3:SetFont("Trebuchet18")
-	p.text3:SizeToContents()
-	y = y + 30
-
-	p.text4 = vgui.Create("DLabel", titlepan)
-	p.text4:SetPos(0, y)
-	p.text4:SetText("Item stats should now properly show in item descriptions.")
-	p.text4:SetTextColor(Color(255,255,210))
-	p.text4:SetFont("Trebuchet18")
-	p.text4:SizeToContents()
-	y = y + 30
-
-	p.text5 = vgui.Create("DLabel", titlepan)
-	p.text5:SetPos(0, y)
-	p.text5:SetText("For more changes, join our discord by typing !discord in chat")
-	p.text5:SetTextColor(Color(255,210,210))
-	p.text5:SetFont("Trebuchet18")
-	p.text5:SizeToContents()
-	y = y + 30
-
-	p.text6 = vgui.Create("DLabel", titlepan)
-	p.text6:SetPos(0, y)
-	p.text6:SetText("And check out our latest announcement!")
-	p.text6:SetTextColor(Color(255,210,210))
-	p.text6:SetFont("Trebuchet18")
-	p.text6:SizeToContents()
-	y = y + 30
-
+	for i=1,#texts do
+		local t = texts[i]
+		p["text"..i] = vgui.Create("DLabel", titlepan)
+		p["text"..i]:SetPos(0, y)
+		p["text"..i]:SetText(t[1])
+		p["text"..i]:SetTextColor(t[2])
+		p["text"..i]:SetFont("Trebuchet18")
+		p["text"..i]:SizeToContents()
+		y = y + 30
+	end
 
 	for i=1,2 do
 		local desc = vgui.Create("DLabel", self.MainMenuPanel)

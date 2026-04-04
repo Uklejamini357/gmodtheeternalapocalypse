@@ -114,6 +114,10 @@ function ENT:Initialize()
 	self:SetCollisionBounds(Vector(-34,-34, 0), Vector(34, 34, 84))
 	self:SetModel("models/undead/undead.mdl")
 	self:PhysicsInitShadow(true)
+	local phys = self:GetPhysicsObject()
+	if phys and phys:IsValid() then
+		phys:EnableMotion(false)
+	end
 
 	if CLIENT then return end
 	self.loco:SetDeathDropHeight(700)
@@ -268,10 +272,11 @@ function ENT:RunBehaviour()
 					if not (self:IsValid() && self:Health() > 0) then return end
 					
 					if (IsValid(target) and self:GetRangeTo(target) <= 105) and target:Alive() then
-						local damageInfo = DamageInfo()
-						damageInfo:SetAttacker(self)
-						damageInfo:SetDamage((self.IsEnraged and math.random(65, 75) or math.random(50, 55)) * target:GetArmorDamageMultiplier())
-						damageInfo:SetDamageType(DMG_CLUB)
+						local dmginfo = DamageInfo()
+						dmginfo:SetAttacker(self)
+						dmginfo:SetInflictor(self)
+						dmginfo:SetDamage((self.IsEnraged and math.random(65, 75) or math.random(50, 55)) * target:GetArmorDamageMultiplier())
+						dmginfo:SetDamageType(DMG_CLUB)
 
 						local distancevector = target:GetPos() - self:GetPos()
 						local force = (distancevector / distancevector:Length()) * 800
@@ -287,8 +292,8 @@ function ENT:RunBehaviour()
 						DOIT()
 						timer.Create("Boss_LordKingAttack"..self:EntIndex(), 0.05, 3, DOIT)
 
-						damageInfo:SetDamageForce(force)
-						target:TakeDamageInfo(damageInfo)
+						dmginfo:SetDamageForce(force)
+						target:TakeDamageInfo(dmginfo)
 						target:EmitSound(self.Hit, 100, math.random(60, 80))
 						target:ViewPunch(VectorRand():Angle() * 0.05)
 						target:SetVelocity(force)
@@ -425,8 +430,8 @@ function ENT:OnLandOnGround()
 	self:EmitSound("physics/flesh/flesh_impact_hard"..math.random(1, 6)..".wav")
 end
 
-function ENT:OnKilled(damageInfo)
-	local attacker = damageInfo:GetAttacker()
+function ENT:OnKilled(dmginfo)
+	local attacker = dmginfo:GetAttacker()
 
 	if attacker:IsPlayer() then
 		GAMEMODE:SystemBroadcast("[BOSS]: "..attacker:Nick().." has slain the Zombie Lord King!", Color(255,105,105,255), false)
@@ -452,16 +457,16 @@ function ENT:OnKilled(damageInfo)
 */
 
 	self:EmitSound(table.Random(self.DeathSounds), 130, math.random(95, 105))
-	self:BecomeRagdoll(damageInfo)
-	gamemode.Call("OnNPCKilled", self, damageInfo:GetAttacker(), damageInfo:GetInflictor())
+	self:BecomeRagdoll(dmginfo)
+	gamemode.Call("OnNPCKilled", self, dmginfo:GetAttacker(), dmginfo:GetInflictor())
 end
 
-function ENT:OnInjured(damageInfo)
-	local attacker = damageInfo:GetAttacker()
-	local dmg = damageInfo:GetDamage()
+function ENT:OnInjured(dmginfo)
+	local attacker = dmginfo:GetAttacker()
+	local dmg = dmginfo:GetDamage()
 	local range = self:GetRangeTo(attacker)
 
-	if self.NextPainSound < CurTime() and damageInfo:GetDamage() < self:Health() then
+	if self.NextPainSound < CurTime() and dmginfo:GetDamage() < self:Health() then
 		self.NextPainSound = CurTime() + 1.1
 		self:EmitSound(table.Random(self.PainSounds), 120, math.random(50, 80))
 	end

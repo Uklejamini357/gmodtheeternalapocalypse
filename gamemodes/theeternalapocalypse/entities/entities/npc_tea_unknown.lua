@@ -115,6 +115,7 @@ function ENT:Think()
 		drown:SetDamage(10000)
 		drown:SetDamageType(DMG_DROWN)
 		drown:SetAttacker(game.GetWorld())
+		drown:SetInflictor(game.GetWorld())
 		drown:SetDamageForce(Vector(0, 0, 0))
 		self:TakeDamageInfo(drown)
 	end

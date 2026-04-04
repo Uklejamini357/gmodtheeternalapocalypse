@@ -262,6 +262,10 @@ GM.AdminMapSpawnables = {
 			local ownang = owner:EyeAngles()
 			for id,v in pairs(var) do
 				render.DrawLine(v.Pos+Vector(0,0,80), v.Pos,color_yellow,true)
+				-- probably unoptimal.
+				render.DrawLine(v.Pos, v.Pos+v.Ang:Forward()*40,color_yellow,true)
+				render.DrawLine(v.Pos+v.Ang:Forward()*40,v.Pos+v.Ang:Forward()*40+(v.Ang+Angle(0,45,0)):Forward()*-15,color_yellow,true)
+				render.DrawLine(v.Pos+v.Ang:Forward()*40,v.Pos+v.Ang:Forward()*40+(v.Ang+Angle(0,-45,0)):Forward()*-15,color_yellow,true)
 				cam.Start3D2D(v.Pos+Vector(0,0,80), Angle(0, ownang.yaw - 90, 90 - ownang.Pitch), math.Clamp(owner:GetPos():Distance(v.Pos)/750, 0.5, 5))
 				draw.DrawText("Loot spawn #"..id, "TEA.HUDFont", 0, 0, tcolor_yellow, TEXT_ALIGN_LEFT)
 				draw.DrawText("Tier: "..v.Tier, "TEA.HUDFontSmall", 0, 20, tcolor_yellow, TEXT_ALIGN_LEFT)
@@ -342,6 +346,9 @@ GM.AdminMapSpawnables = {
 			local ownang = owner:EyeAngles()
 			for id,v in pairs(var) do
 				render.DrawLine(v.Pos+Vector(0,0,80), v.Pos,color_white,true)
+				render.DrawLine(v.Pos, v.Pos+v.Ang:Forward()*40,color_white,true)
+				render.DrawLine(v.Pos+v.Ang:Forward()*40,v.Pos+v.Ang:Forward()*40+(v.Ang+Angle(0,45,0)):Forward()*-15,color_white,true)
+				render.DrawLine(v.Pos+v.Ang:Forward()*40,v.Pos+v.Ang:Forward()*40+(v.Ang+Angle(0,-45,0)):Forward()*-15,color_white,true)
 				cam.Start3D2D(v.Pos+Vector(0,0,80), Angle(0, ownang.yaw - 90, 90 - ownang.Pitch), math.Clamp(owner:GetPos():Distance(v.Pos)/750, 0.5, 5))
 				draw.DrawText("Trader spawn #"..id, "TEA.HUDFont", 0, 0, tcolor_cyan, TEXT_ALIGN_LEFT)
 				cam.End3D2D()
