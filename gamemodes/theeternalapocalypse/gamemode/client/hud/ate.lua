@@ -149,7 +149,6 @@ function HUD:DrawSwep(pl, w, h, swep)
             IsAmmoBox = false
         end
     end
-
 end
 
 function HUD:DrawPVP(pl, state, w, h)
@@ -170,6 +169,16 @@ function HUD:DrawPVP(pl, state, w, h)
     else
         draw_SimpleTextOutlined("C", "CSSTextFont", 135, 85, Color(50, 50, 50), 0, 0, 2, Color(20, 0, 0))
     end
+end
+
+function HUD:DrawTrader(pl, w, h)
+    draw_RoundedBox(2, w / 2 - 230, 20, 460, 75, Color(0, 0, 0, 175))
+    surface_SetDrawColor(155, 155, 0, 255)
+    surface_DrawOutlinedRect(w / 2 - 230, 20, 460, 75)
+
+    draw_DrawText("You are in a trader protection zone", "TEA.HUDFont", w / 2, 30, Color(230, 255, 230, 255), TEXT_ALIGN_CENTER)
+    draw_DrawText("You cannot hurt other players or be hurt by them while in this area", "TEA.HUDFontSmall", w / 2, 50, Color(255, 255, 255, 255), TEXT_ALIGN_CENTER)
+    draw_DrawText("You take 10% less damage from all sources while in trader area", "TEA.HUDFontSmall", w / 2, 70, Color(255, 255, 255, 255), TEXT_ALIGN_CENTER)
 end
 
 

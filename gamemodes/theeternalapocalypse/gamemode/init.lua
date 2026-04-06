@@ -76,6 +76,7 @@ include("server/mastery.lua") -- Mastery for various types, including pvp and me
 --include("time_weather.lua") -- excluded due to file being non-existant
 include("server/player_quests.lua") -- Tasks and task dealers
 include("server/openworld.lua") -- Openworld implementation
+include("server/safezones.lua") -- Safezones
 
 include("server_data/data_saving.lua")
 
@@ -509,6 +510,7 @@ function GM:Initialize()
 	self.TraderSpawnpoints = {}
 	self.PlayerSpawnpoints = {}
 	self.OpenworldTransitions = {}
+	self.MapSafezones = {}
 
 	SetGlobalBool("GM.ZombieSpawning", true)
 

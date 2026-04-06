@@ -129,6 +129,16 @@ function HUD:DrawPVP(pl, state, w, h)
     draw_SimpleText("PvP: "..translate.Get("pvp_state"..state), "TEA.HUDFontSmall", 270, h - 30, Color(205,205,205), 0, 0)
 end
 
+function HUD:DrawTrader(pl, w, h)
+    draw_RoundedBox(2, w / 2 - 230, 20, 460, 75, Color(0, 0, 0, 175))
+    surface_SetDrawColor(155, 155, 0, 255)
+    surface_DrawOutlinedRect(w / 2 - 230, 20, 460, 75)
+
+    draw_DrawText("You are in a trader protection zone", "TEA.HUDFont", w / 2, 30, Color(230, 255, 230, 255), TEXT_ALIGN_CENTER)
+    draw_DrawText("You cannot hurt other players or be hurt by them while in this area", "TEA.HUDFontSmall", w / 2, 50, Color(255, 255, 255, 255), TEXT_ALIGN_CENTER)
+    draw_DrawText("You take 10% less damage from all sources while in trader area", "TEA.HUDFontSmall", w / 2, 70, Color(255, 255, 255, 255), TEXT_ALIGN_CENTER)
+end
+
 function HUD:DrawDead(pl, w, h, Spawn)
     local a = 205
 

@@ -406,16 +406,16 @@ function GM:DrawVitals()
 		hud:DrawPVP(pl, state, scrw, scrh)
 	end
 
+	local drawtrader
 	for _, ent in pairs (ents.FindByClass("tea_trader")) do
 		if ent:GetPos():DistToSqr(me:GetPos()) < 14400 then
-			draw_RoundedBox(2, scrw / 2 - 230, 20, 460, 75, Color(0, 0, 0, 175))
-			surface_SetDrawColor(155, 155, 0, 255)
-			surface_DrawOutlinedRect(scrw / 2 - 230, 20, 460, 75)
-
-			draw_DrawText("You are in a trader protection zone", "TEA.HUDFont", scrw / 2, 30, Color(230, 255, 230, 255), TEXT_ALIGN_CENTER)
-			draw_DrawText("You cannot hurt other players or be hurt by them while in this area", "TEA.HUDFontSmall", scrw / 2, 50, Color(255, 255, 255, 255), TEXT_ALIGN_CENTER)
-			draw_DrawText("You take 10% less damage from all sources while in trader area", "TEA.HUDFontSmall", scrw / 2, 70, Color(255, 255, 255, 255), TEXT_ALIGN_CENTER)
+			drawtrader = true
+			break
 		end
+	end
+
+	if hud and hud.DrawTrader then
+		hud:DrawTrader(pl, scrw, scrh)
 	end
 end
 
@@ -557,6 +557,7 @@ function GM:HUDShouldDraw(name)
 	return true
 end
 
+-- local mat = Material("models/props_lab/projector_noise")
 function GM:RenderScreenspaceEffects()
 	local ply = LocalPlayer()
 	if ply:GetObserverMode() ~= OBS_MODE_NONE then return end
@@ -585,19 +586,46 @@ function GM:RenderScreenspaceEffects()
 	if GAMEMODE.WraithAlpha > 220 then DrawMotionBlur(0.4, 0.8, 0.01) end
 
 
-	local horror = false
+	local filters = {
+		{
+			["$pp_colour_addr"] = 0,
+			["$pp_colour_addg"] = 0,
+			["$pp_colour_addb"] = 0,
+			["$pp_colour_brightness"] = 0,
+			["$pp_colour_contrast"] = contrast * (!ply:Alive() and math.Clamp(1 + (self.LastAliveTime + 5 - CurTime()) * 0.2, 0.05, 1) or 1),
+			["$pp_colour_colour"] = color,
+			["$pp_colour_mulr"] = 0,
+			["$pp_colour_mulg"] = 0,
+			["$pp_colour_mulb"] = 0
+		},
 
-	modify["$pp_colour_addr"] = 0
-	modify["$pp_colour_addg"] = 0
-	modify["$pp_colour_addb"] = 0
-	modify["$pp_colour_brightness"] = horror and -0.045 or 0
-	modify["$pp_colour_contrast"] = contrast * (horror and 1.15 or 1) * (!ply:Alive() and math.Clamp(1 + (self.LastAliveTime + 5 - CurTime()) * 0.2, 0.05, 1) or 1)
-	modify["$pp_colour_colour"] = horror and math.max(0, color - 0.725) or color
-	modify["$pp_colour_mulr"] = 0
-	modify["$pp_colour_mulg"] = 0
-	modify["$pp_colour_mulb"] = 0
-	
-	DrawColorModify(modify)
+
+		{ -- horror
+			["$pp_colour_addr"] = 0,
+			["$pp_colour_addg"] = 0,
+			["$pp_colour_addb"] = 0,
+			["$pp_colour_brightness"] = -0.045,
+			["$pp_colour_contrast"] = contrast * 1.15 * (!ply:Alive() and math.Clamp(1 + (self.LastAliveTime + 5 - CurTime()) * 0.2, 0.05, 1) or 1),
+			["$pp_colour_colour"] = math.max(0, color - 0.725),
+			["$pp_colour_mulr"] = 0,
+			["$pp_colour_mulg"] = 0,
+			["$pp_colour_mulb"] = 0
+		},
+
+		{ -- colorless (black and white)
+			["$pp_colour_addr"] = 0,
+			["$pp_colour_addg"] = 0,
+			["$pp_colour_addb"] = 0,
+			["$pp_colour_brightness"] = -0.1,
+			["$pp_colour_contrast"] = contrast * 0.55 * (!ply:Alive() and math.Clamp(1 + (self.LastAliveTime + 5 - CurTime()) * 0.2, 0.05, 1) or 1),
+			["$pp_colour_colour"] = 0,
+			["$pp_colour_mulr"] = 0,
+			["$pp_colour_mulg"] = 0,
+			["$pp_colour_mulb"] = 0
+		},
+	}
+
+	DrawColorModify(filters[1])
 end
 
 function GM:DrawMiscThings()
@@ -821,6 +849,8 @@ hook.Add("PostDrawTranslucentRenderables", "GM.Transitions", function(bDrawingDe
 	cam.IgnoreZ(true)
 	local ownang = pl:EyeAngles()
 	for id,v in pairs(GAMEMODE.OpenworldTransitions) do
+		-- if !v.LinkedTo then continue end
+
 		local dist = pl:GetPos():Distance(v.Pos)
 		if dist > 2000 then continue end
 		local a = ((2000-dist)/2000)*255

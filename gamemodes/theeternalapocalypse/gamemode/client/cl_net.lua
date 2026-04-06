@@ -294,6 +294,20 @@ net.Receive("tea_admin_tool", function()
 		local box = {net.ReadVector(), net.ReadVector()}
 
 		gamemode.Call("CreateOpenworldTransition", startpos, startang, box[1], box[2])
+	elseif mode == "safezonecreate" then
+		local box = {net.ReadVector(), net.ReadVector()}
+
+		gamemode.Call("CreateSafezoneArea", box[1], box[2])
+	end
+end)
+
+net.Receive("tea_safezone", function()
+	local enter = net.ReadBool()
+
+	GAMEMODE.SafezoneEntered = enter
+	if enter then
+		GAMEMODE.SafezoneTimeEntered = CurTime()
+		GAMEMODE.SafezoneTimeProtected = CurTime()+GAMEMODE.SafezoneProtectionDelay
 	end
 end)
 

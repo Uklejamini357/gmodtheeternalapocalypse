@@ -166,7 +166,6 @@ GM.MaxSellCostMul = 0.3
 GM.MinBuyCostMul = 0.5
 
 -- Work in progress!
---[[
 -- Time it takes after entering the safezone for the protection to fully apply. Spawning inside the safezone applies protection measures immediately.
 GM.SafezoneProtectionDelay = 10
 
@@ -185,6 +184,7 @@ GM.SafezoneGrindingPrevention = 1
 -- Or just set to 0 to not do anything to the zombies.
 GM.SafezoneZombiesAction = 1
 
+--[[
 -- For the both options above, you do NOT want to set these options to 1 and 0 respectively. Because that will make zombies inside safezone a PAIN to deal with.
 
 -- Turn this on if you are making a server adapted to openworld. This option will adapt the gamemode to openworld experience by applying a few changes.
@@ -193,8 +193,6 @@ GM.OpenworldAdaption = false
 
 -- Makes the gamemode use global configuration rather than map configuration (max zombies, loots, zombie spawnrate, etc.).
 GM.UseGlobalMapSettings = false
-
-
 ]]
 
 -------- CONFIG --------

@@ -234,7 +234,62 @@ Remade by Uklejamini. For fun and enjoyment.</p>
 </body>
 </html>]])
 
-    helpList:AddSheet("Help", htmlpanel, nil, false, false, "Guide you might want to read if you're starting out.")
+    local beginnerguidehtml = vgui.Create("DHTML", helpList)
+    beginnerguidehtml:StretchToParent(4, 4, 4, 24)
+    beginnerguidehtml:SetHTML([[<html>
+    <head>
+    <style type="text/css">
+    body
+    {
+        font-family:tahoma;
+        font-size:16px;
+        color:white;
+        background-color: #00000020;
+        width:]].. beginnerguidehtml:GetWide() - 48 ..[[px;
+    }
+    div p
+    {
+        margin:10px;
+        padding:2px;
+    }
 
+    h1 {
+        color: maroon
+    }
+
+    h2 {
+        color: maroon
+    }
+
+    a {
+        color: green
+    }
+    
+    a:hover {
+        color: yellow;
+    }
+    </style>
+    </head>
+
+    <body>
+    <h1></h1>
+<p></p>
+
+<ul>
+<li><a href="#Differences">Differences</a></li>
+
+</ul>
+
+<h2 id="1.">1.</h2>
+<p>This gamemode is pretty much the same as the original. Survive, shoot zombies, find loot, level up, become stronger. However, many new mechanics that alter the gameplay have been introduced, such as:</p>
+<ul>
+</ul>
+
+
+</body>
+</html>]])
+
+    helpList:AddSheet("Help", htmlpanel, nil, false, false, "Guide you might want to read if you're starting out.")
+    helpList:AddSheet("Beginner's Guide", beginnerguidehtml, nil, false, false, "Beginner's guide for new players. ")
 end
 

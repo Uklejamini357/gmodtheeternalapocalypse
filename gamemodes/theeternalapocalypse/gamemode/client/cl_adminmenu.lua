@@ -1225,9 +1225,71 @@ function GM:CreateOpenworldTransition(startpos, startang, pos1, pos2)
 		net.WriteAngle(startang)
 		net.WriteVector(pos1)
 		net.WriteVector(pos2)
+		net.WriteString(mapname:GetText())
 		net.SendToServer()
 		
 		chat.AddText("Creating a new transition...")
+
+		atm:Remove()
+	end
+end
+
+local atm
+function GM:CreateSafezoneArea(pos1, pos2)
+	atm = vgui.Create("EditablePanel")
+	atm:SetSize(400, 300)
+	atm.Paint = function(self, w, h)
+		surface.SetDrawColor(0,0,0,100)
+		surface.DrawRect(0,0,w,h)
+		surface.SetDrawColor(255,255,255,200)
+		surface.DrawOutlinedRect(0,0,w,h)
+	end
+	atm.OnRemove = function(self)
+		hook.Remove("OnPauseMenuShow", self)
+	end
+	hook.Add("OnPauseMenuShow", atm, function()
+		if atm and atm:IsValid() then
+			atm:Remove()
+			return false
+		end
+	end)
+	atm:Center()
+	atm:MakePopup()
+
+	local textname = vgui.Create("DLabel", atm)
+	textname:SetText("Give it a name... or leave it empty")
+	textname:Dock(TOP)
+	textname:SetContentAlignment(4)
+
+	local szname = vgui.Create("DTextEntry", atm)
+	szname:SetText("")
+	szname:SetTextColor(color_black)
+	szname:Dock(TOP)
+	szname:DockMargin(5, 10, 5, 0)
+
+	local pos1text = vgui.Create("DLabel", atm)
+	pos1text:SetText("Area start: "..pos1.x.." "..pos1.y.." "..pos1.z)
+	pos1text:Dock(TOP)
+	pos1text:SetContentAlignment(4)
+
+	local pos2text = vgui.Create("DLabel", atm)
+	pos2text:SetText("Area end: "..pos2.x.." "..pos2.y.." "..pos2.z)
+	pos2text:Dock(TOP)
+	pos2text:SetContentAlignment(4)
+
+	local btn = vgui.Create("DButton", atm)
+	btn:Dock(TOP)
+	btn:DockMargin(0, 20, 0, 0)
+	btn:SetText("Make new transition!")
+	btn.DoClick = function()
+		net.Start("tea_admin_tool")
+		net.WriteString("createsafezonearea")
+		net.WriteString(szname:GetText())
+		net.WriteVector(pos1)
+		net.WriteVector(pos2)
+		net.SendToServer()
+
+		chat.AddText("Creating a new safezone area...")
 
 		atm:Remove()
 	end

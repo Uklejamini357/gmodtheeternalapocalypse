@@ -192,6 +192,7 @@ local color_cyan = Color(120,255,210,60)
 local color_white = Color(255,255,255,60)
 local color_purple = Color(205,53,255,60)
 local color_blue = Color(93,123,255,60)
+local color_green = Color(93,123,255,60)
 
 local tcolor_red = Color(255,0,0,255)
 local tcolor_yellow = Color(255,255,0,255)
@@ -200,6 +201,7 @@ local tcolor_cyan = Color(120,255,210,255)
 local tcolor_white = Color(255,255,255,255)
 local tcolor_purple = Color(205,53,255,255)
 local tcolor_blue = Color(93,123,255,255)
+local tcolor_green = Color(93,123,255,255)
 GM.AdminMapSpawnables = {
 	Zombie = {
 		Name = "zombies",
@@ -474,6 +476,7 @@ GM.AdminMapSpawnables = {
 			swep.OpenworldPos2 = nil
 		end,
 		OnSelect = function(owner, swep)
+			owner:PrintMessage(3, "# Map transitions")
 			owner:PrintMessage(3, "Select where a player would spawn when transitioning back here. The player would also point where you point at horizontally.")
 
 			swep.OpenworldStartPos = nil
@@ -524,6 +527,72 @@ GM.AdminMapSpawnables = {
 				if linkedto then
 					tbl[id].Map = linkedto.Map
 				end
+			end
+
+			return tbl
+		end
+	},
+
+	Safezones = {
+		Name = "ow_safezones",
+		Spawn = function(owner, swep, tr, pos, options)
+			if !swep.SZStartPos then
+				swep.SZStartPos = pos
+				owner:PrintMessage(3, tostring(pos))
+				owner:PrintMessage(3, "Select ending area")
+				return
+			end
+
+			swep.SZEndPos = pos
+			owner:PrintMessage(3, tostring(pos))
+
+			net.Start("tea_admin_tool")
+			net.WriteString("safezonecreate")
+			net.WriteVector(swep.SZStartPos)
+			net.WriteVector(swep.SZEndPos)
+			net.Send(owner)
+
+			swep.SZStartPos = nil
+			swep.SZEndPos = nil
+		end,
+		OnSelect = function(owner, swep)
+			owner:PrintMessage(3, "# Safezones")
+			owner:PrintMessage(3, "Defines a safe area for the survivors.")
+			owner:PrintMessage(3, "Select starting area.")
+
+			swep.SZStartPos = nil
+			swep.SZEndPos = nil
+		end,
+		View = function(owner, var)
+			cam.IgnoreZ(true)
+			local ownang = owner:EyeAngles()
+			for id,v in pairs(var) do
+				render.DrawBox(v.Pos, angle_zero, v.AreaMin-v.Pos, v.AreaMax-v.Pos, color_green)
+				render.DrawWireframeBox(v.Pos, angle_zero, v.AreaMax-v.Pos, v.AreaMin-v.Pos, color_green)
+				cam.Start3D2D(v.Pos+Vector(0,0,80), Angle(0, ownang.yaw - 90, 90 - ownang.Pitch), math.Clamp(owner:GetPos():Distance(v.Pos)/750, 0.3, 5))
+				draw.DrawText("Safezone #"..id, "TEA.HUDFont", 0, -40, tcolor_green, TEXT_ALIGN_CENTER)
+				local pos = (v.AreaMin + v.AreaMax) / 2
+				draw.DrawText("Pos: "..tostring(pos), "TEA.HUDFont", 0, 20, tcolor_green, TEXT_ALIGN_CENTER)
+				draw.DrawText("AreaMin: "..tostring(v.AreaMin-pos), "TEA.HUDFont", 0, 40, tcolor_green, TEXT_ALIGN_CENTER)
+				draw.DrawText("AreaMax: "..tostring(v.AreaMax-pos), "TEA.HUDFont", 0, 60, tcolor_green, TEXT_ALIGN_CENTER)
+				cam.End3D2D()
+
+				-- render.DrawSphere(v.Pos, v.Radius, 16, 16, color_red)
+			end
+			cam.IgnoreZ(false)
+		end,
+		Get = function()
+			return GAMEMODE.MapSafezones
+		end,
+		GetAdminEyes = function(owner)
+			local tbl = {}
+			for id,v in pairs(GAMEMODE.MapSafezones) do
+				if v.Map ~= game.GetMap() then continue end
+				tbl[id] = {
+					Pos = (v.AreaMin+v.AreaMax)/2,
+					AreaMin = v.AreaMin,
+					AreaMax = v.AreaMax
+				}
 			end
 
 			return tbl

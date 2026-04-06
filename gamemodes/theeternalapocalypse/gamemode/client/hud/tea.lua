@@ -7,31 +7,52 @@ local draw_SimpleTextOutlined = draw.SimpleTextOutlined
 local surface_SetDrawColor = surface.SetDrawColor
 local surface_DrawRect = surface.DrawRect
 local surface_DrawRectColor = surface.DrawRectColor
+local surface_DrawOutlinedRect = surface.DrawOutlinedRect
 
 function HUD:DrawHealth(pl, w, h, swep)
     local hp = pl:Health()
     local mhp = pl:GetMaxHealth()
     local ap = pl:Armor()
     local map = pl:GetMaxArmor()
+
+    local hp_mhp = math.Clamp(hp/mhp, 0, 1)
+    local ap_map = math.Clamp(ap/map, 0, 1)
     local cansprint = pl:GetCanSprint()
 
-    surface_DrawRectColor(16, h - 108, 192, 100, Color(255,255,255,65))
-    draw_SimpleText(string.upper(translate.Format("health", hp, mhp)), "TEA.HUDFontSmall", 21, h - 96, Color(255,255,255), 0, 1)
-    draw_SimpleText(string.upper(translate.Format("armor", ap, map)), "TEA.HUDFontSmall", 21, h - 80, Color(255,255,255), 0, 1)
+    draw_SimpleText(string.upper(translate.Format("health", hp, mhp)), "TEA.HUDFontSmall", 21, h - 96, color_white, 0, 1)
+    surface_DrawRectColor(20, h-84, 150, 10, Color(200,0,0,50))
+    surface_DrawRectColor(20, h-84, 150*hp_mhp, 10, Color(255,0,0,150))
+    surface_SetDrawColor(255,0,0,150)
+    surface_DrawOutlinedRect(20, h-84, 150, 10)
+    draw_SimpleText(string.upper(translate.Format("armor", ap, map)), "TEA.HUDFontSmall", 21, h - 56, color_white, 0, 1)
+    surface_DrawRectColor(20, h-44, 150, 10, Color(0,0,200,50))
+    surface_DrawRectColor(20, h-44, 150*ap_map, 10, Color(0,0,255,150))
+    surface_SetDrawColor(0,0,255,150)
+    surface_DrawOutlinedRect(20, h-44, 150, 10)
 
-    draw_SimpleText(translate.Format("prestige", math.floor(pl:GetTEAPrestige())), "TEA.HUDFontSmall", 21, h - 60, Color(255,255,255), 0, 1)
-    draw_SimpleText(translate.Format("level", math.floor(pl:GetTEALevel())), "TEA.HUDFontSmall", 21, h - 44, Color(255,255,255), 0, 1)
-    draw_SimpleText(translate.Format("money", math.floor(pl.Money)), "TEA.HUDFontSmall", 21, h - 28, Color(255,255,255), 0, 1)
+    -- draw_SimpleText(translate.Format("prestige", math.floor(pl:GetTEAPrestige())), "TEA.HUDFontSmall", 21, h - 60, color_white, 0, 1)
+    -- draw_SimpleText(translate.Format("level", math.floor(pl:GetTEALevel())), "TEA.HUDFontSmall", 21, h - 44, color_white, 0, 1)
+    -- draw_SimpleText(translate.Format("money", math.floor(pl.Money)), "TEA.HUDFontSmall", 21, h - 28, color_white, 0, 1)
 
-    surface_DrawRectColor(216, h - 108, 192, 100, Color(255,255,255,65))
-    surface_DrawRectColor(w - 208, h - 108, 192, 100, Color(255,255,255,65))
-    draw_SimpleText(translate.Format("stamina", math.Round(pl.Stamina, GAMEMODE.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 224, h - 100, Color(255,255,255), 0, 1)
-    draw_SimpleText(translate.Format("thirst", math.Round(pl.Thirst / 100, GAMEMODE.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 224, h - 84, Color(255, 205, 255, 255), 0, 1)
-    draw_SimpleText(translate.Format("hunger", math.Round(pl.Hunger / 100, GAMEMODE.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 224, h - 68, Color(155,155,255,255), 0, 1)
-    draw_SimpleText(translate.Format("fatigue", math.Round(pl.Fatigue / 100, GAMEMODE.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 224, h - 52, Color(205,205,255,255), 0, 1)
-    draw_SimpleText(translate.Format("infection", math.Round(pl.Infection / 100, GAMEMODE.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 224, h - 36, Color(205, 105, 105, 255), 0, 1)
+    -- surface_DrawRectColor(216, h - 108, 192, 100, Color(255,255,255,65))
+    -- surface_DrawRectColor(w - 208, h - 108, 192, 100, Color(255,255,255,65))
+    -- draw_SimpleText(translate.Format("stamina", math.Round(pl.Stamina, GAMEMODE.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 224, h - 100, color_white, 0, 1)
+    -- draw_SimpleText(translate.Format("thirst", math.Round(pl.Thirst / 100, GAMEMODE.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 224, h - 84, Color(255, 205, 255, 255), 0, 1)
+    -- draw_SimpleText(translate.Format("hunger", math.Round(pl.Hunger / 100, GAMEMODE.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 224, h - 68, Color(155,155,255,255), 0, 1)
+    -- draw_SimpleText(translate.Format("fatigue", math.Round(pl.Fatigue / 100, GAMEMODE.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 224, h - 52, Color(205,205,255,255), 0, 1)
+    -- draw_SimpleText(translate.Format("infection", math.Round(pl.Infection / 100, GAMEMODE.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 224, h - 36, Color(205, 105, 105, 255), 0, 1)
 end
 
+
+function HUD:DrawTrader(pl, w, h)
+    draw_RoundedBox(2, w / 2 - 230, 20, 460, 75, Color(0, 0, 0, 175))
+    surface_SetDrawColor(155, 155, 0, 255)
+    surface_DrawOutlinedRect(w / 2 - 230, 20, 460, 75)
+
+    draw_DrawText("You are in a trader protection zone", "TEA.HUDFont", w / 2, 30, Color(230, 255, 230, 255), TEXT_ALIGN_CENTER)
+    draw_DrawText("You cannot hurt other players or be hurt by them while in this area", "TEA.HUDFontSmall", w / 2, 50, Color(255, 255, 255, 255), TEXT_ALIGN_CENTER)
+    draw_DrawText("You take 10% less damage from all sources while in trader area", "TEA.HUDFontSmall", w / 2, 70, Color(255, 255, 255, 255), TEXT_ALIGN_CENTER)
+end
 
 function HUD:DrawDead(pl, w, h, Spawn)
     local a = 205
@@ -48,5 +69,5 @@ function HUD:DrawDead(pl, w, h, Spawn)
     draw_DrawText(Format("Players killed: %d", GAMEMODE.MyLastSurvivalStats.PlayerKills), "DeathScreenFont_2", ScrW() / 2, ScrH() / 2 + 68, Color(230,230,230,a), TEXT_ALIGN_CENTER)
 
     message = Spawn > CurTime() + 1 and translate.Format("respawn_1", math.Clamp(math.ceil(Spawn - CurTime()), 0, 2147483647), translate.Get("seconds")) or Spawn > CurTime() and translate.Format("respawn_1", math.Clamp(math.ceil(Spawn - CurTime()), 0, 2147483647), translate.Get("second")) or translate.Get("respawn_2")
-    draw_DrawText(message, "TEA.HUDFont", ScrW() / 2, ScrH() / 2 - 200, Color(255,255,255), TEXT_ALIGN_CENTER)
+    draw_DrawText(message, "TEA.HUDFont", ScrW() / 2, ScrH() / 2 - 200, color_white, TEXT_ALIGN_CENTER)
 end
