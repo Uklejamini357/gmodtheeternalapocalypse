@@ -25,6 +25,11 @@ GM.Credits = {
 	-- Other
 	{"Anyone else I forgot",	"Various contributions",													""},
 }
+GM.RecentChangelogs = {
+	{"Added safezones", Color(255,255,210)},
+	{"Added hints on spawn", Color(255,255,210)},
+	{"Changed main menu a bit", Color(255,255,210)},
+}
 
 DeriveGamemode("sandbox")
 

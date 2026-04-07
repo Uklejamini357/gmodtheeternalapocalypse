@@ -900,7 +900,8 @@ LANG.Tip19 = "Keep an eye on infection level. Zombies become more dangerous, but
 -- New ?????
 
 LANG.the_eternal_apocalypse = "The Eternal Apocalypse"
-LANG.the_eternal_apocalypse_desc = "Апокалиптический режим игры, основанный на выживании.\nЗомби ждут вас."
+LANG.the_eternal_apocalypse_desc = "An apocalyptic survival-based gamemode forked from an old gamemode.\nIn development since early 2022.\nThe zombies await your appearance."
+-- LANG.the_eternal_apocalypse_desc = "Апокалиптический режим игры, основанный на выживании.\nЗомби ждут вас."
 LANG.the_eternal_apocalypse_character = "Choose your character to play."
 LANG.play = "Играть"
 LANG.disconnect = "Отключиться"
