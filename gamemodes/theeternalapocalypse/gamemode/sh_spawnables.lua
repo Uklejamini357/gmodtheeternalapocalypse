@@ -590,7 +590,8 @@ GM.AdminMapSpawnables = {
 					Name = v.Name,
 					Pos = (v.AreaMin+v.AreaMax)/2,
 					AreaMin = v.AreaMin,
-					AreaMax = v.AreaMax
+					AreaMax = v.AreaMax,
+					ShouldDisplay = v.ShouldDisplay
 				}
 			end
 

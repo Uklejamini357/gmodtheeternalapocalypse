@@ -302,15 +302,21 @@ net.Receive("tea_admin_tool", function()
 end)
 
 net.Receive("tea_safezone", function()
-	local enter = net.ReadBool()
+	local id = net.ReadUInt(2)
 
-	GAMEMODE.SafezoneEntered = enter
-	if enter then
+	if id == NET_SAFEZONE_ENTER then
+		GAMEMODE.SafezoneEntered = true
 		GAMEMODE.SafezoneTimeEntered = CurTime()
 		GAMEMODE.SafezoneTimeProtected = CurTime()+GAMEMODE.SafezoneProtectionDelay
-	else
+	elseif id == NET_SAFEZONE_LEAVE then
+		GAMEMODE.SafezoneEntered = false
 		GAMEMODE.SafezoneTimeEntered = 0
 		GAMEMODE.SafezoneTimeProtected = 0
+	elseif id == NET_SAFEZONE_GETINFO then
+		GAMEMODE.MapSafezones = net.ReadTable()
+		for _,v in pairs(GAMEMODE.MapSafezones) do
+			v.Pos = (v.AreaMin + v.AreaMax)/2
+		end
 	end
 end)
 

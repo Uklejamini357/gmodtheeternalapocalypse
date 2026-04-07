@@ -865,5 +865,27 @@ hook.Add("PostDrawTranslucentRenderables", "GM.Transitions", function(bDrawingDe
 	cam.IgnoreZ(false)
 end)
 
+hook.Add("PostDrawTranslucentRenderables", "GM.MapSafezones", function(bDrawingDepth, bDrawingSkybox, isDraw3DSkybox)
+	if bDrawingSkybox or isDraw3DSkybox then return end
+	local pl = LocalPlayer()
+
+	if IsValid(pl:GetActiveWeapon()) and pl:GetActiveWeapon():GetClass() == "tea_admintool" then return end
+	cam.IgnoreZ(true)
+	local ownang = pl:EyeAngles()
+	for id,v in pairs(GAMEMODE.MapSafezones) do
+		local dist = pl:GetPos():Distance(v.Pos)
+		if dist > 2000 then continue end
+		local a = ((2000-dist)/2000)*255
+		cam.Start3D2D(v.Pos+Vector(0,0,20), Angle(0, ownang.yaw - 90, 90 - ownang.Pitch), math.Clamp(dist/800, 0.4, 2.5))
+		draw.DrawText(v.Name or "", "TEA.HUDFont", 0, -60, Color(142,241,156,a), TEXT_ALIGN_CENTER)
+		draw.DrawText("Safezone", "TEA.HUDFontSmall", 0, -30, Color(142,241,156,a), TEXT_ALIGN_CENTER)
+		if !GAMEMODE.SafezoneEntered then
+			draw.DrawText(math.Round(HammerUnitsToMeters(dist), 1).."m", "TEA.HUDFontSmall", 0, -10, Color(142,241,156,a), TEXT_ALIGN_CENTER)
+		end
+		cam.End3D2D()
+	end
+	cam.IgnoreZ(false)
+end)
+
 
 

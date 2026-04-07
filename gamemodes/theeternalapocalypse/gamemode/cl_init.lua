@@ -334,6 +334,7 @@ function GM:Initialize()
 	LocalVault = {}
 
 	self.OpenworldTransitions = {}
+	self.MapSafezones = {}
 
 	self.WraithAlpha = 0
 	self.tea_screenfadeout = 0

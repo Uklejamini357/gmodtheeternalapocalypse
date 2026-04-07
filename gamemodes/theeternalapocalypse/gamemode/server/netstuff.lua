@@ -388,9 +388,10 @@ net.Receive("tea_admin_tool", function(len, pl)
 		local name = net.ReadString()
 		local min = net.ReadVector()
 		local max = net.ReadVector()
+		local shoulddisplay = net.ReadBool()
 
 		pl:PrintMessage(3, "A new safezone area has been made.")
-		gamemode.Call("CreateMapSafezone", name, min, max)
+		gamemode.Call("CreateMapSafezone", name, min, max, shoulddisplay)
 	elseif t == "admineyes" then
 		local m = net.ReadString()
 		local v = net.ReadBool()

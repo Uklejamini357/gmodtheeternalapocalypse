@@ -527,13 +527,16 @@ function GM:Initialize()
 	self:SetUpSeasonalEvents()
 
 --	self:AddResources()
-	self:LoadTransitionsData()
 	self:LoadLoot()
 	self:LoadAD()
 	self:LoadZombies()
 	self:LoadTraders()
 	self:LoadPlayerSpawns()
 	self:LoadTaskDealers()
+
+	self:LoadTransitionsData()
+	self:LoadSafezonesData()
+
 	self:CheckSpawnChanceErrors()
 
 	self:SetInflationMeter(self:CalcInflationMeter())
@@ -561,6 +564,7 @@ function GM:InitPostEntity()
 	self:SpawnTraders()
 	self:SpawnTaskDealers()
 	self:SpawnLevelTransitions()
+	self:SpawnMapSafezones()
 	self:MapReInit()
 end
 
@@ -568,7 +572,8 @@ function GM:PostCleanupMap()
 	self:SpawnTraders()
 	self:SpawnTaskDealers()
 	self:SpawnLevelTransitions()
-	
+	self:SpawnMapSafezones()
+
 	self:MapReInit()
 end
 
@@ -1026,6 +1031,7 @@ end
 function GM:PlayerReady(ply)
 	self:FullyUpdatePlayer(ply)
 	self:SendMapTransitionsInfo(ply)
+	self:SendMapSafezonesInfo(ply)
 end
 
 function GM:PlayerSay(ply, text, team)
