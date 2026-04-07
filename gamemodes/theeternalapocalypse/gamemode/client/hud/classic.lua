@@ -126,7 +126,8 @@ function HUD:DrawHealth(pl, w, h, swep)
 end
 
 function HUD:DrawPVP(pl, state, w, h)
-    draw_SimpleText("PvP: "..translate.Get("pvp_state"..state), "TEA.HUDFontSmall", 270, h - 30, Color(205,205,205), 0, 0)
+    local pvp = state == PVP_STATE_FORCED and "pvp_state_forced" or state == PVP_STATE_ENABLED and "pvp_state_enabled" or state == PVP_STATE_GUARDED and "pvp_state_guarded" or "pvp_state_disabled"
+    draw_SimpleText("PvP: "..translate.Get(pvp), "TEA.HUDFontSmall", 270, h - 30, Color(205,205,205), 0, 0)
 end
 
 function HUD:DrawTrader(pl, w, h)

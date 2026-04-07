@@ -228,6 +228,15 @@ function GM:Think()
 		local noregen_infection = 5000
 
 		for _,ply in player.Iterator() do
+			local infectionchance
+			if self.RandomPlayerInfection and !paused then
+				infectionchance = math.random(1, math.max(10000, 100000 - (ct - ply.SurvivalTime)))
+				if (infectionchance == 1 and math.floor(ct - ply.SurvivalTime) >= 900) and ply.Infection <= 0 and ply:Alive() then
+					ply.Infection = ply.Infection + 1
+					ply:SendChat(translate.ClientGet(ply, "plcaughtinfection"))
+				end
+			end
+
 			if (ply.Thirst >= noregen_thirst and ply.Hunger >= noregen_hunger and ply.Fatigue <= noregen_fatigue and ply.Infection <= noregen_infection) then
 				if ply.HPRegen and ply:Health() < ply:GetMaxHealth() then
 					ply.HPRegen = math.Clamp(ply.HPRegen + 0.11*(1 + ply.StatMedSkill * 0.08)*(ply:IsSleeping() and 10 or 1), 0, ply:GetMaxHealth())
@@ -236,7 +245,11 @@ function GM:Think()
 				end
 			end
 
-			-- in case if player's HPRegen value is nil then it's set to 0
+			-- Can cause overhealed players' health to be reset to max.
+			if ply:GetMaxHealth() <= ply:Health() then
+				ply.HPRegen = 0
+			end
+
 			if ply.HPRegen or ply.HPRegen >= 1 then
 				ply:SetHealth(math.min(ply:Health() + math.floor(ply.HPRegen), ply:GetMaxHealth()))
 				ply.HPRegen = ply.HPRegen - math.floor(ply.HPRegen)
@@ -246,7 +259,6 @@ function GM:Think()
 				ply.BloodLustMeleeHealCap = math.max(0, ply.BloodLustMeleeHealCap - 0.1 * math.Clamp(CurTime() - (ply.BloodLustLastMeleeHit + 5), 0, 10))
 			end
 		end
-
 	end
 
 	for _,ply in player.Iterator() do
@@ -261,21 +273,14 @@ function GM:Think()
 		end
 
 		local sleeping = ply:IsSleeping()
+		local paused = self.SafezonePauseStats and ply.SafeZone
 
 		-- hunger, thirst, fatigue, infection
-		ply.Hunger = math.Clamp(ply.Hunger - (5*ft / (1 + ply.StatSurvivor * 0.045) * (statupdaterate[self.GameplayDifficulty] or 1))*(sleeping and 20 or 1), 0, 10000)
-		ply.Thirst = math.Clamp(ply.Thirst - (6*ft / (1 + ply.StatSurvivor * 0.045) * (statupdaterate[self.GameplayDifficulty] or 1))*(sleeping and 20 or 1), 0, 10000)
-		ply.Fatigue = math.Clamp(ply.Fatigue + (sleeping and -200*ft or (3.2*ft / (1 + ply.StatSurvivor * 0.045) * (statupdaterate[self.GameplayDifficulty] or 1))), 0, 10000)
+		ply.Hunger = math.Clamp(ply.Hunger - (5*ft / (1 + ply.StatSurvivor * 0.045) * (statupdaterate[self.GameplayDifficulty] or 1))*(sleeping and 20 or paused and 0 or 1), 0, 10000)
+		ply.Thirst = math.Clamp(ply.Thirst - (6*ft / (1 + ply.StatSurvivor * 0.045) * (statupdaterate[self.GameplayDifficulty] or 1))*(sleeping and 20 or paused and 0 or 1), 0, 10000)
+		ply.Fatigue = math.Clamp(ply.Fatigue + (sleeping and -200*ft or paused and 0 or (3.2*ft / (1 + ply.StatSurvivor * 0.045) * (statupdaterate[self.GameplayDifficulty] or 1))), 0, 10000)
 
-		--random chance of getting infected per tick is very rare, but has chance if survived for more than 10 minutes
-		if self.RandomPlayerInfection then
-			local infectionchance = math.random(1, math.max(50000, 2000000 - (ct - ply.SurvivalTime)))
-			if (infectionchance == 1 and math.floor(ct - ply.SurvivalTime) >= 900) and ply.Infection <= 0 and ply:Alive() then
-				ply:SendChat(translate.ClientGet(ply, "plcaughtinfection"))
-			end
-		end
-
-		if (ply.Infection > 0 or infectionchance and infectionchance == 1) then
+		if ply.Infection > 0 then
 			ply.Infection = math.Clamp(ply.Infection + (16*ft * (1 - ply.StatImmunity * 0.035) * (statupdaterate[self.GameplayDifficulty] or 1))*(sleeping and 8 or 1), 0, 10000)
 		end
 

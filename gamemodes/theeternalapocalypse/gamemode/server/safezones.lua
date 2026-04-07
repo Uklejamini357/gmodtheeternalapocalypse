@@ -11,7 +11,6 @@ end
 
 function GM:OnSafezoneFull(pl)
     pl:SetNWBool("SafezoneActive", true)
-    pl:PrintMessage(3, "Activated safezone")
 end
 
 function GM:OnSafezoneLeave(pl, ent)
@@ -19,8 +18,14 @@ function GM:OnSafezoneLeave(pl, ent)
         timer.Remove("TEASafeZoneProtection."..pl:EntIndex())
     end
 
-    pl:PrintMessage(3, "Left safezone")
+    if pl:GetNWBool("SafezoneActive") then
+        pl:SystemMessage("You have left the safezone.", Color(255, 255, 200), true)
+    end
     pl:SetNWBool("SafezoneActive", false)
+
+    net.Start("tea_safezone")
+    net.WriteBool(false)
+    net.Send(pl)
 end
 
 function GM:SendMapSafezonesInfo(pl)

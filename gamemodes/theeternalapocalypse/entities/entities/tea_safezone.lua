@@ -30,9 +30,31 @@ function ENT:StartTouch(ent)
 
 				table.sort(tbl, function(a,b) return (a-ent:GetPos()):Length() < (b-ent:GetPos()):Length() end)
 
-				ent:SetPos(tbl[1])
-			elseif GAMEMODE.SafezoneZombiesAction == 2 then
-				ent:Remove()
+				for i=1,#tbl do
+					local allow = true
+					for _,v in ipairs(ents.FindInSphere(tbl[i], 200)) do
+						if v:IsNextBot() or v:IsNPC() or v:IsPlayer() then allow = false break end
+					end
+					if !allow then continue end
+
+					ent:SetPos(tbl[i])
+					break
+				end
+			elseif GAMEMODE.SafezoneZombiesAction == 2 or GAMEMODE.SafezoneZombiesAction == 3 then
+				if GAMEMODE.SafezoneZombiesAction == 2 or ent.BossMonster then
+					for k,v in RandomPairs(GAMEMODE.ZombieSpawnpoints) do
+						local allow = true
+						for _,v in ipairs(ents.FindInSphere(v[1], 200)) do
+							if v:IsNextBot() or v:IsNPC() or v:IsPlayer() then allow = false break end
+						end
+						if !allow then continue end
+
+						ent:SetPos(v[1])
+						break
+					end
+				else
+					ent:Remove()
+				end
 			end
 		end
 

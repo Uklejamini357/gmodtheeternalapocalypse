@@ -50,7 +50,7 @@ function HUD:DrawHealth(pl, w, h, swep)
     surface_SetDrawColor(90, 90, 0, 255)
     surface_DrawOutlinedRect(w - 270, h - 60, 250, 50)
 
-    draw_SimpleText(Format("XP: %s/%s (%s%%)", math.floor(MyXP), pl:GetReqXP(), math.Round(math.floor(MyXP) * 100 / pl:GetReqXP())), "TEA.HUDFontSmall", w - 259, h - 48, Color(255, 255, 255, 255), 0, 1)
+    draw_SimpleText(Format("XP: %s/%s (%s%%)", math.floor(MyXP), pl:GetReqXP(), math.Round(math.floor(MyXP) * 100 / pl:GetReqXP())), "TEA.HUDFontSmall", w - 259, h - 48, color_white, 0, 1)
     draw_RoundedBox(2, w - 250, h - 36, 210, 20, Color(50, 0, 0, 160))
     draw_RoundedBox(4, w - 250, h - 36, math.Clamp(210 * (MyXP / pl:GetReqXP()), 0, 210), 20, Color(150, 0, 0, 160))
 
@@ -125,19 +125,19 @@ function HUD:DrawSwep(pl, w, h, swep)
 
             --Ammo Text
             if (swep.AmmoClip2 != -1) then
-                draw_SimpleText("Ammo in Clip: ".. swep.AmmoClip1 .." / ".. swep.AmmoClip2, "TEA.HUDFontSmall", w - 259, h - 110, Color(255, 255, 255, 255), 0, 1)
+                draw_SimpleText("Ammo in Clip: ".. swep.AmmoClip1 .." / ".. swep.AmmoClip2, "TEA.HUDFontSmall", w - 259, h - 110, color_white, 0, 1)
             else
-                draw_SimpleText("Ammo in Clip: ".. swep.AmmoClip1, "TEA.HUDFontSmall", w - 259, h - 110, Color(255, 255, 255, 255), 0, 1) 
+                draw_SimpleText("Ammo in Clip: ".. swep.AmmoClip1, "TEA.HUDFontSmall", w - 259, h - 110, color_white, 0, 1) 
             end
 
             --Ammo bar base
             draw_RoundedBox(2, w - 252, h - 98, 140, 20, Color(150, 100, 0, 100))
 
             --Second Clip Ammo Text
-            draw_SimpleText("Ammo Remaining: ".. swep.MaxAmmoType, "TEA.HUDFontSmall", w - 259, h - 130, Color(255, 255, 255, 255), 0, 1)
+            draw_SimpleText("Ammo Remaining: ".. swep.MaxAmmoType, "TEA.HUDFontSmall", w - 259, h - 130, color_white, 0, 1)
 
             --Alt ammo Text
-            draw_SimpleText("ALT: ".. swep.MaxAmmoType2, "TEA.HUDFontSmall", w - 89, h - 90, Color(255, 255, 255, 255), 0, 1)
+            draw_SimpleText("ALT: ".. swep.MaxAmmoType2, "TEA.HUDFontSmall", w - 89, h - 90, color_white, 0, 1)
 
 
             if swep.AmmoClip1 > 0 then
@@ -152,7 +152,7 @@ function HUD:DrawSwep(pl, w, h, swep)
 end
 
 function HUD:DrawPVP(pl, state, w, h)
-    if state >= 4 then    
+    if state == PVP_STATE_FORCED then
         surface_SetDrawColor(100,0,0,175)
     else
         surface_SetDrawColor(0,0,0,200)
@@ -161,10 +161,11 @@ function HUD:DrawPVP(pl, state, w, h)
     surface_SetDrawColor(40,0,40)
     surface_DrawOutlinedRect(140, 80, 180, 27)
 
-    draw_SimpleText("PvP: "..translate.Get("pvp_state"..state), "TEA.HUDFontSmall", 180, 86, Color(205,205,205), 0, 0)
-    if state > 2 then
+    local pvp = state == PVP_STATE_FORCED and "pvp_state_forced" or state == PVP_STATE_ENABLED and "pvp_state_enabled" or state == PVP_STATE_GUARDED and "pvp_state_guarded" or "pvp_state_disabled"
+    draw_SimpleText("PvP: "..translate.Get(pvp), "TEA.HUDFontSmall", 180, 86, Color(205,205,205), 0, 0)
+    if state == PVP_STATE_ENABLED or state == PVP_STATE_FORCED then
         draw_SimpleTextOutlined("C", "CSSTextFont", 135, 85, Color(255, 50, 0), 0, 0, 2, Color(50, 0, 0))
-    elseif state == 2 then
+    elseif state == PVP_STATE_GUARDED then
         draw_SimpleTextOutlined("p", "CSSTextFont", 145, 83, Color(50, 250, 0), 0, 0, 2, Color(0, 50, 0))
     else
         draw_SimpleTextOutlined("C", "CSSTextFont", 135, 85, Color(50, 50, 50), 0, 0, 2, Color(20, 0, 0))
@@ -177,8 +178,17 @@ function HUD:DrawTrader(pl, w, h)
     surface_DrawOutlinedRect(w / 2 - 230, 20, 460, 75)
 
     draw_DrawText("You are in a trader protection zone", "TEA.HUDFont", w / 2, 30, Color(230, 255, 230, 255), TEXT_ALIGN_CENTER)
-    draw_DrawText("You cannot hurt other players or be hurt by them while in this area", "TEA.HUDFontSmall", w / 2, 50, Color(255, 255, 255, 255), TEXT_ALIGN_CENTER)
-    draw_DrawText("You take 10% less damage from all sources while in trader area", "TEA.HUDFontSmall", w / 2, 70, Color(255, 255, 255, 255), TEXT_ALIGN_CENTER)
+    draw_DrawText("You cannot hurt other players or be hurt by them while in this area", "TEA.HUDFontSmall", w / 2, 50, color_white, TEXT_ALIGN_CENTER)
+    draw_DrawText("You take 10% less damage from all sources while in trader area", "TEA.HUDFontSmall", w / 2, 70, color_white, TEXT_ALIGN_CENTER)
+end
+
+function HUD:DrawSafezone(pl, time, active, w, h)
+    draw_DrawText("SAFEZONE", "TEA.HUDFontLarge", w / 2, h*0.1, Color(86,207,255), TEXT_ALIGN_CENTER)
+    if active then
+        draw_DrawText("You are now protected.", "TEA.HUDFont", w / 2, h*0.1 + 30, Color(148,238,128), TEXT_ALIGN_CENTER)
+    else
+        draw_DrawText(Format("You will be protected in %d seconds", math.ceil(time)), "TEA.HUDFont", w / 2, h*0.1 + 30, color_white, TEXT_ALIGN_CENTER)
+    end
 end
 
 

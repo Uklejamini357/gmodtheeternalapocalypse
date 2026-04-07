@@ -308,6 +308,9 @@ net.Receive("tea_safezone", function()
 	if enter then
 		GAMEMODE.SafezoneTimeEntered = CurTime()
 		GAMEMODE.SafezoneTimeProtected = CurTime()+GAMEMODE.SafezoneProtectionDelay
+	else
+		GAMEMODE.SafezoneTimeEntered = 0
+		GAMEMODE.SafezoneTimeProtected = 0
 	end
 end)
 
