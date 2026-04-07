@@ -228,6 +228,8 @@ function GM:Think()
 		local noregen_infection = 5000
 
 		for _,ply in player.Iterator() do
+			local paused = self.SafezonePauseStats and ply:IsSZProtected()
+
 			local infectionchance
 			if self.RandomPlayerInfection and !paused then
 				infectionchance = math.random(1, math.max(10000, 100000 - (ct - ply.SurvivalTime)))
@@ -273,7 +275,7 @@ function GM:Think()
 		end
 
 		local sleeping = ply:IsSleeping()
-		local paused = self.SafezonePauseStats and ply.SafeZone
+		local paused = self.SafezonePauseStats and ply:IsSZProtected()
 
 		-- hunger, thirst, fatigue, infection
 		ply.Hunger = math.Clamp(ply.Hunger - (5*ft / (1 + ply.StatSurvivor * 0.045) * (statupdaterate[self.GameplayDifficulty] or 1))*(sleeping and 20 or paused and 0 or 1), 0, 10000)
@@ -712,18 +714,22 @@ local function IsMeleeDamage(num)
 end
 
 function GM:EntityTakeDamage(ent, dmginfo)
-	if ent.ProcessDamage and not ent:ProcessDamage(dmginfo) then return end
-	if ent:IsPlayer() and not gamemode.Call("PlayerShouldTakeDamage", ent, dmginfo:GetAttacker()) then return end
-	if ent.ProcessPlayerDamage and not ent:ProcessPlayerDamage(dmginfo) then return end
-	if (ent:IsNPC() or ent:IsNextBot()) and not ent:ProcessNPCDamage(dmginfo) then return end
+	local attacker = dmginfo:GetAttacker()
+
+	if self.SafezoneGrindingPrevention == 1 and (ent:IsNPC() or ent:IsNextBot()) and ent.IsZombie and attacker:IsValid() and attacker:IsPlayer() and attacker:IsSZProtected() then
+		return true
+	end
+
+	if ent.ProcessDamage and not ent:ProcessDamage(dmginfo) then return true end
+	if ent:IsPlayer() and not gamemode.Call("PlayerShouldTakeDamage", ent, dmginfo:GetAttacker()) then return true end
+	if ent.ProcessPlayerDamage and not ent:ProcessPlayerDamage(dmginfo) then return true end
+	if (ent:IsNPC() or ent:IsNextBot()) and not ent:ProcessNPCDamage(dmginfo) then return true end
 
 	if ent:IsPlayer() and ent:Alive() and dmginfo:GetDamage() > 1 and ent:IsSleeping() then
 		ent:WakeUp()
 
 		ent:SendChat(translate.ClientGet(ent, "wakeup_cause_damage"))
 	end
-
-	local attacker = dmginfo:GetAttacker()
 
 	if attacker:IsPlayer() then
 		if (ent:IsNextBot() or ent:IsNPC() or ent:IsPlayer()) and IsMeleeDamage(dmginfo:GetDamageType()) and attacker:HasPerk("bloodlust") then
@@ -739,7 +745,7 @@ function GM:EntityTakeDamage(ent, dmginfo)
 		end
 	end
 
-	if (ent:IsNextBot() or ent:IsNPC()) and (!ent.LastAttacker or ent:Health() > 0) and attacker:IsPlayer() then
+	if (ent:IsNextBot() or ent:IsNPC()) and (!ent.LastAttacker or ent:Health() > 0) and attacker:IsPlayer() and not (self.SafezoneGrindingPrevention == 2 and attacker:IsSZProtected()) then
 		ent.LastAttacker = attacker
 		if !ent.BossMonster then
 			timer.Create("TEAZombieLastAttacker_"..ent:EntIndex(), 15, 1, function()

@@ -155,7 +155,7 @@ function GM:DrawNames()
 		local message6 = translate.Format("faction", stats[8])
 		local wo6, ho6 = surface_GetTextSize(message6)
 
-		if ent:IsPvPGuarded() then
+		if ent:IsPvPGuarded() or ent:IsSZProtected() then
 			draw.SimpleTextOutlined("p", "CSSTextFont", headPos.x - 15, headPos.y - 62, Color(50, 250, 0, 255), 0, 0, 2, Color(0, 50, 0, 255))
 		elseif ent:IsPvPForced() or (ent:Team() == TEAM_LONER and ent:GetNWBool("pvp") == true) or ((ent:Team() != TEAM_LONER and ent:Team() != me:Team()) or (ent:Team() == TEAM_LONER and !self.VoluntaryPvP)) then
 			draw.SimpleTextOutlined("C", "CSSTextFont", headPos.x - 25, headPos.y - 60, Color(255, 50, 0, 255), 0, 0, 2, Color(50, 0, 0, 255))

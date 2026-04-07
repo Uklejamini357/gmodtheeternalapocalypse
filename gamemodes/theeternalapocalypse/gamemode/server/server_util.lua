@@ -452,7 +452,6 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 		net.WriteString(ply.CauseOfDeath or "")
 		net.WriteString(ply.DeathMessage or "")
 		net.Broadcast()
-		MsgAll(ply:Nick() .." suicided!\n")
 	return end
 
 	if attacker:IsPlayer() then
@@ -465,7 +464,6 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 		net.WriteString(ply.CauseOfDeath or "")
 		net.WriteString(ply.DeathMessage or "")
 		net.Broadcast()
-		MsgAll(attacker:Nick().." killed "..ply:Nick().." using "..inflictor:GetClass().."\n")
 	return end
 
 	net.Start("PlayerKilled")
@@ -477,8 +475,6 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 	net.WriteString(ply.CauseOfDeath or "")
 	net.WriteString(ply.DeathMessage or "")
 	net.Broadcast()
-
-	MsgAll((attacker:IsValid() or attacker:IsWorld()) and ply:Nick().." was killed by "..attacker:GetClass().."\n" or ply:Nick().." was killed by the environment\n")
 end
 
 function GM:PostPlayerDeath(ply)
