@@ -15,6 +15,8 @@ end
 
 function GM:OnSafezoneFull(pl)
     pl:SetSZProtected(true)
+
+    pl.SZSurvivalTime = CurTime() - pl.SurvivalTime
 end
 
 function GM:OnSafezoneLeave(pl, ent)
@@ -24,6 +26,8 @@ function GM:OnSafezoneLeave(pl, ent)
 
     if pl:IsSZProtected() then
         pl:SystemMessage("You have left the safezone.", Color(255, 255, 200), true)
+        pl.SurvivalTime = CurTime() - pl.SZSurvivalTime
+        pl.SZSurvivalTime = nil
     end
     pl:SetSZProtected(false)
 

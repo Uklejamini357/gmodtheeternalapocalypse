@@ -187,10 +187,6 @@ GM.SafezoneGrindingPrevention = 1
 -- Or just set to 0 to not do anything to the zombies.
 GM.SafezoneZombiesAction = 1
 
--- Make zombies not target you while inside the safezone.
--- Zombies cannot inflict any damage to you nor can infect you while you are protected by the safezone.
-GM.SafezoneNoZombieDamage = true
-
 --[[
 -- For the both options above, you do NOT want to set these options to 1 and 0 respectively. Because that will make zombies inside safezone a PAIN to deal with.
 
