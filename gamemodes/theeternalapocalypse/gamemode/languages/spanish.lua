@@ -245,7 +245,7 @@ LANG.select_traderid_remove = "Selecciona la ID de un punto de aparición de com
 LANG.select_adid_remove = "Selecciona la ID de un punto de aparición de suministro aéreo para eliminarlo"
 LANG.select_plrid_remove = "Selecciona la ID de un punto de aparición de jugador para eliminarlo"
 LANG.select_taskdealerid_remove = "Selecciona la ID de un punto de aparición de un distribuidor de tareas para eliminarlo"
-LANG.select_safezoneid_remove = "Select safezone ID to remove"
+LANG.select_safezoneid_remove = "Selecciona la ID de una zona segura para eliminarla"
 
 
 LANG.ow_linkedto = "Vinculado A"
@@ -280,7 +280,7 @@ LANG.airdrops = "Suministros aéreos"
 LANG.player_spawnpoints = "Puntos de aparición de jugador"
 LANG.taskdealers = "Distribuidores de tareas"
 LANG.ow_transitions = "Transiciones"
-LANG.safezones = "Safezones"
+LANG.safezones = "Zonas seguras"
 LANG.rename = "Renombrar"
 
 LANG.zombies_n = "Zombis Normales"
@@ -903,8 +903,7 @@ LANG.Tip19 = "Ten un ojo puesto en el nivel de infección. Los zombis se vuelven
 -- New ?????
 
 LANG.the_eternal_apocalypse = "The Eternal Apocalypse"
-LANG.the_eternal_apocalypse_desc = "An apocalyptic survival-based gamemode forked from an old gamemode.\nIn development since early 2022.\nThe zombies await your appearance."
--- LANG.the_eternal_apocalypse_desc = "Un modo de juego basado en la supervivencia apocalíptica. Los zombis están esperándote."
+LANG.the_eternal_apocalypse_desc = "Un modo de juego basado en la supervivencia apocalíptica derivado de un viejo modo de juego.\nEn desarrollo desde principios de 2022.\nLos zombies esperan tu aparición."
 LANG.the_eternal_apocalypse_character = "Elige el personaje que vas a jugar."
 LANG.play = "Jugar"
 LANG.disconnect = "Desconectar"
