@@ -61,13 +61,14 @@ function MT_PLAYER:ProcessPlayerDamage(dmginfo)
 		dmginfo:ScaleDamage(1.45)
 	end
 
-	if self:Alive() and attacker != self and attacker:IsPlayer() and IsMeleeDamage(dmginfo:GetDamageType()) and (!self:IsPvPGuarded() and !attacker:IsPvPGuarded()) then
+	if attacker != self and attacker:IsPlayer() and IsMeleeDamage(dmginfo:GetDamageType()) then
 		attacker.MeleeDamageDealt = attacker.MeleeDamageDealt + math.Clamp(0.035 * dmginfo:GetDamage(), 0, 0.035 * self:Health())
 		timer.Create("MeleeMasteryGain"..attacker:EntIndex(), 5, 1, function() if attacker:IsValid() then attacker:GainMasteryXP(attacker.MeleeDamageDealt, "Melee") attacker.MeleeDamageDealt = 0 end end)
 	end
 
-	if self:Alive() and attacker != self and attacker:IsPlayer() and (!self:IsPvPGuarded() and !attacker:IsPvPGuarded()) then
+	if attacker != self and attacker:IsPlayer() then
 		if attacker:GetInfoNum("tea_cl_hitsounds", 1) >= 1 and attacker:GetInfoNum("tea_cl_hitsounds_vol", 0.3) > 0 and attacker.HitSoundEffect < CurTime() then
+			-- ahh my old code
 			attacker:SendLua("LocalPlayer():ConCommand(\"playvol \\\"theeternalapocalypse/hitsound.wav\\\" "..attacker:GetInfoNum("tea_cl_hitsounds_vol", 0.3).."\")")
 			attacker.HitSoundEffect = CurTime() + 0.15
 		end
@@ -224,11 +225,6 @@ function GM:ScalePlayerDamage(ent, hitgroup, dmginfo)
 	elseif hitgroup == HITGROUP_LEFTLEG then dmginfo:ScaleDamage(0.35)
 	elseif hitgroup == HITGROUP_RIGHTLEG then dmginfo:ScaleDamage(0.35)
 	elseif hitgroup == HITGROUP_GEAR then dmginfo:ScaleDamage(0.1) -- ????
-	end
-
-	-- the other half of this logic is within the actual trader entity, should stop queerbaits from trader camping with pvp on
-	if ent:IsPvPGuarded() or (attacker:IsPlayer() and attacker:IsPvPGuarded()) then
-		dmginfo:SetDamage(0)
 	end
 
 /*

@@ -38,14 +38,23 @@ function meta:SetPvPGuarded(int)
 	self:SetNWInt("PvPGuard", math.Clamp(int, 0, 2) )
 end
 
+function meta:SetSZProtected(active)
+	if !SERVER then return end
+	return self:SetNWBool("SafezoneActive", active)
+end
+
 function meta:IsPvPGuarded()
-	if self:GetNWInt("PvPGuard") == 1 then return true
-	else return false end
+	if self:GetNWInt("PvPGuard") == 1 then return true end
+	return false
 end
 
 function meta:IsPvPForced()
-	if self:GetNWInt("PvPGuard") == 2 then return true
-	else return false end
+	if self:GetNWInt("PvPGuard") == 2 then return true end
+	return false
+end
+
+function meta:IsSZProtected()
+	return self:GetNWBool("SafezoneActive")
 end
 
 function meta:SlowPlayerDown(value, time)

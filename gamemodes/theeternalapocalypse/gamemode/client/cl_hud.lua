@@ -99,7 +99,7 @@ net.Receive("UpdateRespawnTimer", function(length)
 end)
 
 local function GetMyPvP(pl)
-	if pl:IsPvPGuarded() then return PVP_STATE_GUARDED end
+	if pl:IsPvPGuarded() or pl:IsSZProtected() then return PVP_STATE_GUARDED end
 	if !GAMEMODE.VoluntaryPvP or pl:Team() ~= TEAM_LONER or pl:GetNWBool("pvp") then return PVP_STATE_ENABLED end
 	if pl:IsPvPForced() then return PVP_STATE_FORCED end
 
@@ -418,7 +418,7 @@ function GM:DrawVitals()
 	end
 
 	if hud and hud.DrawSafezone and self.SafezoneEntered then
-		hud:DrawSafezone(pl, math.max(0, self.SafezoneTimeProtected - CurTime()), pl:GetNWBool("SafezoneActive"), scrw, scrh)
+		hud:DrawSafezone(pl, math.max(0, self.SafezoneTimeProtected - CurTime()), pl:IsSZProtected(), scrw, scrh)
 	end
 end
 

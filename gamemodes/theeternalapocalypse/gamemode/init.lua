@@ -787,52 +787,63 @@ function GM:EntityTakeDamage(ent, dmginfo)
 	end
 end
 
+
+local function pvpmsg(pl, msg)
+	local handler = "NoPvPMsgAntiSpamTimer"..pl:EntIndex()
+	if !timer.Exists(handler) then
+		pl:SystemMessage(msg, Color(255,205,205), true)
+		timer.Create(handler, 0.5, 1, function() end)
+	end
+end
 function GM:PlayerShouldTakeDamage(ply, attacker)
-	if ply:IsPlayer() and attacker:IsPlayer() and ply != attacker and !ply:IsPvPForced() and ply.Territory != team.GetName(attacker:Team()) then
-		local handler = "NoPvPMsgAntiSpamTimer"..attacker:EntIndex()
+	if !ply:Alive() then return false end
 
-		if ply:Alive() and attacker:IsPlayer() and ply:IsPlayer() and (ply:HasGodMode() or ply.SpawnProtected) then
-			if !timer.Exists(handler) then
-				attacker:SystemMessage("This target is invulnerable!", Color(255,205,205), true)
-				timer.Create(handler, 0.5, 1, function() end)
-			end
+	if ply:IsSZProtected() then
+		if attacker:IsPlayer() then
+			pvpmsg(attacker, "Target is in safezone! You can't damage them!")
+		end
+		return false
+	end
+
+	if attacker:IsPlayer() then
+		if attacker:IsSZProtected() then
+			pvpmsg(attacker, "You can't damage other players while inside a safezone!")
 			return false
-		elseif ply:Alive() and attacker:IsPlayer() and ply:IsPlayer() and attacker:IsPvPGuarded() then
-			if !timer.Exists(handler) then
-				attacker:SystemMessage("You have PvP guarded! You can't damage other players!", Color(255,205,205), true)
-				timer.Create(handler, 0.5, 1, function() end)
+		end
+	end
+
+	if attacker:IsPlayer() and ply != attacker then
+		-- ply.Territory != team.GetName(attacker:Team()) -- can cause the faction members able to fucking kill a loner and loner cant deal damage to the attacker. need to fix that
+
+		if !ply:IsPvPForced() then
+			if ply:HasGodMode() or ply.SpawnProtected then
+				pvpmsg(attacker, "This target is invulnerable!")
+				return false
+			elseif attacker:Team() == TEAM_LONER and not attacker:GetNWBool("pvp") and GAMEMODE.VoluntaryPvP then
+				pvpmsg(attacker, "Your PvP is not enabled!")
+				return false
+			elseif ply:Team() == TEAM_LONER and not ply:GetNWBool("pvp") and GAMEMODE.VoluntaryPvP then
+				pvpmsg(attacker, "You can't attack loners unless they have PvP enabled!")
+				return false
 			end
+		end
+
+		if ply:Team() == attacker:Team() and ply:Team() ~= TEAM_LONER and attacker:Team() ~= TEAM_LONER then
+			pvpmsg(attacker, "You can't attack your factionmates!")
 			return false
-		elseif ply:Alive() and attacker:IsPlayer() and ply:IsPlayer() and ply:IsPvPGuarded() then
-			if !timer.Exists(handler) then
-				attacker:SystemMessage("Target has PvP guarded! You can't damage that player!", Color(255,205,205), true)
-				timer.Create(handler, 0.5, 1, function() end)
-			end
+		end
+		if attacker:IsPvPGuarded() then
+			pvpmsg(attacker, "You have PvP guarded! You can't damage other players!")
+			return false
+		elseif ply:IsPvPGuarded() then
+			pvpmsg(attacker, "Target has PvP guarded! You can't damage that player!")
 			return false
 		end
 
-		if ply:Alive() and attacker:Team() == TEAM_LONER and not attacker:GetNWBool("pvp") and GAMEMODE.VoluntaryPvP then
-			if !timer.Exists(handler) then
-				attacker:SystemMessage("Your PvP is not enabled!", Color(255,205,205), true)
-				timer.Create(handler, 0.5, 1, function() end)
-			end
-			return false
-		elseif ply:Alive() and ply:Team() == TEAM_LONER and not ply:GetNWBool("pvp") and GAMEMODE.VoluntaryPvP then
-			if !timer.Exists(handler) then
-				attacker:SystemMessage("You can't attack loners unless they have PvP enabled!", Color(255,205,205), true)
-				timer.Create(handler, 0.5, 1, function() end)
-			end
-			return false
-		elseif ply:Alive() and (ply:Team() == attacker:Team()) and not (ply:Team() == TEAM_LONER or attacker:Team() == TEAM_LONER) then
-			if !timer.Exists(handler) then
-				attacker:SystemMessage("You can't attack your factionmates!", Color(255,205,205), true)
-				timer.Create(handler, 0.5, 1, function() end)
-			end
-			return false
+		if !ply:IsPvPForced() then
+			ply.PvPNoToggle = CurTime() + 60
+			attacker.PvPNoToggle = CurTime() + 60
 		end
-
-		ply.PvPNoToggle = CurTime() + 60
-		attacker.PvPNoToggle = CurTime() + 60
 	end
 
 	return true

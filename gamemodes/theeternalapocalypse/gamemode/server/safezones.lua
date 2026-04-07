@@ -1,8 +1,12 @@
 
 function GM:OnSafezoneEnter(pl, ent)
-    timer.Create("TEASafeZoneProtection."..pl:EntIndex(), self.SafezoneProtectionDelay, 1, function()
+    if pl.SpawnProtected then
         gamemode.Call("OnSafezoneFull", pl)
-    end)
+    else
+        timer.Create("TEASafeZoneProtection."..pl:EntIndex(), self.SafezoneProtectionDelay, 1, function()
+            gamemode.Call("OnSafezoneFull", pl)
+        end)
+    end
 
     net.Start("tea_safezone")
     net.WriteBool(true)
@@ -10,7 +14,7 @@ function GM:OnSafezoneEnter(pl, ent)
 end
 
 function GM:OnSafezoneFull(pl)
-    pl:SetNWBool("SafezoneActive", true)
+    pl:SetSZProtected(true)
 end
 
 function GM:OnSafezoneLeave(pl, ent)
@@ -18,10 +22,10 @@ function GM:OnSafezoneLeave(pl, ent)
         timer.Remove("TEASafeZoneProtection."..pl:EntIndex())
     end
 
-    if pl:GetNWBool("SafezoneActive") then
+    if pl:IsSZProtected() then
         pl:SystemMessage("You have left the safezone.", Color(255, 255, 200), true)
     end
-    pl:SetNWBool("SafezoneActive", false)
+    pl:SetSZProtected(false)
 
     net.Start("tea_safezone")
     net.WriteBool(false)
