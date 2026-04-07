@@ -6,6 +6,8 @@ then put the eternal apocalypse folder containing gamemodes folder. Most prefera
 
 You will need to install these addons otherwise you'll get errors, missing sounds or some items won't work:
 
+
+https://steamcommunity.com/sharedfiles/filedetails/?id=3702055118 gamemode content
 https://steamcommunity.com/sharedfiles/filedetails/?id=1270991543 (stalker playermodels for the built in armors [the original was removed by author])
 https://steamcommunity.com/sharedfiles/filedetails/?id=355101935 (Stalker playermodels)
 https://steamcommunity.com/sharedfiles/filedetails/?id=2438451886 (S.T.A.L.K.E.R. Item Models Pack)

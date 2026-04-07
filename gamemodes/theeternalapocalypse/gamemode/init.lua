@@ -527,6 +527,7 @@ function GM:Initialize()
 	self:SetUpSeasonalEvents()
 
 --	self:AddResources()
+	self:AddWSResources()
 	self:LoadLoot()
 	self:LoadAD()
 	self:LoadZombies()
@@ -1465,11 +1466,10 @@ function GM:AddResources()
 	end
 end
 
-
-
+function GM:AddWSResources()
 -------- Workshop addons --------
 
-	resource.AddWorkshop("3044942684") -- gamemode content
+	resource.AddWorkshop("3702055118") -- gamemode content
 	resource.AddWorkshop("2438451886") -- STALKER item models pack
 	resource.AddWorkshop("1270991543") -- STALKER armor playermodels
 	resource.AddWorkshop("355101935") -- STALKER TNB armor playermodels
@@ -1477,3 +1477,4 @@ end
 	resource.AddWorkshop("128091208") -- m9k heavy weapons
 	resource.AddWorkshop("128093075") -- m9k small arms pack
 	resource.AddWorkshop("144982052") -- m9k specialties
+end

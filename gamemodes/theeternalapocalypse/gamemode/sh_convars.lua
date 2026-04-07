@@ -172,7 +172,7 @@ if CLIENT then
 		GAMEMODE:OnConVarChanged(cvar, old, new)
 	end, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_cl_deathsfx_vol")
 
-	GM.DeathSound = CreateClientConVar("tea_cl_deathsound", "theeternalapocalypse/gameover_music.wav", true, false, "Play sound effect on death. Use the valid sound or the sound effect will not play! Tip: Use string '*#' at start of convar string to play the sound as music"):GetString()
+	GM.DeathSound = CreateClientConVar("tea_cl_deathsound", "theeternalapocalypse/gameover_music.mp3", true, false, "Play sound effect on death. Use the valid sound or the sound effect will not play! Tip: Use string '*#' at start of convar string to play the sound as music"):GetString()
 	cvars.AddChangeCallback("tea_cl_deathsound", function(cvar,old,new)
 		GAMEMODE.DeathSound = tostring(new)
 		GAMEMODE:OnConVarChanged(cvar, old, new)
