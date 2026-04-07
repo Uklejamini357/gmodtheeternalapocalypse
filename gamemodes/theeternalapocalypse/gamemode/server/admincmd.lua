@@ -544,7 +544,7 @@ concommand.Add("tea_clearspawns", function(pl, _, args)
 					sendmsg(pl, "Invalid safezone ID.")
 					return
 				end
-				gm:DeleteSafezone(id)
+				gm:DeleteSafezone(tonumber(id))
 				sendmsg(pl, "Deleted safezone ID #"..id..".")
 			end
 		end,

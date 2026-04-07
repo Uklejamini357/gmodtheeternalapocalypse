@@ -79,7 +79,7 @@ function GM:NetUpdateStats(ply)
 	net.WriteFloat(math.Round(ply.Thirst))
 	net.WriteFloat(math.Round(ply.Fatigue))
 	net.WriteFloat(math.Round(ply.Infection))
-	net.WriteFloat(ply.SurvivalTime)
+	net.WriteFloat(CurTime() - ply:GetTimeSurvived())
 	net.WriteFloat(math.Round(ply.Battery))
 	net.Send(ply)
 end

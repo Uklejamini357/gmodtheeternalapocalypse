@@ -192,7 +192,6 @@ local color_cyan = Color(120,255,210,60)
 local color_white = Color(255,255,255,60)
 local color_purple = Color(205,53,255,60)
 local color_blue = Color(93,123,255,60)
-local color_green = Color(93,123,255,60)
 
 local tcolor_red = Color(255,0,0,255)
 local tcolor_yellow = Color(255,255,0,255)
@@ -201,7 +200,6 @@ local tcolor_cyan = Color(120,255,210,255)
 local tcolor_white = Color(255,255,255,255)
 local tcolor_purple = Color(205,53,255,255)
 local tcolor_blue = Color(93,123,255,255)
-local tcolor_green = Color(93,123,255,255)
 GM.AdminMapSpawnables = {
 	Zombie = {
 		Name = "zombies",
@@ -313,10 +311,10 @@ GM.AdminMapSpawnables = {
 			cam.IgnoreZ(true)
 			local ownang = owner:EyeAngles()
 			for id,v in pairs(var) do
-				render.DrawLine(v.Pos+Vector(0,0,80), v.Pos,color_green,true)
+				render.DrawLine(v.Pos+Vector(0,0,80), v.Pos,color_lime,true)
 				cam.Start3D2D(v.Pos+Vector(0,0,80), Angle(0, ownang.yaw - 90, 90 - ownang.Pitch), math.Clamp(owner:GetPos():Distance(v.Pos)/750, 0.5, 5))
-				draw.DrawText("Airdrop spawn #"..id, "TEA.HUDFont", 0, 0, tcolor_green, TEXT_ALIGN_LEFT)
-				-- draw.DrawText("Radius: "..v.Radius, "TEA.HUDFont", 0, 20, tcolor_green, TEXT_ALIGN_LEFT)
+				draw.DrawText("Airdrop spawn #"..id, "TEA.HUDFont", 0, 0, tcolor_lime, TEXT_ALIGN_LEFT)
+				-- draw.DrawText("Radius: "..v.Radius, "TEA.HUDFont", 0, 20, tcolor_lime, TEXT_ALIGN_LEFT)
 				cam.End3D2D()
 			end
 			cam.IgnoreZ(false)
@@ -567,14 +565,14 @@ GM.AdminMapSpawnables = {
 			cam.IgnoreZ(true)
 			local ownang = owner:EyeAngles()
 			for id,v in pairs(var) do
-				render.DrawBox(v.Pos, angle_zero, v.AreaMin-v.Pos, v.AreaMax-v.Pos, color_green)
-				render.DrawWireframeBox(v.Pos, angle_zero, v.AreaMax-v.Pos, v.AreaMin-v.Pos, color_green)
+				render.DrawBox(v.Pos, angle_zero, v.AreaMin-v.Pos, v.AreaMax-v.Pos, color_lime)
+				render.DrawWireframeBox(v.Pos, angle_zero, v.AreaMax-v.Pos, v.AreaMin-v.Pos, color_lime)
 				cam.Start3D2D(v.Pos+Vector(0,0,80), Angle(0, ownang.yaw - 90, 90 - ownang.Pitch), math.Clamp(owner:GetPos():Distance(v.Pos)/750, 0.3, 5))
-				draw.DrawText("Safezone #"..id, "TEA.HUDFont", 0, -40, tcolor_green, TEXT_ALIGN_CENTER)
+				draw.DrawText("Safezone #"..id, "TEA.HUDFont", 0, -40, tcolor_lime, TEXT_ALIGN_CENTER)
 				local pos = (v.AreaMin + v.AreaMax) / 2
-				draw.DrawText("Pos: "..tostring(pos), "TEA.HUDFont", 0, 20, tcolor_green, TEXT_ALIGN_CENTER)
-				draw.DrawText("AreaMin: "..tostring(v.AreaMin-pos), "TEA.HUDFont", 0, 40, tcolor_green, TEXT_ALIGN_CENTER)
-				draw.DrawText("AreaMax: "..tostring(v.AreaMax-pos), "TEA.HUDFont", 0, 60, tcolor_green, TEXT_ALIGN_CENTER)
+				draw.DrawText("Pos: "..tostring(pos), "TEA.HUDFont", 0, 20, tcolor_lime, TEXT_ALIGN_CENTER)
+				draw.DrawText("AreaMin: "..tostring(v.AreaMin-pos), "TEA.HUDFont", 0, 40, tcolor_lime, TEXT_ALIGN_CENTER)
+				draw.DrawText("AreaMax: "..tostring(v.AreaMax-pos), "TEA.HUDFont", 0, 60, tcolor_lime, TEXT_ALIGN_CENTER)
 				cam.End3D2D()
 
 				-- render.DrawSphere(v.Pos, v.Radius, 16, 16, color_red)
@@ -587,7 +585,6 @@ GM.AdminMapSpawnables = {
 		GetAdminEyes = function(owner)
 			local tbl = {}
 			for id,v in pairs(GAMEMODE.MapSafezones) do
-				if v.Map ~= game.GetMap() then continue end
 				tbl[id] = {
 					Pos = (v.AreaMin+v.AreaMax)/2,
 					AreaMin = v.AreaMin,

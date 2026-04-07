@@ -290,6 +290,10 @@ function meta:IsDying()
 	return (self.Thirst <= 0 or self.Hunger <= 0 or self.Fatigue >= 10000 and self.Stamina <= 0 or self.Infection >= 10000)
 end
 
+function meta:GetTimeSurvived()
+	return self.SZSurvivalTime or CurTime() - self.SurvivalTime
+end
+
 function meta:GetArmorProtection(defense)
 	local armorvalue = 0
 	local plyarmor = self:GetNWString("ArmorType")

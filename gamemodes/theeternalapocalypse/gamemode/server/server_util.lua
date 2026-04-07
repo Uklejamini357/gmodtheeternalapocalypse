@@ -307,7 +307,7 @@ end
 
 -- gonna do dead luck perk later
 function GM:DoPlayerDeath(ply, attacker, dmginfo)
-	local survived = CurTime() - ply.SurvivalTime
+	local survived = ply:GetTimeSurvived()
 
 	local keptbounty
 	local stolenbounty

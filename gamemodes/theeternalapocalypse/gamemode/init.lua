@@ -232,8 +232,8 @@ function GM:Think()
 
 			local infectionchance
 			if self.RandomPlayerInfection and !paused then
-				infectionchance = math.random(1, math.max(10000, 100000 - (ct - ply.SurvivalTime)))
-				if (infectionchance == 1 and math.floor(ct - ply.SurvivalTime) >= 900) and ply.Infection <= 0 and ply:Alive() then
+				infectionchance = math.random(1, math.max(10000, 100000 - ply:GetTimeSurvived()))
+				if (infectionchance == 1 and ply:GetTimeSurvived() >= 900) and ply.Infection <= 0 and ply:Alive() then
 					ply.Infection = ply.Infection + 1
 					ply:SendChat(translate.ClientGet(ply, "plcaughtinfection"))
 				end

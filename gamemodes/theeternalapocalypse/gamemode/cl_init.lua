@@ -325,10 +325,6 @@ function GM:Initialize()
 
 	self:SetupFonts()
 
-	MyBestsurvtime = 0
-	MyZmbskilled = 0
-	MyPlyskilled = 0
-	MyPlydeaths = 0
 	MyMMeleexp = 0
 	MyMMeleelvl = 0
 	MyMPvpxp = 0
@@ -336,9 +332,6 @@ function GM:Initialize()
 	
 	LocalInventory = {}
 	LocalVault = {}
-	InventoryItems = {}
-	InventoryWeapons = {}
-	Perks = {}
 
 	self.OpenworldTransitions = {}
 

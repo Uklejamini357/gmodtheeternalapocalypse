@@ -16,7 +16,7 @@ end
 function GM:OnSafezoneFull(pl)
     pl:SetSZProtected(true)
 
-    pl.SZSurvivalTime = CurTime() - pl.SurvivalTime
+    pl.SZSurvivalTime = pl:GetTimeSurvived()
 end
 
 function GM:OnSafezoneLeave(pl, ent)
@@ -26,7 +26,7 @@ function GM:OnSafezoneLeave(pl, ent)
 
     if pl:IsSZProtected() then
         pl:SystemMessage("You have left the safezone.", Color(255, 255, 200), true)
-        pl.SurvivalTime = CurTime() - pl.SZSurvivalTime
+        pl.SurvivalTime = pl:GetTimeSurvived()
         pl.SZSurvivalTime = nil
     end
     pl:SetSZProtected(false)
@@ -65,9 +65,11 @@ end
 
 function GM:DeleteSafezone(id)
     if !id or !self.MapSafezones[id] then return end
+    print("test")
 
     self.MapSafezones[id] = nil
 
+    self:UpdateAdminEyes("Safezones")
     self:SaveSafezonesData()
     self:SpawnMapSafezones()
 end
@@ -78,17 +80,6 @@ function GM:ClearSafezones()
         file.Delete(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/safezones.txt")
     end
 
-    self:SpawnMapSafezones()
-
-    table.Empty(self.MapSafezones)
- 
-    if table.Count(self.MapSafezones) == 0 then
-        if file.Exists(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/safezones.txt", "DATA") then
-            file.Delete(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/safezones.txt")
-        end
-    else
-        self:SaveSafezonesData()
-    end
     self:SpawnMapSafezones()
 end
 
