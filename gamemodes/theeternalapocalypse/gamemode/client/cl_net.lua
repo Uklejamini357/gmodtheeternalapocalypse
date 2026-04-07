@@ -294,6 +294,29 @@ net.Receive("tea_admin_tool", function()
 		local box = {net.ReadVector(), net.ReadVector()}
 
 		gamemode.Call("CreateOpenworldTransition", startpos, startang, box[1], box[2])
+	elseif mode == "safezonecreate" then
+		local box = {net.ReadVector(), net.ReadVector()}
+
+		gamemode.Call("CreateSafezoneArea", box[1], box[2])
+	end
+end)
+
+net.Receive("tea_safezone", function()
+	local id = net.ReadUInt(2)
+
+	if id == NET_SAFEZONE_ENTER then
+		GAMEMODE.SafezoneEntered = true
+		GAMEMODE.SafezoneTimeEntered = CurTime()
+		GAMEMODE.SafezoneTimeProtected = CurTime()+GAMEMODE.SafezoneProtectionDelay
+	elseif id == NET_SAFEZONE_LEAVE then
+		GAMEMODE.SafezoneEntered = false
+		GAMEMODE.SafezoneTimeEntered = 0
+		GAMEMODE.SafezoneTimeProtected = 0
+	elseif id == NET_SAFEZONE_GETINFO then
+		GAMEMODE.MapSafezones = net.ReadTable()
+		for _,v in pairs(GAMEMODE.MapSafezones) do
+			v.Pos = (v.AreaMin + v.AreaMax)/2
+		end
 	end
 end)
 

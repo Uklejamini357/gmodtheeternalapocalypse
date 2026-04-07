@@ -485,18 +485,11 @@ end
 
 
 function GM:Payout(ply, xp, cash)
-	if !ply:IsValid() or !ply:IsPlayer() or ply == NULL then return end
-	local CurXP = ply.XP
-	local CurMoney = ply.Money
-	local XPGain = xp * (self:XPBonus(ply) or 1)
-	local MoneyGain = cash
-	local XPBonus = 0 --math.floor(XPGain * (ply.StatKnowledge * 0.02))
-	local MoneyBonus = 0 --math.floor(MoneyGain * (ply.StatSalvage * 0.02))
+	if !ply or !ply:IsValid() or !ply:IsPlayer() or ply == NULL then return end
+	local TXPGain = (xp * (self:XPBonus(ply) or 1))
+	local TMoneyGain = cash
 
-	local TXPGain = XPGain + XPBonus
-	local TMoneyGain = MoneyGain + MoneyBonus
-
-	ply.XP = CurXP + TXPGain
+	ply.XP = ply.XP + TXPGain
 	ply.Bounty = ply.Bounty + TMoneyGain
 	ply:SetNWInt("PlyBounty", ply.Bounty)
 	if self:GetDebug() >= DEBUGGING_ADVANCED then

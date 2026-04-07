@@ -245,6 +245,7 @@ LANG.select_traderid_remove = "Select trader spawnpoint ID to remove"
 LANG.select_adid_remove = "Select airdrop spawnpoint ID to remove"
 LANG.select_plrid_remove = "Select player spawnpoint ID to remove"
 LANG.select_taskdealerid_remove = "Select taskdealer spawnpoint ID to remove"
+LANG.select_safezoneid_remove = "Select safezone ID to remove"
 
 
 LANG.ow_linkedto = "Linked To"
@@ -279,6 +280,7 @@ LANG.airdrops = "Airdrops"
 LANG.player_spawnpoints = "Player spawnpoints"
 LANG.taskdealers = "Taskdealers"
 LANG.ow_transitions = "Transitions"
+LANG.safezones = "Safezones"
 LANG.rename = "Rename"
 
 LANG.zombies_n = "Normal Zombies"
@@ -844,11 +846,10 @@ LANG.pvp_off = "You have disabled PvP"
 LANG.pvp_proxy_warn = "PROXIMITY WARNING: %s is enabling PvP! Shoot him now before its fully activated!"
 LANG.pvp_unabletotoggle = "Unable to toggle PvP: you have damaged or taken damage from another player within the last 60 seconds!"
 LANG.pvp_nospam = "Don't spam the PvP command!"
-LANG.pvp_state1 = "Disabled"
-LANG.pvp_state2 = "Guarded"
-LANG.pvp_state3 = "Enabled"
-LANG.pvp_state4 = "Forced"
-LANG.pvp_state5 = "Force-Enabled"
+LANG.pvp_state_disabled = "Disabled"
+LANG.pvp_state_guarded = "Guarded"
+LANG.pvp_state_enabled = "Enabled"
+LANG.pvp_state_forced = "Forced"
 LANG.clearedmyprops = "You cleared all your props."
 
 --Admin and dev commands
@@ -902,7 +903,7 @@ LANG.Tip19 = "Keep an eye on infection level. Zombies become more dangerous, but
 -- New ?????
 
 LANG.the_eternal_apocalypse = "The Eternal Apocalypse"
-LANG.the_eternal_apocalypse_desc = "An apocalyptic survival-based gamemode. The zombies are waiting for you."
+LANG.the_eternal_apocalypse_desc = "An apocalyptic survival-based gamemode forked from an old gamemode.\nIn development since early 2022.\nThe zombies await your appearance."
 LANG.the_eternal_apocalypse_character = "Choose your character to play."
 LANG.play = "Play"
 LANG.disconnect = "Disconnect"

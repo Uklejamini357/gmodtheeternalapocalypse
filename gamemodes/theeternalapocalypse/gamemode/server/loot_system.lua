@@ -111,7 +111,6 @@ function GM:RandomizeLootRarity(tier)
 	for i,loot in ipairs(self.LootTable) do
 		if !loot.Rarity then continue end
 
-		print(i, rng, loot.Rarity)
 		if loot.Rarity < rng then
 			rare = i
 			prevrarity = loot.Rarity

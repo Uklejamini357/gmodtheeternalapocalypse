@@ -226,6 +226,12 @@ if CLIENT then
 		GAMEMODE:OnConVarChanged(cvar, old, new)
 	end, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_cl_notips")
 
+	GM.DisableHints = CreateClientConVar("tea_cl_nohints", 0, true, false, "Disables hints on screen.", 0, 1):GetBool()
+	cvars.AddChangeCallback("tea_cl_nohints", function(cvar,old,new)
+		GAMEMODE.DisableHints = tobool(new)
+		GAMEMODE:OnConVarChanged(cvar, old, new)
+	end, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_cl_nohints")
+
 	GM.NoInvWeightHUDDisplay = CreateClientConVar("tea_cl_noinvweighthuddisplay", 0, true, false, "Don't display Inventory Weight on HUD.", 0, 1):GetBool()
 	cvars.AddChangeCallback("tea_cl_noinvweighthuddisplay", function(cvar,old,new)
 		GAMEMODE.NoInvWeightHUDDisplay = tobool(new)

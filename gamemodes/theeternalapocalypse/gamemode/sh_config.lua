@@ -166,11 +166,12 @@ GM.MaxSellCostMul = 0.3
 GM.MinBuyCostMul = 0.5
 
 -- Work in progress!
---[[
 -- Time it takes after entering the safezone for the protection to fully apply. Spawning inside the safezone applies protection measures immediately.
 GM.SafezoneProtectionDelay = 10
 
--- Pauses stats from progressing for players including survival time while safezone protection is enabled.
+-- Pauses thirst, hunger and fatigue from progressing while safezone protection is enabled.
+-- Survival time also pauses after protection is applied, continues after leaving the safezone.
+-- Infection is not paused and will continue progressing even if this option is enabled.
 GM.SafezonePauseStats = true
 
 -- While safezones make it possible for players to take a break without disconnecting or having to die. However, safezones are meant to be a safe area from zombies. To fix this, any grinding inside safezone is impossible.
@@ -180,11 +181,13 @@ GM.SafezonePauseStats = true
 GM.SafezoneGrindingPrevention = 1
 
 -- Obviously, zombies shouldn't be inside the safezone. The option below will determine how to handle the zombies entering the door.
--- Set to 1 to make zombies entering the safezone be teleported to the nearest zombie spawnpoint.
--- Set to 2 to make zombies entering the safezone be removed from their existence.
+-- Set to 1 to make zombies entering the safezone be teleported to the nearest available zombie spawnpoint.
+-- Set to 2 to make zombies entering the safezone be to a random available zombie spawnpoint.
+-- Set to 3 to make zombies entering the safezone be removed from their existence. Boss zombies are teleported to a random zombie spawnpoint instead.
 -- Or just set to 0 to not do anything to the zombies.
 GM.SafezoneZombiesAction = 1
 
+--[[
 -- For the both options above, you do NOT want to set these options to 1 and 0 respectively. Because that will make zombies inside safezone a PAIN to deal with.
 
 -- Turn this on if you are making a server adapted to openworld. This option will adapt the gamemode to openworld experience by applying a few changes.
@@ -193,9 +196,11 @@ GM.OpenworldAdaption = false
 
 -- Makes the gamemode use global configuration rather than map configuration (max zombies, loots, zombie spawnrate, etc.).
 GM.UseGlobalMapSettings = false
-
-
 ]]
+
+-- Make a very rare chance for the player to catch an infection
+-- The longer the player has survived, the higher the chance for them to catch an infection!
+GM.RandomPlayerInfection = false
 
 -------- CONFIG --------
 

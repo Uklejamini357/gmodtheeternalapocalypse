@@ -245,6 +245,7 @@ LANG.select_traderid_remove = "Selecciona la ID de un punto de aparición de com
 LANG.select_adid_remove = "Selecciona la ID de un punto de aparición de suministro aéreo para eliminarlo"
 LANG.select_plrid_remove = "Selecciona la ID de un punto de aparición de jugador para eliminarlo"
 LANG.select_taskdealerid_remove = "Selecciona la ID de un punto de aparición de un distribuidor de tareas para eliminarlo"
+LANG.select_safezoneid_remove = "Select safezone ID to remove"
 
 
 LANG.ow_linkedto = "Vinculado A"
@@ -279,6 +280,7 @@ LANG.airdrops = "Suministros aéreos"
 LANG.player_spawnpoints = "Puntos de aparición de jugador"
 LANG.taskdealers = "Distribuidores de tareas"
 LANG.ow_transitions = "Transiciones"
+LANG.safezones = "Safezones"
 LANG.rename = "Renombrar"
 
 LANG.zombies_n = "Zombis Normales"
@@ -844,11 +846,10 @@ LANG.pvp_off = "Has desactivado el JvJ"
 LANG.pvp_proxy_warn = "¡ALERTA DE PROXIMIDAD: %s está activando el JvJ! ¡Dispárale ahora antes de que esté completamente activado!"
 LANG.pvp_unabletotoggle = "¡Incapaz de alternar JvJ: has hecho daño o recibido daño de otro jugador en los últimos 60 segundos!"
 LANG.pvp_nospam = "¡No le des todo el rato al comando de JvJ!"
-LANG.pvp_state1 = "Desactivado"
-LANG.pvp_state2 = "Protegido"
-LANG.pvp_state3 = "Activado"
-LANG.pvp_state4 = "Forzado"
-LANG.pvp_state5 = "Forzado-Activado"
+LANG.pvp_state_disabled = "Desactivado"
+LANG.pvp_state_guarded = "Protegido"
+LANG.pvp_state_enabled = "Activado"
+LANG.pvp_state_forced = "Forzado"
 LANG.clearedmyprops = "Purgaste todos tus props."
 
 --Admin and dev commands
@@ -902,7 +903,8 @@ LANG.Tip19 = "Ten un ojo puesto en el nivel de infección. Los zombis se vuelven
 -- New ?????
 
 LANG.the_eternal_apocalypse = "The Eternal Apocalypse"
-LANG.the_eternal_apocalypse_desc = "Un modo de juego basado en la supervivencia apocalíptica. Los zombis están esperándote."
+LANG.the_eternal_apocalypse_desc = "An apocalyptic survival-based gamemode forked from an old gamemode.\nIn development since early 2022.\nThe zombies await your appearance."
+-- LANG.the_eternal_apocalypse_desc = "Un modo de juego basado en la supervivencia apocalíptica. Los zombis están esperándote."
 LANG.the_eternal_apocalypse_character = "Elige el personaje que vas a jugar."
 LANG.play = "Jugar"
 LANG.disconnect = "Desconectar"

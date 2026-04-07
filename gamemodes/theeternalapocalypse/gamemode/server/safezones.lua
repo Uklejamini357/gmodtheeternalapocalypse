@@ -1,24 +1,53 @@
 
 function GM:OnSafezoneEnter(pl, ent)
+    if pl.SpawnProtected then
+        gamemode.Call("OnSafezoneFull", pl)
+    else
+        timer.Create("TEASafeZoneProtection."..pl:EntIndex(), self.SafezoneProtectionDelay, 1, function()
+            gamemode.Call("OnSafezoneFull", pl)
+        end)
+    end
+
+    net.Start("tea_safezone")
+    net.WriteUInt(NET_SAFEZONE_ENTER, 2)
+    net.Send(pl)
 end
 
-function GM:OnSafezoneFull(pl, ent)
+function GM:OnSafezoneFull(pl)
+    pl:SetSZProtected(true)
 
+    pl.SZSurvivalTime = pl:GetTimeSurvived()
 end
 
 function GM:OnSafezoneLeave(pl, ent)
+    if timer.Exists("TEASafeZoneProtection."..pl:EntIndex()) then
+        timer.Remove("TEASafeZoneProtection."..pl:EntIndex())
+    end
 
+    if pl:IsSZProtected() then
+        if pl:Alive() then
+            pl:SystemMessage("You have left the safezone.", Color(255, 255, 200), true)
+        end
+        pl.SurvivalTime = pl:GetTimeSurvived()
+        pl.SZSurvivalTime = nil
+    end
+    pl:SetSZProtected(false)
+
+    net.Start("tea_safezone")
+    net.WriteUInt(NET_SAFEZONE_LEAVE, 2)
+    net.Send(pl)
 end
 
 function GM:SendMapSafezonesInfo(pl)
 end
 
-function GM:CreateMapSafezone(name, min, max)
+function GM:CreateMapSafezone(name, min, max, shoulddisplay)
 	local id = #self.MapSafezones + 1
     self.MapSafezones[id] = {
         Name = name,
         AreaMin = min,
-        AreaMax = max
+        AreaMax = max,
+        ShouldDisplay = shoulddisplay
     }
 
     gamemode.Call("SaveSafezonesData")
@@ -26,53 +55,40 @@ function GM:CreateMapSafezone(name, min, max)
     self:UpdateAdminEyes("Safezones")
 end
 
-function GM:ConnectSafeZones(id1, id2)
-	if !id1 or !self.MapSafezones[id1] then print("invalid safezone (arg #1)") return end
-	if !id2 or !self.MapSafezones[id2] then print("invalid safezone (arg #2)") return end
-
-	self.MapSafezones[id1].LinkedTo = id2
-    self:UpdateSafezones()
-
-	print("Created a link to a map")
-end
-
 function GM:DeleteSafezone(id)
     if !id or !self.MapSafezones[id] then return end
-    local thismap = self.MapSafezones[id].Map == game.GetMap()
-    self.MapSafezones[id] = nil
-    for _,v in pairs(self.MapSafezones) do
-        if v.LinkedTo ~= id then continue end
-        v.LinkedTo = nil
-    end
 
+    self.MapSafezones[id] = nil
+
+    self:UpdateAdminEyes("Safezones")
     self:SaveSafezonesData()
-    if thismap then
-        self:SpawnMapSafezones()
-    end
+    self:SpawnMapSafezones()
 end
 
 function GM:ClearSafezones()
-    self.MapSafezones = {}
+    table.Empty(self.MapSafezones)
     if file.Exists(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/safezones.txt", "DATA") then
         file.Delete(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/safezones.txt")
     end
 
     self:SpawnMapSafezones()
+end
 
-    for id,v in pairs(self.MapSafezones) do
-        if v.Map ~= game.GetMap() then continue end
+function GM:SendMapSafezonesInfo(pl)
+	local tbl = {}
+	for _,sz in pairs(self.MapSafezones) do
+        if !sz.ShouldDisplay then continue end
+        table.insert(tbl, {
+            Name = sz.Name,
+            AreaMin = sz.AreaMin,
+            AreaMax = sz.AreaMax
+        })
+	end 
 
-        self.MapSafezones[id] = nil
-    end
-
-    if table.Count(self.MapSafezones) == 0 then
-        if file.Exists(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/safezones.txt", "DATA") then
-            file.Delete(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/safezones.txt")
-        end
-    else
-        self:SaveSafezonesData()
-    end
-    self:SpawnMapSafezones()
+	net.Start("tea_safezone")
+	net.WriteUInt(NET_SAFEZONE_GETINFO, 2)
+	net.WriteTable(tbl)
+	net.Send(pl)
 end
 
 
@@ -96,21 +112,19 @@ function GM:SpawnMapSafezones()
     end
 
     for id, v in pairs(self.MapSafezones) do
-        if v.Map ~= game.GetMap() then continue end
-
         local safezone = ents.Create("tea_safezone")
         safezone.min = v.AreaMin
         safezone.max = v.AreaMax
         safezone.ID = id
-        safezone.LinkedTo = v.LinkedTo
-        safezone.StartPos = v.StartPos
-        safezone.StartAng = v.StartAng
         safezone:SetPos((v.AreaMin + v.AreaMax) / 2)
         safezone:Spawn()
     end
-    self:UpdateAdminEyes("Openworld")
+
+    self:SendMapSafezonesInfo(player.GetAll())
+    self:UpdateAdminEyes("Safezones")
 end
 
+/* -- Unused
 function GM:UpdateSafezones()
     for _, ent in ipairs(ents.FindByClass("tea_safezone")) do
     	if !ent.ID then print(ent, "has invalid ID, wtf!!!") continue end
@@ -119,9 +133,6 @@ function GM:UpdateSafezones()
 
         ent.min = data.AreaMin
         ent.max = data.AreaMax
-        ent.LinkedTo = data.LinkedTo
-        ent.StartPos = data.StartPos
-        ent.StartAng = data.StartAng
         ent:SetPos((data.AreaMin + data.AreaMax) / 2)
 
     	local w = ent.max.x - ent.min.x
@@ -130,9 +141,10 @@ function GM:UpdateSafezones()
 
     	local min = Vector(-(w/2), -(l/2), -(h/2))
     	local max = Vector(w/2, l/2, h/2)
-        print(min, max)
         ent:SetCollisionBounds(min, max)
     end
 
-    self:UpdateAdminEyes("Openworld")
+    self:SendMapSafezonesInfo(player.GetAll())
+    self:UpdateAdminEyes("Safezones")
 end
+*/

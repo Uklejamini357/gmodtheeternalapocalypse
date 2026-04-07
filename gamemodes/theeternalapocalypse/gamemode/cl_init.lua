@@ -247,6 +247,23 @@ function GM:SetupFonts()
 		outline = false,
 	} )
 
+	surface.CreateFont("TEA.HUDFontLarge", {
+		font = font,
+		size = 28,
+		weight = 600,
+		blursize = 0,
+		scanlines = 0,
+		antialias = antialias,
+		underline = false,
+		italic = false,
+		strikeout = false,
+		symbol = false,
+		rotary = false,
+		shadow = false,
+		additive = false,
+		outline = true,
+	} )
+
 	surface.CreateFont("TEA.HUDFont", {
 		font = font,
 		size = 20,
@@ -308,10 +325,6 @@ function GM:Initialize()
 
 	self:SetupFonts()
 
-	MyBestsurvtime = 0
-	MyZmbskilled = 0
-	MyPlyskilled = 0
-	MyPlydeaths = 0
 	MyMMeleexp = 0
 	MyMMeleelvl = 0
 	MyMPvpxp = 0
@@ -319,11 +332,9 @@ function GM:Initialize()
 	
 	LocalInventory = {}
 	LocalVault = {}
-	InventoryItems = {}
-	InventoryWeapons = {}
-	Perks = {}
 
 	self.OpenworldTransitions = {}
+	self.MapSafezones = {}
 
 	self.WraithAlpha = 0
 	self.tea_screenfadeout = 0

@@ -90,7 +90,7 @@ function GM:DevCmds_PauseStats(ply, cmd)
 		ply.SurvivalTime = CurTime() - ply.StatsPaused_LastSurvivalTime
 		ply.StatsPaused_LastSurvivalTime = nil
 	else
-		ply.StatsPaused_LastSurvivalTime = CurTime() - ply.SurvivalTime
+		ply.StatsPaused_LastSurvivalTime = ply:GetTimeSurvived()
     end
 	ply.StatsPaused = !ply.StatsPaused
 end

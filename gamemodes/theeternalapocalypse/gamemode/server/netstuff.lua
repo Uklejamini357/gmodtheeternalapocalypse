@@ -63,6 +63,7 @@ util.AddNetworkString("tea_plyevent_vaultupdate")
 util.AddNetworkString("tea_lootpickup")
 util.AddNetworkString("tea_player_sendcharacters")
 util.AddNetworkString("tea_openworld_level")
+util.AddNetworkString("tea_safezone")
 
 
 util.AddNetworkString("tea_admin_sendspawns")
@@ -78,7 +79,7 @@ function GM:NetUpdateStats(ply)
 	net.WriteFloat(math.Round(ply.Thirst))
 	net.WriteFloat(math.Round(ply.Fatigue))
 	net.WriteFloat(math.Round(ply.Infection))
-	net.WriteFloat(ply.SurvivalTime)
+	net.WriteFloat(CurTime() - ply:GetTimeSurvived())
 	net.WriteFloat(math.Round(ply.Battery))
 	net.Send(ply)
 end
@@ -383,6 +384,14 @@ net.Receive("tea_admin_tool", function(len, pl)
 
 		pl:PrintMessage(3, "A new transition has been made.")
 		gamemode.Call("CreateMapTransition", name, game.GetMap(), startpos, startang, min, max)
+	elseif t == "createsafezonearea" then
+		local name = net.ReadString()
+		local min = net.ReadVector()
+		local max = net.ReadVector()
+		local shoulddisplay = net.ReadBool()
+
+		pl:PrintMessage(3, "A new safezone area has been made.")
+		gamemode.Call("CreateMapSafezone", name, min, max, shoulddisplay)
 	elseif t == "admineyes" then
 		local m = net.ReadString()
 		local v = net.ReadBool()

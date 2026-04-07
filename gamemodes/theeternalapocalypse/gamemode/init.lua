@@ -76,6 +76,7 @@ include("server/mastery.lua") -- Mastery for various types, including pvp and me
 --include("time_weather.lua") -- excluded due to file being non-existant
 include("server/player_quests.lua") -- Tasks and task dealers
 include("server/openworld.lua") -- Openworld implementation
+include("server/safezones.lua") -- Safezones
 
 include("server_data/data_saving.lua")
 
@@ -227,6 +228,17 @@ function GM:Think()
 		local noregen_infection = 5000
 
 		for _,ply in player.Iterator() do
+			local paused = self.SafezonePauseStats and ply:IsSZProtected()
+
+			local infectionchance
+			if self.RandomPlayerInfection and !paused then
+				infectionchance = math.random(1, math.max(10000, 100000 - ply:GetTimeSurvived()))
+				if (infectionchance == 1 and ply:GetTimeSurvived() >= 900) and ply.Infection <= 0 and ply:Alive() then
+					ply.Infection = ply.Infection + 1
+					ply:SendChat(translate.ClientGet(ply, "plcaughtinfection"))
+				end
+			end
+
 			if (ply.Thirst >= noregen_thirst and ply.Hunger >= noregen_hunger and ply.Fatigue <= noregen_fatigue and ply.Infection <= noregen_infection) then
 				if ply.HPRegen and ply:Health() < ply:GetMaxHealth() then
 					ply.HPRegen = math.Clamp(ply.HPRegen + 0.11*(1 + ply.StatMedSkill * 0.08)*(ply:IsSleeping() and 10 or 1), 0, ply:GetMaxHealth())
@@ -235,7 +247,11 @@ function GM:Think()
 				end
 			end
 
-			-- in case if player's HPRegen value is nil then it's set to 0
+			-- Can cause overhealed players' health to be reset to max.
+			if ply:GetMaxHealth() <= ply:Health() then
+				ply.HPRegen = 0
+			end
+
 			if ply.HPRegen or ply.HPRegen >= 1 then
 				ply:SetHealth(math.min(ply:Health() + math.floor(ply.HPRegen), ply:GetMaxHealth()))
 				ply.HPRegen = ply.HPRegen - math.floor(ply.HPRegen)
@@ -245,7 +261,6 @@ function GM:Think()
 				ply.BloodLustMeleeHealCap = math.max(0, ply.BloodLustMeleeHealCap - 0.1 * math.Clamp(CurTime() - (ply.BloodLustLastMeleeHit + 5), 0, 10))
 			end
 		end
-
 	end
 
 	for _,ply in player.Iterator() do
@@ -260,21 +275,14 @@ function GM:Think()
 		end
 
 		local sleeping = ply:IsSleeping()
+		local paused = self.SafezonePauseStats and ply:IsSZProtected()
 
 		-- hunger, thirst, fatigue, infection
-		ply.Hunger = math.Clamp(ply.Hunger - (5*ft / (1 + ply.StatSurvivor * 0.045) * (statupdaterate[self.GameplayDifficulty] or 1))*(sleeping and 20 or 1), 0, 10000)
-		ply.Thirst = math.Clamp(ply.Thirst - (6*ft / (1 + ply.StatSurvivor * 0.045) * (statupdaterate[self.GameplayDifficulty] or 1))*(sleeping and 20 or 1), 0, 10000)
-		ply.Fatigue = math.Clamp(ply.Fatigue + (sleeping and -200*ft or (3.2*ft / (1 + ply.StatSurvivor * 0.045) * (statupdaterate[self.GameplayDifficulty] or 1))), 0, 10000)
+		ply.Hunger = math.Clamp(ply.Hunger - (5*ft / (1 + ply.StatSurvivor * 0.045) * (statupdaterate[self.GameplayDifficulty] or 1))*(sleeping and 20 or paused and 0 or 1), 0, 10000)
+		ply.Thirst = math.Clamp(ply.Thirst - (6*ft / (1 + ply.StatSurvivor * 0.045) * (statupdaterate[self.GameplayDifficulty] or 1))*(sleeping and 20 or paused and 0 or 1), 0, 10000)
+		ply.Fatigue = math.Clamp(ply.Fatigue + (sleeping and -200*ft or paused and 0 or (3.2*ft / (1 + ply.StatSurvivor * 0.045) * (statupdaterate[self.GameplayDifficulty] or 1))), 0, 10000)
 
-		--random chance of getting infected per tick is very rare, but has chance if survived for more than 10 minutes
-		if self.RandomPlayerInfection then
-			local infectionchance = math.random(1, math.max(50000, 2000000 - (ct - ply.SurvivalTime)))
-			if (infectionchance == 1 and math.floor(ct - ply.SurvivalTime) >= 900) and ply.Infection <= 0 and ply:Alive() then
-				ply:SendChat(translate.ClientGet(ply, "plcaughtinfection"))
-			end
-		end
-
-		if (ply.Infection > 0 or infectionchance and infectionchance == 1) then
+		if ply.Infection > 0 then
 			ply.Infection = math.Clamp(ply.Infection + (16*ft * (1 - ply.StatImmunity * 0.035) * (statupdaterate[self.GameplayDifficulty] or 1))*(sleeping and 8 or 1), 0, 10000)
 		end
 
@@ -509,6 +517,7 @@ function GM:Initialize()
 	self.TraderSpawnpoints = {}
 	self.PlayerSpawnpoints = {}
 	self.OpenworldTransitions = {}
+	self.MapSafezones = {}
 
 	SetGlobalBool("GM.ZombieSpawning", true)
 
@@ -518,13 +527,16 @@ function GM:Initialize()
 	self:SetUpSeasonalEvents()
 
 --	self:AddResources()
-	self:LoadTransitionsData()
 	self:LoadLoot()
 	self:LoadAD()
 	self:LoadZombies()
 	self:LoadTraders()
 	self:LoadPlayerSpawns()
 	self:LoadTaskDealers()
+
+	self:LoadTransitionsData()
+	self:LoadSafezonesData()
+
 	self:CheckSpawnChanceErrors()
 
 	self:SetInflationMeter(self:CalcInflationMeter())
@@ -552,6 +564,7 @@ function GM:InitPostEntity()
 	self:SpawnTraders()
 	self:SpawnTaskDealers()
 	self:SpawnLevelTransitions()
+	self:SpawnMapSafezones()
 	self:MapReInit()
 end
 
@@ -559,7 +572,8 @@ function GM:PostCleanupMap()
 	self:SpawnTraders()
 	self:SpawnTaskDealers()
 	self:SpawnLevelTransitions()
-	
+	self:SpawnMapSafezones()
+
 	self:MapReInit()
 end
 
@@ -705,18 +719,22 @@ local function IsMeleeDamage(num)
 end
 
 function GM:EntityTakeDamage(ent, dmginfo)
-	if ent.ProcessDamage and not ent:ProcessDamage(dmginfo) then return end
-	if ent:IsPlayer() and not gamemode.Call("PlayerShouldTakeDamage", ent, dmginfo:GetAttacker()) then return end
-	if ent.ProcessPlayerDamage and not ent:ProcessPlayerDamage(dmginfo) then return end
-	if (ent:IsNPC() or ent:IsNextBot()) and not ent:ProcessNPCDamage(dmginfo) then return end
+	local attacker = dmginfo:GetAttacker()
+
+	if self.SafezoneGrindingPrevention == 1 and (ent:IsNPC() or ent:IsNextBot()) and ent.IsZombie and attacker:IsValid() and attacker:IsPlayer() and attacker:IsSZProtected() then
+		return true
+	end
+
+	if ent.ProcessDamage and not ent:ProcessDamage(dmginfo) then return true end
+	if ent:IsPlayer() and not gamemode.Call("PlayerShouldTakeDamage", ent, dmginfo:GetAttacker()) then return true end
+	if ent.ProcessPlayerDamage and not ent:ProcessPlayerDamage(dmginfo) then return true end
+	if (ent:IsNPC() or ent:IsNextBot()) and not ent:ProcessNPCDamage(dmginfo) then return true end
 
 	if ent:IsPlayer() and ent:Alive() and dmginfo:GetDamage() > 1 and ent:IsSleeping() then
 		ent:WakeUp()
 
 		ent:SendChat(translate.ClientGet(ent, "wakeup_cause_damage"))
 	end
-
-	local attacker = dmginfo:GetAttacker()
 
 	if attacker:IsPlayer() then
 		if (ent:IsNextBot() or ent:IsNPC() or ent:IsPlayer()) and IsMeleeDamage(dmginfo:GetDamageType()) and attacker:HasPerk("bloodlust") then
@@ -732,7 +750,7 @@ function GM:EntityTakeDamage(ent, dmginfo)
 		end
 	end
 
-	if (ent:IsNextBot() or ent:IsNPC()) and (!ent.LastAttacker or ent:Health() > 0) and attacker:IsPlayer() then
+	if (ent:IsNextBot() or ent:IsNPC()) and (!ent.LastAttacker or ent:Health() > 0) and attacker:IsPlayer() and not (self.SafezoneGrindingPrevention == 2 and attacker:IsSZProtected()) then
 		ent.LastAttacker = attacker
 		if !ent.BossMonster then
 			timer.Create("TEAZombieLastAttacker_"..ent:EntIndex(), 15, 1, function()
@@ -780,52 +798,63 @@ function GM:EntityTakeDamage(ent, dmginfo)
 	end
 end
 
+
+local function pvpmsg(pl, msg)
+	local handler = "NoPvPMsgAntiSpamTimer"..pl:EntIndex()
+	if !timer.Exists(handler) then
+		pl:SystemMessage(msg, Color(255,205,205), true)
+		timer.Create(handler, 0.5, 1, function() end)
+	end
+end
 function GM:PlayerShouldTakeDamage(ply, attacker)
-	if ply:IsPlayer() and attacker:IsPlayer() and ply != attacker and !ply:IsPvPForced() and ply.Territory != team.GetName(attacker:Team()) then
-		local handler = "NoPvPMsgAntiSpamTimer"..attacker:EntIndex()
+	if !ply:Alive() then return false end
 
-		if ply:Alive() and attacker:IsPlayer() and ply:IsPlayer() and (ply:HasGodMode() or ply.SpawnProtected) then
-			if !timer.Exists(handler) then
-				attacker:SystemMessage("This target is invulnerable!", Color(255,205,205), true)
-				timer.Create(handler, 0.5, 1, function() end)
-			end
+	if ply:IsSZProtected() then
+		if attacker:IsPlayer() then
+			pvpmsg(attacker, "Target is in safezone! You can't damage them!")
+		end
+		return false
+	end
+
+	if attacker:IsPlayer() then
+		if attacker:IsSZProtected() then
+			pvpmsg(attacker, "You can't damage other players while inside a safezone!")
 			return false
-		elseif ply:Alive() and attacker:IsPlayer() and ply:IsPlayer() and attacker:IsPvPGuarded() then
-			if !timer.Exists(handler) then
-				attacker:SystemMessage("You have PvP guarded! You can't damage other players!", Color(255,205,205), true)
-				timer.Create(handler, 0.5, 1, function() end)
+		end
+	end
+
+	if attacker:IsPlayer() and ply != attacker then
+		-- ply.Territory != team.GetName(attacker:Team()) -- can cause the faction members able to fucking kill a loner and loner cant deal damage to the attacker. need to fix that
+
+		if !ply:IsPvPForced() then
+			if ply:HasGodMode() or ply.SpawnProtected then
+				pvpmsg(attacker, "This target is invulnerable!")
+				return false
+			elseif attacker:Team() == TEAM_LONER and not attacker:GetNWBool("pvp") and GAMEMODE.VoluntaryPvP then
+				pvpmsg(attacker, "Your PvP is not enabled!")
+				return false
+			elseif ply:Team() == TEAM_LONER and not ply:GetNWBool("pvp") and GAMEMODE.VoluntaryPvP then
+				pvpmsg(attacker, "You can't attack loners unless they have PvP enabled!")
+				return false
 			end
+		end
+
+		if ply:Team() == attacker:Team() and ply:Team() ~= TEAM_LONER and attacker:Team() ~= TEAM_LONER then
+			pvpmsg(attacker, "You can't attack your factionmates!")
 			return false
-		elseif ply:Alive() and attacker:IsPlayer() and ply:IsPlayer() and ply:IsPvPGuarded() then
-			if !timer.Exists(handler) then
-				attacker:SystemMessage("Target has PvP guarded! You can't damage that player!", Color(255,205,205), true)
-				timer.Create(handler, 0.5, 1, function() end)
-			end
+		end
+		if attacker:IsPvPGuarded() then
+			pvpmsg(attacker, "You have PvP guarded! You can't damage other players!")
+			return false
+		elseif ply:IsPvPGuarded() then
+			pvpmsg(attacker, "Target has PvP guarded! You can't damage that player!")
 			return false
 		end
 
-		if ply:Alive() and attacker:Team() == TEAM_LONER and not attacker:GetNWBool("pvp") and GAMEMODE.VoluntaryPvP then
-			if !timer.Exists(handler) then
-				attacker:SystemMessage("Your PvP is not enabled!", Color(255,205,205), true)
-				timer.Create(handler, 0.5, 1, function() end)
-			end
-			return false
-		elseif ply:Alive() and ply:Team() == TEAM_LONER and not ply:GetNWBool("pvp") and GAMEMODE.VoluntaryPvP then
-			if !timer.Exists(handler) then
-				attacker:SystemMessage("You can't attack loners unless they have PvP enabled!", Color(255,205,205), true)
-				timer.Create(handler, 0.5, 1, function() end)
-			end
-			return false
-		elseif ply:Alive() and (ply:Team() == attacker:Team()) and not (ply:Team() == TEAM_LONER or attacker:Team() == TEAM_LONER) then
-			if !timer.Exists(handler) then
-				attacker:SystemMessage("You can't attack your factionmates!", Color(255,205,205), true)
-				timer.Create(handler, 0.5, 1, function() end)
-			end
-			return false
+		if !ply:IsPvPForced() then
+			ply.PvPNoToggle = CurTime() + 60
+			attacker.PvPNoToggle = CurTime() + 60
 		end
-
-		ply.PvPNoToggle = CurTime() + 60
-		attacker.PvPNoToggle = CurTime() + 60
 	end
 
 	return true
@@ -1002,6 +1031,7 @@ end
 function GM:PlayerReady(ply)
 	self:FullyUpdatePlayer(ply)
 	self:SendMapTransitionsInfo(ply)
+	self:SendMapSafezonesInfo(ply)
 end
 
 function GM:PlayerSay(ply, text, team)

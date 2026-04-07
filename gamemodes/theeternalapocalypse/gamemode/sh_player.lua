@@ -38,14 +38,23 @@ function meta:SetPvPGuarded(int)
 	self:SetNWInt("PvPGuard", math.Clamp(int, 0, 2) )
 end
 
+function meta:SetSZProtected(active)
+	if !SERVER then return end
+	return self:SetNWBool("SafezoneActive", active)
+end
+
 function meta:IsPvPGuarded()
-	if self:GetNWInt("PvPGuard") == 1 then return true
-	else return false end
+	if self:GetNWInt("PvPGuard") == 1 then return true end
+	return false
 end
 
 function meta:IsPvPForced()
-	if self:GetNWInt("PvPGuard") == 2 then return true
-	else return false end
+	if self:GetNWInt("PvPGuard") == 2 then return true end
+	return false
+end
+
+function meta:IsSZProtected()
+	return self:GetNWBool("SafezoneActive")
 end
 
 function meta:SlowPlayerDown(value, time)
@@ -279,6 +288,10 @@ function meta:IsDying()
 	end
 
 	return (self.Thirst <= 0 or self.Hunger <= 0 or self.Fatigue >= 10000 and self.Stamina <= 0 or self.Infection >= 10000)
+end
+
+function meta:GetTimeSurvived()
+	return self.SZSurvivalTime or CurTime() - self.SurvivalTime
 end
 
 function meta:GetArmorProtection(defense)

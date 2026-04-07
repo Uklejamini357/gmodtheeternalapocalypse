@@ -99,12 +99,11 @@ net.Receive("UpdateRespawnTimer", function(length)
 end)
 
 local function GetMyPvP(pl)
-	if LocalPlayer():IsPvPGuarded() then return 2 end
-	if !GAMEMODE.VoluntaryPvP then return 5 end
-	if LocalPlayer():Team() == TEAM_LONER and LocalPlayer():GetNWBool("pvp") then return 3 end
-	if LocalPlayer():Team() ~= TEAM_LONER then return 3 end
-	if LocalPlayer():IsPvPForced() then return 4 end
-	return 1
+	if pl:IsPvPGuarded() or pl:IsSZProtected() then return PVP_STATE_GUARDED end
+	if !GAMEMODE.VoluntaryPvP or pl:Team() ~= TEAM_LONER or pl:GetNWBool("pvp") then return PVP_STATE_ENABLED end
+	if pl:IsPvPForced() then return PVP_STATE_FORCED end
+
+	return PVP_STATE_DISABLED
 end
 
 local lastent
@@ -156,7 +155,7 @@ function GM:DrawNames()
 		local message6 = translate.Format("faction", stats[8])
 		local wo6, ho6 = surface_GetTextSize(message6)
 
-		if ent:IsPvPGuarded() then
+		if ent:IsPvPGuarded() or ent:IsSZProtected() then
 			draw.SimpleTextOutlined("p", "CSSTextFont", headPos.x - 15, headPos.y - 62, Color(50, 250, 0, 255), 0, 0, 2, Color(0, 50, 0, 255))
 		elseif ent:IsPvPForced() or (ent:Team() == TEAM_LONER and ent:GetNWBool("pvp") == true) or ((ent:Team() != TEAM_LONER and ent:Team() != me:Team()) or (ent:Team() == TEAM_LONER and !self.VoluntaryPvP)) then
 			draw.SimpleTextOutlined("C", "CSSTextFont", headPos.x - 25, headPos.y - 60, Color(255, 50, 0, 255), 0, 0, 2, Color(50, 0, 0, 255))
@@ -406,16 +405,20 @@ function GM:DrawVitals()
 		hud:DrawPVP(pl, state, scrw, scrh)
 	end
 
+	local drawtrader
 	for _, ent in pairs (ents.FindByClass("tea_trader")) do
 		if ent:GetPos():DistToSqr(me:GetPos()) < 14400 then
-			draw_RoundedBox(2, scrw / 2 - 230, 20, 460, 75, Color(0, 0, 0, 175))
-			surface_SetDrawColor(155, 155, 0, 255)
-			surface_DrawOutlinedRect(scrw / 2 - 230, 20, 460, 75)
-
-			draw_DrawText("You are in a trader protection zone", "TEA.HUDFont", scrw / 2, 30, Color(230, 255, 230, 255), TEXT_ALIGN_CENTER)
-			draw_DrawText("You cannot hurt other players or be hurt by them while in this area", "TEA.HUDFontSmall", scrw / 2, 50, Color(255, 255, 255, 255), TEXT_ALIGN_CENTER)
-			draw_DrawText("You take 10% less damage from all sources while in trader area", "TEA.HUDFontSmall", scrw / 2, 70, Color(255, 255, 255, 255), TEXT_ALIGN_CENTER)
+			drawtrader = true
+			break
 		end
+	end
+
+	if hud and hud.DrawTrader and drawtrader then
+		hud:DrawTrader(pl, scrw, scrh)
+	end
+
+	if hud and hud.DrawSafezone and self.SafezoneEntered then
+		hud:DrawSafezone(pl, math.max(0, self.SafezoneTimeProtected - CurTime()), pl:IsSZProtected(), scrw, scrh)
 	end
 end
 
@@ -450,6 +453,7 @@ function GM:HUDPaint()
 		mouthbreather:Stop()
 	end
 */
+	local pl = LocalPlayer()
 
 	self.BaseClass:HUDPaint()
 
@@ -457,6 +461,27 @@ function GM:HUDPaint()
 	self:DrawNames()
 	if LocalPlayer():Alive() then
 		self:DrawMiscThings()
+	end
+
+	if !self.DisableHints and self.SysTimeStarted and self.SysTimeStarted+30 > SysTime() then
+		local col = Color(255,255,255,255*(self.SysTimeStarted+30-SysTime())/1.5)
+		local tbl = {
+			{"Open Inventory", "+menu"},
+			{"Scoreboard and Factions", "+showscores"},
+			{"Actions menu", "+menu_context"},
+			{"Help", "gm_showhelp"},
+			{"Admin Menu", "gm_showteam"},
+			{"Options", "gm_showspare2"},
+		}
+
+		local y = ScrH()/2.5
+		
+		draw.SimpleText("Keybinds:", "TEA.HUDFontLarge", 10, y, col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+		for _,t in ipairs(tbl) do
+			if !AdminCheck(pl) and t[2] == "gm_showteam" then continue end
+			y = y + 34
+			draw.SimpleText((t[2] and string.upper(input.LookupBinding(t[2]) or "[NOT BOUND]").." - "..t[1]) or t[1], "TEA.HUDFontLarge", 10, y, col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+		end
 	end
 
 	if self.ShowInfectionLevelHUD then
@@ -535,6 +560,7 @@ function GM:HUDShouldDraw(name)
 	return true
 end
 
+-- local mat = Material("models/props_lab/projector_noise")
 function GM:RenderScreenspaceEffects()
 	local ply = LocalPlayer()
 	if ply:GetObserverMode() ~= OBS_MODE_NONE then return end
@@ -563,19 +589,46 @@ function GM:RenderScreenspaceEffects()
 	if GAMEMODE.WraithAlpha > 220 then DrawMotionBlur(0.4, 0.8, 0.01) end
 
 
-	local horror = false
+	local filters = {
+		{
+			["$pp_colour_addr"] = 0,
+			["$pp_colour_addg"] = 0,
+			["$pp_colour_addb"] = 0,
+			["$pp_colour_brightness"] = 0,
+			["$pp_colour_contrast"] = contrast * (!ply:Alive() and math.Clamp(1 + (self.LastAliveTime + 5 - CurTime()) * 0.2, 0.05, 1) or 1),
+			["$pp_colour_colour"] = color,
+			["$pp_colour_mulr"] = 0,
+			["$pp_colour_mulg"] = 0,
+			["$pp_colour_mulb"] = 0
+		},
 
-	modify["$pp_colour_addr"] = 0
-	modify["$pp_colour_addg"] = 0
-	modify["$pp_colour_addb"] = 0
-	modify["$pp_colour_brightness"] = horror and -0.045 or 0
-	modify["$pp_colour_contrast"] = contrast * (horror and 1.15 or 1) * (!ply:Alive() and math.Clamp(1 + (self.LastAliveTime + 5 - CurTime()) * 0.2, 0.05, 1) or 1)
-	modify["$pp_colour_colour"] = horror and math.max(0, color - 0.725) or color
-	modify["$pp_colour_mulr"] = 0
-	modify["$pp_colour_mulg"] = 0
-	modify["$pp_colour_mulb"] = 0
-	
-	DrawColorModify(modify)
+
+		{ -- horror
+			["$pp_colour_addr"] = 0,
+			["$pp_colour_addg"] = 0,
+			["$pp_colour_addb"] = 0,
+			["$pp_colour_brightness"] = -0.045,
+			["$pp_colour_contrast"] = contrast * 1.15 * (!ply:Alive() and math.Clamp(1 + (self.LastAliveTime + 5 - CurTime()) * 0.2, 0.05, 1) or 1),
+			["$pp_colour_colour"] = math.max(0, color - 0.725),
+			["$pp_colour_mulr"] = 0,
+			["$pp_colour_mulg"] = 0,
+			["$pp_colour_mulb"] = 0
+		},
+
+		{ -- colorless (black and white)
+			["$pp_colour_addr"] = 0,
+			["$pp_colour_addg"] = 0,
+			["$pp_colour_addb"] = 0,
+			["$pp_colour_brightness"] = -0.1,
+			["$pp_colour_contrast"] = contrast * 0.55 * (!ply:Alive() and math.Clamp(1 + (self.LastAliveTime + 5 - CurTime()) * 0.2, 0.05, 1) or 1),
+			["$pp_colour_colour"] = 0,
+			["$pp_colour_mulr"] = 0,
+			["$pp_colour_mulg"] = 0,
+			["$pp_colour_mulb"] = 0
+		},
+	}
+
+	DrawColorModify(filters[1])
 end
 
 function GM:DrawMiscThings()
@@ -799,12 +852,36 @@ hook.Add("PostDrawTranslucentRenderables", "GM.Transitions", function(bDrawingDe
 	cam.IgnoreZ(true)
 	local ownang = pl:EyeAngles()
 	for id,v in pairs(GAMEMODE.OpenworldTransitions) do
+		-- if !v.LinkedTo then continue end
+
 		local dist = pl:GetPos():Distance(v.Pos)
 		if dist > 2000 then continue end
 		local a = ((2000-dist)/2000)*255
 		cam.Start3D2D(v.Pos+Vector(0,0,20), Angle(0, ownang.yaw - 90, 90 - ownang.Pitch), math.Clamp(dist/800, 0.4, 2.5))
 		draw.DrawText("Map transition", "TEA.HUDFontSmall", 0, -40, Color(119,173,236,a), TEXT_ALIGN_CENTER)
 		draw.DrawText(math.Round(HammerUnitsToMeters(dist), 1).."m", "TEA.HUDFontSmall", 0, -20, Color(119,173,236,a), TEXT_ALIGN_CENTER)
+		cam.End3D2D()
+	end
+	cam.IgnoreZ(false)
+end)
+
+hook.Add("PostDrawTranslucentRenderables", "GM.MapSafezones", function(bDrawingDepth, bDrawingSkybox, isDraw3DSkybox)
+	if bDrawingSkybox or isDraw3DSkybox then return end
+	local pl = LocalPlayer()
+
+	if IsValid(pl:GetActiveWeapon()) and pl:GetActiveWeapon():GetClass() == "tea_admintool" then return end
+	cam.IgnoreZ(true)
+	local ownang = pl:EyeAngles()
+	for id,v in pairs(GAMEMODE.MapSafezones) do
+		local dist = pl:GetPos():Distance(v.Pos)
+		if dist > 2000 then continue end
+		local a = ((2000-dist)/2000)*255
+		cam.Start3D2D(v.Pos+Vector(0,0,20), Angle(0, ownang.yaw - 90, 90 - ownang.Pitch), math.Clamp(dist/800, 0.4, 2.5))
+		draw.DrawText(v.Name or "", "TEA.HUDFont", 0, -60, Color(142,241,156,a), TEXT_ALIGN_CENTER)
+		draw.DrawText("Safezone", "TEA.HUDFontSmall", 0, -30, Color(142,241,156,a), TEXT_ALIGN_CENTER)
+		if !GAMEMODE.SafezoneEntered then
+			draw.DrawText(math.Round(HammerUnitsToMeters(dist), 1).."m", "TEA.HUDFontSmall", 0, -10, Color(142,241,156,a), TEXT_ALIGN_CENTER)
+		end
 		cam.End3D2D()
 	end
 	cam.IgnoreZ(false)

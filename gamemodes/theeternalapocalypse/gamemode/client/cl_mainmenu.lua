@@ -53,6 +53,8 @@ net.Receive("tea_player_ready_spawn", function()
 			chat.AddText(Color(255,255,155), f4..": Options")
 		end)
 	end
+
+	GAMEMODE.SysTimeStarted = SysTime()
 end)
 
 net.Receive("tea_player_sendcharacters", function()
@@ -177,26 +179,14 @@ function GM:LoadMainMenu()
 	local p = {}
 	p.maintext = vgui.Create("DLabel", titlepan)
 	p.maintext:SetPos(0, 0)
-	p.maintext:SetText("(23.03.2026) 0.12.0:")
+	p.maintext:SetText("("..self.DateVer..") "..self.Version..":")
 	p.maintext:SetTextColor(Color(255,255,210))
 	p.maintext:SetFont("Trebuchet24")
 	p.maintext:SizeToContents()
 
-	local texts = {
-		{"A lot of changes were introduced.", Color(255,255,210)},
-		{"Added map transitions.", Color(255,255,210)},
-		{"Introducing Zombines.", Color(255,255,210)},
-		{"Reworked loot caches and their rarity.", Color(255,255,210)},
-		{"Loot spawns now have Tier attribute.", Color(255,255,210)},
-		{"Which means different spawns can have higher quality loot.", Color(255,255,210)},
-		{"Added Spanish translation - thanks Sirtlan :)", Color(210,255,210)},
-		{"There are more changes but you can discover them yourself!", Color(255,255,210)},
-		{"(04.04.2026) 0.12.1: Made Scavenging skill work and patches", Color(210,255,210)},
-	}
-
 	local y = 40
-	for i=1,#texts do
-		local t = texts[i]
+	for i=1,#self.RecentChangelogs do
+		local t = self.RecentChangelogs[i]
 		p["text"..i] = vgui.Create("DLabel", titlepan)
 		p["text"..i]:SetPos(0, y)
 		p["text"..i]:SetText(t[1])
@@ -210,6 +200,7 @@ function GM:LoadMainMenu()
 		local desc = vgui.Create("DLabel", self.MainMenuPanel)
 		desc:SetContentAlignment(5)
 		desc:SetText(translate.Get("the_eternal_apocalypse_desc"))
+		desc:SetTextColor(Color(0, 0, 0, 0))
 		desc:SetFont("Trebuchet18")
 		desc:SizeToContents()
 		desc:SetPos(ScrW()/2 + (i==2 and (ScrW()+desc:GetWide())/2 or -(ScrW()+desc:GetWide())/2), 160)
@@ -218,6 +209,14 @@ function GM:LoadMainMenu()
 			local txtsize_x,txtsize_y = desc:GetSize()
 			desc:SetPos(ScrW() / 2 - txtsize_x/2 + (ScrW()/2)*(i == 1 and 1 or -1), 150)
 			desc:MoveTo(ScrW() / 2 - txtsize_x/2, 150, 0.85)
+		end
+		-- really wanted all the text to display in center but there wasnt a function for it. I could just create more text panels instead, but why though?
+		local txt = string.Explode("\n", desc:GetText())
+		desc:SetTall(10 + #txt*20)
+		desc.Paint = function(self, w, h)
+			for i=1,#txt do
+				draw.DrawText(txt[i], "Trebuchet18", w/2, 20*(i-1), color_white, TEXT_ALIGN_CENTER)
+			end
 		end
 
 		if self.PlayerCharactersTest then
@@ -233,16 +232,12 @@ function GM:LoadMainMenu()
 	end
 
 	if !self.PlayerCharactersTest then
-		for i=1,2 do
-			local note = vgui.Create("DLabel", self.MainMenuPanel)
-			note:SetContentAlignment(5)
-			note:SetTextColor(Color(127,255,255))
-			note:SetText("Please note, this is a beta version. Some things may not work as expected.")
-			note:SetFont("Trebuchet18")
-			note:SizeToContents()
-			note:SetPos(ScrW()/2 + (i==2 and ScrW() or -ScrW()), 200)
-			note:MoveTo(ScrW()/2-note:GetWide()/2, 200, 2.5)
-		end
+		local note = vgui.Create("DLabel", self.MainMenuPanel)
+		note:SetTextColor(Color(127,255,255))
+		note:SetText("Please note, this is a beta version. Some things may not work as expected.\nThread carefully...") -- fucking align doesnt work
+		note:SetFont("Trebuchet18")
+		note:SizeToContents()
+		note:SetPos(ScrW() - note:GetWide() - 2, 2)
 	end
 
 	local button = vgui.Create("DButton", self.MainMenuPanel)
@@ -352,6 +347,13 @@ local randomtip2 = table.Random(randomtips2)
 
 hook.Add("DrawOverlay", "TEA_DrawOverlay", function()
 	if GAMEMODE.HasInitialized then return end
+
+	-- just in case.
+	if LocalPlayer and LocalPlayer() and IsValid(LocalPlayer()) and !GAMEMODE.HasInitialized then
+		GAMEMODE:InitPostEntity()
+		return
+	end
+
 	cam.Start2D()
 	surface.SetDrawColor(0, 0, 0, 255)
 	surface.DrawRect(0, 0, ScrW(), ScrH())

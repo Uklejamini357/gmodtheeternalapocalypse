@@ -160,7 +160,7 @@ function GM:SavePlayer(ply, force)
 			lastsessioninfo["infection"] = ply.Infection
 			lastsessioninfo["battery"] = ply.Battery
 			lastsessioninfo["hpregen"] = ply.HPRegen
-			lastsessioninfo["survivaltime"] = CurTime() - ply.SurvivalTime
+			lastsessioninfo["survivaltime"] = ply:GetTimeSurvived()
 			lastsessioninfo["lastmap"] = ply.TransitioningMap or game.GetMap()
 			lastsessioninfo["lastpos"] = ply.TransitioningPos or ply:GetPos()
 			lastsessioninfo["lastang"] = ply.TransitioningAng or ply:EyeAngles()
