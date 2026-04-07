@@ -78,3 +78,14 @@ function ENT:EndTouch(ent)
 		gamemode.Call("OnSafezoneLeave", ent, self)
 	end
 end
+
+-- fucking EndTouch don't work if safezone gets removed
+function ENT:OnRemove()
+	for _,ply in player.Iterator() do
+		ply.InsideSafeZones = ply.InsideSafeZones or {}
+		table.RemoveByValue(ply.InsideSafeZones, self)
+		if table.Count(ply.InsideSafeZones) == 0 then
+			gamemode.Call("OnSafezoneLeave", ply, self)
+		end
+	end
+end

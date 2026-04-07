@@ -532,7 +532,7 @@ GM.AdminMapSpawnables = {
 	},
 
 	Safezones = {
-		Name = "ow_safezones",
+		Name = "safezones",
 		Spawn = function(owner, swep, tr, pos, options)
 			if !swep.SZStartPos then
 				swep.SZStartPos = pos
@@ -569,10 +569,11 @@ GM.AdminMapSpawnables = {
 				render.DrawWireframeBox(v.Pos, angle_zero, v.AreaMax-v.Pos, v.AreaMin-v.Pos, color_lime)
 				cam.Start3D2D(v.Pos+Vector(0,0,80), Angle(0, ownang.yaw - 90, 90 - ownang.Pitch), math.Clamp(owner:GetPos():Distance(v.Pos)/750, 0.3, 5))
 				draw.DrawText("Safezone #"..id, "TEA.HUDFont", 0, -40, tcolor_lime, TEXT_ALIGN_CENTER)
+				draw.DrawText(v.Name or "", "TEA.HUDFont", 0, -20, tcolor_lime, TEXT_ALIGN_CENTER)
 				local pos = (v.AreaMin + v.AreaMax) / 2
-				draw.DrawText("Pos: "..tostring(pos), "TEA.HUDFont", 0, 20, tcolor_lime, TEXT_ALIGN_CENTER)
-				draw.DrawText("AreaMin: "..tostring(v.AreaMin-pos), "TEA.HUDFont", 0, 40, tcolor_lime, TEXT_ALIGN_CENTER)
-				draw.DrawText("AreaMax: "..tostring(v.AreaMax-pos), "TEA.HUDFont", 0, 60, tcolor_lime, TEXT_ALIGN_CENTER)
+				draw.DrawText("Pos: "..tostring(pos), "TEA.HUDFontSmall", 0, 15, tcolor_lime, TEXT_ALIGN_CENTER)
+				draw.DrawText("AreaMin: "..tostring(v.AreaMin-pos), "TEA.HUDFontSmall", 0, 30, tcolor_lime, TEXT_ALIGN_CENTER)
+				draw.DrawText("AreaMax: "..tostring(v.AreaMax-pos), "TEA.HUDFontSmall", 0, 45, tcolor_lime, TEXT_ALIGN_CENTER)
 				cam.End3D2D()
 
 				-- render.DrawSphere(v.Pos, v.Radius, 16, 16, color_red)
@@ -586,6 +587,7 @@ GM.AdminMapSpawnables = {
 			local tbl = {}
 			for id,v in pairs(GAMEMODE.MapSafezones) do
 				tbl[id] = {
+					Name = v.Name,
 					Pos = (v.AreaMin+v.AreaMax)/2,
 					AreaMin = v.AreaMin,
 					AreaMax = v.AreaMax

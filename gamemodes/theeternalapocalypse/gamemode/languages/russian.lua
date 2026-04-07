@@ -258,6 +258,7 @@ LANG.select_traderid_remove = "Select trader spawnpoint ID to remove"
 LANG.select_adid_remove = "Select airdrop spawnpoint ID to remove"
 LANG.select_plrid_remove = "Select player spawnpoint ID to remove"
 LANG.select_taskdealerid_remove = "Select taskdealer spawnpoint ID to remove"
+LANG.select_safezoneid_remove = "Select safezone ID to remove"
 
 
 LANG.ow_linkedto = "Linked To"
@@ -292,6 +293,7 @@ LANG.airdrops = "Airdrops"
 LANG.player_spawnpoints = "Player spawnpoints"
 LANG.taskdealers = "Taskdealers"
 LANG.ow_transitions = "Transitions"
+LANG.safezones = "Safezones"
 LANG.rename = "Rename"
 
 LANG.zombies_n = "Normal Zombies"

@@ -245,6 +245,7 @@ LANG.select_traderid_remove = "Selecciona la ID de un punto de aparición de com
 LANG.select_adid_remove = "Selecciona la ID de un punto de aparición de suministro aéreo para eliminarlo"
 LANG.select_plrid_remove = "Selecciona la ID de un punto de aparición de jugador para eliminarlo"
 LANG.select_taskdealerid_remove = "Selecciona la ID de un punto de aparición de un distribuidor de tareas para eliminarlo"
+LANG.select_safezoneid_remove = "Select safezone ID to remove"
 
 
 LANG.ow_linkedto = "Vinculado A"
@@ -279,6 +280,7 @@ LANG.airdrops = "Suministros aéreos"
 LANG.player_spawnpoints = "Puntos de aparición de jugador"
 LANG.taskdealers = "Distribuidores de tareas"
 LANG.ow_transitions = "Transiciones"
+LANG.safezones = "Safezones"
 LANG.rename = "Renombrar"
 
 LANG.zombies_n = "Zombis Normales"
