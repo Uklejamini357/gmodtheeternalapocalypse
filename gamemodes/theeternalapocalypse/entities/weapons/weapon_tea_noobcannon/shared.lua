@@ -22,7 +22,7 @@ SWEP.Primary.Recoil		= 0.8
 SWEP.Primary.Damage		= 15
 SWEP.Primary.NumShots		= 1
 SWEP.Primary.Cone			= 0.02
-SWEP.Primary.Delay 		= 0.12
+SWEP.Primary.Delay 		= 0.18
 
 SWEP.Primary.ClipSize		= 14
 SWEP.Primary.DefaultClip	= 0

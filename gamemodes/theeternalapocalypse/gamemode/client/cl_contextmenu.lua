@@ -78,7 +78,7 @@ function GM:CMenu()
 			if wep.Primary then
 				local wep_prim = wep.Primary
 				local class = wep:GetClass()
-				local delay = math.Round(wep_prim.Delay or 1 / ((wep_prim.RPM or 0) / 60) or 1, 3)
+				local delay = math.Round(wep_prim.Delay or 1 / ((wep_prim.RPM or 1) / 60) or 1, 3)
 
 				local usemulshots = wep_prim.NumShots and wep_prim.NumShots ~= 0 and wep_prim.NumShots ~= 1
 				draw.DrawText(translate.Format("wep_damage",
@@ -134,20 +134,24 @@ function GM:CMenu()
 			surface.DrawOutlinedRect(scw - 600, sch / 2 - 150, 400, 300)
 
 			local infection = math.Round(self:GetInfectionLevel(), 2)
-			local effective = infection--math.Round(self:GetEffectiveInfectionLevel(), 2)
-			local text,color = self:GetInfectionTextColor(effective)
+			local effective = math.Round(self:GetEffectiveInfectionLevel(), 2)
+
+			local text,color = self:GetInfectionTextColor(infection)
 
 			if effective == infection then
-				draw.SimpleText(translate.Format("infection_level", infection).." ("..text..")", "TEA.HUDFont", scw - 590, sch / 2 - 145, color, 0, 0)
+				draw.SimpleText(translate.Format("infection_level", infection), "TEA.HUDFont", scw - 590, sch / 2 - 145, color, 0, 0)
 			else
 				draw.SimpleText(translate.Format("infection_level", infection).." ("..translate.Format("infection_level_effective", effective)..")", "TEA.HUDFont", scw - 590, sch / 2 - 145, color, 0, 0)
 			end
 
-			local y = sch / 2 - 125
+			draw.SimpleText(text, "TEA.HUDFontSmall", scw - 590, sch / 2 - 125, color, 0, 0)
+
 			local minlvl = self:GetZombieLvlMin()
 			local maxlvl = self:GetZombieLvlMax()
+			local y = sch / 2 - 105
 			draw.SimpleText(translate.Format("zm_lvl", minlvl, maxlvl), "TEA.HUDFont", scw - 590, y, color, 0, 0)
 			y = y + 20
+
 			draw.SimpleText(translate.Format("zm_health", 100*math.Round(0.75+minlvl*0.025, 4), 100*math.Round(0.75+maxlvl*0.025, 4)), "TEA.HUDFontSmall", scw - 590, y, color, 0, 0)
 			y = y + 15
 			draw.SimpleText(translate.Format("zm_dmgdealt", 100*math.Round(0.85+minlvl*0.015, 4), 100*math.Round(0.85+maxlvl*0.015, 4)), "TEA.HUDFontSmall", scw - 590, y, color, 0, 0)

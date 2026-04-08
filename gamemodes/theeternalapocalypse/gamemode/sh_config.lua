@@ -178,7 +178,7 @@ GM.SafezonePauseStats = true
 -- Set to 1 to make zombies outside the safezone unkillable in any way while inside the safezone.
 -- Set to 2 to make zombies killable while inside the safezone, but killing them does not gain you anything.
 -- Otherwise, setting this variable to 0 will not affect zombies vs player inside safezones.
-GM.SafezoneGrindingPrevention = 1
+GM.SafezoneGrindingPrevention = 2
 
 -- Obviously, zombies shouldn't be inside the safezone. The option below will determine how to handle the zombies entering the door.
 -- Set to 1 to make zombies entering the safezone be teleported to the nearest available zombie spawnpoint.
@@ -187,9 +187,9 @@ GM.SafezoneGrindingPrevention = 1
 -- Or just set to 0 to not do anything to the zombies.
 GM.SafezoneZombiesAction = 1
 
---[[
 -- For the both options above, you do NOT want to set these options to 1 and 0 respectively. Because that will make zombies inside safezone a PAIN to deal with.
 
+--[[
 -- Turn this on if you are making a server adapted to openworld. This option will adapt the gamemode to openworld experience by applying a few changes.
 -- Factions, props and structures saved through sessions.
 GM.OpenworldAdaption = false

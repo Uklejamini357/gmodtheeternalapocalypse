@@ -3,8 +3,8 @@ GM.AltName	= "After The End Reborn"
 GM.Author	= "Uklejamini"
 GM.Email	= ""
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.12.2"
-GM.DateVer	= "07.04.2026" -- Follows the DD.MM.YYYY format.
+GM.Version	= "0.12.3b" -- i love beta :)
+GM.DateVer	= "08.04.2026" -- Follows the DD.MM.YYYY format.
 GM.Credits = {
 	-- Assets
 	{"GSC Game World",			"For all the S.T.A.L.K.E.R. content",										""},
@@ -331,8 +331,31 @@ function GM:GetInfectionLevel(bypass)
 end
 
 function GM:GetEffectiveInfectionLevel(bypass)
-	if not bypass and !self.InfectionLevelEnabled then return 0 end
-	return tonumber(GetGlobalFloat("tea_infectionlevel", 0))
+	local lvl = self:GetInfectionLevel()
+
+	if GetGlobalBool("TEA.IgnoreEffLevel") then return lvl end
+
+	local avgp, totalp = 0, 0
+	local max = 50
+	for c,ply in player.Iterator() do
+		if c ~= 1 then
+			lvl = lvl + 0.2
+		end
+
+		local a = math.min(20, ply:GetTEAPrestige()) + math.sqrt(math.max(0, ply:GetTEAPrestige()-20))
+		avgp = avgp + a
+		totalp = totalp + a
+	end
+	avgp = avgp / player.GetCount()
+
+	max = max + (totalp*5)^0.85
+
+	if avgp > 0 then
+		lvl = lvl + math.min(20, math.floor(avgp))
+	end
+
+	if GetGlobalBool("TEA.IgnoreMaxInfLvl") then return lvl end
+	return math.min(max, lvl)
 end
 
 function GM:SetInfectionLevel(value, bypass)
@@ -446,6 +469,48 @@ function GM:GetItemDescription(id, ply) -- ply is for the server
 	local itemtype = item.ItemType
 	if itemtype and self.ItemTypes[itemtype] then
 		desc = desc.."\nItem type: "..self.ItemTypes[itemtype]
+	end
+
+	local wep = item.WeaponType and weapons.Get(item.WeaponType)
+	if wep and wep.Primary then
+		local dmg = wep.Primary.Damage
+		local numshots = wep.Primary.NumberOfShots or wep.Primary.NumShots
+		local delay = (wep.Primary.Delay or wep.Primary.RPM) and math.Round(wep.Primary.Delay or 1 / ((wep.Primary.RPM or 1) / 60) or 1, 3)
+
+		if dmg then
+			desc = desc.."\nDamage: "..dmg
+		end
+
+		if numshots then
+			desc = desc.."\nNumber of Shots: "..numshots
+		end
+
+		if delay then
+			desc = desc.."\nAttack Delay: "..delay.."s"
+		end
+
+		if dmg and delay then
+			desc = desc.."\nDPS: "..math.Round(dmg * numshots / delay, 2)
+		end
+
+		if wep.Primary.ClipSize and wep.Primary.ClipSize ~= -1 then
+			desc = desc.."\nClip Size: "..wep.Primary.ClipSize
+		end
+
+		if wep.Primary.Recoil then
+			desc = desc.."\nRecoil: "..wep.Primary.Recoil
+		end
+
+		if wep.HitDistance then
+			desc = desc.."\nMelee Range: "..wep.HitDistance
+		end
+
+		desc = desc.."\nAutomatic: "..(wep.Primary.Automatic and "Yes" or "No")
+
+		local dmgvszms = wep.DamageVsZombiesMul or self.WeaponDamageVsZombiesMul[item.WeaponType]
+		if dmgvszms then
+			desc = desc.."\n"..translate.ClientFormat(ply, "wep_vszombiedmg", dmgvszms)
+		end
 	end
 
 	local armorstats = item.ArmorStats

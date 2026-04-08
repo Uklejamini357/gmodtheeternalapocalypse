@@ -43,6 +43,20 @@ function ENT:Use(activator, caller)
 
 	local loottype = self:GetNWInt("loottype", 1)
 	local lootrarity = math.Clamp(self:GetNWFloat("lootrarity", 1) + caller.StatScavenging*0.01, 1, #GAMEMODE.LootTable)
+
+	-- Prevent OP loot at start for new players
+	if GAMEMODE.PreventGoodLootRNGForNewPlayers then
+		if caller:GetTEAPrestige() == 0 then
+			if caller:GetTEALevel() < 10 then
+				lootrarity = math.min(lootrarity, LOOTRARITY_UNCOMMON)
+			elseif caller:GetTEALevel() < 20 then
+				lootrarity = math.min(lootrarity, LOOTRARITY_RARE)
+			else
+				lootrarity = math.min(lootrarity, LOOTRARITY_EPIC)
+			end
+		end
+	end
+
 	self:SetNWInt("lootrarity", lootrarity)
 
 	GAMEMODE:RandomizeEntityLoot(self)

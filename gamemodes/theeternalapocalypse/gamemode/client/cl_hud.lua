@@ -168,7 +168,7 @@ function GM:DrawNames()
 
 	end
 
-	if npcent and npcent:IsValid() and (npcent:IsNPC() or npcent:IsNextBot()) and (self.Config["ZombieClasses"][npcent:GetClass()] or self.Config["BossClasses"][npcent:GetClass()]) and self.DrawZombiesInfo and self:GetDebug() >= DEBUGGING_ADVANCED then
+	if npcent and npcent:IsValid() and (npcent:IsNPC() or npcent:IsNextBot()) and (self.Config["ZombieClasses"][npcent:GetClass()] or self.Config["BossClasses"][npcent:GetClass()]) and self.DrawZombiesInfo then
 		if ent and ent:IsValid() and (ent:IsNPC() or ent:IsNextBot()) and (self.Config["ZombieClasses"][ent:GetClass()] or self.Config["BossClasses"][ent:GetClass()]) then
 			lastent = ent
 			lastdraw = CurTime()
