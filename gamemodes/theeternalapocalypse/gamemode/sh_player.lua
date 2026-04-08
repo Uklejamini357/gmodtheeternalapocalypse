@@ -407,7 +407,7 @@ function meta:GetItemSellCostMul(item)
 	mul = mul * (1 + GAMEMODE:GetInflationSellCostMul())
 	mul = mul * GAMEMODE:GetEconomyDiffSellCostMul()
 
-	return itemtbl.IgnoreSellCostMulLimit and mul or math.max(GAMEMODE.MaxSellCostMul, mul)
+	return itemtbl.IgnoreSellCostMulLimit and mul or math.min(GAMEMODE.MaxSellCostMul, mul)
 end
 
 function meta:AddStatisticPoints(var, value)
