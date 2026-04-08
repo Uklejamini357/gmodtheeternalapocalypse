@@ -29,7 +29,7 @@ net.Receive("UpdateStats", function(len) -- this net message is received once ev
 	pl.Thirst = net.ReadFloat()
 	pl.Fatigue = net.ReadFloat()
 	pl.Infection = net.ReadFloat()
-	MySurvivaltime = net.ReadFloat()
+	pl.SurvivalTime = net.ReadFloat()
 	pl.Battery = net.ReadFloat()
 end)
 
@@ -61,14 +61,11 @@ function GM:HUDDrawTargetID()
 end
 
 net.Receive("Payout", function(length)
-	local xpgain = net.ReadFloat()
-	local moneygain = net.ReadFloat()
+	XPGained = net.ReadFloat()
+	MoneyGained = net.ReadFloat()
 
-	XPGained = xpgain
-	MoneyGained = moneygain
-
-	TotalXPGained = TotalXPGained + xpgain
-	TotalMoneyGained = TotalMoneyGained + moneygain
+	TotalXPGained = TotalXPGained + XPGained
+	TotalMoneyGained = TotalMoneyGained + MoneyGained
 
 	if XPGained != 0 then
 		XPColor = Color(255,255,255,155)
@@ -867,6 +864,7 @@ end)
 
 hook.Add("PostDrawTranslucentRenderables", "GM.MapSafezones", function(bDrawingDepth, bDrawingSkybox, isDraw3DSkybox)
 	if bDrawingSkybox or isDraw3DSkybox then return end
+	if GAMEMODE.SafezoneEntered then return end
 	local pl = LocalPlayer()
 
 	if IsValid(pl:GetActiveWeapon()) and pl:GetActiveWeapon():GetClass() == "tea_admintool" then return end
