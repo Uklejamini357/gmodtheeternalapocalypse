@@ -91,7 +91,7 @@ function GM:LocalPlayerDeath(attacker)
 	self.tea_deathtext_a = 0
 	self.tea_survivalstats_a = 0
 
-	self.MyLastSurvivalStats.SurvivalTime = CurTime() - MySurvivaltime
+	self.MyLastSurvivalStats.SurvivalTime = CurTime() - me.SurvivalTime
 	self.MyLastSurvivalStats.BestSurvivalTime = me.Statistics.BestSurvivalTime
 	for k,v in pairs(me.LifeStats) do
 		self.MyLastSurvivalStats[k] = v
@@ -371,7 +371,7 @@ function GM:InitializeLocalPlayer()
 	pl.Thirst = 0
 	pl.Fatigue = 0
 	pl.Infection = 0
-	MySurvivaltime = 0
+	pl.SurvivalTime = 0
 	pl.Battery = 0
 	pl.Money = 0
 	MyXP = 0

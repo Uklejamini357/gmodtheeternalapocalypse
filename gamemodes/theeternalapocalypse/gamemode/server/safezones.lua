@@ -28,7 +28,7 @@ function GM:OnSafezoneLeave(pl, ent)
         if pl:Alive() then
             pl:SystemMessage("You have left the safezone.", Color(255, 255, 200), true)
         end
-        pl.SurvivalTime = pl:GetTimeSurvived()
+        pl.SurvivalTime = CurTime() - pl:GetTimeSurvived()
         pl.SZSurvivalTime = nil
     end
     pl:SetSZProtected(false)
