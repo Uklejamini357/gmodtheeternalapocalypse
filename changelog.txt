@@ -1,5 +1,11 @@
 There's been a lot missed out...
-WORKING ON THIS CURRENTLY
+WORKING ON THIS CURRENTLY. even tho progress is slow asf
+
+-------- v0.12.3 --------
+
+-------- v0.12.2 --------
+
+-------- v0.12.1 --------
 
 -------- v0.12.0 FULL CHANGELOG --------
 
@@ -7,11 +13,23 @@ Nope.
 
 
 -------- v0.12.0b7 of 15th March 2026 --------
+
+
 -------- v0.12.0b6 of 15th March 2026 --------
+
+
 -------- v0.12.0b5 of 14th March 2026 --------
+
+
 -------- v0.12.0b4 of 12th March 2026 --------
+
+
 -------- v0.12.0b3 of 11th March 2026 --------
+
+
 -------- v0.12.0b2 of 8th March 2026 --------
+
+
 -------- v0.12.0b1 of 8th March 2026 --------
 
 -------- v0.11.4a of 24th August 2025 --------
@@ -42,19 +60,99 @@ Nope.
 * Fix some death sounds
 
 -------- v0.11.3b of 7th June 2025 --------
+
+
 -------- v0.11.3a of 28th January 2025 --------
+
+
 -------- v0.11.3 of 7th January 2025 --------
+
+
 -------- v0.11.2e of 5th January 2025 --------
+
+
 -------- v0.11.2d of 5th January 2025 --------
+
+
 -------- v0.11.2c of 5th January 2025 --------
+
+
 -------- v0.11.2b of 5th January 2025 --------
+
+
 -------- v0.11.2a of 2nd January 2025 --------
+
++ Added new unique Magnus KA-357
++ Added networking for oxygen
++ Added the new ammos to inventory/trader
++ Added water bottle and Medbag enhanced
+
+
+= Greatly empowered Unknown zombie's stats
+= Rebalanced deadly minigun
+
+* Fixed zombies causing error (OnNPCKilled hook)
+* Fixed medical attention task not being completable
+* Fixed prop names
+
 -------- v0.11.2 of 30th December 2024 --------
+
++ [BETA] Added characters system.
++ Added option to have infection level dependent on average player prestige
++ Added Oxygen (instead of using stamina underwater uses oxygen)
++ Added sandbox spawnmenu
++ Added visibility for zombie, trader, loot spawns, etc. for admins via a command
++ Added being able to reset prestige perks
++ Added 2 more ammo types
++ Added 3 more tasks
+
+- Using admin commands no longer plays a sound.
+
+/ Changed how sprinting exhaustion works, you can no longer actually bypass sprint when exhausted. (reached 0% stamina and haven't reached back above 30% stamina yet)
+/ Changed ZS event.
+/ Loot finder task now works.
+/ Empowered skills now work properly.
+/ Elite Variant spawns now vary depending on current infection level
+/ Add Lag Compensation for Zombies. (hopefully this fixes all the issues with hitreg)
+/ Resetting perks may also result in skills reset if you end up having negative skill points after the reset.
+/ Changed xp requirement for levels.
+/ Tasks menu now displays background color depending on task's status (yellow = in progress, green = completed) 
+
+= Increased AR2 damage: 28 -> 32
+= Increased Combine pistol damage: 23 -> 31
+= Balanced Deadly Axe: Damage 191 -> 183, delay 1.7s -> 1.6s
+= WalkSpeed increased in config: 135 -> 155
+= RunSpeed increased in config: 260 -> 270
+= Reduced Tyrant's rocks splash damage on final blow: 50 -> 30
+
+* Fixed collision for zombies
+* Fixed infinite skill points glitch with resetting perks.
+
+? Those are all the changes since the beta. This includes all the beta changes that are not available yet
 
 -------- v0.11.2 beta of 1st June 2024 --------
 
++ Added russian translation (thanks Blueberryy!)
++ Add zombie speed scaling for higher infection level
++ Added new Zombie Lord King's ability when it Enrages
++ Added the Hunter Zombie, the most dangerous zombie ever to exist!
++ Added 6 new perks
++ Added progress text for tasks in C menu to monitor your task progress
++ Added minibosses. They spawn when infection level is 25% or higher, or when there are 3 or more players online
++ Added new perks for newbies
++ Added option to disable inventory weight text on HUD
++ Added ability to heal other players with medical items
++ Added new props
++ Added loot finder task (non-functional)
 
+/ Vault and inventory panels (trader menu) now updates everytime it's updated.
+/ Infection gain mult. now gradually decreases after reaching 100%.
+/ Changed how task completion works
 
+; Reworked inventory, you no longer need to have space in your inventory to pick up items!
+; Added speed penalty for reaching past the inventory weight limit, and even can be left unable to move if carrying too much! (just like in stalker)
+
+* Fixed visual bug with build tool
 
 -------- Ver. 0.11.1c of 25 February 2024 --------
 
