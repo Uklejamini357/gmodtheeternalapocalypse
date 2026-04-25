@@ -11,7 +11,7 @@ function PANEL:Init()
 	self:SetDrawOnTop( true )
 	self.DeleteContentsOnClose = false
 	self:SetText( "" )
-	self:SetFont( "TEA.HUDFontSmaller" )
+	self:SetFont( "TEA.HUDFontSmall" )
 	if IsValid(previoustooltip) then previoustooltip:Remove() end
 	previoustooltip = self
 

@@ -11,6 +11,10 @@ function GM:AddItemLootTable(tbl, rarity, class, qty)
 	return t
 end
 
+-- Prevents players at levels early progression stage be unable to find super high quality loot. (Prevents OP start)
+-- Players at prestige 0 cannot obtain Legendary loot. At level lower than 20 players cannot get Epic loot caches and at level <10 players cannot find Rare loot.
+-- Does not affect boss and faction loot caches.
+GM.PreventGoodLootRNGForNewPlayers = true
 
 GM.LootTable = {
 	[LOOTRARITY_COMMON] = {
@@ -18,19 +22,19 @@ GM.LootTable = {
 		Items = {}
 	},
 	[LOOTRARITY_UNCOMMON] = {
-		Rarity = 3,
+		Rarity = 3.5,
 		Items = {}
 	},
 	[LOOTRARITY_RARE] = {
-		Rarity = 10,
+		Rarity = 15,
 		Items = {}
 	},
 	[LOOTRARITY_EPIC] = {
-		Rarity = 40,
+		Rarity = 65,
 		Items = {}
 	},
 	[LOOTRARITY_LEGENDARY] = {
-		Rarity = 150,
+		Rarity = 300,
 		Items = {}
 	},
 }
@@ -52,21 +56,19 @@ GM:AddItemLootTable(GM.LootTable, LOOTRARITY_COMMON, "item_m9k_assaultammo", 1)
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_COMMON, "weapon_tea_pigsticker", 1)
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_COMMON, "item_scrap", 2)
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_COMMON, "item_chems", 1)
-GM:AddItemLootTable(GM.LootTable, LOOTRARITY_COMMON, "weapon_tea_grenade_pipe", 2)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_COMMON, "weapon_tea_grenade_pipe", 1)
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_COMMON, "weapon_tea_grenade_flare", 2)
-GM:AddItemLootTable(GM.LootTable, LOOTRARITY_COMMON, "weapon_tea_grenade_frag", 1)
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_COMMON, "item_craft_battery", 1)
 
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_UNCOMMON, "item_sleepingbag", 1)
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_UNCOMMON, "item_armorbattery", 1)
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_UNCOMMON, "weapon_tea_axe", 1)
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_UNCOMMON, "weapon_tea_falcon", 1)
-GM:AddItemLootTable(GM.LootTable, LOOTRARITY_UNCOMMON, "weapon_tea_dual", 1)
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_UNCOMMON, "item_sniperammo", 2)
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_UNCOMMON, "item_tv", 1)
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_UNCOMMON, "item_beer", 1)
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_UNCOMMON, "item_hamradio", 1)
-GM:AddItemLootTable(GM.LootTable, LOOTRARITY_UNCOMMON, "weapon_tea_grenade_frag", 3)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_UNCOMMON, "weapon_tea_grenade_frag", 2)
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_UNCOMMON, "weapon_tea_807", 1)
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_UNCOMMON, "m9k_model500", 1)
 
@@ -74,19 +76,22 @@ GM:AddItemLootTable(GM.LootTable, LOOTRARITY_RARE, "item_rocketammo", 2)
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_RARE, "item_armorkevlar", 1)
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_RARE, "item_computer", 1)
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_RARE, "weapon_tea_scrapsword", 1)
-GM:AddItemLootTable(GM.LootTable, LOOTRARITY_RARE, "weapon_tea_grenade_frag", 5)
-GM:AddItemLootTable(GM.LootTable, LOOTRARITY_RARE, "weapon_tea_shredder", 1)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_RARE, "weapon_tea_grenade_frag", 3)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_RARE, "weapon_tea_dual", 1)
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_RARE, "weapon_tea_satan", 1)
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_RARE, "weapon_tea_k8c", 1)
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_RARE, "weapon_tea_bosch", 1)
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_RARE, "item_armor_jacket_leather", 1)
-GM:AddItemLootTable(GM.LootTable, LOOTRARITY_RARE, "weapon_tea_l303", 1)
 
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_EPIC, "weapon_tea_shredder", 1)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_EPIC, "weapon_tea_l303", 1)
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_EPIC, "weapon_tea_blackhawk", 1)
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_EPIC, "weapon_tea_combinepistol", 1)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_LEGENDARY, "m9k_uzi", 1)
 
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_LEGENDARY, "weapon_tea_ar2", 1)
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_LEGENDARY, "m9k_mp7", 1)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_LEGENDARY, "m9k_tar21", 1)
 
 
 GM:AddItemLootTable(GM.LootTableBoss, nil, "weapon_tea_scar", 1)

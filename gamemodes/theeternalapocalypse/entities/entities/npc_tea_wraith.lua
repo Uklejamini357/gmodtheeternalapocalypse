@@ -38,7 +38,7 @@ function ENT:SetUpStats()
 
 	self.ZombieStats = {
 --refer to entites/entities/npc_tea_basic.lua
-		["Damage"] = 27,
+		["Damage"] = 19,
 		["PropDamage"] = 28,
 		["Force"] = 180,
 		["Infection"] = 12,
@@ -114,9 +114,11 @@ function ENT:AttackPlayer(ply)
 		if (IsValid(ply) and self:GetRangeTo(ply) <= self.ZombieStats["Reach"] * 1.2) then
 			self:ApplyPlayerDamage(ply, self.ZombieStats["Damage"], -self.ZombieStats["Force"], self.ZombieStats["Infection"])
 
-			net.Start("WraithBlind")
-			net.WriteInt(255, 10)
-			net.Send(ply)
+			if ply:IsPlayer() then
+				net.Start("WraithBlind")
+				net.WriteInt(240, 10)
+				net.Send(ply)
+			end
 		end
 	end)
 

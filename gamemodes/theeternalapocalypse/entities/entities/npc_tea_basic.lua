@@ -10,6 +10,9 @@ ENT.AdminOnly = false
 
 ENT.Model = "models/zombie/classic.mdl"
 
+-- VJ Base compatibility
+ENT.VJ_NPC_Class = {"CLASS_ZOMBIE"}
+
 list.Set("NPC", "npc_tea_basic", {
 	Name = ENT.PrintName,
 	Class = "npc_tea_basic",
@@ -219,6 +222,32 @@ function ENT:SpecialSkill1()
 end
 
 
+-- todo: make hl2 npc's target these zombies (or move it to a new nextbot base lol)
+local function cantarget(self, ent)
+	if self == ent then return false end
+	if !IsValid(ent) then return false end
+	if GAMEMODE.Config["ZombieClasses"][ent:GetClass()] then return false end
+	if GAMEMODE.Config["BossClasses"][ent:GetClass()] then return false end
+
+	if (ent:IsNPC() or ent:IsNextBot()) and !ent.IsZombie and ent:Health() > 0 then
+		if ent.VJ_NPC_Class then
+			for _,class in pairs(ent.VJ_NPC_Class) do
+				if table.HasValue(self.VJ_NPC_Class, class) then
+					return false
+				end
+			end
+		end
+
+		return true
+	end
+
+	if ent:IsPlayer() and ent:Alive() and not (ent:IsFlagSet(FL_NOTARGET) or ent.AdminMode) then
+		return true
+	end
+
+	return false
+end
+
 function ENT:RunBehaviour()
 	while (true) do
 		if CLIENT then return end
@@ -230,9 +259,9 @@ function ENT:RunBehaviour()
 
 		local target = self.target
 		local selfpos = self:GetPos()
-		local cantarget = IsValid(target) and (target:IsPlayer() and target:Alive() or target:IsNPC() and target:Health() > 0) and not (target:IsFlagSet(FL_NOTARGET) or target.AdminMode)
+		local targettable = cantarget(self, target)
 
-		if cantarget and (self:GetRangeTo(target) <= (1500 * self.RageLevel) or GAMEMODE.ZombieApocalypse) then
+		if targettable and (self:GetRangeTo(target) <= (1500 * self.RageLevel) or GAMEMODE.ZombieApocalypse) then
 			self.loco:FaceTowards(target:GetPos())
 
 -- check if we are obstructed by props and smash them if we are
@@ -352,13 +381,13 @@ end
 function ENT:FindTarget()
 	local targets = {}
 	for _, ent in pairs(ents.FindInSphere(self:GetPos(), 1200 * self.RageLevel)) do
-		if ent:IsNPC() and ent:Health() > 0 or ent:IsPlayer() and ent:Alive() and not (ent:IsFlagSet(FL_NOTARGET) or ent.AdminMode) then
+		if cantarget(self, ent) then
 			targets[ent] = self:GetRangeTo(ent)
 		end
 	end
 	if GAMEMODE.ZombieApocalypse then
-		for _, ent in pairs(player.GetAll()) do
-			if ent:Alive() and not (ent:IsFlagSet(FL_NOTARGET) or ent.AdminMode) and not targets[ent] then
+		for _, ent in player.Iterator() do
+			if not targets[ent] and cantarget(self, ent) then
 				targets[ent] = self:GetRangeTo(ent)
 			end
 		end
@@ -462,7 +491,7 @@ function ENT:AttackPlayer(target)
 
 	-- check if we killed the guy and find a new target if we did
 	self:DelayedCallback(self.ZombieStats["StrikeDelay"] * 1.2, function()
-		if target:IsValid() and (target:IsPlayer() and !target:Alive() or target:IsNPC() and target:Health() <= 0) then
+		if target:IsValid() and (target:IsPlayer() and !target:Alive() or (target:IsNPC() or target:IsNextBot()) and !target.IsZombie and target:Health() <= 0) then
 			self.target = nil
 		end
 	end)
@@ -579,8 +608,8 @@ function ENT:ApplyPlayerDamage(ply, damage, hitforce, infection)
 	local dmginfo = DamageInfo()
 	dmginfo:SetAttacker(self)
 	dmginfo:SetInflictor(self)
-	dmginfo:SetDamage(ply:IsPlayer() and dmg1 * ply:GetArmorDamageMultiplier() or dmg1)
-	dmginfo:SetDamageType(DMG_CLUB)
+	dmginfo:SetDamage(dmg1)
+	dmginfo:SetDamageType(DMG_SLASH)
 
 	local distancevector = self:GetPos() - ply:GetPos()
 	local force = (distancevector / distancevector:Length()) * hitforce

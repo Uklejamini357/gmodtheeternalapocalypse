@@ -98,6 +98,7 @@ function GM:SaveSafezonesData()
 end
 
 function GM:LoadSafezonesData()
+    if !file.Exists(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/safezones.txt", "DATA") then return end
     local method = self.Config.SFS and sfs.decode or util.JSONToTable
     local tbl = method(file.Read(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/safezones.txt", "DATA"))
 

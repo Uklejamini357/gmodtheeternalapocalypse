@@ -82,6 +82,7 @@ GM.EnableSpecialEventsSystem = true
 GM.WeaponDamageVsZombiesMul = {
 	["weapon_tea_punisher"] = 1.55,
 	["m9k_intervention"] = 1.3,
+	["m9k_m98b"] = 2.5,
 }
 
 -- Zombies don't target players if they're in trader area. This also means that they can't damage zombies to prevent farming! Default: false (not working)
@@ -178,7 +179,7 @@ GM.SafezonePauseStats = true
 -- Set to 1 to make zombies outside the safezone unkillable in any way while inside the safezone.
 -- Set to 2 to make zombies killable while inside the safezone, but killing them does not gain you anything.
 -- Otherwise, setting this variable to 0 will not affect zombies vs player inside safezones.
-GM.SafezoneGrindingPrevention = 1
+GM.SafezoneGrindingPrevention = 2
 
 -- Obviously, zombies shouldn't be inside the safezone. The option below will determine how to handle the zombies entering the door.
 -- Set to 1 to make zombies entering the safezone be teleported to the nearest available zombie spawnpoint.
@@ -187,9 +188,9 @@ GM.SafezoneGrindingPrevention = 1
 -- Or just set to 0 to not do anything to the zombies.
 GM.SafezoneZombiesAction = 1
 
---[[
 -- For the both options above, you do NOT want to set these options to 1 and 0 respectively. Because that will make zombies inside safezone a PAIN to deal with.
 
+--[[
 -- Turn this on if you are making a server adapted to openworld. This option will adapt the gamemode to openworld experience by applying a few changes.
 -- Factions, props and structures saved through sessions.
 GM.OpenworldAdaption = false
@@ -276,7 +277,7 @@ if not sfs and GM.Config["SFS"] then
 end
 
 
------------------------------ZOMBIE CLASSES-----------------------------
+---- Zombie Classes ----
 
 local unknown_name = ""
 for i=1,10 do
@@ -438,7 +439,7 @@ GM.Config["ZombieClasses"] = {
 
 }
 
------------------------------BOSS CLASSES-----------------------------
+---- Boss Classes ----
 
 GM.Config["BossClasses"] = {
 	["npc_tea_boss_tyrant"] = {
@@ -477,6 +478,30 @@ GM.Config["BossClasses"] = {
 		AllowEliteVariants = true,
 	},
 }
+
+
+---- Human spawns ----
+-- Optionally, you can include human spawns into the map(s).
+-- How this works:
+-- You include a NPC table into the GM.HumanSpawnClasses table then configure the human spawnpoint.
+-- WIP
+/*
+GM.HumanSpawnClasses = {
+	--[[ -- EXAMPLE
+	["NPC_CLASS"] = {
+		XPReward = number,				-- Amount of XP to give when you kill Human NPC of that type
+		MoneyReward = number,			-- Amount of bounty to give after killing human NPC of that type
+		Weapon = string or table,		-- Give them a weapon to use! Most preferrably a weapon intended to use for NPC's. For VJ SNPC's, use VJ weapons. If it's a table value, select one of them for the spawned human NPC randomly.
+		DropLoot = table or function,	-- What loot to give? for function, return a table with contents.
+		RepGain = number,				-- Reputation points to give after killing the NPC.
+		Friendly = boolean,				-- Determines if the specified human NPC is friendly.
+	}
+	]]
+}
+
+*/
+
+
 
 
 -----------------------------Newbie GEAR-----------------------------

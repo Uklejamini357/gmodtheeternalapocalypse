@@ -137,7 +137,7 @@ function GM:CheckIfDesertedArea(ent)
 end
 
 
-function GM:SpawnRandomZombie(pos, ang)
+function GM:SpawnRandomZombie(pos, ang, tier)
 	local maxchance = 0
 	for _,z in pairs(self.Config["ZombieClasses"]) do if !z.Disabled then maxchance = maxchance + z.SpawnChance end end
 
@@ -152,7 +152,7 @@ function GM:SpawnRandomZombie(pos, ang)
 
 			local elitechance = math.Rand(0, 100)
 			local elite = elitechance ~= 0 and elitechance <= self:GetEliteVariantSpawnChance(false)
-			local ent = self:CreateZombie(k, pos, ang, v.XPReward * self:GetDiffXPMul(), v.MoneyReward * self:GetDiffCashMul(), v.InfectionRate, nil, false)
+			local ent = self:CreateZombie(k, pos, ang, v.XPReward * self:GetDiffXPMul(), v.MoneyReward * self:GetDiffCashMul(), v.InfectionRate, math.random(self:GetZombieLvlMin(), self:GetZombieLvlMax()) + (tier and tier-1 or 0)*5, false)
 
 			if elite and v.AllowEliteVariants then
 				local elite_variant = math.random(8)
@@ -217,7 +217,7 @@ function GM:SpawnRandomBoss(pos, ang, plycountoverride, nonotify)
 
 				local elitechance = math.Rand(0, 100)
 				local elite = elitechance ~= 0 and elitechance <= self:GetEliteVariantSpawnChance(true)
-				local ent = self:CreateZombie(k, pos, ang, v.XPReward * self:GetDiffXPMul(), v.MoneyReward * self:GetDiffCashMul(), v.InfectionRate, nil, true)
+				local ent = self:CreateZombie(k, pos, ang, v.XPReward * self:GetDiffXPMul(), v.MoneyReward * self:GetDiffCashMul(), v.InfectionRate, math.random(self:GetZombieLvlMin(), self:GetZombieLvlMax()) + (tier and tier-1 or 0)*5, true)
 
 				if elite and v.AllowEliteVariants then
 					local elite_variant = 8--math.random(8)
@@ -311,7 +311,7 @@ function GM:SpawnZombies()
 				end
 			end
 
-			self:SpawnRandomZombie(spawnpos + Vector(0, 0, 10), Angle(0,math.random(-180,180),0))
+			self:SpawnRandomZombie(spawnpos + Vector(0, 0, 10), Angle(0,math.random(-180,180),0), 1)
 
 		end
 		return true
@@ -341,7 +341,7 @@ function GM:SpawnZombies()
 		if !inplyrange then continue end
 
 
-		self:SpawnRandomZombie(pos + Vector(0, 0, 10), ang)
+		self:SpawnRandomZombie(pos + Vector(0, 0, 10), ang, tier)
 	end
 end
 concommand.Add("tea_dev_spawnzombies", function(ply, cmd)

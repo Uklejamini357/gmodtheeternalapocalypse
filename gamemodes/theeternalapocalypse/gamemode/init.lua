@@ -1156,6 +1156,10 @@ function GM:PlayerSpawn(ply)
 		self:SystemGiveItem(ply, newgun)
 		self:SendInventory(ply)
 	end
+
+	if ply.AdminMode then
+		ply:SetNoTarget(true)
+	end
 end
 
 function GM:PlayerLoadout(ply)

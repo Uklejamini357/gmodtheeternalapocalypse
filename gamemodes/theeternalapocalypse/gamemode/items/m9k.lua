@@ -57,18 +57,18 @@ i = GM:CreateItem("item_m9k_sniperammo", {
 -- Pistols and Revolvers
 
 GM:CreateItem("m9k_coltpython", {
-    Cost = 2800,
+    Cost = 900,
     Model = "models/weapons/w_colt_python.mdl",
     Weight = 1.36,
     Supply = 0,
-    Rarity = RARITY_UNCOMMON,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "m9k_coltpython"
 })
 
 GM:CreateItem("m9k_glock", {
-    Cost = 5600,
+    Cost = 3000,
     Model = "models/weapons/w_dmg_glock.mdl",
     Weight = 1.56,
     Supply = 0,
@@ -79,7 +79,7 @@ GM:CreateItem("m9k_glock", {
 })
 
 GM:CreateItem("m9k_hk45", {
-    Cost = 2650,
+    Cost = 2400,
     Model = "models/weapons/w_hk45c.mdl",
     Weight = 0.96,
     Supply = 0,
@@ -90,7 +90,7 @@ GM:CreateItem("m9k_hk45", {
 })
 
 GM:CreateItem("m9k_m92beretta", {
-    Cost = 2700,
+    Cost = 700,
     Model = "models/weapons/w_beretta_m92.mdl",
     Weight = 1.16,
     Supply = 0,
@@ -101,7 +101,7 @@ GM:CreateItem("m9k_m92beretta", {
 })
 
 GM:CreateItem("m9k_luger", {
-    Cost = 2750,
+    Cost = 2500,
     Model = "models/weapons/w_luger_p08.mdl",
     Weight = 1.09,
     Supply = 0,
@@ -112,29 +112,29 @@ GM:CreateItem("m9k_luger", {
 })
 
 GM:CreateItem("m9k_ragingbull", {
-    Cost = 4225,
+    Cost = 1500,
     Model = "models/weapons/w_taurus_raging_bull.mdl",
     Weight = 2.16,
     Supply = 0,
-    Rarity = RARITY_RARE,
+    Rarity = RARITY_UNCOMMON,
     Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "m9k_ragingbull"
 })
 
 GM:CreateItem("m9k_scoped_taurus", {
-    Cost = 5500,
+    Cost = 2500,
     Model = "models/weapons/w_raging_bull_scoped.mdl",
     Weight = 2.56,
     Supply = 0,
-    Rarity = RARITY_RARE,
+    Rarity = RARITY_UNCOMMON,
     Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "m9k_scoped_taurus"
 })
 
 GM:CreateItem("m9k_remington1858", {
-    Cost = 3675,
+    Cost = 1680,
     Model = "models/weapons/w_remington_1858.mdl",
     Weight = 1.46,
     Supply = 0,
@@ -145,7 +145,7 @@ GM:CreateItem("m9k_remington1858", {
 })
 
 GM:CreateItem("m9k_model3russian", {
-    Cost = 3700,
+    Cost = 1120,
     Model = "models/weapons/w_model_3_rus.mdl",
     Weight = 1.38,
     Supply = 0,
@@ -156,29 +156,29 @@ GM:CreateItem("m9k_model3russian", {
 })
 
 GM:CreateItem("m9k_model500", {
-    Cost = 4550,
+    Cost = 2020,
     Model = "models/weapons/w_sw_model_500.mdl",
     Weight = 1.86,
     Supply = -1,
-    Rarity = RARITY_RARE,
+    Rarity = RARITY_UNCOMMON,
     Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "m9k_model500"
 })
 
 GM:CreateItem("m9k_model627", {
-    Cost = 4675,
+    Cost = 650,
     Model = "models/weapons/w_sw_model_627.mdl",
     Weight = 1.46,
     Supply = 1,
-    Rarity = RARITY_RARE,
+    Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "m9k_model627"
 })
 
 GM:CreateItem("m9k_sig_p229r", {
-    Cost = 3850,
+    Cost = 1330,
     Model = "models/weapons/w_sig_229r.mdl",
     Weight = 1.31,
     Supply = 0,
@@ -204,18 +204,18 @@ GM:CreateItem("m9k_acr", {
 })
 
 GM:CreateItem("m9k_ak47", {
-    Cost = 22250,
+    Cost = 17250,
     Model = "models/weapons/w_ak47_m9k.mdl",
     Weight = 3.8,
     Supply = -1,
-    Rarity = RARITY_EPIC,
+    Rarity = RARITY_SUPERRARE,
     Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "m9k_ak47"
 })
 
 GM:CreateItem("m9k_ak74", {
-    Cost = 22750,
+    Cost = 18450,
     Model = "models/weapons/w_tct_ak47.mdl",
     Weight = 3.66,
     Supply = 0,
@@ -237,7 +237,7 @@ GM:CreateItem("m9k_amd65", {
 })
 
 GM:CreateItem("m9k_an94", {
-    Cost = 31250,
+    Cost = 28250, -- burst fire makes this a powerful weapon
     Model = "models/weapons/w_rif_an_94.mdl",
     Weight = 4.4,
     Supply = -1,
@@ -248,7 +248,7 @@ GM:CreateItem("m9k_an94", {
 })
 
 GM:CreateItem("m9k_val", {
-    Cost = 39000,
+    Cost = 31000,
     Model = "models/weapons/w_dmg_vally.mdl",
     Weight = 3.3,
     Supply = 1,
@@ -259,7 +259,7 @@ GM:CreateItem("m9k_val", {
 })
 
 GM:CreateItem("m9k_f2000", {
-    Cost = 35750,
+    Cost = 22750,
     Model = "models/weapons/w_fn_f2000.mdl",
     Weight = 5.24,
     Supply = -1,
@@ -281,7 +281,7 @@ GM:CreateItem("m9k_fal", {
 })
 
 GM:CreateItem("m9k_g36", {
-    Cost = 33250,
+    Cost = 23250,
     Model = "models/weapons/w_hk_g36c.mdl",
     Weight = 3.6,
     Supply = -1,
@@ -303,7 +303,7 @@ GM:CreateItem("m9k_m416", {
 })
 
 GM:CreateItem("m9k_g3a3", {
-    Cost = 35250,
+    Cost = 22250,
     Model = "models/weapons/w_hk_g3.mdl",
     Weight = 5.8,
     Supply = -1,
@@ -314,7 +314,7 @@ GM:CreateItem("m9k_g3a3", {
 })
 
 GM:CreateItem("m9k_l85", {
-    Cost = 36500,
+    Cost = 26500,
     Model = "models/weapons/w_l85a2.mdl",
     Weight = 5,
     Supply = 1,
@@ -336,7 +336,7 @@ GM:CreateItem("m9k_m16a4_acog", {
 })
 
 GM:CreateItem("m9k_vikhr", {
-    Cost = 23500,
+    Cost = 33500,
     Model = "models/weapons/w_dmg_vikhr.mdl",
     Weight = 3.68,
     Supply = -1,
@@ -347,7 +347,7 @@ GM:CreateItem("m9k_vikhr", {
 })
 
 GM:CreateItem("m9k_auga3", {
-    Cost = 29500,
+    Cost = 15500,
     Model = "models/weapons/w_auga3.mdl",
     Weight = 4.18,
     Supply = 1,
@@ -358,7 +358,7 @@ GM:CreateItem("m9k_auga3", {
 })
 
 GM:CreateItem("m9k_tar21", {
-    Cost = 29500,
+    Cost = 39500,
     Model = "models/weapons/w_imi_tar21.mdl",
     Weight = 3.35,
     Supply = -1,
@@ -373,7 +373,7 @@ GM:CreateItem("m9k_tar21", {
 
 
 GM:CreateItem("m9k_ares_shrike", {
-    Cost = 80750,
+    Cost = 64750,
     Model = "models/weapons/w_ares_shrike.mdl",
     Weight = 9.85,
     Supply = -1,
@@ -384,20 +384,32 @@ GM:CreateItem("m9k_ares_shrike", {
 })
 
 GM:CreateItem("m9k_fg42", {
-    Cost = 49500,
+    Cost = 55000,
     Model = "models/weapons/w_fg42.mdl",
     Weight = 5.2,
     Supply = 0,
-    Rarity = RARITY_EPIC,
+    Rarity = RARITY_LEGENDARY,
     Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "m9k_fg42"
 })
 
+-- This one is incredibly powerful yet heavy. well! here goes nothing...
+GM:CreateItem("m9k_minigun", {
+    Cost = 325175,
+    Model = "models/weapons/w_m134_minigun.mdl",
+    Weight = 5.2,
+    Supply = 0,
+    Rarity = RARITY_MYTHIC,
+    Category = ITEMCATEGORY_WEAPONS,
+	ItemType = ITEMTYPE_WEAPON,
+    WeaponType = "m9k_minigun"
+})
+
 GM:CreateItem("m9k_m1918bar", {
-    Cost = 52500,
+    Cost = 35000,
     Model = "models/weapons/w_m1918_bar.mdl",
-    Weight = 5.6,
+    Weight = 5.16,
     Supply = 1,
     Rarity = RARITY_EPIC,
     Category = ITEMCATEGORY_WEAPONS,
@@ -406,18 +418,18 @@ GM:CreateItem("m9k_m1918bar", {
 })
 
 GM:CreateItem("m9k_m60", {
-    Cost = 93000,
+    Cost = 78590,
     Model = "models/weapons/w_m60_machine_gun.mdl",
     Weight = 9.8,
     Supply = 1,
-    Rarity = RARITY_MYTHIC,
+    Rarity = RARITY_EPIC,
     Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "m9k_m60"
 })
 
 GM:CreateItem("m9k_pkm", {
-    Cost = 81500,
+    Cost = 61220,
     Model = "models/weapons/w_mach_russ_pkm.mdl",
     Weight = 8.5,
     Supply = 1,
@@ -432,40 +444,40 @@ GM:CreateItem("m9k_pkm", {
 
 
 GM:CreateItem("m9k_m3", {
-    Cost = 31500,
+    Cost = 11500,
     Model = "models/weapons/w_benelli_m3.mdl",
     Weight = 3.62,
     Supply = -1,
-    Rarity = RARITY_SUPERRARE,
+    Rarity = RARITY_RARE,
     Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "m9k_m3"
 })
 
 GM:CreateItem("m9k_browningauto5", {
-    Cost = 37250,
+    Cost = 19250,
     Model = "models/weapons/w_browning_auto.mdl",
     Weight = 4.4,
     Supply = -1,
-    Rarity = RARITY_EPIC,
+    Rarity = RARITY_SUPERRARE,
     Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "m9k_browningauto5"
 })
 
 GM:CreateItem("m9k_ithacam37", {
-    Cost = 34250,
+    Cost = 14350,
     Model = "models/weapons/w_ithaca_m37.mdl",
     Weight = 3.45,
     Supply = 1,
-    Rarity = RARITY_EPIC,
+    Rarity = RARITY_RARE,
     Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "m9k_ithacam37"
 })
 
 GM:CreateItem("m9k_mossberg590", {
-    Cost = 34150,
+    Cost = 16150,
     Model = "models/weapons/w_mossberg_590.mdl",
     Weight = 3.69,
     Supply = -1,
@@ -476,7 +488,7 @@ GM:CreateItem("m9k_mossberg590", {
 })
 
 GM:CreateItem("m9k_jackhammer", {
-    Cost = 40000,
+    Cost = 18650,
     Model = "models/weapons/w_pancor_jackhammer.mdl",
     Weight = 4.6,
     Supply = 1,
@@ -487,7 +499,7 @@ GM:CreateItem("m9k_jackhammer", {
 })
 
 GM:CreateItem("m9k_spas12", {
-    Cost = 44500,
+    Cost = 64500,
     Model = "models/weapons/w_spas_12.mdl",
     Weight = 4.2,
     Supply = -1,
@@ -498,18 +510,18 @@ GM:CreateItem("m9k_spas12", {
 })
 
 GM:CreateItem("m9k_striker12", {
-    Cost = 42250,
+    Cost = 27250,
     Model = "models/weapons/w_striker_12g.mdl",
     Weight = 3.66,
     Supply = -1,
-    Rarity = RARITY_LEGENDARY,
+    Rarity = RARITY_EPIC,
     Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "m9k_striker12"
 })
 
 GM:CreateItem("m9k_1897winchester", {
-    Cost = 34500,
+    Cost = 14500,
     Model = "models/weapons/w_winchester_1897_trench.mdl",
     Weight = 3.2,
     Supply = -1,
@@ -520,7 +532,7 @@ GM:CreateItem("m9k_1897winchester", {
 })
 
 GM:CreateItem("m9k_1887winchester", {
-    Cost = 33750,
+    Cost = 13750,
     Model = "models/weapons/w_winchester_1887.mdl",
     Weight = 3.12,
     Supply = 1,
@@ -535,7 +547,7 @@ GM:CreateItem("m9k_1887winchester", {
 
 
 GM:CreateItem("m9k_barret_m82", {
-    Cost = 84000,
+    Cost = 64000,
     Model = "models/weapons/w_barret_m82.mdl",
     Weight = 11.85,
     Supply = -1,
@@ -546,11 +558,11 @@ GM:CreateItem("m9k_barret_m82", {
 })
 
 GM:CreateItem("m9k_m98b", {
-    Cost = 66000,
+    Cost = 46000,
     Model = "models/weapons/w_barrett_m98b.mdl",
     Weight = 10.95,
     Supply = -1,
-    Rarity = RARITY_EPIC,
+    Rarity = RARITY_LEGENDARY,
     Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "m9k_m98b"
@@ -561,14 +573,14 @@ GM:CreateItem("m9k_svu", {
     Model = "models/weapons/w_dragunov_svu.mdl",
     Weight = 5.44,
     Supply = -1,
-    Rarity = RARITY_EPIC,
+    Rarity = RARITY_LEGENDARY,
     Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "m9k_svu"
 })
 
 GM:CreateItem("m9k_sl8", {
-    Cost = 49500,
+    Cost = 36500,
     Model = "models/weapons/w_snip_int.mdl",
     Weight = 4.92,
     Supply = 1,
@@ -579,7 +591,7 @@ GM:CreateItem("m9k_sl8", {
 })
 
 GM:CreateItem("m9k_intervention", {
-    Cost = 47250,
+    Cost = 36550,
     Model = "models/weapons/w_snip_int.mdl",
     Weight = 8.46,
     Supply = 0,
@@ -590,7 +602,7 @@ GM:CreateItem("m9k_intervention", {
 })
 
 GM:CreateItem("m9k_m24", {
-    Cost = 58750,
+    Cost = 29900,
     Model = "models/weapons/w_snip_m24_6.mdl",
     Weight = 7.98,
     Supply = -1,
@@ -601,7 +613,7 @@ GM:CreateItem("m9k_m24", {
 })
 
 GM:CreateItem("m9k_psg1", {
-    Cost = 61250,
+    Cost = 66250,
     Model = "models/weapons/w_hk_psg1.mdl",
     Weight = 8.28,
     Supply = -1,
@@ -611,8 +623,9 @@ GM:CreateItem("m9k_psg1", {
     WeaponType = "m9k_psg1"
 })
 
+-- who tf made this weapon weak?!?!?
 GM:CreateItem("m9k_remington7615p", {
-    Cost = 11000,
+    Cost = 4000,
     Model = "models/weapons/w_remington_7615p.mdl",
     Weight = 5.65,
     Supply = -1,
@@ -623,20 +636,20 @@ GM:CreateItem("m9k_remington7615p", {
 })
 
 GM:CreateItem("m9k_svt40", {
-    Cost = 57500,
+    Cost = 43500,
     Model = "models/weapons/w_svt_40.mdl",
     Weight = 5.48,
     Supply = -1,
-    Rarity = RARITY_SUPERRARE,
+    Rarity = RARITY_EPIC,
     Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "m9k_svt40"
 })
 
 GM:CreateItem("m9k_contender", {
-    Cost = 41000,
+    Cost = 8000,
     Model = "models/weapons/w_g2_contender.mdl",
-    Weight = 4.18,
+    Weight = 3.65,
     Supply = -1,
     Rarity = RARITY_RARE,
     Category = ITEMCATEGORY_WEAPONS,
@@ -644,10 +657,15 @@ GM:CreateItem("m9k_contender", {
     WeaponType = "m9k_contender"
 })
 
+
+-- SMG guns
+
+
+
 GM:CreateItem("m9k_honeybadger", {
-    Cost = 46750,
+    Cost = 19640,
     Model = "models/weapons/w_aac_honeybadger.mdl",
-    Weight = 4.44,
+    Weight = 4.24,
     Supply = -1,
     Rarity = RARITY_EPIC,
     Category = ITEMCATEGORY_WEAPONS,
@@ -655,12 +673,8 @@ GM:CreateItem("m9k_honeybadger", {
     WeaponType = "m9k_honeybadger"
 })
 
-
--- SMG guns
-
-
 GM:CreateItem("m9k_mp5", {
-    Cost = 21500,
+    Cost = 18350,
     Model = "models/weapons/w_hk_mp5.mdl",
     Weight = 3.15,
     Supply = 1,
@@ -682,7 +696,7 @@ GM:CreateItem("m9k_mp7", {
 })
 
 GM:CreateItem("m9k_ump45", {
-    Cost = 19200,
+    Cost = 13200,
     Model = "models/weapons/w_hk_ump45.mdl",
     Weight = 2.95,
     Supply = 1,
@@ -693,18 +707,18 @@ GM:CreateItem("m9k_ump45", {
 })
 
 GM:CreateItem("m9k_kac_pdw", {
-    Cost = 21350,
+    Cost = 2650,
     Model = "models/weapons/w_kac_pdw.mdl",
     Weight = 3.12,
-    Supply = -1,
-    Rarity = RARITY_EPIC,
+    Supply = 1,
+    Rarity = RARITY_UNCOMMON,
     Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "m9k_kac_pdw"
 })
 
 GM:CreateItem("m9k_vector", {
-    Cost = 27150,
+    Cost = 16150,
     Model = "models/weapons/w_kriss_vector.mdl",
     Weight = 3.1,
     Supply = -1,
@@ -715,7 +729,7 @@ GM:CreateItem("m9k_vector", {
 })
 
 GM:CreateItem("m9k_magpulpdr", {
-    Cost = 24150,
+    Cost = 22150,
     Model = "models/weapons/w_magpul_pdr.mdl",
     Weight = 3.16,
     Supply = -1,
@@ -737,7 +751,7 @@ GM:CreateItem("m9k_mp5sd", {
 })
 
 GM:CreateItem("m9k_mp9", {
-    Cost = 24600,
+    Cost = 16680,
     Model = "models/weapons/w_brugger_thomet_mp9.mdl",
     Weight = 2.68,
     Supply = 1,
@@ -748,7 +762,7 @@ GM:CreateItem("m9k_mp9", {
 })
 
 GM:CreateItem("m9k_tec9", {
-    Cost = 16800,
+    Cost = 6800,
     Model = "models/weapons/w_intratec_tec9.mdl",
     Weight = 2.38,
     Supply = -1,
@@ -759,7 +773,7 @@ GM:CreateItem("m9k_tec9", {
 })
 
 GM:CreateItem("m9k_thompson", {
-    Cost = 24250,
+    Cost = 9850,
     Model = "models/weapons/w_tommy_gun.mdl",
     Weight = 3.84,
     Supply = 1,
@@ -770,7 +784,7 @@ GM:CreateItem("m9k_thompson", {
 })
 
 GM:CreateItem("m9k_uzi", {
-    Cost = 19000,
+    Cost = 11250,
     Model = "models/weapons/w_uzi_imi.mdl",
     Weight = 2.95,
     Supply = -1,

@@ -43,6 +43,20 @@ function ENT:Use(activator, caller)
 
 	local loottype = self:GetNWInt("loottype", 1)
 	local lootrarity = math.Clamp(self:GetNWFloat("lootrarity", 1) + caller.StatScavenging*0.01, 1, #GAMEMODE.LootTable)
+
+	-- Prevent OP loot at start for new players
+	if GAMEMODE.PreventGoodLootRNGForNewPlayers then
+		if caller:GetTEAPrestige() == 0 then
+			if caller:GetTEALevel() < 10 then
+				lootrarity = math.min(lootrarity, LOOTRARITY_UNCOMMON)
+			elseif caller:GetTEALevel() < 20 then
+				lootrarity = math.min(lootrarity, LOOTRARITY_RARE)
+			else
+				lootrarity = math.min(lootrarity, LOOTRARITY_EPIC)
+			end
+		end
+	end
+
 	self:SetNWInt("lootrarity", lootrarity)
 
 	GAMEMODE:RandomizeEntityLoot(self)
@@ -77,7 +91,7 @@ function ENT:Use(activator, caller)
 	end
 	-- caller:SendChat("You picked up a faction loot cache containing [ "..qty.."x "..GAMEMODE:GetItemName(name, caller).." ]")
 	-- caller:SendChat(translate.ClientFormat(caller, "you_picked_up_a_lootcache_faction", qty, GAMEMODE:GetItemName(name, caller)))
-	-- for _,ply in pairs(player.GetAll()) do
+	-- for _,ply in player.Iterator() do
 		-- ply:SystemMessage(caller:Nick().." has found a faction loot cache containing "..qty.."x "..GAMEMODE:GetItemName(name, ply).."!", Color(255,255,255,255), true)
 		-- ply:SystemMessage(translate.ClientFormat(ply, "player_found_lootcache_faction", caller:Nick(), qty, GAMEMODE:GetItemName(name, caller)), Color(255,255,255), true)
 	-- end
