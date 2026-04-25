@@ -336,6 +336,7 @@ end
 local randomtips = {
 	"Getting to prestige 1 shouldn't take a long time... And it took me 14 days to do that.",
 	"This remort requirememnt to skills encourages players to remort. - Zombie Survival gmod servers with skill requiring certain amount of remorts",
+	"Wonder what happens when you reach very high infection level?"
 }
 
 local randomtips2 = {
@@ -345,12 +346,17 @@ local randomtips2 = {
 local randomtip = table.Random(randomtips)
 local randomtip2 = table.Random(randomtips2)
 
+local can = false
 hook.Add("DrawOverlay", "TEA_DrawOverlay", function()
 	if GAMEMODE.HasInitialized then return end
 
 	-- just in case.
 	if LocalPlayer and LocalPlayer() and IsValid(LocalPlayer()) and !GAMEMODE.HasInitialized then
-		GAMEMODE:InitPostEntity()
+		if can then
+			GAMEMODE:InitPostEntity()
+		else
+			can = true
+		end
 		return
 	end
 

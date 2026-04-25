@@ -91,7 +91,7 @@ function ENT:Use(activator, caller)
 	end
 	-- caller:SendChat("You picked up a faction loot cache containing [ "..qty.."x "..GAMEMODE:GetItemName(name, caller).." ]")
 	-- caller:SendChat(translate.ClientFormat(caller, "you_picked_up_a_lootcache_faction", qty, GAMEMODE:GetItemName(name, caller)))
-	-- for _,ply in pairs(player.GetAll()) do
+	-- for _,ply in player.Iterator() do
 		-- ply:SystemMessage(caller:Nick().." has found a faction loot cache containing "..qty.."x "..GAMEMODE:GetItemName(name, ply).."!", Color(255,255,255,255), true)
 		-- ply:SystemMessage(translate.ClientFormat(ply, "player_found_lootcache_faction", caller:Nick(), qty, GAMEMODE:GetItemName(name, caller)), Color(255,255,255), true)
 	-- end

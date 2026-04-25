@@ -6,6 +6,9 @@ ENT.Category = "T.E.A. Bosses"
 ENT.Purpose = "Can teleport nearby zombies"
 ENT.Author = "Uklejamini"
 
+-- VJ Base compatibility
+ENT.VJ_NPC_Class = {"CLASS_ZOMBIE"}
+
 list.Set("NPC", "npc_tea_boss_lordking", {
 	Name = ENT.PrintName,
 	Class = "npc_tea_boss_lordking",
@@ -157,16 +160,41 @@ function ENT:TimedEvent(time, callback)
 	end)
 end
 
+local function cantarget(self, ent)
+	if self == ent then return false end
+	if !IsValid(ent) then return false end
+	if GAMEMODE.Config["ZombieClasses"][ent:GetClass()] then return false end
+	if GAMEMODE.Config["BossClasses"][ent:GetClass()] then return false end
+
+	if (ent:IsNPC() or ent:IsNextBot()) and !ent.IsZombie and ent:Health() > 0 then
+		if ent.VJ_NPC_Class then
+			for _,class in pairs(ent.VJ_NPC_Class) do
+				if table.HasValue(self.VJ_NPC_Class, class) then
+					return false
+				end
+			end
+		end
+
+		return true
+	end
+
+	if ent:IsPlayer() and ent:Alive() and not (ent:IsFlagSet(FL_NOTARGET) or ent.AdminMode) then
+		return true
+	end
+
+	return false
+end
+
 function ENT:Think()
 	if !IsValid(self) then return end
 	local target = self.target
-	local cantarget = IsValid(target) and target:Alive() and not (target:IsFlagSet(FL_NOTARGET) or target.AdminMode)
+	local targettable = IsValid(target) and target:Alive() and not (target:IsFlagSet(FL_NOTARGET) or target.AdminMode)
 
 	if ai_disabled:GetBool() then
 		return
 	end
 
-	if cantarget and (self:GetRangeTo(target) <= 1750 && self.AbilityCD < CurTime() && self:HasLOS()) then
+	if targettable and (self:GetRangeTo(target) <= 1750 && self.AbilityCD < CurTime() && self:HasLOS()) then
 		local effectdata = EffectData()
 		effectdata:SetOrigin(self:GetPos() + Vector(0, 0, 60))
 		util.Effect("zw_master_pulse", effectdata)
@@ -191,7 +219,7 @@ function ENT:Think()
 		self.AbilityCD = CurTime() + math.Rand(20,25) -- i would enjoy the chaos if you set this to 0 (HIGHLY UNRECOMMENDED)
 	end
 
-	if cantarget and (self:GetRangeTo(target) <= 1000 && self.Ability2CD < CurTime() && self:HasLOS()) and self.IsEnraged then
+	if targettable and (self:GetRangeTo(target) <= 1000 && self.Ability2CD < CurTime() && self:HasLOS()) and self.IsEnraged then
 		self:TimedEvent(0.4, function()
 			local jtr = util.TraceLine( {
 				start = self:GetPos() + Vector(0, 0, 40), 
@@ -223,9 +251,9 @@ function ENT:RunBehaviour()
 
 		local target = self.target
 		local selfpos = self:GetPos()
-		local cantarget = IsValid(target) and target:Alive() and not (target:IsFlagSet(FL_NOTARGET) or target.AdminMode)
+		local targettable = IsValid(target) and target:Alive() and not (target:IsFlagSet(FL_NOTARGET) or target.AdminMode)
 		
-		if cantarget then
+		if targettable then
 			local data = {}
 			data.start = self:GetPos()
 			data.endpos = self:GetPos() + self:GetForward()*128
@@ -240,7 +268,7 @@ function ENT:RunBehaviour()
 			end
 		end
 
-		if cantarget and (self:GetRangeTo(target) <= (2500 * self.RageLevel) or GAMEMODE.ZombieApocalypse) then
+		if targettable and (self:GetRangeTo(target) <= (2500 * self.RageLevel) or GAMEMODE.ZombieApocalypse) then
 			self.loco:FaceTowards(target:GetPos())
 
 			if self.NxtTick < 1 then
@@ -275,8 +303,8 @@ function ENT:RunBehaviour()
 						local dmginfo = DamageInfo()
 						dmginfo:SetAttacker(self)
 						dmginfo:SetInflictor(self)
-						dmginfo:SetDamage((self.IsEnraged and math.random(65, 75) or math.random(50, 55)) * target:GetArmorDamageMultiplier())
-						dmginfo:SetDamageType(DMG_CLUB)
+						dmginfo:SetDamage((self.IsEnraged and math.random(65, 75) or math.random(50, 55)))
+						dmginfo:SetDamageType(DMG_SLASH)
 
 						local distancevector = target:GetPos() - self:GetPos()
 						local force = (distancevector / distancevector:Length()) * 800
@@ -284,7 +312,7 @@ function ENT:RunBehaviour()
 
 
 						local function DOIT()
-							self:EmitSound("ambient/energy/zap9.wav", 120, 80)
+							self:EmitSound("ambient/energy/zap9.wav", 80, 80)
 							local effectdata = EffectData()
 							effectdata:SetOrigin(self:GetPos() + Vector(0, 0, 60))
 							util.Effect("zw_master_strike", effectdata)
@@ -295,18 +323,20 @@ function ENT:RunBehaviour()
 						dmginfo:SetDamageForce(force)
 						target:TakeDamageInfo(dmginfo)
 						target:EmitSound(self.Hit, 100, math.random(60, 80))
-						target:ViewPunch(VectorRand():Angle() * 0.05)
 						target:SetVelocity(force)
-						local rng = math.random(0, 100)
-						if self.IsEnraged and rng > 50 then
-							target:AddInfection(math.Rand(200,750))
-						elseif rng > 70 then
-							target:AddInfection(math.Rand(120,500))
+						if target:IsPlayer() then
+							target:ViewPunch(VectorRand():Angle() * 0.05)
+							local rng = math.random(0, 100)
+							if self.IsEnraged and rng > 50 then
+								target:AddInfection(math.Rand(200,750))
+							elseif rng > 70 then
+								target:AddInfection(math.Rand(120,500))
+							end
+							target:SlowPlayerDown(self.IsEnraged and 0.25 or 0.2, self.IsEnraged and 6 or 4)
+							net.Start("WraithBlind")
+							net.WriteInt(self.IsEnraged and 223 or 207, 10)
+							net.Send(target)
 						end
-						target:SlowPlayerDown(self.IsEnraged and 0.25 or 0.2, self.IsEnraged and 6 or 4)
-						net.Start("WraithBlind")
-						net.WriteInt(self.IsEnraged and 223 or 207, 10)
-						net.Send(target)
 
 					end
 				end)
@@ -378,13 +408,13 @@ end
 function ENT:FindTarget()
 	local targets = {}
 	for _, ent in pairs(ents.FindInSphere(self:GetPos(), 1200 * self.RageLevel)) do
-		if ent:IsNPC() and ent:Health() > 0 or ent:IsPlayer() and ent:Alive() and not (ent:IsFlagSet(FL_NOTARGET) or ent.AdminMode) then
+		if cantarget(self, ent) then
 			targets[ent] = self:GetRangeTo(ent)
 		end
 	end
 	if GAMEMODE.ZombieApocalypse then
-		for _, ent in pairs(player.GetAll()) do
-			if ent:Alive() and not (ent:IsFlagSet(FL_NOTARGET) or ent.AdminMode) and not targets[ent] then
+		for _, ent in player.Iterator() do
+			if not targets[ent] and cantarget(self, ent) then
 				targets[ent] = self:GetRangeTo(ent)
 			end
 		end

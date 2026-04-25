@@ -8,6 +8,9 @@ ENT.Category = "T.E.A. Bosses"
 ENT.Purpose = "Very tough zombie, can throw rocks and cause shockwave"
 ENT.Author = "Uklejamini"
 
+-- VJ Base compatibility
+ENT.VJ_NPC_Class = {"CLASS_ZOMBIE"}
+
 list.Set("NPC", "npc_tea_boss_tyrant", {
 	Name = ENT.PrintName,
 	Class = "npc_tea_boss_tyrant",
@@ -156,6 +159,31 @@ function ENT:TimedEvent(time, callback)
 	end)
 end
 
+local function cantarget(self, ent)
+	if self == ent then return false end
+	if !IsValid(ent) then return false end
+	if GAMEMODE.Config["ZombieClasses"][ent:GetClass()] then return false end
+	if GAMEMODE.Config["BossClasses"][ent:GetClass()] then return false end
+
+	if (ent:IsNPC() or ent:IsNextBot()) and !ent.IsZombie and ent:Health() > 0 then
+		if ent.VJ_NPC_Class then
+			for _,class in pairs(ent.VJ_NPC_Class) do
+				if table.HasValue(self.VJ_NPC_Class, class) then
+					return false
+				end
+			end
+		end
+
+		return true
+	end
+
+	if ent:IsPlayer() and ent:Alive() and not (ent:IsFlagSet(FL_NOTARGET) or ent.AdminMode) then
+		return true
+	end
+
+	return false
+end
+
 function ENT:Think()
 	if !IsValid(self) then return end
 	if ai_disabled:GetBool() then return end
@@ -173,9 +201,9 @@ function ENT:RunBehaviour()
 
 		local target = self.target
 		local selfpos = self:GetPos()
-		local cantarget = IsValid(target) and target:Alive() and not (target:IsFlagSet(FL_NOTARGET) or target.AdminMode)
+		local targettable = IsValid(target) and target:Alive() and not (target:IsFlagSet(FL_NOTARGET) or target.AdminMode)
 
-		if cantarget then
+		if targettable then
 			local data = {}
 			data.start = self:GetPos()
 			data.endpos = self:GetPos() + self:GetForward()*128
@@ -194,7 +222,7 @@ function ENT:RunBehaviour()
 			end
 		end
 
-		if (cantarget and (self:GetRangeTo(target) <= (2500 * self.RageLevel) or GAMEMODE.ZombieApocalypse)) then
+		if (targettable and (self:GetRangeTo(target) <= (2500 * self.RageLevel) or GAMEMODE.ZombieApocalypse)) then
 			self.loco:FaceTowards(target:GetPos())
 
 			if self.NxtTick < 1 then
@@ -243,7 +271,7 @@ function ENT:RunBehaviour()
 							local dmginfo = DamageInfo()
 							dmginfo:SetAttacker(self)
 							dmginfo:SetInflictor(self)
-							dmginfo:SetDamage((self.IsEnraged and 65 or 50) * v:GetArmorDamageMultiplier())
+							dmginfo:SetDamage(self.IsEnraged and 65 or 50)
 							dmginfo:SetDamageType(DMG_CLUB)
 
 							v:TakeDamageInfo(dmginfo)
@@ -300,22 +328,25 @@ function ENT:RunBehaviour()
 						local dmginfo = DamageInfo()
 						dmginfo:SetAttacker(self)
 						dmginfo:SetInflictor(self)
-						dmginfo:SetDamage((self.IsEnraged and math.random(45, 70) or math.random(40, 55)) * target:GetArmorDamageMultiplier())
-						dmginfo:SetDamageType(DMG_CLUB)
+						dmginfo:SetDamage(self.IsEnraged and math.random(45, 70) or math.random(40, 55))
+						dmginfo:SetDamageType(DMG_SLASH)
 
-						local force = target:GetAimVector() * -600
+						local distancevector = target:GetPos() - self:GetPos()
+						local force = (distancevector / distancevector:Length()) * 600
 						force.z = 180
 
 						dmginfo:SetDamageForce(force)
 						target:TakeDamageInfo(dmginfo)
 						target:EmitSound("npc/zombie/zombie_hit.wav", 100, math.random(60, 80))
-						target:ViewPunch(VectorRand():Angle() * 0.05)
 						target:SetVelocity(force)
-						local rng = math.random(0, 100)
-						if self.IsEnraged and rng > 50 then
-							target:AddInfection(math.Rand(200,650))
-						elseif rng > 70 then
-							target:AddInfection(math.Rand(120,400))
+						if target:IsPlayer() then
+							target:ViewPunch(VectorRand():Angle() * 0.05)
+							local rng = math.random(0, 100)
+							if self.IsEnraged and rng > 50 then
+								target:AddInfection(math.Rand(200,650))
+							elseif rng > 70 then
+								target:AddInfection(math.Rand(120,400))
+							end
 						end
 					end
 				end)
@@ -363,7 +394,7 @@ function ENT:RunBehaviour()
 			})
 
 			if (!self.target) then
-				for k, v in pairs(player.GetAll()) do
+				for k, v in player.Iterator() do
 					if (v:Alive() and (self:GetRangeTo(v) <= (2500 * self.RageLevel) or GAMEMODE.ZombieApocalypse) and not (v:IsFlagSet(FL_NOTARGET) or v.AdminMode)) then
 --						self:AlertNearby(v)
 						self.target = v
@@ -398,13 +429,13 @@ end
 function ENT:FindTarget()
 	local targets = {}
 	for _, ent in pairs(ents.FindInSphere(self:GetPos(), 1200 * self.RageLevel)) do
-		if ent:IsNPC() and ent:Health() > 0 or ent:IsPlayer() and ent:Alive() and not (ent:IsFlagSet(FL_NOTARGET) or ent.AdminMode) then
+		if cantarget(self, ent) then
 			targets[ent] = self:GetRangeTo(ent)
 		end
 	end
 	if GAMEMODE.ZombieApocalypse then
-		for _, ent in pairs(player.GetAll()) do
-			if ent:Alive() and not (ent:IsFlagSet(FL_NOTARGET) or ent.AdminMode) and not targets[ent] then
+		for _, ent in player.Iterator() do
+			if not targets[ent] and cantarget(self, ent) then
 				targets[ent] = self:GetRangeTo(ent)
 			end
 		end

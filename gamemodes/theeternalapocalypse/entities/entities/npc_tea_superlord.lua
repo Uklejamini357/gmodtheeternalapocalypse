@@ -124,8 +124,8 @@ function ENT:ApplyPlayerDamage(ply, damage, hitforce, infection)
 	local dmginfo = DamageInfo()
 	dmginfo:SetAttacker(self)
 	dmginfo:SetInflictor(self)
-	dmginfo:SetDamage(dmg1 * ply:GetArmorDamageMultiplier())
-	dmginfo:SetDamageType(DMG_CLUB)
+	dmginfo:SetDamage(dmg1)
+	dmginfo:SetDamageType(DMG_SLASH)
 
 	local distancevector = self:GetPos() - ply:GetPos()
 	local force = (distancevector / distancevector:Length()) * hitforce

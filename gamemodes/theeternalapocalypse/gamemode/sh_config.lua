@@ -82,6 +82,7 @@ GM.EnableSpecialEventsSystem = true
 GM.WeaponDamageVsZombiesMul = {
 	["weapon_tea_punisher"] = 1.55,
 	["m9k_intervention"] = 1.3,
+	["m9k_m98b"] = 2.5,
 }
 
 -- Zombies don't target players if they're in trader area. This also means that they can't damage zombies to prevent farming! Default: false (not working)
@@ -276,7 +277,7 @@ if not sfs and GM.Config["SFS"] then
 end
 
 
------------------------------ZOMBIE CLASSES-----------------------------
+---- Zombie Classes ----
 
 local unknown_name = ""
 for i=1,10 do
@@ -438,7 +439,7 @@ GM.Config["ZombieClasses"] = {
 
 }
 
------------------------------BOSS CLASSES-----------------------------
+---- Boss Classes ----
 
 GM.Config["BossClasses"] = {
 	["npc_tea_boss_tyrant"] = {
@@ -477,6 +478,30 @@ GM.Config["BossClasses"] = {
 		AllowEliteVariants = true,
 	},
 }
+
+
+---- Human spawns ----
+-- Optionally, you can include human spawns into the map(s).
+-- How this works:
+-- You include a NPC table into the GM.HumanSpawnClasses table then configure the human spawnpoint.
+-- WIP
+/*
+GM.HumanSpawnClasses = {
+	--[[ -- EXAMPLE
+	["NPC_CLASS"] = {
+		XPReward = number,				-- Amount of XP to give when you kill Human NPC of that type
+		MoneyReward = number,			-- Amount of bounty to give after killing human NPC of that type
+		Weapon = string or table,		-- Give them a weapon to use! Most preferrably a weapon intended to use for NPC's. For VJ SNPC's, use VJ weapons. If it's a table value, select one of them for the spawned human NPC randomly.
+		DropLoot = table or function,	-- What loot to give? for function, return a table with contents.
+		RepGain = number,				-- Reputation points to give after killing the NPC.
+		Friendly = boolean,				-- Determines if the specified human NPC is friendly.
+	}
+	]]
+}
+
+*/
+
+
 
 
 -----------------------------Newbie GEAR-----------------------------

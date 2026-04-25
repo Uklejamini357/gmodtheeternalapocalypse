@@ -13,6 +13,7 @@ local diffdamage = {
 	[DIFFICULTY_GAMEPLAY_HELL] = 2.25,
 	[DIFFICULTY_GAMEPLAY_IMPOSSIBLE] = 3
 }
+local env_classes = {"trigger_hurt", "point_hurt", "entityflame", "env_fire"}
 
 function MT_PLAYER:ProcessPlayerDamage(dmginfo)
 	local attacker = dmginfo:GetAttacker()
@@ -35,13 +36,12 @@ function MT_PLAYER:ProcessPlayerDamage(dmginfo)
 	local attackerclass = attacker:GetClass()
 	local armorvalue = 0
 	local plyarmor = self:GetNWString("ArmorType")
-	local env_classes = {"trigger_hurt", "point_hurt", "entityflame", "env_fire"}
 	
 	if attacker:IsPlayer() then
 		dmginfo:SetDamage(dmginfo:GetDamage() * self:GetArmorDamageMultiplier())
 	elseif env_classes[dmginfo:GetAttacker():GetClass()] then
 		dmginfo:SetDamage(dmginfo:GetDamage() * self:GetArmorEnvDamageMultiplier())
-	elseif bit.band(dmginfo:GetDamageType(), DMG_BULLET) ~= 0 then
+	elseif bit.band(dmginfo:GetDamageType(), DMG_BULLET) ~= 0 or bit.band(dmginfo:GetDamageType(), DMG_SLASH) ~= 0 then
 		dmginfo:SetDamage(dmginfo:GetDamage() * self:GetArmorDamageMultiplier())
 	end
 
@@ -146,7 +146,7 @@ function MT_ENTITY:ProcessDamage(dmginfo)
 		dmginfo:ScaleDamage(1.2)
 	end
 
-	if attacker.IsZombie and self.IsPropBarricade then
+	if attacker.IsZombie and (self.IsPropBarricade or self:IsNPC() or self:IsNextBot()) and !self.IsZombie then
 		dmginfo:ScaleDamage((0.85 + attacker:GetZombieLevel()*0.015) * (diffdamage[GAMEMODE.GameplayDifficulty] or 1)) -- +0.5% damage to barricade per 1% infection
 	end
 

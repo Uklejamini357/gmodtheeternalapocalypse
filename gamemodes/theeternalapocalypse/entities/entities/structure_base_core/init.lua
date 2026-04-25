@@ -137,7 +137,7 @@ function ENT:OnTakeDamage( dmg )
 			timer.Destroy("basecoreattacked"..owner:Team()) 
 		end)
 	end
-	if GetConVar("tea_server_debugging"):GetInt() >= 1 then
+	if GAMEMODE:GetDebug() >= DEBUGGING_NORMAL then
 		if attacker:IsPlayer() then
 			print(attacker:Nick().." is attacking base core of faction "..team.GetName(owner:Team()).."! (Team: "..owner:Team()..", Damage: "..damage..")")
 		else

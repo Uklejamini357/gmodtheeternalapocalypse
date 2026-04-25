@@ -308,7 +308,7 @@ local ironsightoffset = Vector(0,0,0)
 
 function SWEP:GetViewModelPosition(pos, ang)
 
-	local bIron = self.Weapon:GetDTBool(1)	
+	local bIron = self.Weapon:GetDTBool(1)
 	
 	if self:GetOwner():IsSprinting() then
 		self.DashDelta = math.Clamp(self.DashDelta + (1 - self.DashDelta) * FrameTime() * 3.5,0,1)

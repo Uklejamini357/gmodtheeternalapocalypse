@@ -1,0 +1,2 @@
+--- Insert code for human spawns here.
+--- (stalker npc spawns, vj spawns, etc. as i managed to make zombies target other npc's)

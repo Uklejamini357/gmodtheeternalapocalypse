@@ -120,8 +120,8 @@ function ENT:ApplyPlayerDamage(ply, damage, hitforce, infection)
 	local dmginfo = DamageInfo()
 	dmginfo:SetAttacker(self)
 	dmginfo:SetInflictor(self)
-	dmginfo:SetDamage(dmg1 * ply:GetArmorDamageMultiplier())
-	dmginfo:SetDamageType(DMG_CLUB)
+	dmginfo:SetDamage(dmg1)
+	dmginfo:SetDamageType(DMG_SLASH)
 
 	local distancevector = self:GetPos() - ply:GetPos()
 	local force = (distancevector / distancevector:Length()) * hitforce
@@ -129,16 +129,18 @@ function ENT:ApplyPlayerDamage(ply, damage, hitforce, infection)
 	dmginfo:SetDamageForce(force)
 	ply:TakeDamageInfo(dmginfo)
 
-	self:EmitSound("ambient/energy/zap9.wav", 100, 80)
+	self:EmitSound("ambient/energy/zap9.wav", 70, 80)
 	local effectdata = EffectData()
 	effectdata:SetOrigin(self:GetPos() + Vector(0, 0, 60))
 	util.Effect("zw_master_strike", effectdata)
 
 --ply:EmitSound(self.Hit, 100, math.random(80, 110))
-	ply:ViewPunch(VectorRand():Angle() * 0.05)
 	ply:SetVelocity(force)
-	if math.random(0, 100) > (100 - infection) then
-		ply:AddInfection(100)
+	if ply:IsPlayer() then
+		ply:ViewPunch(VectorRand():Angle() * 0.05)
+		if math.random(0, 100) > (100 - infection) then
+			ply:AddInfection(100)
+		end
 	end
 end
 
