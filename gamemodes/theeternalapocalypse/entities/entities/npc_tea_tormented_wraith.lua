@@ -128,11 +128,13 @@ function ENT:AttackPlayer(ply)
 
 		if (IsValid(ply) and self:GetRangeTo(ply) <= self.ZombieStats["Reach"] * 1.3) then
 			self:ApplyPlayerDamage(ply, self.ZombieStats["Damage"], -self.ZombieStats["Force"], self.ZombieStats["Infection"])
-			ply:SlowPlayerDown(0.15, 5)
+			if ply:IsPlayer() then
+				ply:SlowPlayerDown(0.15, 5)
 
-			net.Start("WraithBlind")
-			net.WriteInt(251, 10)
-			net.Send(ply)
+				net.Start("WraithBlind")
+				net.WriteInt(251, 10)
+				net.Send(ply)
+			end
 		end
 	end)
 

@@ -137,6 +137,18 @@ function GM:UseItem(ply, item, use, targetply)
 						local wep = ply:GetWeapon(gun)
 						if not wep:IsValid() then
 							wep = ply:Give(gun, true)
+
+							-- ArcCW/ARC9 compatibility
+							if wep:IsValid() and ref.ArcCWCompatible then
+								wep.ForceDefaultAmmo = 0
+								wep.ForceDefaultClip = 0
+
+								timer.Simple(0.2, function()
+									if !wep:IsValid() then return end
+									wep:SetClip1(0)
+									wep:SetClip2(0)
+								end)
+							end
 						end
 						ply:GiveAmmo(1, wep:GetPrimaryAmmoType())
 
@@ -149,6 +161,18 @@ function GM:UseItem(ply, item, use, targetply)
 						local wep = ply:GetWeapon(gun)
 						if not wep:IsValid() then
 							wep = ply:Give(gun, true)
+
+							-- ArcCW/ARC9 compatibility
+							if wep:IsValid() and ref.ArcCWCompatible then
+								wep.ForceDefaultAmmo = 0
+								wep.ForceDefaultClip = 0
+
+								timer.Simple(0.2, function()
+									if !wep:IsValid() then return end
+									wep:SetClip1(0)
+									wep:SetClip2(0)
+								end)
+							end
 						end
 						ply:SelectWeapon(gun)
 					end

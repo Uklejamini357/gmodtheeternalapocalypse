@@ -3,8 +3,8 @@ GM.AltName	= "After The End Reborn"
 GM.Author	= "Uklejamini"
 GM.Email	= ""
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.12.3b" -- i love beta :)
-GM.DateVer	= "08.04.2026" -- Follows the DD.MM.YYYY format.
+GM.Version	= "0.12.4" -- i love beta :)
+GM.DateVer	= "26.04.2026" -- Follows the DD.MM.YYYY format.
 GM.Credits = {
 	-- Assets
 	{"GSC Game World",			"For all the S.T.A.L.K.E.R. content",										""},
@@ -459,11 +459,6 @@ end
 function GM:GetItemDescription(id, ply) -- ply is for the server
 	local item = self.ItemsList[id]
 	local desc = item.Description or ply and translate.ClientGet(ply, id.."_d") or translate.Get(id.."_d")
---[[
-	if item.Thirst then
-		desc = desc.."\n"..Format("Thirst: %s%%", tonumber(item.Thirst) > 0 and "+"..item.Thirst or item.Thirst)
-	end
-]]
 
 	desc = desc.."\n"
 	local itemtype = item.ItemType
@@ -473,12 +468,16 @@ function GM:GetItemDescription(id, ply) -- ply is for the server
 
 	local wep = item.WeaponType and weapons.Get(item.WeaponType)
 	if wep and wep.Primary then
-		local dmg = wep.Primary.Damage
-		local numshots = wep.Primary.NumberOfShots or wep.Primary.NumShots
-		local delay = (wep.Primary.Delay or wep.Primary.RPM) and math.Round(wep.Primary.Delay or 1 / ((wep.Primary.RPM or 1) / 60) or 1, 3)
+		local wep_prim = wep.Primary
+		local dmg, dmgmin = wep.DamageMax or wep_prim.Damage, wep.DamageMin
+		local numshots = wep.Num or wep_prim.NumberOfShots or wep_prim.NumShots
+		local delay = (wep_prim.Delay or wep.RPM or wep_prim.RPM) and math.Round(wep_prim.Delay or 1 / ((wep.RPM or wep_prim.RPM or 1) / 60) or 1, 3)
+		local clipsize = wep.ClipSize or wep_prim.ClipSize
+		local recoil = wep.Recoil or wep_prim.Recoil
+		local range,rangemin = wep.RangeMax or wep.HitDistance, wep.RangeMin
 
 		if dmg then
-			desc = desc.."\nDamage: "..dmg
+			desc = desc.."\nDamage: "..(dmgmin and math.Round(dmgmin, 2).."~"..math.Round(dmg, 2) or math.Round(dmg, 2))
 		end
 
 		if numshots then
@@ -493,19 +492,23 @@ function GM:GetItemDescription(id, ply) -- ply is for the server
 			desc = desc.."\nDPS: "..math.Round(dmg * numshots / delay, 2)
 		end
 
-		if wep.Primary.ClipSize and wep.Primary.ClipSize ~= -1 then
-			desc = desc.."\nClip Size: "..wep.Primary.ClipSize
+		if clipsize and clipsize ~= -1 then
+			desc = desc.."\nClip Size: "..clipsize
 		end
 
-		if wep.Primary.Recoil then
-			desc = desc.."\nRecoil: "..wep.Primary.Recoil
+		if recoil then
+			desc = desc.."\nRecoil: "..recoil
 		end
 
-		if wep.HitDistance then
-			desc = desc.."\nMelee Range: "..wep.HitDistance
+		if range then
+			desc = desc.."\nRange: "..(rangemin and rangemin.."~"..range or range)
 		end
 
-		desc = desc.."\nAutomatic: "..(wep.Primary.Automatic and "Yes" or "No")
+		if wep.Firemodes then
+			desc = desc.."\nFiremodes: "..#wep.Firemodes
+		else
+			desc = desc.."\nAutomatic: "..(wep_prim.Automatic and "Yes" or "No")
+		end
 
 		local dmgvszms = wep.DamageVsZombiesMul or self.WeaponDamageVsZombiesMul[item.WeaponType]
 		if dmgvszms then

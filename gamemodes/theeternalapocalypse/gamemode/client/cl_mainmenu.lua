@@ -352,9 +352,11 @@ hook.Add("DrawOverlay", "TEA_DrawOverlay", function()
 
 	-- just in case.
 	if LocalPlayer and LocalPlayer() and IsValid(LocalPlayer()) and !GAMEMODE.HasInitialized then
-		if can then
-			GAMEMODE:InitPostEntity()
-		else
+		if !can then
+			timer.Simple(1, function()
+				if GAMEMODE.HasInitialized then return end
+				GAMEMODE:InitPostEntity()
+			end)
 			can = true
 		end
 		return

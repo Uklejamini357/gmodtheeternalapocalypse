@@ -308,18 +308,24 @@ function GM:AdminMenu()
 				surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
 			end
 		
-			local ItemDisplay = vgui.Create("SpawnIcon", ItemBackground)
-			ItemDisplay:SetPos(10, 10)
-			ItemDisplay:SetModel(v.Model)
-			if v.ModelColor then
-				ItemDisplay:SetColor(v.ModelColor)
+			local itIcon
+			if v.Material then
+				itIcon = vgui.Create("DImageButton", ItemBackground)
+				itIcon:SetMaterial(v.Material)
+			else
+				itIcon = vgui.Create("SpawnIcon", ItemBackground)
+				itIcon:SetModel(v.Model)
 			end
-			ItemDisplay:SetToolTip(GAMEMODE:GetItemDescription(k))
-			ItemDisplay:SetSize(60,60)
-			ItemDisplay.PaintOver = function()
+			itIcon:SetPos(8, 8)
+			if v.ModelColor then
+				itIcon:SetColor(v.ModelColor)
+			end
+			itIcon:SetToolTip(GAMEMODE:GetItemDescription(k))
+			itIcon:SetSize(64,64)
+			itIcon.PaintOver = function()
 				return
 			end
-			ItemDisplay.OnMousePressed = function(self, mc)
+			itIcon.OnMousePressed = function(self, mc)
 				if mc == MOUSE_RIGHT then
 					local d = DermaMenu()
 					d:AddOption("Copy item ID", function() SetClipboardText(k) end)
@@ -923,9 +929,12 @@ function GM:OpenAdminToolMenu(wep)
 	end
 
 
-	atm.panel = vgui.Create("DIconLayout", atm.Categories)
+	atm.scrollpanel = vgui.Create("DScrollPanel", atm.Categories) -- Create the Scroll panel
+	atm.scrollpanel:Dock(FILL)
+
+	atm.panel = vgui.Create("DIconLayout", atm.scrollpanel)
 	atm.panel:Dock(FILL)
-	local shtbl = atm.Categories:AddSheet("Props & Structures", atm.panel)
+	local shtbl = atm.Categories:AddSheet("Props & Structures", atm.scrollpanel)
 	shtbl.Button.Paint = atm.Categories.Paint
 	shtbl.Button:SetTextColor(color_white)
 	shtbl.Button:SetTooltip(shtbl.Button:GetText())

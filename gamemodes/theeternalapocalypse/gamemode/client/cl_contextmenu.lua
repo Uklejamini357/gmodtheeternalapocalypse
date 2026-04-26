@@ -78,27 +78,33 @@ function GM:CMenu()
 			if wep.Primary then
 				local wep_prim = wep.Primary
 				local class = wep:GetClass()
-				local delay = math.Round(wep_prim.Delay or 1 / ((wep_prim.RPM or 1) / 60) or 1, 3)
+				local delay = math.Round(wep_prim.Delay or 1 / ((wep.RPM or wep_prim.RPM or 1) / 60) or 1, 3)
 
 				local usemulshots = wep_prim.NumShots and wep_prim.NumShots ~= 0 and wep_prim.NumShots ~= 1
+				local dmg,dmgmin = wep.DamageMax or wep_prim.Damage, wep.DamageMin
 				draw.DrawText(translate.Format("wep_damage",
-					usemulshots and wep_prim.Damage.." x ".. wep_prim.NumShots or wep_prim.Damage, math.Round((usemulshots and wep_prim.Damage * wep_prim.NumShots or wep_prim.Damage or 0) / (delay), 2)
+					usemulshots and (dmgmin and math.Round(dmgmin, 2).."~"..math.Round(dmg, 2) or math.Round(dmg, 2).." x ".. wep_prim.NumShots) or 
+					dmgmin and math.Round(dmgmin, 2).."~"..math.Round(dmg, 2) or math.Round(dmg, 2), math.Round((usemulshots and dmg * wep_prim.NumShots or dmg or 0) / (delay), 2)
 				), "TEA.HUDFontSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 				y = y - 15
 
 				draw.DrawText(translate.Format("wep_delay", delay), "TEA.HUDFontSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 				y = y - 15
 				if wep_prim.ClipSize ~= -1 then
-					draw.DrawText(translate.Format("wep_clipsize", wep_prim.ClipSize), "TEA.HUDFontSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+					draw.DrawText(translate.Format("wep_clipsize", wep.ClipSize or wep_prim.ClipSize), "TEA.HUDFontSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 					y = y - 15
 				end
-				draw.DrawText(translate.Format("wep_recoil", wep_prim.Recoil), "TEA.HUDFontSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+				draw.DrawText(translate.Format("wep_recoil", wep.Recoil or wep_prim.Recoil), "TEA.HUDFontSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 				y = y - 15
 				if wep.HitDistance then
-					draw.DrawText(translate.Format("wep_range", wep.HitDistance), "TEA.HUDFontSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-				y = y - 15
+					draw.DrawText(translate.Format("wep_range", wep.RangeMax or wep.HitDistance), "TEA.HUDFontSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+					y = y - 15
 				end
-				draw.DrawText(translate.Format("wep_automatic", wep_prim.Automatic and translate.Get("yes") or translate.Get("no")), "TEA.HUDFontSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+				if wep.Firemodes then
+					draw.DrawText("Fire modes: "..#wep.Firemodes, "TEA.HUDFontSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+				else
+					draw.DrawText(translate.Format("wep_automatic", wep_prim.Automatic and translate.Get("yes") or translate.Get("no")), "TEA.HUDFontSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+				end
 				y = y - 15
 
 				local dmgvszms = wep.DamageVsZombiesMul or self.WeaponDamageVsZombiesMul[class]
@@ -301,21 +307,23 @@ function GM:CMenu()
 		RunConsoleCommand("-menu_context")
 		RunConsoleCommand("refresh_inventory")
 	end
-/*
-	local ver = vgui.Create("DButton", ContextMenu)
-	ver:SetSize(buttonsize_x, buttonsize_y)
-	ver:Center()
-	x,y = ver:GetPos()
-	ver:SetPos(x, y - 180)
-	ver:SetText("Thirdperson")
-	ver:SetTextColor(Color(255, 255, 0, 255))
-	ver.Paint = function(panel)
+
+	local thirdperson = vgui.Create("DButton", ContextMenu)
+	thirdperson:SetSize(buttonsize_x, buttonsize_y)
+	thirdperson:Center()
+	x,y = thirdperson:GetPos()
+	thirdperson:SetPos(x, y - 180)
+	thirdperson:SetText("Thirdperson")
+	thirdperson:SetTextColor(color_white)
+	thirdperson.Paint = function(panel)
 		surface.SetDrawColor(150, 150, 0, 255)
 		surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
 		draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(0, 0, 0, 130))
 	end
-	ver.DoClick = function() end
-*/
+	thirdperson.DoClick = function()
+		self:ToggleThirdPerson()
+	end
+
 	local cash = vgui.Create("DButton", ContextMenu)
 	cash:SetSize(buttonsize_x, buttonsize_y)
 	cash:Center()
@@ -829,5 +837,28 @@ function GM:Emotes()
 		RunConsoleCommand("act", "salute")
 		EmoteFrame:Remove()
 	end
-
 end
+
+local thirdperson = false
+local lastcam
+function GM:ToggleThirdPerson()
+	local pl = LocalPlayer()
+	lastcam = gamemode.Call("CalcView", pl, pl:EyePos(), pl:EyeAngles(), pl:GetFOV()).origin
+
+	thirdperson = !thirdperson
+end
+
+hook.Add("CalcView", "TEA.ThirdPerson", function(pl, origin, angles, fov)
+	if !thirdperson then return end
+
+	local viewpos = origin + angles:Forward() * -50 + Vector(0, 0, 15)
+	lastcam = lastcam + (viewpos-lastcam)*math.min(1, FrameTime()*10)
+
+	return {
+		origin = lastcam
+	}
+end)
+
+hook.Add("ShouldDrawLocalPlayer", "TEA.ThirdPerson", function(pl)
+	if thirdperson then return true end
+end)

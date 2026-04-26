@@ -42,6 +42,18 @@ include("cl_killicons.lua")
 include("minigames/cl_init.lua")
 
 
+local mapdir = GM.FolderName.."/gamemode/maps/"..game.GetMap()
+if file.IsDir(mapdir, "LUA") then
+	if file.Exists(mapdir.."/client.lua", "LUA") then
+		include("maps/"..game.GetMap().."/client.lua")
+	end
+	if file.Exists(mapdir.."/shared.lua", "LUA") then
+		include("maps/"..game.GetMap().."/shared.lua")
+	end
+else
+	include("maps/"..game.GetMap()..".lua")
+end
+
 
 local death_sound_volume = 0
 local death_sound_volume_s = 0

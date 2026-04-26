@@ -3,45 +3,44 @@ AddCSLuaFile( "shared.lua" )
 
 include( 'shared.lua' )
 
-function ENT:SpawnFunction( userid, tr )
-	local trace = util.GetPlayerTrace( userid, userid:GetCursorAimVector() )
+function ENT:SpawnFunction( pl, tr )
+	local trace = util.GetPlayerTrace( pl, pl:GetAimVector() )
 	local tr = util.TraceLine( trace )
 	local thisent = ents.Create( "tea_taskdealer" )
-		thisent:SetPos( tr.HitPos + tr.HitNormal * 32 )
-		thisent:SetAngles( Angle( 0, 0, 0 ) )
-		thisend:SetNetworkedString( "Owner", "World" )
-		thisent:Spawn()
-		thisent:DropToFloor()
-		thisent:Activate()
+	thisent:SetPos( tr.HitPos + tr.HitNormal * 32 )
+	thisent:SetAngles(Angle(0, -(pl:EyeAngles().yaw), 0))
+	thisent:Spawn()
+	thisent:DropToFloor()
+	thisent:Activate()
+
+	return thisent
 end
 
 function ENT:Think() 
-
-
---shouldn't cause too many unsignificant problems (trader himself will not be targetted by anyone)
-local meta = self
-local tbNPCsNoTarget = {}
-local AddEntityRelationship = meta.AddEntityRelationship
-tbNPCsNoTarget[self] = {}
-for _,ent in ipairs(ents.GetAll()) do
-	if(ent:IsNPC() and ent ~= self) then
-		tbNPCsNoTarget[self][ent] = ent:Disposition(self)
-		AddEntityRelationship(ent,self,D_NU,100)
+	--shouldn't cause too many unsignificant problems (trader himself will not be targetted by anyone)
+	local meta = self
+	local tbNPCsNoTarget = {}
+	local AddEntityRelationship = meta.AddEntityRelationship
+	tbNPCsNoTarget[self] = {}
+	for _,ent in ipairs(ents.GetAll()) do
+		if(ent:IsNPC() and ent ~= self) then
+			tbNPCsNoTarget[self][ent] = ent:Disposition(self)
+			AddEntityRelationship(ent,self,D_NU,100)
+		end
 	end
 end
 
 
-end
-
-
 function ENT:Initialize( )
-	self:SetModel( "models/gman.mdl" )
- 	self:SetHullType( HULL_HUMAN )
-	self:SetUseType( SIMPLE_USE )
-	self:SetHullSizeNormal( )
-	self:SetSolid( SOLID_BBOX )
-	self:CapabilitiesAdd( CAP_ANIMATEDFACE || CAP_USE_SHOT_REGULATOR || CAP_TURN_HEAD || CAP_AIM_GUN )
-	self:SetMaxYawSpeed( 5000 )
+	self:SetModel("models/gman.mdl")
+ 	self:SetHullType(HULL_HUMAN)
+	self:SetUseType(SIMPLE_USE)
+	self:SetHullSizeNormal()
+	self:SetSolid(SOLID_BBOX)
+	self:CapabilitiesAdd(CAP_ANIMATEDFACE or CAP_USE_SHOT_REGULATOR or CAP_TURN_HEAD or CAP_AIM_GUN)
+	self:SetMaxYawSpeed(5000)
+
+	self:AddFlags(FL_NOTARGET)
 	self.LastTimeUsed = 0
 	local PhysAwake = self.Entity:GetPhysicsObject( )
 	if PhysAwake:IsValid( ) then

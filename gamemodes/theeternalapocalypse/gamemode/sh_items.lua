@@ -7,6 +7,7 @@ GM:CreateItem(itemid, { -- what the item will be called within the games code as
 		Description = desc,		-- Description for the item. Unused.
 		Cost = cost,            -- how much money will it cost if you buy it from the trader?
 		Model = model,          -- the items model
+		Material = material,	-- sets the image for material. Optional, but allows using icons from spawnmenu
 		Weight = weight,        -- weight in kilograms (if your american and want to use imperial then your shit out of luck m8)
 		Supply = supply,        -- how many of these items does each trader have in stock? stock refills every 24 hours.
 -- (Stock limits don't work, will try to fix/add one) Putting 0 means unlimited stock, Putting -1 as stock will make it so the item isn't sold by traders

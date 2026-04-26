@@ -10,9 +10,6 @@ GM:CreateItem(itemid, {
     Category = category,
     UseFunc = function(ply) return false end,
     DropFunc = function(ply, _, item) return true end
-
--- Additional variables if needed
-    IsSecret = false,
 })
 
 ]]

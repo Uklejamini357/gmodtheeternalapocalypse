@@ -281,6 +281,7 @@ LANG.player_spawnpoints = "Puntos de aparición de jugador"
 LANG.taskdealers = "Distribuidores de tareas"
 LANG.ow_transitions = "Transiciones"
 LANG.safezones = "Zonas seguras"
+LANG.safezones = "Zonas seguras"
 LANG.rename = "Renombrar"
 
 LANG.zombies_n = "Zombis Normales"
@@ -590,7 +591,7 @@ LANG.m9k_ak74_d = "AK-74 de M9k Assault Rifles. Usa munición de Rifle de Asalto
 LANG.m9k_amd65_n = "AMD 65"
 LANG.m9k_amd65_d = "AMD 65 de M9k Assault Rifles. Usa munición de Rifle de Asalto de M9k."
 LANG.m9k_an94_n = "AN-94"
-LANG.m9k_an94_d = "AN-94 de M9k Assault Rifles. Usa munición de Rifle de Asalto de M9k."
+LANG.m9k_an94_d = "AN-94 de M9k Assault Rifles. ¡Tiene fuego de ráfaga que se puede activar presionando E+R! Usa munición de Rifle de Asalto de M9k."
 LANG.m9k_val_n = "AS Val"
 LANG.m9k_val_d = "AS Val de M9k Assault Rifles. Usa munición de Rifle de Asalto de M9k."
 LANG.m9k_f2000_n = "F2000"
@@ -617,6 +618,8 @@ LANG.m9k_ares_shrike_n = "Ares Shrike"
 LANG.m9k_ares_shrike_d = "Ares Shrike de M9k Heavy Weapons. Usa munición de Rifle de Asalto de M9k."
 LANG.m9k_fg42_n = "FG 42"
 LANG.m9k_fg42_d = "FG 42 de M9k Heavy Weapons. Usa munición de Rifle de Asalto de M9k."
+LANG.m9k_minigun_n = "M134 Minigun"
+LANG.m9k_minigun_d = "Arma muy poderosa, pero también muy pesada. Usa munición de Rifle de Asalto de M9k."
 LANG.m9k_m1918bar_n = "M1918 BAR"
 LANG.m9k_m1918bar_d = "M1918 Bar de M9k Heavy Weapons. Usa munición de Rifle de Asalto de M9k."
 LANG.m9k_m60_n = "M60"
@@ -654,7 +657,7 @@ LANG.m9k_intervention_d = "Intervention de M9k Heavy Weapons. Usa munición de R
 LANG.m9k_m24_n = "M24"
 LANG.m9k_m24_d = "M24 de M9k Heavy Weapons. Usa munición de Rifle de Francotirador de M9k."
 LANG.m9k_psg1_n = "PSG-1"
-LANG.m9k_psg1_d = "PSG-1 de M9k Heavy Weapons. Usa munición de Rifle de Francotirador de M9k."
+LANG.m9k_psg1_d = "PSG-1 de M9k Heavy Weapons. ¡Muy buen DPS! Usa munición de Rifle de Francotirador de M9k."
 LANG.m9k_remington7615p_n = "Remington 7615P"
 LANG.m9k_remington7615p_d = "Remington 7615P de M9k Heavy Weapons, siendo conocido como un rifle de francotirador débil. Usa munición de Rifle de Francotirador de M9k."
 LANG.m9k_svt40_n = "SVT 40"
@@ -685,6 +688,39 @@ LANG.m9k_thompson_n = "Tommy Gun"
 LANG.m9k_thompson_d = "Tommy Gun de M9k Small Arms. Usa munición de SMG de M9k."
 LANG.m9k_uzi_n = "UZI"
 LANG.m9k_uzi_d = "UZI de M9k Small Arms. Usa munición de SMG de M9k."
+
+
+-- M9k Specials
+
+
+LANG.m9k_davy_crockett_n = "Davy Crockett"
+LANG.m9k_davy_crockett_d = "¿Quieres reventar el mundo? ¡Ahora puedes!\nEl absurdo valor de esta arma hace que los comerciantes quieran guardarse este arma para ellos mismos.\nUn solo uso."
+LANG.m9k_ex41_n = "EX40"
+LANG.m9k_ex41_d = "Un lanzagranadas que contiene hasta 3 granadas de 40mm. Los golpes directos pueden causar explosiones retardadas.\nEl radio de las explosiones es mortal."
+LANG.m9k_ied_detonator_n = "Detonador IED"
+LANG.m9k_ied_detonator_d = "El disparo primario coloca una bomba. El disparo secundario detona todas las bombas."
+LANG.m9k_m202_n = "M202"
+LANG.m9k_m202_d = "Un lanzacohetes cuádruple."
+LANG.m9k_m79gl_n = "Lanzagranadas M79"
+LANG.m9k_m79gl_d = "Los golpes directos pueden causar explosiones retardadas."
+LANG.m9k_matador_n = "Matador"
+LANG.m9k_matador_d = "Un lanzacohetes"
+LANG.m9k_milkormgl_n = "Milkor Mk1"
+LANG.m9k_milkormgl_d = "Un lanzagranadas de 40 mm de seis disparos portátil. Los golpes directos pueden causar explosiones retardadas."
+LANG.m9k_nerve_gas_n = "Gas Nervioso"
+LANG.m9k_nerve_gas_d = "Un arma química increíblemente mortal. ¡Ni siquiera el más fuerte puede sobrevivir a esto!"
+LANG.m9k_nitro_n = "Nitro Glicerina"
+LANG.m9k_nitro_d = "Una botella que contiene nitro glicerina. ¡Los contenidos dentro de la botella son muy volátiles y pueden causar una enorme explosión cuando se rompe!"
+LANG.m9k_orbital_strike_n = "Marcador de Golpe Orbital"
+LANG.m9k_orbital_strike_d = "Hace daño MASIVO en el area marcada y todo a su alrededor. Un solo uso."
+LANG.m9k_rpg7_n = "RPG-7"
+LANG.m9k_rpg7_d = "Un lanzador de granadas propulsadas por cohetes."
+LANG.m9k_sticky_grenade_n = "Grenada Pegajosa"
+LANG.m9k_sticky_grenade_d = "Se pega al objetivo al aterrizar. Podría ser difícil de lanzar."
+LANG.m9k_suicide_bomb_n = "C4 con Temporizador"
+LANG.m9k_suicide_bomb_d = "C4 usada para explotar cosas. Si alguien está cerca, grita siempre \"¡¡¡DISPARAD EN LA BRECHA!!!\" cuando inicies una explosión.\n\nEn la parte de atrás del explosivo, se puede leer una pequeña nota:\nPara quien esté usando esto, debo recordarte que el temporizador está puesto a 0 segundos.\n¡Lo que significa que detonará al instante de armarla!\nPara prevenir esto, presiona el fuego secundario para ajustar un temporizador.\nEl temporizador se puede ajustar a 0s, 5s, 10s, 15s y 20s, respectivamente."
+
+
 
 -- Extra weapons
 
@@ -903,6 +939,7 @@ LANG.Tip19 = "Ten un ojo puesto en el nivel de infección. Los zombis se vuelven
 -- New ?????
 
 LANG.the_eternal_apocalypse = "The Eternal Apocalypse"
+LANG.the_eternal_apocalypse_desc = "Un modo de juego basado en la supervivencia apocalíptica derivado de un viejo modo de juego.\nEn desarrollo desde principios de 2022.\nLos zombis esperan tu aparición."
 LANG.the_eternal_apocalypse_desc = "Un modo de juego basado en la supervivencia apocalíptica derivado de un viejo modo de juego.\nEn desarrollo desde principios de 2022.\nLos zombies esperan tu aparición."
 LANG.the_eternal_apocalypse_character = "Elige el personaje que vas a jugar."
 LANG.play = "Jugar"

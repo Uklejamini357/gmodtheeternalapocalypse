@@ -22,9 +22,6 @@ GM:CreateItem(itemid, {
 		carryweight = number,		-- additional max carryweight when the player is wearing the armor
 		allowmodels = table			-- force the player to be one of these models, nil to let them choose from the default models
 	}
-
--- Additional variables if needed
-    IsSecret = false,
 })
 
 ]]

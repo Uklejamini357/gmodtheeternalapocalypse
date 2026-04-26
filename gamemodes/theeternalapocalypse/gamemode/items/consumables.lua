@@ -11,8 +11,6 @@ GM:CreateItem(itemid, {
     UseFunc = function(ply, targetply) return UseFunc_Heal(ply, targetply, usetime, health, infection, playsound) end,
     DropFunc = function(ply, _, item) local drop = UseFunc_DropItem(ply, "item_bandage") return drop end,
 
--- Additional variables if needed
-    IsSecret = false,
     CanUseOnOthers = true   -- Highly recommended to use for certain medical items. UseFunc will need a 2nd argument to be providable!
 })
 

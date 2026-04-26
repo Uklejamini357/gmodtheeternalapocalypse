@@ -83,6 +83,25 @@ include("server_data/data_saving.lua")
 include("minigames/init.lua")
 include("minigames/shared.lua")
 
+local mapdir = GM.FolderName.."/gamemode/maps/"..game.GetMap()
+if file.IsDir(mapdir, "LUA") then
+	if file.Exists(mapdir.."/client.lua", "LUA") then
+		AddCSLuaFile("maps/"..game.GetMap().."/client.lua")
+	end
+	if file.Exists(mapdir.."/init.lua", "LUA") then
+		include("maps/"..game.GetMap().."/init.lua")
+	end
+	if file.Exists(mapdir.."/shared.lua", "LUA") then
+		include("maps/"..game.GetMap().."/shared.lua")
+		AddCSLuaFile("maps/"..game.GetMap().."/shared.lua")
+	end
+else
+	local addclientside = include("maps/"..game.GetMap()..".lua")
+	if addclientside then
+		AddCSLuaFile("maps/"..game.GetMap()..".lua")
+	end
+end
+
 
 Factions = Factions or {}
 
@@ -562,6 +581,12 @@ function GM:InitPostEntity()
 	RunConsoleCommand("M9KDisablePenetration", "1") --they are op with penetration, time to nerf them again (unless you want them to remain the same, remove or comment this line)
 	RunConsoleCommand("sv_defaultdeployspeed", "1") --so that users don't just switch weapons too quickly
 
+	if VJ then
+		RunConsoleCommand("vj_npc_wep_drop", "0")
+		RunConsoleCommand("vj_npc_wep_ply_pickup", "0")
+		hook.Remove("Think", "loyal") -- causes issues with player relationships with other VJ stalker npc's
+	end
+
 	self:SpawnTraders()
 	self:SpawnTaskDealers()
 	self:SpawnLevelTransitions()
@@ -612,7 +637,9 @@ function GM:ShutDown()
 	for _, ply in ipairs(player.GetAll()) do
 		gamemode.Call("SavePlayer", ply)
 	end
-	print("WARNING! WARNING!! THE OBJECT IS GONE!!")
+
+	print("WARNING! WARNING!! THE OBJECT IS GONE!!") -- reference to REBORN Istok (REBORN Source) message when the "Reality (...)" or idk I don't remember disappears after walking into its death zone
+
 	self:SaveServerData()
 	self:DebugLog("Server shutting down/changing map")
 	self:SaveLog()
@@ -1014,7 +1041,9 @@ function GM:PlayerInitialSpawn(ply, transition)
 		end)
 	end
 
-	print(Format("Loading datafiles for %s...\n", ply:Nick()))
+	if self:GetDebug() >= DEBUGGING_NORMAL then
+		print(Format("Loading datafiles for %s...\n", ply:Nick()))
+	end
 	gamemode.Call("LoadPlayer", ply)
 
 	ply:SetPvPGuarded(0)
@@ -1023,6 +1052,17 @@ function GM:PlayerInitialSpawn(ply, transition)
 	ply:SetTeam(TEAM_LONER)
 
 	ply:ArmorEquip(ply.EquippedArmor)
+
+	if VJ then
+		ply.StalkerFaction = "stalker"
+		ply.friclass = "CLASS_STALKER"
+		ply.SquadName = "vj_stalker"
+		ply.Class = "CLASS_STALKER"
+		ply.Classify = "CLASS_STALKER" 
+		ply.VJ_NPC_Class = {"CLASS_STALKER","CLASS_FREEDOM","CLASS_DOLG","CLASS_RENEGADE","CLASS_HUNTER","CLASS_UCHONIE","CLASS_CS","CLASS_RENEGADE","CLASS_SKIT","CLASS_HERO_NEUTRAL"}
+		ply.GetClass = "CLASS_STALKER"
+		ply.SetClass = "CLASS_STALKER"
+	end
 end
 
 function GM:PlayerPostThink(ply)
