@@ -307,21 +307,23 @@ function GM:CMenu()
 		RunConsoleCommand("-menu_context")
 		RunConsoleCommand("refresh_inventory")
 	end
-/*
-	local ver = vgui.Create("DButton", ContextMenu)
-	ver:SetSize(buttonsize_x, buttonsize_y)
-	ver:Center()
-	x,y = ver:GetPos()
-	ver:SetPos(x, y - 180)
-	ver:SetText("Thirdperson")
-	ver:SetTextColor(Color(255, 255, 0, 255))
-	ver.Paint = function(panel)
+
+	local thirdperson = vgui.Create("DButton", ContextMenu)
+	thirdperson:SetSize(buttonsize_x, buttonsize_y)
+	thirdperson:Center()
+	x,y = thirdperson:GetPos()
+	thirdperson:SetPos(x, y - 180)
+	thirdperson:SetText("Thirdperson")
+	thirdperson:SetTextColor(color_white)
+	thirdperson.Paint = function(panel)
 		surface.SetDrawColor(150, 150, 0, 255)
 		surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
 		draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(0, 0, 0, 130))
 	end
-	ver.DoClick = function() end
-*/
+	thirdperson.DoClick = function()
+		self:ToggleThirdPerson()
+	end
+
 	local cash = vgui.Create("DButton", ContextMenu)
 	cash:SetSize(buttonsize_x, buttonsize_y)
 	cash:Center()
@@ -835,5 +837,28 @@ function GM:Emotes()
 		RunConsoleCommand("act", "salute")
 		EmoteFrame:Remove()
 	end
-
 end
+
+local thirdperson = false
+local lastcam
+function GM:ToggleThirdPerson()
+	local pl = LocalPlayer()
+	lastcam = gamemode.Call("CalcView", pl, pl:EyePos(), pl:EyeAngles(), pl:GetFOV()).origin
+
+	thirdperson = !thirdperson
+end
+
+hook.Add("CalcView", "TEA.ThirdPerson", function(pl, origin, angles, fov)
+	if !thirdperson then return end
+
+	local viewpos = origin + angles:Forward() * -50 + Vector(0, 0, 15)
+	lastcam = lastcam + (viewpos-lastcam)*math.min(1, FrameTime()*10)
+
+	return {
+		origin = lastcam
+	}
+end)
+
+hook.Add("ShouldDrawLocalPlayer", "TEA.ThirdPerson", function(pl)
+	if thirdperson then return true end
+end)

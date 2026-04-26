@@ -17,49 +17,47 @@ function ENT:SpawnFunction( userid, tr )
 end
 
 function ENT:Think() 
+	local people = ents.FindInSphere(self:GetPos() + Vector(0, 0, 20), 120)
 
-local people = ents.FindInSphere(self:GetPos() + Vector(0, 0, 20), 120)
+	for k, v in pairs(people) do
+		if v:IsValid() and v:IsPlayer() and v:Alive() and !v:IsPvPForced() then
+			v:SetPvPGuarded(1)
 
-for k, v in pairs(people) do
-	if v:IsValid() and v:IsPlayer() and v:Alive() and !v:IsPvPForced() then
-
-		v:SetPvPGuarded( 1 )
-
-		timer.Create("pvpguardtimer"..v:EntIndex(), 3, 1, function() 
-		if !v:IsValid() then return false end
-			v:SetPvPGuarded( 0 )
-		end)
+			timer.Create("pvpguardtimer"..v:EntIndex(), 3, 1, function() 
+			if !v:IsValid() then return false end
+				v:SetPvPGuarded(0)
+			end)
+		end
 	end
-end
 
---shouldn't cause too many unsignificant problems (trader himself will not be targetted by anyone)
-local meta = self
-local tbNPCsNoTarget = {}
-local AddEntityRelationship = meta.AddEntityRelationship
-tbNPCsNoTarget[self] = {}
-for _,ent in ipairs(ents.GetAll()) do
-	if(ent:IsNPC() and ent ~= self) then
-		tbNPCsNoTarget[self][ent] = ent:Disposition(self)
-		AddEntityRelationship(ent,self,D_NU,100)
+	--shouldn't cause too many unsignificant problems (trader himself will not be targetted by anyone)
+	local meta = self
+	local tbNPCsNoTarget = {}
+	local AddEntityRelationship = meta.AddEntityRelationship
+	tbNPCsNoTarget[self] = {}
+	for _,ent in ipairs(ents.GetAll()) do
+		if(ent:IsNPC() and ent ~= self) then
+			tbNPCsNoTarget[self][ent] = ent:Disposition(self)
+			AddEntityRelationship(ent,self,D_NU,100)
+		end
 	end
-end
-
-
 end
 
 
 function ENT:Initialize( )
-	self:SetModel( "models/odessa.mdl" )
- 	self:SetHullType( HULL_HUMAN )
-	self:SetUseType( SIMPLE_USE )
-	self:SetHullSizeNormal( )
-	self:SetSolid( SOLID_BBOX )
-	self:CapabilitiesAdd( CAP_ANIMATEDFACE || CAP_USE_SHOT_REGULATOR || CAP_TURN_HEAD || CAP_AIM_GUN )
-	self:SetMaxYawSpeed( 5000 )
+	self:SetModel("models/odessa.mdl")
+ 	self:SetHullType(HULL_HUMAN)
+	self:SetUseType(SIMPLE_USE)
+	self:SetHullSizeNormal()
+	self:SetSolid(SOLID_BBOX)
+	self:CapabilitiesAdd(CAP_ANIMATEDFACE or CAP_USE_SHOT_REGULATOR or CAP_TURN_HEAD or CAP_AIM_GUN)
+	self:SetMaxYawSpeed(5000)
+
+	self:AddFlags(FL_NOTARGET)
 	self.LastTimeUsed = 0
 	local PhysAwake = self.Entity:GetPhysicsObject( )
 	if PhysAwake:IsValid( ) then
-		PhysAwake:Wake( )
+		PhysAwake:Wake()
 	end
 
 end

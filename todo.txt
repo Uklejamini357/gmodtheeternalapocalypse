@@ -1,0 +1,13 @@
+todo:
+
+v0.12.4:
+maps lua
+
+v0.13.0:
+Add Human SNPC's spawns
+Add black market NPC's (Sells unique items but at 2.5x price)
+Add Reputation system (Affects NPC's only, but also some players)
+
+v0.14.0:
+add vehicle dealer and simfphys/Glide vehicles support
+
