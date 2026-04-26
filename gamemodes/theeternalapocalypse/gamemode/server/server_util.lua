@@ -41,7 +41,7 @@ function MT_PLAYER:ProcessPlayerDamage(dmginfo)
 		dmginfo:SetDamage(dmginfo:GetDamage() * self:GetArmorDamageMultiplier())
 	elseif env_classes[dmginfo:GetAttacker():GetClass()] then
 		dmginfo:SetDamage(dmginfo:GetDamage() * self:GetArmorEnvDamageMultiplier())
-	elseif bit.band(dmginfo:GetDamageType(), DMG_BULLET) ~= 0 or bit.band(dmginfo:GetDamageType(), DMG_SLASH) ~= 0 then
+	elseif bit.band(dmginfo:GetDamageType(), DMG_BULLET) ~= 0 or bit.band(dmginfo:GetDamageType(), DMG_SLASH) ~= 0 or bit.band(dmginfo:GetDamageType(), DMG_BLAST) ~= 0 then
 		dmginfo:SetDamage(dmginfo:GetDamage() * self:GetArmorDamageMultiplier())
 	end
 

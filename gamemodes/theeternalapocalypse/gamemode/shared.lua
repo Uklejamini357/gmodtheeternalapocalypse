@@ -3,7 +3,7 @@ GM.AltName	= "After The End Reborn"
 GM.Author	= "Uklejamini"
 GM.Email	= ""
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.12.4b" -- i love beta :)
+GM.Version	= "0.12.4" -- i love beta :)
 GM.DateVer	= "26.04.2026" -- Follows the DD.MM.YYYY format.
 GM.Credits = {
 	-- Assets
@@ -459,11 +459,6 @@ end
 function GM:GetItemDescription(id, ply) -- ply is for the server
 	local item = self.ItemsList[id]
 	local desc = item.Description or ply and translate.ClientGet(ply, id.."_d") or translate.Get(id.."_d")
---[[
-	if item.Thirst then
-		desc = desc.."\n"..Format("Thirst: %s%%", tonumber(item.Thirst) > 0 and "+"..item.Thirst or item.Thirst)
-	end
-]]
 
 	desc = desc.."\n"
 	local itemtype = item.ItemType

@@ -39,7 +39,7 @@ GM.InfectionLevelEnabled = true
 -- Infection Level gaining mul. Default: 1
 GM.InfectionLevelGainMul = 1
 
--- Should infection level NOT decrease? Suggesting for setting to true if doing events. Default: false
+-- Should infection level NOT decrease? Useful if doing events. Default: false
 GM.InfectionLevelShouldNotDecrease = false
 
 
@@ -61,6 +61,7 @@ GM.PlayerLoseXPOnDeath = false
 -- Should players drop their weapons when they die? Set false if making deathmatch for fun, doing an event or anything else in which you don't want anyone to lose their weapons. Default: true
 GM.DropActiveWeaponOnDeath = true
 
+/* -- replaced with map transitions system
 -- Enable map cycling system for every maintenance. Map is rolled out before auto-maintenance. Default: false (Doesn't work yet)
 GM.EnableMapCycleSystem = false
 
@@ -69,13 +70,14 @@ GM.MapCycles = {
 	"rp_pripyat_fixed",
 	"gm_construct",
 }
+*/
 
 -- Enable Special events. Default: true (Doesn't work yet)
 -- Info:
 -- 1 - Zombie Fog: Limited Vision to 1500 hammer units, vision obscured by greenish fog, zombies defense increased by +20% and move 20% faster. Rewards increased.
 -- 2 - Blood Moon: Vision turns more red and dark, zombie speed greatly increased (+60%), zombies deal +30% damage
 -- 3 - Increased Infection Level gain from killing zombies by +50% and Infection Level does not decrease by its' own.
--- 4 - Horde Event: Zombie spawn rate decreased down to 2 seconds and zombies can see players 2.5x further.
+-- 4 - Horde Event: Zombie spawn rate are 5x faster (minimum 2s delay) and zombies can see players 2.5x further.
 GM.EnableSpecialEventsSystem = true
 
 -- Weapon Damage Multiplier against zombies. Does not affect players!

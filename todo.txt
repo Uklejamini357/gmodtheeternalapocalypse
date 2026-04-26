@@ -2,12 +2,25 @@ todo:
 
 v0.12.4:
 maps lua
+and other stuff
+
+v0.12.5:
+Add more tasks
+Add more statistics
+Add more masteries
+
+v0.12.6:
+Add random events.. this has been missing since a long time.
+Make next boss spawn, next airdrop spawn carry over to next session
+Remove what ammo weapons use from descriptions. Instead, add another text string to the details (inside descriptions) displaying what ammo the gun uses.
+
 
 v0.13.0:
 Add Human SNPC's spawns
-Add black market NPC's (Sells unique items but at 2.5x price)
 Add Reputation system (Affects NPC's only, but also some players)
 
+
 v0.14.0:
-add vehicle dealer and simfphys/Glide vehicles support
+Add black market trader NPC's (Sells unique items but at 2.5x price)
+Add vehicle dealer and simfphys/Glide vehicles support
 
