@@ -118,14 +118,20 @@ local function DoLootPanel(canstore)
 				-- end
 			end
 
-			local ItemDisplay = vgui.Create("SpawnIcon", ItemBackground)
-			ItemDisplay:SetPos(5, 5)
-			ItemDisplay:SetModel(v.Model)
-			ItemDisplay:SetToolTip(GAMEMODE:GetItemDescription(k))
-			ItemDisplay:SetSize(56,56)
-			ItemDisplay.PaintOver = function()
+			local itIcon
+			if v.Material then
+				itIcon = vgui.Create("DImageButton", ItemBackground)
+				itIcon:SetMaterial(v.Material)
+			else
+				itIcon = vgui.Create("SpawnIcon", ItemBackground)
+				itIcon:SetModel(v.Model)
 			end
-			ItemDisplay.OnMousePressed = function()
+			itIcon:SetPos(5, 5)
+			itIcon:SetToolTip(GAMEMODE:GetItemDescription(k))
+			itIcon:SetSize(56,56)
+			itIcon.PaintOver = function()
+			end
+			itIcon.OnMousePressed = function()
 				return false
 			end
 

@@ -10,9 +10,6 @@ GM:CreateItem(itemid, { -- It's necessary to use the Entity Classname here for t
     Category = ITEMCATEGORY_WEAPONS,
     UseFunc = function(ply) UseFunc_EquipGun(ply, itemid) return false end,
     DropFunc = function(ply, _, item) local drop = UseFunc_DropItem(ply, itemid) UseFunc_StripWeapon(ply, itemid, drop)
-
--- Additional variables if needed
-    IsSecret = false,
 })
 
 ]]

@@ -612,7 +612,9 @@ function GM:ShutDown()
 	for _, ply in ipairs(player.GetAll()) do
 		gamemode.Call("SavePlayer", ply)
 	end
-	print("WARNING! WARNING!! THE OBJECT IS GONE!!")
+
+	print("WARNING! WARNING!! THE OBJECT IS GONE!!") -- reference to REBORN Istok (REBORN Source) message when the "Reality (...)" or idk I don't remember disappears after walking into its death zone
+
 	self:SaveServerData()
 	self:DebugLog("Server shutting down/changing map")
 	self:SaveLog()

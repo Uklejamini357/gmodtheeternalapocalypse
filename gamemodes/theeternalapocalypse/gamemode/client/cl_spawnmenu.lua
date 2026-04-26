@@ -43,11 +43,17 @@ local function DoInvPanel()
 			surface.DrawRect(0, 0, panel:GetWide(), panel:GetTall())
 		end
 
-		local itIcon = vgui.Create("SpawnIcon", itPanel)
+		local itIcon
+		if item.Material then
+			itIcon = vgui.Create("DImage", itPanel)
+			itIcon:SetMaterial(item.Material)
+		else
+			itIcon = vgui.Create("SpawnIcon", itPanel)
+			itIcon:SetModel(item.Model)
+		end
 		itIcon:SetPos(5, 5)
-		itIcon:SetModel(v.Model)
-		if v.ModelColor then
-			itIcon:SetColor(v.ModelColor)
+		if item.ModelColor then
+			itIcon:SetColor(item.ModelColor)
 		end
 		itIcon:SetSize(60,60)
 		itIcon.PaintOver = function(self, w, h)
@@ -384,7 +390,8 @@ function GM:InvMenu()
 
 	local function DoCraftablesList()
 		for k,v in SortedPairs(GAMEMODE.ItemsList) do
-			if !GAMEMODE.CraftableList[k] then continue end
+			local craftable = GAMEMODE.CraftableList[k]
+			if !craftable then continue end
 			local raretbl = gamemode.Call("CheckItemRarity", v["Rarity"])
 
 			local itBackground = vgui.Create("DPanel", pCraftables)
@@ -396,11 +403,17 @@ function GM:InvMenu()
 				surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
 			end
 
-			local itIcon = vgui.Create("SpawnIcon", itBackground)
-			itIcon:SetPos(8, 8)
-			itIcon:SetModel(v.Model)
-			itIcon:SetToolTip(GAMEMODE:GetItemDescription(k))
+			local itIcon
+			if v.Material then
+				itIcon = vgui.Create("DImageButton", itBackground)
+				itIcon:SetMaterial(v.Material)
+			else
+				itIcon = vgui.Create("SpawnIcon", itBackground)
+				itIcon:SetModel(v.Model)
+			end
 			itIcon:SetSize(64,64)
+			itIcon:SetPos(8, 8)
+			itIcon:SetToolTip(GAMEMODE:GetItemDescription(k))
 			itIcon.PaintOver = function() return end
 			itIcon.OnMousePressed = function() return false end
 
@@ -428,14 +441,14 @@ function GM:InvMenu()
 			itXP:SetPos(85, 42)
 			itXP:SetSize(170, 15)
 			itXP:SetColor(Color(155,255,255,255))
-			itXP:SetText("XP: "..GAMEMODE.CraftableList[k].XP)
+			itXP:SetText("XP: "..craftable.XP)
 
 			local itTime = vgui.Create("DLabel", itBackground)
 			itTime:SetFont("TEA.HUDFontSmall")
 			itTime:SetPos(85, 58)
 			itTime:SetSize(170, 15)
 			itTime:SetColor(Color(255,255,155,255))
-			itTime:SetText(translate.Get("craft_time")..": "..GAMEMODE.CraftableList[k].CraftTime.."s")
+			itTime:SetText(translate.Get("craft_time")..": "..craftable.CraftTime.."s")
 
 			local itRequirements = vgui.Create("DButton", itBackground)
 			itRequirements:SetSize(100, 20)
@@ -450,7 +463,7 @@ function GM:InvMenu()
 			end
 			itRequirements.DoClick = function()
 				chat.AddText(Color(0,192,192), translate.Format("required_items_to_craft", GAMEMODE:GetItemName(k)))
-				for r,q in pairs(GAMEMODE.CraftableList[k]["Requirements"]) do
+				for r,q in pairs(craftable["Requirements"]) do
 					chat.AddText(Color(0,192,255), "\t"..q.."x "..GAMEMODE:GetItemName(r))
 				end
 			end

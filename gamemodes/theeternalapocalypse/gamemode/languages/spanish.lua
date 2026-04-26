@@ -617,6 +617,8 @@ LANG.m9k_ares_shrike_n = "Ares Shrike"
 LANG.m9k_ares_shrike_d = "Ares Shrike de M9k Heavy Weapons. Usa munición de Rifle de Asalto de M9k."
 LANG.m9k_fg42_n = "FG 42"
 LANG.m9k_fg42_d = "FG 42 de M9k Heavy Weapons. Usa munición de Rifle de Asalto de M9k."
+LANG.m9k_minigun_n = "M134 Minigun"
+LANG.m9k_minigun_d = "Very powerful weapon, yet also very heavy. Uses M9k Assault Rifle ammo."
 LANG.m9k_m1918bar_n = "M1918 BAR"
 LANG.m9k_m1918bar_d = "M1918 Bar de M9k Heavy Weapons. Usa munición de Rifle de Asalto de M9k."
 LANG.m9k_m60_n = "M60"
@@ -685,6 +687,38 @@ LANG.m9k_thompson_n = "Tommy Gun"
 LANG.m9k_thompson_d = "Tommy Gun de M9k Small Arms. Usa munición de SMG de M9k."
 LANG.m9k_uzi_n = "UZI"
 LANG.m9k_uzi_d = "UZI de M9k Small Arms. Usa munición de SMG de M9k."
+
+
+-- M9k Specials
+
+
+LANG.m9k_davy_crockett_n = "Davy Crockett"
+LANG.m9k_davy_crockett_d = "Do you wanna nuke the world? Now you can!\nIts' absurd value of this weapon makes traders want to keep this item to themselves.\nSingle-use only."
+LANG.m9k_ex41_n = "EX40"
+LANG.m9k_ex41_d = "A grenade launcher that contains up to 3 40mm grenades. Direct hits can cause delayed explosions.\nExplosions radius is deadly."
+LANG.m9k_ied_detonator_n = "IED Detonator"
+LANG.m9k_ied_detonator_d = "Primary fire to put a bomb down. Secondary fire detonates all bombs."
+LANG.m9k_m202_n = "M202"
+LANG.m9k_m202_d = "A quadruple rocket launcher."
+LANG.m9k_m79gl_n = "M79 Grenade Launcher"
+LANG.m9k_m79gl_d = "Direct hits can cause delayed explosions."
+LANG.m9k_matador_n = "Matador"
+LANG.m9k_matador_d = "A Rocket launcher"
+LANG.m9k_milkormgl_n = "Milkor Mk1"
+LANG.m9k_milkormgl_d = "A portable six-shot 40 mm grenade launcher. Direct hits can cause delayed explosions."
+LANG.m9k_nerve_gas_n = "Nerve Gas"
+LANG.m9k_nerve_gas_d = "An incredibly deadly chemical weapon. Not even the strongest can survive this!"
+LANG.m9k_nitro_n = "Nitro Glycerine"
+LANG.m9k_nitro_d = "A bottle containing nitro glycerine. The contents inside the bottle are very volatile and can cause an enormous explosion when it breaks!"
+LANG.m9k_orbital_strike_n = "Orbital Strike Marker"
+LANG.m9k_orbital_strike_d = "Does MASSIVE damage in the marked area and everything surrounding it. Single-use only."
+LANG.m9k_rpg7_n = "RPG-7"
+LANG.m9k_rpg7_d = "A Rocket-Propelled Grenade launcher."
+LANG.m9k_sticky_grenade_n = "Sticky Grenade"
+LANG.m9k_sticky_grenade_d = "Sticks to the target upon landing. Might be hard to throw."
+LANG.m9k_suicide_bomb_n = "Timed C4"
+LANG.m9k_suicide_bomb_d = "C4 used for exploding stuff. If anyone is nearby, always scream \"FIRE IN THE HOLE!!!\" when setting off an explosion.\n\nOn the back of the explosive, a small note can be read:\nFor whoever is using this, I must remind you that the timer is set to 0 seconds.\nWhich means it will instantly detonate upon arming!\nTo prevent this, press secondary fire to set a timer.\nTimer can be set to 0s, 5s, 10s, 15s and 20s, respectively."
+
 
 -- Extra weapons
 

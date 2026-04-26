@@ -848,8 +848,21 @@ function meta:LoadLastSession()
 			for _,wep in pairs(self.LastSessionInfo["weapons"]) do
 				local w = self:Give(wep[1], true)
 				if w:IsValid() then
-					w:SetClip1(wep[2])
-					w:SetClip2(wep[3])
+					local clip1, clip2 = wep[2], wep[3]
+					w:SetClip1(clip1)
+					w:SetClip2(clip2)
+					
+					-- ArcCW/ARC9 compatibility
+					if GAMEMODE.ItemsList[wep[1]] and GAMEMODE.ItemsList[wep[1]].ArcCWCompatible then
+						w.ForceDefaultAmmo = 0
+						w.ForceDefaultClip = 0
+
+						timer.Simple(0.2, function()
+							if !w:IsValid() then return end
+							w:SetClip1(clip1)
+							w:SetClip2(clip2)
+						end)
+					end
 				end
 			end
 		end
