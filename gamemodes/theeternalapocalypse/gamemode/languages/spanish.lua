@@ -281,6 +281,7 @@ LANG.player_spawnpoints = "Puntos de aparición de jugador"
 LANG.taskdealers = "Distribuidores de tareas"
 LANG.ow_transitions = "Transiciones"
 LANG.safezones = "Zonas seguras"
+LANG.safezones = "Zonas seguras"
 LANG.rename = "Renombrar"
 
 LANG.zombies_n = "Zombis Normales"
@@ -939,6 +940,7 @@ LANG.Tip19 = "Ten un ojo puesto en el nivel de infección. Los zombis se vuelven
 
 LANG.the_eternal_apocalypse = "The Eternal Apocalypse"
 LANG.the_eternal_apocalypse_desc = "Un modo de juego basado en la supervivencia apocalíptica derivado de un viejo modo de juego.\nEn desarrollo desde principios de 2022.\nLos zombis esperan tu aparición."
+LANG.the_eternal_apocalypse_desc = "Un modo de juego basado en la supervivencia apocalíptica derivado de un viejo modo de juego.\nEn desarrollo desde principios de 2022.\nLos zombies esperan tu aparición."
 LANG.the_eternal_apocalypse_character = "Elige el personaje que vas a jugar."
 LANG.play = "Jugar"
 LANG.disconnect = "Desconectar"
