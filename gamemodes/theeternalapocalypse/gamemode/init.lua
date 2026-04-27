@@ -95,7 +95,7 @@ if file.IsDir(mapdir, "LUA") then
 		include("maps/"..game.GetMap().."/shared.lua")
 		AddCSLuaFile("maps/"..game.GetMap().."/shared.lua")
 	end
-else
+elseif file.Exists(mapdir..".lua", "LUA") then
 	local addclientside = include("maps/"..game.GetMap()..".lua")
 	if addclientside then
 		AddCSLuaFile("maps/"..game.GetMap()..".lua")

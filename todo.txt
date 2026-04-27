@@ -18,6 +18,7 @@ Remove what ammo weapons use from descriptions. Instead, add another text string
 v0.13.0:
 Add Human SNPC's spawns
 Add Reputation system (Affects NPC's only, but also some players)
+Items dropping on death (not just for currently holding weapons, but also in inventory) <-- having a % chance to drop on death, not making as hardcore like in dayz
 
 
 v0.14.0:

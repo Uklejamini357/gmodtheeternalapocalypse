@@ -50,7 +50,7 @@ if file.IsDir(mapdir, "LUA") then
 	if file.Exists(mapdir.."/shared.lua", "LUA") then
 		include("maps/"..game.GetMap().."/shared.lua")
 	end
-else
+elseif file.Exists(mapdir..".lua", "LUA") then
 	include("maps/"..game.GetMap()..".lua")
 end
 
