@@ -475,7 +475,7 @@ hook.Add("CalcView", "DeathView", DeathView, HOOK_LOW)
 
 function GM:OnUndo(name, str)
 	-- this is still needed by the test zombies function
-	notification.AddLegacy("Undone "..name, 2, 3)
+	notification.AddLegacy(str, 2, 3)
 	surface.PlaySound("buttons/button15.wav")
 end
 
@@ -609,6 +609,68 @@ function GM:CreateMove(cmd)
 		ang = cmd:GetViewAngles()
 	end
 end
+/*
+local fog = {
+	color = {200, 200, 200},
+	density = 1,
+	start = 0,
+	endpos = 1000,
+}
+
+function GM:PreDrawSkyBox()
+	-- return true
+end
+
+function GM:PostDrawSkyBox()
+end
+
+local Mat = Material("dev/graygrid")
+function GM:PostDraw2DSkyBox()    
+    render.OverrideDepthEnable( true, false ) -- ignore Z to prevent drawing over 3D skybox
+
+    cam.Start3D(Vector(0, 0, 0), EyeAngles())
+        render.SetMaterial(Mat)
+		local l = 2000
+		local n = Vector(l,0,0)
+		local e = Vector(0,l,0)
+		local s = Vector(-l,0,0)
+		local w = Vector(0,-l,0)
+		local up = Vector(0,0,l)
+		local down = Vector(0,0,-l)
+
+		render.DrawQuad(n + Vector(0,l,l), n + Vector(0,-l,l), n + Vector(0,-l,-l), n + Vector(0,l,-l), color_white)
+		render.DrawQuad(e + Vector(l,0,l), e + Vector(-l,0,l), e + Vector(-l,0,-l), e + Vector(l,0,-l), color_white)
+		render.DrawQuad(s + Vector(0,l,l), s + Vector(0,-l,l), s + Vector(0,-l,-l), s + Vector(0,l,-l), color_white)
+		render.DrawQuad(w + Vector(0,l,l), w + Vector(0,-l,l), w + Vector(0,-l,-l), w + Vector(0,l,-l), color_white)
+		render.DrawQuad(up + Vector(0,l,l), up + Vector(0,-l,l), up + Vector(0,-l,-l), up + Vector(0,l,-l), color_white)
+		render.DrawQuad(down + Vector(0,l,l), down + Vector(0,-l,l), down + Vector(0,-l,-l), down + Vector(0,l,-l), color_white)
+	cam.End3D()
+
+    render.OverrideDepthEnable(false, false)
+end
+
+function GM:SetupWorldFog()
+	if !fog then return end
+	render.FogColor(fog.color[1], fog.color[2], fog.color[3])
+	render.FogMaxDensity(fog.density)
+	render.FogStart(fog.start)
+	render.FogEnd(fog.endpos)
+	render.FogMode(MATERIAL_FOG_LINEAR)
+
+	return true
+end
+
+function GM:SetupSkyboxFog()
+	if !fog then return end
+	render.FogColor(fog.color[1], fog.color[2], fog.color[3])
+	render.FogMaxDensity(fog.density)
+	render.FogStart(fog.start)
+	render.FogEnd(fog.endpos/16)
+	render.FogMode(MATERIAL_FOG_LINEAR)
+
+	return true
+end
+*/
 
 
 

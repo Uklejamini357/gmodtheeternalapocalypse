@@ -941,14 +941,33 @@ function GM:PlayerInitialSpawn(ply, transition)
 	-------- Statistics --------
 	ply.Statistics = {
 		BestSurvivalTime = 0,
-		
+		TimePlayed = 0,
+
 		ZombieKills = 0,
 		ZombieKillAssists = 0,
 		BossKills = 0,
 		BossKillAssists = 0,
-		ZombieDamageToZombies = 0,
+		ZombieDamageDealt = 0,
+
+		LootFound = 0,
+		LootCommonFound = 0,
+		LootUncommonFound = 0,
+		LootRareFound = 0,
+		LootEpicFound = 0,
+		LootLegendaryFound = 0,
+		LootFactionFound = 0,
+		LootBossFound = 0,
 
 		PlayersKilled = 0,
+		PlayersKillAssists = 0,
+
+		CashGainedByItemSell = 0,
+		CashGainedByBounty = 0,
+		CashGainedByLvlup = 0,
+		CashGainedByMastery = 0,
+
+		CashSpentByItemBuy = 0,
+		CashSpentByPerkResets = 0,
 
 		Deaths = 0,
 		DeathsByThirst = 0,
@@ -963,6 +982,7 @@ function GM:PlayerInitialSpawn(ply, transition)
 	----------------
 	
 	-------- Mastery Stats --------
+	-- for statid,_ in pairs()
 	ply.MasteryMeleeXP = 0
 	ply.MasteryMeleeLevel = 0
 	ply.MasteryPvPXP = 0

@@ -881,8 +881,21 @@ GM.PerksList = {
 			ply:SkillsReset()
 		end
 	},
+}
 
 
+GM.MasterySkillStats = {
+	["Melee"] = {
+		XPReq = function(pl, lvl)
+			local xpreq = 984
+			local addexpperlevel = 165
+			local addexpperlevel2 = 1.161
+
+			local mlvl = SERVER and pl.MasteryMeleeLevel or MyMMeleelvl
+
+			return math.floor(xpreq + (mlvl * addexpperlevel) ^ addexpperlevel2)
+		end
+	}
 }
 
 
