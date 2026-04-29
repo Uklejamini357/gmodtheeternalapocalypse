@@ -1004,8 +1004,14 @@ function GM:PlayerInitialSpawn(ply, transition)
 	----------------
 	
 	-------- Mastery Stats --------
-	-- for statid,_ in pairs() do
-	-- end
+	ply.MasterySkills = {}
+	for statid,_ in pairs(self.MasterySkillStats) do
+		ply.MasterySkills[statid] = {
+			XP = 0,
+			Level = 0
+		}
+	end
+
 	ply.MasteryMeleeXP = 0
 	ply.MasteryMeleeLevel = 0
 	ply.MasteryPvPXP = 0
