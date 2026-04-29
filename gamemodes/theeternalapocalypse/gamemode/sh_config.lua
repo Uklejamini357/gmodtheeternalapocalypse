@@ -885,7 +885,13 @@ GM.PerksList = {
 
 
 GM.MasterySkillStats = {
-	["Melee"] = {
+	["Melee"] = { -- Identifier for the mastery skill!
+		Name = "Melee", -- Name for the mastery
+		Description = "", -- Give it a description!
+		GainHelpDesc = "", -- How to gain it?
+		RewardDesc = "", -- What does it do?
+		EffRewardDesc = "", -- Currently effective% for the stat
+		MaxLevel = 20, -- Max level for the mastery
 		XPReq = function(pl, lvl)
 			local xpreq = 984
 			local addexpperlevel = 165
@@ -894,8 +900,111 @@ GM.MasterySkillStats = {
 			local mlvl = SERVER and pl.MasteryMeleeLevel or MyMMeleelvl
 
 			return math.floor(xpreq + (mlvl * addexpperlevel) ^ addexpperlevel2)
+		end,
+		OnLevelup = function(pl, lvl)
+			
+		end,
+		GetStatEffectiveVal = function(pl, lvl)
+			return math.min(20, lvl)*0.005
 		end
-	}
+	},
+
+	["PvP"] = {
+		Name = "PVP",
+		Description = "",
+		GainHelpDesc = "",
+		RewardDesc = "",
+		EffRewardDesc = "",
+		MaxLevel = 20,
+		XPReq = function(pl, lvl)
+			local expreq = 593
+			local addxpprlevel = 85
+			local addexpperlevel2 = 1.153
+
+			local mlvl = SERVER and self.MasteryPvPLevel or MyMPvplvl
+
+			return math.floor(expreq + (mlvl * addxpprlevel) ^ addexpperlevel2)
+		end,
+		OnLevelup = function(pl, lvl)
+			
+		end,
+		GetStatEffectiveVal = function(pl, lvl)
+			return math.min(20, lvl)*0.005
+		end
+	},
+
+	["Survivor"] = {
+		Name = "Survivor",
+		Description = "The excess damage has been making your body getting used to it, resulting it in becoming more resilient.",
+		GainHelpDesc = "Earned by surviving damage while on <10% health.",
+		RewardDesc = "Increases damage resistance by +0.25% per level.",
+		EffRewardDesc = "+%s%% damage resistance",
+		MaxLevel = 20,
+		XPReq = function(pl, lvl)
+			local xpreq = 984
+			local addexpperlevel = 165
+			local addexpperlevel2 = 1.161
+
+			local mlvl = SERVER and pl.MasteryMeleeLevel or MyMMeleelvl
+
+			return math.floor(xpreq + (mlvl * addexpperlevel) ^ addexpperlevel2)
+		end,
+		OnLevelup = function(pl, lvl)
+			
+		end,
+		GetStatEffectiveVal = function(pl, lvl)
+			return math.min(20, lvl)*0.005
+		end
+	},
+
+	["Gunnery"] = {
+		Name = "Gunnery",
+		Description = "Wielding guns has never been any better before.",
+		GainHelpDesc = "Earned by inflicting headshots with guns.",
+		RewardDesc = "+0.5% to base headshot damage per level (applies before the multipliers)",
+		EffRewardDesc = "",
+		MaxLevel = 20,
+		XPReq = function(pl, lvl)
+			local xpreq = 984
+			local addexpperlevel = 165
+			local addexpperlevel2 = 1.161
+
+			local mlvl = SERVER and pl.MasteryMeleeLevel or MyMMeleelvl
+
+			return math.floor(xpreq + (mlvl * addexpperlevel) ^ addexpperlevel2)
+		end,
+		OnLevelup = function(pl, lvl)
+			
+		end,
+		GetStatEffectiveVal = function(pl, lvl)
+			return math.min(20, lvl)*0.005
+		end
+	},
+
+	["Medic"] = {
+		Name = "Medic",
+		Description = "Medicine is very important especially in this apocalyptic world.",
+		GainHelpDesc = "Earned by healing neutral/friendly players.",
+		RewardDesc = "+1% more effective healing to others per level",
+		EffRewardDesc = "",
+		MaxLevel = 20,
+		XPReq = function(pl, lvl)
+			local xpreq = 984
+			local addexpperlevel = 165
+			local addexpperlevel2 = 1.161
+
+			local mlvl = SERVER and pl.MasteryMeleeLevel or MyMMeleelvl
+
+			return math.floor(xpreq + (mlvl * addexpperlevel) ^ addexpperlevel2)
+		end,
+		OnLevelup = function(pl, lvl)
+			
+		end,
+		GetStatEffectiveVal = function(pl, lvl)
+			return math.min(20, lvl)*0.005
+		end
+	},
+
 }
 
 

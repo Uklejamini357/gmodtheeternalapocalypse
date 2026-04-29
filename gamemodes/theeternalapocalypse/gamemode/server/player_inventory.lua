@@ -123,13 +123,13 @@ function GM:UseItem(ply, item, use, targetply)
 
 	if ply.Inventory[item] and ply.Inventory[item] > 0 then
 		if ftoggle == "UseFunc" then
+			local itemtype = ref.ItemType
 			if ref.UseFunc then
 				local func = ref.UseFunc(ply, targetply, item)
 				if func then
 					GAMEMODE:SystemRemoveItem(ply, item, false) -- leave this as false otherwise grenades are unusable
 				end
 			else
-				local itemtype = ref.ItemType
 				local shouldremove
 				if ref.WeaponType then
 					local gun = ref.WeaponType
@@ -194,6 +194,19 @@ function GM:UseItem(ply, item, use, targetply)
 						end)
 					end
 				end
+
+				if itemtype == ITEMTYPE_MED then
+					ply:AddStatisticPoints("ItemsUsedHeal", 1)
+				elseif itemtype == ITEMTYPE_DRINK then
+					ply:AddStatisticPoints("ItemsUsedDrink", 1)
+				elseif itemtype == ITEMTYPE_FOOD then
+					ply:AddStatisticPoints("ItemsUsedFood", 1)
+				elseif itemtype == ITEMTYPE_AMMO then
+					ply:AddStatisticPoints("ItemsUsedAmmo", 1)
+				elseif itemtype == ITEMTYPE_OTHER then
+					ply:AddStatisticPoints("ItemsUsedMisc", 1)
+				end
+
 
 				local consum = ref.ConsumableStats
 				if consum then
@@ -378,6 +391,8 @@ function meta:BuyItem(str)
 	if (cash < buyprice) then self:SendChat(translate.ClientGet(self, "cannot_afford_that")) return false end
 	-- if ((self:CalculateWeight() + item["Weight"]) > self:CalculateMaxWeight()) then self:SendChat(translate.ClientFormat(self, "notenoughspace", GAMEMODE:CalculateRemainingInventoryWeight(self, item["Weight"]))) return false end
 
+	self:AddStatisticPoints("CashSpentByItemBuy", buyprice)
+
 	GAMEMODE:SystemGiveItem(self, str)
 	self.Money = math.floor(self.Money - buyprice)
 	self:PrintTranslatedMessage(HUD_PRINTCONSOLE, "tr_itembought", GAMEMODE:GetItemName(str, self), buyprice, GAMEMODE.Config["Currency"])
@@ -417,12 +432,14 @@ net.Receive("SellItem", function(len, ply)
 		ply:ArmorUnequip()
 	end
 
-	ply:PrintTranslatedMessage(HUD_PRINTCONSOLE, "tr_itemsold", GAMEMODE:GetItemName(str, ply), amt, sellprice, GAMEMODE.Config["Currency"])
-	ply.Money = math.floor(cash + sellprice) -- base sell price 20% of the original buy price plus 0.5% per barter level to max of 25%
+	local gains = math.floor(cash + sellprice)
+	ply.Money = gains -- base sell price 20% of the original buy price plus 0.5% per barter level to max of 25%
 	ply:EmitSound("physics/cardboard/cardboard_box_break3.wav", 100, 100)
+	ply:PrintTranslatedMessage(HUD_PRINTCONSOLE, "tr_itemsold", GAMEMODE:GetItemName(str, ply), amt, sellprice, GAMEMODE.Config["Currency"])
 	if item.OnSell then
 		item.OnSell(ply, amt)
 	end
+	ply:AddstatisticPoints("CashGainedByItemSell", gains)
 	GAMEMODE:SendInventory(ply)
 	GAMEMODE:NetUpdatePeriodicStats(ply)
 end)

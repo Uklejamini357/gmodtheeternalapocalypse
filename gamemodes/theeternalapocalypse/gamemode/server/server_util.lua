@@ -368,6 +368,10 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 	timer.Destroy("IsSleeping_"..ply:EntIndex())
 	ply:AddDeaths(1)
 	ply:AddStatisticPoints("Deaths", 1)
+	if ply.DeathCause == DEATHCAUSE_THIRST then
+		ply:AddStatisticPoints("DeathsByThirst", 1)
+	end
+	ply.DeathCause = nil
 
 	ply:SetStatisticPoint("BestSurvivalTime", math.floor(math.max(ply:GetStatisticPoints("BestSurvivalTime"), survived)))
 	ply.SurvivalTime = CurTime()

@@ -284,6 +284,10 @@ function GM:Think()
 
 	for _,ply in player.Iterator() do
 		if !ply:IsValid() then continue end
+
+		if ply.Statistics then
+			ply:AddStatisticPoints("TimePlayed", ft)
+		end
 		if !ply:Alive() or ply.StatsPaused or ply:GetObserverMode() ~= OBS_MODE_NONE then 
 			if (ply.NextTick or 0) < RealTime() then
 				self:NetUpdateStats(ply)
@@ -790,11 +794,13 @@ function GM:EntityTakeDamage(ent, dmginfo)
 		end
 
 		if ent.DamagedBy then
+			local dmg = math.Clamp(dmginfo:GetDamage(), 0, ent:Health())
 			if !ent.DamagedBy[attacker] then 
-				ent.DamagedBy[attacker] = math.Clamp(dmginfo:GetDamage(), 0, ent:Health())
+				ent.DamagedBy[attacker] = dmg
 			else
-				ent.DamagedBy[attacker] = math.max(ent.DamagedBy[attacker] + math.Clamp(dmginfo:GetDamage(), 0, ent:Health()), 0)
+				ent.DamagedBy[attacker] = math.max(ent.DamagedBy[attacker] + dmg, 0)
 			end
+			attacker:AddStatisticPoints("ZombieDamageDealt", dmg)
 		end
 	end
 
@@ -942,6 +948,19 @@ function GM:PlayerInitialSpawn(ply, transition)
 	ply.Statistics = {
 		BestSurvivalTime = 0,
 		TimePlayed = 0,
+		TimesJoined = 0,
+		MapsTransitioned = 0,
+
+		ItemsUsedHeal = 0,
+		ItemsUsedDrink = 0,
+		ItemsUsedFood = 0,
+		ItemsUsedAmmo = 0,
+		ItemsUsedMisc = 0,
+
+		DistanceSpentByWalk = 0,
+		DistanceSpentBySwim = 0,
+		DistanceSpentInAir = 0,
+		DistanceSpentByVehicle = 0,
 
 		ZombieKills = 0,
 		ZombieKillAssists = 0,
@@ -975,14 +994,18 @@ function GM:PlayerInitialSpawn(ply, transition)
 		DeathsByFatigue = 0,
 		DeathsByInfection = 0,
 		DeathsByZombies = 0,
+		DeathsByBoss = 0,
+		DeathsByHuman = 0,
 		DeathsByPlayers = 0,
 		DeathsBySuicide = 0,
+		DeathsByFall = 0,
 	}
 	ply.LifeStats = {}
 	----------------
 	
 	-------- Mastery Stats --------
-	-- for statid,_ in pairs()
+	-- for statid,_ in pairs() do
+	-- end
 	ply.MasteryMeleeXP = 0
 	ply.MasteryMeleeLevel = 0
 	ply.MasteryPvPXP = 0
@@ -1072,6 +1095,8 @@ function GM:PlayerInitialSpawn(ply, transition)
 	ply:SetTeam(TEAM_LONER)
 
 	ply:ArmorEquip(ply.EquippedArmor)
+
+	ply:AddStatisticPoints("TimesJoined", 1)
 
 	if VJ then
 		ply.StalkerFaction = "stalker"

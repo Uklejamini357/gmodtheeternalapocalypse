@@ -656,6 +656,7 @@ function GM:GainLevel(ply)
 	end
 
 	ply:SetNWInt("PlyLevel", ply.Level)
+	ply:AddStatisticPoints("CashGainedByLvlup", totalmoneyreward)
 	self:NetUpdatePeriodicStats(ply)
 
 	timer.Simple(0.04, function() -- Timer was created to prevent Buffer Overflow if user has too much XP if user levels up

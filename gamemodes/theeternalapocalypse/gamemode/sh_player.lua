@@ -416,7 +416,7 @@ function meta:AddStatisticPoints(var, value)
 end
 
 function meta:SetStatisticPoint(var, value)
-	self.Statistics[var] = value
+	self.Statistics[var] = value or (self.Statistics and self.Statistics[var]) or 0
 end
 
 function meta:GetStatisticPoints(var, value)
