@@ -21,13 +21,16 @@ function GM:MakeMoneyPrinterPanel(ent)
 		if !ent or !ent:IsValid() then
 			this:Remove()
 		end
-		if input.IsKeyDown(KEY_ESCAPE) and gui.IsGameUIVisible() then
-			timer.Simple(0, function()
-				this:Remove()
-			end)
-			gui.HideGameUI()
-		end
 	end
+	PrinterPanel.OnRemove = function(self)
+		hook.Remove("OnPauseMenuShow", self)
+	end
+	hook.Add("OnPauseMenuShow", PrinterPanel, function()
+		if PrinterPanel and PrinterPanel:IsValid() and PrinterPanel:IsVisible() then
+			PrinterPanel:Close()
+			return false
+		end
+	end)
 
 
 	local text = vgui.Create("DLabel", PrinterPanel)

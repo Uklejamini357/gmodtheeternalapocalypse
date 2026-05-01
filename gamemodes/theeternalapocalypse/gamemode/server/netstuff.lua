@@ -115,7 +115,6 @@ end
 
 function GM:NetUpdatePlayerStatistics(ply, target)
 	net.Start("UpdateTargetStats")
-	net.WriteString(target:Nick())
 	net.WriteTable(target.Statistics)
 	net.WriteFloat(target.MasteryMeleeXP)
 	net.WriteFloat(target.MasteryMeleeLevel)

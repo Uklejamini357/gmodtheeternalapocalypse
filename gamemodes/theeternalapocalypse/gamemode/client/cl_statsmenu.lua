@@ -1,99 +1,158 @@
 -------- STATISTICS --------
 
-local TargetStats = {}
+GM.PlayerStatsCache = {}
 
-local RefreshStats = function()
-end
+local RefreshStats = function() end
 
 net.Receive("UpdateTargetStats", function(length)
-    TargetStats.Nick = net.ReadString()
+    GAMEMODE.PlayerStatsCache[GAMEMODE.PlayerStatsSelectedPlr] = {}
+    local tbl = GAMEMODE.PlayerStatsCache[GAMEMODE.PlayerStatsSelectedPlr]
     for stat,value in pairs(net.ReadTable()) do
-        TargetStats[stat] = value
+        tbl[stat] = value
     end
-    TargetStats.MMeleeXP = net.ReadFloat()
-    TargetStats.MMeleeLvl = net.ReadFloat()
-    TargetStats.MMeleeReqXP = net.ReadFloat()
-    TargetStats.MPvPXP = net.ReadFloat()
-    TargetStats.MPvPLvl = net.ReadFloat()
-    TargetStats.MPvPReqXP = net.ReadFloat()
+    tbl.MMeleeXP = net.ReadFloat()
+    tbl.MMeleeLvl = net.ReadFloat()
+    tbl.MMeleeReqXP = net.ReadFloat()
+    tbl.MPvPXP = net.ReadFloat()
+    tbl.MPvPLvl = net.ReadFloat()
+    tbl.MPvPReqXP = net.ReadFloat()
 
     RefreshStats()
 end)
 
+local statstoshow = {
+    {"BestSurvivalTime", "Best survival time", function(val)
+        return string.format("%d:%02d:%02d", math.floor(val/3600), math.floor((val/60)%60), math.floor(val%60))
+    end},
+    {"TimePlayed", "Total time played", function(val)
+        return string.format("%d:%02d:%02d", math.floor(val/3600), math.floor((val/60)%60), math.floor(val%60))
+    end},
+    {"TimesJoined", "Times joined"},
+    {"MapsTransitioned", "Maps transitioned"},
+    {},
+    {"ItemsUsedHeal", "Heal items used"},
+    {"ItemsUsedDrink", "Drink items used"},
+    {"ItemsUsedFood", "Food items used"},
+    {"ItemsUsedAmmo", "Ammo items used"},
+    {"ItemsUsedMisc", "Misc items used"},
+    {},
+    -- {"DistanceSpentByWalk", "Distance spent by walking"},
+    -- {"DistanceSpentBySwim", "Distance spent by swimming"},
+    -- {"DistanceSpentInAir", "Distance spent while in air"},
+    -- {"DistanceSpentByVehicle", "Distnace spent by vehicle"},
+
+    {"ZombieKills", "Zombie kills"},
+    {"ZombieKillAssists", "Zombie kill assists"},
+    {"BossKills", "Boss kills"},
+    {"BossKillAssists", "Boss kill assists"},
+    {"ZombieDamageDealt", "Damage dealt to zombies", FormatNumber},
+    {},
+
+    -- {"HumansKilled", "Humans killed"},
+    -- {"HumansKillAssists", "Human kill assists"},
+    -- {"HumansDamageDealt", "Damage dealt to humans"},
+
+    {"LootFound", "Loot caches found"},
+    {"LootCommonFound", "Common loot caches found"},
+    {"LootUncommonFound", "Uncommon loot caches found"},
+    {"LootRareFound", "Rare loot caches found"},
+    {"LootEpicFound", "Epic loot caches found"},
+    {"LootLegendaryFound", "Legendary loot caches found"},
+    {"LootFactionFound", "Faction loot caches found"},
+    {"LootBossFound", "Boss loot caches found"},
+    {},
+
+    {"PlayersKilled", "Players killed"},
+    -- {"PlayersKillAssists", "Player kill assists"},
+    -- {"PlayersDamageDealt", "Damage dealt to players"},
+    {},
+
+    {"CashGainedByItemSell", "Cash gained from selling items"},
+    {"CashGainedByBounty", "Cash gained from bounties"},
+    {"CashGainedByLvlup", "Cash gained from leveling up"},
+    {"CashGainedByMastery", "Cash gained from masteries"},
+    {},
+
+    {"CashSpentByItemBuy", "Cash spent by buying items"},
+    {"CashSpentByPerkResets", "Cash spent by buying items"},
+    {},
+
+    {"Deaths", "Deaths"},
+    {"DeathsByThirst", "Deaths from thirst"},
+    {"DeathsByHunger", "Deaths from hunger"},
+    {"DeathsByFatigue", "Deaths from fatigue"},
+    {"DeathsByInfection", "Deaths from infection"},
+    {"DeathsByZombies", "Deaths from zombies"},
+    {"DeathsByBoss", "Deaths from bosses"},
+    {"DeathsByHuman", "Deaths from humans"},
+    {"DeathsByPlayers", "Deaths from players"},
+    {"DeathsBySuicide", "Deaths from suicide"},
+    {"DeathsByFall", "Deaths from fall damage"},
+    {},
+}
+
 function StatsMenu(ent)
-    if not ent then return end
+    if not IsValid(ent) then return end
+    GAMEMODE.PlayerStatsSelectedPlr = ent
+
     local StatsFrame = vgui.Create("DFrame")
     StatsFrame:SetSize(700, 400)
     StatsFrame:Center()
-    StatsFrame:SetTitle(ent:GetName())
+    StatsFrame:SetTitle(ent:GetName().."'s stats")
     StatsFrame:SetDraggable(false)
     StatsFrame:SetVisible(true)
     StatsFrame:SetAlpha(0)
     StatsFrame:AlphaTo(255, 0.5, 0)
     StatsFrame:ShowCloseButton(true)
     StatsFrame:MakePopup()
-    StatsFrame.Paint = function()
-        draw.RoundedBox(2, 0, 0, StatsFrame:GetWide(), StatsFrame:GetTall(), Color(0, 0, 0, 200))
-        surface.SetDrawColor(150, 150, 0 ,255)
-        surface.DrawOutlinedRect(0, 0, StatsFrame:GetWide(), StatsFrame:GetTall())
+    StatsFrame.Paint = function(panel)
+        draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(0, 0, 0, 200))
+        surface.SetDrawColor(255, 255, 255 ,255)
+        surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
     end
+    StatsFrame.OnRemove = function(self)
+		hook.Remove("OnPauseMenuShow", self)
+	end
+	hook.Add("OnPauseMenuShow", StatsFrame, function()
+		if StatsFrame and StatsFrame:IsValid() and StatsFrame:IsVisible() then
+			StatsFrame:Close()
+			return false
+		end
+	end)
+
+    local list = vgui.Create("DScrollPanel", StatsFrame)
+    list:Dock(FILL)
 
     local loadtext = vgui.Create("DLabel", StatsFrame)
 	loadtext:SetFont("TEA.HUDFontSmall")
-	loadtext:SetColor(Color(205,205,205,255))
+	loadtext:SetColor(Color(205,205,205))
 	loadtext:SetText("Loading...")
 	loadtext:SetPos(20, 50)
 
-    local stats1 = vgui.Create("DLabel", StatsFrame)
-	stats1:SetFont("TEA.HUDFontSmall")
-	stats1:SetColor(Color(205,205,205,255))
-	stats1:SetText("")
-	stats1:SetPos(20, 50)
-    
-    local stats2 = vgui.Create("DLabel", StatsFrame)
-	stats2:SetFont("TEA.HUDFontSmall")
-	stats2:SetColor(Color(205,205,205,255))
-	stats2:SetText("")
-	stats2:SetPos(20, 75)
-    
-    local stats3 = vgui.Create("DLabel", StatsFrame)
-	stats3:SetFont("TEA.HUDFontSmall")
-	stats3:SetColor(Color(205,205,205,255))
-	stats3:SetText("")
-	stats3:SetPos(20, 100)
-    
-    local stats4 = vgui.Create("DLabel", StatsFrame)
-	stats4:SetFont("TEA.HUDFontSmall")
-	stats4:SetColor(Color(205,205,205,255))
-	stats4:SetText("")
-	stats4:SetPos(20, 125)
-
-    local stats5 = vgui.Create("DLabel", StatsFrame)
-	stats5:SetFont("TEA.HUDFontSmall")
-	stats5:SetColor(Color(205,205,205,255))
-	stats5:SetText("")
-	stats5:SetPos(20, 150)
-
-    local stats6 = vgui.Create("DLabel", StatsFrame)
-	stats6:SetFont("TEA.HUDFontSmall")
-	stats6:SetColor(Color(205,205,205,255))
-	stats6:SetText("")
-	stats6:SetPos(20, 175)
-    
 	RefreshStats = function() -- I'm a "bit of coder"... no?
         if !StatsFrame:IsValid() then return end
         loadtext:SetVisible(false)
-        stats1:SetText(translate.Format("besttimesurvived", util.ToMinutesSeconds(TargetStats.BestSurvivalTime)))
-        stats1:SizeToContents()
-        stats2:SetText(Format("Zombies killed in total: %s", TargetStats.ZombieKills))
-        stats2:SizeToContents()
-        stats3:SetText(Format("Total players killed on this server: %s", TargetStats.PlayersKilled))
-	    stats3:SizeToContents()
-        stats4:SetText(Format("Total deaths on this server: %s", TargetStats.Deaths))
-	    stats4:SizeToContents()
-        stats5:SetText(Format("Mastery Melee XP: %s / %s (Level %s)", math.floor(TargetStats.MMeleeXP), TargetStats.MMeleeReqXP, TargetStats.MMeleeLvl))
-	    stats5:SizeToContents()
-        stats6:SetText(Format("Mastery PvP XP: %s / %s (Level %s)", math.floor(TargetStats.MPvPXP), TargetStats.MPvPReqXP, TargetStats.MPvPLvl))
-	    stats6:SizeToContents()
+
+        local lasttxt
+        for _,val in ipairs(statstoshow) do
+            if lasttxt and #val == 0 then
+                lasttxt:DockMargin(0, 0, 0, 28)
+                continue
+            end
+            local value = GAMEMODE.PlayerStatsCache[ent][val[1]] or 0
+
+            local txt = vgui.Create("DLabel")
+            lasttxt = txt
+            list:AddItem(txt)
+            txt:Dock(TOP)
+            txt:SetText(val[2]..": "..(val[3] and val[3](value) or value))
+            txt:SetFont("TEA.HUDFont")
+            txt:SetWrap(true)
+            txt:DockMargin(0, 0, 0, 4)
+        end
+    end
+
+    if GAMEMODE.PlayerStatsCache[ent] then
+        RefreshStats()
     end
 end

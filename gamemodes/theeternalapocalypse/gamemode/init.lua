@@ -968,6 +968,10 @@ function GM:PlayerInitialSpawn(ply, transition)
 		BossKillAssists = 0,
 		ZombieDamageDealt = 0,
 
+		HumansKilled = 0,
+		HumansKillAssists = 0,
+		HumansDamageDealt = 0,
+
 		LootFound = 0,
 		LootCommonFound = 0,
 		LootUncommonFound = 0,
@@ -979,6 +983,7 @@ function GM:PlayerInitialSpawn(ply, transition)
 
 		PlayersKilled = 0,
 		PlayersKillAssists = 0,
+		PlayersDamageDealt = 0,
 
 		CashGainedByItemSell = 0,
 		CashGainedByBounty = 0,

@@ -3,8 +3,8 @@ GM.AltName	= "After The End Reborn"
 GM.Author	= "Uklejamini"
 GM.Email	= ""
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.12.4" -- i love beta :)
-GM.DateVer	= "26.04.2026" -- Follows the DD.MM.YYYY format.
+GM.Version	= "0.12.5b" -- i love beta :)
+GM.DateVer	= "01.05.2026" -- Follows the DD.MM.YYYY format.
 GM.Credits = {
 	-- Assets
 	{"GSC Game World",			"For all the S.T.A.L.K.E.R. content",										""},
@@ -859,6 +859,46 @@ function GM:GetLootRarityName(id)
 	elseif id >= LOOTRARITY_LEGENDARY then
 		return "Legendary"
 	end
+end
+
+function FormatNumber(val, roundval)
+	local log10_value = math.floor(math.log10(val))
+
+
+	local txt
+	local negative = val < 0 and "-" or ""
+	roundval = roundval or 2
+	val = math.abs(val)
+	if val >= math.huge then return val end
+	if val >= 1e15 then
+		val = val / (10^log10_value)
+
+		txt = math.floor(val*(10^roundval))/(10^roundval) .."e"..log10_value
+	elseif val >= 1e12 then
+		val = val / 1e12
+
+		txt = math.floor(val*(10^roundval))/(10^roundval) .." T"
+	elseif val >= 1e9 then
+		val = val / 1e9
+
+		txt = math.floor(val*(10^roundval))/(10^roundval) .." B"
+	elseif val >= 1e6 then
+		val = val / 1e6
+
+		txt = math.floor(val*(10^roundval))/(10^roundval) .." M"
+	elseif val >= 1e3 then
+		val = val / 1e3
+
+		txt = math.floor(val*(10^roundval))/(10^roundval) .." K"
+	elseif val == 0 then txt = 0
+	elseif val > -(10^-(roundval or 1)) and val < 10^-(roundval or 1) then
+		val = val / (10^log10_value)
+
+		txt = math.floor(val*(10^roundval))/(10^roundval) .."e-"..math.abs(log10_value)
+	end
+
+	if txt then return negative..txt end
+	return negative..math.Round(val*(10^(roundval or 1)))/(10^(roundval or 1))
 end
 
 function HammerUnitsToMeters(units)

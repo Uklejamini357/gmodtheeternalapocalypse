@@ -24,14 +24,15 @@ function GM:OpenTasksMenu()
 		surface.SetDrawColor(150, 150, 0,255)
 		surface.DrawOutlinedRect(0, 0, self:GetWide(), self:GetTall())
 	end
-	tasks.Think = function(self)
-		if input.IsKeyDown(KEY_ESCAPE) and gui.IsGameUIVisible() then
-			timer.Simple(0, function()
-				self:Remove()
-			end)
-			gui.HideGameUI()
-		end
+	tasks.OnRemove = function(self)
+		hook.Remove("OnPauseMenuShow", self)
 	end
+	hook.Add("OnPauseMenuShow", tasks, function()
+		if tasks and tasks:IsValid() and tasks:IsVisible() then
+			tasks:Close()
+			return false
+		end
+	end)
 	
 	self.TasksPanel = tasks
 
