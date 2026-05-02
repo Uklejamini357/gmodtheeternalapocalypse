@@ -280,7 +280,7 @@ LANG.zombies_mb = "Miniboss Zombies"
 LANG.zombies_b = "Boss Zombies"
 
 LANG.yes = "Yes"
-LANG.no = "Mo"
+LANG.no = "No"
 
 
 --Items
