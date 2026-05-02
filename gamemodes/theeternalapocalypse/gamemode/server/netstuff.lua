@@ -259,7 +259,7 @@ net.Receive("CashBounty", function(len, ply)
 	ply.Money = tonumber(ply.Money) + tonumber(ply.Bounty)
 	if GAMEMODE:GetDebug() >= DEBUGGING_NORMAL then print(ply:Nick().." cashed in their bounty and received "..tonumber(math.floor(ply.Bounty)).." "..GAMEMODE.Config["Currency"].."s") end
 	ply:SystemMessage(Format("You cashed in your bounty and received %s %ss!", tonumber(math.floor(ply.Bounty)), GAMEMODE.Config["Currency"]), Color(205,255,205), true)
-	ply:AddStatistics("CashGainedByBounty", ply.Bounty)
+	ply:AddStatisticPoints("CashGainedByBounty", ply.Bounty)
 	ply.Bounty = 0
 	ply:SetNWInt("PlyBounty", ply.Bounty)
 

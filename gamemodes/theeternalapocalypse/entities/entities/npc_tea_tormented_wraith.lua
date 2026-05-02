@@ -112,8 +112,8 @@ function ENT:SpecialSkill1()
 	self.Ability1CD = CurTime() + self.ZombieStats["Ability1Cooldown"]
 end
 
-function ENT:AttackPlayer(ply)
-	if !ply:IsValid() or !self:IsValid() then return false end
+function ENT:AttackPlayer(target)
+	if !target:IsValid() or !self:IsValid() then return false end
 	self:EmitSound(table.Random(self.AttackSounds), 100, math.random(95, 105))
 	self:SetMaterial("")
 
@@ -126,14 +126,14 @@ function ENT:AttackPlayer(ply)
 	self:DelayedCallback(self.ZombieStats["StrikeDelay"], function()
 	if !self:IsValid() or self:Health() < 1 then return end
 
-		if (IsValid(ply) and self:GetRangeTo(ply) <= self.ZombieStats["Reach"] * 1.3) then
-			self:ApplyPlayerDamage(ply, self.ZombieStats["Damage"], -self.ZombieStats["Force"], self.ZombieStats["Infection"])
-			if ply:IsPlayer() then
-				ply:SlowPlayerDown(0.15, 5)
+		if (IsValid(target) and self:GetRangeTo(target) <= self.ZombieStats["Reach"] * 1.3) then
+			self:ApplyPlayerDamage(target, self.ZombieStats["Damage"], -self.ZombieStats["Force"], self.ZombieStats["Infection"])
+			if target:IsPlayer() then
+				target:SlowPlayerDown(0.15, 5)
 
 				net.Start("WraithBlind")
 				net.WriteInt(251, 10)
-				net.Send(ply)
+				net.Send(target)
 			end
 		end
 	end)

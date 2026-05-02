@@ -439,7 +439,7 @@ net.Receive("SellItem", function(len, ply)
 	if item.OnSell then
 		item.OnSell(ply, amt)
 	end
-	ply:AddstatisticPoints("CashGainedByItemSell", gains)
+	ply:AddStatisticPoints("CashGainedByItemSell", gains)
 	GAMEMODE:SendInventory(ply)
 	GAMEMODE:NetUpdatePeriodicStats(ply)
 end)
