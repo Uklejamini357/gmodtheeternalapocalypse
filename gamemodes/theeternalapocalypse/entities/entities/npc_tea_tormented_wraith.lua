@@ -139,11 +139,10 @@ function ENT:AttackPlayer(ply)
 	end)
 
 
-	self:DelayedCallback(self.ZombieStats["StrikeDelay"] * 1.2, function()
-		if (IsValid(ply) and !ply:Alive()) then
-			self.target = nil
-		end
-	end)
+	if target:IsValid() and (target:IsPlayer() and !target:Alive() or (target:IsNPC() or target:IsNextBot()) and !target.IsZombie and target:Health() <= 0) then
+		self.target = nil
+		self:FindTarget()
+	end
 
 	self:DelayedCallback(1, function()
 	self:SetMaterial("models/effects/vol_lightmask01")

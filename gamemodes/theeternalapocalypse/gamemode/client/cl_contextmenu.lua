@@ -78,13 +78,14 @@ function GM:CMenu()
 			if wep.Primary then
 				local wep_prim = wep.Primary
 				local class = wep:GetClass()
-				local delay = math.Round(wep_prim.Delay or 1 / ((wep.RPM or wep_prim.RPM or 1) / 60) or 1, 3)
+				local delay = math.Round(wep.Delay or wep_prim.Delay or 1 / ((wep.RPM or wep_prim.RPM or 1) / 60) or 1, 3)
 
 				local usemulshots = wep_prim.NumShots and wep_prim.NumShots ~= 0 and wep_prim.NumShots ~= 1
-				local dmg,dmgmin = wep.DamageMax or wep_prim.Damage, wep.DamageMin
+				local numshots = wep.Num or wep_prim.NumberOfShots or wep_prim.NumShots
+				local dmg,dmgmin = wep.DamageMax or wep.Damage or wep_prim.Damage, wep.DamageMin
 				draw.DrawText(translate.Format("wep_damage",
-					usemulshots and (dmgmin and math.Round(dmgmin, 2).."~"..math.Round(dmg, 2) or math.Round(dmg, 2).." x ".. wep_prim.NumShots) or 
-					dmgmin and math.Round(dmgmin, 2).."~"..math.Round(dmg, 2) or math.Round(dmg, 2), math.Round((usemulshots and dmg * wep_prim.NumShots or dmg or 0) / (delay), 2)
+					usemulshots and (dmgmin and math.Round(dmgmin, 2).."~"..math.Round(dmg, 2) or math.Round(dmg, 2).." x ".. numshots) or 
+					dmgmin and math.Round(dmgmin, 2).."~"..math.Round(dmg, 2) or math.Round(dmg, 2), math.Round((usemulshots and dmg * (numshots) or dmg or 0) / (delay), 2)
 				), "TEA.HUDFontSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 				y = y - 15
 

@@ -338,12 +338,10 @@ function ENT:RunBehaviour()
 							net.Send(target)
 						end
 
-					end
-				end)
-
-				self:TimedEvent(0.45, function()
-					if (IsValid(target) and !target:Alive()) then
-						target.target = nil
+						if target:IsValid() and (target:IsPlayer() and !target:Alive() or (target:IsNPC() or target:IsNextBot()) and !target.IsZombie and target:Health() <= 0) then
+							self.target = nil
+							self:FindTarget()
+						end
 					end
 				end)
 
