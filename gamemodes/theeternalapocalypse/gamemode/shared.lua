@@ -3,8 +3,8 @@ GM.AltName	= "After The End Reborn"
 GM.Author	= "Uklejamini"
 GM.Email	= ""
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.12.5b" -- i love beta :)
-GM.DateVer	= "01.05.2026" -- Follows the DD.MM.YYYY format.
+GM.Version	= "0.12.5" -- i love beta :)
+GM.DateVer	= "02.05.2026" -- Follows the DD.MM.YYYY format.
 GM.Credits = {
 	-- Assets
 	{"GSC Game World",			"For all the S.T.A.L.K.E.R. content",										""},
@@ -26,9 +26,11 @@ GM.Credits = {
 	{"Anyone else I forgot",	"Various contributions",													""},
 }
 GM.RecentChangelogs = {
-	{"Added safezones", Color(255,255,210)},
-	{"Added hints on spawn", Color(255,255,210)},
-	{"Changed main menu a bit", Color(255,255,210)},
+	{"Added more statistics", Color(255,255,210)},
+	{"Added 3 new masteries", Color(255,255,210)},
+	{"Added 2 new tasks", Color(255,255,210)},
+
+	{"Fixed task dealer", Color(255,255,210)},
 }
 
 DeriveGamemode("sandbox")

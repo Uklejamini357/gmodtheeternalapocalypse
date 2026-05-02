@@ -11,7 +11,6 @@ function meta:GainMasteryXP(amount, type)
         if self.MasteryPvPXP >= self:GetReqMasteryPvPXP() then self:GainMasteryLevel("PvP") end
     else return
     end
-    GAMEMODE:NetUpdateStatistics(self)
     net.Start("GainMasteryProgress")
     net.WriteString(type)
     net.WriteFloat(amount)
@@ -38,6 +37,5 @@ function meta:GainMasteryLevel(type)
 
     self:AddStatisticPoints("CashGainedByMastery", cashreward)
 
-    GAMEMODE:NetUpdateStatistics(self)
     GAMEMODE:NetUpdatePeriodicStats(self)
 end

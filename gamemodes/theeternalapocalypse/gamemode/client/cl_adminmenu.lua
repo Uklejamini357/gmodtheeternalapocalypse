@@ -78,8 +78,7 @@ function GM:AdminMenu()
 	pAdmMenuFrame = AdmMenuFrame
 
 	local PropertySheet = vgui.Create("DPropertySheet", AdmMenuFrame)
-	PropertySheet:SetPos(5, 20)
-	PropertySheet:SetSize(990, 680)
+	PropertySheet:Dock(FILL)
 	PropertySheet:SetFadeTime(0)
 	PropertySheet.Paint = function(panel)
 		surface.SetDrawColor(0, 0, 0, 50)
@@ -136,7 +135,7 @@ function GM:AdminMenu()
 
 	
 	local AdminCmds = vgui.Create("DPanel", PropertySheet)
-	AdminCmds:SetSize(AdmMenuFrame:GetWide() - 20, AdmMenuFrame:GetTall() - 20)
+	AdminCmds:Dock(FILL)
 	AdminCmds.Paint = function(self, w, h)
 		draw.RoundedBox(2, 0, 0, w, h, Color(0, 0, 0, 100))
 		surface.SetDrawColor(0, 0, 0, 0)
@@ -254,12 +253,41 @@ function GM:AdminMenu()
 		RunConsoleCommand("tea_sadmin_clearprops")
 	end
 
+	if TEADevCheck(pl) then
+		local devactions = vgui.Create("DButton", AdminCmds)
+		devactions:SetSize(120, 30)
+		devactions:SetPos(20, 600)
+		devactions:SetText("Dev actions")
+		devactions:SetTextColor(Color(255, 255, 255))
+		devactions.Paint = function(panel)
+			local col = HSVToColor(SysTime()*55, 1, 0.9)
+			surface.SetDrawColor(col.r, col.g, col.b, 255)
+			surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
+			col = HSVToColor(75 + SysTime()*50, 1, 0.88)
+			col.a = 130
+			draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), col)
+		end
+		devactions.DoClick = function()
+			local d = DermaMenu()
+			d:AddOption("Load main menu", function()
+				self:LoadMainMenu()
+			end)
+			d:AddOption("Load trader menu", function()
+				self:OpenTraderMenu()
+			end)
+			d:AddOption("Load taskdealer menu", function()
+				self:OpenTasksMenu()
+			end)
+
+			d:Open()
+		end
+	end
+
 
 
 
 	local SpawnMenu = vgui.Create("DPanelList", PropertySheet)
-	SpawnMenu:SetSize(690, 500)
-	SpawnMenu:SetPos(5, 25)
+	SpawnMenu:Dock(FILL)
 	SpawnMenu:EnableVerticalScrollbar(true)
 	SpawnMenu:EnableHorizontal(true)
 	SpawnMenu:SetSpacing(10)
@@ -269,8 +297,7 @@ function GM:AdminMenu()
 	end
 
 	local SpawnMenuProperties = vgui.Create("DPropertySheet", SpawnMenu)
-	SpawnMenuProperties:SetPos(5, 0)
-	SpawnMenuProperties:SetSize(990, 650)
+	SpawnMenuProperties:Dock(FILL)
 	SpawnMenuProperties.Paint = function(panel)
 		surface.SetDrawColor(0, 0, 0, 50)
 		surface.DrawRect(0, 0, panel:GetWide(), panel:GetTall())
@@ -286,8 +313,8 @@ function GM:AdminMenu()
 	local buypanel = {}
 	for i=1,6 do
 		buypanel[i] = vgui.Create("DPanelList")
-		buypanel[i]:SetSize(wide-110, tall-65)
-		buypanel[i]:SetPos(5, 25)
+		buypanel[i]:Dock(FILL)
+		buypanel[i]:DockMargin(0, 5, 0, 0)
 		buypanel[i]:EnableVerticalScrollbar(true)
 		buypanel[i]:EnableHorizontal(true)
 		buypanel[i]:SetSpacing(10)
@@ -448,7 +475,7 @@ function GM:AdminMenu()
 	-- SpawnMenuProperties:AddSheet(translate.Get("items_category_7"), buypanel[7], "icon16/basket.png", false, false, translate.Get("items_category_7_d"))
 
 	local MapConfig = vgui.Create("DPanel", PropertySheet)
-	MapConfig:SetSize(AdmMenuFrame:GetWide() - 20, AdmMenuFrame:GetTall() - 20)
+	MapConfig:Dock(FILL)
 	MapConfig.Paint = function(self, w, h)
 		draw.RoundedBox(2, 0, 0, w, h, Color(0, 0, 0, 100))
 	end
@@ -467,7 +494,10 @@ function GM:AdminMenu()
 	click:DockMargin(20, 10, 20, 0)
 	click.DoClick = function()
 		local d = DermaMenu(true)
-		d:AddOption(translate.Get("zombies"), function() RunConsoleCommand("tea_clearspawns", "zombies", "all") end)
+		d:AddOption(translate.Get("zombies"), function() Derma_Query("Are you sure about that?", "Confirm", translate.Get("yes"), function()
+				RunConsoleCommand("tea_clearspawns", "zombies", "all")
+			end, translate.Get("no"))
+		end)
 		d:AddOption(translate.Get("loot"), function() RunConsoleCommand("tea_clearspawns", "loot", "all") end)
 		d:AddOption(translate.Get("traders"), function() RunConsoleCommand("tea_clearspawns", "traders", "all") end)
 		d:AddOption(translate.Get("airdrops"), function() RunConsoleCommand("tea_clearspawns", "airdrops", "all") end)
@@ -535,13 +565,14 @@ function GM:AdminMenu()
 	end
 
 	local OpenwManager = vgui.Create("DPanel", PropertySheet)
-	OpenwManager:SetSize(AdmMenuFrame:GetWide() - 20, AdmMenuFrame:GetTall() - 20)
+	OpenwManager:Dock(FILL)
 	OpenwManager.Paint = function(self, w, h)
 		draw.RoundedBox(2, 0, 0, w, h, Color(0, 0, 0, 100))
 	end
 
 	TransitionsView = vgui.Create("DListView", OpenwManager)
-	TransitionsView:SetSize(OpenwManager:GetWide(), OpenwManager:GetTall() - 80)
+	TransitionsView:Dock(FILL)
+	TransitionsView:DockMargin(0, 0, 0, 80)
 	TransitionsView.Paint = function(this)
 		surface.SetDrawColor(85,85,85,255)
 		surface.DrawRect(0,0,this:GetWide(), this:GetTall())
@@ -559,8 +590,8 @@ function GM:AdminMenu()
 	column = TransitionsView:AddColumn("StartAng")
 
 	local OpenwManagerButton = vgui.Create("DButton", OpenwManager)
-	OpenwManagerButton:SetSize(120, 30)
-	OpenwManagerButton:SetPos(20, OpenwManager:GetTall() - 70)
+	OpenwManagerButton:Dock(BOTTOM)
+	OpenwManagerButton:DockMargin(180, 0, 180, 40)
 	OpenwManagerButton:SetText(translate.Get("ow_refreshdata"))
 	OpenwManagerButton:SetTextColor(Color(255, 255, 255))
 	OpenwManagerButton.Paint = function(panel)

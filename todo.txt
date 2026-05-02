@@ -5,20 +5,36 @@ maps lua
 and other stuff
 
 v0.12.5:
-Add more tasks
+Add more tasks -- moved to v0.12.7 update
 Add more statistics
-Add more masteries
+Add more masteries -- moved to v0.12.7 update
 
 v0.12.6:
 Add random events.. this has been missing since a long time.
 Make next boss spawn, next airdrop spawn carry over to next session
 Remove what ammo weapons use from descriptions. Instead, add another text string to the details (inside descriptions) displaying what ammo the gun uses.
 
+v0.12.7:
+Add more tasks -- moved from v0.12.5 update
+Add more masteries -- moved from v0.12.5 update
+New admin command to force
+
+v0.12.8:
+Add more translation strings
+
+v0.12.9:
+Add more admin logging?
 
 v0.13.0:
 Add Human SNPC's spawns
 Add Reputation system (Affects NPC's only, but also some players)
 Items dropping on death (not just for currently holding weapons, but also in inventory) <-- having a % chance to drop on death, not making as hardcore like in dayz
+
+v0.13.1:
+Add new mechanic to map transitions:
+- Cannot go to another map without any intel.
+- Intel must be bought from the trader to be able to pass to new areas.
+- Map transitions with 0 cost are free to pass without any need for intel.
 
 
 v0.14.0:

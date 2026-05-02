@@ -375,9 +375,6 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 
 	ply:SetStatisticPoint("BestSurvivalTime", math.floor(math.max(ply:GetStatisticPoints("BestSurvivalTime"), survived)))
 	ply.SurvivalTime = CurTime()
-	timer.Simple(0, function()
-		self:NetUpdateStatistics(ply)
-	end)
 /* 
 	if attacker:IsPlayer() and (ply:Team() == attacker:Team()) and attacker != ply and not (ply:Team() == TEAM_LONER or attacker:Team() == TEAM_LONER) then
 		attacker:AddFrags(-1)
@@ -400,7 +397,6 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 
 		local lvl = math.min(60, ply.Level)
 		timer.Simple(1, function() attacker:GainMasteryXP(math.Rand(11 + (0.15 * lvl), 15 + (0.18 * lvl)), "PvP") end)
-		self:NetUpdateStatistics(attacker)
 	elseif attacker.IsZombie and (attacker:IsNPC() or attacker:IsNextBot()) then
 		local boss = attacker.BossMonster
 		if self:GetInfectionLevel() > 0 then

@@ -180,7 +180,7 @@ function GM:CreateScoreboardInv()
 							net.Start("UpdateTargetStats")
 							net.WriteEntity(v)
 							net.SendToServer()
-							StatsMenu(v)
+							gamemode.Call("StatsMenu", v)
 						else
 							chat.AddText(Color(255,205,205,255), translate.Get("this_player_doesnt_exist"))
 						end

@@ -398,7 +398,6 @@ function GM:NPCReward(ent)
 				end
 
 				self:SendPlayerSurvivalStats(attacker)
-				self:NetUpdateStatistics(attacker)
 			end
 			killer:AddStatisticPoints("ZombieKills", 1)
 			killer:AddLifeStatisticPoints("ZombieKills", 1)

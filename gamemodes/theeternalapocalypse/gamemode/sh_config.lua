@@ -884,6 +884,7 @@ GM.PerksList = {
 }
 
 
+-- Doesn't work, yet
 GM.MasterySkillStats = {
 	["Melee"] = { -- Identifier for the mastery skill!
 		Name = "Melee", -- Name for the mastery
@@ -892,20 +893,20 @@ GM.MasterySkillStats = {
 		RewardDesc = "", -- What does it do?
 		EffRewardDesc = "", -- Currently effective% for the stat
 		MaxLevel = 20, -- Max level for the mastery
-		XPReq = function(pl, lvl)
+		XPReq = function(pl, mlvl)
 			local xpreq = 984
 			local addexpperlevel = 165
 			local addexpperlevel2 = 1.161
 
-			local mlvl = SERVER and pl.MasteryMeleeLevel or MyMMeleelvl
+			local mlvl = pl.MasteryMeleeLevel
 
 			return math.floor(xpreq + (mlvl * addexpperlevel) ^ addexpperlevel2)
 		end,
-		OnLevelup = function(pl, lvl)
+		OnLevelup = function(pl, mlvl)
 			
 		end,
-		GetStatEffectiveVal = function(pl, lvl)
-			return math.min(20, lvl)*0.005
+		GetStatEffectiveVal = function(pl, mlvl)
+			return math.min(20, mlvl)*0.005
 		end
 	},
 
@@ -916,12 +917,14 @@ GM.MasterySkillStats = {
 		RewardDesc = "",
 		EffRewardDesc = "",
 		MaxLevel = 20,
-		XPReq = function(pl, lvl)
+		XPReq = function(pl, mlvl)
 			local expreq = 593
 			local addxpprlevel = 85
 			local addexpperlevel2 = 1.153
 
-			local mlvl = SERVER and self.MasteryPvPLevel or MyMPvplvl
+			if !mlvl then
+				mlvl = pl.MasteryPvPLevel
+			end
 
 			return math.floor(expreq + (mlvl * addxpprlevel) ^ addexpperlevel2)
 		end,
@@ -932,7 +935,7 @@ GM.MasterySkillStats = {
 			return math.min(20, lvl)*0.005
 		end
 	},
-
+--[[
 	["Survivor"] = {
 		Name = "Survivor",
 		Description = "The excess damage has been making your body getting used to it, resulting it in becoming more resilient.",
@@ -945,7 +948,7 @@ GM.MasterySkillStats = {
 			local addexpperlevel = 165
 			local addexpperlevel2 = 1.161
 
-			local mlvl = SERVER and pl.MasteryMeleeLevel or MyMMeleelvl
+			local mlvl = pl.MasteryMeleeLevel
 
 			return math.floor(xpreq + (mlvl * addexpperlevel) ^ addexpperlevel2)
 		end,
@@ -969,7 +972,7 @@ GM.MasterySkillStats = {
 			local addexpperlevel = 165
 			local addexpperlevel2 = 1.161
 
-			local mlvl = SERVER and pl.MasteryMeleeLevel or MyMMeleelvl
+			local mlvl = pl.MasteryMeleeLevel
 
 			return math.floor(xpreq + (mlvl * addexpperlevel) ^ addexpperlevel2)
 		end,
@@ -993,7 +996,7 @@ GM.MasterySkillStats = {
 			local addexpperlevel = 165
 			local addexpperlevel2 = 1.161
 
-			local mlvl = SERVER and pl.MasteryMeleeLevel or MyMMeleelvl
+			local mlvl = pl.MasteryMeleeLevel
 
 			return math.floor(xpreq + (mlvl * addexpperlevel) ^ addexpperlevel2)
 		end,
@@ -1004,7 +1007,7 @@ GM.MasterySkillStats = {
 			return math.min(20, lvl)*0.005
 		end
 	},
-
+]]
 }
 
 

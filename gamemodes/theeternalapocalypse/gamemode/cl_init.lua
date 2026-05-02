@@ -337,10 +337,7 @@ function GM:Initialize()
 
 	self:SetupFonts()
 
-	MyMMeleexp = 0
-	MyMMeleelvl = 0
-	MyMPvpxp = 0
-	MyMPvplvl = 0
+	self.MasterySkills = {}
 	
 	LocalInventory = {}
 	LocalVault = {}

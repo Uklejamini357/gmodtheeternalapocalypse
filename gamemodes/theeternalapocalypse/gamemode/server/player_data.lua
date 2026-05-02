@@ -711,7 +711,6 @@ function GM:GainPrestige(ply)
 
 	self:NetUpdatePeriodicStats(ply)
 	self:NetUpdatePerks(ply)
-	self:NetUpdateStatistics(ply)
 
 	ply:SetNWInt("PlyLevel", ply.Level)
 	ply:SetNWInt("PlyPrestige", prestige)
@@ -760,7 +759,6 @@ function GM:FullyUpdatePlayer(ply)
 	self:SendInventory(ply)
 	self:NetUpdatePeriodicStats(ply)
 	self:NetUpdatePerks(ply)
-	self:NetUpdateStatistics(ply)
 	self:SendPlayerPerksUnlocked(ply)
 	ply:RefreshTasksStats()
 

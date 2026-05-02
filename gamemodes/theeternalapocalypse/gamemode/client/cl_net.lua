@@ -146,21 +146,6 @@ net.Receive("tea_itemuse", function()
 	pl.UsingItemCanMove = canmove
 end)
 
-net.Receive("UpdateStatistics", function(length)
-	local pl = LocalPlayer()
-
-	if not pl:IsValid() then return end
-	if not pl.Statistics then pl.Statistics = {} end
-	for stat, value in pairs(net.ReadTable()) do
-		pl.Statistics[stat] = value
-	end
-
-	MyMMeleexp = net.ReadFloat()
-	MyMMeleelvl = net.ReadFloat()
-	MyMPvpxp = net.ReadFloat()
-	MyMPvplvl = net.ReadFloat()
-end)
-
 net.Receive("UpdatePerks", function(length)
 	local me = LocalPlayer()
 	for statname, _ in SortedPairs(GAMEMODE.StatConfigs) do

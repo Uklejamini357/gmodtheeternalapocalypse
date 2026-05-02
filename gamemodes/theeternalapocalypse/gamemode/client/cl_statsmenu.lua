@@ -10,12 +10,15 @@ net.Receive("UpdateTargetStats", function(length)
     for stat,value in pairs(net.ReadTable()) do
         tbl[stat] = value
     end
-    tbl.MMeleeXP = net.ReadFloat()
-    tbl.MMeleeLvl = net.ReadFloat()
-    tbl.MMeleeReqXP = net.ReadFloat()
-    tbl.MPvPXP = net.ReadFloat()
-    tbl.MPvPLvl = net.ReadFloat()
-    tbl.MPvPReqXP = net.ReadFloat()
+
+    local mastery = {}
+    tbl.Mastery = mastery
+    mastery.Melee = mastery.Melee or {}
+    mastery.Melee.XP = math.Round(net.ReadFloat(), 2)
+    mastery.Melee.Level = net.ReadUInt(8)
+    mastery.PvP = mastery.PvP or {}
+    mastery.PvP.XP = math.Round(net.ReadFloat(), 2)
+    mastery.PvP.Level = net.ReadUInt(8)
 
     RefreshStats()
 end)
@@ -74,7 +77,7 @@ local statstoshow = {
     {},
 
     {"CashSpentByItemBuy", "Cash spent by buying items"},
-    {"CashSpentByPerkResets", "Cash spent by buying items"},
+    {"CashSpentByPerkResets", "Cash spent by resetting perks"},
     {},
 
     {"Deaths", "Deaths"},
@@ -88,17 +91,20 @@ local statstoshow = {
     {"DeathsByPlayers", "Deaths from players"},
     {"DeathsBySuicide", "Deaths from suicide"},
     {"DeathsByFall", "Deaths from fall damage"},
-    {},
+}
+local masteriestoshow = {
+    "Melee",
+    "PvP"
 }
 
-function StatsMenu(ent)
+function GM:StatsMenu(ent)
     if not IsValid(ent) then return end
     GAMEMODE.PlayerStatsSelectedPlr = ent
 
     local StatsFrame = vgui.Create("DFrame")
     StatsFrame:SetSize(700, 400)
     StatsFrame:Center()
-    StatsFrame:SetTitle(ent:GetName().."'s stats")
+    StatsFrame:SetTitle(ent == LocalPlayer() and "Your statistics" or ent:GetName().."'s statistics")
     StatsFrame:SetDraggable(false)
     StatsFrame:SetVisible(true)
     StatsFrame:SetAlpha(0)
@@ -122,6 +128,8 @@ function StatsMenu(ent)
 
     local list = vgui.Create("DScrollPanel", StatsFrame)
     list:Dock(FILL)
+    list.Stats = {}
+    list.MasterySkills = {}
 
     local loadtext = vgui.Create("DLabel", StatsFrame)
 	loadtext:SetFont("TEA.HUDFontSmall")
@@ -133,23 +141,104 @@ function StatsMenu(ent)
         if !StatsFrame:IsValid() then return end
         loadtext:SetVisible(false)
 
+        local tbl = GAMEMODE.PlayerStatsCache[ent]
+
+        if !list.StatisticsHeader then
+            local txt = vgui.Create("DLabel", list)
+            list.StatisticsHeader = txt
+            txt:Dock(TOP)
+            txt:DockMargin(0, 0, 0, 28)
+            txt:SetText("Statistics")
+            txt:SetFont("TEA.HUDFontLarge")
+        end
+
+
+
         local lasttxt
-        for _,val in ipairs(statstoshow) do
+        for id,val in ipairs(statstoshow) do
             if lasttxt and #val == 0 then
                 lasttxt:DockMargin(0, 0, 0, 28)
                 continue
             end
-            local value = GAMEMODE.PlayerStatsCache[ent][val[1]] or 0
+            local value = tbl[val[1]] or 0
 
-            local txt = vgui.Create("DLabel")
-            lasttxt = txt
-            list:AddItem(txt)
-            txt:Dock(TOP)
-            txt:SetText(val[2]..": "..(val[3] and val[3](value) or value))
-            txt:SetFont("TEA.HUDFont")
-            txt:SetWrap(true)
-            txt:DockMargin(0, 0, 0, 4)
+            local existingtxt = list.Stats[val[1]]
+            if existingtxt and IsValid(existingtxt) then
+                lasttxt = existingtxt
+                existingtxt:SetText(val[2]..": "..(val[3] and val[3](value) or value))
+            else
+                local txt = vgui.Create("DLabel", list)
+                lasttxt = txt
+                list.Stats[val[1]] = txt
+                txt:Dock(TOP)
+                txt:SetText(val[2]..": "..(val[3] and val[3](value) or value))
+                txt:SetFont("TEA.HUDFont")
+                txt:SetWrap(true)
+                txt:DockMargin(0, 0, 0, 4)
+            end
+
+            if id == #statstoshow then
+                lasttxt:DockMargin(0, 0, 0, 40)
+            end
         end
+
+        if !list.MasteryHeader then
+            local txt = vgui.Create("DLabel", list)
+            list.MasteryHeader = txt
+            txt:Dock(TOP)
+            txt:DockMargin(0, 0, 0, 28)
+            txt:SetText("Masteries")
+            txt:SetFont("TEA.HUDFontLarge")
+        end
+
+        local lastpanel
+        for _,id in pairs(masteriestoshow) do
+            local mastery = tbl.Mastery[id] or 0
+
+            local existingpanel = list.MasterySkills["Mastery."..id]
+            local reqxp = id == "Melee" and ent:GetReqMasteryMeleeXP(mastery.Level) or id == "PvP" and ent:GetReqMasteryPvPXP(mastery.Level) or 0
+            if existingpanel and IsValid(existingpanel) then
+                lastpanel = existingpanel
+                existingpanel.XPText:SetText("XP: ".. mastery.XP.."/"..reqxp.."  //  Level: "..mastery.Level)
+                existingpanel.XPBar.Fraction = math.min(1, mastery.XP/reqxp)
+            else
+                local panel = vgui.Create("Panel", list)
+                panel.Paint = function() end
+                lastpanel = panel
+                list.MasterySkills["Mastery."..id] = panel
+                panel:Dock(TOP)
+                panel:SetTall(75)
+                panel:DockMargin(0, 0, 0, 8)
+
+                local txt = vgui.Create("DLabel", panel)
+                txt:Dock(TOP)
+                txt:DockMargin(0, 0, 0, 4)
+                txt:SetText(id)
+                txt:SetFont("TEA.HUDFont")
+
+                local txt = vgui.Create("DLabel", panel)
+                panel.XPText = txt
+                txt:Dock(TOP)
+                txt:SetText("XP: ".. mastery.XP.."/"..reqxp.."  //  Level: "..mastery.Level)
+                txt:SetFont("TEA.HUDFontSmall")
+                txt:SetWrap(true)
+                txt:DockMargin(0, 0, 0, 4)
+
+                local bar = vgui.Create("Panel", panel)
+                panel.XPBar = bar
+                bar.Fraction = math.min(1, mastery.XP/reqxp)
+                bar.Paint = function(this, w, h)
+                    surface.SetDrawColor(255, 255, 255, 200)
+                    surface.DrawRect(0, 0, w, h)
+                    surface.SetDrawColor(255, 155, 155, 255)
+                    surface.DrawRect(1, 1, (w-2)*(this.Fraction), h-2)
+                end
+                bar:Dock(TOP)
+                bar:DockMargin(0, 0, 0, 20)
+            end
+        end
+
+
     end
 
     if GAMEMODE.PlayerStatsCache[ent] then

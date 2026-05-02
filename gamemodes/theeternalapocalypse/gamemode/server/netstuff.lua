@@ -8,7 +8,6 @@ util.AddNetworkString("WithdrawVault")
 util.AddNetworkString("tea_updatestamina") -- no functions for this in this file, see player_data.lua and cl_hud.lua
 util.AddNetworkString("UpdateStats")
 util.AddNetworkString("UpdatePeriodicStats")
-util.AddNetworkString("UpdateStatistics")
 util.AddNetworkString("UpdatePerks")
 util.AddNetworkString("UpdateInventory")
 util.AddNetworkString("UpdateTargetStats")
@@ -103,25 +102,13 @@ function GM:NetUpdatePerks(ply)
 end
 
 
-function GM:NetUpdateStatistics(ply)
-	net.Start("UpdateStatistics")
-	net.WriteTable(ply.Statistics)
-	net.WriteFloat(ply.MasteryMeleeXP)
-	net.WriteFloat(ply.MasteryMeleeLevel)
-	net.WriteFloat(ply.MasteryPvPXP)
-	net.WriteFloat(ply.MasteryPvPLevel)
-	net.Send(ply)
-end
-
 function GM:NetUpdatePlayerStatistics(ply, target)
 	net.Start("UpdateTargetStats")
 	net.WriteTable(target.Statistics)
 	net.WriteFloat(target.MasteryMeleeXP)
-	net.WriteFloat(target.MasteryMeleeLevel)
-	net.WriteFloat(target:GetReqMasteryMeleeXP())
+	net.WriteUInt(target.MasteryMeleeLevel, 8)
 	net.WriteFloat(target.MasteryPvPXP)
-	net.WriteFloat(target.MasteryPvPLevel)
-	net.WriteFloat(target:GetReqMasteryPvPXP())
+	net.WriteUInt(target.MasteryPvPLevel, 8)
 	net.Send(ply)
 end
 

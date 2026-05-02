@@ -637,7 +637,7 @@ function GM:InvMenu()
 		net.Start("UpdateTargetStats")
 		net.WriteEntity(ply)
 		net.SendToServer()
-		StatsMenu(ply)
+		gamemode.Call("StatsMenu", ply)
 	end
 	local tab = InvSheet1:AddSheet(translate.Get("props"), props, "icon16/brick.png", false, false, translate.Get("props_d"))
 	tab.Tab.DoClick = function()

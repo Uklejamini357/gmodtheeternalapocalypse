@@ -40,8 +40,8 @@ end
 
 local dynprogress = 0
 function GM:CMenu()
-	local scw = ScrW()
-	local sch = ScrH()
+	local pl = LocalPlayer()
+	local scw, sch = ScrW(), ScrH()
 
 	ContextMenu = vgui.Create("DFrame")
 	ContextMenu:SetSize(scw, sch)
@@ -82,10 +82,11 @@ function GM:CMenu()
 
 				local usemulshots = wep_prim.NumShots and wep_prim.NumShots ~= 0 and wep_prim.NumShots ~= 1
 				local numshots = wep.Num or wep_prim.NumberOfShots or wep_prim.NumShots
-				local dmg,dmgmin = wep.DamageMax or wep.Damage or wep_prim.Damage, wep.DamageMin
+				local dmg,dmgmin = wep.DamageMax or wep.Damage or wep_prim.Damage or 0, wep.DamageMin
 				draw.DrawText(translate.Format("wep_damage",
 					usemulshots and (dmgmin and math.Round(dmgmin, 2).."~"..math.Round(dmg, 2) or math.Round(dmg, 2).." x ".. numshots) or 
-					dmgmin and math.Round(dmgmin, 2).."~"..math.Round(dmg, 2) or math.Round(dmg, 2), math.Round((usemulshots and dmg * (numshots) or dmg or 0) / (delay), 2)
+					dmgmin and math.Round(dmgmin, 2).."~"..math.Round(dmg, 2) or 
+					math.Round(dmg, 2), math.Round((usemulshots and dmg * (numshots) or dmg or 0) / (delay), 2)
 				), "TEA.HUDFontSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 				y = y - 15
 
@@ -268,7 +269,12 @@ function GM:CMenu()
 	prestige.Paint = function(panel)
 		surface.SetDrawColor(150, 150, 200, 255)
 		surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
-		draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(0, 0, 0, 130))
+		if pl:GetTEALevel() >= pl:GetMaxLevel() then
+			local white = math.abs(math.sin(SysTime()*math.pi)) * 175
+			draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(white,white,white,130))
+		else
+			draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(0, 0, 0, 130))
+		end
 	end
 	prestige.DoClick = function()
 		RunConsoleCommand("-menu_context")
@@ -428,7 +434,7 @@ function GM:WantToPrestige()
 	local pframe = vgui.Create("DFrame")
 	pframe:SetSize(560,340)
 	pframe:Center()
-	pframe:SetTitle("Prestiging information panel")
+	pframe:SetTitle("Prestige")
 	pframe:SetDraggable(false)
 	pframe:SetVisible(true)
 	pframe:SetAlpha(0)
@@ -444,18 +450,17 @@ function GM:WantToPrestige()
 	local prestigetext = vgui.Create("DLabel", pframe)
 	prestigetext:SetFont("TEA.HUDFontSmall")
 	prestigetext:SetColor(Color(205,205,205))
+	prestigetext:SetAutoStretchVertical(true)
 	prestigetext:SetWrap(true)
-	prestigetext:SetText("Prestiging allows you to gain more levels depending on your Prestige level.\nYou will also be given some cash and a perk point if you prestige.\nYou need to be at least level "..pl:GetMaxLevel().." ("..self.MaxLevel.." plus "..self.LevelsPerPrestige.." depending on prestige) in order to prestige.")
-	prestigetext:SetSize(540, 60)
-	prestigetext:SetPos(10,30)
+	prestigetext:SetText("Prestiging will grant you +1 prestige and +1 perk point, along with other rewards such as money. If this is your first time prestiging, you will also gain access to new features such as Perks.\n\nYou need to be at least level "..pl:GetMaxLevel().." ("..self.MaxLevel.." + "..self.LevelsPerPrestige.."x"..math.min(math.Round((100-self.MaxLevel)/self.LevelsPerPrestige, 2), pl:GetTEAPrestige()).." depending on your current prestige) in order to do so.")
+	prestigetext:Dock(TOP)
 
 	local prestigetext2 = vgui.Create("DLabel", pframe)
 	prestigetext2:SetFont("TEA.HUDFontSmall")
 	prestigetext2:SetColor(Color(205,205,205))
 	prestigetext2:SetWrap(true)
-	prestigetext2:SetText(Format("You may %sprestige.", pl:GetTEALevel() >= pl:GetMaxLevel() and "" or "not "))
-	prestigetext2:SetSize(540, 240)
-	prestigetext2:SetPos(10,30)
+	prestigetext2:SetText(Format("Current level: %d / %d. You may %sprestige.", pl:GetTEALevel(), pl:GetMaxLevel(), pl:GetTEALevel() >= pl:GetMaxLevel() and "" or "not "))
+	prestigetext2:Dock(TOP)
 
 
 	local shouldprestige
@@ -489,7 +494,7 @@ function GM:WantToPrestige()
 			panel.Think = function(this)
 				this:SetTextColor(HSVToColor((RealTime() * 160) % 360, 0.5, 1))
 			end
-			prestigetext:SetText("WARNING: Once you prestige, there is no return!\nYour levels and skills will be reset and your skill points will not be refunded!\nAre you really sure you want to prestige??")
+			prestigetext:SetText("WARNING: Once you prestige, there is no return!\nYour levels and skills will be reset and your skill points will not be refunded!\nAre you really sure you want to prestige?")
 			prestigetext2:SetVisible(false)
 			shouldprestige = true
 		else
