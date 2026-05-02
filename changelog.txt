@@ -69,16 +69,62 @@ Nope.
 
 
 -------- v0.11.2e of 5th January 2025 --------
++ Added XM1014 elite into T.E.A
 
+/ Use Delay for items no longer floors to int's, float values now work!
+/ Adjust stuff in HUD
+/ Change trader menu
+/ Speed now works in % instead of additive values
+
+= Rebalanced all armors' speed penalties
+
+* Fix stuff in admin panel, add 2 new categories in spawn menu
+* Fix model for armor items from spawn item command
 
 -------- v0.11.2d of 5th January 2025 --------
+= Survivor no longer changes the requirements for health regeneration
+
+/ HP Regen applies every second
+/ No longer execute "M9KDefaultClip 0" concommand on each server start up, found a new solution (yey)
+/ Bullet DMG calculation for protection
 
 
 -------- v0.11.2c of 5th January 2025 --------
++ Added more models for armors
++ Added 6 new items, can be accessed only by admins
++ Added 10 new armor, including:
+    Berill-5M armor
+    Merc Sunrise armor
+    Mil SEVA prot. armor
+    SEVA prot. armor
+    Freedom SEVA prot. armor
+    Duty SEVA prot. armor
+    Monolith Heavy SEVA prot. armor
+    Duty Heavy SKAT Exoskeleton
+    Freedom Radiation Suit
+    Heavy Monolith Radiation Suit
+
+/ Changed items use sounds to sounds from sound/theeternalapocalypse/items directory (moving content files)
+
+* Fixed normal medkit not working
 
 
 -------- v0.11.2b of 5th January 2025 --------
++ Added GM:GetItemName, GM:GetItemDescription and GM:GetSkillDescription functions for more readable code
 
+= Player stats progressions rebalanced (for every second):
+    Hunger: 0.0435% -> 0.05%
+    Thirst: 0.052% -> 0.06%
+    Fatigue: 0.03% -> 0.032%
+= Rebalanced Survivor stat.
+
+/ Migrate items from sh_items.lua to "items" directory (this took way too long)
+/ Swap Ammo and Supplies item category ID's
+/ Changed stats to network every 1 second instead of 0.12s.
+/ Stamina networks every tick.
+
+
+* Fix typo of GM:GetEliteVariantSpawnChance function
 
 -------- v0.11.2a of 2nd January 2025 --------
 
