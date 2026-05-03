@@ -584,16 +584,16 @@ function GM:RenderScreenspaceEffects()
 		self.BloodMoonEnd = CurTime()
 	end
 	local bloodmoon = (self.BloodMoonActive and math.Clamp(CurTime() - (self.BloodMoonStart or 0), 0, 3) / 3 or
-	!self.BloodMoonActive and self.BloodMoonEnd+3 > CurTime() and math.Clamp(3 + self.BloodMoonEnd - CurTime(), 0, 3) / 3 or 0)
+	!self.BloodMoonActive and self.BloodMoonEnd+3 > CurTime() and math.Clamp(3 + self.BloodMoonEnd - CurTime(), 0, 3) / 3 or 0) * alive
 	local filters = {
 		{
 			["$pp_colour_addr"] = 0.15*bloodmoon,
-			["$pp_colour_addg"] = 0,
-			["$pp_colour_addb"] = 0,
+			["$pp_colour_addg"] = -0.05*bloodmoon,
+			["$pp_colour_addb"] = -0.05*bloodmoon,
 			["$pp_colour_brightness"] = 0,
 			["$pp_colour_contrast"] = contrast * alive * (1-bloodmoon*0.45),
 			["$pp_colour_colour"] = color,
-			["$pp_colour_mulr"] = 1.5*bloodmoon,
+			["$pp_colour_mulr"] = 0.5*bloodmoon,
 			["$pp_colour_mulg"] = 0,
 			["$pp_colour_mulb"] = 0
 		},
