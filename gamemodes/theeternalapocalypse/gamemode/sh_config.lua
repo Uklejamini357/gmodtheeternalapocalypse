@@ -72,13 +72,21 @@ GM.MapCycles = {
 }
 */
 
--- Enable Special events. Default: true (Doesn't work yet)
+-- Enable Special events. Default: true (Limited events functionality, only 2nd works)
+-- Unlike Airdrop and Boss spawns, it does not have player count requirement.
+-- UPDATE: ONLY 2ND EVENT WORKS AS OF NOW.
 -- Info:
 -- 1 - Zombie Fog: Limited Vision to 1500 hammer units, vision obscured by greenish fog, zombies defense increased by +20% and move 20% faster. Rewards increased.
--- 2 - Blood Moon: Vision turns more red and dark, zombie speed greatly increased (+60%), zombies deal +30% damage
+-- 2 - Blood Moon: The environment turns more reddish and dark. Zombie speed is greatly increased (+60%) and zombies deal +30% damage. +25% xp and cash rewards.
 -- 3 - Increased Infection Level gain from killing zombies by +50% and Infection Level does not decrease by its' own.
 -- 4 - Horde Event: Zombie spawn rate are 5x faster (minimum 2s delay) and zombies can see players 2.5x further.
 GM.EnableSpecialEventsSystem = true
+
+-- Interval between these special events.
+GM.SpecialEventInterval = 2840
+
+-- Chance for the special events to actually happen (0.2 = 20% chance)
+GM.SpecialEventChance = 0.2
 
 -- Weapon Damage Multiplier against zombies. Does not affect players!
 GM.WeaponDamageVsZombiesMul = {

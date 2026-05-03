@@ -17,6 +17,10 @@ function GM:LoadServerData()
             self:SetInfectionLevel(tbl.InfectionLevel, true)
         end
 
+        self.NextBossSpawn = tbl.NextBossSpawn or self.NextBossSpawn
+        self.NextAirdropSpawn = tbl.NextAirdropSpawn or self.NextAirdropSpawn
+        self.NextSpecialEvent = tbl.NextSpecialEvent or self.NextSpecialEvent
+
         self.ServerInitOsTime = tbl.ServerInitOsTime or os.time()
     else
         self:SetInfectionLevel(0, true)
@@ -30,6 +34,9 @@ function GM:SaveServerData()
 	Data["InfectionLevel"] = self:GetInfectionLevel()
 	Data["Statistics"] = self.StatTracker
 	Data["ServerInitOsTime"] = self.ServerInitOsTime
+	Data["NextBossSpawn"] = self.NextBossSpawn - CurTime()
+	Data["NextAirdropSpawn"] = self.NextAirdropSpawn - CurTime()
+	Data["NextSpecialEvent"] = self.NextSpecialEvent - CurTime()
 
 
 	local method = self.Config.SFS and sfs.encode or util.TableToJSON

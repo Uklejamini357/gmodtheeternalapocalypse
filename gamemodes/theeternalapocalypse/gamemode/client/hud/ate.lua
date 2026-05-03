@@ -115,38 +115,37 @@ function HUD:DrawHealth(pl, w, h, swep)
 end
 
 function HUD:DrawSwep(pl, w, h, swep)
-    if swep then
-        if (swep.MaxAmmoType != 0 or swep.MaxAmmoType2 != 0 or swep.AmmoClip1 > 0 or swep.AmmoClip2 > 0) then
-            IsAmmoBox = true
+    if IsValid(swep) then
+        local clip1, clip2 = swep:Clip1(), swep:Clip2()
+        local maxclip1, maxclip2 = swep:GetMaxClip1(), swep:GetMaxClip2()
+        local ammo1, ammo2 = pl:GetAmmoCount(swep:GetPrimaryAmmoType()), pl:GetAmmoCount(swep:GetSecondaryAmmoType())
+ 
+        if (ammo1 != 0 or ammo2 != 0 or clip1 > 0 or clip2 > 0) then
             --Ammo Box
             draw_RoundedBox(1, w - 270, h - 140, 250, 70, Color(0, 0, 0, 175))
             surface_SetDrawColor(200, 100, 0, 255)
             surface_DrawOutlinedRect(w - 270, h - 140, 250, 70)
 
+            draw_SimpleText(language.GetPhrase(swep.PrintName or swep:GetClass()), "TEA.HUDFontSmall", w - 30, h - 130, color_white, TEXT_ALIGN_RIGHT, 1)
+
             --Ammo Text
-            if (swep.AmmoClip2 != -1) then
-                draw_SimpleText("Ammo in Clip: ".. swep.AmmoClip1 .." / ".. swep.AmmoClip2, "TEA.HUDFontSmall", w - 259, h - 110, color_white, 0, 1)
-            else
-                draw_SimpleText("Ammo in Clip: ".. swep.AmmoClip1, "TEA.HUDFontSmall", w - 259, h - 110, color_white, 0, 1) 
-            end
+            draw_SimpleText("Ammo: ".. clip1 .." / ".. maxclip1.." ("..ammo1..")", "TEA.HUDFontSmall", w - 259, h - 110, color_white, 0, 1)
 
             --Ammo bar base
             draw_RoundedBox(2, w - 252, h - 98, 140, 20, Color(150, 100, 0, 100))
 
-            --Second Clip Ammo Text
-            draw_SimpleText("Ammo Remaining: ".. swep.MaxAmmoType, "TEA.HUDFontSmall", w - 259, h - 130, color_white, 0, 1)
-
             --Alt ammo Text
-            draw_SimpleText("ALT: ".. swep.MaxAmmoType2, "TEA.HUDFontSmall", w - 89, h - 90, color_white, 0, 1)
+            draw_SimpleText("Alt: ".. clip2.." / "..maxclip2.." ("..ammo2..")", "TEA.HUDFontSmall", w - 259, h - 130, color_white, 0, 1)
 
 
-            if swep.AmmoClip1 > 0 then
+            if clip1 > 0 then
                 --Ammo Bar
-                draw_RoundedBox(4, w - 252, h - 98, math.min(140, 140 * (swep.AmmoClip1 / swep.MaxAmmoClip1)), 20, Color(200, 110, 0, 200))
-                draw_RoundedBox(4, w - 252, h - 98, math.min(140, 140 * (swep.AmmoClip1 / swep.MaxAmmoClip1)), 10, Color(200, 150, 0, 50))
+                draw_RoundedBox(4, w - 252, h - 98, math.min(140, 140 * (clip1 / maxclip1)), 20, Color(200, 110, 0, 200))
+                draw_RoundedBox(4, w - 252, h - 98, math.min(140, 140 * (clip2 / maxclip2)), 10, Color(200, 150, 0, 50))
             end
-        else
-            IsAmmoBox = false
+            if clip2 > 0 then
+                draw_RoundedBox(4, w - 252, h - 88, math.min(140, 140 * (clip2 / maxclip2)), 10, Color(200, 150, 0, 150))
+            end
         end
     end
 end

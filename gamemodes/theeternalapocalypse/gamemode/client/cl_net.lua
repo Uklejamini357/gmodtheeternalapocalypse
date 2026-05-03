@@ -363,3 +363,29 @@ net.Receive("tea_lootpickup", function(len)
 		end
 	end
 end)
+
+net.Receive("tea_events", function(len)
+	local eventType = net.ReadUInt(4)
+	local start = net.ReadBool()
+
+	if eventType == EVENTTYPE_BLOODMOON then
+		GAMEMODE.BloodMoonActive = start
+		if start then
+			GAMEMODE.BloodMoonStart = CurTime()
+			chat.AddText(Color(190,0,0), "A blood moon is rising...")
+			chat.AddText(Color(255,0,0), "The zombies are greatly influenced by the blood moon, making them faster and stronger!")
+		else
+			GAMEMODE.BloodMoonEnd = CurTime()
+			chat.AddText(Color(95,190,0), "The blood moon is fading...")
+			chat.AddText(Color(125,255,0), "The zombies are no longer boosted...")
+		end
+	end
+end)
+
+net.Receive("tea_playerevent", function(len)
+	local eventType = net.ReadUInt(4)
+
+	if eventType == PLAYEREVENT_INITSPAWN then
+		GAMEMODE.SkyBoxCameraPos = net.ReadVector()
+	end
+end)

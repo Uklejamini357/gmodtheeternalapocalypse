@@ -3,7 +3,7 @@ GM.AltName	= "After The End Reborn" -- yes, it's a fork. what else did you expec
 GM.Author	= "Uklejamini"
 GM.Email	= ""
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.12.5"
+GM.Version	= "0.12.6b"
 GM.DateVer	= "03.05.2026" -- Follows the DD.MM.YYYY format.
 GM.Credits = {
 	-- Assets
