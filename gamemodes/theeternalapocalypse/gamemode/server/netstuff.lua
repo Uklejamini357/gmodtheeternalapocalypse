@@ -8,7 +8,6 @@ util.AddNetworkString("WithdrawVault")
 util.AddNetworkString("tea_updatestamina") -- no functions for this in this file, see player_data.lua and cl_hud.lua
 util.AddNetworkString("UpdateStats")
 util.AddNetworkString("UpdatePeriodicStats")
-util.AddNetworkString("UpdateStatistics")
 util.AddNetworkString("UpdatePerks")
 util.AddNetworkString("UpdateInventory")
 util.AddNetworkString("UpdateTargetStats")
@@ -103,26 +102,13 @@ function GM:NetUpdatePerks(ply)
 end
 
 
-function GM:NetUpdateStatistics(ply)
-	net.Start("UpdateStatistics")
-	net.WriteTable(ply.Statistics)
-	net.WriteFloat(ply.MasteryMeleeXP)
-	net.WriteFloat(ply.MasteryMeleeLevel)
-	net.WriteFloat(ply.MasteryPvPXP)
-	net.WriteFloat(ply.MasteryPvPLevel)
-	net.Send(ply)
-end
-
 function GM:NetUpdatePlayerStatistics(ply, target)
 	net.Start("UpdateTargetStats")
-	net.WriteString(target:Nick())
 	net.WriteTable(target.Statistics)
 	net.WriteFloat(target.MasteryMeleeXP)
-	net.WriteFloat(target.MasteryMeleeLevel)
-	net.WriteFloat(target:GetReqMasteryMeleeXP())
+	net.WriteUInt(target.MasteryMeleeLevel, 8)
 	net.WriteFloat(target.MasteryPvPXP)
-	net.WriteFloat(target.MasteryPvPLevel)
-	net.WriteFloat(target:GetReqMasteryPvPXP())
+	net.WriteUInt(target.MasteryPvPLevel, 8)
 	net.Send(ply)
 end
 
@@ -251,9 +237,7 @@ net.Receive("CashBounty", function(len, ply)
 	if !ply:IsValid() or !ply:Alive() then return false end
 
 	local trader = false
-	local plycheck = ents.FindInSphere(ply:GetPos(), 150)
-
-	for k, v in pairs(plycheck) do
+	for k, v in ipairs(ents.FindInSphere(ply:GetPos(), 150)) do
 		if v:GetClass() == "tea_trader" then trader = true break end
 	end
 	if !trader then ply:SystemMessage("You are not in a trader area!", Color(255,205,205), true) return false end
@@ -262,6 +246,7 @@ net.Receive("CashBounty", function(len, ply)
 	ply.Money = tonumber(ply.Money) + tonumber(ply.Bounty)
 	if GAMEMODE:GetDebug() >= DEBUGGING_NORMAL then print(ply:Nick().." cashed in their bounty and received "..tonumber(math.floor(ply.Bounty)).." "..GAMEMODE.Config["Currency"].."s") end
 	ply:SystemMessage(Format("You cashed in your bounty and received %s %ss!", tonumber(math.floor(ply.Bounty)), GAMEMODE.Config["Currency"]), Color(205,255,205), true)
+	ply:AddStatisticPoints("CashGainedByBounty", ply.Bounty)
 	ply.Bounty = 0
 	ply:SetNWInt("PlyBounty", ply.Bounty)
 
@@ -362,6 +347,7 @@ net.Receive("tea_perksreset", function(len, pl)
 	pl.Money = pl.Money - finalcost
 	pl.UnlockedPerks = {}
 	pl:SystemMessage("Reset all your perks and refunded perk points for "..finalcost.." "..GAMEMODE.Config["Currency"].."s!")
+	pl:AddStatisticPoints("CashSpentByPerkResets", finalcost)
 
 	pl:SetMaxHealth(GAMEMODE:CalcMaxHealth(pl))
 	pl:SetMaxArmor(GAMEMODE:CalcMaxArmor(pl))

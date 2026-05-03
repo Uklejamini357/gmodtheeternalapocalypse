@@ -105,27 +105,6 @@ LANG.placeblueprint = "Place Blueprint"
 
 --Categories
 
-LANG.inventory = "Inventory"
-LANG.inventory_d = "Manage your stuff"
-LANG.factions = "Factions"
-LANG.factions_d = "Join factions"
-LANG.scoreboard = "Scoreboard"
-LANG.scoreboard_d = "See who is online and how many killed players they have"
-LANG.help = "Help"
-LANG.help_d = "Shows a bit of info about this gamemode"
-LANG.crafting = "Crafting"
-LANG.crafting_d = "Craft something and use it for future purposes"
-LANG.statistics = "Statistics"
-LANG.statistics_d = "Here, you can view some of your statistics done on this server.\nSuch as how long you survived before getting killed."
-LANG.achievements = "Achievements"
-LANG.achievements_d = "See what is your next goal"
-LANG.props = "Props"
-LANG.props_d = "Build your props!"
-LANG.my_skills = "My Skills"
-LANG.my_skills_d = "Upgrade your stats"
-
---Categories
-
 LANG.inventory = "Инвентарь"
 LANG.inventory_d = "Тут ваши вещи"
 LANG.factions = "Фракции"
@@ -301,7 +280,7 @@ LANG.zombies_mb = "Miniboss Zombies"
 LANG.zombies_b = "Boss Zombies"
 
 LANG.yes = "Yes"
-LANG.no = "Mo"
+LANG.no = "No"
 
 
 --Items

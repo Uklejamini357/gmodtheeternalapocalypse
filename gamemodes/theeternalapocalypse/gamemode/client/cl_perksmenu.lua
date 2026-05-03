@@ -36,15 +36,15 @@ local function PrettySureYouDontWannaDoThis()
 		surface.SetDrawColor(150, 150, 0,255)
 		surface.DrawOutlinedRect(0, 0, this:GetWide(), this:GetTall())
 	end
-	perkresetconfirm.Think = function(this)
-		if input.IsKeyDown(KEY_ESCAPE) and gui.IsGameUIVisible() then
-			timer.Simple(0, function()
-				this:Remove()
-			end)
-			gui.HideGameUI()
-		end
+    perkresetconfirm.OnRemove = function(self)
+		hook.Remove("OnPauseMenuShow", self)
 	end
-
+	hook.Add("OnPauseMenuShow", perkresetconfirm, function()
+		if perkresetconfirm and perkresetconfirm:IsValid() and perkresetconfirm:IsVisible() then
+			perkresetconfirm:Close()
+			return false
+		end
+	end)
 
 	local txt = vgui.Create("DLabel", perkresetconfirm)
 	txt:SetFont("TEA.HUDFontSmall")
@@ -110,14 +110,15 @@ function GM:CallPerksMenu()
 		surface.SetDrawColor(150, 150, 0,255)
 		surface.DrawOutlinedRect(0, 0, this:GetWide(), this:GetTall())
 	end
-	perksvgui.Think = function(this)
-		if input.IsKeyDown(KEY_ESCAPE) and gui.IsGameUIVisible() then
-			timer.Simple(0, function()
-				this:Remove()
-			end)
-			gui.HideGameUI()
-		end
+	perksvgui.OnRemove = function(self)
+		hook.Remove("OnPauseMenuShow", self)
 	end
+	hook.Add("OnPauseMenuShow", perksvgui, function()
+		if perksvgui and perksvgui:IsValid() and perksvgui:IsVisible() then
+			perksvgui:Close()
+			return false
+		end
+	end)
 
 	local sheet = vgui.Create("DPropertySheet", perksvgui)
 	sheet:SetPos(5, 25)

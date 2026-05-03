@@ -161,18 +161,37 @@ end
 
 
 net.Receive("tea_taskassign", function(len, pl)
+	local taskdealer = false
+	for k, v in ipairs(ents.FindInSphere(pl:GetPos(), 150)) do
+		if v:GetClass() == "tea_trader" then taskdealer = true break end
+	end
+	if !taskdealer then pl:SystemMessage("You are not near a task dealer!", Color(255,205,205), true) return false end
+
+
 	local task = net.ReadString()
 
 	gamemode.Call("GiveTask", pl, task)
 end)
 
 net.Receive("tea_taskcancel", function(len, pl)
+	local taskdealer = false
+	for k, v in ipairs(ents.FindInSphere(pl:GetPos(), 150)) do
+		if v:GetClass() == "tea_trader" then taskdealer = true break end
+	end
+	if !taskdealer then pl:SystemMessage("You are not near a task dealer!", Color(255,205,205), true) return false end
+
 	local task = net.ReadString()
 
 	gamemode.Call("CancelTask", pl, task)
 end)
 
 net.Receive("tea_taskfinish", function(len, pl)
+	local taskdealer = false
+	for k, v in ipairs(ents.FindInSphere(pl:GetPos(), 150)) do
+		if v:GetClass() == "tea_trader" then taskdealer = true break end
+	end
+	if !taskdealer then pl:SystemMessage("You are not near a task dealer!", Color(255,205,205), true) return false end
+
 	local task = net.ReadString()
 
 	gamemode.Call("FinishTask", pl, task)

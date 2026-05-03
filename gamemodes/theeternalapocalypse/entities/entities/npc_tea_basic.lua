@@ -422,8 +422,8 @@ function ENT:GotoPos(pos)
 	elseif reachpos then
 		local result = self:MoveToPos(reachpos or target:GetPos(), {
 			tolerance = self.ZombieStats["Reach"],
-			maxage = self:GetRangeTo(target) >= 1500 and 2 or 1,
-			repath = self:GetRangeTo(target) >= 1500 and 2 or 1,
+			maxage = self:GetRangeTo(target) >= 1500 and 1.5 or 1,
+			repath = self:GetRangeTo(target) >= 1500 and 1.5 or 1,
 		})
 	end
 end
@@ -490,11 +490,10 @@ function ENT:AttackPlayer(target)
 	end)
 
 	-- check if we killed the guy and find a new target if we did
-	self:DelayedCallback(self.ZombieStats["StrikeDelay"] * 1.2, function()
-		if target:IsValid() and (target:IsPlayer() and !target:Alive() or (target:IsNPC() or target:IsNextBot()) and !target.IsZombie and target:Health() <= 0) then
-			self.target = nil
-		end
-	end)
+	if target:IsValid() and (target:IsPlayer() and !target:Alive() or (target:IsNPC() or target:IsNextBot()) and !target.IsZombie and target:Health() <= 0) then
+		self.target = nil
+		self:FindTarget()
+	end
 
 	return false
 end

@@ -1,7 +1,39 @@
 There's been a lot missed out...
 WORKING ON THIS CURRENTLY. even tho progress is slow asf
 
+-------- v0.12.5 --------
++ Add highlight for yourself in scoreboard
++ Added MORE STATISTICS
+
+; Reworked stats menu.
+
+/ Changed networking in a way so it no longer networks statistics constantly (which would consume a lot of bandwidth...)
+/ Zombies behavior changed a bit.
+
+* fix stuff
+* Fix Lua error for include lua files with the maps lua files
+* Fixed being able to accept, cancel and finish taskdealer quests when not near a task dealer
+* Fix the "no" typo in translation (WTF?!?)
+
+-------- v0.12.4 --------
++ ArcCW/ARC9 weapons compatibility!
++ Added usability for weapon icons (material png's) in inventory
++ Added ARC9 stalker 2 weapons (which won't be added in altho it's fully optional)
++ Added spanish translation (thanks, Sirtlan!)
++ Add very own-made thirdperson
++ Add VJ Classes for player for compatibility with VJ STALKER SNPC's
++ Map lua for each! Can be found in gamemode/maps directory (there are 2 as of now)
+
+/ Updated translations
+/ Make taskdealer and trader have notarget flag on, so VJ SNPC's don't target them
+/ [CUSTOM] Balanced the stalker2 weapons costs
+
 -------- v0.12.3 --------
+/ Zombies now do SLASH damage instead of CLUB damage
+/ Zombies target npc's better, altho.. hl2 npc's don't target them :(((, but VJ SNPC's do, as far as it has been tested
+
+= Balanced m9k weapon costs (fynally)
+= Made Barret M98B do 2.5x more damage to zombies
 
 -------- v0.12.2 --------
 
@@ -35,50 +67,143 @@ Nope.
 -------- v0.11.4a of 24th August 2025 --------
 
 -------- v0.11.4 of 5th August 2025 --------
++ Added SFS saving method
++ Added NEW FONTS
 
 
-+- Added and removed some background images whilst in the main menu
-+ Added Propane. It explodes with 500 damage and 450 radius upon a hard impact or if it's shot.
-+ Some new death messages
-+ (ADMIN) Added Admin Mode. Using this command as an admin will save your stats.
-+ (ADMIN) Added Sandbox hooks so they can't be done by a regular player. - Could be used to give weapon to self or spawn anything
-
-; Rewritten function for spawning loot caches
-; Props now spawn with the health depending on their mass and volume instead of 2000HP. Does not change color if damaged anymore.
-
-/ You can now spam click items in your inventory. (There is still a 0.25 seconds delay between using items!)
-/ Changed Infection now increases by 0.16% per second. The infection gets worse now...
-
-= RPG damage increased from to 560 and its' rocket now explodes within radius of 320 hammer units. Now only deals extra 1000 explosion damage on the target it directly hit instead of all targets within 50 radius.
-= Rockets can now fly for 5 seconds instead of 3 seconds
-
-* Build tool can now build faction structures again.
-* Fixed incorrect model for Sunrise Merc Armor
-* Heavy Tank Zombie no longer reflects damage if its' damage type is DMG_GENERIC
-* Fix zombie CanSeeTarget not working nearly all the time
-* Fix death messages for thirst, hunger, fatigue, infection.
-* Fix some death sounds
 
 -------- v0.11.3b of 7th June 2025 --------
++ Fists now have a passive mode
++ Adding experimental attachments item (THEY DO NOT WORK ATM)
 
+/ TEA Zombies no longer think if ai_disabled is set to 1.
+/ Edit the player death text when killed by player
+/ Sorting some functions
+/ Edited Stamina for sprinting, now you can sprint again after regaining at least 20% stamina instead of 30%
+
+* Fixed a typo in npc_tea_lord.lua
+
+! IMPORTANT:
+++ YOU MUST IMPORT SAVES FROM 0.11.3a AND BELOW AFTER UPDATING TO THIS VERSION ++
+++ The function was built to make the job easier for you: tea_sv_performplayerdataimport ++
+++ You must be a superadmin or run this command from console in order for this to work. ++
+++ If you just started at this version, you do not have to worry about it. ++
 
 -------- v0.11.3a of 28th January 2025 --------
++ Added Propane. It explodes with 500 damage and 450 radius upon a hard impact or if it's shot.
++ The gamemode now derives from sandbox, so admins can use the sandbox spawn menu and its' tools.
++ (ADMIN) Added Admin Mode. Using this command as an admin will save your stats.
++ New death messages
 
+- F3 button no longer does anything. (for now)
+- Removed 2 unused entities (optimization)
+
++- Removed background images for main menu, replaced with the 2 screenshots from the actual gamemode
+
+= Rockets now have fuel of 5 seconds instead of 3 seconds before falling down
+= RPG damage increased from to 560 and its' rocket now explodes within radius of 320 hammer units. Now only deals extra 1000 explosion damage on the target it directly hit instead of all targets within 50 radius.
+= Made [Unknown Zombie] bit weaker
+
+; Reworked Build tool.
+; Props now spawn with the health depending on their mass and volume instead of 2000HP. Does not change color if damaged anymore.
+; Rewritten function for spawning loot caches
+
+/ Infection now increases by 0.16% per second. The infection gets worse now...
+/ You can now spam click items in your inventory. (There is still a 0.25 seconds delay between using items!)
+
+* Fix zombie CanSeeTarget not working nearly all the time
+* Fixes for build tool being unable to build faction structures
+* Fixed hl2 death sounds
+* Fix death messages for thirst, hunger, fatigue, infection.
+* Fixed incorrect model for Sunrise Merc Armor
+* Heavy Tank Zombie no longer reflects damage if its' damage type is DMG_GENERIC
 
 -------- v0.11.3 of 7th January 2025 --------
++ Added new death messages
++ Added functionality to destroy an item
++ Added icons to buttons for item actions
++ Armors now have new functional oxygen capacity stat.
++ Added Bloodlust perk - regens hp with melee hits
++ Added Dead Luck - Keeps 30% of your bounty, does not drop weapons and keeps you 40% of ammo on death.
++ Added new functionality for cheez burger!
++ FG 42 can now be bought from trader
++ Added oxygen tank
++ Added saving player stats between sessions. Rejoining will bring the player back where they were before disconnecting (Big change!)
 
+- Disconnecting will no longer drop any cash if the player has bounty on them.
+
+= Adjusted armor stats
+
+/ Nerfed Lord Zombie attack rate
+/ Fists inflict CLUB damage type
+/ Other melee's now inflict SLASH damage type
+/ HP Regen no longer sets HP back to minimum 5hp.
+/ Playermodel change now applies immediately, reduce cooldown to 60s
+/ Zombie spawns will not spawn any zombies if there are any zombies/players in 200hu instead of 250hu
+
+= Reduced AUG's recoil by 60%
+
+* Fixed zombies being able to hit through wall
+
+? New way for easier programming with the item descriptions is WIP!
 
 -------- v0.11.2e of 5th January 2025 --------
++ Added XM1014 elite into T.E.A
 
+/ Use Delay for items no longer floors to int's, float values now work!
+/ Adjust stuff in HUD
+/ Change trader menu
+/ Speed now works in % instead of additive values
+
+= Rebalanced all armors' speed penalties
+
+* Fix stuff in admin panel, add 2 new categories in spawn menu
+* Fix model for armor items from spawn item command
 
 -------- v0.11.2d of 5th January 2025 --------
+= Survivor no longer changes the requirements for health regeneration
+
+/ HP Regen applies every second
+/ No longer execute "M9KDefaultClip 0" concommand on each server start up, found a new solution (yey)
+/ Bullet DMG calculation for protection
 
 
 -------- v0.11.2c of 5th January 2025 --------
++ Added more models for armors
++ Added 6 new items, can be accessed only by admins
++ Added 10 new armor, including:
+    Berill-5M armor
+    Merc Sunrise armor
+    Mil SEVA prot. armor
+    SEVA prot. armor
+    Freedom SEVA prot. armor
+    Duty SEVA prot. armor
+    Monolith Heavy SEVA prot. armor
+    Duty Heavy SKAT Exoskeleton
+    Freedom Radiation Suit
+    Heavy Monolith Radiation Suit
+
+/ Changed items use sounds to sounds from sound/theeternalapocalypse/items directory (moving content files)
+
+* Fixed normal medkit not working
 
 
 -------- v0.11.2b of 5th January 2025 --------
++ Added GM:GetItemName, GM:GetItemDescription and GM:GetSkillDescription functions for more readable code
 
+= Player stats progressions rebalanced (for every second):
+    Hunger: 0.0435% -> 0.05%
+    Thirst: 0.052% -> 0.06%
+    Fatigue: 0.03% -> 0.032%
+= Rebalanced Survivor stat.
+
+/ Migrate items from sh_items.lua to "items" directory (this took way too long)
+/ Swap Ammo and Supplies item category ID's
+/ Changed stats to network every 1 second instead of 0.12s.
+/ Stamina networks every tick.
+
+
+* Fix typo of GM:GetEliteVariantSpawnChance function
 
 -------- v0.11.2a of 2nd January 2025 --------
 

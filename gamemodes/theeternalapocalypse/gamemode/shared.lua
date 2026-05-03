@@ -1,10 +1,10 @@
 GM.Name		= "The Eternal Apocalypse" -- The Eternol Apocalypse
-GM.AltName	= "After The End Reborn"
+GM.AltName	= "After The End Reborn" -- yes, it's a fork. what else did you expect?
 GM.Author	= "Uklejamini"
 GM.Email	= ""
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.12.4" -- i love beta :)
-GM.DateVer	= "26.04.2026" -- Follows the DD.MM.YYYY format.
+GM.Version	= "0.12.5"
+GM.DateVer	= "03.05.2026" -- Follows the DD.MM.YYYY format.
 GM.Credits = {
 	-- Assets
 	{"GSC Game World",			"For all the S.T.A.L.K.E.R. content",										""},
@@ -26,9 +26,36 @@ GM.Credits = {
 	{"Anyone else I forgot",	"Various contributions",													""},
 }
 GM.RecentChangelogs = {
-	{"Added safezones", Color(255,255,210)},
-	{"Added hints on spawn", Color(255,255,210)},
-	{"Changed main menu a bit", Color(255,255,210)},
+	{"+ Add highlight for yourself in scoreboard", Color(210,255,210)},
+	{"+ Added MORE STATISTICS", Color(210,255,210)},
+	
+	{"; Reworked stats menu.", Color(219,171,255)},
+	
+	{"/ Changed networking in a way so it no longer networks statistics constantly (which would consume a lot of bandwidth...)", Color(255,223,210)},
+	{"/ Zombies behavior changed a bit.", Color(255,223,210)},
+	
+	{"* Fix some stuff", Color(210,210,255)},
+	{"* Fix Lua error for include lua files with the maps lua files", Color(210,210,255)},
+	{"* Fixed being able to accept, cancel and finish taskdealer quests when not near a task dealer", Color(210,210,255)},
+	{"* Fix the 'no' typo in translation (WTF?!?)", Color(210,210,255)},
+	
+	{"v0.12.4", color_white},
+	{"+ ArcCW/ARC9 weapons compatibility!", Color(210,255,210)},
+	{"+ Added usability for weapon icons (material png's) in inventory", Color(210,255,210)},
+	{"+ Added spanish translation (thanks, Sirtlan!)", Color(210,255,210)},
+	{"+ Add very own-made thirdperson", Color(210,255,210)},
+	{"+ Add VJ Classes for player for compatibility with VJ STALKER SNPC's", Color(210,255,210)},
+	{"+ Map lua for each! Can be found in gamemode/maps directory (there are 2 as of now)", Color(210,255,210)},
+	
+	{"/ Updated translations", Color(255,223,210)},
+	{"/ Make taskdealer and trader have notarget flag on, so VJ SNPC's don't target them", Color(255,223,210)},
+	
+	{"v0.12.3", color_white},
+	{"/ Zombies now do SLASH damage instead of CLUB damage", Color(255,223,210)},
+	{"/ Zombies target npc's better, altho.. hl2 npc's don't target them :(((, but VJ SNPC's do, as far as it has been tested", Color(255,223,210)},
+
+	{"= Balanced m9k weapon costs (fynally)", Color(210,255,255)},
+	{"= Made Barret M98B do 2.5x more damage to zombies", Color(210,255,255)},
 }
 
 DeriveGamemode("sandbox")
@@ -859,6 +886,46 @@ function GM:GetLootRarityName(id)
 	elseif id >= LOOTRARITY_LEGENDARY then
 		return "Legendary"
 	end
+end
+
+function FormatNumber(val, roundval)
+	local log10_value = math.floor(math.log10(val))
+
+
+	local txt
+	local negative = val < 0 and "-" or ""
+	roundval = roundval or 2
+	val = math.abs(val)
+	if val >= math.huge then return val end
+	if val >= 1e15 then
+		val = val / (10^log10_value)
+
+		txt = math.floor(val*(10^roundval))/(10^roundval) .."e"..log10_value
+	elseif val >= 1e12 then
+		val = val / 1e12
+
+		txt = math.floor(val*(10^roundval))/(10^roundval) .." T"
+	elseif val >= 1e9 then
+		val = val / 1e9
+
+		txt = math.floor(val*(10^roundval))/(10^roundval) .." B"
+	elseif val >= 1e6 then
+		val = val / 1e6
+
+		txt = math.floor(val*(10^roundval))/(10^roundval) .." M"
+	elseif val >= 1e3 then
+		val = val / 1e3
+
+		txt = math.floor(val*(10^roundval))/(10^roundval) .." K"
+	elseif val == 0 then txt = 0
+	elseif val > -(10^-(roundval or 1)) and val < 10^-(roundval or 1) then
+		val = val / (10^log10_value)
+
+		txt = math.floor(val*(10^roundval))/(10^roundval) .."e-"..math.abs(log10_value)
+	end
+
+	if txt then return negative..txt end
+	return negative..math.Round(val*(10^(roundval or 1)))/(10^(roundval or 1))
 end
 
 function HammerUnitsToMeters(units)

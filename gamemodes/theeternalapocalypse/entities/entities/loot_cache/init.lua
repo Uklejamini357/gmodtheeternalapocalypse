@@ -57,7 +57,8 @@ function ENT:Use(activator, caller)
 		end
 	end
 
-	self:SetNWInt("lootrarity", lootrarity)
+	lootrarity = math.floor(lootrarity)
+	self:SetNWFloat("lootrarity", lootrarity)
 
 	GAMEMODE:RandomizeEntityLoot(self)
 
@@ -76,6 +77,24 @@ function ENT:Use(activator, caller)
 	if !item then caller:SendChat(translate.ClientGet(caller, "buggedcache")) self:Remove() return false end
 
 	gamemode.Call("SystemGiveItem", caller, id, qty)
+	caller:AddStatisticPoints("LootFound", 1)
+	if loottype == LOOTTYPE_NORMAL then
+		if lootrarity == LOOTRARITY_COMMON then
+			caller:AddStatisticPoints("LootCommonFound", 1)
+		elseif lootrarity == LOOTRARITY_UNCOMMON then
+			caller:AddStatisticPoints("LootUncommonFound", 1)
+		elseif lootrarity == LOOTRARITY_RARE then
+			caller:AddStatisticPoints("LootRareFound", 1)
+		elseif lootrarity == LOOTRARITY_EPIC then
+			caller:AddStatisticPoints("LootEpicFound", 1)
+		elseif lootrarity == LOOTRARITY_LEGENDARY then
+			caller:AddStatisticPoints("LootLegendaryFound", 1)
+		end
+	elseif loottype == LOOTTYPE_FACTION then
+		caller:AddStatisticPoints("LootFactionFound", 1)
+	elseif loottype == LOOTTYPE_BOSS then
+		caller:AddStatisticPoints("LootBossFound", 1)
+	end
 	gamemode.Call("GiveTaskProgress", caller, "loot_finder", 1)
 
 	net.Start("tea_lootpickup")

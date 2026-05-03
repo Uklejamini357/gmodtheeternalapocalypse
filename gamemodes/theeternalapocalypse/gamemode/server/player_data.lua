@@ -656,6 +656,7 @@ function GM:GainLevel(ply)
 	end
 
 	ply:SetNWInt("PlyLevel", ply.Level)
+	ply:AddStatisticPoints("CashGainedByLvlup", totalmoneyreward)
 	self:NetUpdatePeriodicStats(ply)
 
 	timer.Simple(0.04, function() -- Timer was created to prevent Buffer Overflow if user has too much XP if user levels up
@@ -710,7 +711,6 @@ function GM:GainPrestige(ply)
 
 	self:NetUpdatePeriodicStats(ply)
 	self:NetUpdatePerks(ply)
-	self:NetUpdateStatistics(ply)
 
 	ply:SetNWInt("PlyLevel", ply.Level)
 	ply:SetNWInt("PlyPrestige", prestige)
@@ -759,7 +759,6 @@ function GM:FullyUpdatePlayer(ply)
 	self:SendInventory(ply)
 	self:NetUpdatePeriodicStats(ply)
 	self:NetUpdatePerks(ply)
-	self:NetUpdateStatistics(ply)
 	self:SendPlayerPerksUnlocked(ply)
 	ply:RefreshTasksStats()
 
@@ -949,7 +948,6 @@ function GM:GetPlayerCharacters(ply)
 			ply.playerskilled = 0
 			ply.playerdeaths = 0
 			ply.ZKills = 0
-			ply.BestSurvivalTime = 0
 			ply.StatPoints = 0
 			ply.EquippedArmor = "none"
 			ply.StatsReset = 0

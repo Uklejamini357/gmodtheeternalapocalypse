@@ -14,6 +14,10 @@ function GM:OpenworldTransition(tomapid)
 			pl.TransitioningMap = map
 			pl.TransitioningPos = data.StartPos
 			pl.TransitioningAng = data.StartAng
+
+            if pl.Statistics then
+                pl:AddStatisticPoints("MapsTransitioned", 1)
+            end
 		end
 	
         RunConsoleCommand("changelevel", map)

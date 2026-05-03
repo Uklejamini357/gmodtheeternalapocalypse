@@ -170,7 +170,8 @@ function GM:LoadMainMenu()
 	end
 
 	-- Update panel
-	local titlepan = vgui.Create("DPanel", self.MainMenuPanel)
+	local titlepan = vgui.Create("DScrollPanel", self.MainMenuPanel)
+	self.MainMenuPanel.TitlePanel = titlepan
 	titlepan:SetPos(ScrW(), ScrH() / 2 - 150)
 	titlepan:MoveTo(ScrW() - 500, ScrH()/2 - 150, 3)
 	titlepan:SetSize(450, 300)
@@ -178,7 +179,8 @@ function GM:LoadMainMenu()
 
 	local p = {}
 	p.maintext = vgui.Create("DLabel", titlepan)
-	p.maintext:SetPos(0, 0)
+	p.maintext:Dock(TOP)
+	p.maintext:DockMargin(0, 0, 0, 12)
 	p.maintext:SetText("("..self.DateVer..") "..self.Version..":")
 	p.maintext:SetTextColor(Color(255,255,210))
 	p.maintext:SetFont("Trebuchet24")
@@ -188,11 +190,13 @@ function GM:LoadMainMenu()
 	for i=1,#self.RecentChangelogs do
 		local t = self.RecentChangelogs[i]
 		p["text"..i] = vgui.Create("DLabel", titlepan)
-		p["text"..i]:SetPos(0, y)
+		titlepan:AddItem(p["text"..i])
+		p["text"..i]:Dock(TOP)
+		p["text"..i]:SetAutoStretchVertical(true)
+		p["text"..i]:SetWrap(true)
 		p["text"..i]:SetText(t[1])
 		p["text"..i]:SetTextColor(t[2])
 		p["text"..i]:SetFont("Trebuchet18")
-		p["text"..i]:SizeToContents()
 		y = y + 30
 	end
 

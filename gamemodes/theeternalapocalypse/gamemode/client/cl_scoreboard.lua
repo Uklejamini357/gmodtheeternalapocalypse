@@ -159,6 +159,12 @@ function GM:CreateScoreboardInv()
 			plypanelAction:SetSize(plypanel:GetWide(), plypanel:GetTall())
 			plypanelAction:SetText("")
 			plypanelAction.Paint = function(panel, w, h)
+				if v == me then
+					surface.SetDrawColor(255, 255, 255, 50)
+					surface.DrawOutlinedRect(0, 0, w, h)
+					surface.SetDrawColor(255, 255, 255, 8)
+					surface.DrawRect(1, 1, w-2, h-2)
+				end
 				if panel:IsHovered() then
 					surface.SetDrawColor(255, 255, 255, 100)
 					surface.DrawOutlinedRect(0, 0, w, h)
@@ -174,7 +180,7 @@ function GM:CreateScoreboardInv()
 							net.Start("UpdateTargetStats")
 							net.WriteEntity(v)
 							net.SendToServer()
-							StatsMenu(v)
+							gamemode.Call("StatsMenu", v)
 						else
 							chat.AddText(Color(255,205,205,255), translate.Get("this_player_doesnt_exist"))
 						end

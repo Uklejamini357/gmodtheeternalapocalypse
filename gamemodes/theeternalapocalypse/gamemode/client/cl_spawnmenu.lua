@@ -494,131 +494,8 @@ function GM:InvMenu()
 
 	local y = 10
 
-	local StatisticsForm = vgui.Create("DPanel", InvSheet1)
-	StatisticsForm:SetSize(675, 700)
-	StatisticsForm.Paint = function(panel, w, h)
-		draw.RoundedBox(2, 0, 0, w, h, Color(0, 0, 0, 100))
-		surface.SetDrawColor(150, 150, 0 ,255)
-		surface.DrawOutlinedRect(0, 0, w, h)
-
-
-		surface.SetDrawColor(0, 0, 0 ,255)
-		surface.DrawOutlinedRect(15, 165, 200, 8)
-		surface.SetDrawColor(50,0,0,75)
-		surface.DrawRect(15, 165, 200, 8)
-
-		local bar1 = math.Clamp( 200 * (MyMMeleexp / ply:GetReqMasteryMeleeXP()), 0, 200)
-		surface.SetDrawColor(150,0,0,160)
-		surface.DrawRect(15, 165, bar1, 8)
-
-		surface.SetDrawColor(0, 0, 0 ,255)
-		surface.DrawOutlinedRect(15, 210, 200, 8)
-		surface.SetDrawColor(50,0,0,75)
-		surface.DrawRect(15, 210, 200, 8)
-
-		local bar2 = math.Clamp( 200 * (MyMPvpxp / ply:GetReqMasteryPvPXP()), 0, 200)
-		surface.SetDrawColor(150,0,0,160)
-		surface.DrawRect(15, 210, bar2, 8 )
-	end
-
-	local texts = {}
-	local stats = ply.Statistics
-
-	texts.SurvivalTime = vgui.Create("DLabel", StatisticsForm)
-	texts.SurvivalTime:SetFont("TEA.HUDFont")
-	texts.SurvivalTime:SetTextColor(Color(255,255,255))
-	texts.SurvivalTime:SetText(translate.Format("timesurvived", util.ToMinutesSeconds(CurTime() - ply.SurvivalTime)))
-	texts.SurvivalTime:SetMouseInputEnabled(true)
-	texts.SurvivalTime:SizeToContents()
-	texts.SurvivalTime:SetPos(15, y)
-	texts.SurvivalTime.Think = function(panel)
-		panel:SetText(translate.Format("timesurvived", util.ToMinutesSeconds(CurTime() - ply.SurvivalTime)))
-		panel:SizeToContents()
-	end
-	y = y + 25
-
-	texts.BestSurvivalTime = vgui.Create("DLabel", StatisticsForm)
-	texts.BestSurvivalTime:SetFont("TEA.HUDFont")
-	texts.BestSurvivalTime:SetTextColor(Color(255,255,255))
-	texts.BestSurvivalTime:SetText(translate.Format("besttimesurvived", util.ToMinutesSeconds(ply.Statistics.BestSurvivalTime)))
-	texts.BestSurvivalTime:SetMouseInputEnabled(true)
-	texts.BestSurvivalTime:SizeToContents()
-	texts.BestSurvivalTime:SetPos(15, y)
-	texts.BestSurvivalTime.Think = function(panel)
-		panel:SetText(translate.Format("besttimesurvived", util.ToMinutesSeconds(ply.Statistics.BestSurvivalTime)))
-		panel:SizeToContents()
-	end
-	y = y + 25
-
-	texts.ZombieKills = vgui.Create("DLabel", StatisticsForm)
-	texts.ZombieKills:SetFont("TEA.HUDFont")
-	texts.ZombieKills:SetTextColor(Color(255,255,255))
-	texts.ZombieKills:SetText("Zombies Killed in Total: "..stats.ZombieKills)
-	texts.ZombieKills:SetMouseInputEnabled(true)
-	texts.ZombieKills:SizeToContents()
-	texts.ZombieKills:SetPos(15, y)
-	texts.ZombieKills.Think = function(panel)
-		panel:SetText("Zombies Killed in Total: "..stats.ZombieKills)
-		panel:SizeToContents()
-	end
-	y = y + 25
-
-	texts.PlayerKills = vgui.Create("DLabel", StatisticsForm)
-	texts.PlayerKills:SetFont("TEA.HUDFont")
-	texts.PlayerKills:SetTextColor(Color(255,255,255))
-	texts.PlayerKills:SetText("Players killed in Total: "..stats.PlayersKilled)
-	texts.PlayerKills:SetMouseInputEnabled(true)
-	texts.PlayerKills:SizeToContents()
-	texts.PlayerKills:SetPos(15, y)
-	texts.PlayerKills.Think = function(panel)
-		panel:SetText("Players killed in Total: "..stats.PlayersKilled)
-		panel:SizeToContents()
-	end
-	y = y + 25
-
-	texts.TotalDeaths = vgui.Create("DLabel", StatisticsForm)
-	texts.TotalDeaths:SetFont("TEA.HUDFont")
-	texts.TotalDeaths:SetTextColor(Color(255,255,255))
-	texts.TotalDeaths:SetText("Your Deaths in Total: "..stats.Deaths)
-	texts.TotalDeaths:SetMouseInputEnabled(true)
-	texts.TotalDeaths:SizeToContents()
-	texts.TotalDeaths:SetPos(15, y)
-	texts.TotalDeaths.Think = function(panel)
-		panel:SetText("Your Deaths in Total: "..stats.Deaths)
-		panel:SizeToContents()
-	end
-	y = y + 25
-
-	texts.MasteryMeleeXP = vgui.Create("DLabel", StatisticsForm)
-	texts.MasteryMeleeXP:SetFont("TEA.HUDFont")
-	texts.MasteryMeleeXP:SetTextColor(Color(205,205,205))
-	texts.MasteryMeleeXP:SetText("Mastery Melee XP: ".. math.floor(MyMMeleexp) .."/".. ply:GetReqMasteryMeleeXP().." (Level "..math.floor(MyMMeleelvl)..")")
-	texts.MasteryMeleeXP:SetToolTip("Increases melee damage by 0.5% per level, increases when doing melee damage to zombies. \nGain rate is DECREASED when damaging players with melee weapons.")
-	texts.MasteryMeleeXP:SetMouseInputEnabled(true)
-	texts.MasteryMeleeXP:SizeToContents()
-	texts.MasteryMeleeXP:SetPos(15, 140)
-	texts.MasteryMeleeXP.Think = function(panel)
-		panel:SetText("Mastery Melee XP: ".. math.floor(MyMMeleexp) .."/".. ply:GetReqMasteryMeleeXP().." (Level "..math.floor(MyMMeleelvl)..")")
-		panel:SizeToContents()
-	end
-
-	texts.MasteryPVPXP = vgui.Create("DLabel", StatisticsForm)
-	texts.MasteryPVPXP:SetFont("TEA.HUDFont")
-	texts.MasteryPVPXP:SetTextColor(Color(205,205,205))
-	texts.MasteryPVPXP:SetText("Mastery PvP XP: ".. math.floor(MyMPvpxp) .."/".. ply:GetReqMasteryPvPXP().." (Level "..math.floor(MyMPvplvl)..")")
-	texts.MasteryPVPXP:SetToolTip("Gained from killing players. (no other benefits other than money gain on level up)\nGain rate increased when they have higher level and prestige.")
-	texts.MasteryPVPXP:SetMouseInputEnabled(true)
-	texts.MasteryPVPXP:SizeToContents()
-	texts.MasteryPVPXP:SetPos(15, 185)
-	texts.MasteryPVPXP.Think = function(panel)
-		panel:SetText("Mastery PvP XP: ".. math.floor(MyMPvpxp) .."/".. ply:GetReqMasteryPvPXP().." (Level "..math.floor(MyMPvplvl)..")")
-		panel:SizeToContents()
-	end
-
-
-
-
-
+	local stats = vgui.Create("DPanel", InvSheet1)
+	stats:SetSize(0, 0)
 
 
 
@@ -754,7 +631,14 @@ function GM:InvMenu()
 	
 	InvSheet1:AddSheet(translate.Get("inventory"), InvForm, "icon16/basket.png", false, false, translate.Get("inventory_d"))
 	InvSheet1:AddSheet(translate.Get("crafting"), CraftForm, "icon16/wrench_orange.png", false, false, translate.Get("crafting_d"))
-	InvSheet1:AddSheet(translate.Get("statistics"), StatisticsForm, "icon16/user.png", false, false, translate.Get("statistics_d"))
+	local tab = InvSheet1:AddSheet(translate.Get("statistics"), stats, "icon16/user.png", false, false, translate.Get("statistics_d"))
+	tab.Tab.DoClick = function()
+		self:CloseInvMenu()
+		net.Start("UpdateTargetStats")
+		net.WriteEntity(ply)
+		net.SendToServer()
+		gamemode.Call("StatsMenu", ply)
+	end
 	local tab = InvSheet1:AddSheet(translate.Get("props"), props, "icon16/brick.png", false, false, translate.Get("props_d"))
 	tab.Tab.DoClick = function()
 		self:CloseInvMenu()

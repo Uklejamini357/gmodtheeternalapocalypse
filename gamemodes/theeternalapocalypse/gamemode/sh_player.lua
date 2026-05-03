@@ -127,22 +127,27 @@ function meta:GetReqXP()
 	return math.floor(xp * math.max(1, 1+(plylevel-30)*0.01))
 end
 
-function meta:GetReqMasteryMeleeXP(ply)
+-- todo: replace these functions in v0.12.7
+function meta:GetReqMasteryMeleeXP(mlvl)
 	local xpreq = 984
 	local addexpperlevel = 165
 	local addexpperlevel2 = 1.161
 
-	local mlvl = SERVER and self.MasteryMeleeLevel or MyMMeleelvl
+	if !mlvl then
+		mlvl = self.MasteryMeleeLevel or 0
+	end
 
 	return math.floor(xpreq + (mlvl * addexpperlevel) ^ addexpperlevel2)
 end
 
-function meta:GetReqMasteryPvPXP(ply)
+function meta:GetReqMasteryPvPXP(mlvl)
 	local expreq = 593
 	local addxpprlevel = 85
 	local addexpperlevel2 = 1.153
 
-	local mlvl = SERVER and self.MasteryPvPLevel or MyMPvplvl
+	if !mlvl then
+		mlvl = self.MasteryPvPLevel or 0
+	end
 
 	return math.floor(expreq + (mlvl * addxpprlevel) ^ addexpperlevel2)
 end
@@ -416,7 +421,7 @@ function meta:AddStatisticPoints(var, value)
 end
 
 function meta:SetStatisticPoint(var, value)
-	self.Statistics[var] = value
+	self.Statistics[var] = value or (self.Statistics and self.Statistics[var]) or 0
 end
 
 function meta:GetStatisticPoints(var, value)

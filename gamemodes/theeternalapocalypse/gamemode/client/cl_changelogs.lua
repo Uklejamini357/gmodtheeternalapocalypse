@@ -1,4 +1,5 @@
 function GM:MakeChangeLogs()
+	do chat.AddText("Changelogs are not available at the moment. sorry!") return end -- due to my laziness in making changelogs
 	surface.PlaySound("buttons/lightswitch2.wav")
 	if IsValid(self.ChangeLogsFrame) then self.ChangeLogsFrame:Remove() end
 

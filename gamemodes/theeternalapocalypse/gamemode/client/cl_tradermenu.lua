@@ -36,14 +36,15 @@ function GM:OpenTraderMenu()
 		surface.SetDrawColor(150, 150, 0, 255)
 		surface.DrawOutlinedRect(0, 0, TraderMenu:GetWide(), TraderMenu:GetTall())
 	end
-	TraderMenu.Think = function(this)
-		if input.IsKeyDown(KEY_ESCAPE) and gui.IsGameUIVisible() then
-			timer.Simple(0, function()
-				this:Remove()
-			end)
-			gui.HideGameUI()
-		end
+	TraderMenu.OnRemove = function(self)
+		hook.Remove("OnPauseMenuShow", self)
 	end
+	hook.Add("OnPauseMenuShow", TraderMenu, function()
+		if TraderMenu and TraderMenu:IsValid() and TraderMenu:IsVisible() then
+			TraderMenu:Close()
+			return false
+		end
+	end)
 
 
 	local text = vgui.Create("DLabel", TraderMenu)
@@ -116,14 +117,15 @@ function GM:TraderMenu()
 		surface.DrawOutlinedRect(0, 0, this:GetWide(), this:GetTall())
 		surface.DrawLine(0, this:GetTall() - 60, this:GetWide(), this:GetTall() - 60)
 	end
-	TraderFrame.Think = function(this)
-		if input.IsKeyDown(KEY_ESCAPE) and gui.IsGameUIVisible() then
-			timer.Simple(0, function()
-				this:Remove()
-			end)
-			gui.HideGameUI()
-		end
+	TraderFrame.OnRemove = function(self)
+		hook.Remove("OnPauseMenuShow", self)
 	end
+	hook.Add("OnPauseMenuShow", TraderFrame, function()
+		if TraderFrame and TraderFrame:IsValid() and TraderFrame:IsVisible() then
+			TraderFrame:Close()
+			return false
+		end
+	end)
 
 	local PropertySheet = vgui.Create("DPropertySheet")
 	PropertySheet:SetParent(TraderFrame)
