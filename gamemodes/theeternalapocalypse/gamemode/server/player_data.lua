@@ -948,7 +948,6 @@ function GM:GetPlayerCharacters(ply)
 			ply.playerskilled = 0
 			ply.playerdeaths = 0
 			ply.ZKills = 0
-			ply.BestSurvivalTime = 0
 			ply.StatPoints = 0
 			ply.EquippedArmor = "none"
 			ply.StatsReset = 0
