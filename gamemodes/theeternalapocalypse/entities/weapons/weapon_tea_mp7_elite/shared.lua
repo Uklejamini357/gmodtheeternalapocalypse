@@ -19,7 +19,7 @@ SWEP.Primary.Delay 		= 0.075
 SWEP.Primary.ClipSize		= 40
 SWEP.Primary.DefaultClip	= 40
 SWEP.Primary.Automatic		= true
-SWEP.Primary.Ammo			= "Gravity"
+SWEP.Primary.Ammo			= "smg1"
 
 SWEP.Secondary.ClipSize		= -1
 SWEP.Secondary.DefaultClip	= -1

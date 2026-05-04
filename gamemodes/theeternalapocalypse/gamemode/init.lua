@@ -177,9 +177,26 @@ function GM:Think()
 			end
 		end
 
-		if !self.BloodMoonActive and ct > tonumber(self.NextSpecialEvent) and self.SpecialEventChance <= math.Rand(0,1) then
+		if !self.BloodMoonActive and ct > tonumber(self.NextSpecialEvent) then
 			self.NextSpecialEvent = ct + tonumber(self.SpecialEventInterval)
-			gamemode.Call("ManageSpecialEvent", EVENTTYPE_BLOODMOON, true)
+
+			local allowbloodmoon = 0
+			for _,pl in player.Iterator() do
+				if pl:GetTEAPrestige() > 0 then
+					allowbloodmoon = true
+					break
+				end
+
+				allowbloodmoon = allowbloodmoon + pl:GetTEALevel()
+			end
+
+			if isnumber(allowbloodmoon) then
+				allowbloodmoon = (allowbloodmoon / player.GetCount()) >= 20
+			end
+
+			if allowbloodmoon and self.SpecialEventChance >= math.Rand(0,1) then
+				gamemode.Call("ManageSpecialEvent", EVENTTYPE_BLOODMOON, true)
+			end
 		elseif self.BloodMoonActive and ct > tonumber(self.SpecialEventEndTime) then
 			self.NextSpecialEvent = ct + tonumber(self.SpecialEventInterval)
 			gamemode.Call("ManageSpecialEvent", EVENTTYPE_BLOODMOON, false)
@@ -1600,7 +1617,7 @@ function GM:ManageSpecialEvent(eventType, shouldStart)
 	if eventType == EVENTTYPE_BLOODMOON then
 		if shouldStart then
 			self.BloodMoonActive = true
-			self.SpecialEventEndTime = CurTime() + math.Rand(900,1200)
+			self.SpecialEventEndTime = CurTime() + math.Rand(600,900)
 			engine.LightStyle(0, "b")
 			BroadcastLua([[render.RedownloadAllLightmaps()]])
 		else

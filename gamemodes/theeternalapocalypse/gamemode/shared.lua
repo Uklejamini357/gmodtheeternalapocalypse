@@ -3,13 +3,14 @@ GM.AltName	= "After The End Reborn" -- yes, it's a fork. what else did you expec
 GM.Author	= "Uklejamini"
 GM.Email	= ""
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.12.6b"
-GM.DateVer	= "03.05.2026" -- Follows the DD.MM.YYYY format.
+GM.Version	= "0.12.6"
+GM.DateVer	= "04.05.2026" -- Follows the DD.MM.YYYY format.
 GM.Credits = {
 	-- Assets
 	{"GSC Game World",			"For all the S.T.A.L.K.E.R. content",										""},
 	{"WickedRabbit",			"For porting the STALKER assets to gmod (and credits to his contributors)",	"https://steamcommunity.com/sharedfiles/filedetails/?id=2438451886"},
 	{"Comrade Communist",		"S.T.A.L.K.E.R. sounds",													"https://steamcommunity.com/sharedfiles/filedetails/?id=1680884607"},
+	{"Garry Newman",			"For the base game",														""},
 
 	-- Supporters
 	{"LegendOfRobbo",			"After The End creator",													""}, -- 2015
@@ -26,36 +27,30 @@ GM.Credits = {
 	{"Anyone else I forgot",	"Various contributions",													""},
 }
 GM.RecentChangelogs = {
-	{"+ Add highlight for yourself in scoreboard", Color(210,255,210)},
-	{"+ Added MORE STATISTICS", Color(210,255,210)},
+	{"+ Added new function for zombies: Attack Rate Mult.", Color(210,255,210)},
+	{"+ Added Special events mechanic:", Color(210,255,210)},
+	{"\tEvery ~47mins, there is a 20% chance for the special event to happen.", Color(210,255,210)},
+	{"\tCurrently there is only 1 special event: Blood Moon, which grants:", Color(210,255,210)},
+	{"\t\t+45% zombies speed", Color(210,255,210)},
+	{"\t\t+30% zombies attack rate", Color(210,255,210)},
+	{"\t\tAnd lasts 10~15mins.", Color(210,255,210)},
+	{"\tSpecial events cannot overlap each other.", Color(210,255,210)},
+	{"\tRequired 1 player with prestige >= 1 or average level between all players > 20", Color(210,255,210)},
+	{"+ Next Boss, Airdrop, Special Event timers pass on to next session!", Color(210,255,210)},
+	{"+ Make new function for giving ammo for specified ammo types", Color(210,255,210)},
+	{"+ New way to display how much an ammo box gives ammo and which ammo the weapon uses", Color(210,255,210)},
+	{"+ Added new category near \"My skills\"", Color(210,255,210)},
 	
-	{"; Reworked stats menu.", Color(219,171,255)},
-	
-	{"/ Changed networking in a way so it no longer networks statistics constantly (which would consume a lot of bandwidth...)", Color(255,223,210)},
-	{"/ Zombies behavior changed a bit.", Color(255,223,210)},
-	
-	{"* Fix some stuff", Color(210,210,255)},
-	{"* Fix Lua error for include lua files with the maps lua files", Color(210,210,255)},
-	{"* Fixed being able to accept, cancel and finish taskdealer quests when not near a task dealer", Color(210,210,255)},
-	{"* Fix the 'no' typo in translation (WTF?!?)", Color(210,210,255)},
-	
-	{"v0.12.4", color_white},
-	{"+ ArcCW/ARC9 weapons compatibility!", Color(210,255,210)},
-	{"+ Added usability for weapon icons (material png's) in inventory", Color(210,255,210)},
-	{"+ Added spanish translation (thanks, Sirtlan!)", Color(210,255,210)},
-	{"+ Add very own-made thirdperson", Color(210,255,210)},
-	{"+ Add VJ Classes for player for compatibility with VJ STALKER SNPC's", Color(210,255,210)},
-	{"+ Map lua for each! Can be found in gamemode/maps directory (there are 2 as of now)", Color(210,255,210)},
-	
-	{"/ Updated translations", Color(255,223,210)},
-	{"/ Make taskdealer and trader have notarget flag on, so VJ SNPC's don't target them", Color(255,223,210)},
-	
-	{"v0.12.3", color_white},
-	{"/ Zombies now do SLASH damage instead of CLUB damage", Color(255,223,210)},
-	{"/ Zombies target npc's better, altho.. hl2 npc's don't target them :(((, but VJ SNPC's do, as far as it has been tested", Color(255,223,210)},
+	{"= Shambler Zombie's attack rate reduced: 1/1s -> 1/1.3s", Color(255,255,210)},
+	{"= Rockets shot from RPG now have starting velocity of 500hu/s", Color(255,255,210)},
+	{"= Rockets' direct hit damage reduced from 1000 to 600.", Color(255,255,210)},
 
-	{"= Balanced m9k weapon costs (fynally)", Color(210,255,255)},
-	{"= Made Barret M98B do 2.5x more damage to zombies", Color(210,255,255)},
+	{"/ Boss zombies now work on base of npc_tea_basic nextbot zombie", Color(255,223,210)},
+	{"/ Slightly adjusted the SWEP HUD element", Color(255,223,210)},
+	{"/ Changed MP7 and MP7 Elite's ammo type to SMG", Color(255,223,210)},
+	
+	{"* Real fix for not being able to assign tasks or anything when not near task dealer", Color(210,210,255)},
+	{"* Fixed Rockets' direct hit causing a lua error if their origin weapon is invalid (weapon that was shot with)", Color(210,210,255)},
 }
 
 DeriveGamemode("sandbox")
@@ -483,6 +478,21 @@ function GM:GetItemName(id, ply) -- ply is for the server
 	return name
 end
 
+local ammonames = {
+	["pistol"] = "Pistol rounds",
+	["357"] = "Magnum rounds",
+	["buckshot"] = "Buckshot rounds",
+	["smg1"] = "SMG rounds",
+	["ar2"] = "Assault Rifle rounds",
+	["SniperPenetratedRound"] = "Sniper Rifle rounds",
+	["ammo_sniper"] = "Sniper rounds",
+	["ammo_ar2_pulseammo"] = "AR2 Pulse rounds",
+	["RPG_Round"] = "Rockets",
+	["XBowBolt"] = "Crossbow bolts",
+	["ammo_deadlybolt"] = "Deadly crossbow bolts",
+	["ammo_minigun"] = "Minigun rounds",
+	["ammo_plasmabomb"] = "Plasma charges",
+}
 function GM:GetItemDescription(id, ply) -- ply is for the server
 	local item = self.ItemsList[id]
 	local desc = item.Description or ply and translate.ClientGet(ply, id.."_d") or translate.Get(id.."_d")
@@ -519,10 +529,6 @@ function GM:GetItemDescription(id, ply) -- ply is for the server
 			desc = desc.."\nDPS: "..math.Round(dmg * numshots / delay, 2)
 		end
 
-		if clipsize and clipsize ~= -1 then
-			desc = desc.."\nClip Size: "..clipsize
-		end
-
 		if recoil then
 			desc = desc.."\nRecoil: "..recoil
 		end
@@ -541,6 +547,14 @@ function GM:GetItemDescription(id, ply) -- ply is for the server
 		if dmgvszms then
 			desc = desc.."\n"..translate.ClientFormat(ply, "wep_vszombiedmg", dmgvszms)
 		end
+
+		if clipsize and clipsize ~= -1 then
+			desc = desc.."\n\nClip Size: "..clipsize
+		end
+
+		if wep_prim.Ammo and wep_prim.Ammo ~= "none" and wep_prim.Ammo ~= "" then
+			desc = desc.."\nUsed ammo: "..(ammonames[wep_prim.Ammo] or ammonames[string.lower(wep_prim.Ammo)] or language.GetPhrase(wep_prim.Ammo))
+		end	
 	end
 
 	local armorstats = item.ArmorStats
@@ -620,6 +634,10 @@ function GM:GetItemDescription(id, ply) -- ply is for the server
 		if consum.Fatigue and consum.Fatigue ~= 0 then
 			desc = desc.."\nFatigue: "..(consum.Fatigue > 0 and "+"..consum.Fatigue or consum.Fatigue).."%"
 		end
+	end
+
+	if item.AmmoType and item.AmmoAmount then
+		desc = desc.."\n+"..(item.AmmoAmount or 0).." to "..(ammonames[item.AmmoType] or ammonames[string.lower(item.AmmoType)] or language.GetPhrase(item.AmmoType))
 	end
 
 	if item.AddDesc then

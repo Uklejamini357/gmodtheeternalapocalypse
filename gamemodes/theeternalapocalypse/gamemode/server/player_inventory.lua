@@ -281,6 +281,12 @@ function GM:UseItem(ply, item, use, targetply)
 					end
 				end
 
+				if ref.AmmoType and ref.AmmoAmount then
+					shouldremove = true
+					ply:GiveAmmo(ref.AmmoAmount, ref.AmmoType)
+				end
+
+
 				if ref.UseSound then
 					ply:EmitSound(ref.UseSound, 100, 100)
 				end

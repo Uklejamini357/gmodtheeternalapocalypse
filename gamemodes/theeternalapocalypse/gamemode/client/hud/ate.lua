@@ -127,6 +127,9 @@ function HUD:DrawSwep(pl, w, h, swep)
             surface_DrawOutlinedRect(w - 270, h - 140, 250, 70)
 
             draw_SimpleText(language.GetPhrase(swep.PrintName or swep:GetClass()), "TEA.HUDFontSmall", w - 30, h - 130, color_white, TEXT_ALIGN_RIGHT, 1)
+            if swep.Primary.Ammo then
+                draw_SimpleText(language.GetPhrase(swep.Primary.Ammo), "TEA.HUDFontSmall", w - 30, h - 110, color_white, TEXT_ALIGN_RIGHT, 1)
+            end
 
             --Ammo Text
             draw_SimpleText("Ammo: ".. clip1 .." / ".. maxclip1.." ("..ammo1..")", "TEA.HUDFontSmall", w - 259, h - 110, color_white, 0, 1)

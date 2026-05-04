@@ -163,7 +163,7 @@ end
 net.Receive("tea_taskassign", function(len, pl)
 	local taskdealer = false
 	for k, v in ipairs(ents.FindInSphere(pl:GetPos(), 150)) do
-		if v:GetClass() == "tea_trader" then taskdealer = true break end
+		if v:GetClass() == "tea_taskdealer" then taskdealer = true break end
 	end
 	if !taskdealer then pl:SystemMessage("You are not near a task dealer!", Color(255,205,205), true) return false end
 
@@ -176,7 +176,7 @@ end)
 net.Receive("tea_taskcancel", function(len, pl)
 	local taskdealer = false
 	for k, v in ipairs(ents.FindInSphere(pl:GetPos(), 150)) do
-		if v:GetClass() == "tea_trader" then taskdealer = true break end
+		if v:GetClass() == "tea_taskdealer" then taskdealer = true break end
 	end
 	if !taskdealer then pl:SystemMessage("You are not near a task dealer!", Color(255,205,205), true) return false end
 
@@ -188,7 +188,7 @@ end)
 net.Receive("tea_taskfinish", function(len, pl)
 	local taskdealer = false
 	for k, v in ipairs(ents.FindInSphere(pl:GetPos(), 150)) do
-		if v:GetClass() == "tea_trader" then taskdealer = true break end
+		if v:GetClass() == "tea_taskdealer" then taskdealer = true break end
 	end
 	if !taskdealer then pl:SystemMessage("You are not near a task dealer!", Color(255,205,205), true) return false end
 

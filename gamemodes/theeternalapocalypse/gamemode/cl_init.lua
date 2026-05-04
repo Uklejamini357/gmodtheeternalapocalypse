@@ -631,8 +631,8 @@ end
 local fog = {
 	color = {30, 0, 0},
 	density = 1,
-	start = 0,
-	endpos = 1500,
+	start = -2000,
+	endpos = 4000,
 }
 
 function GM:PreDrawSkyBox()
@@ -651,7 +651,7 @@ function GM:SetupWorldFog()
 	render.FogColor(fog.color[1], fog.color[2], fog.color[3])
 	render.FogMaxDensity(fog.density)
 	render.FogStart(fog.start)
-	render.FogEnd(fog.endpos + 7500*(
+	render.FogEnd(fog.endpos + 6000*(
 		self.BloodMoonActive and math.Clamp(3 + (self.BloodMoonStart or 0) - CurTime(), 0, 3) / 3 or
 		!self.BloodMoonActive and self.BloodMoonEnd+3 > CurTime() and math.Clamp(CurTime() - self.BloodMoonEnd, 0, 3) / 3
 	))
@@ -666,7 +666,7 @@ function GM:SetupSkyboxFog()
 	render.FogColor(fog.color[1], fog.color[2], fog.color[3])
 	render.FogMaxDensity(fog.density)
 	render.FogStart(fog.start)
-	render.FogEnd((fog.endpos + 7500*(
+	render.FogEnd((fog.endpos + 6000*(
 		self.BloodMoonActive and math.Clamp(3 + (self.BloodMoonStart or 0) - CurTime(), 0, 3) / 3 or
 		!self.BloodMoonActive and self.BloodMoonEnd+3 > CurTime() and math.Clamp(CurTime() - self.BloodMoonEnd, 0, 3) / 3
 	))/16)
@@ -686,7 +686,7 @@ hook.Add("PreDrawOpaqueRenderables", "TEA.BloodMoonSkyBox", function(depth, skyb
 	local lookpos = view.origin
 	local looknorm = Vector(1,0,0)
 	looknorm:Rotate(lookdir)
-	local fogend = 1500
+	local fogend = 20000
 	local fpsfog_r = 30
 	local fpsfog_g = 0
 	local fpsfog_b = 0

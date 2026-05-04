@@ -41,7 +41,8 @@ GM:CreateItem("m9k_davy_crockett", {
     Rarity = RARITY_UNOBTAINABLE,
     Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
-    WeaponType = "m9k_davy_crockett"
+    WeaponType = "m9k_davy_crockett",
+    IsGrenade = true
 })
 
 GM:CreateItem("m9k_ex41", {
@@ -63,7 +64,8 @@ GM:CreateItem("m9k_ied_detonator", {
     Rarity = RARITY_UNOBTAINABLE,
     Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
-    WeaponType = "m9k_ied_detonator"
+    WeaponType = "m9k_ied_detonator",
+    IsGrenade = true
 })
 
 -- has buggy collision.
@@ -120,6 +122,7 @@ GM:CreateItem("m9k_nerve_gas", {
     Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "m9k_nerve_gas",
+    IsGrenade = true,
 
     ModelColor = Color(255,0,0)
 })
@@ -132,7 +135,8 @@ GM:CreateItem("m9k_nitro", {
     Rarity = RARITY_UNOBTAINABLE,
     Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
-    WeaponType = "m9k_nitro"
+    WeaponType = "m9k_nitro",
+    IsGrenade = true
 })
 
 GM:CreateItem("m9k_orbital_strike", {
@@ -143,7 +147,8 @@ GM:CreateItem("m9k_orbital_strike", {
     Rarity = RARITY_UNOBTAINABLE,
     Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
-    WeaponType = "m9k_orbital_strike"
+    WeaponType = "m9k_orbital_strike",
+    IsGrenade = true
 })
 
 GM:CreateItem("m9k_rpg7", {
@@ -165,7 +170,8 @@ GM:CreateItem("m9k_sticky_grenade", {
     Rarity = RARITY_UNOBTAINABLE,
     Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
-    WeaponType = "m9k_sticky_grenade"
+    WeaponType = "m9k_sticky_grenade",
+    IsGrenade = true
 })
 
 GM:CreateItem("m9k_suicide_bomb", {
@@ -176,6 +182,7 @@ GM:CreateItem("m9k_suicide_bomb", {
     Rarity = RARITY_UNOBTAINABLE,
     Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
-    WeaponType = "m9k_suicide_bomb"
+    WeaponType = "m9k_suicide_bomb",
+    IsGrenade = true
 })
 
