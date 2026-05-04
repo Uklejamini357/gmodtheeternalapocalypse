@@ -514,7 +514,8 @@ i = GM:CreateItem("item_pistolammo", {
     Rarity = RARITY_JUNK,
     Category = ITEMCATEGORY_AMMO,
     ItemType = ITEMTYPE_AMMO,
-    UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 100, "Pistol") return bool end,
+    AmmoType = "Pistol",
+    AmmoAmount = 100,
 })
 
 i = GM:CreateItem("item_magammo", {
@@ -525,7 +526,8 @@ i = GM:CreateItem("item_magammo", {
     Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_AMMO,
     ItemType = ITEMTYPE_AMMO,
-    UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 50, "357") return bool end,
+    AmmoType = "357",
+    AmmoAmount = 50,
 })
 
 i = GM:CreateItem("item_buckshotammo", {
@@ -536,7 +538,8 @@ i = GM:CreateItem("item_buckshotammo", {
     Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_AMMO,
     ItemType = ITEMTYPE_AMMO,
-    UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 50, "Buckshot") return bool end,
+    AmmoType = "Buckshot",
+    AmmoAmount = 50,
 })
 
 i = GM:CreateItem("item_rifleammo", {
@@ -547,7 +550,8 @@ i = GM:CreateItem("item_rifleammo", {
     Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_AMMO,
     ItemType = ITEMTYPE_AMMO,
-    UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 100, "ammo_rifle") return bool end,
+    AmmoType = "ammo_rifle",
+    AmmoAmount = 100,
 })
 
 i = GM:CreateItem("item_sniperammo", {
@@ -558,8 +562,9 @@ i = GM:CreateItem("item_sniperammo", {
     Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_AMMO,
     ItemType = ITEMTYPE_AMMO,
-    UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 50, "ammo_sniper") return bool end,
-})
+    AmmoType = "ammo_sniper",
+    AmmoAmount = 50,
+ })
 
 i = GM:CreateItem("item_minigunammo", {
     Cost = 1000,
@@ -569,7 +574,8 @@ i = GM:CreateItem("item_minigunammo", {
     Rarity = RARITY_RARE,
     Category = ITEMCATEGORY_AMMO,
     ItemType = ITEMTYPE_AMMO,
-    UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 100, "ammo_minigun") return bool end,
+    AmmoType = "ammo_minigun",
+    AmmoAmount = 100,
 })
 
 i = GM:CreateItem("item_ar2pulseammo", {
@@ -580,7 +586,8 @@ i = GM:CreateItem("item_ar2pulseammo", {
     Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_AMMO,
     ItemType = ITEMTYPE_AMMO,
-    UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 100, "ammo_ar2_pulseammo") return bool end,
+    AmmoType = "ammo_ar2_pulseammo",
+    AmmoAmount = 100,
 })
 
 i = GM:CreateItem("item_crossbowbolt", {
@@ -591,7 +598,8 @@ i = GM:CreateItem("item_crossbowbolt", {
     Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_AMMO,
     ItemType = ITEMTYPE_AMMO,
-    UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 6, "XBowBolt") return bool end,
+    AmmoType = "XBowBolt",
+    AmmoAmount = 6,
 })
 
 i = GM:CreateItem("item_crossbowbolt_crate", {
@@ -602,7 +610,8 @@ i = GM:CreateItem("item_crossbowbolt_crate", {
     Rarity = RARITY_UNCOMMON,
     Category = ITEMCATEGORY_AMMO,
     ItemType = ITEMTYPE_AMMO,
-    UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 25, "XBowBolt") return bool end,
+    AmmoType = "XBowBolt",
+    AmmoAmount = 25,
 })
 
 i = GM:CreateItem("item_deadly_crossbowbolt", {
@@ -613,7 +622,8 @@ i = GM:CreateItem("item_deadly_crossbowbolt", {
     Rarity = RARITY_RARE,
     Category = ITEMCATEGORY_AMMO,
     ItemType = ITEMTYPE_AMMO,
-    UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 25, "ammo_deadlybolt") return bool end,
+    AmmoType = "ammo_deadlybolt",
+    AmmoAmount = 25,
 })
 
 i = GM:CreateItem("item_rocketammo", {
@@ -624,7 +634,8 @@ i = GM:CreateItem("item_rocketammo", {
     Rarity = RARITY_UNCOMMON,
     Category = ITEMCATEGORY_AMMO,
     ItemType = ITEMTYPE_AMMO,
-    UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 1, "RPG_Round") return bool end,
+    AmmoType = "RPG_Round",
+    AmmoAmount = 1,
 })
 
 

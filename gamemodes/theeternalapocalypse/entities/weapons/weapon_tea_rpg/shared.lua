@@ -65,6 +65,10 @@ function SWEP:Rocket()
 	rocket.ShotFromWeapon = self
 	rocket:Spawn()
 	rocket:Activate()
+	local phys = rocket:GetPhysicsObject()
+	if phys and phys:IsValid() then
+		phys:SetVelocityInstantaneous(rocket:GetAngles():Forward()*500)
+	end
 end
 
 function SWEP:DoubleRocket()
@@ -85,6 +89,11 @@ function SWEP:DoubleRocket()
 	rocket.Number = 2
 	rocket:Spawn()
 	rocket:Activate()
+
+	local phys = rocket:GetPhysicsObject()
+	if phys and phys:IsValid() then
+		phys:SetVelocityInstantaneous(rocket:GetAngles():Forward()*500)
+	end
 end
 
 function SWEP:PrimaryAttack()

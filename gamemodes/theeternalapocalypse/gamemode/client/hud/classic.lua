@@ -41,19 +41,22 @@ function HUD:DrawHealth(pl, w, h, swep)
 
 ---------------- AMMO ----------------
     if swep then
-        if (swep.AmmoClip1 != -1 or swep.AmmoClip2 != -1) then
-            IsAmmoBox = true
+        local clip1, clip2 = swep:Clip1(), swep:Clip2()
+        local maxclip1, maxclip2 = swep:GetMaxClip1(), swep:GetMaxClip2()
+        local ammo1, ammo2 = pl:GetAmmoCount(swep:GetPrimaryAmmoType()), pl:GetAmmoCount(swep:GetSecondaryAmmoType())
+
+        if (clip1 != -1 or clip2 != -1) then
             --Ammo Text
-            if (swep.AmmoClip2 != -1) then
-                draw_SimpleText("Ammo in Clip: ".. swep.AmmoClip1 .." / ".. swep.AmmoClip2, "TEA.HUDFontSmall", 270, h - 210, Color(205,205,205,255), 0, 1) 
+            if (clip2 != -1) then
+                draw_SimpleText("Ammo in Clip: ".. clip1 .." / ".. clip2, "TEA.HUDFontSmall", 270, h - 210, Color(205,205,205,255), 0, 1) 
             else
-                draw_SimpleText("Ammo in Clip: ".. swep.AmmoClip1, "TEA.HUDFontSmall", 270, h - 210, Color(205,205,205,255), 0, 1) 
+                draw_SimpleText("Ammo in Clip: ".. clip1, "TEA.HUDFontSmall", 270, h - 210, Color(205,205,205,255), 0, 1) 
             end
             --Second Clip Ammo Text
-            draw_SimpleText("Ammo Remaining: ".. swep.MaxAmmoType, "TEA.HUDFontSmall", 270, h - 192, Color(205,205,205,255), 0, 1)
+            draw_SimpleText("Ammo Remaining: ".. ammo1, "TEA.HUDFontSmall", 270, h - 192, Color(205,205,205,255), 0, 1)
             --Alt ammo Text
-            draw_SimpleText("ALT: ".. swep.MaxAmmoType2, "TEA.HUDFontSmall", 270, h - 174, Color(205,205,205,255), 0, 1)
-        else IsAmmoBox = false end
+            draw_SimpleText("ALT: ".. ammo2, "TEA.HUDFontSmall", 270, h - 174, Color(205,205,205,255), 0, 1)
+        end
     end
 -------------- EXperience --------------
     surface_SetDrawColor(0, 0, 0, 255)

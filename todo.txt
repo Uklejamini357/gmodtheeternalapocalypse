@@ -10,17 +10,18 @@ Add more statistics
 Add more masteries -- moved to v0.12.7 update
 
 v0.12.6:
-Add random events.. this has been missing since a long time.
+Add random events.. this has been missing since a long time. -- Only 1 event for now, next one in v0.12.8
 Make next boss spawn, next airdrop spawn carry over to next session
 Remove what ammo weapons use from descriptions. Instead, add another text string to the details (inside descriptions) displaying what ammo the gun uses.
 
 v0.12.7:
 Add more tasks -- moved from v0.12.5 update
 Add more masteries -- moved from v0.12.5 update
-New admin command to force
+New admin command to force map transition
 
 v0.12.8:
 Add more translation strings
+Zombie fog special event
 
 v0.12.9:
 Add more admin logging?

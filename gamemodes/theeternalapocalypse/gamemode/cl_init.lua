@@ -259,6 +259,23 @@ function GM:SetupFonts()
 		outline = false,
 	} )
 
+	surface.CreateFont("TEA.HUDFontLarger", {
+		font = font,
+		size = 36,
+		weight = 800,
+		blursize = 0,
+		scanlines = 0,
+		antialias = antialias,
+		underline = false,
+		italic = false,
+		strikeout = false,
+		symbol = false,
+		rotary = false,
+		shadow = false,
+		additive = false,
+		outline = true,
+	} )
+
 	surface.CreateFont("TEA.HUDFontLarge", {
 		font = font,
 		size = 28,
@@ -344,6 +361,10 @@ function GM:Initialize()
 
 	self.OpenworldTransitions = {}
 	self.MapSafezones = {}
+
+	self.BloodMoonActive = false
+	self.BloodMoonStart = 0
+	self.BloodMoonEnd = 0
 
 	self.WraithAlpha = 0
 	self.tea_screenfadeout = 0
@@ -472,7 +493,7 @@ hook.Add("CalcView", "DeathView", DeathView, HOOK_LOW)
 
 function GM:OnUndo(name, str)
 	-- this is still needed by the test zombies function
-	notification.AddLegacy(str, 2, 3)
+	notification.AddLegacy(str or "Undone "..name, 2, 3)
 	surface.PlaySound("buttons/button15.wav")
 end
 
@@ -606,12 +627,12 @@ function GM:CreateMove(cmd)
 		ang = cmd:GetViewAngles()
 	end
 end
-/*
+
 local fog = {
-	color = {200, 200, 200},
+	color = {30, 0, 0},
 	density = 1,
-	start = 0,
-	endpos = 1000,
+	start = -2000,
+	endpos = 4000,
 }
 
 function GM:PreDrawSkyBox()
@@ -621,37 +642,19 @@ end
 function GM:PostDrawSkyBox()
 end
 
-local Mat = Material("dev/graygrid")
-function GM:PostDraw2DSkyBox()    
-    render.OverrideDepthEnable( true, false ) -- ignore Z to prevent drawing over 3D skybox
-
-    cam.Start3D(Vector(0, 0, 0), EyeAngles())
-        render.SetMaterial(Mat)
-		local l = 2000
-		local n = Vector(l,0,0)
-		local e = Vector(0,l,0)
-		local s = Vector(-l,0,0)
-		local w = Vector(0,-l,0)
-		local up = Vector(0,0,l)
-		local down = Vector(0,0,-l)
-
-		render.DrawQuad(n + Vector(0,l,l), n + Vector(0,-l,l), n + Vector(0,-l,-l), n + Vector(0,l,-l), color_white)
-		render.DrawQuad(e + Vector(l,0,l), e + Vector(-l,0,l), e + Vector(-l,0,-l), e + Vector(l,0,-l), color_white)
-		render.DrawQuad(s + Vector(0,l,l), s + Vector(0,-l,l), s + Vector(0,-l,-l), s + Vector(0,l,-l), color_white)
-		render.DrawQuad(w + Vector(0,l,l), w + Vector(0,-l,l), w + Vector(0,-l,-l), w + Vector(0,l,-l), color_white)
-		render.DrawQuad(up + Vector(0,l,l), up + Vector(0,-l,l), up + Vector(0,-l,-l), up + Vector(0,l,-l), color_white)
-		render.DrawQuad(down + Vector(0,l,l), down + Vector(0,-l,l), down + Vector(0,-l,-l), down + Vector(0,l,-l), color_white)
-	cam.End3D()
-
-    render.OverrideDepthEnable(false, false)
+function GM:PostDraw2DSkyBox()
 end
 
 function GM:SetupWorldFog()
 	if !fog then return end
+	if not (self.BloodMoonActive or !self.BloodMoonActive and self.BloodMoonEnd and self.BloodMoonEnd+3 > CurTime()) then return end
 	render.FogColor(fog.color[1], fog.color[2], fog.color[3])
 	render.FogMaxDensity(fog.density)
 	render.FogStart(fog.start)
-	render.FogEnd(fog.endpos)
+	render.FogEnd(fog.endpos + 6000*(
+		self.BloodMoonActive and math.Clamp(3 + (self.BloodMoonStart or 0) - CurTime(), 0, 3) / 3 or
+		!self.BloodMoonActive and self.BloodMoonEnd+3 > CurTime() and math.Clamp(CurTime() - self.BloodMoonEnd, 0, 3) / 3
+	))
 	render.FogMode(MATERIAL_FOG_LINEAR)
 
 	return true
@@ -659,95 +662,37 @@ end
 
 function GM:SetupSkyboxFog()
 	if !fog then return end
+	if not (self.BloodMoonActive or !self.BloodMoonActive and self.BloodMoonEnd and self.BloodMoonEnd+3 > CurTime()) then return end
 	render.FogColor(fog.color[1], fog.color[2], fog.color[3])
 	render.FogMaxDensity(fog.density)
 	render.FogStart(fog.start)
-	render.FogEnd(fog.endpos/16)
+	render.FogEnd((fog.endpos + 6000*(
+		self.BloodMoonActive and math.Clamp(3 + (self.BloodMoonStart or 0) - CurTime(), 0, 3) / 3 or
+		!self.BloodMoonActive and self.BloodMoonEnd+3 > CurTime() and math.Clamp(CurTime() - self.BloodMoonEnd, 0, 3) / 3
+	))/16)
 	render.FogMode(MATERIAL_FOG_LINEAR)
 
 	return true
 end
-*/
 
+local constructmat = Material("gm_construct/color_room")
+hook.Add("PreDrawOpaqueRenderables", "TEA.BloodMoonSkyBox", function(depth, skybox)
+	if not (GAMEMODE.BloodMoonActive or !GAMEMODE.BloodMoonActive and GAMEMODE.BloodMoonEnd and GAMEMODE.BloodMoonEnd+3 > CurTime()) then return end
+	if not GAMEMODE.SkyBoxCameraPos then return end
 
+	local ply = LocalPlayer()
+	local view = render.GetViewSetup()
+	local lookdir = view.angles
+	local lookpos = view.origin
+	local looknorm = Vector(1,0,0)
+	looknorm:Rotate(lookdir)
+	local fogend = 20000
+	local fpsfog_r = 30
+	local fpsfog_g = 0
+	local fpsfog_b = 0
 
-/*
-	surface.CreateFont("DefaultFontSmall", {
-		font = "tahoma",
-		size = 11,
-		weight = 0,
-		blursize = 0,
-		scanlines = 0,
-		antialias = false
-	})
-	surface.CreateFont("AmmoText", {
-		font	= "arial",
-		size	= 30,
-		weight	= 700,
-		blursize	= 0,
-		scanlines	= 0,
-		antialias	= true,
-	})
-
-	surface.CreateFont("QtyFont", {
-		font = "Trebuchet MS",
-		size = 24,
-		weight = 500,
-		blursize = 0,
-		scanlines = 0,
-		antialias = true,
-	})
-
-	surface.CreateFont("DeathScreenText", {
-		font	= "Trebuchet MS",
-		size	= 56,
-		weight	= 600,
-		blursize	= 0,
-		scanlines	= 0,
-		antialias	= true,
-	})
-
-	surface.CreateFont("DeathScreenText_2", {
-		font	= "Trebuchet MS",
-		size	= 28,
-		weight	= 300,
-		blursize	= 0,
-		scanlines	= 0,
-		antialias	= true,
-	})
-
-	surface.CreateFont("DeathScreenText_3", {
-		font	= "arial",
-		size	= 32,
-		weight	= 450,
-		blursize	= 0,
-		scanlines	= 0,
-		antialias	= false,
-	})
-	
-	surface.CreateFont("OtherText", {
-		font	= "arial",
-		size	= 15,
-		weight	= 700,
-		blursize	= 0,
-		scanlines	= 0,
-		antialias	= true,
-	})
-
-	surface.CreateFont("DamageFloaterFont", {
-		font	= "arial",
-		size	= 144,
-		weight	= 650,
-		blursize	= 0,
-		scanlines	= 6,
-		antialias	= false,
-	})
-
-	surface.CreateFont("CSSTextFont", {
-	    font	= "csd",
-	    size	= 38,
-	    weight	= 400,
-	    antialias	= true,
-	    shadow	= false
-	})
-*/
+	if skybox then
+		render.SetMaterial(constructmat)
+		render.DrawQuadEasy((lookpos + looknorm * fogend) / 16 + GAMEMODE.SkyBoxCameraPos, looknorm * -1, 1000000, 1000000, Color(fpsfog_r, fpsfog_g, fpsfog_b))
+	end
+end)

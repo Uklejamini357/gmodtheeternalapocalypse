@@ -320,13 +320,22 @@ function GM:AdminMenu()
 		buypanel[i]:SetSpacing(10)
 	end
 
+	SpawnMenuProperties:AddSheet(translate.Get("items_category_1"), buypanel[1], "icon16/ammo_three.png", false, false, translate.Get("items_category_1_d"))
+	SpawnMenuProperties:AddSheet(translate.Get("items_category_2"), buypanel[2], "icon16/box.png", false, false, translate.Get("items_category_2_d"))
+	SpawnMenuProperties:AddSheet(translate.Get("items_category_3"), buypanel[3], "icon16/gun.png", false, false, translate.Get("items_category_3_d"))
+	SpawnMenuProperties:AddSheet(translate.Get("items_category_4"), buypanel[4], "icon16/shield.png", false, false, translate.Get("items_category_4_d"))
+	SpawnMenuProperties:AddSheet(translate.Get("items_category_5"), buypanel[5], "icon16/bin.png", false, false, translate.Get("items_category_5_d"))
+	SpawnMenuProperties:AddSheet(translate.Get("items_category_6"), buypanel[6], "icon16/basket.png", false, false, translate.Get("items_category_6_d"))
+	-- SpawnMenuProperties:AddSheet(translate.Get("items_category_7"), buypanel[7], "icon16/basket.png", false, false, translate.Get("items_category_7_d"))
+
 
 	local function RefreshItemList(cat, parent)
 		for k,v in SortedPairsByMemberValue(GAMEMODE.ItemsList, "Cost") do
 			if v.Category != cat or v.IsSecret then continue end
 
 			local raretbl = gamemode.Call("CheckItemRarity", v.Rarity)
-			local ItemBackground = vgui.Create("DPanel", SpawnMenuProperties)
+			local ItemBackground = vgui.Create("DPanel")
+			parent:AddItem(ItemBackground)
 			ItemBackground:SetPos(5, 5)
 			ItemBackground:SetSize(300, 80)
 			ItemBackground.Paint = function(panel) -- Paint function
@@ -440,7 +449,6 @@ function GM:AdminMenu()
 					RunConsoleCommand("tea_dev_forceequiparmor", k)
 				end
 			end
-			parent:AddItem(ItemBackground)
 		end
 		if TEADevCheck(pl) then
 			if TEADevCheck(pl) and cat == ITEMCATEGORY_ARMOR then
@@ -465,14 +473,6 @@ function GM:AdminMenu()
 		RefreshItemList(i, buypanel[i])
 	end
 	RefreshPanel()
-
-	SpawnMenuProperties:AddSheet(translate.Get("items_category_1"), buypanel[1], "icon16/ammo_three.png", false, false, translate.Get("items_category_1_d"))
-	SpawnMenuProperties:AddSheet(translate.Get("items_category_2"), buypanel[2], "icon16/box.png", false, false, translate.Get("items_category_2_d"))
-	SpawnMenuProperties:AddSheet(translate.Get("items_category_3"), buypanel[3], "icon16/gun.png", false, false, translate.Get("items_category_3_d"))
-	SpawnMenuProperties:AddSheet(translate.Get("items_category_4"), buypanel[4], "icon16/shield.png", false, false, translate.Get("items_category_4_d"))
-	SpawnMenuProperties:AddSheet(translate.Get("items_category_5"), buypanel[5], "icon16/bin.png", false, false, translate.Get("items_category_5_d"))
-	SpawnMenuProperties:AddSheet(translate.Get("items_category_6"), buypanel[6], "icon16/basket.png", false, false, translate.Get("items_category_6_d"))
-	-- SpawnMenuProperties:AddSheet(translate.Get("items_category_7"), buypanel[7], "icon16/basket.png", false, false, translate.Get("items_category_7_d"))
 
 	local MapConfig = vgui.Create("DPanel", PropertySheet)
 	MapConfig:Dock(FILL)

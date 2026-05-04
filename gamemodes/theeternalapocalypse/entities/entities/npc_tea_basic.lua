@@ -38,7 +38,7 @@ function ENT:SetUpStats()
 		["Infection"] = 8, -- percentage chance to infect them
 		["Reach"] = 60, -- how far can the zombies attack reach? in source units
 		["StrikeDelay"] = 0.8, -- how long does it take for the zombie to deal damage after beginning an attack
-		["AfterStrikeDelay"] = 1, -- how long should the zombie wait after a strike lands until reverting to its behaviour cycle
+		["AfterStrikeDelay"] = 1.3, -- how long should the zombie wait after a strike lands until reverting to its behaviour cycle
 
 		["Health"] = 145, -- self explanatory
 		["MoveSpeedWalk"] = 60, -- zombies move speed when idly wandering around
@@ -130,7 +130,33 @@ end
 
 
 function ENT:GetTEAZombieSpeedMul()
-	return math.min(self:GetEliteVariant() == VARIANT_ENRAGED and 1.6 or 1, 2 - (self:Health() / self:GetMaxHealth())) * math.Clamp(1+(self:GetZombieLevel()-20)*0.01, 1, 1.25) * GAMEMODE.ZombieSpeedMultiplier * self.SpeedBuff
+	local speed = 1
+
+	if self:GetZombieLevel() > 20 then
+		speed = speed + math.min(25, self:GetZombieLevel()-20)*0.01
+	end
+
+	if self:GetEliteVariant() == VARIANT_ENRAGED then
+		speed = speed + math.Clamp(1 - (self:Health() / self:GetMaxHealth()), 0, 0.6)
+	end
+
+	if GAMEMODE.BloodMoonActive then
+		speed = speed + 0.45
+	end
+
+	speed = speed * self.SpeedBuff * GAMEMODE.ZombieSpeedMultiplier
+
+	return speed
+end
+
+function ENT:GetTEAZombieAttackRateMul()
+	local speed = 1
+
+	if GAMEMODE.BloodMoonActive then
+		speed = speed * 1.3
+	end
+
+	return speed
 end
 
 local ai_disabled = GetConVar("ai_disabled")
@@ -170,6 +196,8 @@ function ENT:DelayedCallback(delay, callback)
 end
 
 function ENT:OnContact(ent)
+	if !IsValid(ent) then return end
+	if !self.NextVehicleCollide then return end
 	if self.NextVehicleCollide > CurTime() then return end
 	if ent:IsVehicle() and ent:GetVelocity():Length() > 300 then
 		ent:EmitSound("physics/flesh/flesh_bloody_break.wav", 100, math.random(80, 90))
@@ -300,7 +328,8 @@ function ENT:RunBehaviour()
 				self:AttackPlayer(target)
 
 				self:StartActivity(self.AttackAnim)
-				coroutine.wait(self.ZombieStats["AfterStrikeDelay"])
+				self:SetPlaybackRate(self:GetTEAZombieAttackRateMul())
+				coroutine.wait(self.ZombieStats["AfterStrikeDelay"] / self:GetTEAZombieAttackRateMul())
 				self:StartActivity(self.WalkAnim)	
 
 
@@ -476,13 +505,13 @@ function ENT:AttackPlayer(target)
 	self:EmitSound(table.Random(self.AttackSounds), 100, math.random(95, 105))
 
 	-- swing those claws baby
-	self:DelayedCallback(self.ZombieStats["StrikeDelay"] * 0.75, function()
+	self:DelayedCallback(self.ZombieStats["StrikeDelay"] * 0.75 / self:GetTEAZombieAttackRateMul(), function()
 		self:EmitSound("npc/vort/claw_swing"..math.random(1, 2)..".wav")
 	end)
 
 	-- actually apply the damage
-	self:DelayedCallback(self.ZombieStats["StrikeDelay"], function()
-	if !self:IsValid() or self:Health() < 1 then return end
+	self:DelayedCallback(self.ZombieStats["StrikeDelay"] / self:GetTEAZombieAttackRateMul(), function()
+		if !self:IsValid() or self:Health() < 1 then return end
 
 		if (IsValid(target) and self:GetRangeTo(target) <= self.ZombieStats["Reach"]) then
 			self:ApplyPlayerDamage(target, self.ZombieStats["Damage"], -self.ZombieStats["Force"], self.ZombieStats["Infection"])
@@ -507,7 +536,7 @@ function ENT:AttackProp(target)
 	self:StartActivity(self.AttackAnim)
 	self:SetPlaybackRate(self.ZombieStats["StrikeAnimSpeed"] or 1)
 
-	coroutine.wait(self.ZombieStats["StrikeDelay"])
+	coroutine.wait(self.ZombieStats["StrikeDelay"] / self:GetTEAZombieAttackRateMul())
 	self:EmitSound(self.Miss)
 
 	if !target:IsValid() then return end
@@ -521,7 +550,7 @@ function ENT:AttackProp(target)
 		target:TakeDamage(self.ZombieStats["PropDamage"] or self.ZombieStats["Damage"], self)	
 		util.ScreenShake(target:GetPos(), 5, 5, math.Rand(0.2, 0.4), 300)
 	end
-	coroutine.wait(self.ZombieStats["AfterStrikeDelay"])
+	coroutine.wait(self.ZombieStats["AfterStrikeDelay"] / self:GetTEAZombieAttackRateMul())
 	self:StartActivity(self.WalkAnim)
 end
 
@@ -535,9 +564,9 @@ function ENT:AttackDoor(target)
 
 	self:StartActivity(self.AttackAnim)
 	self:SetPlaybackRate(self.ZombieStats["StrikeAnimSpeed"] or 1)
-	coroutine.wait(self.ZombieStats["StrikeDelay"])
+	coroutine.wait(self.ZombieStats["StrikeDelay"] / self:GetTEAZombieAttackRateMul())
 	if target:GetNoDraw() then
-		coroutine.wait(self.ZombieStats["AfterStrikeDelay"])
+		coroutine.wait(self.ZombieStats["AfterStrikeDelay"] / self:GetTEAZombieAttackRateMul())
 		self:StartActivity(self.WalkAnim)
 		return
 	end
@@ -548,7 +577,7 @@ function ENT:AttackDoor(target)
 	
 	if target.doorhealth >= 0 then
 		util.ScreenShake(target:GetPos(), 5, 5, math.Rand(0.2, 0.4), 300)
-		coroutine.wait(self.ZombieStats["AfterStrikeDelay"])
+		coroutine.wait(self.ZombieStats["AfterStrikeDelay"] / self:GetTEAZombieAttackRateMul())
 		self:StartActivity(self.WalkAnim)
 		return
 	end
@@ -594,7 +623,7 @@ function ENT:AttackDoor(target)
 
 	ent:Spawn()
 	timer.Simple(tonumber(GAMEMODE.Config["DoorResetTime"]), function() ResetDoor(target, ent) end)
-	coroutine.wait(self.ZombieStats["AfterStrikeDelay"])
+	coroutine.wait(self.ZombieStats["AfterStrikeDelay"] / self:GetTEAZombieAttackRateMul())
 	self:StartActivity(self.WalkAnim)
 end
 

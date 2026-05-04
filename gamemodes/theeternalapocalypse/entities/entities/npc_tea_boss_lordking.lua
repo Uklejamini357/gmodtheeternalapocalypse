@@ -1,6 +1,6 @@
 AddCSLuaFile()
 
-ENT.Base = "base_nextbot"
+ENT.Base = "npc_tea_basic"
 ENT.PrintName = "Zombie Lord King"
 ENT.Category = "T.E.A. Bosses"
 ENT.Purpose = "Can teleport nearby zombies"
@@ -105,10 +105,6 @@ function ENT:HasLOS()
 	else
 		return false
 	end
-end
-
-function ENT:GetTEAZombieSpeedMul()
-	return math.min(self:GetEliteVariant() == VARIANT_ENRAGED and 1.6 or 1, 2 - (self:Health() / self:GetMaxHealth())) * math.Clamp(1+(self:GetZombieLevel()-20)*0.01, 1, 1.25) * GAMEMODE.ZombieSpeedMultiplier * self.SpeedBuff
 end
 
 local ai_disabled = GetConVar("ai_disabled")
@@ -296,7 +292,7 @@ function ENT:RunBehaviour()
 					self:EmitSound("npc/vort/claw_swing"..math.random(1, 2)..".wav", 100, 70)
 				end)
 
-				self:TimedEvent(self.AttackWaitTime, function()
+				self:TimedEvent(self.AttackWaitTime / self:GetTEAZombieAttackRateMul(), function()
 					if not (self:IsValid() && self:Health() > 0) then return end
 					
 					if (IsValid(target) and self:GetRangeTo(target) <= 105) and target:Alive() then
@@ -346,7 +342,7 @@ function ENT:RunBehaviour()
 				end)
 
 				self:StartActivity(self.AttackAnim)
-				coroutine.wait(self.AttackWaitTime + self.AttackFinishTime)
+				coroutine.wait((self.AttackWaitTime + self.AttackFinishTime) / self:GetTEAZombieAttackRateMul())
 				self:StartActivity(self.WalkAnim)	
 			else
 				local distance = selfpos:Distance(target:GetPos())
@@ -531,7 +527,7 @@ function ENT:AttackProp(targetprops)
 			self:EmitSound(table.Random(self.AttackSounds), 110, math.random(90, 120))
 			self:StartActivity(self.AttackAnim)
 
-			coroutine.wait(self.AttackWaitTime)
+			coroutine.wait(self.AttackWaitTime / self:GetTEAZombieAttackRateMul())
 			self:EmitSound(self.Miss)
 
 			if !v:IsValid() then return end
@@ -542,7 +538,7 @@ function ENT:AttackProp(targetprops)
 			v:TakeDamage(self.IsEnraged and math.random(195, 225) or math.random(150, 165), self)
 			util.ScreenShake(v:GetPos(), 8, 6, math.Rand(0.3, 0.5), 400)
 			end
-		coroutine.wait(self.AttackFinishTime)
+		coroutine.wait(self.AttackFinishTime / self:GetTEAZombieAttackRateMul())
 		self:StartActivity(self.WalkAnim)
 			return true
 		end
@@ -556,9 +552,9 @@ function ENT:AttackDoor(target)
 	self:EmitSound(table.Random(self.AttackSounds), 105, math.random(85, 95))
 
 	self:StartActivity(self.AttackAnim)
-	coroutine.wait(self.AttackWaitTime)
+	coroutine.wait(self.AttackWaitTime / self:GetTEAZombieAttackRateMul())
 	if target:GetNoDraw() then
-		coroutine.wait(self.AttackFinishTime)
+		coroutine.wait(self.AttackFinishTime / self:GetTEAZombieAttackRateMul())
 		self:StartActivity(self.WalkAnim)
 		return
 	end
@@ -568,7 +564,7 @@ function ENT:AttackDoor(target)
 	
 	if target.doorhealth >= 0 then
 		util.ScreenShake(target:GetPos(), 5, 5, math.Rand(0.2, 0.4), 300)
-		coroutine.wait(self.AttackFinishTime)
+		coroutine.wait(self.AttackFinishTime / self:GetTEAZombieAttackRateMul())
 		self:StartActivity(self.WalkAnim)
 		return
 	end
@@ -614,7 +610,7 @@ function ENT:AttackDoor(target)
 
 	ent:Spawn()
 	timer.Simple(tonumber(GAMEMODE.Config["DoorResetTime"]), function() ResetDoor(target, ent) end)
-	coroutine.wait(self.AttackFinishTime)
+	coroutine.wait(self.AttackFinishTime / self:GetTEAZombieAttackRateMul())
 	self:StartActivity( self.WalkAnim )
 end
 

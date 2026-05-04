@@ -517,19 +517,19 @@ function GM:InvMenu()
 
 
 -----------------------------------------Stats Form---------------------------------------------------------------
-	local invStats = vgui.Create("DPanelList", pInvPanel)
-	invStats:SetSize(675, 600)
-	invStats:SetPos(0, 0)
-	invStats:EnableVerticalScrollbar(true)
-	invStats:SetSpacing(10)
-	invStats.Paint = function(panel)
+	local invSkills = vgui.Create("DPanelList", pInvPanel)
+	invSkills:SetSize(675, 600)
+	invSkills:SetPos(0, 0)
+	invSkills:EnableVerticalScrollbar(true)
+	invSkills:SetSpacing(10)
+	invSkills.Paint = function(panel)
 		surface.SetDrawColor(0, 0, 0 ,100)
 		surface.DrawRect(0, 0, panel:GetWide(), panel:GetTall())
 	end
-	invStats.VBar.Paint = function(panel)
+	invSkills.VBar.Paint = function(panel)
 		draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(30, 30, 30, 50))
 	end
-	invStats.VBar.btnGrip.Paint = function(panel)
+	invSkills.VBar.btnGrip.Paint = function(panel)
 		draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(40, 40, 0, 50))
 	end
 
@@ -577,7 +577,7 @@ function GM:InvMenu()
 			LabelDefense:SetText(translate.Get(k)..": "..ply["Stat"..k])
 			LabelDefense:SetToolTip(descr)
 			LabelDefense:SizeToContents()
-			invStats:AddItem(LabelDefense)
+			invSkills:AddItem(LabelDefense)
 
 			local Button = vgui.Create("DButton")
 			Button:SetPos(50, 100)
@@ -592,8 +592,8 @@ function GM:InvMenu()
 				net.WriteUInt(num, 16)
 				net.SendToServer()
 				timer.Simple(0.3, function()
-					if invStats:IsValid() then
-						invStats:Clear()
+					if invSkills:IsValid() then
+						invSkills:Clear()
 						DoStatsList()
 					end
 				end)
@@ -621,10 +621,33 @@ function GM:InvMenu()
 				surface.SetDrawColor(100, 100, 0 ,255)
 				surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
 			end
-			invStats:AddItem(Button)
+			invSkills:AddItem(Button)
 		end
 	end
 	DoStatsList()
+
+
+-----------------------------------------Stats Form---------------------------------------------------------------
+	local invStats = vgui.Create("DScrollPanel", pInvPanel)
+	invStats:SetSize(675, 600)
+	invStats.Paint = function(panel)
+		surface.SetDrawColor(0, 0, 0 ,100)
+		surface.DrawRect(0, 0, panel:GetWide(), panel:GetTall())
+	end
+	invStats.VBar.Paint = function(panel)
+		draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(30, 30, 30, 50))
+	end
+	invStats.VBar.btnGrip.Paint = function(panel)
+		draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(40, 40, 0, 50))
+	end
+
+	local txt = vgui.Create("DLabel", invStats)
+	txt:Dock(TOP)
+	txt:SetText("Survival Time: "..string.format("%d:%02d", ply:GetTimeSurvived()/60, ply:GetTimeSurvived()%60))
+	txt:SetFont("TEA.HUDFontSmall")
+	txt.Think = function(panel)
+		panel:SetText("Survival Time: "..string.format("%d:%02d", ply:GetTimeSurvived()/60, ply:GetTimeSurvived()%60))
+	end
 
 	local props = vgui.Create("Panel", InvSheet1)
 	props:SetSize(0,0)
@@ -647,7 +670,8 @@ function GM:InvMenu()
 
 
 
-	InvSheet2:AddSheet(translate.Get("my_skills"), invStats, "icon16/heart.png", false, false, translate.Get("my_skills_d"))
+	InvSheet2:AddSheet(translate.Get("my_skills"), invSkills, "icon16/heart.png", false, false, translate.Get("my_skills_d"))
+	InvSheet2:AddSheet("Stats", invStats, "icon16/user_red.png", false, false, "Your stats.")
 
 	return pInvPanel
 end

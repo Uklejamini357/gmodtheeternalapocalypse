@@ -24,7 +24,8 @@ i = GM:CreateItem("item_plasmaammo", {
     Rarity = RARITY_EPIC,
     Category = ITEMCATEGORY_AMMO,
     ItemType = ITEMTYPE_AMMO,
-    UseFunc = function(ply) local bool = UseFunc_GiveAmmo(ply, 20, "ammo_plasmabomb") return bool end,
+    AmmoType = "ammo_plasmabomb",
+    AmmoAmount = 20,
 })
 
 

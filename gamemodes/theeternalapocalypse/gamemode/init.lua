@@ -177,6 +177,31 @@ function GM:Think()
 			end
 		end
 
+		if !self.BloodMoonActive and ct > tonumber(self.NextSpecialEvent) then
+			self.NextSpecialEvent = ct + tonumber(self.SpecialEventInterval)
+
+			local allowbloodmoon = 0
+			for _,pl in player.Iterator() do
+				if pl:GetTEAPrestige() > 0 then
+					allowbloodmoon = true
+					break
+				end
+
+				allowbloodmoon = allowbloodmoon + pl:GetTEALevel()
+			end
+
+			if isnumber(allowbloodmoon) then
+				allowbloodmoon = (allowbloodmoon / player.GetCount()) >= 20
+			end
+
+			if allowbloodmoon and self.SpecialEventChance >= math.Rand(0,1) then
+				gamemode.Call("ManageSpecialEvent", EVENTTYPE_BLOODMOON, true)
+			end
+		elseif self.BloodMoonActive and ct > tonumber(self.SpecialEventEndTime) then
+			self.NextSpecialEvent = ct + tonumber(self.SpecialEventInterval)
+			gamemode.Call("ManageSpecialEvent", EVENTTYPE_BLOODMOON, false)
+		end
+
 		if ct > tonumber(self.NextLootSpawn) then
 			self.NextLootSpawn = ct + 60
 			gamemode.Call("SpawnLoot")
@@ -522,8 +547,10 @@ end
 
 function GM:Initialize()
 	self.NextZombieSpawn = 0
-	self.NextBossSpawn = 0
-	self.NextAirdropSpawn = 0
+	self.NextBossSpawn = CurTime() + self.Config["BossSpawnRate"]
+	self.NextAirdropSpawn = CurTime() + self.Config["AirdropSpawnRate"]
+	self.NextSpecialEvent = CurTime() + self.SpecialEventInterval
+	self.SpecialEventEndTime = 0
 	self.NextLootSpawn = 0
 	self.NextInfectionDecrease = 0
 	self.InfectionDecreasedTimes = 0
@@ -620,6 +647,8 @@ function GM:MapReInit()
 	for k, v in pairs(ents.FindByClass("prop_door_rotating")) do
 		v.doorhealth = tonumber(self.Config["DoorHealth"])
 	end
+
+	self.SkyBoxCamera = ents.FindByClass("sky_camera")[1]
 end
 
 function GM:OnReloaded()
@@ -1129,6 +1158,11 @@ function GM:PlayerReady(ply)
 	self:FullyUpdatePlayer(ply)
 	self:SendMapTransitionsInfo(ply)
 	self:SendMapSafezonesInfo(ply)
+
+	net.Start("tea_playerevent")
+	net.WriteUInt(PLAYEREVENT_INITSPAWN, 4)
+	net.WriteVector(self.SkyBoxCamera and self.SkyBoxCamera:GetPos() or Vector(0,0,0))
+	net.Send(ply)
 end
 
 function GM:PlayerSay(ply, text, team)
@@ -1577,4 +1611,24 @@ function GM:AddWSResources()
 	resource.AddWorkshop("128091208") -- m9k heavy weapons
 	resource.AddWorkshop("128093075") -- m9k small arms pack
 	resource.AddWorkshop("144982052") -- m9k specialties
+end
+
+function GM:ManageSpecialEvent(eventType, shouldStart)
+	if eventType == EVENTTYPE_BLOODMOON then
+		if shouldStart then
+			self.BloodMoonActive = true
+			self.SpecialEventEndTime = CurTime() + math.Rand(600,900)
+			engine.LightStyle(0, "b")
+			BroadcastLua([[render.RedownloadAllLightmaps()]])
+		else
+			self.BloodMoonActive = false
+			engine.LightStyle(0, "m")
+			BroadcastLua([[render.RedownloadAllLightmaps()]])
+		end
+	end
+
+	net.Start("tea_events")
+	net.WriteUInt(eventType, 4)
+	net.WriteBool(shouldStart)
+	net.Broadcast()
 end

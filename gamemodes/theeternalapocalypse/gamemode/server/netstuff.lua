@@ -69,6 +69,9 @@ util.AddNetworkString("tea_admin_sendspawns")
 util.AddNetworkString("tea_admin_safezone")
 util.AddNetworkString("tea_admin_tool")
 
+util.AddNetworkString("tea_events")
+util.AddNetworkString("tea_playerevent")
+
 
 --util.AddNetworkString("Respawn")
 

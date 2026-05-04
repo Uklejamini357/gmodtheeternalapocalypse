@@ -209,18 +209,8 @@ function GM:DrawVitals()
 	local Armor = me:Armor()
 	local MaxArmor = me:GetMaxArmor()
 
-	local SWEP
 	local weapon = me:GetActiveWeapon()
-	if weapon != NULL then
-		SWEP = {}
-		SWEP.Class = weapon:GetClass()
-		SWEP.AmmoClip1 = weapon:Clip1()
-		SWEP.AmmoClip2 = weapon:Clip2()
-		SWEP.MaxAmmoClip1 = weapon:GetMaxClip1()
-		SWEP.MaxAmmoClip2 = weapon:GetMaxClip2()
-		SWEP.MaxAmmoType = me:GetAmmoCount(weapon:GetPrimaryAmmoType())
-		SWEP.MaxAmmoType2 = me:GetAmmoCount(weapon:GetSecondaryAmmoType())
-	end
+
 
 	local cansprint = me:GetCanSprint()
 	-- local DGradientCenter = surface.GetTextureID("gui/center_gradient")
@@ -256,7 +246,7 @@ function GM:DrawVitals()
 		hud:DrawStats(pl, scrw, scrh)
 	end
 	if hud and hud.DrawSwep then
-		hud:DrawSwep(pl, scrw, scrh, SWEP)
+		hud:DrawSwep(pl, scrw, scrh, weapon)
 	end
 
 	--Max Weight
@@ -586,15 +576,24 @@ function GM:RenderScreenspaceEffects()
 	if GAMEMODE.WraithAlpha > 220 then DrawMotionBlur(0.4, 0.8, 0.01) end
 
 
+	local alive = !ply:Alive() and math.Clamp(1 + (self.LastAliveTime + 5 - CurTime()) * 0.2, 0.05, 1) or 1
+	if !self.BloodMoonStart then
+		self.BloodMoonStart = CurTime()
+	end
+	if !self.BloodMoonEnd then
+		self.BloodMoonEnd = CurTime()
+	end
+	local bloodmoon = (self.BloodMoonActive and math.Clamp(CurTime() - (self.BloodMoonStart or 0), 0, 3) / 3 or
+	!self.BloodMoonActive and self.BloodMoonEnd+3 > CurTime() and math.Clamp(3 + self.BloodMoonEnd - CurTime(), 0, 3) / 3 or 0) * alive
 	local filters = {
 		{
-			["$pp_colour_addr"] = 0,
-			["$pp_colour_addg"] = 0,
-			["$pp_colour_addb"] = 0,
+			["$pp_colour_addr"] = 0.15*bloodmoon,
+			["$pp_colour_addg"] = -0.05*bloodmoon,
+			["$pp_colour_addb"] = -0.05*bloodmoon,
 			["$pp_colour_brightness"] = 0,
-			["$pp_colour_contrast"] = contrast * (!ply:Alive() and math.Clamp(1 + (self.LastAliveTime + 5 - CurTime()) * 0.2, 0.05, 1) or 1),
+			["$pp_colour_contrast"] = contrast * alive * (1-bloodmoon*0.45),
 			["$pp_colour_colour"] = color,
-			["$pp_colour_mulr"] = 0,
+			["$pp_colour_mulr"] = 0.5*bloodmoon,
 			["$pp_colour_mulg"] = 0,
 			["$pp_colour_mulb"] = 0
 		},
@@ -605,7 +604,7 @@ function GM:RenderScreenspaceEffects()
 			["$pp_colour_addg"] = 0,
 			["$pp_colour_addb"] = 0,
 			["$pp_colour_brightness"] = -0.045,
-			["$pp_colour_contrast"] = contrast * 1.15 * (!ply:Alive() and math.Clamp(1 + (self.LastAliveTime + 5 - CurTime()) * 0.2, 0.05, 1) or 1),
+			["$pp_colour_contrast"] = contrast * 1.15 * alive,
 			["$pp_colour_colour"] = math.max(0, color - 0.725),
 			["$pp_colour_mulr"] = 0,
 			["$pp_colour_mulg"] = 0,
@@ -617,7 +616,7 @@ function GM:RenderScreenspaceEffects()
 			["$pp_colour_addg"] = 0,
 			["$pp_colour_addb"] = 0,
 			["$pp_colour_brightness"] = -0.1,
-			["$pp_colour_contrast"] = contrast * 0.55 * (!ply:Alive() and math.Clamp(1 + (self.LastAliveTime + 5 - CurTime()) * 0.2, 0.05, 1) or 1),
+			["$pp_colour_contrast"] = contrast * 0.55 * alive,
 			["$pp_colour_colour"] = 0,
 			["$pp_colour_mulr"] = 0,
 			["$pp_colour_mulg"] = 0,

@@ -141,10 +141,10 @@ function ENT:PhysicsCollide(data, physobj)
 		local ent = data.HitEntity
 		if ent:IsValid() then
 			local dmg = DamageInfo()
-			dmg:SetDamage(1000)
+			dmg:SetDamage(600)
 			dmg:SetDamageType(DMG_BLAST)
 			dmg:SetAttacker(self.Owner)
-			dmg:SetInflictor(self.ShotFromWeapon or self)
+			dmg:SetInflictor(IsValid(self.ShotFromWeapon) and self.ShotFromWeapon or self)
 			dmg:SetDamagePosition(self:GetPos())
 			ent:TakeDamageInfo(dmg)
 		end

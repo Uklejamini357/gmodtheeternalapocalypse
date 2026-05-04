@@ -1,6 +1,32 @@
 There's been a lot missed out...
 WORKING ON THIS CURRENTLY. even tho progress is slow asf
 
+-------- v0.12.6 --------
++ Added new function for zombies: Attack Rate Mult.
++ Added Special events mechanic:
+    Every ~47mins, there is a 20% chance for the special event to happen.
+    Currently there is only 1 special event: Blood Moon, which does:
+        +45% zombies speed
+        +30% zombies attack rate
+        Lasts 15~20mins.
+    Special events cannot overlap each other.
+    Required 1 player with prestige >= 1 or average level between all players > 20
++ Next Boss, Airdrop, Special Event timers pass on to next session!
++ Make new function for giving ammo for specified ammo types
++ New way to display how much an ammo box gives ammo and which ammo the weapon uses
++ Added new category near "My skills"
+
+= Shambler Zombie's attack rate reduced: 1/1s -> 1/1.3s
+= Rockets shot from RPG now have starting velocity of 500hu/s
+= Rockets' direct hit damage reduced from 1000 to 600.
+
+/ Boss zombies now work on base of npc_tea_basic nextbot zombie
+/ Slightly adjusted the SWEP HUD element
+/ Changed MP7 and MP7 Elite's ammo type to SMG
+
+* Real fix for not being able to assign tasks or anything when not near task dealer
+* Fixed Rockets' direct hit causing a lua error if their origin weapon is invalid (weapon that was shot with)
+
 -------- v0.12.5 --------
 + Add highlight for yourself in scoreboard
 + Added MORE STATISTICS
