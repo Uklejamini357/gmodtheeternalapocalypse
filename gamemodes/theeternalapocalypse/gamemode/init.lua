@@ -942,7 +942,7 @@ function GM:HandlePlayerArmorReduction(ply, dmginfo)
 		ply:SetArmor(ply:Armor() - flArmor)
 	end
 
-	dmginfo:SetDamage( flNew )
+	dmginfo:SetDamage(flNew)
 end
 
 function GM:PlayerInitialSpawn(ply, transition)
@@ -964,6 +964,41 @@ function GM:PlayerInitialSpawn(ply, transition)
 	ply.Money = 0
 	ply.Bounty = 0
 	----------------
+
+--[[ -- Maybe sometime soon... when the Realism/Hardcore update comes.. (in 2026/2027 or so). Don't intend to make it 100% realistic though.
+
+	-- Can cause sudden shock if too high, resulting in temporary -70% movespeed and inability to move for few seconds.
+	ply.BodyPain = 0
+
+	-- If it's a positive value, at >100% you start to overheat, lose thirst faster and health as well.
+	-- If it's a negative value, at -20%< you move slower. At -40%< you experience hypothermia, which means you would lose 0.1% cold per second at the cost of starving faster, if your hunger is above 30%.
+	-- At -65%< you start to lose health.
+	ply.BodyHeat = 0
+
+	-- Reduces carrying weight and increases cold vulnerability. Increases heat resistance.
+	ply.BodyWet = 0 -- no, don't overexaggerate it.
+
+	ply.BodyHealth = { -- How will healing work?
+		[HITGROUP_HEAD] = 45,
+		[HITGROUP_CHEST] = 70, -- upper torso
+		[HITGROUP_STOMACH] = 80, -- lower torso
+
+		-- both legs broken: Can't sprint.
+		[HITGROUP_LEFTARM] = 40, -- worse aim if broken
+		[HITGROUP_RIGHTARM] = 40, -- worse aim if broken
+
+		-- both legs broken: Can't sprint.
+		[HITGROUP_LEFTLEG] = 35, -- -45% (mult.) movespeed if broken
+		[HITGROUP_RIGHTLEG] = 35 -- -45% (mult.) movespeed if broken
+	}
+
+	-- The higher the worse: Increases when your stamina is low (<30%) for too long. Exhaustion gain is doubled if your stamina is 0%.
+	-- At >10% exhaustion, stamina regen is reduced gradually, up to 65% less stamina regen at 100% exhaustion.
+	-- At >35%, move speed is decreased by 10%, max 30% at 100% exhaustion.
+	ply.Exhaustion = 0
+
+
+]]
 	
 	-------- Progression Stats --------
 	ply.XP = 0
@@ -1045,11 +1080,6 @@ function GM:PlayerInitialSpawn(ply, transition)
 			Level = 0
 		}
 	end
-
-	ply.MasteryMeleeXP = 0
-	ply.MasteryMeleeLevel = 0
-	ply.MasteryPvPXP = 0
-	ply.MasteryPvPLevel = 0
 	----------------
 	
 	-------- Other Stats --------

@@ -13,12 +13,12 @@ net.Receive("UpdateTargetStats", function(length)
 
     local mastery = {}
     tbl.Mastery = mastery
-    mastery.Melee = mastery.Melee or {}
-    mastery.Melee.XP = math.Round(net.ReadFloat(), 2)
-    mastery.Melee.Level = net.ReadUInt(8)
-    mastery.PvP = mastery.PvP or {}
-    mastery.PvP.XP = math.Round(net.ReadFloat(), 2)
-    mastery.PvP.Level = net.ReadUInt(8)
+
+	for mType in SortedPairs(GAMEMODE.MasterySkillStats) do
+		mastery[mType] = mastery[mType] or {}
+        mastery[mType].XP = math.Round(net.ReadFloat(), 2)
+		mastery[mType].Level = net.ReadUInt(8)
+	end
 
     RefreshStats()
 end)
@@ -196,10 +196,14 @@ function GM:StatsMenu(ent)
             local mastery = tbl.Mastery[id] or 0
 
             local existingpanel = list.MasterySkills["Mastery."..id]
-            local reqxp = id == "Melee" and ent:GetReqMasteryMeleeXP(mastery.Level) or id == "PvP" and ent:GetReqMasteryPvPXP(mastery.Level) or 0
+            local reqxp = ent:GetReqMasteryXP(id, mastery.Level) or 0
+
+            local colprogress = HSVToColor(math.Clamp(120 * mastery.XP/reqxp, 0, 120), 1, 1)
             if existingpanel and IsValid(existingpanel) then
                 lastpanel = existingpanel
                 existingpanel.XPText:SetText("XP: ".. mastery.XP.."/"..reqxp.."  //  Level: "..mastery.Level)
+                existingpanel.XPPercentText:SetText("("..math.Round(100*mastery.XP/reqxp).."%)")
+                existingpanel.XPPercentText:SetTextColor(colprogress)
                 existingpanel.XPBar.Fraction = math.min(1, mastery.XP/reqxp)
             else
                 local panel = vgui.Create("Panel", list)
@@ -209,6 +213,7 @@ function GM:StatsMenu(ent)
                 panel:Dock(TOP)
                 panel:SetTall(75)
                 panel:DockMargin(0, 0, 0, 8)
+
 
                 local txt = vgui.Create("DLabel", panel)
                 txt:Dock(TOP)
@@ -224,13 +229,24 @@ function GM:StatsMenu(ent)
                 txt:SetWrap(true)
                 txt:DockMargin(0, 0, 0, 4)
 
+                local txt = vgui.Create("DLabel", panel)
+                panel.XPPercentText = txt
+                txt:MoveBelow(panel.XPText, 4)
+                txt:MoveRightOf(panel.XPText, 160)
+                txt:SetText("("..math.Round(100*mastery.XP/reqxp).."%)")
+                txt:SetTextColor(colprogress)
+                txt:SetFont("TEA.HUDFontSmall")
+                txt:SetWrap(true)
+                txt:DockMargin(0, 0, 0, 4)
+
+                colprogress = HSVToColor(math.Clamp(120 * mastery.XP/reqxp, 0, 120), 0.4, 1)
                 local bar = vgui.Create("Panel", panel)
                 panel.XPBar = bar
                 bar.Fraction = math.min(1, mastery.XP/reqxp)
                 bar.Paint = function(this, w, h)
                     surface.SetDrawColor(255, 255, 255, 200)
                     surface.DrawRect(0, 0, w, h)
-                    surface.SetDrawColor(255, 155, 155, 255)
+                    surface.SetDrawColor(colprogress.r, colprogress.g, colprogress.b, 255)
                     surface.DrawRect(1, 1, (w-2)*(this.Fraction), h-2)
                 end
                 bar:Dock(TOP)

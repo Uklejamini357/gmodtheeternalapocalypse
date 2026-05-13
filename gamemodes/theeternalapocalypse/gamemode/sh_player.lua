@@ -127,29 +127,20 @@ function meta:GetReqXP()
 	return math.floor(xp * math.max(1, 1+(plylevel-30)*0.01))
 end
 
--- todo: replace these functions in v0.12.7
 function meta:GetReqMasteryMeleeXP(mlvl)
-	local xpreq = 984
-	local addexpperlevel = 165
-	local addexpperlevel2 = 1.161
-
-	if !mlvl then
-		mlvl = self.MasteryMeleeLevel or 0
-	end
-
-	return math.floor(xpreq + (mlvl * addexpperlevel) ^ addexpperlevel2)
+	return self:GetReqMasteryXP("Melee", mlvl)
 end
 
 function meta:GetReqMasteryPvPXP(mlvl)
-	local expreq = 593
-	local addxpprlevel = 85
-	local addexpperlevel2 = 1.153
+	return self:GetReqMasteryXP("PvP", mlvl)
+end
 
-	if !mlvl then
-		mlvl = self.MasteryPvPLevel or 0
-	end
+function meta:GetReqMasteryXP(mtype, mlvl)
+	if !mtype then return end
+	local mastery = GAMEMODE.MasterySkillStats[mtype]
+	if !mastery then return end
 
-	return math.floor(expreq + (mlvl * addxpprlevel) ^ addexpperlevel2)
+	return mastery.XPReq(self, mlvl or (self.MasterySkills and self.MasterySkills[mtype].Level) or 0)
 end
 
 function meta:GetProgressToPrestige()

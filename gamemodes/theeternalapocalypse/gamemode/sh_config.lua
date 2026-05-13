@@ -902,13 +902,11 @@ GM.MasterySkillStats = {
 		EffRewardDesc = "", -- Currently effective% for the stat
 		MaxLevel = 20, -- Max level for the mastery
 		XPReq = function(pl, mlvl)
-			local xpreq = 984
-			local addexpperlevel = 165
-			local addexpperlevel2 = 1.161
+			if !mlvl then
+				mlvl = pl.MasterySkills["Melee"].Level or 0
+			end
 
-			local mlvl = pl.MasteryMeleeLevel
-
-			return math.floor(xpreq + (mlvl * addexpperlevel) ^ addexpperlevel2)
+			return math.floor(984 + (mlvl * 165) ^ 1.161)
 		end,
 		OnLevelup = function(pl, mlvl)
 			
@@ -926,15 +924,11 @@ GM.MasterySkillStats = {
 		EffRewardDesc = "",
 		MaxLevel = 20,
 		XPReq = function(pl, mlvl)
-			local expreq = 593
-			local addxpprlevel = 85
-			local addexpperlevel2 = 1.153
-
 			if !mlvl then
-				mlvl = pl.MasteryPvPLevel
+				mlvl = pl.MasterySkills["PvP"].Level or 0
 			end
 
-			return math.floor(expreq + (mlvl * addxpprlevel) ^ addexpperlevel2)
+			return math.floor(593 + (mlvl * 85) ^ 1.153)
 		end,
 		OnLevelup = function(pl, lvl)
 			
@@ -943,7 +937,7 @@ GM.MasterySkillStats = {
 			return math.min(20, lvl)*0.005
 		end
 	},
---[[
+
 	["Survivor"] = {
 		Name = "Survivor",
 		Description = "The excess damage has been making your body getting used to it, resulting it in becoming more resilient.",
@@ -952,13 +946,11 @@ GM.MasterySkillStats = {
 		EffRewardDesc = "+%s%% damage resistance",
 		MaxLevel = 20,
 		XPReq = function(pl, lvl)
-			local xpreq = 984
-			local addexpperlevel = 165
-			local addexpperlevel2 = 1.161
+			if !mlvl then
+				mlvl = pl.MasterySkills["Survivor"].Level or 0
+			end
 
-			local mlvl = pl.MasteryMeleeLevel
-
-			return math.floor(xpreq + (mlvl * addexpperlevel) ^ addexpperlevel2)
+			return math.floor(593 + (mlvl * 85) ^ 1.153)
 		end,
 		OnLevelup = function(pl, lvl)
 			
@@ -973,16 +965,14 @@ GM.MasterySkillStats = {
 		Description = "Wielding guns has never been any better before.",
 		GainHelpDesc = "Earned by inflicting headshots with guns.",
 		RewardDesc = "+0.5% to base headshot damage per level (applies before the multipliers)",
-		EffRewardDesc = "",
+		EffRewardDesc = "+%s%% base headshot damage",
 		MaxLevel = 20,
 		XPReq = function(pl, lvl)
-			local xpreq = 984
-			local addexpperlevel = 165
-			local addexpperlevel2 = 1.161
+			if !mlvl then
+				mlvl = pl.MasterySkills["Gunnery"].Level or 0
+			end
 
-			local mlvl = pl.MasteryMeleeLevel
-
-			return math.floor(xpreq + (mlvl * addexpperlevel) ^ addexpperlevel2)
+			return math.floor(593 + (mlvl * 85) ^ 1.153)
 		end,
 		OnLevelup = function(pl, lvl)
 			
@@ -997,16 +987,14 @@ GM.MasterySkillStats = {
 		Description = "Medicine is very important especially in this apocalyptic world.",
 		GainHelpDesc = "Earned by healing neutral/friendly players.",
 		RewardDesc = "+1% more effective healing to others per level",
-		EffRewardDesc = "",
+		EffRewardDesc = "%s%% healing efficiency to others",
 		MaxLevel = 20,
 		XPReq = function(pl, lvl)
-			local xpreq = 984
-			local addexpperlevel = 165
-			local addexpperlevel2 = 1.161
+			if !mlvl then
+				mlvl = pl.MasterySkills["Medic"].Level or 0
+			end
 
-			local mlvl = pl.MasteryMeleeLevel
-
-			return math.floor(xpreq + (mlvl * addexpperlevel) ^ addexpperlevel2)
+			return math.floor(593 + (mlvl * 85) ^ 1.153)
 		end,
 		OnLevelup = function(pl, lvl)
 			
@@ -1015,7 +1003,7 @@ GM.MasterySkillStats = {
 			return math.min(20, lvl)*0.005
 		end
 	},
-]]
+
 }
 
 

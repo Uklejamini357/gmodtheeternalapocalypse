@@ -22,11 +22,6 @@ function GM:SetStartingVariables(ply)
 	ply.Vault = table.Copy(self.Config["NewbieVault"])
 	ply.UnlockedPerks = {}
 
-	ply.MasteryMeleeXP = 0
-	ply.MasteryMeleeLevel = 0
-	ply.MasteryPvPXP = 0
-	ply.MasteryPvPLevel = 0
-
 	for statname, _ in pairs(self.StatConfigs) do
 		ply["Stat"..statname] = 0
 	end
@@ -134,7 +129,6 @@ function GM:SavePlayer(ply, force)
 	Data["CurrentTaskProgress"] = ply.CurrentTaskProgress
 	Data["TaskCooldowns"] = ply.TaskCooldowns
 
-	Data["MasteryMeleeXP"] = ply.MasteryMeleeXP
 	Data["MasteryMeleeLevel"] = ply.MasteryMeleeLevel
 	Data["MasteryPvPXP"] = ply.MasteryPvPXP
 	Data["MasteryPvPLevel"] = ply.MasteryPvPLevel
@@ -939,24 +933,6 @@ function GM:GetPlayerCharacters(ply)
 			end
 		else
 			t.Money = tonumber(self.Config["StartMoney"])
-	/*
-			ply.ChosenModel = "models/player/kleiner.mdl"
-			ply.BestSurvivalTime = 0
-			ply.XP = 0 
-			ply.Level = 1
-			ply.Prestige = 0
-			ply.playerskilled = 0
-			ply.playerdeaths = 0
-			ply.ZKills = 0
-			ply.StatPoints = 0
-			ply.EquippedArmor = "none"
-			ply.StatsReset = 0
-	
-			ply.MasteryMeleeXP = 0
-			ply.MasteryMeleeLevel = 0
-			ply.MasteryPvPXP = 0
-			ply.MasteryPvPLevel = 0
-	*/
 		end
 
 		tbl[i] = t

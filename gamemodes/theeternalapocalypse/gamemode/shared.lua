@@ -3,8 +3,8 @@ GM.AltName	= "After The End Reborn" -- yes, it's a fork. what else did you expec
 GM.Author	= "Uklejamini"
 GM.Email	= ""
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.12.6"
-GM.DateVer	= "04.05.2026" -- Follows the DD.MM.YYYY format.
+GM.Version	= "0.12.7-pre"
+GM.DateVer	= "13.05.2026" -- Follows the DD.MM.YYYY format.
 GM.Credits = {
 	-- Assets
 	{"GSC Game World",			"For all the S.T.A.L.K.E.R. content",										""},
@@ -27,30 +27,13 @@ GM.Credits = {
 	{"Anyone else I forgot",	"Various contributions",													""},
 }
 GM.RecentChangelogs = {
-	{"+ Added new function for zombies: Attack Rate Mult.", Color(210,255,210)},
-	{"+ Added Special events mechanic:", Color(210,255,210)},
-	{"    > Every ~47mins, there is a 20% chance for the special event to happen.", Color(210,255,210)},
-	{"    > Currently there is only 1 special event: Blood Moon, which grants:", Color(210,255,210)},
-	{"         >> +45% zombies speed", Color(210,255,210)},
-	{"         >> +30% zombies attack rate", Color(210,255,210)},
-	{"         >> And lasts 10~15mins.", Color(210,255,210)},
-	{"    > Special events cannot overlap each other.", Color(210,255,210)},
-	{"    > Required 1 player with prestige >= 1 or average level between all players > 20", Color(210,255,210)},
-	{"+ Next Boss, Airdrop, Special Event timers pass on to next session!", Color(210,255,210)},
-	{"+ Make new function for giving ammo for specified ammo types", Color(210,255,210)},
-	{"+ New way to display how much an ammo box gives ammo and which ammo the weapon uses", Color(210,255,210)},
-	{"+ Added new category near \"My skills\"", Color(210,255,210)},
-	
-	{"= Shambler Zombie's attack rate reduced: 1/1s -> 1/1.3s", Color(255,255,210)},
-	{"= Rockets shot from RPG now have starting velocity of 500hu/s", Color(255,255,210)},
-	{"= Rockets' direct hit damage reduced from 1000 to 600.", Color(255,255,210)},
+	{"+ working", Color(210,255,210)},
 
-	{"/ Boss zombies now work on base of npc_tea_basic nextbot zombie", Color(255,223,210)},
-	{"/ Slightly adjusted the SWEP HUD element", Color(255,223,210)},
-	{"/ Changed MP7 and MP7 Elite's ammo type to SMG", Color(255,223,210)},
-	
-	{"* Real fix for not being able to assign tasks or anything when not near task dealer", Color(210,210,255)},
-	{"* Fixed Rockets' direct hit causing a lua error if their origin weapon is invalid (weapon that was shot with)", Color(210,210,255)},
+	-- {"= Rockets' direct hit damage reduced from 1000 to 600.", Color(255,255,210)},
+
+	-- {"/ Changed MP7 and MP7 Elite's ammo type to SMG", Color(255,223,210)},
+
+	-- {"* Fixed Rockets' direct hit causing a lua error if their origin weapon is invalid (weapon that was shot with)", Color(210,210,255)},
 }
 
 DeriveGamemode("sandbox")
