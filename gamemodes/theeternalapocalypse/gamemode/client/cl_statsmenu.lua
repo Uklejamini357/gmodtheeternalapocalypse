@@ -94,7 +94,10 @@ local statstoshow = {
 }
 local masteriestoshow = {
     "Melee",
-    "PvP"
+    "PvP",
+    "Survivor",
+    "Gunnery",
+    "Medic",
 }
 
 function GM:StatsMenu(ent)
@@ -194,6 +197,7 @@ function GM:StatsMenu(ent)
         local lastpanel
         for _,id in pairs(masteriestoshow) do
             local mastery = tbl.Mastery[id] or 0
+            local gm_mastery_skill = GAMEMODE.MasterySkillStats[id]
 
             local existingpanel = list.MasterySkills["Mastery."..id]
             local reqxp = ent:GetReqMasteryXP(id, mastery.Level) or 0
@@ -210,6 +214,14 @@ function GM:StatsMenu(ent)
                 panel.Paint = function() end
                 lastpanel = panel
                 list.MasterySkills["Mastery."..id] = panel
+                panel:SetMouseInputEnabled(true)
+                panel:SetTooltip(
+                    gm_mastery_skill.Name..":\n"..
+                    gm_mastery_skill.Description.."\n\n"..
+                    gm_mastery_skill.GainHelpDesc.."\n\n"..
+                    gm_mastery_skill.RewardDesc.."\n\n"..
+                    string.format(gm_mastery_skill.EffRewardDesc, gm_mastery_skill:GetStatEffectiveVal(ent, mastery.Level))
+                )
                 panel:Dock(TOP)
                 panel:SetTall(75)
                 panel:DockMargin(0, 0, 0, 8)

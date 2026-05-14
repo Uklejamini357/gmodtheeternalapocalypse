@@ -896,26 +896,38 @@ GM.PerksList = {
 GM.MasterySkillStats = {
 	["Melee"] = { -- Identifier for the mastery skill!
 		Name = "Melee", -- Name for the mastery
-		Description = "", -- Give it a description!
-		GainHelpDesc = "", -- How to gain it?
-		RewardDesc = "", -- What does it do?
-		EffRewardDesc = "", -- Currently effective% for the stat
+		Description = "With each swing of your melee weapon, you become better at it.", -- Give it a description!
+		GainHelpDesc = "XP is gained by inflicting damage with melee weapons.", -- How to gain it?
+		RewardDesc = "+0.5% melee damage per level", -- What does it do?
+		EffRewardDesc = "+%s%% melee damage", -- Currently effective% for the stat
 		MaxLevel = 20, -- Max level for the mastery
-		XPReq = function(pl, mlvl)
+		XPReq = function(self, pl, mlvl)
 			if !mlvl then
-				mlvl = pl.MasterySkills["Melee"].Level or 0
+				if pl.MasterySkills and pl.MasterySkills["Melee"] then
+					mlvl = pl.MasterySkills["Melee"].Level
+				else
+					mlvl = 0
+				end
 			end
 
 			return math.floor(984 + (mlvl * 165) ^ 1.161)
 		end,
-		OnLevelup = function(pl, mlvl)
+		OnLevelup = function(self, pl, oldlvl, newlvl)
+		    pl:SystemMessage("Your 'Melee' mastery is now level "..newlvl.."! Gained "..self:CashGain(pl, newlvl).." cash.", Color(130, 255, 130, 255), false)
 			
+			if self:GetStatEffectiveVal(pl, oldlvl) ~= self:GetStatEffectiveVal(pl, newlvl) then
+		    	pl:SystemMessage("New melee damage mult. boost: +"..math.Round(self:GetStatEffectiveVal(pl, newlvl)*100, 1).."%", Color(130, 255, 130, 255), false)
+			end
 		end,
-		GetStatEffectiveVal = function(pl, mlvl)
+		CashGain = function(self, pl, new)
+			return math.floor(269 + (69 * new) ^ 1.1869)
+		end,
+		GetStatEffectiveVal = function(self, pl, mlvl)
 			return math.min(20, mlvl)*0.005
 		end
 	},
 
+	-- Might get removed in future update. (Potentially v0.13.0)
 	["PvP"] = {
 		Name = "PVP",
 		Description = "",
@@ -923,18 +935,25 @@ GM.MasterySkillStats = {
 		RewardDesc = "",
 		EffRewardDesc = "",
 		MaxLevel = 20,
-		XPReq = function(pl, mlvl)
+		XPReq = function(self, pl, mlvl)
 			if !mlvl then
-				mlvl = pl.MasterySkills["PvP"].Level or 0
+				if pl.MasterySkills and pl.MasterySkills["PvP"] then
+					mlvl = pl.MasterySkills["PvP"].Level
+				else
+					mlvl = 0
+				end
 			end
 
 			return math.floor(593 + (mlvl * 85) ^ 1.153)
 		end,
-		OnLevelup = function(pl, lvl)
+		OnLevelup = function(self, pl, oldlvl, newlvl)
 			
 		end,
-		GetStatEffectiveVal = function(pl, lvl)
-			return math.min(20, lvl)*0.005
+		CashGain = function(self, pl, new)
+			return math.floor(312 + (76 * new) ^ 1.2232)
+		end,
+		GetStatEffectiveVal = function(self, pl, mlvl)
+			return math.min(20, mlvl)*0.005
 		end
 	},
 
@@ -945,18 +964,25 @@ GM.MasterySkillStats = {
 		RewardDesc = "Increases damage resistance by +0.25% per level.",
 		EffRewardDesc = "+%s%% damage resistance",
 		MaxLevel = 20,
-		XPReq = function(pl, lvl)
+		XPReq = function(self, pl, mlvl)
 			if !mlvl then
-				mlvl = pl.MasterySkills["Survivor"].Level or 0
+				if pl.MasterySkills and pl.MasterySkills["Survivor"] then
+					mlvl = pl.MasterySkills["Survivor"].Level
+				else
+					mlvl = 0
+				end
 			end
 
 			return math.floor(593 + (mlvl * 85) ^ 1.153)
 		end,
-		OnLevelup = function(pl, lvl)
+		OnLevelup = function(self, pl, oldlvl, newlvl)
 			
 		end,
-		GetStatEffectiveVal = function(pl, lvl)
-			return math.min(20, lvl)*0.005
+		CashGain = function(self, pl, new)
+			return math.floor(312 + (76 * new) ^ 1.2232)
+		end,
+		GetStatEffectiveVal = function(self, pl, mlvl)
+			return math.min(20, mlvl)*0.005
 		end
 	},
 
@@ -967,18 +993,25 @@ GM.MasterySkillStats = {
 		RewardDesc = "+0.5% to base headshot damage per level (applies before the multipliers)",
 		EffRewardDesc = "+%s%% base headshot damage",
 		MaxLevel = 20,
-		XPReq = function(pl, lvl)
+		XPReq = function(self, pl, mlvl)
 			if !mlvl then
-				mlvl = pl.MasterySkills["Gunnery"].Level or 0
+				if pl.MasterySkills and pl.MasterySkills["Gunnery"] then
+					mlvl = pl.MasterySkills["Gunnery"].Level
+				else
+					mlvl = 0
+				end
 			end
 
 			return math.floor(593 + (mlvl * 85) ^ 1.153)
 		end,
-		OnLevelup = function(pl, lvl)
+		OnLevelup = function(self, pl, old, new)
 			
 		end,
-		GetStatEffectiveVal = function(pl, lvl)
-			return math.min(20, lvl)*0.005
+		CashGain = function(self, pl, new)
+			return math.floor(312 + (76 * new) ^ 1.2232)
+		end,
+		GetStatEffectiveVal = function(self, pl, mlvl)
+			return math.min(20, mlvl)*0.005
 		end
 	},
 
@@ -989,18 +1022,25 @@ GM.MasterySkillStats = {
 		RewardDesc = "+1% more effective healing to others per level",
 		EffRewardDesc = "%s%% healing efficiency to others",
 		MaxLevel = 20,
-		XPReq = function(pl, lvl)
+		XPReq = function(self, pl, mlvl)
 			if !mlvl then
-				mlvl = pl.MasterySkills["Medic"].Level or 0
+				if pl.MasterySkills and pl.MasterySkills["Medic"] then
+					mlvl = pl.MasterySkills["Medic"].Level
+				else
+					mlvl = 0
+				end
 			end
 
 			return math.floor(593 + (mlvl * 85) ^ 1.153)
 		end,
-		OnLevelup = function(pl, lvl)
+		OnLevelup = function(self, pl, oldlvl, newlvl)
 			
 		end,
-		GetStatEffectiveVal = function(pl, lvl)
-			return math.min(20, lvl)*0.005
+		CashGain = function(self, pl, new)
+			return math.floor(312 + (76 * new) ^ 1.2232)
+		end,
+		GetStatEffectiveVal = function(self, pl, mlvl)
+			return math.min(20, mlvl)*0.005
 		end
 	},
 

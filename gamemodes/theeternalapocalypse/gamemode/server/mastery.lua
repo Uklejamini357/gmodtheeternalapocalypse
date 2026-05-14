@@ -15,16 +15,20 @@ function meta:GainMasteryXP(amount, mType)
 end
 
 function meta:GainMasteryLevel(mType)
+    local mtbl = GAMEMODE.MasterySkillStats[mType]
+    if !mtbl then return end
+
     if self.MasterySkills[mType].XP < self:GetReqMasteryXP(mType) then return end
     self.MasterySkills[mType].XP = self.MasterySkills[mType].XP - self:GetReqMasteryXP(mType)
     
-    local newlevel = self.MasterySkills[mType].Level + 1
-    local cashreward = math.floor(269 + (69 * newlevel) ^ 1.1869)
-    -- cashreward = math.floor(312 + (76 * newlevel) ^ 1.2232) -- PVP
+    local oldlevel = self.MasterySkills[mType].Level
+    local newlevel = oldlevel + 1
+    local cashreward = mtbl.CashGain and mtbl:CashGain(self, newlevel) or 0
 
     self.MasterySkills[mType].Level = newlevel
     self.Money = self.Money + cashreward
-    self:SystemMessage("[Mastery System] Your Mastery Melee Level is now "..newlevel.."! Gained "..cashreward.." cash.", Color(130, 255, 130, 255), false)
+
+    mtbl:OnLevelup(self, oldlevel, newlevel)
 
     self:AddStatisticPoints("CashGainedByMastery", cashreward)
 

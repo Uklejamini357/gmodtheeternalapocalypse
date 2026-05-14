@@ -43,6 +43,24 @@ function GM:CorrectPlayerDataFromPreviousVersions(ply, prevdata)
 		ply.Statistics["playerdeaths"] = nil
 	end
 
+	if ply.MasteryMeleeLevel then
+		ply.MasterySkills["Melee"] = {
+			XP = ply.MasteryMeleeXP,
+			Level = ply.MasteryMeleeLevel
+		}
+		ply.MasteryMeleeXP = nil
+		ply.MasteryMeleeLevel = nil
+	end
+
+	if ply.MasteryMeleeLevel then
+		ply.MasterySkills["PvP"] = {
+			XP = ply.MasteryPvPXP,
+			Level = ply.MasteryPvPLevel
+		}
+		ply.MasteryPvPXP = nil
+		ply.MasteryPvPLevel = nil
+	end
+
 	if !prevdata.perkpoints then
 		ply.PerkPoints = ply.Prestige
 	end
@@ -129,14 +147,11 @@ function GM:SavePlayer(ply, force)
 	Data["CurrentTaskProgress"] = ply.CurrentTaskProgress
 	Data["TaskCooldowns"] = ply.TaskCooldowns
 
-	Data["MasteryMeleeLevel"] = ply.MasteryMeleeLevel
-	Data["MasteryPvPXP"] = ply.MasteryPvPXP
-	Data["MasteryPvPLevel"] = ply.MasteryPvPLevel
-
 	Data["Inventory"] = ply.Inventory
 	Data["InvalidInventory"] = ply.InvalidInventory
 	Data["Vault"] = ply.Vault
 	Data["UnlockedPerks"] = ply.UnlockedPerks
+	Data["MasterySkills"] = ply.MasterySkills
 
 	Data["Statistics"] = ply.Statistics
 
