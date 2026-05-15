@@ -43,19 +43,19 @@ function GM:CorrectPlayerDataFromPreviousVersions(ply, prevdata)
 		ply.Statistics["playerdeaths"] = nil
 	end
 
-	if ply.MasteryMeleeLevel then
+	if ply.MasteryMeleeXP or ply.MasteryMeleeLevel then
 		ply.MasterySkills["Melee"] = {
-			XP = ply.MasteryMeleeXP,
-			Level = ply.MasteryMeleeLevel
+			XP = ply.MasteryMeleeXP or 0,
+			Level = ply.MasteryMeleeLevel or 0
 		}
 		ply.MasteryMeleeXP = nil
 		ply.MasteryMeleeLevel = nil
 	end
 
-	if ply.MasteryMeleeLevel then
+	if ply.MasteryPvPXP or ply.MasteryPvPLevel then
 		ply.MasterySkills["PvP"] = {
-			XP = ply.MasteryPvPXP,
-			Level = ply.MasteryPvPLevel
+			XP = ply.MasteryPvPXP or 0,
+			Level = ply.MasteryPvPLevel or 0
 		}
 		ply.MasteryPvPXP = nil
 		ply.MasteryPvPLevel = nil
