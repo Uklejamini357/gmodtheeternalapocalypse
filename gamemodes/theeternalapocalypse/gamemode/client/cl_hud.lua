@@ -538,6 +538,7 @@ end
 function GM:HUDShouldDraw(name)
 	local me = LocalPlayer()
 
+	if !IsValid(me) then return false end
 	if IsValid(me:GetActiveWeapon()) and me:GetActiveWeapon():GetClass() == "gmod_camera" and
 	name ~= "CHudWeaponSelection" then return false end
 	local donotdraw = 

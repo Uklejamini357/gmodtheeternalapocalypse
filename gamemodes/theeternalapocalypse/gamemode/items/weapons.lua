@@ -626,6 +626,20 @@ i = GM:CreateItem("item_deadly_crossbowbolt", {
     AmmoAmount = 25,
 })
 
+i = GM:CreateItem("item_40mmgrenade", {
+    Name = "40mm Grenade",
+    Description = "",
+    Cost = 140,
+    Model = "models/items/ar2_grenade.mdl",
+    Weight = 0.26,
+    Supply = 0,
+    Rarity = RARITY_UNCOMMON,
+    Category = ITEMCATEGORY_AMMO,
+    ItemType = ITEMTYPE_AMMO,
+    AmmoType = "SMG1_Grenade",
+    AmmoAmount = 1,
+})
+
 i = GM:CreateItem("item_rocketammo", {
     Cost = 180,
     Model = "models/weapons/w_missile_closed.mdl",

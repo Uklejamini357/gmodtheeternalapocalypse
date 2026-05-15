@@ -21,3 +21,21 @@ Realism/Hardcore mode:
 
 ----
 
+Trading system:
+    Players can trade goods between each other.
+    This would make bartering with players more effective than it would normally be with dropping items and money.
+    Players can initiate a trade by pressing use key on them and pressing the "Trade" button that shows up.
+    Players who receive trade request can either accept or deny.
+    Trade range: 120hu
+
+    If it's denied:
+        The player cannot send trade request to the target for the next 30 seconds.
+    If it's accepted:
+        The trade starts, and the trade menu pops up.
+
+        At any time, if the player is too far away, or is not alive, the popup closes and the trade is cancelled automatically.
+        Everything is networked real-time, this includes offered items and money.
+        
+
+
+
