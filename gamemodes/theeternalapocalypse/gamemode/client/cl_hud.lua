@@ -537,6 +537,9 @@ end
 
 function GM:HUDShouldDraw(name)
 	local me = LocalPlayer()
+
+	if IsValid(me:GetActiveWeapon()) and me:GetActiveWeapon():GetClass() == "gmod_camera" and
+	name ~= "CHudWeaponSelection" then return false end
 	local donotdraw = 
 	{"CHudHealth", "CHudAmmo", "CHudSecondaryAmmo", "CHudBattery", "CHudSuitPower"}
 
@@ -555,11 +558,11 @@ function GM:RenderScreenspaceEffects()
 	local modify = {}
 	local color = 1
 	local contrast = 1
-	local hp = (((ply:GetMaxHealth() * 0.4) - ply:Health()) * (1 / (ply:GetMaxHealth() * 0.4)))
+	local hp = math.max(((ply:GetMaxHealth() * 0.4) - ply:Health()) * (1 / (ply:GetMaxHealth() * 0.4)))
 	
 	if (ply:Health() < ply:GetMaxHealth() * 0.4) then
 		if (ply:Alive()) then
-			color = math.min(color - hp, color)
+			color = math.Clamp(color - hp, 0, color)
 		else
 			color = 0
 		end

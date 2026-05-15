@@ -898,7 +898,7 @@ GM.MasterySkillStats = {
 		Name = "Melee", -- Name for the mastery
 		Description = "With each swing of your melee weapon, you become better at it.", -- Give it a description!
 		GainHelpDesc = "XP is gained by inflicting damage with melee weapons.", -- How to gain it?
-		RewardDesc = "+0.5% melee damage per level", -- What does it do?
+		RewardDesc = "+0.5% melee damage per level, max +5%.", -- What does it do?
 		EffRewardDesc = "+%s%% melee damage", -- Currently effective% for the stat
 		MaxLevel = 20, -- Max level for the mastery
 		XPReq = function(self, pl, mlvl)
@@ -923,7 +923,7 @@ GM.MasterySkillStats = {
 			return math.floor(269 + (69 * new) ^ 1.1869)
 		end,
 		GetStatEffectiveVal = function(self, pl, mlvl)
-			return math.min(20, mlvl)*0.005
+			return math.min(10, mlvl)*0.005
 		end
 	},
 
@@ -961,7 +961,7 @@ GM.MasterySkillStats = {
 		Name = "Survivor",
 		Description = "The excess damage has been making your body getting used to it, resulting it in becoming more resilient.",
 		GainHelpDesc = "Earned by surviving damage while on <10% health.",
-		RewardDesc = "Increases damage resistance by +0.25% per level.",
+		RewardDesc = "Increases damage resistance by +0.25% per level, max +2.5%.",
 		EffRewardDesc = "+%s%% damage resistance",
 		MaxLevel = 20,
 		XPReq = function(self, pl, mlvl)
@@ -982,7 +982,7 @@ GM.MasterySkillStats = {
 			return math.floor(312 + (76 * new) ^ 1.2232)
 		end,
 		GetStatEffectiveVal = function(self, pl, mlvl)
-			return math.min(20, mlvl)*0.005
+			return math.min(10, mlvl)*0.005
 		end
 	},
 
@@ -990,7 +990,7 @@ GM.MasterySkillStats = {
 		Name = "Gunnery",
 		Description = "Wielding guns has never been any better before.",
 		GainHelpDesc = "Earned by inflicting headshots with guns.",
-		RewardDesc = "+0.5% to base headshot damage per level (applies before the multipliers)",
+		RewardDesc = "+0.5% to base headshot damage per level, max +5% (applies before the multipliers)",
 		EffRewardDesc = "+%s%% base headshot damage",
 		MaxLevel = 20,
 		XPReq = function(self, pl, mlvl)
@@ -1011,7 +1011,7 @@ GM.MasterySkillStats = {
 			return math.floor(312 + (76 * new) ^ 1.2232)
 		end,
 		GetStatEffectiveVal = function(self, pl, mlvl)
-			return math.min(20, mlvl)*0.005
+			return math.min(10, mlvl)*0.005
 		end
 	},
 
@@ -1019,7 +1019,7 @@ GM.MasterySkillStats = {
 		Name = "Medic",
 		Description = "Medicine is very important especially in this apocalyptic world.",
 		GainHelpDesc = "Earned by healing neutral/friendly players.",
-		RewardDesc = "+1% more effective healing to others per level",
+		RewardDesc = "+1% more effective healing to others per level, max +10%",
 		EffRewardDesc = "%s%% healing efficiency to others",
 		MaxLevel = 20,
 		XPReq = function(self, pl, mlvl)
@@ -1031,16 +1031,16 @@ GM.MasterySkillStats = {
 				end
 			end
 
-			return math.floor(593 + (mlvl * 85) ^ 1.153)
+			return math.floor(453 + (mlvl * 69) ^ 1.146)
 		end,
 		OnLevelup = function(self, pl, oldlvl, newlvl)
 			
 		end,
 		CashGain = function(self, pl, new)
-			return math.floor(312 + (76 * new) ^ 1.2232)
+			return math.floor(265 + (37 * new) ^ 1.1965)
 		end,
 		GetStatEffectiveVal = function(self, pl, mlvl)
-			return math.min(20, mlvl)*0.005
+			return math.min(10, mlvl)*0.005
 		end
 	},
 

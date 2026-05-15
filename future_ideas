@@ -1,0 +1,23 @@
+Realism/Hardcore mode:
+    Comes with many changes that make your survival significantly more miserable.
+    For hardcore players only. Death becomes way more punishing!
+
+    On death:
+        - 30s respawn time
+        - Drop significant amount of your money, by following:
+            1. The dropped value is 10% of your money
+            2. The value is powered to ^0.75
+            3. Apply slight softcap if it's above 5k
+
+    Minimal HUD (Health, ammo remaining for specific weapon only)
+
+    Body health system:
+        Head: Very vulnerable. 0HP -> Death.
+        Torso: The core part of your body, has vital organs. 0HP -> Death.
+        Arms: You hold your weapons with it. Lower HP -> Worse aim
+        Legs: They are what you walk with. Lower HP -> Worse movement speed
+
+    and more
+
+----
+
