@@ -32,7 +32,6 @@ local i = GM:CreateItem("item_bandage", {
     },
     UseSound = "theeternalapocalypse/items/inv_bandages.ogg",
 
-	UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 11, 0, "theeternalapocalypse/items/inv_bandages.ogg") return healing end,
     CanUseOnOthers = true
 })
 
@@ -52,7 +51,6 @@ i = GM:CreateItem("item_medkit", {
     },
     UseSound = "theeternalapocalypse/items/inv_aptecka.ogg",
 
-    UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 45, 5, "theeternalapocalypse/items/inv_aptecka.ogg") return healing end,
     CanUseOnOthers = true
 })
 
@@ -72,7 +70,6 @@ i = GM:CreateItem("item_armymedkit", {
     },
     UseSound = "theeternalapocalypse/items/inv_aptecka.ogg",
 
-    UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 70, 20, "theeternalapocalypse/items/inv_aptecka.ogg") return healing end,
     CanUseOnOthers = true
 })
 
@@ -92,7 +89,6 @@ i = GM:CreateItem("item_scientificmedkit", {
     },
     UseSound = "theeternalapocalypse/items/inv_aptecka.ogg",
 
-    UseFunc = function(ply, targetply) local healing = UseFunc_Heal(ply, targetply, 3, 100, 60, "theeternalapocalypse/items/inv_aptecka.ogg") return healing end,
     CanUseOnOthers = true
 })
 

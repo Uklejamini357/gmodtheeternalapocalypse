@@ -213,7 +213,9 @@ function GM:ScalePlayerDamage(ent, hitgroup, dmginfo)
 		headdmg = headdmg * 2
 	end
 
-	if hitgroup == HITGROUP_HEAD then dmginfo:ScaleDamage(headdmg)
+	if hitgroup == HITGROUP_HEAD then
+		dmginfo:ScaleDamage(headdmg)
+		ent.HeadShotDamagedBy = attacker
 	elseif hitgroup == HITGROUP_CHEST then dmginfo:ScaleDamage(1)
 	elseif hitgroup == HITGROUP_STOMACH then dmginfo:ScaleDamage(0.8)
 	elseif hitgroup == HITGROUP_LEFTARM then dmginfo:ScaleDamage(0.35)
@@ -254,7 +256,9 @@ function GM:ScaleNPCDamage(ent, hitgroup, dmginfo)
 		headdmg = headdmg * 2
 	end
 
-	if hitgroup == HITGROUP_HEAD then dmginfo:ScaleDamage(headdmg)
+	if hitgroup == HITGROUP_HEAD then
+		dmginfo:ScaleDamage(headdmg)
+		ent.HeadShotDamagedBy = attacker
 	elseif hitgroup == HITGROUP_CHEST then dmginfo:ScaleDamage(1)
 	elseif hitgroup == HITGROUP_STOMACH then dmginfo:ScaleDamage(0.8)
 	elseif hitgroup == HITGROUP_LEFTARM then dmginfo:ScaleDamage(0.5)
@@ -347,10 +351,12 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 		print(ply:Nick().." has died with "..ply.Bounty.." bounty and survived for "..math.floor(survived).."s")
 	end
 
-	if !attacker:IsPlayer() then
-		MsgN("[Death Log] "..ply:Nick().." was killed by "..attacker:GetClass())
-	elseif attacker != ply then
-		MsgN("[Death Log] "..ply:Nick().." was killed by "..attacker:Nick().." using "..attacker:GetActiveWeapon():GetClass())
+	if IsValid(attacker) then
+		if !attacker:IsPlayer() then
+			MsgN("[Death Log] "..ply:Nick().." was killed by "..attacker:GetClass())
+		elseif attacker != ply then
+			MsgN("[Death Log] "..ply:Nick().." was killed by "..attacker:Nick().." using "..attacker:GetActiveWeapon():GetClass())
+		end
 	end
 
 	if ply:IsSleeping() then
@@ -443,8 +449,13 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 		ply.LastLifeAmmo = ply:GetAmmo()
 	end
 
+	if attacker == NULL then
+		attacker = game.GetWorld()
+	end
 	local inflictor = dmginfo:GetInflictor()
-	inflictor = inflictor:IsValid() and inflictor or attacker
+	if inflictor == NULL then	
+		inflictor = attacker
+	end
 
 	if attacker == ply then
 		net.Start("PlayerKilledSelf")
@@ -496,7 +507,7 @@ function GM:PlayerDeathSound(ply)
 	local sound = table.Random(tbl)
 	ply:EmitSound(sound, 85)
 	if self:GetDebug() >= DEBUGGING_ADVANCED then print(sound) end
-	return true
+	return false
 end
 
 function GM:OnDamagedByExplosion(ply, dmginfo)

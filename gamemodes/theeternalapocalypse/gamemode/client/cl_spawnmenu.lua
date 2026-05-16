@@ -127,7 +127,7 @@ local function DoInvPanel()
 						local add = item.ItemType == ITEMTYPE_MED and " ["..pl:Health().."/"..pl:GetMaxHealth().."]" or ""
 						if pl:IsPlayer() and ply ~= pl then
 							sub:AddOption(pl:Nick()..add, function()
-								UseItem(ply, k)
+								UseItem(pl, k)
 							end)
 						end
 					end

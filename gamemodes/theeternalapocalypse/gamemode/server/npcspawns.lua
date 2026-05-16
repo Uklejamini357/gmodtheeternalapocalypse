@@ -466,7 +466,12 @@ function GM:NPCReward(ent)
 				ent.TEA_KilledByPlayer = boss_killer
 			end
 			ent.TEA_MostDamageByPlayer = boss_damage
-			
+
+			local ondefeatedfunc = self.Config["BossClasses"][ent:GetClass()].OnDefeated
+			if ondefeatedfunc and table.Count(ent.DamagedBy) > 0 then
+				ondefeatedfunc(ent, boss_killer, ent.DamagedBy)
+			end
+
 			if table.Count(attackers) > 0 then
 				if self:GetDebug() >= DEBUGGING_NORMAL then
 					print("BOSS DEFEATED:\n")

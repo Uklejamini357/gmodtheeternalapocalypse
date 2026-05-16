@@ -81,16 +81,16 @@ local statstoshow = {
     {},
 
     {"Deaths", "Deaths"},
-    {"DeathsByThirst", "Deaths from thirst"},
-    {"DeathsByHunger", "Deaths from hunger"},
-    {"DeathsByFatigue", "Deaths from fatigue"},
-    {"DeathsByInfection", "Deaths from infection"},
-    {"DeathsByZombies", "Deaths from zombies"},
-    {"DeathsByBoss", "Deaths from bosses"},
-    {"DeathsByHuman", "Deaths from humans"},
-    {"DeathsByPlayers", "Deaths from players"},
-    {"DeathsBySuicide", "Deaths from suicide"},
-    {"DeathsByFall", "Deaths from fall damage"},
+    -- {"DeathsByThirst", "Deaths from thirst"},
+    -- {"DeathsByHunger", "Deaths from hunger"},
+    -- {"DeathsByFatigue", "Deaths from fatigue"},
+    -- {"DeathsByInfection", "Deaths from infection"},
+    -- {"DeathsByZombies", "Deaths from zombies"},
+    -- {"DeathsByBoss", "Deaths from bosses"},
+    -- {"DeathsByHuman", "Deaths from humans"},
+    -- {"DeathsByPlayers", "Deaths from players"},
+    -- {"DeathsBySuicide", "Deaths from suicide"},
+    -- {"DeathsByFall", "Deaths from fall damage"},
 }
 local masteriestoshow = {
     "Melee",
@@ -220,7 +220,7 @@ function GM:StatsMenu(ent)
                     gm_mastery_skill.Description.."\n\n"..
                     gm_mastery_skill.GainHelpDesc.."\n\n"..
                     gm_mastery_skill.RewardDesc.."\n\n"..
-                    string.format(gm_mastery_skill.EffRewardDesc, gm_mastery_skill:GetStatEffectiveVal(ent, mastery.Level))
+                    string.format(gm_mastery_skill.EffRewardDesc, gm_mastery_skill:GetStatEffectiveVal(ent, mastery.Level) * 100)
                 )
                 panel:Dock(TOP)
                 panel:SetTall(75)

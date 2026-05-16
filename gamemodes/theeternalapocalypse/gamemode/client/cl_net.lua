@@ -3,7 +3,9 @@ net.Receive("tea_damagefloater", function(length)
 	local pos = net.ReadVector()
 	local pl = net.ReadBool()
 
-	LocalPlayer():EmitSound("buttons/button10.wav", 0, 100, 10)
+	-- for i=1,2 do
+	-- LocalPlayer():EmitSound("buttons/button10.wav", 150, 100, 1)
+	-- end
 	if GAMEMODE.HitSounds then
 		local snd = "theeternalapocalypse/hitsound.wav"
 		if pl and GAMEMODE.HitSoundsVolumeNPC > 0 then

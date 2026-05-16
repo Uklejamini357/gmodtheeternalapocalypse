@@ -278,6 +278,8 @@ function GM:UseItem(ply, item, use, targetply)
 						ply.XP = ply.XP + math.floor(hp)
 						ply:SendChat(translate.ClientFormat(ply, "healed_x_for_y", targetply:Nick(), hp, math.floor(hp*1.5)))
 						gamemode.Call("GiveTaskProgress", ply, "medical_attention", 1)
+
+						ply:GainMasteryXP(hp/1.5, "Medic")
 					end
 				end
 

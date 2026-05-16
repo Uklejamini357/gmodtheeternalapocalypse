@@ -8,9 +8,11 @@ PANEL.AlphaMul = 0
 function PANEL:Init()
 
 	self:SetAlpha(255*ToolTipAlphaMul)
-	self:SetDrawOnTop( true )
+	self:SetDrawOnTop(true)
 	self.DeleteContentsOnClose = false
-	self:SetText( "" )
+	self:SetText("")
+	-- self:SetWrap(true)
+	-- self:SetAutoStretchVertical(true)
 	self:SetFont( "TEA.HUDFontSmall" )
 	if IsValid(previoustooltip) then previoustooltip:Remove() end
 	previoustooltip = self
@@ -18,10 +20,8 @@ function PANEL:Init()
 end
 
 function PANEL:UpdateColours( skin )
-
 	-- return self:SetTextStyleColor( skin.Colours.TooltipText )
-	return self:SetTextStyleColor( Color(255,255,255,255) )
-
+	return self:SetTextStyleColor(colr_white)
 end
 
 function PANEL:SetContents( panel, bDelete )
@@ -38,22 +38,16 @@ function PANEL:SetContents( panel, bDelete )
 end
 
 function PANEL:PerformLayout()
-
 	if ( IsValid( self.Contents ) ) then
-
 		self:SetWide( self.Contents:GetWide() + 8 )
 		self:SetTall( self.Contents:GetTall() + 8 )
 		self.Contents:SetPos( 4, 4 )
 		self.Contents:SetVisible( true )
-
 	else
-
 		local w, h = self:GetContentSize()
 		self:SetSize( w + 8, h + 6 )
 		self:SetContentAlignment( 5 )
-
 	end
-
 end
 
 local Mat = Material( "vgui/arrow" )
@@ -115,8 +109,7 @@ function PANEL:Paint( w, h )
 
 end
 
-function PANEL:OpenForPanel( panel )
-
+function PANEL:OpenForPanel(panel)
 	self.TargetPanel = panel
 	self.OpenDelay = 0
 	self:PositionTooltip()
@@ -137,17 +130,16 @@ function PANEL:OpenForPanel( panel )
 
 		end )
 	end
-
 end
 
 function PANEL:Close()
 
-	if ( !self.DeleteContentsOnClose and IsValid( self.Contents ) ) then
+	-- if ( !self.DeleteContentsOnClose and IsValid( self.Contents ) ) then
 
 		-- self.Contents:SetVisible( false )
 		-- self.Contents:SetParent( nil )
 
-	end
+	-- end
 
 	self.Closing = true
 	-- self:Remove()
@@ -156,10 +148,10 @@ end
 
 function PANEL:GenerateExample( ClassName, PropertySheet, Width, Height )
 
-	local ctrl = vgui.Create( "DButton" )
-	ctrl:SetText( "Hover me" )
-	ctrl:SetWide( 200 )
-	ctrl:SetTooltip( "This is a tooltip" )
+	local ctrl = vgui.Create("DButton")
+	ctrl:SetText("Hover me")
+	ctrl:SetWide(200)
+	ctrl:SetTooltip("This is a tooltip")
 
 	PropertySheet:AddSheet( ClassName, ctrl, nil, true, true )
 

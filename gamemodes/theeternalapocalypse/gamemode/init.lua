@@ -845,7 +845,7 @@ function GM:ProcessPostDamage(ent, dmginfo, tookdmg)
 		attacker = dmginfo.Attacker
 		inflictor = dmginfo.Inflictor
 		weapon = dmginfo.Weapon
-	else
+	elseif dmginfo then
 		dmg = dmginfo:GetDamage()
 		dmgtype = dmginfo:GetDamageType()
 		dmgpos = dmginfo:GetDamagePosition()
@@ -854,6 +854,7 @@ function GM:ProcessPostDamage(ent, dmginfo, tookdmg)
 		attacker = dmginfo:GetAttacker()
 		inflictor = dmginfo:GetInflictor()
 		weapon = dmginfo:GetWeapon()
+	else return
 	end
 
 	if dmg == 0 then return end
@@ -883,15 +884,30 @@ function GM:ProcessPostDamage(ent, dmginfo, tookdmg)
 	end
 
 	if attacker:IsPlayer() then
-		if (ent:IsNextBot() or ent:IsNPC() or ent:IsPlayer()) and IsMeleeDamage(dmgtype) and attacker:HasPerk("bloodlust") then
-			local heal = math.min(50 - attacker.BloodLustMeleeHealCap, effective_dmg*0.1)*(50-attacker.BloodLustMeleeHealCap)/50
-			attacker.BloodLustMeleeHeal = attacker.BloodLustMeleeHeal + heal
-			attacker.BloodLustMeleeHealCap = attacker.BloodLustMeleeHealCap + heal
-			attacker.BloodLustLastMeleeHit = CurTime()
+		if ent:IsNextBot() or ent:IsNPC() or ent:IsPlayer() then
+			if ent.HeadShotDamagedBy then
+				if ent.HeadShotDamagedBy == attacker then
+					attacker.MMasteryGunneryHeadshotDamage = (attacker.MMasteryGunneryHeadshotDamage or 0) + (effective_dmg^0.65)/10
 
-			if attacker.BloodLustMeleeHeal and attacker.BloodLustMeleeHeal >= 1 then
-				attacker:SetHealth(math.min(attacker:GetMaxHealth(), attacker:Health() + math.floor(attacker.BloodLustMeleeHeal)))
-				attacker.BloodLustMeleeHeal = attacker.BloodLustMeleeHeal - math.floor(attacker.BloodLustMeleeHeal)
+					timer.Create("TEA.GunneryMasteryTimer", 3, 1, function()
+						attacker:GainMasteryXP(attacker.MMasteryGunneryHeadshotDamage, "Gunnery")
+						attacker.MMasteryGunneryHeadshotDamage = 0
+					end)
+				end
+				ent.HeadShotDamagedBy = nil
+			end
+
+
+			if IsMeleeDamage(dmgtype) and attacker:HasPerk("bloodlust") then
+				local heal = math.min(50 - attacker.BloodLustMeleeHealCap, effective_dmg*0.1)*(50-attacker.BloodLustMeleeHealCap)/50
+				attacker.BloodLustMeleeHeal = attacker.BloodLustMeleeHeal + heal
+				attacker.BloodLustMeleeHealCap = attacker.BloodLustMeleeHealCap + heal
+				attacker.BloodLustLastMeleeHit = CurTime()
+
+				if attacker.BloodLustMeleeHeal and attacker.BloodLustMeleeHeal >= 1 then
+					attacker:SetHealth(math.min(attacker:GetMaxHealth(), attacker:Health() + math.floor(attacker.BloodLustMeleeHeal)))
+					attacker.BloodLustMeleeHeal = attacker.BloodLustMeleeHeal - math.floor(attacker.BloodLustMeleeHeal)
+				end
 			end
 		end
 	end
@@ -1165,6 +1181,7 @@ function GM:PlayerInitialSpawn(ply, transition)
 		}
 	end
 	ply.MMasterySurvivorDamageTook = 0
+	ply.MMasteryGunneryHeadshotDamage = 0
 	----------------
 	
 	-------- Other Stats --------

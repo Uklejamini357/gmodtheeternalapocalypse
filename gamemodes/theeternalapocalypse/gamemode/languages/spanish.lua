@@ -939,8 +939,8 @@ LANG.Tip19 = "Ten un ojo puesto en el nivel de infección. Los zombis se vuelven
 -- New ?????
 
 LANG.the_eternal_apocalypse = "The Eternal Apocalypse"
-LANG.the_eternal_apocalypse_desc = "Un modo de juego basado en la supervivencia apocalíptica derivado de un viejo modo de juego.\nEn desarrollo desde principios de 2022.\nLos zombis esperan tu aparición."
 LANG.the_eternal_apocalypse_desc = "Un modo de juego basado en la supervivencia apocalíptica derivado de un viejo modo de juego.\nEn desarrollo desde principios de 2022.\nLos zombies esperan tu aparición."
+-- LANG.the_eternal_apocalypse_desc = "A recreated version of an old game mode with an apocalyptic survival theme.\nBased on the ideas from STALKER, Zombie Survival and more.\nThe zombies await your appearance." -- new (to translate)
 LANG.the_eternal_apocalypse_character = "Elige el personaje que vas a jugar."
 LANG.play = "Jugar"
 LANG.disconnect = "Desconectar"

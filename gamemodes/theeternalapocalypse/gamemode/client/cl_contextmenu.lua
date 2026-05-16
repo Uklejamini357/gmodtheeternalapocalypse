@@ -859,6 +859,12 @@ hook.Add("CalcView", "TEA.ThirdPerson", function(pl, origin, angles, fov)
 
 	local viewpos = origin + angles:Forward() * -50 + Vector(0, 0, 15)
 	lastcam = lastcam + (viewpos-lastcam)*math.min(1, FrameTime()*10)
+	local tr = util.TraceLine({
+		start = origin,
+		endpos = lastcam,
+		filter = function(ent) return ent ~= pl end
+	})
+	lastcam = tr.HitPos
 
 	return {
 		origin = lastcam

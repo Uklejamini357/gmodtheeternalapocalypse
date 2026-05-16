@@ -6,8 +6,11 @@ function meta:GainMasteryXP(amount, mType)
     if !self.MasterySkills[mType] then return end
     if !amount then return end
 
+    local mastery = GAMEMODE.MasterySkillStats[mType]
+
     self.MasterySkills[mType].XP = (self.MasterySkills[mType].XP or 0) + amount
-    if self.MasterySkills[mType].XP >= self:GetReqMasteryXP(mType) then
+    for i=1,mastery.MaxLevel do
+        if not (self.MasterySkills[mType].XP >= self:GetReqMasteryXP(mType) and mastery.MaxLevel > self:GetMasteryLevel(mType)) then break end
         self:GainMasteryLevel(mType)
     end
 

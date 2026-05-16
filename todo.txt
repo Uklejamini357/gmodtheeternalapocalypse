@@ -1,14 +1,14 @@
 todo:
 
 v0.12.7:
-Add more tasks -- moved from v0.12.5 update
 Add more masteries -- moved from v0.12.5 update (still wip)
-New admin command to force map transition
 Fix thirdperson camera noclipping
 
 v0.12.8:
 Add more translation strings (More translation support yay)
 Zombie fog special event
+Make death screen more animated
+
 
 v0.12.9: Tasks QOL
 - Make it possible to assign multiple tasks at a time (up to 3 tasks at once)
@@ -17,39 +17,55 @@ v0.12.9: Tasks QOL
 
 v0.12.10:
 Expand admin system and logging... maybe?
+New admin command to force map transition -- moved from v0.12.7
 Add ULX commands
 Add CAMI permissions
 
 v0.12.11:
+Add more tasks -- moved from v0.12.5, then v0.12.7
 
 
 
 --------
 
 
-v0.13.0:
+
+v1.0.0:
 Add Human SNPC's spawns
 Add Reputation system (Affects NPC's only, but also some players)
-Items dropping on death (not just for currently holding weapons, but also in inventory) <-- having a % chance to drop on death, not making as hardcore like in dayz
+Items dropping on death (not just for currently holding weapons, but also in inventory) <-- having a % chance to drop on death, not making as hardcore like in dayz. Thankfully it'll be toggleable
 Add achievements (Oh, NOW ADDING THEM?!)
 
-v0.13.1:
+v1.0.1:
 Add new mechanic to map transitions:
 - Cannot go to another map without any intel.
 - Intel must be bought from the trader to be able to pass to new areas.
 - Map transitions with 0 cost are free to pass without any need for intel.
 
-v0.13.2:
+v1.0.2:
 Add task completion quotes
-Item blessing mechanic: 
+Item blessing mechanic:
+- Blessed items 
 
-v0.13.3:
+v1.0.3:
 Make player reputation affect prices for the traders
 
-placeholder:
-Add permanent tasks (Completable only once)
-
-v0.14.0:
+v1.0.4:
 Add black market trader NPC's (Sells unique items but at 2.5x price)
+
+v1.0.5:
+Quick use wheel on T key (re-bindable)
+
+v1.1.0:
+Add permanent tasks (Completable only once)
 Add vehicle dealer and simfphys/Glide vehicles support
 
+v1.1.1:
+Add backpacks
+
+v1.1.2:
+Add armor attachments
+
+
+v1.2.0:
+Add support for ArcCW attachments

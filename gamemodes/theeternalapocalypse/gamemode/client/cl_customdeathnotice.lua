@@ -113,7 +113,7 @@ local function CheckLocalPlayerDeath(victim, attacker, dmg, dmgtype, msgoverride
 		elseif attacker == "worldspawn" then
 			GAMEMODE.DeathMessage = table.Random(killedbyother)
 		else
-			GAMEMODE.DeathMessage = "killed by "..language.GetPhrase(attacker)
+			GAMEMODE.DeathMessage = "Killed by "..language.GetPhrase(attacker)
 		end
 	end
 end

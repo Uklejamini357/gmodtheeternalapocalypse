@@ -469,7 +469,7 @@ GM.Config["BossClasses"] = {
 		InfectionRate = 4.85,	-- Infection rate
 		AllowEliteVariants = true,	-- Some bosses don't like being elite variants, so we only enable for some of them!
 	},
-	
+
 	["npc_tea_boss_lordking"] = {
 		Name = "Zombie Lord King",
 		SpawnChance = 30,
@@ -900,7 +900,7 @@ GM.MasterySkillStats = {
 		RewardDesc = "+0.5% melee damage per level, max +5%.", -- What does it do?
 		EffRewardDesc = "+%s%% melee damage", -- Currently effective% for the stat
 		MaxLevel = 20, -- Max level for the mastery
-		XPReq = function(self, pl, mlvl)
+		XPReq = function(self, pl, mlvl) -- XP Required for the mastery. Return the value inside the function.
 			if !mlvl then
 				if pl.MasterySkills and pl.MasterySkills["Melee"] then
 					mlvl = pl.MasterySkills["Melee"].Level
@@ -909,9 +909,9 @@ GM.MasterySkillStats = {
 				end
 			end
 
-			return math.floor(984 + (mlvl * 165) ^ 1.161)
+			return math.floor(984 + (mlvl * 139) ^ 1.156)
 		end,
-		OnLevelup = function(self, pl, oldlvl, newlvl)
+		OnLevelup = function(self, pl, oldlvl, newlvl) -- Bulk level-ups only call level up once.
 		    pl:SystemMessage("Your 'Melee' mastery is now level "..newlvl.."! Gained "..self:CashGain(pl, newlvl).." cash.", Color(130, 255, 130, 255), false)
 			
 			if self:GetStatEffectiveVal(pl, oldlvl) ~= self:GetStatEffectiveVal(pl, newlvl) then
@@ -919,7 +919,7 @@ GM.MasterySkillStats = {
 			end
 		end,
 		CashGain = function(self, pl, new)
-			return math.floor(269 + (69 * new) ^ 1.1869)
+			return math.floor(153 + (42 * new) ^ 1.1869)
 		end,
 		GetStatEffectiveVal = function(self, pl, mlvl)
 			return math.min(10, mlvl)*0.005
@@ -931,7 +931,7 @@ GM.MasterySkillStats = {
 		Name = "PVP",
 		Description = "Your skills against other survivors become no match.",
 		GainHelpDesc = "Gained by killing other players. The higher their level and prestige, the more XP is gained.",
-		RewardDesc = "No actual reward, only cash.",
+		RewardDesc = "No actual boost, only cash gain.",
 		EffRewardDesc = "None",
 		MaxLevel = 20,
 		XPReq = function(self, pl, mlvl)
@@ -946,17 +946,13 @@ GM.MasterySkillStats = {
 			return math.floor(593 + (mlvl * 85) ^ 1.153)
 		end,
 		OnLevelup = function(self, pl, oldlvl, newlvl)
-		    pl:SystemMessage("Your 'Melee' mastery is now level "..newlvl.."! Gained "..self:CashGain(pl, newlvl).." cash.", Color(130, 255, 130, 255), false)
-			
-			if self:GetStatEffectiveVal(pl, oldlvl) ~= self:GetStatEffectiveVal(pl, newlvl) then
-		    	pl:SystemMessage("New melee damage mult. boost: +"..math.Round(self:GetStatEffectiveVal(pl, newlvl)*100, 1).."%", Color(130, 255, 130, 255), false)
-			end
+		    pl:SystemMessage("Your 'PvP' mastery is now level "..newlvl.."! Gained "..self:CashGain(pl, newlvl).." cash.", Color(130, 255, 130, 255), false)
 		end,
 		CashGain = function(self, pl, new)
-			return math.floor(312 + (76 * new) ^ 1.2232)
+			return math.floor(212 + (74 * new) ^ 1.2132)
 		end,
 		GetStatEffectiveVal = function(self, pl, mlvl)
-			return math.min(20, mlvl)*0.005
+			return 0
 		end
 	},
 
@@ -979,17 +975,17 @@ GM.MasterySkillStats = {
 			return math.floor(1391 + (mlvl * 106) ^ 1.217)
 		end,
 		OnLevelup = function(self, pl, oldlvl, newlvl)
-		    pl:SystemMessage("Your 'Melee' mastery is now level "..newlvl.."! Gained "..self:CashGain(pl, newlvl).." cash.", Color(130, 255, 130, 255), false)
+		    pl:SystemMessage("Your 'Survivor' mastery is now level "..newlvl.."! Gained "..self:CashGain(pl, newlvl).." cash.", Color(130, 255, 130, 255), false)
 			
 			if self:GetStatEffectiveVal(pl, oldlvl) ~= self:GetStatEffectiveVal(pl, newlvl) then
-		    	pl:SystemMessage("New melee damage mult. boost: +"..math.Round(self:GetStatEffectiveVal(pl, newlvl)*100, 1).."%", Color(130, 255, 130, 255), false)
+		    	pl:SystemMessage("New Survivor damage resistance boost: +"..math.Round(self:GetStatEffectiveVal(pl, newlvl)*100, 2).."%", Color(130, 255, 130, 255), false)
 			end
 		end,
 		CashGain = function(self, pl, new)
 			return math.floor(137 + (18 * new) ^ 1.2374)
 		end,
 		GetStatEffectiveVal = function(self, pl, mlvl)
-			return math.min(10, mlvl)*0.005
+			return math.min(10, mlvl)*0.0025
 		end
 	},
 
@@ -1009,17 +1005,17 @@ GM.MasterySkillStats = {
 				end
 			end
 
-			return math.floor(593 + (mlvl * 85) ^ 1.153)
+			return math.floor(1593 + (mlvl * 137) ^ 1.334)
 		end,
 		OnLevelup = function(self, pl, oldlvl, newlvl)
-		    pl:SystemMessage("Your 'Melee' mastery is now level "..newlvl.."! Gained "..self:CashGain(pl, newlvl).." cash.", Color(130, 255, 130, 255), false)
+		    pl:SystemMessage("Your 'Gunnery' mastery is now level "..newlvl.."! Gained "..self:CashGain(pl, newlvl).." cash.", Color(130, 255, 130, 255), false)
 			
 			if self:GetStatEffectiveVal(pl, oldlvl) ~= self:GetStatEffectiveVal(pl, newlvl) then
-		    	pl:SystemMessage("New melee damage mult. boost: +"..math.Round(self:GetStatEffectiveVal(pl, newlvl)*100, 1).."%", Color(130, 255, 130, 255), false)
+		    	pl:SystemMessage("New Gunnery damage mult. boost: +"..math.Round(self:GetStatEffectiveVal(pl, newlvl)*100, 1).."%", Color(130, 255, 130, 255), false)
 			end
 		end,
 		CashGain = function(self, pl, new)
-			return math.floor(312 + (76 * new) ^ 1.2232)
+			return math.floor(136 + (63 * new) ^ 1.0732)
 		end,
 		GetStatEffectiveVal = function(self, pl, mlvl)
 			return math.min(10, mlvl)*0.005
@@ -1031,7 +1027,7 @@ GM.MasterySkillStats = {
 		Description = "Medicine is very important especially in this apocalyptic world.",
 		GainHelpDesc = "Earned by healing neutral/friendly players.",
 		RewardDesc = "+1% more effective healing to others per level, max +10%",
-		EffRewardDesc = "%s%% healing efficiency to others",
+		EffRewardDesc = "+%s%% healing efficiency to others",
 		MaxLevel = 20,
 		XPReq = function(self, pl, mlvl)
 			if !mlvl then
@@ -1045,14 +1041,14 @@ GM.MasterySkillStats = {
 			return math.floor(453 + (mlvl * 69) ^ 1.146)
 		end,
 		OnLevelup = function(self, pl, oldlvl, newlvl)
-		    pl:SystemMessage("Your 'Melee' mastery is now level "..newlvl.."! Gained "..self:CashGain(pl, newlvl).." cash.", Color(130, 255, 130, 255), false)
+		    pl:SystemMessage("Your 'Medic' mastery is now level "..newlvl.."! Gained "..self:CashGain(pl, newlvl).." cash.", Color(130, 255, 130, 255), false)
 			
 			if self:GetStatEffectiveVal(pl, oldlvl) ~= self:GetStatEffectiveVal(pl, newlvl) then
-		    	pl:SystemMessage("New melee damage mult. boost: +"..math.Round(self:GetStatEffectiveVal(pl, newlvl)*100, 1).."%", Color(130, 255, 130, 255), false)
+		    	pl:SystemMessage("New Medic damage mult. boost: +"..math.Round(self:GetStatEffectiveVal(pl, newlvl)*100, 1).."%", Color(130, 255, 130, 255), false)
 			end
 		end,
 		CashGain = function(self, pl, new)
-			return math.floor(265 + (37 * new) ^ 1.1965)
+			return math.floor(86 + (37 * new) ^ 1.1965)
 		end,
 		GetStatEffectiveVal = function(self, pl, mlvl)
 			return math.min(10, mlvl)*0.005

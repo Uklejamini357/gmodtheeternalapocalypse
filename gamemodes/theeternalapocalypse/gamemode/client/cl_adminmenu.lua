@@ -278,6 +278,11 @@ function GM:AdminMenu()
 			d:AddOption("Load taskdealer menu", function()
 				self:OpenTasksMenu()
 			end)
+			d:AddOption("Reset your masteries", function()
+				net.Start("tea_admin_devactions")
+				net.WriteUInt(1, 8)
+				net.SendToServer()
+			end)
 
 			d:Open()
 		end

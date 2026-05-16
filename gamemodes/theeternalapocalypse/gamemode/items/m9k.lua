@@ -409,7 +409,7 @@ GM:CreateItem("m9k_minigun", {
 GM:CreateItem("m9k_m1918bar", {
     Cost = 35000,
     Model = "models/weapons/w_m1918_bar.mdl",
-    Weight = 5.16,
+    Weight = 8,
     Supply = 1,
     Rarity = RARITY_EPIC,
     Category = ITEMCATEGORY_WEAPONS,

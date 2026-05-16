@@ -13,8 +13,7 @@ GM.Credits = {
 	{"Garry Newman",			"For the base game",														""},
 
 	-- Supporters
-	{"LegendOfRobbo",			"After The End creator",													""}, -- 2015
-	{"Commander Shepard",		"For hosting AtE (ZsRPG) back in the days",									""}, -- 2017-2020
+	{"LegendOfRobbo",			"After The End creator",													""}, -- Back in 2015
 
 	-- Contributors
 	{"CLuaRainBob",				"T.E.A. Contributor",														""}, -- Reworked build tool, Added SFS save method
@@ -27,7 +26,7 @@ GM.Credits = {
 	{"Anyone else I forgot",	"Various contributions",													""},
 }
 GM.RecentChangelogs = {
-	{"+ working", Color(210,255,210)},
+	{"+ Added 3 new masteries", Color(210,255,210)},
 
 	-- {"= Rockets' direct hit damage reduced from 1000 to 600.", Color(255,255,210)},
 
