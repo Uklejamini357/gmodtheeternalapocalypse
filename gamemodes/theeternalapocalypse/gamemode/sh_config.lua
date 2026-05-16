@@ -892,7 +892,6 @@ GM.PerksList = {
 }
 
 
--- Doesn't work, yet
 GM.MasterySkillStats = {
 	["Melee"] = { -- Identifier for the mastery skill!
 		Name = "Melee", -- Name for the mastery
@@ -930,10 +929,10 @@ GM.MasterySkillStats = {
 	-- Might get removed in future update. (Potentially v0.13.0)
 	["PvP"] = {
 		Name = "PVP",
-		Description = "",
-		GainHelpDesc = "",
-		RewardDesc = "",
-		EffRewardDesc = "",
+		Description = "Your skills against other survivors become no match.",
+		GainHelpDesc = "Gained by killing other players. The higher their level and prestige, the more XP is gained.",
+		RewardDesc = "No actual reward, only cash.",
+		EffRewardDesc = "None",
 		MaxLevel = 20,
 		XPReq = function(self, pl, mlvl)
 			if !mlvl then
@@ -947,7 +946,11 @@ GM.MasterySkillStats = {
 			return math.floor(593 + (mlvl * 85) ^ 1.153)
 		end,
 		OnLevelup = function(self, pl, oldlvl, newlvl)
+		    pl:SystemMessage("Your 'Melee' mastery is now level "..newlvl.."! Gained "..self:CashGain(pl, newlvl).." cash.", Color(130, 255, 130, 255), false)
 			
+			if self:GetStatEffectiveVal(pl, oldlvl) ~= self:GetStatEffectiveVal(pl, newlvl) then
+		    	pl:SystemMessage("New melee damage mult. boost: +"..math.Round(self:GetStatEffectiveVal(pl, newlvl)*100, 1).."%", Color(130, 255, 130, 255), false)
+			end
 		end,
 		CashGain = function(self, pl, new)
 			return math.floor(312 + (76 * new) ^ 1.2232)
@@ -973,13 +976,17 @@ GM.MasterySkillStats = {
 				end
 			end
 
-			return math.floor(593 + (mlvl * 85) ^ 1.153)
+			return math.floor(1391 + (mlvl * 106) ^ 1.217)
 		end,
 		OnLevelup = function(self, pl, oldlvl, newlvl)
+		    pl:SystemMessage("Your 'Melee' mastery is now level "..newlvl.."! Gained "..self:CashGain(pl, newlvl).." cash.", Color(130, 255, 130, 255), false)
 			
+			if self:GetStatEffectiveVal(pl, oldlvl) ~= self:GetStatEffectiveVal(pl, newlvl) then
+		    	pl:SystemMessage("New melee damage mult. boost: +"..math.Round(self:GetStatEffectiveVal(pl, newlvl)*100, 1).."%", Color(130, 255, 130, 255), false)
+			end
 		end,
 		CashGain = function(self, pl, new)
-			return math.floor(312 + (76 * new) ^ 1.2232)
+			return math.floor(137 + (18 * new) ^ 1.2374)
 		end,
 		GetStatEffectiveVal = function(self, pl, mlvl)
 			return math.min(10, mlvl)*0.005
@@ -1004,8 +1011,12 @@ GM.MasterySkillStats = {
 
 			return math.floor(593 + (mlvl * 85) ^ 1.153)
 		end,
-		OnLevelup = function(self, pl, old, new)
+		OnLevelup = function(self, pl, oldlvl, newlvl)
+		    pl:SystemMessage("Your 'Melee' mastery is now level "..newlvl.."! Gained "..self:CashGain(pl, newlvl).." cash.", Color(130, 255, 130, 255), false)
 			
+			if self:GetStatEffectiveVal(pl, oldlvl) ~= self:GetStatEffectiveVal(pl, newlvl) then
+		    	pl:SystemMessage("New melee damage mult. boost: +"..math.Round(self:GetStatEffectiveVal(pl, newlvl)*100, 1).."%", Color(130, 255, 130, 255), false)
+			end
 		end,
 		CashGain = function(self, pl, new)
 			return math.floor(312 + (76 * new) ^ 1.2232)
@@ -1034,7 +1045,11 @@ GM.MasterySkillStats = {
 			return math.floor(453 + (mlvl * 69) ^ 1.146)
 		end,
 		OnLevelup = function(self, pl, oldlvl, newlvl)
+		    pl:SystemMessage("Your 'Melee' mastery is now level "..newlvl.."! Gained "..self:CashGain(pl, newlvl).." cash.", Color(130, 255, 130, 255), false)
 			
+			if self:GetStatEffectiveVal(pl, oldlvl) ~= self:GetStatEffectiveVal(pl, newlvl) then
+		    	pl:SystemMessage("New melee damage mult. boost: +"..math.Round(self:GetStatEffectiveVal(pl, newlvl)*100, 1).."%", Color(130, 255, 130, 255), false)
+			end
 		end,
 		CashGain = function(self, pl, new)
 			return math.floor(265 + (37 * new) ^ 1.1965)

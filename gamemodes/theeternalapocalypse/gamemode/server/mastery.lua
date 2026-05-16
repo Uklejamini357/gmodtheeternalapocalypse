@@ -3,7 +3,10 @@
 local meta = FindMetaTable("Player")
 
 function meta:GainMasteryXP(amount, mType)
-    self.MasterySkills[mType].XP = self.MasterySkills[mType].XP + amount
+    if !self.MasterySkills[mType] then return end
+    if !amount then return end
+
+    self.MasterySkills[mType].XP = (self.MasterySkills[mType].XP or 0) + amount
     if self.MasterySkills[mType].XP >= self:GetReqMasteryXP(mType) then
         self:GainMasteryLevel(mType)
     end

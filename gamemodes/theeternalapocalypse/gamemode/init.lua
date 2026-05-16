@@ -705,7 +705,25 @@ function GM:DoAutoMaintenance(time)
 	self:SetServerRestartTime(CurTime() + time)
 end
 
-function GM:OnNPCKilled(ent, attacker, inflictor, dmginfo)
+local function ProcessLastDmgInfo(tbl)
+	local dmg = DamageInfo()
+	dmg:SetDamage(tbl.Damage)
+	dmg:SetDamageType(tbl.DamageType)
+	dmg:SetDamagePosition(tbl.DamagePos)
+	dmg:SetReportedPosition(tbl.DamageOrigin)
+
+	dmg:SetAttacker(tbl.Attacker)
+	dmg:SetInflictor(tbl.Inflictor)
+	dmg:SetWeapon(tbl.Weapon)
+
+	return dmg
+end
+
+
+function GM:OnNPCKilled(ent, attacker, inflictor)
+	self:ProcessPostDamage(ent, ent.LastDmgInfo)
+	ent.NPCDied = true
+
 	local entclass = ent:GetClass()
 	local npcrewards = { -- override rewards for killing NPC
 /*
@@ -766,12 +784,12 @@ end
 
 function GM:DamageFloater(attacker, victim, dmgpos, dmg)
 	if attacker == victim then return end
-	if victim:Health() < 0 then return end
 	if dmgpos == vector_origin then dmgpos = victim:NearestPoint(attacker:EyePos()) end
 
 	net.Start("tea_damagefloater")
 	net.WriteFloat(dmg)
 	net.WriteVector(dmgpos)
+	net.WriteBool(victim:IsPlayer())
 	net.Send(attacker)
 end
 
@@ -797,9 +815,76 @@ function GM:EntityTakeDamage(ent, dmginfo)
 		ent:SendChat(translate.ClientGet(ent, "wakeup_cause_damage"))
 	end
 
+	ent.LastDmgInfo = {
+		Damage = dmginfo:GetDamage(),
+		DamageType = dmginfo:GetDamageType(),
+		DamagePos = dmginfo:GetDamagePosition(),
+		DamageOrigin = dmginfo:GetReportedPosition(),
+
+		Attacker = dmginfo:GetAttacker(),
+		Inflictor = dmginfo:GetInflictor(),
+		Weapon = dmginfo:GetWeapon(),
+	}
+end
+
+function GM:PostEntityTakeDamage(ent, dmginfo, tookdmg)
+	if !tookdmg or ent.NPCDied or ent:IsPlayer() and !ent:Alive() then return end
+
+	self:ProcessPostDamage(ent, dmginfo, tookdmg)
+end
+
+function GM:ProcessPostDamage(ent, dmginfo, tookdmg)
+	local dmg, dmgtype, dmgpos, dmgorigin
+	local attacker, inflictor, weapon
+	if istable(dmginfo) then
+		dmg = dmginfo.Damage
+		dmgtype = dmginfo.DamageType
+		dmgpos = dmginfo.DamagePos
+		dmgorigin = dmginfo.DamageOrigin
+		
+		attacker = dmginfo.Attacker
+		inflictor = dmginfo.Inflictor
+		weapon = dmginfo.Weapon
+	else
+		dmg = dmginfo:GetDamage()
+		dmgtype = dmginfo:GetDamageType()
+		dmgpos = dmginfo:GetDamagePosition()
+		dmgorigin = dmginfo:GetReportedPosition()
+
+		attacker = dmginfo:GetAttacker()
+		inflictor = dmginfo:GetInflictor()
+		weapon = dmginfo:GetWeapon()
+	end
+
+	if dmg == 0 then return end
+
+	local effective_dmg = dmg
+	if ent:Health() < 0 then
+		effective_dmg = dmg + ent:Health()
+	end
+
+	if ent:IsPlayer() then
+		if (attacker:IsNPC() or attacker:IsNextBot() or attacker:IsPlayer()) and ent:Health() <= ent:GetMaxHealth()*0.1 and ent:Alive() then
+			ent.MMasterySurvivorDamageTook = (ent.MMasterySurvivorDamageTook or 0) + effective_dmg
+		end
+
+		if ent:Alive() then
+			if ent.MMasterySurvivorDamageTook and ent.MMasterySurvivorDamageTook > 0 then
+				timer.Create("TEA.MSurvivor_"..ent:EntIndex(), 10, 1, function()
+					if ent:Alive() then
+						ent:GainMasteryXP(ent.MMasterySurvivorDamageTook, "Survivor")
+					end
+					ent.MMasterySurvivorDamageTook = 0
+				end)
+			end
+		else
+			ent.MMasterySurvivorDamageTook = 0
+		end
+	end
+
 	if attacker:IsPlayer() then
-		if (ent:IsNextBot() or ent:IsNPC() or ent:IsPlayer()) and IsMeleeDamage(dmginfo:GetDamageType()) and attacker:HasPerk("bloodlust") then
-			local heal = math.min(50 - attacker.BloodLustMeleeHealCap, dmginfo:GetDamage()*0.1)*(50-attacker.BloodLustMeleeHealCap)/50
+		if (ent:IsNextBot() or ent:IsNPC() or ent:IsPlayer()) and IsMeleeDamage(dmgtype) and attacker:HasPerk("bloodlust") then
+			local heal = math.min(50 - attacker.BloodLustMeleeHealCap, effective_dmg*0.1)*(50-attacker.BloodLustMeleeHealCap)/50
 			attacker.BloodLustMeleeHeal = attacker.BloodLustMeleeHeal + heal
 			attacker.BloodLustMeleeHealCap = attacker.BloodLustMeleeHealCap + heal
 			attacker.BloodLustLastMeleeHit = CurTime()
@@ -811,7 +896,8 @@ function GM:EntityTakeDamage(ent, dmginfo)
 		end
 	end
 
-	if (ent:IsNextBot() or ent:IsNPC()) and (!ent.LastAttacker or ent:Health() > 0) and attacker:IsPlayer() and not (self.SafezoneGrindingPrevention == 2 and attacker:IsSZProtected()) then
+	if (ent:IsNextBot() or ent:IsNPC()) and attacker:IsPlayer() and
+	not (self.SafezoneGrindingPrevention == 2 and attacker:IsSZProtected()) then
 		ent.LastAttacker = attacker
 		if !ent.BossMonster then
 			timer.Create("TEAZombieLastAttacker_"..ent:EntIndex(), 15, 1, function()
@@ -823,19 +909,18 @@ function GM:EntityTakeDamage(ent, dmginfo)
 		end
 
 		if ent.DamagedBy then
-			local dmg = math.Clamp(dmginfo:GetDamage(), 0, ent:Health())
-			if !ent.DamagedBy[attacker] then 
-				ent.DamagedBy[attacker] = dmg
+			if ent.DamagedBy[attacker] then 
+				ent.DamagedBy[attacker] = math.max(ent.DamagedBy[attacker] + effective_dmg, 0)
 			else
-				ent.DamagedBy[attacker] = math.max(ent.DamagedBy[attacker] + dmg, 0)
+				ent.DamagedBy[attacker] = effective_dmg
 			end
-			attacker:AddStatisticPoints("ZombieDamageDealt", dmg)
+			attacker:AddStatisticPoints("ZombieDamageDealt", effective_dmg)
 		end
 	end
 
 	if ent:GetClass() == "prop_physics" and ent.prophealth then
 		if ent.prophealth then
-			ent.prophealth = ent.prophealth - dmginfo:GetDamage()
+			ent.prophealth = ent.prophealth - dmg
 		end
 		-- local ColorAmount = ((ent:Health() / ent.maxhealth) * 255)
 		-- ent:SetColor(Color(ColorAmount, ColorAmount, ColorAmount, 255))
@@ -848,15 +933,14 @@ function GM:EntityTakeDamage(ent, dmginfo)
 
 	if self:GetDebug() >= DEBUGGING_ADVANCED then
 		if ent:IsPlayer() and ent:Alive() and (!ent.SpawnProtected and !ent:HasGodMode()) then
-			local dmg = dmginfo:GetDamage()
 			ent:SendLua("notification.AddLegacy(translate.Format(\"dmgtaken\", \""..math.Round(dmg, 1).."\"), 0, 4)")
 			print(ent:Nick().." has taken "..dmg.." damage!")
 		end
 	end
 
 	if attacker:IsPlayer() then
-		if ent:IsPlayer() or ent:IsNextBot() or (ent:IsNPC() and ent:GetClass() ~= "tea_trader") and ent:Health() ~= 0 then
-			self:DamageFloater(attacker, ent, dmginfo:GetDamagePosition(), ent:IsPlayer() and math.floor(dmginfo:GetDamage()) or dmginfo:GetDamage())
+		if ent:IsPlayer() or ent:IsNextBot() or (ent:IsNPC() and ent:GetClass() ~= "tea_trader") then
+			self:DamageFloater(attacker, ent, dmgpos, ent:IsPlayer() and math.floor(dmg) or dmg)
 		end
 	end
 end
@@ -1080,6 +1164,7 @@ function GM:PlayerInitialSpawn(ply, transition)
 			Level = 0
 		}
 	end
+	ply.MMasterySurvivorDamageTook = 0
 	----------------
 	
 	-------- Other Stats --------
@@ -1296,6 +1381,8 @@ function GM:PlayerSpawn(ply)
 	timer.Simple(1, function()
 		gamemode.Call("RecalcPlayerSpeed", ply)
 	end)
+
+	ply.MMasterySurvivorDamageTook = 0
 
 	ply.CauseOfDeath = ""
 	ply.DeathMessage = ""

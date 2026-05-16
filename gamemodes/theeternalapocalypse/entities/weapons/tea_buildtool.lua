@@ -223,6 +223,22 @@ function SWEP:SecondaryAttack()
     DFrame:SetPos(0, ScrH() * 0.985 - DFrame:GetTall())
     DFrame:CenterHorizontal(0.185)
     DFrame:MakePopup()
+    DFrame.Paint = function(this, w, h)
+        surface.SetDrawColor(255, 255, 255, 255, 255)
+        surface.DrawOutlinedRect(0, 0, w, h)
+        surface.SetDrawColor(0, 0, 0, 200)
+        surface.DrawRect(0, 0, w, h)
+    end
+	DFrame.OnRemove = function(self)
+		hook.Remove("OnPauseMenuShow", self)
+	end
+	hook.Add("OnPauseMenuShow", DFrame, function()
+		if DFrame and DFrame:IsValid() and DFrame:IsVisible() then
+			DFrame:Close()
+			return false
+		end
+	end)
+
     local DScrollPanel = vgui.Create("DScrollPanel", DFrame)
     DScrollPanel:Dock(FILL)
     local panel = vgui.Create("DPanel")

@@ -3,8 +3,8 @@ GM.AltName	= "After The End Reborn" -- yes, it's a fork. what else did you expec
 GM.Author	= "Uklejamini"
 GM.Email	= ""
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.12.7b"
-GM.DateVer	= "14.05.2026" -- Follows the DD.MM.YYYY format.
+GM.Version	= "0.12.7b1"
+GM.DateVer	= "16.05.2026" -- Follows the DD.MM.YYYY format.
 GM.Credits = {
 	-- Assets
 	{"GSC Game World",			"For all the S.T.A.L.K.E.R. content",										""},
@@ -489,9 +489,9 @@ function GM:GetItemDescription(id, ply) -- ply is for the server
 	local wep = item.WeaponType and weapons.Get(item.WeaponType)
 	if wep and wep.Primary then
 		local wep_prim = wep.Primary
-		local dmg, dmgmin = wep.DamageMax or wep_prim.Damage, wep.DamageMin
+		local dmg,dmgmin = wep.DamageMax or wep.Damage or wep_prim.Damage or 0, wep.DamageMin
 		local numshots = wep.Num or wep_prim.NumberOfShots or wep_prim.NumShots
-		local delay = (wep_prim.Delay or wep.RPM or wep_prim.RPM) and math.Round(wep_prim.Delay or 1 / ((wep.RPM or wep_prim.RPM or 1) / 60) or 1, 3)
+		local delay = (wep.Delay or wep_prim.Delay or wep.RPM or wep_prim.RPM) and math.Round(wep.Delay or wep_prim.Delay or 1 / ((wep.RPM or wep_prim.RPM or 1) / 60) or 1, 3)
 		local clipsize = wep.ClipSize or wep_prim.ClipSize
 		local recoil = wep.Recoil or wep_prim.Recoil
 		local range,rangemin = wep.RangeMax or wep.HitDistance, wep.RangeMin
@@ -500,7 +500,7 @@ function GM:GetItemDescription(id, ply) -- ply is for the server
 			desc = desc.."\nDamage: "..(dmgmin and math.Round(dmgmin, 2).."~"..math.Round(dmg, 2) or math.Round(dmg, 2))
 		end
 
-		if numshots then
+		if numshots and numshots ~= 1 then
 			desc = desc.."\nNumber of Shots: "..numshots
 		end
 

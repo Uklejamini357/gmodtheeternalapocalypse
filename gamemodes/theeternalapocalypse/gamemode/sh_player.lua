@@ -143,12 +143,18 @@ function meta:GetMasteryLevel(mType)
 	return self.MasterySkills[mType].Level
 end
 
-function meta:GetReqMasteryXP(mtype, mlvl)
-	if !mtype then return end
-	local mastery = GAMEMODE.MasterySkillStats[mtype]
+function meta:GetMasteryEffectiveStat(mType, mlvl)
+	local mastery = GAMEMODE.MasterySkillStats[mType]
+	if !mastery then return 0 end
+	return mastery:GetStatEffectiveVal(self, mlvl or (self.MasterySkills and self.MasterySkills[mType].Level) or 0)
+end
+
+function meta:GetReqMasteryXP(mType, mlvl)
+	if !mType then return end
+	local mastery = GAMEMODE.MasterySkillStats[mType]
 	if !mastery then return end
 
-	return mastery:XPReq(self, mlvl or (self.MasterySkills and self.MasterySkills[mtype].Level) or 0)
+	return mastery:XPReq(self, mlvl or (self.MasterySkills and self.MasterySkills[mType].Level) or 0)
 end
 
 function meta:GetProgressToPrestige()

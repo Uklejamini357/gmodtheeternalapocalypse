@@ -20,6 +20,10 @@ Expand admin system and logging... maybe?
 Add ULX commands
 Add CAMI permissions
 
+v0.12.11:
+
+
+
 --------
 
 
