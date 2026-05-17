@@ -35,7 +35,7 @@ local meta = FindMetaTable("Player")
 -- 0 = no pvp guard, 1 = pvp guarded, 2 = pvp forced
 function meta:SetPvPGuarded(int)
 	if !SERVER then return end
-	self:SetNWInt("PvPGuard", math.Clamp(int, 0, 2) )
+	self:SetNWInt("PvPGuard", math.Clamp(int, 0, 2))
 end
 
 function meta:SetSZProtected(active)
@@ -127,14 +127,6 @@ function meta:GetReqXP()
 	return math.floor(xp * math.max(1, 1+(plylevel-30)*0.01))
 end
 
-function meta:GetReqMasteryMeleeXP(mlvl)
-	return self:GetReqMasteryXP("Melee", mlvl)
-end
-
-function meta:GetReqMasteryPvPXP(mlvl)
-	return self:GetReqMasteryXP("PvP", mlvl)
-end
-
 function meta:GetMasteryXP(mType)
 	return self.MasterySkills[mType].XP
 end
@@ -195,16 +187,10 @@ function meta:CalculateMaxWeight()
 
 	local baseweight = GAMEMODE.Config["MaxCarryWeight"]
 	local perksweight = (self:HasPerk("weightboost") and 1.5 or 0) + (self:HasPerk("weightboost2") and 2.5 or 0) + (self:HasPerk("weightboost3") and 3.5 or 0)
-	-- if SERVER then
-		if self.StatsPaused then return math.huge end
+	if self.StatsPaused then return math.huge end
 
-		return (baseweight + perksweight + ((self.StatStrength or 0) * 1.53) + (self:GetNWString("ArmorType") ~= "none" and armortype["ArmorStats"]["carryweight"] or 0)) *
-		(GAMEMODE.GameplayDifficulty == DIFFICULTY_GAMEPLAY_HELL and 0.9 or GAMEMODE.GameplayDifficulty == DIFFICULTY_GAMEPLAY_IMPOSSIBLE and 0.75 or 1)
-	-- else
-		-- local skillsweight = (Perks.Strength or 0) * 1.53
-		-- local additionalarmorweight = armorstr ~= "none" and armortype["ArmorStats"]["carryweight"] or 0
-		-- return math.Round(baseweight + perksweight + skillsweight + additionalarmorweight, 2)
-	-- end
+	return (baseweight + perksweight + ((self.StatStrength or 0) * 1.53) + (self:GetNWString("ArmorType") ~= "none" and armortype["ArmorStats"]["carryweight"] or 0)) *
+	(GAMEMODE.GameplayDifficulty == DIFFICULTY_GAMEPLAY_HELL and 0.9 or GAMEMODE.GameplayDifficulty == DIFFICULTY_GAMEPLAY_IMPOSSIBLE and 0.75 or 1)
 end
 
 function meta:RecalculateCurrentWeight()
@@ -243,14 +229,6 @@ end
 
 function meta:GetCanSprint()
 	return self:GetNWBool("cansprint", true)
-end
-
-function meta:GetEnduranceStaminaDrainMul()
-	return 1 - self.StatEndurance*0.045
-end
-
-function meta:GetEnduranceStaminaJumpDrainMul()
-	return 1 - self.StatEndurance*0.045
 end
 
 function meta:SkillsReset()
@@ -314,7 +292,7 @@ function meta:GetArmorProtection(defense)
 	end
 
 	if defense then
-		armorvalue = armorvalue + (self.StatDefense*0.02) * (1 - armorvalue)
+		armorvalue = armorvalue + (self.StatDefense*0.02 + self:GetMasteryEffectiveStat("Survivor")) * (1 - armorvalue)
 	end
 
 	return armorvalue
@@ -330,7 +308,7 @@ function meta:GetArmorEnvProtection(defense)
 	end
 
 	if defense then
-		armorvalue = armorvalue + (self.StatDefense*0.015) *  (1 - armorvalue)
+		armorvalue = armorvalue + (self.StatDefense*0.015 + self:GetMasteryEffectiveStat("Survivor")) *  (1 - armorvalue)
 	end
 
 	return armorvalue
@@ -374,7 +352,7 @@ function meta:GetStaminaDrainWeightMul()
 
 	mul = mul + weight*0.01
 	if weight < 10 then
-		mul = mul * 0.9
+		mul = mul * 0.95
 	end
 
 	if overload then

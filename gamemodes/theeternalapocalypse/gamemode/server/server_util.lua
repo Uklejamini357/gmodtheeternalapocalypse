@@ -63,7 +63,9 @@ function MT_PLAYER:ProcessPlayerDamage(dmginfo)
 
 	if attacker != self and attacker:IsPlayer() and IsMeleeDamage(dmginfo:GetDamageType()) then
 		attacker.MeleeDamageDealt = attacker.MeleeDamageDealt + math.Clamp(0.035 * dmginfo:GetDamage(), 0, 0.035 * self:Health())
-		timer.Create("MeleeMasteryGain"..attacker:EntIndex(), 5, 1, function() if attacker:IsValid() then attacker:GainMasteryXP(attacker.MeleeDamageDealt, "Melee") attacker.MeleeDamageDealt = 0 end end)
+		timer.Create("MeleeMasteryGain"..attacker:EntIndex(), 5, 1, function()
+			if attacker:IsValid() then attacker:GainMasteryXP(attacker.MeleeDamageDealt, "Melee") attacker.MeleeDamageDealt = 0 end
+		end)
 	end
 
 	if attacker != self and attacker:IsPlayer() then
@@ -115,7 +117,7 @@ function MT_ENTITY:ProcessDamage(dmginfo)
 	local directdmg = bit.band(DMG_DIRECT, dmginfo:GetDamageType()) ~= 0
 	if attacker:IsPlayer() then
 		if IsMeleeDamage(dmginfo:GetDamageType()) then
-			dmginfo:ScaleDamage(1 + (0.01 * attacker.StatStrength) + (0.005 * math.min(attacker:GetMasteryLevel("Melee"), 10)))
+			dmginfo:ScaleDamage(1 + (0.01 * attacker.StatStrength) + (0.005 * attacker:GetMasteryEffectiveStat("Melee")))
 		end
 		if IsMeleeDamage(dmginfo:GetDamageType()) and attacker:HasPerk("weightboost3") then
 			dmginfo:ScaleDamage(1.05)
@@ -507,7 +509,7 @@ function GM:PlayerDeathSound(ply)
 	local sound = table.Random(tbl)
 	ply:EmitSound(sound, 85)
 	if self:GetDebug() >= DEBUGGING_ADVANCED then print(sound) end
-	return false
+	return true
 end
 
 function GM:OnDamagedByExplosion(ply, dmginfo)

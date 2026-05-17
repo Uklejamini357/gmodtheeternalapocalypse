@@ -993,7 +993,7 @@ GM.MasterySkillStats = {
 		Name = "Gunnery",
 		Description = "Wielding guns has never been any better before.",
 		GainHelpDesc = "Earned by inflicting headshots with guns.",
-		RewardDesc = "+0.5% to base headshot damage per level, max +5% (applies before the multipliers)",
+		RewardDesc = "+0.5% to base headshot damage per level, max +5%",
 		EffRewardDesc = "+%s%% base headshot damage",
 		MaxLevel = 20,
 		XPReq = function(self, pl, mlvl)
@@ -1051,7 +1051,7 @@ GM.MasterySkillStats = {
 			return math.floor(86 + (37 * new) ^ 1.1965)
 		end,
 		GetStatEffectiveVal = function(self, pl, mlvl)
-			return math.min(10, mlvl)*0.005
+			return math.min(10, mlvl)*0.01
 		end
 	},
 

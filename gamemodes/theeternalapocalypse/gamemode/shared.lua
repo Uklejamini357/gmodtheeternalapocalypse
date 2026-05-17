@@ -3,36 +3,56 @@ GM.AltName	= "After The End Reborn" -- yes, it's a fork. what else did you expec
 GM.Author	= "Uklejamini"
 GM.Email	= ""
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.12.7b1"
-GM.DateVer	= "16.05.2026" -- Follows the DD.MM.YYYY format.
+GM.Version	= "0.12.7"
+GM.DateVer	= "17.05.2026" -- Follows the DD.MM.YYYY format.
+GAMEMODE.Credits = {}
 GM.Credits = {
-	-- Assets
+	{"LegendOfRobbo",			"Created After The End gamemode",											"Back in 2015. It's such a great gamemode!"},
+
 	{"GSC Game World",			"For all the S.T.A.L.K.E.R. content",										""},
 	{"WickedRabbit",			"For porting the STALKER assets to gmod (and credits to his contributors)",	"https://steamcommunity.com/sharedfiles/filedetails/?id=2438451886"},
 	{"Comrade Communist",		"S.T.A.L.K.E.R. sounds",													"https://steamcommunity.com/sharedfiles/filedetails/?id=1680884607"},
-	{"Garry Newman",			"For the base game",														""},
 
-	-- Supporters
-	{"LegendOfRobbo",			"After The End creator",													""}, -- Back in 2015
+	{"nil",						"T.E.A. Contributor",														"Reworked build tool, Added SFS save method"},
 
-	-- Contributors
-	{"CLuaRainBob",				"T.E.A. Contributor",														""}, -- Reworked build tool, Added SFS save method
+	{"BlueBerryy",				"Russian Translator",														"2024"},
+	{"Sirtlan",					"Spanish Translator",														"2026-now"},
 
-	-- Translators
-	{"BlueBerryy",				"Russian Translator",														""},
-	{"Sirtlan",					"Spanish Translator",														""},
-
-	-- Other
-	{"Anyone else I forgot",	"Various contributions",													""},
+	{"You",						"For playing the gamemode!",												""},
 }
 GM.RecentChangelogs = {
 	{"+ Added 3 new masteries", Color(210,255,210)},
+	{"    > Survivor: Increases damage resistance by 0.25% per level", Color(210,255,210)},
+	{"    > Gunnery: Increases base headshot damage by 0.5% per level", Color(210,255,210)},
+	{"    > Medic: Increases effectiveness of healing others by 1% per level", Color(210,255,210)},
+	{"+ Added new function for getting masteries XP", Color(210,255,210)},
+	{"+ Added new table in sh_config.lua for mastery", Color(210,255,210)},
+	{"+ Added color to progress bar in mastery category of statistics", Color(210,255,210)},
+	{"+ Added new descriptions for masteries", Color(210,255,210)},
+	{"+ Added 40mm Grenade (Not a m9k variant)", Color(210,255,210)},
+	{"+ 1 new dev action: resets your masteries", Color(210,255,210)},
+	{"+ Added new \"OnDefeated\" function for bosses", Color(210,255,210)},
+	{"+ Added credits tab in help menu", Color(210,255,210)},
 
-	-- {"= Rockets' direct hit damage reduced from 1000 to 600.", Color(255,255,210)},
 
-	-- {"/ Changed MP7 and MP7 Elite's ammo type to SMG", Color(255,223,210)},
+	{"- Temporarily remove \"DeathsBy*\" stat from stats menu", Color(255,210,210)},
 
-	-- {"* Fixed Rockets' direct hit causing a lua error if their origin weapon is invalid (weapon that was shot with)", Color(210,210,255)},
+	{"= Change M1918 Bar's weight to 8kg", Color(255,255,210)},
+
+	{"/ Moving the Mastery variables to a table for easier code", Color(255,223,210)},
+	{"/ Holding gmod_camera will not display anything", Color(255,223,210)},
+	{"/ Changed build tool's edit menu visuals and made it close on ESC", Color(255,223,210)},
+	{"/ Moved hitsounds to clientside", Color(255,223,210)},
+	{"/ Numshots in description no longer appearing if it's just 1", Color(255,223,210)},
+	{"/ Change the main menu animation", Color(255,223,210)},
+
+	{"; Rework the damage calculations", Color(210,210,255)},
+
+	{"* Fix a bug with HUD SWEP element", Color(210,210,255)},
+	{"* Fixed damage/attack delay not appearing on some weapons description", Color(210,210,255)},
+	{"* Fix camera noclipping", Color(210,210,255)},
+	{"* Fix lowercase character in one of the death messages", Color(210,210,255)},
+	{"* Fixed a lua error if a player dies by an attacker being a NULL entity", Color(210,210,255)},
 }
 
 DeriveGamemode("sandbox")

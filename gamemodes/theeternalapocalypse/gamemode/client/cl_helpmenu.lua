@@ -296,5 +296,68 @@ Recreated by Uklejamini. Made for fun and enjoyment.</p>
     helpList:AddSheet("Help", htmlpanel, nil, false, false, "Guide you might want to read if you're starting out.")
     helpList:AddSheet("Beginner's Guide", beginnerguidehtml, nil, false, false, "Beginner's guide for new players. ")
 */
+
+
+    local allcredits = ""
+    for _,v in pairs(self.Credits) do
+        allcredits = allcredits.."<li>"..v[1]..": "..v[2]..(v[3] and v[3] ~= "" and " ("..(v[3]:sub(1, 8) == "https://" and "<a href=\""..v[3].."\">"..v[3].."</a>" or v[3])..")" or "").."</li>"
+    end
+
+    local creditshtml = vgui.Create("DHTML", helpList)
+    creditshtml:StretchToParent(4, 4, 4, 24)
+    creditshtml:SetHTML([[<html>
+    <head>
+    <style type="text/css">
+    body
+    {
+        font-family:tahoma;
+        font-size:16px;
+        color:white;
+        background-color: #00000020;
+        width:]].. creditshtml:GetWide() - 48 ..[[px;
+    }
+    div p
+    {
+        margin:10px;
+        padding:2px;
+    }
+
+    h1 {
+        color: maroon
+    }
+
+    h2 {
+        color: maroon
+    }
+
+    a {
+        color: green
+    }
+    
+    a:hover {
+        color: yellow;
+    }
+
+    li {
+        margin-bottom: 8px
+    }
+    </style>
+    </head>
+
+    <body>
+        <h1>Credits go to:</h1>
+        <p></p>
+
+        <ul>]]..
+            allcredits
+        ..[[
+        </ul>
+
+
+</body>
+</html>]])
+
+    helpList:AddSheet("Help", htmlpanel, nil, false, false, "Guide you might want to read if you're starting out.")
+    helpList:AddSheet("Credits", creditshtml, nil, false, false)
 end
 

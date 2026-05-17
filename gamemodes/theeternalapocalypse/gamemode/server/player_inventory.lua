@@ -242,7 +242,7 @@ function GM:UseItem(ply, item, use, targetply)
 					local hp
 
 					if consum.Health then
-						hp = math.min(targetply:GetMaxHealth() - targetply:Health(), consum.Health * (1 + (ply.StatMedSkill * 0.025)))
+						hp = math.min(targetply:GetMaxHealth() - targetply:Health(), consum.Health * (1 + (ply.StatMedSkill * 0.025) + (ply ~= targetply and ply:GetMasteryEffectiveStat("Medic") or 0)))
 						targetply:SetHealth(math.Clamp(targetply:Health() + hp, 0, targetply:GetMaxHealth()))
 					end
 

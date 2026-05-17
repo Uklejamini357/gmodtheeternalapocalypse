@@ -23,6 +23,7 @@ Add CAMI permissions
 
 v0.12.11:
 Add more tasks -- moved from v0.12.5, then v0.12.7
+And finish the elite variants
 
 
 
