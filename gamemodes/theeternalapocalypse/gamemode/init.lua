@@ -414,6 +414,7 @@ function GM:Think()
 	
 		local armorstr = ply:GetNWString("ArmorType") or "none"
 		local armortype = self.ItemsList[armorstr]
+/*	-- maybe another time
 		if ply:FlashlightIsOn() then
 			if ply.Battery <= 0 then
 				ply:Flashlight(false)
@@ -423,7 +424,7 @@ function GM:Think()
 		else
 			ply.Battery = math.Clamp(ply.Battery + 1.35*ft, 0, ply:GetMaxBattery())
 		end
-
+*/
 
 
 		local oxygendrainmul = 1

@@ -33,6 +33,7 @@ GM.RecentChangelogs = {
 	{"+ 1 new dev action: resets your masteries", Color(210,255,210)},
 	{"+ Added new \"OnDefeated\" function for bosses", Color(210,255,210)},
 	{"+ Added credits tab in help menu", Color(210,255,210)},
+	{"+ Added 2 new options", Color(210,255,210)},
 
 
 	{"- Temporarily remove \"DeathsBy*\" stat from stats menu", Color(255,210,210)},

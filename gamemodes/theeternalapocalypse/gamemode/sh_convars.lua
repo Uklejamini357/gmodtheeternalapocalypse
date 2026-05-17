@@ -238,6 +238,18 @@ if CLIENT then
 		GAMEMODE:OnConVarChanged(cvar, old, new)
 	end, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_cl_noinvweighthuddisplay")
 
+	GM.NoCompassHUD = CreateClientConVar("tea_cl_nocompasshud", 0, true, false, "Don't display compass", 0, 1):GetBool()
+	cvars.AddChangeCallback("tea_cl_nocompasshud", function(cvar,old,new)
+		GAMEMODE.NoCompassHUD = tobool(new)
+		GAMEMODE:OnConVarChanged(cvar, old, new)
+	end, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_cl_nocompasshud")
+
+	GM.NoPvPHUD = CreateClientConVar("tea_cl_nopvphud", 0, true, false, "Don't display current PvP status", 0, 1):GetBool()
+	cvars.AddChangeCallback("tea_cl_nopvphud", function(cvar,old,new)
+		GAMEMODE.NoPvPHUD = tobool(new)
+		GAMEMODE:OnConVarChanged(cvar, old, new)
+	end, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_cl_nopvphud")
+
 	GM.DrawZombiesInfo = CreateClientConVar("tea_cl_drawzinfo", 0, true, false, "Draw zombie info? (Name, Health and its' purpose (or what does it do)) Currently not working", 0, 1):GetBool()
 	cvars.AddChangeCallback("tea_cl_drawzinfo", function(cvar,old,new)
 		GAMEMODE.DrawZombiesInfo = tobool(new)

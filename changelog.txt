@@ -15,8 +15,10 @@ WORKING ON THIS CURRENTLY. even tho progress is slow asf
 + 1 new dev action: resets your masteries
 + Added new "OnDefeated" function for bosses (which will be used later)
 + Added credits tab in help menu
++ Added 2 new options
 
 - Temporarily remove "DeathsBy*" stat from stats menu
+- Temporarily cease \"Battery\" functionality (until I come up with something new)
 
 = Change M1918 Bar's weight to 8kg
 
@@ -34,6 +36,7 @@ WORKING ON THIS CURRENTLY. even tho progress is slow asf
 * Fix camera noclipping
 * Fix lowercase character in one of the death messages
 * Fixed a lua error if a player dies by an attacker being a NULL entity
+* Fix bugs with compass, make it use pl:EyeAngles instead of pl:GetAngles
 
 ? Might also expand the config to also modify NPC's health, damage, damage taken mult, etc.
 

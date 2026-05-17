@@ -139,6 +139,8 @@ function GM:MakeOptions()
 	check:SetToolTip("If disabled, the tip about to cash in bounties regularly is shown upon dying.")
 
 	check = CreateCheckLabel(pan, list, "Don't display Inventory Weight on HUD", "tea_cl_noinvweighthuddisplay")
+	check = CreateCheckLabel(pan, list, "Don't dipslay Compass", "tea_cl_nocompasshud")
+	check = CreateCheckLabel(pan, list, "Don't display current PvP status", "tea_cl_nopvphud")
 	-- check:SetToolTip(".")
 
 	check = CreateCheckLabel(pan, list, "Display killfeed", "tea_cl_killfeed")
