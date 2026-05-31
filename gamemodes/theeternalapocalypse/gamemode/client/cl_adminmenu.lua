@@ -1104,6 +1104,7 @@ end
 
 local atm
 function GM:OpenAdminToolMenuOptions(wep)
+	if atm and atm:IsValid() then atm:Remove() end
 	atm = vgui.Create("EditablePanel")
 	atm:SetSize(400, 300)
 	atm.Paint = function(self, w, h)
@@ -1209,6 +1210,7 @@ end
 
 local atm
 function GM:CreateOpenworldTransition(startpos, startang, pos1, pos2)
+	if atm and atm:IsValid() then atm:Remove() end
 	atm = vgui.Create("EditablePanel")
 	atm:SetSize(400, 300)
 	atm.Paint = function(self, w, h)
@@ -1287,6 +1289,7 @@ end
 
 local atm
 function GM:CreateSafezoneArea(pos1, pos2)
+	if atm and atm:IsValid() then atm:Remove() end
 	atm = vgui.Create("EditablePanel")
 	atm:SetSize(400, 300)
 	atm.Paint = function(self, w, h)

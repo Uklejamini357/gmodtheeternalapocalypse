@@ -107,9 +107,9 @@ end
 local ai_disabled = GetConVar("ai_disabled")
 
 function ENT:Initialize()
-	self:SetCollisionBounds(Vector(-34,-34, 0), Vector(34, 34, 84))
 	self:SetModel("models/sin/quadralex.mdl")
 	self:PhysicsInitShadow(true)
+	self:SetCollisionBounds(Vector(-34,-34, 0), Vector(34, 34, 84))
 	local phys = self:GetPhysicsObject()
 	if phys and phys:IsValid() then
 		phys:EnableMotion(false)
