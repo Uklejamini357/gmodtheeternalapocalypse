@@ -248,15 +248,24 @@ function GM:TraderMenu()
 				surface.DrawOutlinedRect(0, 0, ItemBackground:GetWide(), ItemBackground:GetTall())
 			end
 
-			local ItemDisplay = vgui.Create("SpawnIcon", ItemBackground)
-			ItemDisplay:SetPos(10, 10)
-			ItemDisplay:SetModel(v.Model)
-			ItemDisplay:SetToolTip(GAMEMODE:GetItemDescription(k))
-			ItemDisplay:SetSize(60,60)
-			ItemDisplay.PaintOver = function()
+			local itIcon
+			if v.Material then
+				itIcon = vgui.Create("DImageButton", ItemBackground)
+				itIcon:SetMaterial(v.Material)
+			else
+				itIcon = vgui.Create("SpawnIcon", ItemBackground)
+				itIcon:SetModel(v.Model)
+			end
+			itIcon:SetPos(8, 8)
+			if v.ModelColor then
+				itIcon:SetColor(v.ModelColor)
+			end
+			itIcon:SetToolTip(GAMEMODE:GetItemDescription(k))
+			itIcon:SetSize(64,64)
+			itIcon.PaintOver = function()
 				return
 			end
-			ItemDisplay.OnMousePressed = function()
+			itIcon.OnMousePressed = function()
 				return false
 			end
 
@@ -342,15 +351,24 @@ function GM:TraderMenu()
 				surface.DrawRect(0, 0, ItemBackground:GetWide(), ItemBackground:GetTall())
 			end
 
-			local ItemDisplay = vgui.Create("SpawnIcon", ItemBackground)
-			ItemDisplay:SetPos(5, 5)
-			ItemDisplay:SetModel(v.Model)
-			ItemDisplay:SetToolTip(GAMEMODE:GetItemDescription(k))
-			ItemDisplay:SetSize(60,60)
-			ItemDisplay.PaintOver = function()
+			local itIcon
+			if v.Material then
+				itIcon = vgui.Create("DImageButton", ItemBackground)
+				itIcon:SetMaterial(v.Material)
+			else
+				itIcon = vgui.Create("SpawnIcon", ItemBackground)
+				itIcon:SetModel(v.Model)
+			end
+			itIcon:SetPos(8, 8)
+			if v.ModelColor then
+				itIcon:SetColor(v.ModelColor)
+			end
+			itIcon:SetToolTip(GAMEMODE:GetItemDescription(k))
+			itIcon:SetSize(64,64)
+			itIcon.PaintOver = function()
 				return
 			end
-			ItemDisplay.OnMousePressed = function()
+			itIcon.OnMousePressed = function()
 				return false
 			end
 			
@@ -484,15 +502,24 @@ function GM:TraderMenu()
 				surface.DrawRect(0, 0, ItemBackground:GetWide(), ItemBackground:GetTall())
 			end
 
-			local ItemDisplay = vgui.Create("SpawnIcon", ItemBackground)
-			ItemDisplay:SetPos(5, 5)
-			ItemDisplay:SetModel(v.Model)
-			ItemDisplay:SetToolTip(GAMEMODE:GetItemDescription(k))
-			ItemDisplay:SetSize(60,60)
-			ItemDisplay.PaintOver = function()
+			local itIcon
+			if v.Material then
+				itIcon = vgui.Create("DImageButton", ItemBackground)
+				itIcon:SetMaterial(v.Material)
+			else
+				itIcon = vgui.Create("SpawnIcon", ItemBackground)
+				itIcon:SetModel(v.Model)
+			end
+			itIcon:SetPos(8, 8)
+			if v.ModelColor then
+				itIcon:SetColor(v.ModelColor)
+			end
+			itIcon:SetToolTip(GAMEMODE:GetItemDescription(k))
+			itIcon:SetSize(64,64)
+			itIcon.PaintOver = function()
 				return
 			end
-			ItemDisplay.OnMousePressed = function()
+			itIcon.OnMousePressed = function()
 				return false
 			end
 

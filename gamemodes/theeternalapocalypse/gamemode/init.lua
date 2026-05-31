@@ -1145,6 +1145,7 @@ function GM:PlayerInitialSpawn(ply, transition)
 		LootLegendaryFound = 0,
 		LootFactionFound = 0,
 		LootBossFound = 0,
+		AirdropsOpened = 0,
 
 		PlayersKilled = 0,
 		PlayersKillAssists = 0,
