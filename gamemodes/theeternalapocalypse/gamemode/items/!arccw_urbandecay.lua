@@ -1,6 +1,7 @@
 -- addons: 
 -- Urban Decay: https://steamcommunity.com/sharedfiles/filedetails/?id=2641653126
 -- Urban Renewal: https://steamcommunity.com/sharedfiles/filedetails/?id=2906702282
+-- really? EOL now?
 
 -- ArcCW Urban Decay weapons --
 -- With attachments, these weapons can become VERY OVERPOWERED. Hence, that's why they are very high cost.

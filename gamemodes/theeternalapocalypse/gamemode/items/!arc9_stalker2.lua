@@ -211,7 +211,7 @@ GM:CreateItem("arc9_stalker2_pt_pm", {
 GM:CreateItem("arc9_stalker2_pt_rhino", {
     Name = "Rhino",
     Description = "",
-    Cost = 8205
+    Cost = 8205,
     Model = "models/weapons/w_pist_deagle.mdl", -- invisible model..
     Material = "entities/arc9_stalker2_pt_rhino.png",
     Weight = 1.7,
