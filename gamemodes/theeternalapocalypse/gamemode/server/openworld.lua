@@ -200,6 +200,7 @@ function GM:SaveTransitionsData()
 end
 
 function GM:LoadTransitionsData()
+    if !file.Exists(self.DataFolder.."/openworlddata.txt", "DATA") then return end
     local method = self.Config.SFS and sfs.decode or util.JSONToTable
     local tbl = method(file.Read(self.DataFolder.."/openworlddata.txt", "DATA"))
 

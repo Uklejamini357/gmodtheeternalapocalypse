@@ -117,18 +117,17 @@ function GM:LoadPlayer(ply, id)
 
 		self:NetUpdatePerks(ply)
 	else
+		self:SavePlayer(ply, nil, true)
+
 		print("Created a new profile for "..ply:Nick() .." ("..ply:SteamID()..")")
 		self:DebugLog("Created new data file for: "..ply:Nick().." ("..ply:SteamID()..") located at: "..filedir_ply)
-
-		self:SavePlayer(ply)
-
 	end
 
 	return true
 end
 
 
-function GM:SavePlayer(ply, force)
+function GM:SavePlayer(ply, force, nolastsession)
 	if not force and (ply.NoDataSave or not self.DatabaseSaving) then return end
 	local plyfile = self.DataFolder.."/players/"..string.lower(string.gsub(ply:SteamID(), ":", "_")..".txt")
 
@@ -155,7 +154,7 @@ function GM:SavePlayer(ply, force)
 
 	Data["Statistics"] = ply.Statistics
 
-	if ply:Alive() or ply.LastSessionInfo then
+	if (ply:Alive() or ply.LastSessionInfo) and not nolastsession then
 		local lastsessioninfo = {}
 		if ply:Alive() then
 			lastsessioninfo["health"] = ply:Health()
