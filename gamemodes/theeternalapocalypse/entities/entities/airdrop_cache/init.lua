@@ -90,6 +90,7 @@ function ENT:Think()
 	local decodingply = self:GetADOpeningPlayer()
 	if self:GetADOpeningStatus() then
 		if self:GetADOpeningTime() <= CurTime() and decodingply:IsValid() and decodingply:Alive() and decodingply:GetPos():DistToSqr(self:GetPos()) <= 62500 then --250^2
+			decodingply:AddStatisticPoints("AirdropsOpened", 1)
 			GAMEMODE:SystemBroadcast(decodingply:Nick().." has opened an air drop crate!", Color(255,255,255,255), false)
 			self:SetADOpenedStatus(true)
 			self:SetADOpeningPlayer(ply)

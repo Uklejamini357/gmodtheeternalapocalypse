@@ -324,31 +324,33 @@ function GM:DrawVitals()
 
 -- Compass
 
-	local angles = tostring(math.Round(-me:GetAngles().y + 180))
-	local nang = math.rad(angles - 90)
-	local eang = math.rad(angles - 180)
-	local sang = math.rad(angles - 270)
-	local wang = math.rad(angles)
+	if !self.NoCompassHUD then 
+		local angles = tostring(math.Round(-me:EyeAngles().y + 180))
+		local nang = math.rad(angles - 90)
+		local eang = math.rad(angles - 180)
+		local sang = math.rad(angles - 270)
+		local wang = math.rad(angles)
 
-	local nx = 40*math.cos(-nang) + 80
-	local ny = 40*math.sin(-nang) + 90
-	local ex = 40*math.cos(-eang) + 80
-	local ey = 40*math.sin(-eang) + 90
-	local sx = 40*math.cos(-sang) + 80
-	local sy = 40*math.sin(-sang) + 90
-	local wx = 40*math.cos(-wang) + 80
-	local wy = 40*math.sin(-wang) + 90
+		local nx = 40*math.cos(-nang) + 80
+		local ny = 40*math.sin(-nang) + 90
+		local ex = 40*math.cos(-eang) + 80
+		local ey = 40*math.sin(-eang) + 90
+		local sx = 40*math.cos(-sang) + 80
+		local sy = 40*math.sin(-sang) + 90
+		local wx = 40*math.cos(-wang) + 80
+		local wy = 40*math.sin(-wang) + 90
 
-	surface.DrawCircle(80,90, 30, Color(155,155,155,55))
-	surface.DrawCircle(80,90, 5, Color(155,155,155,55))
-	surface_SetDrawColor(155,155,155)
-	surface.DrawLine(80, 90, 80, 70)
+		surface.DrawCircle(80,90, 30, Color(155,155,155,55))
+		surface.DrawCircle(80,90, 5, Color(155,155,155,55))
+		surface_SetDrawColor(155,155,155)
+		surface.DrawLine(80, 90, 80, 70)
 
-	-- add 5 to x and 10 to y, i dont know why it puts them in the wrong position but whatever
-	draw.SimpleText("N", "TEA.HUDFont", nx - 5, ny - 10, Color(205,205,205), 0, 0)
-	draw.SimpleText("E", "TEA.HUDFont", ex - 5, ey - 10, Color(205,205,205), 0, 0)
-	draw.SimpleText("S", "TEA.HUDFont", sx - 5, sy - 10, Color(205,205,205), 0, 0)
-	draw.SimpleText("W", "TEA.HUDFont", wx - 5, wy - 10, Color(205,205,205), 0, 0)
+		-- add 5 to x and 10 to y, i dont know why it puts them in the wrong position but whatever
+		draw.SimpleText("N", "TEA.HUDFont", nx - 5, ny - 10, Color(205,205,205), 0, 0)
+		draw.SimpleText("E", "TEA.HUDFont", ex - 5, ey - 10, Color(205,205,205), 0, 0)
+		draw.SimpleText("S", "TEA.HUDFont", sx - 5, sy - 10, Color(205,205,205), 0, 0)
+		draw.SimpleText("W", "TEA.HUDFont", wx - 5, wy - 10, Color(205,205,205), 0, 0)
+	end
 --[[
 -- Threat level (How about Infection level?)
 
@@ -386,10 +388,12 @@ function GM:DrawVitals()
 
 -- draw pvp status
 
-	local state = GetMyPvP(pl)
+	if !self.NoPvPHUD then
+		local state = GetMyPvP(pl)
 
-	if hud and hud.DrawPVP then
-		hud:DrawPVP(pl, state, scrw, scrh)
+		if hud and hud.DrawPVP then
+			hud:DrawPVP(pl, state, scrw, scrh)
+		end
 	end
 
 	local drawtrader
@@ -537,6 +541,10 @@ end
 
 function GM:HUDShouldDraw(name)
 	local me = LocalPlayer()
+
+	if !IsValid(me) then return false end
+	if IsValid(me:GetActiveWeapon()) and me:GetActiveWeapon():GetClass() == "gmod_camera" and
+	name ~= "CHudWeaponSelection" then return false end
 	local donotdraw = 
 	{"CHudHealth", "CHudAmmo", "CHudSecondaryAmmo", "CHudBattery", "CHudSuitPower"}
 
@@ -555,11 +563,11 @@ function GM:RenderScreenspaceEffects()
 	local modify = {}
 	local color = 1
 	local contrast = 1
-	local hp = (((ply:GetMaxHealth() * 0.4) - ply:Health()) * (1 / (ply:GetMaxHealth() * 0.4)))
+	local hp = math.max(((ply:GetMaxHealth() * 0.4) - ply:Health()) * (1 / (ply:GetMaxHealth() * 0.4)))
 	
 	if (ply:Health() < ply:GetMaxHealth() * 0.4) then
 		if (ply:Alive()) then
-			color = math.min(color - hp, color)
+			color = math.Clamp(color - hp, 0, color)
 		else
 			color = 0
 		end

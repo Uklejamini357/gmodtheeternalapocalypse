@@ -2,38 +2,39 @@
 
 local meta = FindMetaTable("Player")
 
-function meta:GainMasteryXP(amount, type)
-    if type == "Melee" then
-        self.MasteryMeleeXP = self.MasteryMeleeXP + amount
-        if self.MasteryMeleeXP >= self:GetReqMasteryMeleeXP() then self:GainMasteryLevel("Melee") end
-    elseif type == "PvP" then
-        self.MasteryPvPXP = self.MasteryPvPXP + amount
-        if self.MasteryPvPXP >= self:GetReqMasteryPvPXP() then self:GainMasteryLevel("PvP") end
-    else return
+function meta:GainMasteryXP(amount, mType)
+    if !self.MasterySkills[mType] then return end
+    if !amount then return end
+
+    local mastery = GAMEMODE.MasterySkillStats[mType]
+
+    self.MasterySkills[mType].XP = (self.MasterySkills[mType].XP or 0) + amount
+    for i=1,mastery.MaxLevel do
+        if not (self.MasterySkills[mType].XP >= self:GetReqMasteryXP(mType) and mastery.MaxLevel > self:GetMasteryLevel(mType)) then break end
+        self:GainMasteryLevel(mType)
     end
+
     net.Start("GainMasteryProgress")
-    net.WriteString(type)
+    net.WriteString(mType)
     net.WriteFloat(amount)
     net.Send(self)
 end
 
-function meta:GainMasteryLevel(type)
-    local newlevel, cashreward
-    if type == "Melee" and self.MasteryMeleeXP >= self:GetReqMasteryMeleeXP() then
-        self.MasteryMeleeXP = self.MasteryMeleeXP - self:GetReqMasteryMeleeXP()
-        newlevel = self.MasteryMeleeLevel + 1
-        cashreward = math.floor(269 + (69 * newlevel) ^ 1.1869)
-        self.MasteryMeleeLevel = newlevel
-        self.Money = self.Money + cashreward
-        self:SystemMessage("[Mastery System] Your Mastery Melee Level is now "..newlevel.."! Gained "..cashreward.." cash.", Color(130, 255, 130, 255), false)
-    elseif type == "PvP" and self.MasteryPvPXP >= self:GetReqMasteryPvPXP() then
-        self.MasteryPvPXP = self.MasteryPvPXP - self:GetReqMasteryPvPXP()
-        newlevel = self.MasteryPvPLevel + 1
-        cashreward = math.floor(312 + (76 * newlevel) ^ 1.2232)
-        self.MasteryPvPLevel = newlevel
-        self.Money = self.Money + cashreward
-        self:SystemMessage("[Mastery System] Your Mastery PvP Level is now "..newlevel.."! Gained "..cashreward.." cash.", Color(130, 255, 130, 255), false)
-    else return end
+function meta:GainMasteryLevel(mType)
+    local mtbl = GAMEMODE.MasterySkillStats[mType]
+    if !mtbl then return end
+
+    if self.MasterySkills[mType].XP < self:GetReqMasteryXP(mType) then return end
+    self.MasterySkills[mType].XP = self.MasterySkills[mType].XP - self:GetReqMasteryXP(mType)
+    
+    local oldlevel = self.MasterySkills[mType].Level
+    local newlevel = oldlevel + 1
+    local cashreward = mtbl.CashGain and mtbl:CashGain(self, newlevel) or 0
+
+    self.MasterySkills[mType].Level = newlevel
+    self.Money = self.Money + cashreward
+
+    mtbl:OnLevelup(self, oldlevel, newlevel)
 
     self:AddStatisticPoints("CashGainedByMastery", cashreward)
 

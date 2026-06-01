@@ -859,6 +859,12 @@ hook.Add("CalcView", "TEA.ThirdPerson", function(pl, origin, angles, fov)
 
 	local viewpos = origin + angles:Forward() * -50 + Vector(0, 0, 15)
 	lastcam = lastcam + (viewpos-lastcam)*math.min(1, FrameTime()*10)
+	local tr = util.TraceLine({
+		start = origin,
+		endpos = lastcam,
+		filter = function(ent) return ent ~= pl end
+	})
+	lastcam = tr.HitPos
 
 	return {
 		origin = lastcam
@@ -868,3 +874,31 @@ end)
 hook.Add("ShouldDrawLocalPlayer", "TEA.ThirdPerson", function(pl)
 	if thirdperson then return true end
 end)
+
+local function draw_Circle( x, y, radius, seg )
+	local cir = {}
+
+	table.insert( cir, { x = x, y = y, u = 0.5, v = 0.5 } )
+	for i = 0, seg do
+		local a = math.rad(i/seg * -360)
+		table.insert(cir, { x = x + math.sin( a ) * radius, y = y + math.cos( a ) * radius, u = math.sin( a ) / 2 + 0.5, v = math.cos( a ) / 2 + 0.5 })
+	end
+
+	local a = math.rad(0)
+	table.insert(cir, { x = x + math.sin( a ) * radius, y = y + math.cos( a ) * radius, u = math.sin( a ) / 2 + 0.5, v = math.cos( a ) / 2 + 0.5 })
+
+	surface.DrawPoly(cir)
+end
+
+function WheelPaneltest()
+	local panel = vgui.Create("Panel")
+	panel:SetSize(600, 600)
+	panel:Center()
+	panel.Paint = function(self, x, y)
+		surface.DrawCircle(x/2, y/2, 100, 255, 255, 255, 255)
+
+		surface.SetDrawColor( 255, 0, 0, 200)
+		draw_Circle( x/2, y/2, 100, 360 )
+	end
+end
+

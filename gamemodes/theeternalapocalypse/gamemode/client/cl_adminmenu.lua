@@ -278,6 +278,11 @@ function GM:AdminMenu()
 			d:AddOption("Load taskdealer menu", function()
 				self:OpenTasksMenu()
 			end)
+			d:AddOption("Reset your masteries", function()
+				net.Start("tea_admin_devactions")
+				net.WriteUInt(1, 8)
+				net.SendToServer()
+			end)
 
 			d:Open()
 		end
@@ -1099,6 +1104,7 @@ end
 
 local atm
 function GM:OpenAdminToolMenuOptions(wep)
+	if atm and atm:IsValid() then atm:Remove() end
 	atm = vgui.Create("EditablePanel")
 	atm:SetSize(400, 300)
 	atm.Paint = function(self, w, h)
@@ -1204,6 +1210,7 @@ end
 
 local atm
 function GM:CreateOpenworldTransition(startpos, startang, pos1, pos2)
+	if atm and atm:IsValid() then atm:Remove() end
 	atm = vgui.Create("EditablePanel")
 	atm:SetSize(400, 300)
 	atm.Paint = function(self, w, h)
@@ -1282,6 +1289,7 @@ end
 
 local atm
 function GM:CreateSafezoneArea(pos1, pos2)
+	if atm and atm:IsValid() then atm:Remove() end
 	atm = vgui.Create("EditablePanel")
 	atm:SetSize(400, 300)
 	atm.Paint = function(self, w, h)

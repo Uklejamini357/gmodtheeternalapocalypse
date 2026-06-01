@@ -3,54 +3,56 @@ GM.AltName	= "After The End Reborn" -- yes, it's a fork. what else did you expec
 GM.Author	= "Uklejamini"
 GM.Email	= ""
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.12.6"
-GM.DateVer	= "04.05.2026" -- Follows the DD.MM.YYYY format.
+GM.Version	= "0.12.7"
+GM.DateVer	= "22.05.2026" -- Follows the DD.MM.YYYY format.
 GM.Credits = {
-	-- Assets
+	{"LegendOfRobbo",			"Created After The End gamemode",											"Back in 2015. It's such a great gamemode!"},
+
 	{"GSC Game World",			"For all the S.T.A.L.K.E.R. content",										""},
 	{"WickedRabbit",			"For porting the STALKER assets to gmod (and credits to his contributors)",	"https://steamcommunity.com/sharedfiles/filedetails/?id=2438451886"},
 	{"Comrade Communist",		"S.T.A.L.K.E.R. sounds",													"https://steamcommunity.com/sharedfiles/filedetails/?id=1680884607"},
-	{"Garry Newman",			"For the base game",														""},
 
-	-- Supporters
-	{"LegendOfRobbo",			"After The End creator",													""}, -- 2015
-	{"Commander Shepard",		"For hosting AtE (ZsRPG) back in the days",									""}, -- 2017-2020
+	{"nil",						"T.E.A. Contributor",														"Reworked build tool, Added SFS save method"},
 
-	-- Contributors
-	{"CLuaRainBob",				"T.E.A. Contributor",														""}, -- Reworked build tool, Added SFS save method
+	{"BlueBerryy",				"Russian Translator",														"2024"},
+	{"Sirtlan",					"Spanish Translator",														"2026-now"},
 
-	-- Translators
-	{"BlueBerryy",				"Russian Translator",														""},
-	{"Sirtlan",					"Spanish Translator",														""},
-
-	-- Other
-	{"Anyone else I forgot",	"Various contributions",													""},
+	{"You",						"For playing the gamemode!",												""},
 }
 GM.RecentChangelogs = {
-	{"+ Added new function for zombies: Attack Rate Mult.", Color(210,255,210)},
-	{"+ Added Special events mechanic:", Color(210,255,210)},
-	{"    > Every ~47mins, there is a 20% chance for the special event to happen.", Color(210,255,210)},
-	{"    > Currently there is only 1 special event: Blood Moon, which grants:", Color(210,255,210)},
-	{"         >> +45% zombies speed", Color(210,255,210)},
-	{"         >> +30% zombies attack rate", Color(210,255,210)},
-	{"         >> And lasts 10~15mins.", Color(210,255,210)},
-	{"    > Special events cannot overlap each other.", Color(210,255,210)},
-	{"    > Required 1 player with prestige >= 1 or average level between all players > 20", Color(210,255,210)},
-	{"+ Next Boss, Airdrop, Special Event timers pass on to next session!", Color(210,255,210)},
-	{"+ Make new function for giving ammo for specified ammo types", Color(210,255,210)},
-	{"+ New way to display how much an ammo box gives ammo and which ammo the weapon uses", Color(210,255,210)},
-	{"+ Added new category near \"My skills\"", Color(210,255,210)},
-	
-	{"= Shambler Zombie's attack rate reduced: 1/1s -> 1/1.3s", Color(255,255,210)},
-	{"= Rockets shot from RPG now have starting velocity of 500hu/s", Color(255,255,210)},
-	{"= Rockets' direct hit damage reduced from 1000 to 600.", Color(255,255,210)},
+	{"+ Added 3 new masteries", Color(210,255,210)},
+	{"    > Survivor: Increases damage resistance by 0.25% per level", Color(210,255,210)},
+	{"    > Gunnery: Increases base headshot damage by 0.5% per level", Color(210,255,210)},
+	{"    > Medic: Increases effectiveness of healing others by 1% per level", Color(210,255,210)},
+	{"+ Added new function for getting masteries XP", Color(210,255,210)},
+	{"+ Added new table in sh_config.lua for mastery", Color(210,255,210)},
+	{"+ Added color to progress bar in mastery category of statistics", Color(210,255,210)},
+	{"+ Added new descriptions for masteries", Color(210,255,210)},
+	{"+ Added 40mm Grenade (Not a m9k variant)", Color(210,255,210)},
+	{"+ 1 new dev action: resets your masteries", Color(210,255,210)},
+	{"+ Added new \"OnDefeated\" function for bosses", Color(210,255,210)},
+	{"+ Added credits tab in help menu", Color(210,255,210)},
+	{"+ Added 2 new options", Color(210,255,210)},
 
-	{"/ Boss zombies now work on base of npc_tea_basic nextbot zombie", Color(255,223,210)},
-	{"/ Slightly adjusted the SWEP HUD element", Color(255,223,210)},
-	{"/ Changed MP7 and MP7 Elite's ammo type to SMG", Color(255,223,210)},
-	
-	{"* Real fix for not being able to assign tasks or anything when not near task dealer", Color(210,210,255)},
-	{"* Fixed Rockets' direct hit causing a lua error if their origin weapon is invalid (weapon that was shot with)", Color(210,210,255)},
+
+	{"- Temporarily remove \"DeathsBy*\" stat from stats menu", Color(255,210,210)},
+
+	{"= Change M1918 Bar's weight to 8kg", Color(255,255,210)},
+
+	{"/ Moving the Mastery variables to a table for easier code", Color(255,223,210)},
+	{"/ Holding gmod_camera will not display anything", Color(255,223,210)},
+	{"/ Changed build tool's edit menu visuals and made it close on ESC", Color(255,223,210)},
+	{"/ Moved hitsounds to clientside", Color(255,223,210)},
+	{"/ Numshots in description no longer appearing if it's just 1", Color(255,223,210)},
+	{"/ Change the main menu animation", Color(255,223,210)},
+
+	{"; Rework the damage calculations", Color(210,210,255)},
+
+	{"* Fix a bug with HUD SWEP element", Color(210,210,255)},
+	{"* Fixed damage/attack delay not appearing on some weapons description", Color(210,210,255)},
+	{"* Fix camera noclipping", Color(210,210,255)},
+	{"* Fix lowercase character in one of the death messages", Color(210,210,255)},
+	{"* Fixed a lua error if a player dies by an attacker being a NULL entity", Color(210,210,255)},
 }
 
 DeriveGamemode("sandbox")
@@ -506,9 +508,9 @@ function GM:GetItemDescription(id, ply) -- ply is for the server
 	local wep = item.WeaponType and weapons.Get(item.WeaponType)
 	if wep and wep.Primary then
 		local wep_prim = wep.Primary
-		local dmg, dmgmin = wep.DamageMax or wep_prim.Damage, wep.DamageMin
+		local dmg,dmgmin = wep.DamageMax or wep.Damage or wep_prim.Damage or 0, wep.DamageMin
 		local numshots = wep.Num or wep_prim.NumberOfShots or wep_prim.NumShots
-		local delay = (wep_prim.Delay or wep.RPM or wep_prim.RPM) and math.Round(wep_prim.Delay or 1 / ((wep.RPM or wep_prim.RPM or 1) / 60) or 1, 3)
+		local delay = (wep.Delay or wep_prim.Delay or wep.RPM or wep_prim.RPM) and math.Round(wep.Delay or wep_prim.Delay or 1 / ((wep.RPM or wep_prim.RPM or 1) / 60) or 1, 3)
 		local clipsize = wep.ClipSize or wep_prim.ClipSize
 		local recoil = wep.Recoil or wep_prim.Recoil
 		local range,rangemin = wep.RangeMax or wep.HitDistance, wep.RangeMin
@@ -517,7 +519,7 @@ function GM:GetItemDescription(id, ply) -- ply is for the server
 			desc = desc.."\nDamage: "..(dmgmin and math.Round(dmgmin, 2).."~"..math.Round(dmg, 2) or math.Round(dmg, 2))
 		end
 
-		if numshots then
+		if numshots and numshots ~= 1 then
 			desc = desc.."\nNumber of Shots: "..numshots
 		end
 

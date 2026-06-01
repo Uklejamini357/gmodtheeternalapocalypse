@@ -35,7 +35,7 @@ local meta = FindMetaTable("Player")
 -- 0 = no pvp guard, 1 = pvp guarded, 2 = pvp forced
 function meta:SetPvPGuarded(int)
 	if !SERVER then return end
-	self:SetNWInt("PvPGuard", math.Clamp(int, 0, 2) )
+	self:SetNWInt("PvPGuard", math.Clamp(int, 0, 2))
 end
 
 function meta:SetSZProtected(active)
@@ -116,40 +116,33 @@ function meta:HasCompletedTask()
 end
 
 function meta:GetReqXP()
-	local basexpreq = 509
-	local addxpperlevel = 97
-	local addxpperlevel2 = 1.1329
-
 	local plyprestige = SERVER and self.Prestige or self:GetTEAPrestige()
 	local plylevel = SERVER and self.Level or self:GetTEALevel()
 
-	local xp = (basexpreq + (plylevel  * addxpperlevel) * (1 + (plyprestige * (0.0072 + math.min(20, plyprestige) * 0.0003)))) ^ addxpperlevel2
+	local xp = (509 + (plylevel  * 97) * (1 + (plyprestige * (0.0072 + math.min(20, plyprestige) * 0.0003)))) ^ 1.1129
 	return math.floor(xp * math.max(1, 1+(plylevel-30)*0.01))
 end
 
--- todo: replace these functions in v0.12.7
-function meta:GetReqMasteryMeleeXP(mlvl)
-	local xpreq = 984
-	local addexpperlevel = 165
-	local addexpperlevel2 = 1.161
-
-	if !mlvl then
-		mlvl = self.MasteryMeleeLevel or 0
-	end
-
-	return math.floor(xpreq + (mlvl * addexpperlevel) ^ addexpperlevel2)
+function meta:GetMasteryXP(mType)
+	return self.MasterySkills[mType].XP
 end
 
-function meta:GetReqMasteryPvPXP(mlvl)
-	local expreq = 593
-	local addxpprlevel = 85
-	local addexpperlevel2 = 1.153
+function meta:GetMasteryLevel(mType)
+	return self.MasterySkills[mType].Level
+end
 
-	if !mlvl then
-		mlvl = self.MasteryPvPLevel or 0
-	end
+function meta:GetMasteryEffectiveStat(mType, mlvl)
+	local mastery = GAMEMODE.MasterySkillStats[mType]
+	if !mastery then return 0 end
+	return mastery:GetStatEffectiveVal(self, mlvl or (self.MasterySkills and self.MasterySkills[mType].Level) or 0)
+end
 
-	return math.floor(expreq + (mlvl * addxpprlevel) ^ addexpperlevel2)
+function meta:GetReqMasteryXP(mType, mlvl)
+	if !mType then return end
+	local mastery = GAMEMODE.MasterySkillStats[mType]
+	if !mastery then return end
+
+	return mastery:XPReq(self, mlvl or (self.MasterySkills and self.MasterySkills[mType].Level) or 0)
 end
 
 function meta:GetProgressToPrestige()
@@ -190,16 +183,10 @@ function meta:CalculateMaxWeight()
 
 	local baseweight = GAMEMODE.Config["MaxCarryWeight"]
 	local perksweight = (self:HasPerk("weightboost") and 1.5 or 0) + (self:HasPerk("weightboost2") and 2.5 or 0) + (self:HasPerk("weightboost3") and 3.5 or 0)
-	-- if SERVER then
-		if self.StatsPaused then return math.huge end
+	if self.StatsPaused then return math.huge end
 
-		return (baseweight + perksweight + ((self.StatStrength or 0) * 1.53) + (self:GetNWString("ArmorType") ~= "none" and armortype["ArmorStats"]["carryweight"] or 0)) *
-		(GAMEMODE.GameplayDifficulty == DIFFICULTY_GAMEPLAY_HELL and 0.9 or GAMEMODE.GameplayDifficulty == DIFFICULTY_GAMEPLAY_IMPOSSIBLE and 0.75 or 1)
-	-- else
-		-- local skillsweight = (Perks.Strength or 0) * 1.53
-		-- local additionalarmorweight = armorstr ~= "none" and armortype["ArmorStats"]["carryweight"] or 0
-		-- return math.Round(baseweight + perksweight + skillsweight + additionalarmorweight, 2)
-	-- end
+	return (baseweight + perksweight + ((self.StatStrength or 0) * 1.53) + (self:GetNWString("ArmorType") ~= "none" and armortype["ArmorStats"]["carryweight"] or 0)) *
+	(GAMEMODE.GameplayDifficulty == DIFFICULTY_GAMEPLAY_HELL and 0.9 or GAMEMODE.GameplayDifficulty == DIFFICULTY_GAMEPLAY_IMPOSSIBLE and 0.75 or 1)
 end
 
 function meta:RecalculateCurrentWeight()
@@ -238,14 +225,6 @@ end
 
 function meta:GetCanSprint()
 	return self:GetNWBool("cansprint", true)
-end
-
-function meta:GetEnduranceStaminaDrainMul()
-	return 1 - self.StatEndurance*0.045
-end
-
-function meta:GetEnduranceStaminaJumpDrainMul()
-	return 1 - self.StatEndurance*0.045
 end
 
 function meta:SkillsReset()
@@ -309,7 +288,7 @@ function meta:GetArmorProtection(defense)
 	end
 
 	if defense then
-		armorvalue = armorvalue + (self.StatDefense*0.02) * (1 - armorvalue)
+		armorvalue = armorvalue + (self.StatDefense*0.02 + self:GetMasteryEffectiveStat("Survivor")) * (1 - armorvalue)
 	end
 
 	return armorvalue
@@ -325,7 +304,7 @@ function meta:GetArmorEnvProtection(defense)
 	end
 
 	if defense then
-		armorvalue = armorvalue + (self.StatDefense*0.015) *  (1 - armorvalue)
+		armorvalue = armorvalue + (self.StatDefense*0.015 + self:GetMasteryEffectiveStat("Survivor")) *  (1 - armorvalue)
 	end
 
 	return armorvalue
@@ -369,7 +348,7 @@ function meta:GetStaminaDrainWeightMul()
 
 	mul = mul + weight*0.01
 	if weight < 10 then
-		mul = mul * 0.9
+		mul = mul * 0.95
 	end
 
 	if overload then
@@ -406,9 +385,10 @@ function meta:GetItemSellCostMul(item)
 		itemtbl = item
 	end
 
-	if itemtbl.IgnoreCostModifiers then return 0.2 end
+	local mul = 0.25
+	if itemtbl.IgnoreCostModifiers then return mul end
 
-	local mul = 0.2 + ((self.StatBarter or 0) * 0.005)
+	mul = mul + ((self.StatBarter or 0) * 0.005)
 	mul = mul * (1 + GAMEMODE:GetInflationSellCostMul())
 	mul = mul * GAMEMODE:GetEconomyDiffSellCostMul()
 

@@ -22,11 +22,6 @@ function GM:SetStartingVariables(ply)
 	ply.Vault = table.Copy(self.Config["NewbieVault"])
 	ply.UnlockedPerks = {}
 
-	ply.MasteryMeleeXP = 0
-	ply.MasteryMeleeLevel = 0
-	ply.MasteryPvPXP = 0
-	ply.MasteryPvPLevel = 0
-
 	for statname, _ in pairs(self.StatConfigs) do
 		ply["Stat"..statname] = 0
 	end
@@ -46,6 +41,24 @@ function GM:CorrectPlayerDataFromPreviousVersions(ply, prevdata)
 	if ply.Statistics["playerdeaths"] then
 		ply.Statistics["Deaths"] = ply.Statistics["playerdeaths"]
 		ply.Statistics["playerdeaths"] = nil
+	end
+
+	if ply.MasteryMeleeXP or ply.MasteryMeleeLevel then
+		ply.MasterySkills["Melee"] = {
+			XP = ply.MasteryMeleeXP or 0,
+			Level = ply.MasteryMeleeLevel or 0
+		}
+		ply.MasteryMeleeXP = nil
+		ply.MasteryMeleeLevel = nil
+	end
+
+	if ply.MasteryPvPXP or ply.MasteryPvPLevel then
+		ply.MasterySkills["PvP"] = {
+			XP = ply.MasteryPvPXP or 0,
+			Level = ply.MasteryPvPLevel or 0
+		}
+		ply.MasteryPvPXP = nil
+		ply.MasteryPvPLevel = nil
 	end
 
 	if !prevdata.perkpoints then
@@ -104,18 +117,17 @@ function GM:LoadPlayer(ply, id)
 
 		self:NetUpdatePerks(ply)
 	else
+		self:SavePlayer(ply, nil, true)
+
 		print("Created a new profile for "..ply:Nick() .." ("..ply:SteamID()..")")
 		self:DebugLog("Created new data file for: "..ply:Nick().." ("..ply:SteamID()..") located at: "..filedir_ply)
-
-		self:SavePlayer(ply)
-
 	end
 
 	return true
 end
 
 
-function GM:SavePlayer(ply, force)
+function GM:SavePlayer(ply, force, nolastsession)
 	if not force and (ply.NoDataSave or not self.DatabaseSaving) then return end
 	local plyfile = self.DataFolder.."/players/"..string.lower(string.gsub(ply:SteamID(), ":", "_")..".txt")
 
@@ -134,19 +146,15 @@ function GM:SavePlayer(ply, force)
 	Data["CurrentTaskProgress"] = ply.CurrentTaskProgress
 	Data["TaskCooldowns"] = ply.TaskCooldowns
 
-	Data["MasteryMeleeXP"] = ply.MasteryMeleeXP
-	Data["MasteryMeleeLevel"] = ply.MasteryMeleeLevel
-	Data["MasteryPvPXP"] = ply.MasteryPvPXP
-	Data["MasteryPvPLevel"] = ply.MasteryPvPLevel
-
 	Data["Inventory"] = ply.Inventory
 	Data["InvalidInventory"] = ply.InvalidInventory
 	Data["Vault"] = ply.Vault
 	Data["UnlockedPerks"] = ply.UnlockedPerks
+	Data["MasterySkills"] = ply.MasterySkills
 
 	Data["Statistics"] = ply.Statistics
 
-	if ply:Alive() or ply.LastSessionInfo then
+	if (ply:Alive() or ply.LastSessionInfo) and not nolastsession then
 		local lastsessioninfo = {}
 		if ply:Alive() then
 			lastsessioninfo["health"] = ply:Health()
@@ -939,24 +947,6 @@ function GM:GetPlayerCharacters(ply)
 			end
 		else
 			t.Money = tonumber(self.Config["StartMoney"])
-	/*
-			ply.ChosenModel = "models/player/kleiner.mdl"
-			ply.BestSurvivalTime = 0
-			ply.XP = 0 
-			ply.Level = 1
-			ply.Prestige = 0
-			ply.playerskilled = 0
-			ply.playerdeaths = 0
-			ply.ZKills = 0
-			ply.StatPoints = 0
-			ply.EquippedArmor = "none"
-			ply.StatsReset = 0
-	
-			ply.MasteryMeleeXP = 0
-			ply.MasteryMeleeLevel = 0
-			ply.MasteryPvPXP = 0
-			ply.MasteryPvPLevel = 0
-	*/
 		end
 
 		tbl[i] = t

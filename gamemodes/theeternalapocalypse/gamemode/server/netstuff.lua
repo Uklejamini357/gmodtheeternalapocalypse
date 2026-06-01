@@ -68,6 +68,7 @@ util.AddNetworkString("tea_safezone")
 util.AddNetworkString("tea_admin_sendspawns")
 util.AddNetworkString("tea_admin_safezone")
 util.AddNetworkString("tea_admin_tool")
+util.AddNetworkString("tea_admin_devactions")
 
 util.AddNetworkString("tea_events")
 util.AddNetworkString("tea_playerevent")
@@ -108,10 +109,10 @@ end
 function GM:NetUpdatePlayerStatistics(ply, target)
 	net.Start("UpdateTargetStats")
 	net.WriteTable(target.Statistics)
-	net.WriteFloat(target.MasteryMeleeXP)
-	net.WriteUInt(target.MasteryMeleeLevel, 8)
-	net.WriteFloat(target.MasteryPvPXP)
-	net.WriteUInt(target.MasteryPvPLevel, 8)
+	for mType in SortedPairs(self.MasterySkillStats) do
+		net.WriteFloat(ply.MasterySkills[mType].XP)
+		net.WriteUInt(ply.MasterySkills[mType].Level, 8)
+	end
 	net.Send(ply)
 end
 
@@ -437,6 +438,20 @@ net.Receive("tea_admin_tool", function(len, pl)
 		table.Merge(wep.SetOptions, tbl)
 	elseif t == "toggleremover" then
 		wep:SetMode(net.ReadUInt(4))
+	end
+end)
+
+net.Receive("tea_admin_devactions", function(len, pl)
+	if !TEADevCheck(pl) then return end
+	local aType = net.ReadUInt(8)
+
+	if aType == 1 then
+		for k,v in pairs(pl.MasterySkills) do
+			v.XP = 0
+			v.Level = 0
+		end
+
+		pl:SystemMessage("Your masteries have been reset.", Color(255,0,0))
 	end
 end)
 

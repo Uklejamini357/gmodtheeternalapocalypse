@@ -621,7 +621,7 @@ local ang
 function GM:CreateMove(cmd)
 	local ply = LocalPlayer()
 
-	if (ply:IsUsingItem() and not ply.UsingItemCanMove) or ply:IsSleeping() and ang then
+	if ((ply:IsUsingItem() and not ply.UsingItemCanMove) or ply:IsSleeping()) and ang then
 		cmd:SetViewAngles(ang)
 	else
 		ang = cmd:GetViewAngles()

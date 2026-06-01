@@ -110,7 +110,8 @@ function GM:MakeOptions()
 	check:SetTooltip("Displays above the crosshair")
 	check = CreateCheckLabel(pan, list, "Show infection level text on HUD", "tea_cl_hudshowinflvltext")
 	check:SetTooltip("Must have (tea_cl_hudshowinflvl) Show infection level% on HUD to be enabled")
-	check = CreateCheckLabel(pan, list, "Play boss stinger music", "tea_cl_soundboss")
+	check = CreateCheckLabel(pan, list, "Play ambient music", "tea_cl_ambientmusic")
+	check = CreateCheckLabel(pan, list, "Play boss spawn sound", "tea_cl_soundboss")
 	check = CreateCheckLabel(pan, list, "Play hitsounds on dealing damage", "tea_cl_hitsounds")
 	check = CreateCheckLabel(pan, list, "Use decimal values on HUD", "tea_cl_huddec")
 	check:SetToolTip("Example:\
@@ -139,6 +140,8 @@ function GM:MakeOptions()
 	check:SetToolTip("If disabled, the tip about to cash in bounties regularly is shown upon dying.")
 
 	check = CreateCheckLabel(pan, list, "Don't display Inventory Weight on HUD", "tea_cl_noinvweighthuddisplay")
+	check = CreateCheckLabel(pan, list, "Don't dipslay Compass", "tea_cl_nocompasshud")
+	check = CreateCheckLabel(pan, list, "Don't display current PvP status", "tea_cl_nopvphud")
 	-- check:SetToolTip(".")
 
 	check = CreateCheckLabel(pan, list, "Display killfeed", "tea_cl_killfeed")

@@ -414,6 +414,7 @@ function GM:Think()
 	
 		local armorstr = ply:GetNWString("ArmorType") or "none"
 		local armortype = self.ItemsList[armorstr]
+/*	-- maybe another time
 		if ply:FlashlightIsOn() then
 			if ply.Battery <= 0 then
 				ply:Flashlight(false)
@@ -423,7 +424,7 @@ function GM:Think()
 		else
 			ply.Battery = math.Clamp(ply.Battery + 1.35*ft, 0, ply:GetMaxBattery())
 		end
-
+*/
 
 
 		local oxygendrainmul = 1
@@ -705,7 +706,25 @@ function GM:DoAutoMaintenance(time)
 	self:SetServerRestartTime(CurTime() + time)
 end
 
-function GM:OnNPCKilled(ent, attacker, inflictor, dmginfo)
+local function ProcessLastDmgInfo(tbl)
+	local dmg = DamageInfo()
+	dmg:SetDamage(tbl.Damage)
+	dmg:SetDamageType(tbl.DamageType)
+	dmg:SetDamagePosition(tbl.DamagePos)
+	dmg:SetReportedPosition(tbl.DamageOrigin)
+
+	dmg:SetAttacker(tbl.Attacker)
+	dmg:SetInflictor(tbl.Inflictor)
+	dmg:SetWeapon(tbl.Weapon)
+
+	return dmg
+end
+
+
+function GM:OnNPCKilled(ent, attacker, inflictor)
+	self:ProcessPostDamage(ent, ent.LastDmgInfo)
+	ent.NPCDied = true
+
 	local entclass = ent:GetClass()
 	local npcrewards = { -- override rewards for killing NPC
 /*
@@ -766,12 +785,12 @@ end
 
 function GM:DamageFloater(attacker, victim, dmgpos, dmg)
 	if attacker == victim then return end
-	if victim:Health() < 0 then return end
 	if dmgpos == vector_origin then dmgpos = victim:NearestPoint(attacker:EyePos()) end
 
 	net.Start("tea_damagefloater")
 	net.WriteFloat(dmg)
 	net.WriteVector(dmgpos)
+	net.WriteBool(victim:IsPlayer())
 	net.Send(attacker)
 end
 
@@ -797,21 +816,105 @@ function GM:EntityTakeDamage(ent, dmginfo)
 		ent:SendChat(translate.ClientGet(ent, "wakeup_cause_damage"))
 	end
 
-	if attacker:IsPlayer() then
-		if (ent:IsNextBot() or ent:IsNPC() or ent:IsPlayer()) and IsMeleeDamage(dmginfo:GetDamageType()) and attacker:HasPerk("bloodlust") then
-			local heal = math.min(50 - attacker.BloodLustMeleeHealCap, dmginfo:GetDamage()*0.1)*(50-attacker.BloodLustMeleeHealCap)/50
-			attacker.BloodLustMeleeHeal = attacker.BloodLustMeleeHeal + heal
-			attacker.BloodLustMeleeHealCap = attacker.BloodLustMeleeHealCap + heal
-			attacker.BloodLustLastMeleeHit = CurTime()
+	ent.LastDmgInfo = {
+		Damage = dmginfo:GetDamage(),
+		DamageType = dmginfo:GetDamageType(),
+		DamagePos = dmginfo:GetDamagePosition(),
+		DamageOrigin = dmginfo:GetReportedPosition(),
 
-			if attacker.BloodLustMeleeHeal and attacker.BloodLustMeleeHeal >= 1 then
-				attacker:SetHealth(math.min(attacker:GetMaxHealth(), attacker:Health() + math.floor(attacker.BloodLustMeleeHeal)))
-				attacker.BloodLustMeleeHeal = attacker.BloodLustMeleeHeal - math.floor(attacker.BloodLustMeleeHeal)
+		Attacker = dmginfo:GetAttacker(),
+		Inflictor = dmginfo:GetInflictor(),
+		Weapon = dmginfo:GetWeapon(),
+	}
+end
+
+function GM:PostEntityTakeDamage(ent, dmginfo, tookdmg)
+	if !tookdmg or ent.NPCDied or ent:IsPlayer() and !ent:Alive() then return end
+
+	self:ProcessPostDamage(ent, dmginfo, tookdmg)
+end
+
+function GM:ProcessPostDamage(ent, dmginfo, tookdmg)
+	local dmg, dmgtype, dmgpos, dmgorigin
+	local attacker, inflictor, weapon
+	if istable(dmginfo) then
+		dmg = dmginfo.Damage
+		dmgtype = dmginfo.DamageType
+		dmgpos = dmginfo.DamagePos
+		dmgorigin = dmginfo.DamageOrigin
+		
+		attacker = dmginfo.Attacker
+		inflictor = dmginfo.Inflictor
+		weapon = dmginfo.Weapon
+	elseif dmginfo then
+		dmg = dmginfo:GetDamage()
+		dmgtype = dmginfo:GetDamageType()
+		dmgpos = dmginfo:GetDamagePosition()
+		dmgorigin = dmginfo:GetReportedPosition()
+
+		attacker = dmginfo:GetAttacker()
+		inflictor = dmginfo:GetInflictor()
+		weapon = dmginfo:GetWeapon()
+	else return
+	end
+
+	if dmg == 0 then return end
+
+	local effective_dmg = dmg
+	if ent:Health() < 0 then
+		effective_dmg = dmg + ent:Health()
+	end
+
+	if ent:IsPlayer() then
+		if (attacker:IsNPC() or attacker:IsNextBot() or attacker:IsPlayer()) and ent:Health() <= ent:GetMaxHealth()*0.1 and ent:Alive() then
+			ent.MMasterySurvivorDamageTook = (ent.MMasterySurvivorDamageTook or 0) + effective_dmg
+		end
+
+		if ent:Alive() then
+			if ent.MMasterySurvivorDamageTook and ent.MMasterySurvivorDamageTook > 0 then
+				timer.Create("TEA.MSurvivor_"..ent:EntIndex(), 10, 1, function()
+					if ent:Alive() then
+						ent:GainMasteryXP(ent.MMasterySurvivorDamageTook, "Survivor")
+					end
+					ent.MMasterySurvivorDamageTook = 0
+				end)
+			end
+		else
+			ent.MMasterySurvivorDamageTook = 0
+		end
+	end
+
+	if attacker:IsPlayer() then
+		if ent:IsNextBot() or ent:IsNPC() or ent:IsPlayer() then
+			if ent.HeadShotDamagedBy then
+				if ent.HeadShotDamagedBy == attacker then
+					attacker.MMasteryGunneryHeadshotDamage = (attacker.MMasteryGunneryHeadshotDamage or 0) + (effective_dmg^0.65)/10
+
+					timer.Create("TEA.GunneryMasteryTimer", 3, 1, function()
+						attacker:GainMasteryXP(attacker.MMasteryGunneryHeadshotDamage, "Gunnery")
+						attacker.MMasteryGunneryHeadshotDamage = 0
+					end)
+				end
+				ent.HeadShotDamagedBy = nil
+			end
+
+
+			if IsMeleeDamage(dmgtype) and attacker:HasPerk("bloodlust") then
+				local heal = math.min(50 - attacker.BloodLustMeleeHealCap, effective_dmg*0.1)*(50-attacker.BloodLustMeleeHealCap)/50
+				attacker.BloodLustMeleeHeal = attacker.BloodLustMeleeHeal + heal
+				attacker.BloodLustMeleeHealCap = attacker.BloodLustMeleeHealCap + heal
+				attacker.BloodLustLastMeleeHit = CurTime()
+
+				if attacker.BloodLustMeleeHeal and attacker.BloodLustMeleeHeal >= 1 then
+					attacker:SetHealth(math.min(attacker:GetMaxHealth(), attacker:Health() + math.floor(attacker.BloodLustMeleeHeal)))
+					attacker.BloodLustMeleeHeal = attacker.BloodLustMeleeHeal - math.floor(attacker.BloodLustMeleeHeal)
+				end
 			end
 		end
 	end
 
-	if (ent:IsNextBot() or ent:IsNPC()) and (!ent.LastAttacker or ent:Health() > 0) and attacker:IsPlayer() and not (self.SafezoneGrindingPrevention == 2 and attacker:IsSZProtected()) then
+	if (ent:IsNextBot() or ent:IsNPC()) and attacker:IsPlayer() and
+	not (self.SafezoneGrindingPrevention == 2 and attacker:IsSZProtected()) then
 		ent.LastAttacker = attacker
 		if !ent.BossMonster then
 			timer.Create("TEAZombieLastAttacker_"..ent:EntIndex(), 15, 1, function()
@@ -823,19 +926,18 @@ function GM:EntityTakeDamage(ent, dmginfo)
 		end
 
 		if ent.DamagedBy then
-			local dmg = math.Clamp(dmginfo:GetDamage(), 0, ent:Health())
-			if !ent.DamagedBy[attacker] then 
-				ent.DamagedBy[attacker] = dmg
+			if ent.DamagedBy[attacker] then 
+				ent.DamagedBy[attacker] = math.max(ent.DamagedBy[attacker] + effective_dmg, 0)
 			else
-				ent.DamagedBy[attacker] = math.max(ent.DamagedBy[attacker] + dmg, 0)
+				ent.DamagedBy[attacker] = effective_dmg
 			end
-			attacker:AddStatisticPoints("ZombieDamageDealt", dmg)
+			attacker:AddStatisticPoints("ZombieDamageDealt", effective_dmg)
 		end
 	end
 
 	if ent:GetClass() == "prop_physics" and ent.prophealth then
 		if ent.prophealth then
-			ent.prophealth = ent.prophealth - dmginfo:GetDamage()
+			ent.prophealth = ent.prophealth - dmg
 		end
 		-- local ColorAmount = ((ent:Health() / ent.maxhealth) * 255)
 		-- ent:SetColor(Color(ColorAmount, ColorAmount, ColorAmount, 255))
@@ -848,15 +950,14 @@ function GM:EntityTakeDamage(ent, dmginfo)
 
 	if self:GetDebug() >= DEBUGGING_ADVANCED then
 		if ent:IsPlayer() and ent:Alive() and (!ent.SpawnProtected and !ent:HasGodMode()) then
-			local dmg = dmginfo:GetDamage()
 			ent:SendLua("notification.AddLegacy(translate.Format(\"dmgtaken\", \""..math.Round(dmg, 1).."\"), 0, 4)")
 			print(ent:Nick().." has taken "..dmg.." damage!")
 		end
 	end
 
 	if attacker:IsPlayer() then
-		if ent:IsPlayer() or ent:IsNextBot() or (ent:IsNPC() and ent:GetClass() ~= "tea_trader") and ent:Health() ~= 0 then
-			self:DamageFloater(attacker, ent, dmginfo:GetDamagePosition(), ent:IsPlayer() and math.floor(dmginfo:GetDamage()) or dmginfo:GetDamage())
+		if ent:IsPlayer() or ent:IsNextBot() or (ent:IsNPC() and ent:GetClass() ~= "tea_trader") then
+			self:DamageFloater(attacker, ent, dmgpos, ent:IsPlayer() and math.floor(dmg) or dmg)
 		end
 	end
 end
@@ -873,7 +974,7 @@ function GM:PlayerShouldTakeDamage(ply, attacker)
 	if !ply:Alive() then return false end
 
 	if ply:IsSZProtected() then
-		if attacker:IsPlayer() then
+		if attacker:IsPlayer() and ply ~= attacker then
 			pvpmsg(attacker, "Target is in safezone! You can't damage them!")
 		end
 		return false
@@ -942,7 +1043,7 @@ function GM:HandlePlayerArmorReduction(ply, dmginfo)
 		ply:SetArmor(ply:Armor() - flArmor)
 	end
 
-	dmginfo:SetDamage( flNew )
+	dmginfo:SetDamage(flNew)
 end
 
 function GM:PlayerInitialSpawn(ply, transition)
@@ -964,6 +1065,41 @@ function GM:PlayerInitialSpawn(ply, transition)
 	ply.Money = 0
 	ply.Bounty = 0
 	----------------
+
+--[[ -- Maybe sometime soon... when the Realism/Hardcore update comes.. (in 2026/2027 or so). Don't intend to make it 100% realistic though.
+
+	-- Can cause sudden shock if too high, resulting in temporary -70% movespeed and inability to move for few seconds.
+	ply.BodyPain = 0
+
+	-- If it's a positive value, at >100% you start to overheat, lose thirst faster and health as well.
+	-- If it's a negative value, at -20%< you move slower. At -40%< you experience hypothermia, which means you would lose 0.1% cold per second at the cost of starving faster, if your hunger is above 30%.
+	-- At -65%< you start to lose health.
+	ply.BodyHeat = 0
+
+	-- Reduces carrying weight and increases cold vulnerability. Increases heat resistance.
+	ply.BodyWet = 0 -- no, don't overexaggerate it.
+
+	ply.BodyHealth = { -- How will healing work?
+		[HITGROUP_HEAD] = 45,
+		[HITGROUP_CHEST] = 70, -- upper torso
+		[HITGROUP_STOMACH] = 80, -- lower torso
+
+		-- both legs broken: Can't sprint.
+		[HITGROUP_LEFTARM] = 40, -- worse aim if broken
+		[HITGROUP_RIGHTARM] = 40, -- worse aim if broken
+
+		-- both legs broken: Can't sprint.
+		[HITGROUP_LEFTLEG] = 35, -- -45% (mult.) movespeed if broken
+		[HITGROUP_RIGHTLEG] = 35 -- -45% (mult.) movespeed if broken
+	}
+
+	-- The higher the worse: Increases when your stamina is low (<30%) for too long. Exhaustion gain is doubled if your stamina is 0%.
+	-- At >10% exhaustion, stamina regen is reduced gradually, up to 65% less stamina regen at 100% exhaustion.
+	-- At >35%, move speed is decreased by 10%, max 30% at 100% exhaustion.
+	ply.Exhaustion = 0
+
+
+]]
 	
 	-------- Progression Stats --------
 	ply.XP = 0
@@ -1009,6 +1145,7 @@ function GM:PlayerInitialSpawn(ply, transition)
 		LootLegendaryFound = 0,
 		LootFactionFound = 0,
 		LootBossFound = 0,
+		AirdropsOpened = 0,
 
 		PlayersKilled = 0,
 		PlayersKillAssists = 0,
@@ -1045,11 +1182,8 @@ function GM:PlayerInitialSpawn(ply, transition)
 			Level = 0
 		}
 	end
-
-	ply.MasteryMeleeXP = 0
-	ply.MasteryMeleeLevel = 0
-	ply.MasteryPvPXP = 0
-	ply.MasteryPvPLevel = 0
+	ply.MMasterySurvivorDamageTook = 0
+	ply.MMasteryGunneryHeadshotDamage = 0
 	----------------
 	
 	-------- Other Stats --------
@@ -1266,6 +1400,8 @@ function GM:PlayerSpawn(ply)
 	timer.Simple(1, function()
 		gamemode.Call("RecalcPlayerSpeed", ply)
 	end)
+
+	ply.MMasterySurvivorDamageTook = 0
 
 	ply.CauseOfDeath = ""
 	ply.DeathMessage = ""

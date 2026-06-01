@@ -201,25 +201,29 @@ function GM:LoadMainMenu()
 	end
 
 	for i=1,2 do
+		local txtdesc = translate.Get("the_eternal_apocalypse_desc")
 		local desc = vgui.Create("DLabel", self.MainMenuPanel)
 		desc:SetContentAlignment(5)
-		desc:SetText(translate.Get("the_eternal_apocalypse_desc"))
+		desc:SetText("")
 		desc:SetTextColor(Color(0, 0, 0, 0))
 		desc:SetFont("Trebuchet18")
 		desc:SizeToContents()
-		desc:SetPos(ScrW()/2 + (i==2 and (ScrW()+desc:GetWide())/2 or -(ScrW()+desc:GetWide())/2), 160)
-		desc:MoveTo(ScrW()/2-desc:GetWide()/2, 160, 2)
-		if self.PlayerCharactersTest then
-			local txtsize_x,txtsize_y = desc:GetSize()
-			desc:SetPos(ScrW() / 2 - txtsize_x/2 + (ScrW()/2)*(i == 1 and 1 or -1), 150)
-			desc:MoveTo(ScrW() / 2 - txtsize_x/2, 150, 0.85)
-		end
+		desc:SetPos(ScrW()/2-desc:GetWide()/2, 160, 2)
 		-- really wanted all the text to display in center but there wasnt a function for it. I could just create more text panels instead, but why though?
-		local txt = string.Explode("\n", desc:GetText())
-		desc:SetTall(10 + #txt*20)
+		local explodetxt = string.Explode("\n", txtdesc)
+		desc:SetTall(10 + #txtdesc*20)
+		desc.CreatedAt = SysTime()
+		desc.Think = function(self)
+			local s = string.sub(txtdesc, 1, #txtdesc*(SysTime()-desc.CreatedAt)/6)
+			if self:GetText() == s then return end
+			self:SetText(s)
+			self:SizeToContents()
+			self:CenterHorizontal()
+			explodetxt = string.Explode("\n", s)
+		end
 		desc.Paint = function(self, w, h)
-			for i=1,#txt do
-				draw.DrawText(txt[i], "Trebuchet18", w/2, 20*(i-1), color_white, TEXT_ALIGN_CENTER)
+			for i=1,#explodetxt do
+				draw.DrawText(explodetxt[i], "Trebuchet18", w/2, 20*(i-1), color_white, TEXT_ALIGN_CENTER)
 			end
 		end
 

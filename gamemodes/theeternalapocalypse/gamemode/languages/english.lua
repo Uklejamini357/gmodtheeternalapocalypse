@@ -336,7 +336,7 @@ LANG.item_hotdog_d = "A Hot Dog."
 LANG.item_donut_n = "Donut"
 LANG.item_donut_d = "A donut."
 LANG.item_bed_n = "Bed"
-LANG.item_bed_d = "Allows you to sleep and set your spawnpoint (your spawnpoint depends on your bed location).\nHeals by 10% when sleeping in it."
+LANG.item_bed_d = "Allows you to sleep and set your spawnpoint (your spawnpoint depends on your bed location)."
 LANG.item_sleepingbag_n = "Sleeping Bag"
 LANG.item_sleepingbag_d = "A sleeping bag that can be re-used. Sleeping in the open may attract zombies"
 LANG.item_amnesiapills_n = "Amnesia Pills"
@@ -938,7 +938,7 @@ LANG.Tip19 = "Keep an eye on infection level. Zombies become more dangerous, but
 -- New ?????
 
 LANG.the_eternal_apocalypse = "The Eternal Apocalypse"
-LANG.the_eternal_apocalypse_desc = "An apocalyptic survival-based gamemode forked from an old gamemode.\nIn development since early 2022.\nThe zombies await your appearance."
+LANG.the_eternal_apocalypse_desc = "A recreated version of an old game mode with an apocalyptic survival theme.\nBased on the ideas from STALKER, Zombie Survival and more.\nThe zombies await your appearance."
 LANG.the_eternal_apocalypse_character = "Choose your character to play."
 LANG.play = "Play"
 LANG.disconnect = "Disconnect"

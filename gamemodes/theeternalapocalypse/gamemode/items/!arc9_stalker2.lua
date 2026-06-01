@@ -1,8 +1,7 @@
 -- ARC9 Stalker2 weapons --
 -- The real world models for these weren't made. They just used CS:S models. I don't understand why tho.
--- At the time of making this itemlist, ARC9 errors on client when initializing for the first time. This could potentially impact addon compatibility.
--- TEMPORARY FIX: Set cvar value of arc9_phystweak to 0.
 -- addon: https://steamcommunity.com/sharedfiles/filedetails/?id=3394681012
+-- Has ERRORS when used in multiplayer. Use it at your own risk.
 
 GM:CreateItem("arc9_stalker2_ar_ak74", {
     Name = "AKM-74S",
@@ -211,7 +210,7 @@ GM:CreateItem("arc9_stalker2_pt_pm", {
 GM:CreateItem("arc9_stalker2_pt_rhino", {
     Name = "Rhino",
     Description = "",
-    Cost = 8205
+    Cost = 8205,
     Model = "models/weapons/w_pist_deagle.mdl", -- invisible model..
     Material = "entities/arc9_stalker2_pt_rhino.png",
     Weight = 1.7,

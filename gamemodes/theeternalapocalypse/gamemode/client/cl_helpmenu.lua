@@ -74,7 +74,7 @@ function GM:HelpMenu()
     <h1> Welcome to The Eternal Apocalypse!</h1>
 <p>A remake of an old zombie survival gamemode from 2015 made by LegendOfRobbo, with concepts of zombified world and STALKER.<br>
 Development began in early 2022, with support up to today.<br>
-Remade by Uklejamini. For fun and enjoyment.</p>
+Recreated by Uklejamini. Made for fun and enjoyment.</p>
 
 <ul>
 <li><a href="#Differences">Differences</a></li>
@@ -126,6 +126,7 @@ Remade by Uklejamini. For fun and enjoyment.</p>
 <li>Infection: Determines if a character has infection and needs a cure. Only increases if you are infected. If it reaches 100%, you start dying.</li>
 </ul>
 <p>If you end up succumbing to zombies or dying, you will drop 30-40% of your bounty along with your currently held weapon.</p>
+<p>If you disconnect and join, you will spawn in where you were with all your stats you had when you logged off.</p>
 
 <h2 id="Zombies">Zombies</h2>
 <p>As you play, you will discover different zombies with different abilities. These zombies can range from being weak and with almost no danger to being tough and very dangerous.</p>
@@ -171,12 +172,14 @@ Remade by Uklejamini. For fun and enjoyment.</p>
 <p>And the last one is the faction loot cache. They only drop by destroying other faction's base cores.</p>
 
 <h2 id="Bosses">Bosses</h2>
-<p>Bosses are very powerful zombies that appear once every ~53 minutes. They can only spawn when there are at least 2 players online.</p>
+<p>Bosses are very powerful zombies that appear once every time after some time passed. They can only spawn when there are at least 2 players online.</p>
 <p>They have different abilities as mentioned above. For each boss defeated, drops a boss cache.</p>
+<p style="color: indianred">Bosses spawn naturally only when there are at least X players online.</p>
 
 <h2 id="Airdrops">Airdrops</h2>
-<p>Airdrops appear once every ~1h6m.</p>
+<p>Airdrops are dropped from the sky once every an hour,, or so.</p>
 <p>They come with lots of loot, including ammo, supplies, weapons and even unique stuff. Even junk items which are completely useless!</p>
+<p style="color: indianred">An airdrop may only spawn when there are at least X players online.</p>
 
 <h2 id="Traders">Traders</h2>
 <p>Traders can be found across the map. They sell supplies to you for money, but they can also buy stuff from you.</p>
@@ -208,7 +211,7 @@ Remade by Uklejamini. For fun and enjoyment.</p>
 
 <h2 id="PVP">PVP</h2>
 <p>The Eternal Apocalypse is not only about PvE. PVP also exists!</p>
-<p>PVP lets you fight against other players for their loot. To toggle PVP, open C menu and click on the \"Toggle PVP\" button!</p>
+<p>PVP lets you fight against other players for their loot. To toggle PVP, open C menu and click on the "Toggle PVP" button!</p>
 <p>Note that toggling PVP makes your PVP forced. PVP forced makes you able to take damage from any player, even if their PVP is disabled!</p>
 <p>Forced PVP also applies when near active airdrops. Be wary!</p>
 <p>Upon inflicting or taking damage, you will be unable to toggle your PVP in the next 60 seconds.</p>
@@ -234,6 +237,7 @@ Remade by Uklejamini. For fun and enjoyment.</p>
 </body>
 </html>]])
 
+/*
     local beginnerguidehtml = vgui.Create("DHTML", helpList)
     beginnerguidehtml:StretchToParent(4, 4, 4, 24)
     beginnerguidehtml:SetHTML([[<html>
@@ -291,5 +295,69 @@ Remade by Uklejamini. For fun and enjoyment.</p>
 
     helpList:AddSheet("Help", htmlpanel, nil, false, false, "Guide you might want to read if you're starting out.")
     helpList:AddSheet("Beginner's Guide", beginnerguidehtml, nil, false, false, "Beginner's guide for new players. ")
+*/
+
+
+    local allcredits = ""
+    for _,v in pairs(self.Credits) do
+        allcredits = allcredits.."<li>"..v[1]..": "..v[2]..(v[3] and v[3] ~= "" and " ("..(v[3]:sub(1, 8) == "https://" and "<a href=\""..v[3].."\">"..v[3].."</a>" or v[3])..")" or "").."</li>"
+    end
+
+    local creditshtml = vgui.Create("DHTML", helpList)
+    creditshtml:StretchToParent(4, 4, 4, 24)
+    creditshtml:SetHTML([[<html>
+    <head>
+    <style type="text/css">
+    body
+    {
+        font-family:tahoma;
+        font-size:16px;
+        color:white;
+        background-color: #00000020;
+        width:]].. creditshtml:GetWide() - 48 ..[[px;
+    }
+    div p
+    {
+        margin:10px;
+        padding:2px;
+    }
+
+    h1 {
+        color: maroon
+    }
+
+    h2 {
+        color: maroon
+    }
+
+    a {
+        color: green
+    }
+    
+    a:hover {
+        color: yellow;
+    }
+
+    li {
+        margin-bottom: 8px
+    }
+    </style>
+    </head>
+
+    <body>
+        <h1>Credits go to:</h1>
+        <p></p>
+
+        <ul>]]..
+            allcredits
+        ..[[
+        </ul>
+
+
+</body>
+</html>]])
+
+    helpList:AddSheet("Help", htmlpanel, nil, false, false, "Guide you might want to read if you're starting out.")
+    helpList:AddSheet("Credits", creditshtml, nil, false, false)
 end
 

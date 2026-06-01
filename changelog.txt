@@ -1,6 +1,45 @@
 There's been a lot missed out...
 WORKING ON THIS CURRENTLY. even tho progress is slow asf
 
+-------- v0.12.7 --------
++ Added new function for getting masteries XP
++ Added new table in sh_config.lua for mastery
++ Added 3 new masteries:
+    > Survivor:
+    > Gunnery:
+    > Medic: 
++ Added color to progress bar in mastery category of statistics
++ Added new descriptions for masteries
++ Added ArcCW Urban Decay/Renewal to items/ folder (not on by default)
++ Added 40mm Grenade (Not a m9k variant)
++ 1 new dev action: resets your masteries
++ Added new "OnDefeated" function for bosses (which will be used later)
++ Added credits tab in help menu
++ Added 2 new options
+
+- Temporarily remove "DeathsBy*" stat from stats menu
+- Temporarily cease \"Battery\" functionality (until I come up with something new)
+
+= Change M1918 Bar's weight to 8kg
+
+/ Moving the Mastery variables to a table for easier code
+/ Holding gmod_camera will not display anything
+/ Changed build tool's edit menu visuals and made it close on ESC
+/ Moved hitsounds to clientside
+/ Numshots in description no longer appearing if it's just 1
+/ Change the main menu animation
+
+; Rework the damage calculations (better support for npc's with OnTakeDamage function that modify damage)
+
+* Fix a bug with HUD SWEP element
+* Fixed damage/attack delay not appearing on some weapons description
+* Fix camera noclipping
+* Fix lowercase character in one of the death messages
+* Fixed a lua error if a player dies by an attacker being a NULL entity
+* Fix bugs with compass, make it use pl:EyeAngles instead of pl:GetAngles
+
+? Might also expand the config to also modify NPC's health, damage, damage taken mult, etc.
+
 -------- v0.12.6 --------
 + Added new function for zombies: Attack Rate Mult.
 + Added Special events mechanic:

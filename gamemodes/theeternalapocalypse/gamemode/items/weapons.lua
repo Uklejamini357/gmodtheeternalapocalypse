@@ -29,7 +29,7 @@ local i = GM:CreateItem("weapon_tea_noobcannon", {
 })
 
 i = GM:CreateItem("weapon_tea_pigsticker", {
-    Cost = 350,
+    Cost = 150,
     Model = "models/weapons/w_knife_ct.mdl",
     Weight = 0.38,
     Supply = 0,
@@ -40,7 +40,7 @@ i = GM:CreateItem("weapon_tea_pigsticker", {
 })
 
 i = GM:CreateItem("weapon_tea_axe", {
-    Cost = 800,
+    Cost = 550,
     Model = "models/props/CS_militia/axe.mdl",
     Weight = 1.73,
     Supply = 0,
@@ -51,7 +51,7 @@ i = GM:CreateItem("weapon_tea_axe", {
 })
 
 i = GM:CreateItem("weapon_tea_wrench", {
-    Cost = 1250,
+    Cost = 380,
     Model = "models/props_c17/tools_wrench01a.mdl",
     Weight = 0.47,
     Supply = 0,
@@ -62,7 +62,7 @@ i = GM:CreateItem("weapon_tea_wrench", {
 })
 
 i = GM:CreateItem("weapon_tea_repair", {
-    Cost = 5500,
+    Cost = 1500,
     Model = "models/props_c17/tools_wrench01a.mdl",
     Weight = 0.58,
     Supply = 0,
@@ -73,7 +73,7 @@ i = GM:CreateItem("weapon_tea_repair", {
 })
 
 i = GM:CreateItem("weapon_tea_scrapsword", {
-    Cost = 2000,
+    Cost = 1150,
     Model = "models/props_c17/TrapPropeller_Blade.mdl",
     Weight = 5.3,
     Supply = 0,
@@ -84,7 +84,7 @@ i = GM:CreateItem("weapon_tea_scrapsword", {
 })
 
 i = GM:CreateItem("weapon_tea_g20", {
-    Cost = 850,
+    Cost = 320,
     Model = "models/weapons/w_pist_glock18.mdl",
     Weight = 1.18,
     Supply = 0,
@@ -95,7 +95,7 @@ i = GM:CreateItem("weapon_tea_g20", {
 })
 
 i = GM:CreateItem("weapon_tea_57", {
-    Cost = 1000,
+    Cost = 400,
     Model = "models/weapons/w_pist_fiveseven.mdl",
     Weight = 0.82,
     Supply = 0,
@@ -106,7 +106,7 @@ i = GM:CreateItem("weapon_tea_57", {
 })
 
 i = GM:CreateItem("weapon_tea_u45", {
-    Cost = 1100,
+    Cost = 480,
     Model = "models/weapons/w_pist_usp.mdl",
     Weight = 1.1,
     Supply = 0,
@@ -117,7 +117,7 @@ i = GM:CreateItem("weapon_tea_u45", {
 })
 
 i = GM:CreateItem("weapon_tea_warren50", {
-    Cost = 1650,
+    Cost = 650,
     Model = "models/weapons/w_pist_deagle.mdl",
     Weight = 1.73,
     Supply = 0,
@@ -128,7 +128,7 @@ i = GM:CreateItem("weapon_tea_warren50", {
 })
 
 i = GM:CreateItem("weapon_tea_python", {
-    Cost = 1200,
+    Cost = 500,
     Model = "models/weapons/w_357.mdl",
     Weight = 1.18,
     Supply = 0,
@@ -139,7 +139,7 @@ i = GM:CreateItem("weapon_tea_python", {
 })
 
 i = GM:CreateItem("weapon_tea_dual", {
-    Cost = 2000,
+    Cost = 900,
     Model = "models/weapons/w_pist_elite.mdl",
     Weight = 2.72,
     Supply = -1,
@@ -150,7 +150,7 @@ i = GM:CreateItem("weapon_tea_dual", {
 })
 
 i = GM:CreateItem("weapon_tea_satan", {
-    Cost = 2250,
+    Cost = 1050,
     Model = "models/weapons/w_m29_satan.mdl",
     Weight = 3.14,
     Supply = -1,
@@ -161,7 +161,7 @@ i = GM:CreateItem("weapon_tea_satan", {
 })
 
 i = GM:CreateItem("weapon_tea_mp11", {
-    Cost = 2750,
+    Cost = 1500,
     Model = "models/weapons/w_smg_mac10.mdl",
     Weight = 2.85,
     Supply = 0,
@@ -172,7 +172,7 @@ i = GM:CreateItem("weapon_tea_mp11", {
 })
 
 i = GM:CreateItem("weapon_tea_rg900", {
-    Cost = 3000,
+    Cost = 1700,
     Model = "models/weapons/w_smg_tmp.mdl",
     Weight = 2.9,
     Supply = 0,
@@ -183,7 +183,7 @@ i = GM:CreateItem("weapon_tea_rg900", {
 })
 
 i = GM:CreateItem("weapon_tea_k5a", {
-    Cost = 3500,
+    Cost = 2000,
     Model = "models/weapons/w_smg_mp5.mdl",
     Weight = 3,
     Supply = 0,
@@ -194,7 +194,7 @@ i = GM:CreateItem("weapon_tea_k5a", {
 })
 
 i = GM:CreateItem("weapon_tea_stinger", {
-    Cost = 3200,
+    Cost = 1820,
     Model = "models/weapons/w_smg1.mdl",
     Weight = 3.85,
     Supply = 0,
@@ -205,7 +205,7 @@ i = GM:CreateItem("weapon_tea_stinger", {
 })
 
 i = GM:CreateItem("weapon_tea_bosch", {
-    Cost = 4000,
+    Cost = 2200,
     Model = "models/weapons/w_sten.mdl",
     Weight = 3.45,
     Supply = 0,
@@ -216,7 +216,7 @@ i = GM:CreateItem("weapon_tea_bosch", {
 })
 
 i = GM:CreateItem("weapon_tea_k8", {
-    Cost = 5000,
+    Cost = 2500,
     Model = "models/weapons/w_smg_ump45.mdl",
     Weight = 3.12,
     Supply = 0,
@@ -227,7 +227,7 @@ i = GM:CreateItem("weapon_tea_k8", {
 })
 
 i = GM:CreateItem("weapon_tea_k8c", {
-    Cost = 5500,
+    Cost = 2800,
     Model = "models/weapons/w_hk_usc.mdl",
     Weight = 3.15,
     Supply = -1,
@@ -238,7 +238,7 @@ i = GM:CreateItem("weapon_tea_k8c", {
 })
 
 i = GM:CreateItem("weapon_tea_shredder", {
-    Cost = 7750,
+    Cost = 4000,
     Model = "models/weapons/w_smg_p90.mdl",
     Weight = 3,
     Supply = -1,
@@ -249,7 +249,7 @@ i = GM:CreateItem("weapon_tea_shredder", {
 })
 
 i = GM:CreateItem("weapon_tea_enforcer", {
-    Cost = 5000,
+    Cost = 3150,
     Model = "models/weapons/w_shot_m3super90.mdl",
     Weight = 3.6,
     Supply = 0,
@@ -260,7 +260,7 @@ i = GM:CreateItem("weapon_tea_enforcer", {
 })
 
 i = GM:CreateItem("weapon_tea_sweeper", {
-    Cost = 7750,
+    Cost = 3800,
     Model = "models/weapons/w_shot_xm1014.mdl",
     Weight = 3.8,
     Supply = 0,
@@ -271,7 +271,7 @@ i = GM:CreateItem("weapon_tea_sweeper", {
 })
 
 i = GM:CreateItem("weapon_tea_ranger", {
-    Cost = 7250,
+    Cost = 4000,
     Model = "models/weapons/w_rif_m4a1.mdl",
     Weight = 4.2,
     Supply = 0,
@@ -282,7 +282,7 @@ i = GM:CreateItem("weapon_tea_ranger", {
 })
 
 i = GM:CreateItem("weapon_tea_fusil", {
-    Cost = 7150,
+    Cost = 4150,
     Model = "models/weapons/w_rif_famas.mdl",
     Weight = 4,
     Supply = 0,
@@ -293,7 +293,7 @@ i = GM:CreateItem("weapon_tea_fusil", {
 })
 
 i = GM:CreateItem("weapon_tea_stugcommando", {
-    Cost = 9750, 
+    Cost = 5350,
     Model = "models/weapons/w_rif_sg552.mdl",
     Weight = 4.45,
     Supply = 0,
@@ -304,7 +304,7 @@ i = GM:CreateItem("weapon_tea_stugcommando", {
 })
 
 i = GM:CreateItem("weapon_tea_krukov", {
-    Cost = 11000,
+    Cost = 6000,
     Model = "models/weapons/w_rif_ak47.mdl",
     Weight = 3.76,
     Supply = 0,
@@ -315,7 +315,7 @@ i = GM:CreateItem("weapon_tea_krukov", {
 })
 
 i = GM:CreateItem("weapon_tea_krukov_uniq", {
-    Cost = 185000,
+    Cost = 100000,
     Model = "models/weapons/w_rif_ak47.mdl",
     Weight = 4.46,
     Supply = 0,
@@ -326,7 +326,7 @@ i = GM:CreateItem("weapon_tea_krukov_uniq", {
 })
 
 i = GM:CreateItem("weapon_tea_l303", {
-    Cost = 13500,
+    Cost = 7800,
     Model = "models/weapons/w_rif_galil.mdl",
     Weight = 5.35,
     Supply = -1,
@@ -337,7 +337,7 @@ i = GM:CreateItem("weapon_tea_l303", {
 })
 
 i = GM:CreateItem("weapon_tea_scar", {
-    Cost = 22000,
+    Cost = 16000,
     Model = "models/weapons/w_fn_scar_h.mdl",
     Weight = 4.6,
     Supply = -1,
@@ -348,7 +348,7 @@ i = GM:CreateItem("weapon_tea_scar", {
 })
 
 i = GM:CreateItem("weapon_tea_lmg", {
-    Cost = 17250,
+    Cost = 11000,
     Model = "models/weapons/w_mach_m249para.mdl",
     Weight = 7.5,
     Supply = 0,
@@ -359,7 +359,7 @@ i = GM:CreateItem("weapon_tea_lmg", {
 })
 
 i = GM:CreateItem("weapon_tea_antelope", {
-    Cost = 9200,
+    Cost = 6000,
     Model = "models/weapons/w_snip_scout.mdl",
     Weight = 5.25,
     Supply = 0,
@@ -370,7 +370,7 @@ i = GM:CreateItem("weapon_tea_antelope", {
 })
 
 i = GM:CreateItem("weapon_tea_scimitar", {
-    Cost = 12250,
+    Cost = 7150,
     Model = "models/weapons/w_snip_g3sg1.mdl",
     Weight = 5.4,
     Supply = 0,
@@ -381,7 +381,7 @@ i = GM:CreateItem("weapon_tea_scimitar", {
 })
 
 i = GM:CreateItem("weapon_tea_blackhawk", {
-    Cost = 15000,
+    Cost = 7880,
     Model = "models/weapons/w_snip_sg550.mdl",
     Weight = 6.35,
     Supply = -1,
@@ -392,7 +392,7 @@ i = GM:CreateItem("weapon_tea_blackhawk", {
 })
 
 i = GM:CreateItem("weapon_tea_punisher", {
-    Cost = 35000,
+    Cost = 14770,
     Model = "models/weapons/w_acc_int_aw50.mdl",
     Weight = 7.95,
     Supply = 5,
@@ -403,7 +403,7 @@ i = GM:CreateItem("weapon_tea_punisher", {
 })
 
 i = GM:CreateItem("weapon_tea_scrapcrossbow", {
-    Cost = 15000,
+    Cost = 9000,
     Model = "models/weapons/w_crossbow.mdl",
     Weight = 8,
     Supply = -1,
@@ -414,7 +414,7 @@ i = GM:CreateItem("weapon_tea_scrapcrossbow", {
 })
 
 i = GM:CreateItem("weapon_tea_winchester", {
-    Cost = 6500,
+    Cost = 4000,
     Model = "models/weapons/w_winchester_1873.mdl",
     Weight = 5.32,
     Supply = -1,
@@ -425,7 +425,7 @@ i = GM:CreateItem("weapon_tea_winchester", {
 })
 
 i = GM:CreateItem("weapon_tea_perrin", {
-    Cost = 8500,
+    Cost = 6500,
     Model = "models/weapons/w_pp19_bizon.mdl",
     Weight = 3.72,
     Supply = -1,
@@ -436,7 +436,7 @@ i = GM:CreateItem("weapon_tea_perrin", {
 })
 
 i = GM:CreateItem("weapon_tea_dammerung", {
-    Cost = 12200,
+    Cost = 9200,
     Model = "models/weapons/w_usas_12.mdl",
     Weight = 6.72,
     Supply = -1,
@@ -447,7 +447,7 @@ i = GM:CreateItem("weapon_tea_dammerung", {
 })
 
 i = GM:CreateItem("weapon_tea_rpg", {
-    Cost = 55000,
+    Cost = 20000,
     Model = "models/weapons/w_rocket_launcher.mdl",
     Weight = 7.2,
     Supply = 0,
@@ -567,8 +567,8 @@ i = GM:CreateItem("item_sniperammo", {
  })
 
 i = GM:CreateItem("item_minigunammo", {
-    Cost = 1000,
-    Model = "models/wick/wrbstalker/anomaly/items/wick_ammo_792x33_ap.mdl", -- I'll find the right model for this soon, hopefully.
+    Cost = 350,
+    Model = "models/wick/wrbstalker/anomaly/items/wick_ammo_792x33_ap.mdl",
     Weight = 1,
     Supply = 0,
     Rarity = RARITY_RARE,
@@ -615,7 +615,7 @@ i = GM:CreateItem("item_crossbowbolt_crate", {
 })
 
 i = GM:CreateItem("item_deadly_crossbowbolt", {
-    Cost = 500,
+    Cost = 220,
     Model = "models/Items/CrossbowRounds.mdl",
     Weight = 0.8,
     Supply = 0,
@@ -624,6 +624,20 @@ i = GM:CreateItem("item_deadly_crossbowbolt", {
     ItemType = ITEMTYPE_AMMO,
     AmmoType = "ammo_deadlybolt",
     AmmoAmount = 25,
+})
+
+i = GM:CreateItem("item_40mmgrenade", {
+    Name = "40mm Grenade",
+    Description = "",
+    Cost = 140,
+    Model = "models/items/ar2_grenade.mdl",
+    Weight = 0.26,
+    Supply = 0,
+    Rarity = RARITY_UNCOMMON,
+    Category = ITEMCATEGORY_AMMO,
+    ItemType = ITEMTYPE_AMMO,
+    AmmoType = "SMG1_Grenade",
+    AmmoAmount = 1,
 })
 
 i = GM:CreateItem("item_rocketammo", {
@@ -656,7 +670,7 @@ i = GM:CreateItem("weapon_tea_plasmalauncher", {
 })
 
 i = GM:CreateItem("weapon_tea_minigun", {
-    Cost = 47000,
+    Cost = 21000,
     Model = "models/weapons/w_m134_minigun.mdl",
     Weight = 16.96,
     Supply = -1,
@@ -667,7 +681,7 @@ i = GM:CreateItem("weapon_tea_minigun", {
 })
 
 i = GM:CreateItem("weapon_tea_ar2", {
-    Cost = 18000,
+    Cost = 14000,
     Model = "models/weapons/w_irifle.mdl",
     Weight = 5.28,
     Supply = -1,
@@ -678,7 +692,7 @@ i = GM:CreateItem("weapon_tea_ar2", {
 })
 
 i = GM:CreateItem("weapon_tea_combinepistol", {
-    Cost = 10000,
+    Cost = 7000,
     Model = "models/weapons/w_cmbhgp.mdl",
     Weight = 2.28,
     Supply = -1,
@@ -724,25 +738,24 @@ i = GM:CreateItem("weapon_tea_grenade_frag", {
     IsGrenade = true
 })
 
-/* -- ugh this thing can just fcking crash the server, there is currently no fix available so include this item at your own risk
+-- ugh this thing can just fcking crash the server, there is currently no fix available so include this item to traders at your own risk
 i = GM:CreateItem("weapon_tea_grenade_molotov", {
     Cost = 400,
     Model = "models/props_junk/garbage_glassbottle003a.mdl",
     Weight = 0.35,
-    Supply = 0,
+    Supply = -1,
     Rarity = RARITY_COMMON,
     Category = ITEMCATEGORY_WEAPONS,
     ItemType = ITEMTYPE_WEAPON,
     WeaponType = "weapon_tea_grenade_molotov",
     IsGrenade = true
 })
-*/
 
 
 -- Weapons that were earlier cut in T.E.A., but was added back anyway
 
 i = GM:CreateItem("weapon_tea_amex", {
-    Cost = 8500,
+    Cost = 6500,
     Model = "models/weapons/w_rif_xamas.mdl",
     Weight = 5.75,
     Supply = 0,
@@ -753,7 +766,7 @@ i = GM:CreateItem("weapon_tea_amex", {
 })
 
 i = GM:CreateItem("weapon_tea_mars", {
-    Cost = 17500,
+    Cost = 11000,
     Model = "models/weapons/w_rif_tavor.mdl",
     Weight = 7.92,
     Supply = -1,
@@ -764,7 +777,7 @@ i = GM:CreateItem("weapon_tea_mars", {
 })
 
 i = GM:CreateItem("weapon_tea_dragunov", {
-    Cost = 14000,
+    Cost = 10000,
     Model = "models/weapons/w_svd_dragunov.mdl",
     Weight = 6.3,
     Supply = 0,
@@ -775,7 +788,7 @@ i = GM:CreateItem("weapon_tea_dragunov", {
 })
 
 i = GM:CreateItem("weapon_tea_boomstick", {
-    Cost = 3200,
+    Cost = 1250,
     Model = "models/weapons/w_double_barrel_shotgun.mdl",
     Weight = 3.2,
     Supply = 0,
@@ -791,7 +804,7 @@ i = GM:CreateItem("weapon_tea_boomstick", {
 
 
 i = GM:CreateItem("weapon_tea_deadly_axe", {
-    Cost = 30000,
+    Cost = 13500,
     Model = "models/props/CS_militia/axe.mdl",
     Weight = 3.26,
     Supply = 1,
@@ -803,7 +816,7 @@ i = GM:CreateItem("weapon_tea_deadly_axe", {
 })
 
 i = GM:CreateItem("weapon_tea_deadly_scrapcrossbow", {
-    Cost = 265000,
+    Cost = 79500,
     Model = "models/weapons/w_crossbow.mdl",
     Weight = 13.65,
     Supply = 1,
@@ -814,7 +827,7 @@ i = GM:CreateItem("weapon_tea_deadly_scrapcrossbow", {
 })
 
 i = GM:CreateItem("weapon_tea_deadly_minigun", {
-    Cost = 845000,
+    Cost = 295000,
     Model = "models/weapons/w_m134_minigun.mdl",
     Weight = 28.52,
     Supply = 1,

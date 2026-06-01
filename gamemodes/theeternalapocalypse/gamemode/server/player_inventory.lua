@@ -242,7 +242,7 @@ function GM:UseItem(ply, item, use, targetply)
 					local hp
 
 					if consum.Health then
-						hp = math.min(targetply:GetMaxHealth() - targetply:Health(), consum.Health * (1 + (ply.StatMedSkill * 0.025)))
+						hp = math.min(targetply:GetMaxHealth() - targetply:Health(), consum.Health * (1 + (ply.StatMedSkill * 0.025) + (ply ~= targetply and ply:GetMasteryEffectiveStat("Medic") or 0)))
 						targetply:SetHealth(math.Clamp(targetply:Health() + hp, 0, targetply:GetMaxHealth()))
 					end
 
@@ -275,9 +275,11 @@ function GM:UseItem(ply, item, use, targetply)
 					end
 
 					if ply ~= targetply and hp and hp > 0 then
-						ply.XP = ply.XP + math.floor(hp)
+						ply.XP = ply.XP + math.floor(hp*1.5)
 						ply:SendChat(translate.ClientFormat(ply, "healed_x_for_y", targetply:Nick(), hp, math.floor(hp*1.5)))
 						gamemode.Call("GiveTaskProgress", ply, "medical_attention", 1)
+
+						ply:GainMasteryXP(hp/1.5, "Medic")
 					end
 				end
 
@@ -445,7 +447,7 @@ net.Receive("SellItem", function(len, ply)
 	if item.OnSell then
 		item.OnSell(ply, amt)
 	end
-	ply:AddStatisticPoints("CashGainedByItemSell", gains)
+	ply:AddStatisticPoints("CashGainedByItemSell", sellprice)
 	GAMEMODE:SendInventory(ply)
 	GAMEMODE:NetUpdatePeriodicStats(ply)
 end)

@@ -63,15 +63,12 @@ function MT_PLAYER:ProcessPlayerDamage(dmginfo)
 
 	if attacker != self and attacker:IsPlayer() and IsMeleeDamage(dmginfo:GetDamageType()) then
 		attacker.MeleeDamageDealt = attacker.MeleeDamageDealt + math.Clamp(0.035 * dmginfo:GetDamage(), 0, 0.035 * self:Health())
-		timer.Create("MeleeMasteryGain"..attacker:EntIndex(), 5, 1, function() if attacker:IsValid() then attacker:GainMasteryXP(attacker.MeleeDamageDealt, "Melee") attacker.MeleeDamageDealt = 0 end end)
+		timer.Create("MeleeMasteryGain"..attacker:EntIndex(), 5, 1, function()
+			if attacker:IsValid() then attacker:GainMasteryXP(attacker.MeleeDamageDealt, "Melee") attacker.MeleeDamageDealt = 0 end
+		end)
 	end
 
 	if attacker != self and attacker:IsPlayer() then
-		if attacker:GetInfoNum("tea_cl_hitsounds", 1) >= 1 and attacker:GetInfoNum("tea_cl_hitsounds_vol", 0.3) > 0 and attacker.HitSoundEffect < CurTime() then
-			-- ahh my old code
-			attacker:SendLua("LocalPlayer():ConCommand(\"playvol \\\"theeternalapocalypse/hitsound.wav\\\" "..attacker:GetInfoNum("tea_cl_hitsounds_vol", 0.3).."\")")
-			attacker.HitSoundEffect = CurTime() + 0.15
-		end
 		if GAMEMODE:GetDebug() >= DEBUGGING_ADVANCED then
 			print("[Debug] "..attacker:Nick().." damage -> "..self:Nick().." with "..dmginfo:GetDamage().." damage")
 		end
@@ -120,7 +117,7 @@ function MT_ENTITY:ProcessDamage(dmginfo)
 	local directdmg = bit.band(DMG_DIRECT, dmginfo:GetDamageType()) ~= 0
 	if attacker:IsPlayer() then
 		if IsMeleeDamage(dmginfo:GetDamageType()) then
-			dmginfo:ScaleDamage(1 + (0.01 * attacker.StatStrength) + (0.005 * math.Clamp(attacker.MasteryMeleeLevel, 0, 10)))
+			dmginfo:ScaleDamage(1 + (0.01 * attacker.StatStrength) + (0.005 * attacker:GetMasteryEffectiveStat("Melee")))
 		end
 		if IsMeleeDamage(dmginfo:GetDamageType()) and attacker:HasPerk("weightboost3") then
 			dmginfo:ScaleDamage(1.05)
@@ -129,10 +126,6 @@ function MT_ENTITY:ProcessDamage(dmginfo)
 			if IsMeleeDamage(dmginfo:GetDamageType()) then
 				attacker.MeleeDamageDealt = attacker.MeleeDamageDealt + math.Clamp(0.05 * dmginfo:GetDamage(), 0, 0.05 * self:Health())
 				timer.Create("MeleeMasteryGain"..attacker:EntIndex(), 5, 1, function() if attacker:IsValid() then attacker:GainMasteryXP(attacker.MeleeDamageDealt, "Melee") attacker.MeleeDamageDealt = 0 end end)
-			end
-			if attacker:GetInfoNum("tea_cl_hitsounds", 1) >= 1 and attacker:GetInfoNum("tea_cl_hitsounds_volnpc", 0.225) > 0 and attacker.HitSoundEffect < CurTime() then
-				attacker:SendLua("LocalPlayer():ConCommand(\"playvol \\\"theeternalapocalypse/hitsound.wav\\\" "..attacker:GetInfoNum("tea_cl_hitsounds_volnpc", 0.225).."\")")
-				attacker.HitSoundEffect = CurTime() + 0.15
 			end
 		end
 	end
@@ -206,7 +199,10 @@ function GM:ScalePlayerDamage(ent, hitgroup, dmginfo)
 	local attacker = dmginfo:GetAttacker()
 	local inflictor = dmginfo:GetInflictor()
 
-	local headdmg = 2
+	local headdmg = 1
+	if attacker:IsPlayer() then
+		headdmg = headdmg + attacker:GetMasteryEffectiveStat("Gunnery") -- adds to base dmg
+	end
 
 	if inflictor == attacker and (attacker:IsPlayer() or attacker:IsNPC()) then
 		inflictor = attacker:GetActiveWeapon()
@@ -214,10 +210,14 @@ function GM:ScalePlayerDamage(ent, hitgroup, dmginfo)
 	end
 
 	if inflictor:IsValid() and inflictor.HeadshotDamageMulti then
-		headdmg = inflictor.HeadshotDamageMulti
+		headdmg = headdmg * inflictor.HeadshotDamageMulti
+	else
+		headdmg = headdmg * 2
 	end
 
-	if hitgroup == HITGROUP_HEAD then dmginfo:ScaleDamage(headdmg)
+	if hitgroup == HITGROUP_HEAD then
+		dmginfo:ScaleDamage(headdmg)
+		ent.HeadShotDamagedBy = attacker
 	elseif hitgroup == HITGROUP_CHEST then dmginfo:ScaleDamage(1)
 	elseif hitgroup == HITGROUP_STOMACH then dmginfo:ScaleDamage(0.8)
 	elseif hitgroup == HITGROUP_LEFTARM then dmginfo:ScaleDamage(0.35)
@@ -242,7 +242,10 @@ function GM:ScaleNPCDamage(ent, hitgroup, dmginfo)
 	local attacker = dmginfo:GetAttacker()
 	local inflictor = dmginfo:GetInflictor()
 
-	local headdmg = 2
+	local headdmg = 1
+	if attacker:IsPlayer() then
+		headdmg = headdmg + attacker:GetMasteryEffectiveStat("Gunnery") -- adds to base dmg
+	end
 
 	if inflictor == attacker and (attacker:IsPlayer() or attacker:IsNPC()) then
 		inflictor = attacker:GetActiveWeapon()
@@ -250,10 +253,14 @@ function GM:ScaleNPCDamage(ent, hitgroup, dmginfo)
 	end
 
 	if inflictor:IsValid() and inflictor.HeadshotDamageMulti then
-		headdmg = inflictor.HeadshotDamageMulti
+		headdmg = headdmg * inflictor.HeadshotDamageMulti
+	else
+		headdmg = headdmg * 2
 	end
 
-	if hitgroup == HITGROUP_HEAD then dmginfo:ScaleDamage(headdmg)
+	if hitgroup == HITGROUP_HEAD then
+		dmginfo:ScaleDamage(headdmg)
+		ent.HeadShotDamagedBy = attacker
 	elseif hitgroup == HITGROUP_CHEST then dmginfo:ScaleDamage(1)
 	elseif hitgroup == HITGROUP_STOMACH then dmginfo:ScaleDamage(0.8)
 	elseif hitgroup == HITGROUP_LEFTARM then dmginfo:ScaleDamage(0.5)
@@ -305,9 +312,10 @@ function GM:PlayerDeath(ply, inflictor, attacker)
 end
 
 
--- gonna do dead luck perk later
 function GM:DoPlayerDeath(ply, attacker, dmginfo)
-	local survived = ply:GetTimeSurvived()
+	self:ProcessPostDamage(ply, dmginfo)
+
+	local survived = math.floor(ply:GetTimeSurvived())
 
 	local keptbounty
 	local stolenbounty
@@ -326,7 +334,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 
 		keptbounty = ply:HasPerk("dead_luck") and ply.Bounty * 0.25 or 0
 		if self:GetDebug() >= DEBUGGING_NORMAL then
-			print(ply:Nick().." has died with "..ply.Bounty.." bounty, dropped money worth of "..math.floor(cashloss).." "..GAMEMODE.Config["Currency"].."s and survived for "..math.floor(survived).."s")
+			print(ply:Nick().." has died with "..ply.Bounty.." bounty, dropped money worth of "..math.floor(cashloss).." "..GAMEMODE.Config["Currency"].."s and survived for "..survived.."s")
 		end
 
 		local ent = ents.Create("ate_cash")
@@ -341,13 +349,15 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 			ply:SystemMessage("Remember to cash in your bounties regularly, this specifically means if you have high bounty!", Color(255,205,205), true)
 		end
 	else
-		print(ply:Nick().." has died with "..ply.Bounty.." bounty and survived for "..math.floor(survived).."s")
+		print(ply:Nick().." has died with "..ply.Bounty.." bounty and survived for "..survived.."s")
 	end
 
-	if !attacker:IsPlayer() then
-		MsgN("[Death Log] "..ply:Nick().." was killed by "..attacker:GetClass())
-	elseif attacker != ply then
-		MsgN("[Death Log] "..ply:Nick().." was killed by "..attacker:Nick().." using "..attacker:GetActiveWeapon():GetClass())
+	if IsValid(attacker) then
+		if !attacker:IsPlayer() then
+			MsgN("[Death Log] "..ply:Nick().." was killed by "..attacker:GetClass())
+		elseif attacker != ply then
+			MsgN("[Death Log] "..ply:Nick().." was killed by "..attacker:Nick().." using "..attacker:GetActiveWeapon():GetClass())
+		end
 	end
 
 	if ply:IsSleeping() then
@@ -373,8 +383,11 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 	end
 	ply.DeathCause = nil
 
-	ply:SetStatisticPoint("BestSurvivalTime", math.floor(math.max(ply:GetStatisticPoints("BestSurvivalTime"), survived)))
+	if ply:GetStatisticPoints("BestSurvivalTime") > survived then
+		ply:SetStatisticPoint("BestSurvivalTime", survived)
+	end
 	ply.SurvivalTime = CurTime()
+
 /* 
 	if attacker:IsPlayer() and (ply:Team() == attacker:Team()) and attacker != ply and not (ply:Team() == TEAM_LONER or attacker:Team() == TEAM_LONER) then
 		attacker:AddFrags(-1)
@@ -440,8 +453,13 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 		ply.LastLifeAmmo = ply:GetAmmo()
 	end
 
+	if attacker == NULL then
+		attacker = game.GetWorld()
+	end
 	local inflictor = dmginfo:GetInflictor()
-	inflictor = inflictor:IsValid() and inflictor or attacker
+	if inflictor == NULL then	
+		inflictor = attacker
+	end
 
 	if attacker == ply then
 		net.Start("PlayerKilledSelf")
