@@ -24,6 +24,7 @@ translate.AddLanguage("en", "English")
 LANG.health = "Health: %s / %s"
 LANG.armor = "Armor: %s / %s"
 LANG.money = "Money: %s"
+LANG.xp = "XP: %s"
 LANG.level = "Level: %s"
 LANG.prestige = "Prestige: %s"
 LANG.timesurvived = "Time Survived: %s"
@@ -72,6 +73,7 @@ LANG.dropcash = "Drop Money"
 LANG.togglepvp = "Toggle PVP"
 LANG.emotes = "Emotes"
 LANG.perks = "Perks"
+LANG.thirdperson = "Third Person"
 LANG.clearingprops = "Clearing Props..."
 LANG.doit = "Do it!"
 LANG.doprestige1 = "Prestige"
@@ -85,6 +87,7 @@ LANG.infection_level_effective = "Effective: %s%%"
 LANG.dropping_cash = "Dropping Money..."
 LANG.drop_cash_prompt = "How much cash do you want to drop?"
 
+LANG.item_type = "Item type: %s"
 LANG.wep_name = "Held weapon: %s"
 LANG.wep_class = "Weapon class: %s"
 LANG.wep_damage = "Damage: %s (Max DPS: %s)"
@@ -226,6 +229,84 @@ LANG.loottaken = "Loot Taken: %s"
 LANG.tr_itemsold = "Sold item '%s' (%dx) for %d %ss!"
 LANG.tr_itembought = "Purchased item '%s' for %d %ss!"
 
+-- Statistics
+
+LANG.your_statistics = "Your statistics"
+LANG.plr_statistics = "%s's statistics"
+
+LANG.Stats_BestSurvivalTime = "Best survival time"
+LANG.Stats_TimePlayed = "Total time played"
+LANG.Stats_TimesJoined = "Times joined"
+LANG.Stats_MapsTransitioned = "Maps transitioned"
+
+LANG.Stats_ItemsUsedHeal = "Heal items used"
+LANG.Stats_ItemsUsedDrink = "Drink items used"
+LANG.Stats_ItemsUsedFood = "Food items used"
+LANG.Stats_ItemsUsedAmmo = "Ammo items used"
+LANG.Stats_ItemsUsedMisc = "Misc items used"
+
+LANG.Stats_ZombieKills = "Zombie kills"
+LANG.Stats_ZombieKillAssists = "Zombie kill assists"
+LANG.Stats_BossKills = "Boss kills"
+LANG.Stats_BossKillAssists = "Boss kill assists"
+LANG.Stats_ZombieDamageDealt = "Damage dealt to zombies"
+
+LANG.Stats_LootFound = "Loot caches found"
+LANG.Stats_LootCommonFound = "Common loot caches found"
+LANG.Stats_LootUncommonFound = "Uncommon loot caches found"
+LANG.Stats_LootRareFound = "Rare loot caches found"
+LANG.Stats_LootEpicFound = "Epic loot caches found"
+LANG.Stats_LootLegendaryFound = "Legendary loot caches found"
+LANG.Stats_LootFactionFound = "Faction loot caches found"
+LANG.Stats_LootBossFound = "Boss loot caches found"
+
+LANG.Stats_PlayersKilled = "Players killed"
+
+LANG.Stats_CashGainedByItemSell = "Cash gained from selling items"
+LANG.Stats_CashGainedByBounty = "Cash gained from bounties"
+LANG.Stats_CashGainedByLvlup = "Cash gained from leveling up"
+LANG.Stats_CashGainedByMastery = "Cash gained from masteries"
+
+LANG.Stats_CashSpentByItemBuy = "Cash spent by buying items"
+LANG.Stats_CashSpentByPerkResets = "Cash spent by resetting perks"
+
+LANG.Stats_Deaths = "Deaths"
+
+-- Masteries
+
+LANG.masteries = "Masteries"
+
+LANG.StatsM_Melee = "Melee"
+LANG.StatsM_Melee_Desc = "With each swing of your melee weapon, you become better at it."
+LANG.StatsM_Melee_GainHelpDesc = "XP is gained by inflicting damage with melee weapons."
+LANG.StatsM_Melee_RewardDesc = "+0.5% melee damage per level, max +5%."
+LANG.StatsM_Melee_EffRewardDesc = "+%s%% melee damage"
+
+LANG.StatsM_PvP = "PvP"
+LANG.StatsM_PvP_Desc = "Your skills become no match against other survivors."
+LANG.StatsM_PvP_GainHelpDesc = "Gained by killing other players. The higher their level and prestige, the more XP is gained."
+LANG.StatsM_PvP_RewardDesc = "No actual boost, only cash gain."
+LANG.StatsM_PvP_EffRewardDesc = "None"
+
+LANG.StatsM_Survivor = "Survivor"
+LANG.StatsM_Survivor_Desc = "The excess damage has been making your body getting used to it, resulting it in becoming more resilient."
+LANG.StatsM_Survivor_GainHelpDesc = "Earned by surviving damage while on <10% health."
+LANG.StatsM_Survivor_RewardDesc = "Increases damage resistance by +0.25% per level, max +2.5%."
+LANG.StatsM_Survivor_EffRewardDesc = "+%s%% damage resistance"
+
+LANG.StatsM_Gunnery = "Gunnery"
+LANG.StatsM_Gunnery_Desc = "Wielding guns has never been any better before."
+LANG.StatsM_Gunnery_GainHelpDesc = "Earned by inflicting headshots with guns."
+LANG.StatsM_Gunnery_RewardDesc = "+0.5% to base headshot damage per level, max +5%"
+LANG.StatsM_Gunnery_EffRewardDesc = "+%s%% base headshot damage"
+
+LANG.StatsM_Medic = "Medic"
+LANG.StatsM_Medic_Desc = "Medicine is very important especially in this apocalyptic world."
+LANG.StatsM_Medic_GainHelpDesc = "Earned by healing neutral/friendly players."
+LANG.StatsM_Medic_RewardDesc = "+1% more effective healing to others per level, max +10%"
+LANG.StatsM_Medic_EffRewardDesc = "+%s%% healing efficiency to others"
+
+
 --Admin menu
 LANG.admin_panel = "Admin Panel"
 LANG.toggle_admin_mode = "Toggle Admin Mode"
@@ -289,6 +370,9 @@ LANG.zombies_b = "Boss Zombies"
 
 LANG.yes = "Yes"
 LANG.no = "No"
+LANG.accept = "Accept"
+LANG.cancel = "Cancel"
+LANG.finish = "Finish"
 
 
 --Items
@@ -1012,6 +1096,10 @@ LANG.task_finished1 = "You have finished a task "
 LANG.task_cancelled1 = "You cancelled task "
 LANG.task_cancelled2 = ". You have "
 LANG.task_cancelled3 = " hours cooldown before you are able to accept this task again!"
+LANG.task_cancel_confirm1 = "Are you sure you want to cancel this task?"
+LANG.task_cancel_confirm2 = "Cancel task confirm"
+LANG.taskslist_n = "Tasks list"
+LANG.taskslist_d = "Complete your tasks and get some juicy rewards!"
 
 -- New
 

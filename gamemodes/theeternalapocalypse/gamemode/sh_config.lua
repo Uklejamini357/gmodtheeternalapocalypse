@@ -894,11 +894,11 @@ GM.PerksList = {
 
 GM.MasterySkillStats = {
 	["Melee"] = { -- Identifier for the mastery skill!
-		Name = "Melee", -- Name for the mastery
-		Description = "With each swing of your melee weapon, you become better at it.", -- Give it a description!
-		GainHelpDesc = "XP is gained by inflicting damage with melee weapons.", -- How to gain it?
-		RewardDesc = "+0.5% melee damage per level, max +5%.", -- What does it do?
-		EffRewardDesc = "+%s%% melee damage", -- Currently effective% for the stat
+		-- Name = "Melee", -- Name for the mastery
+		-- Description = "With each swing of your melee weapon, you become better at it.", -- Give it a description!
+		-- GainHelpDesc = "XP is gained by inflicting damage with melee weapons.", -- How to gain it?
+		-- RewardDesc = "+0.5% melee damage per level, max +5%.", -- What does it do?
+		-- EffRewardDesc = "+%s%% melee damage", -- Currently effective% for the stat
 		MaxLevel = 20, -- Max level for the mastery
 		XPReq = function(self, pl, mlvl) -- XP Required for the mastery. Return the value inside the function.
 			if !mlvl then
@@ -928,11 +928,11 @@ GM.MasterySkillStats = {
 
 	-- Might get removed in future update. (Potentially v0.13.0)
 	["PvP"] = {
-		Name = "PVP",
-		Description = "Your skills against other survivors become no match.",
-		GainHelpDesc = "Gained by killing other players. The higher their level and prestige, the more XP is gained.",
-		RewardDesc = "No actual boost, only cash gain.",
-		EffRewardDesc = "None",
+		-- Name = "PVP",
+		-- Description = "Your skills against other survivors become no match.",
+		-- GainHelpDesc = "Gained by killing other players. The higher their level and prestige, the more XP is gained.",
+		-- RewardDesc = "No actual boost, only cash gain.",
+		-- EffRewardDesc = "None",
 		MaxLevel = 20,
 		XPReq = function(self, pl, mlvl)
 			if !mlvl then
@@ -957,11 +957,11 @@ GM.MasterySkillStats = {
 	},
 
 	["Survivor"] = {
-		Name = "Survivor",
-		Description = "The excess damage has been making your body getting used to it, resulting it in becoming more resilient.",
-		GainHelpDesc = "Earned by surviving damage while on <10% health.",
-		RewardDesc = "Increases damage resistance by +0.25% per level, max +2.5%.",
-		EffRewardDesc = "+%s%% damage resistance",
+		-- Name = "Survivor",
+		-- Description = "The excess damage has been making your body getting used to it, resulting it in becoming more resilient.",
+		-- GainHelpDesc = "Earned by surviving damage while on <10% health.",
+		-- RewardDesc = "Increases damage resistance by +0.25% per level, max +2.5%.",
+		-- EffRewardDesc = "+%s%% damage resistance",
 		MaxLevel = 20,
 		XPReq = function(self, pl, mlvl)
 			if !mlvl then
@@ -990,11 +990,11 @@ GM.MasterySkillStats = {
 	},
 
 	["Gunnery"] = {
-		Name = "Gunnery",
-		Description = "Wielding guns has never been any better before.",
-		GainHelpDesc = "Earned by inflicting headshots with guns.",
-		RewardDesc = "+0.5% to base headshot damage per level, max +5%",
-		EffRewardDesc = "+%s%% base headshot damage",
+		-- Name = "Gunnery",
+		-- Description = "Wielding guns has never been any better before.",
+		-- GainHelpDesc = "Earned by inflicting headshots with guns.",
+		-- RewardDesc = "+0.5% to base headshot damage per level, max +5%",
+		-- EffRewardDesc = "+%s%% base headshot damage",
 		MaxLevel = 20,
 		XPReq = function(self, pl, mlvl)
 			if !mlvl then
@@ -1023,11 +1023,11 @@ GM.MasterySkillStats = {
 	},
 
 	["Medic"] = {
-		Name = "Medic",
-		Description = "Medicine is very important especially in this apocalyptic world.",
-		GainHelpDesc = "Earned by healing neutral/friendly players.",
-		RewardDesc = "+1% more effective healing to others per level, max +10%",
-		EffRewardDesc = "+%s%% healing efficiency to others",
+		-- Name = "Medic",
+		-- Description = "Medicine is very important especially in this apocalyptic world.",
+		-- GainHelpDesc = "Earned by healing neutral/friendly players.",
+		-- RewardDesc = "+1% more effective healing to others per level, max +10%",
+		-- EffRewardDesc = "+%s%% healing efficiency to others",
 		MaxLevel = 20,
 		XPReq = function(self, pl, mlvl)
 			if !mlvl then

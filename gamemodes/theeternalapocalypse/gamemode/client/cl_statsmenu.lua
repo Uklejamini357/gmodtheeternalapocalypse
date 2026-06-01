@@ -24,63 +24,63 @@ net.Receive("UpdateTargetStats", function(length)
 end)
 
 local statstoshow = {
-    {"BestSurvivalTime", "Best survival time", function(val)
+    {"BestSurvivalTime", function(val)
         return string.format("%d:%02d:%02d", math.floor(val/3600), math.floor((val/60)%60), math.floor(val%60))
     end},
-    {"TimePlayed", "Total time played", function(val)
+    {"TimePlayed", function(val)
         return string.format("%d:%02d:%02d", math.floor(val/3600), math.floor((val/60)%60), math.floor(val%60))
     end},
-    {"TimesJoined", "Times joined"},
-    {"MapsTransitioned", "Maps transitioned"},
+    {"TimesJoined"},
+    {"MapsTransitioned"},
     {},
-    {"ItemsUsedHeal", "Heal items used"},
-    {"ItemsUsedDrink", "Drink items used"},
-    {"ItemsUsedFood", "Food items used"},
-    {"ItemsUsedAmmo", "Ammo items used"},
-    {"ItemsUsedMisc", "Misc items used"},
+    {"ItemsUsedHeal"},
+    {"ItemsUsedDrink"},
+    {"ItemsUsedFood"},
+    {"ItemsUsedAmmo"},
+    {"ItemsUsedMisc"},
     {},
     -- {"DistanceSpentByWalk", "Distance spent by walking"},
     -- {"DistanceSpentBySwim", "Distance spent by swimming"},
     -- {"DistanceSpentInAir", "Distance spent while in air"},
     -- {"DistanceSpentByVehicle", "Distnace spent by vehicle"},
 
-    {"ZombieKills", "Zombie kills"},
-    {"ZombieKillAssists", "Zombie kill assists"},
-    {"BossKills", "Boss kills"},
-    {"BossKillAssists", "Boss kill assists"},
-    {"ZombieDamageDealt", "Damage dealt to zombies", FormatNumber},
+    {"ZombieKills"},
+    {"ZombieKillAssists"},
+    {"BossKills"},
+    {"BossKillAssists"},
+    {"ZombieDamageDealt", FormatNumber},
     {},
 
     -- {"HumansKilled", "Humans killed"},
     -- {"HumansKillAssists", "Human kill assists"},
     -- {"HumansDamageDealt", "Damage dealt to humans"},
 
-    {"LootFound", "Loot caches found"},
-    {"LootCommonFound", "Common loot caches found"},
-    {"LootUncommonFound", "Uncommon loot caches found"},
-    {"LootRareFound", "Rare loot caches found"},
-    {"LootEpicFound", "Epic loot caches found"},
-    {"LootLegendaryFound", "Legendary loot caches found"},
-    {"LootFactionFound", "Faction loot caches found"},
-    {"LootBossFound", "Boss loot caches found"},
+    {"LootFound"},
+    {"LootCommonFound"},
+    {"LootUncommonFound"},
+    {"LootRareFound"},
+    {"LootEpicFound",},
+    {"LootLegendaryFound"},
+    {"LootFactionFound"},
+    {"LootBossFound"},
     {},
 
-    {"PlayersKilled", "Players killed"},
+    {"PlayersKilled"},
     -- {"PlayersKillAssists", "Player kill assists"},
     -- {"PlayersDamageDealt", "Damage dealt to players"},
     {},
 
-    {"CashGainedByItemSell", "Cash gained from selling items"},
-    {"CashGainedByBounty", "Cash gained from bounties"},
-    {"CashGainedByLvlup", "Cash gained from leveling up"},
-    {"CashGainedByMastery", "Cash gained from masteries"},
+    {"CashGainedByItemSell"},
+    {"CashGainedByBounty"},
+    {"CashGainedByLvlup"},
+    {"CashGainedByMastery"},
     {},
 
-    {"CashSpentByItemBuy", "Cash spent by buying items"},
-    {"CashSpentByPerkResets", "Cash spent by resetting perks"},
+    {"CashSpentByItemBuy"},
+    {"CashSpentByPerkResets"},
     {},
 
-    {"Deaths", "Deaths"},
+    {"Deaths"},
     -- {"DeathsByThirst", "Deaths from thirst"},
     -- {"DeathsByHunger", "Deaths from hunger"},
     -- {"DeathsByFatigue", "Deaths from fatigue"},
@@ -107,7 +107,7 @@ function GM:StatsMenu(ent)
     local StatsFrame = vgui.Create("DFrame")
     StatsFrame:SetSize(700, 400)
     StatsFrame:Center()
-    StatsFrame:SetTitle(ent == LocalPlayer() and "Your statistics" or ent:GetName().."'s statistics")
+    StatsFrame:SetTitle(ent == LocalPlayer() and translate.Get("your_statistics") or translate.Format("plr_statistics", ent:GetName()))
     StatsFrame:SetDraggable(false)
     StatsFrame:SetVisible(true)
     StatsFrame:SetAlpha(0)
@@ -151,7 +151,7 @@ function GM:StatsMenu(ent)
             list.StatisticsHeader = txt
             txt:Dock(TOP)
             txt:DockMargin(0, 0, 0, 28)
-            txt:SetText("Statistics")
+            txt:SetText(translate.Get("statistics"))
             txt:SetFont("TEA.HUDFontLarge")
         end
 
@@ -164,17 +164,18 @@ function GM:StatsMenu(ent)
                 continue
             end
             local value = tbl[val[1]] or 0
+            local name = translate.Get("Stats_"..val[1])
 
             local existingtxt = list.Stats[val[1]]
             if existingtxt and IsValid(existingtxt) then
                 lasttxt = existingtxt
-                existingtxt:SetText(val[2]..": "..(val[3] and val[3](value) or value))
+                existingtxt:SetText(name..": "..(val[2] and val[2](value) or value))
             else
                 local txt = vgui.Create("DLabel", list)
                 lasttxt = txt
                 list.Stats[val[1]] = txt
                 txt:Dock(TOP)
-                txt:SetText(val[2]..": "..(val[3] and val[3](value) or value))
+                txt:SetText(name..": "..(val[2] and val[2](value) or value))
                 txt:SetFont("TEA.HUDFont")
                 txt:SetWrap(true)
                 txt:DockMargin(0, 0, 0, 4)
@@ -190,14 +191,13 @@ function GM:StatsMenu(ent)
             list.MasteryHeader = txt
             txt:Dock(TOP)
             txt:DockMargin(0, 0, 0, 28)
-            txt:SetText("Masteries")
+            txt:SetText(translate.Get("masteries"))
             txt:SetFont("TEA.HUDFontLarge")
         end
 
         local lastpanel
-        for _,id in pairs(masteriestoshow) do
+        for id,gm_mastery_skill in pairs(GAMEMODE.MasterySkillStats) do
             local mastery = tbl.Mastery[id] or 0
-            local gm_mastery_skill = GAMEMODE.MasterySkillStats[id]
 
             local existingpanel = list.MasterySkills["Mastery."..id]
             local reqxp = ent:GetReqMasteryXP(id, mastery.Level) or 0
@@ -205,7 +205,7 @@ function GM:StatsMenu(ent)
             local colprogress = HSVToColor(math.Clamp(120 * mastery.XP/reqxp, 0, 120), 1, 1)
             if existingpanel and IsValid(existingpanel) then
                 lastpanel = existingpanel
-                existingpanel.XPText:SetText("XP: ".. mastery.XP.."/"..reqxp.."  //  Level: "..mastery.Level)
+                existingpanel.XPText:SetText(translate.Format("xp", mastery.XP.."/"..reqxp).."  //  "..translate.Format("level", mastery.Level))
                 existingpanel.XPPercentText:SetText("("..math.Round(100*mastery.XP/reqxp).."%)")
                 existingpanel.XPPercentText:SetTextColor(colprogress)
                 existingpanel.XPBar.Fraction = math.min(1, mastery.XP/reqxp)
@@ -216,11 +216,11 @@ function GM:StatsMenu(ent)
                 list.MasterySkills["Mastery."..id] = panel
                 panel:SetMouseInputEnabled(true)
                 panel:SetTooltip(
-                    gm_mastery_skill.Name..":\n"..
-                    gm_mastery_skill.Description.."\n\n"..
-                    gm_mastery_skill.GainHelpDesc.."\n\n"..
-                    gm_mastery_skill.RewardDesc.."\n\n"..
-                    string.format(gm_mastery_skill.EffRewardDesc, gm_mastery_skill:GetStatEffectiveVal(ent, mastery.Level) * 100)
+                    (gm_mastery_skill.Name and gm_mastery_skill.Name or translate.Get("StatsM_"..id))..":\n"..
+                    (gm_mastery_skill.Description and gm_mastery_skill.Description or translate.Get("StatsM_"..id.."_Desc")).."\n\n"..
+                    (gm_mastery_skill.GainHelpDesc and gm_mastery_skill.GainHelpDesc or translate.Get("StatsM_"..id.."_GainHelpDesc")).."\n\n"..
+                    (gm_mastery_skill.RewardDesc and gm_mastery_skill.RewardDesc or translate.Get("StatsM_"..id.."_RewardDesc")).."\n\n"..
+                    string.format(gm_mastery_skill.EffRewardDesc and gm_mastery_skill.EffRewardDesc or translate.Get("StatsM_"..id.."_EffRewardDesc"), gm_mastery_skill:GetStatEffectiveVal(ent, mastery.Level) * 100)
                 )
                 panel:Dock(TOP)
                 panel:SetTall(75)
@@ -236,7 +236,7 @@ function GM:StatsMenu(ent)
                 local txt = vgui.Create("DLabel", panel)
                 panel.XPText = txt
                 txt:Dock(TOP)
-                txt:SetText("XP: ".. mastery.XP.."/"..reqxp.."  //  Level: "..mastery.Level)
+                txt:SetText(translate.Format("xp", mastery.XP.."/"..reqxp).."  //  "..translate.Format("level", mastery.Level))
                 txt:SetFont("TEA.HUDFontSmall")
                 txt:SetWrap(true)
                 txt:DockMargin(0, 0, 0, 4)

@@ -490,11 +490,11 @@ function GM:Think()
 
 			if !ply:InVehicle() then
 				if (ply:IsSprinting() and PlayerIsMoving and not ply:Crouching()) then
-					ply.Stamina = ply.Stamina - 6*ft*endurance_mul*weightpenalty
+					ply.Stamina = ply.Stamina - 5.4*ft*endurance_mul*weightpenalty
 				elseif PlayerIsMoving and ply:Crouching() then
-					ply.Stamina = ply.Stamina - 2.4*ft*endurance_mul*math.sqrt(weightpenalty)
+					ply.Stamina = ply.Stamina - 2.1*ft*endurance_mul*math.sqrt(weightpenalty)
 				elseif PlayerIsMoving then
-					ply.Stamina = ply.Stamina - 2.6*ft*endurance_mul*math.sqrt(weightpenalty)
+					ply.Stamina = ply.Stamina - 2.3*ft*endurance_mul*math.sqrt(weightpenalty)
 				end
 			end
 

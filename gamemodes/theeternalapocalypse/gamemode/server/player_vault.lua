@@ -83,7 +83,7 @@ net.Receive("AddVault", function(length, ply)
 	GAMEMODE:AddToVault(ply, str, amt)
 
 	if ply.EquippedArmor == str then
-		UseFunc_RemoveArmor(ply, str)
+		ply:ArmorUnequip()
 	end
 	gamemode.Call("SendInventory", ply)
 	ply:EmitSound("items/ammocrate_open.wav", 100, 100)

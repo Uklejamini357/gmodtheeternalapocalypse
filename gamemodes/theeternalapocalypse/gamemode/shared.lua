@@ -502,7 +502,7 @@ function GM:GetItemDescription(id, ply) -- ply is for the server
 	desc = desc.."\n"
 	local itemtype = item.ItemType
 	if itemtype and self.ItemTypes[itemtype] then
-		desc = desc.."\nItem type: "..self.ItemTypes[itemtype]
+		desc = desc.."\n"..translate.ClientFormat(ply, "item_type", self.ItemTypes[itemtype])
 	end
 
 	local wep = item.WeaponType and weapons.Get(item.WeaponType)
@@ -516,19 +516,13 @@ function GM:GetItemDescription(id, ply) -- ply is for the server
 		local range,rangemin = wep.RangeMax or wep.HitDistance, wep.RangeMin
 
 		if dmg then
-			desc = desc.."\nDamage: "..(dmgmin and math.Round(dmgmin, 2).."~"..math.Round(dmg, 2) or math.Round(dmg, 2))
-		end
-
-		if numshots and numshots ~= 1 then
-			desc = desc.."\nNumber of Shots: "..numshots
+			desc = desc.."\n"..translate.ClientFormat(ply, "wep_damage",
+			(dmgmin and math.Round(dmgmin, 2).."~"..math.Round(dmg, 2) or math.Round(dmg, 2))..(numshots and numshots ~= 1 and "x"..numshots or ""),
+			math.Round(dmg * numshots / delay, 2))
 		end
 
 		if delay then
 			desc = desc.."\nAttack Delay: "..delay.."s"
-		end
-
-		if dmg and delay then
-			desc = desc.."\nDPS: "..math.Round(dmg * numshots / delay, 2)
 		end
 
 		if recoil then
