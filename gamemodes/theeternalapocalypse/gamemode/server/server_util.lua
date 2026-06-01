@@ -383,7 +383,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 	end
 	ply.DeathCause = nil
 
-	if ply:GetStatisticPoints("BestSurvivalTime") > survived then
+	if ply:GetStatisticPoints("BestSurvivalTime") < survived then
 		ply:SetStatisticPoint("BestSurvivalTime", survived)
 	end
 	ply.SurvivalTime = CurTime()

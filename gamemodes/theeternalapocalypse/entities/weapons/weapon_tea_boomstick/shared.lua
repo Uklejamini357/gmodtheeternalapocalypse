@@ -65,9 +65,9 @@ function SWEP:Reload()
 	if (self.ActionDelay > CurTime()) then return end 
 
 	// Need to call the default reload before the real reload animation
-	self.Weapon:DefaultReload(ACT_VM_RELOAD)
+	self:DefaultReload(ACT_VM_RELOAD)
 
-	if (self.Weapon:Clip1() < self.Primary.ClipSize) and (self.Owner:GetAmmoCount(self.Primary.Ammo) > 0) then
+	if (self:Clip1() < self.Primary.ClipSize) and (self.Owner:GetAmmoCount(self.Primary.Ammo) > 0) then
 		self:SetIronsights(false)
 		self:ReloadAnimation()
 	end
@@ -78,18 +78,19 @@ end
 function SWEP:ReloadAnimation()
 
 	// Reload with the suppressor animation if you're suppressor is on the FUCKING gun
-	if self.Weapon:GetDTBool(3) and self.Type == 2 then
-		self.Weapon:DefaultReload(ACT_VM_RELOAD_SILENCED)
+	if self:GetDTBool(3) and self.Type == 2 then
+		self:DefaultReload(ACT_VM_RELOAD_SILENCED)
 	else
-		self.Weapon:DefaultReload(ACT_VM_RELOAD)
+		self:DefaultReload(ACT_VM_RELOAD)
 	end
 
 	if (IsValid(self.Owner) and self.Owner:GetViewModel()) then
 		self:IdleAnimation(self.Owner:GetViewModel():SequenceDuration())
 	end
-	self.Weapon:SetNextPrimaryFire(CurTime() + 1.9)
-	self.Weapon:SetNextSecondaryFire(CurTime() + 1.9)
+	self:SetNextPrimaryFire(CurTime() + 1.9)
+	self:SetNextSecondaryFire(CurTime() + 1.9)
 	timer.Simple(1, function()
-		self.Weapon:SendWeaponAnim(ACT_SHOTGUN_RELOAD_FINISH)
+		if !self:IsValid() then return end
+		self:SendWeaponAnim(ACT_SHOTGUN_RELOAD_FINISH)
 	end )
 end
