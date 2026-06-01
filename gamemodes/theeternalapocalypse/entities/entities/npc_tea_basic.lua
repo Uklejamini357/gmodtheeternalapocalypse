@@ -32,7 +32,7 @@ function ENT:SetUpStats()
 
 
 	self.ZombieStats = {
-		["Damage"] = 31, -- how much damage per strike?
+		["Damage"] = 24, -- how much damage per strike?
 		["PropDamage"] = 35, -- damage done to props per attack (normal damage is not impacted)
 		["Force"] = 400, -- how far to knock the player back upon striking them
 		["Infection"] = 8, -- percentage chance to infect them

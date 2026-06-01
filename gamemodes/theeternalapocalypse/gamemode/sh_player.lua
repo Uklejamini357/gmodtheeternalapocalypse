@@ -116,14 +116,10 @@ function meta:HasCompletedTask()
 end
 
 function meta:GetReqXP()
-	local basexpreq = 509
-	local addxpperlevel = 97
-	local addxpperlevel2 = 1.1329
-
 	local plyprestige = SERVER and self.Prestige or self:GetTEAPrestige()
 	local plylevel = SERVER and self.Level or self:GetTEALevel()
 
-	local xp = (basexpreq + (plylevel  * addxpperlevel) * (1 + (plyprestige * (0.0072 + math.min(20, plyprestige) * 0.0003)))) ^ addxpperlevel2
+	local xp = (509 + (plylevel  * 97) * (1 + (plyprestige * (0.0072 + math.min(20, plyprestige) * 0.0003)))) ^ 1.1129
 	return math.floor(xp * math.max(1, 1+(plylevel-30)*0.01))
 end
 
@@ -389,9 +385,10 @@ function meta:GetItemSellCostMul(item)
 		itemtbl = item
 	end
 
-	if itemtbl.IgnoreCostModifiers then return 0.2 end
+	local mul = 0.25
+	if itemtbl.IgnoreCostModifiers then return mul end
 
-	local mul = 0.2 + ((self.StatBarter or 0) * 0.005)
+	mul = mul + ((self.StatBarter or 0) * 0.005)
 	mul = mul * (1 + GAMEMODE:GetInflationSellCostMul())
 	mul = mul * GAMEMODE:GetEconomyDiffSellCostMul()
 

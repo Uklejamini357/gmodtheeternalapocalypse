@@ -312,11 +312,10 @@ function GM:PlayerDeath(ply, inflictor, attacker)
 end
 
 
--- gonna do dead luck perk later
 function GM:DoPlayerDeath(ply, attacker, dmginfo)
 	self:ProcessPostDamage(ply, dmginfo)
 
-	local survived = ply:GetTimeSurvived()
+	local survived = math.floor(ply:GetTimeSurvived())
 
 	local keptbounty
 	local stolenbounty
@@ -335,7 +334,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 
 		keptbounty = ply:HasPerk("dead_luck") and ply.Bounty * 0.25 or 0
 		if self:GetDebug() >= DEBUGGING_NORMAL then
-			print(ply:Nick().." has died with "..ply.Bounty.." bounty, dropped money worth of "..math.floor(cashloss).." "..GAMEMODE.Config["Currency"].."s and survived for "..math.floor(survived).."s")
+			print(ply:Nick().." has died with "..ply.Bounty.." bounty, dropped money worth of "..math.floor(cashloss).." "..GAMEMODE.Config["Currency"].."s and survived for "..survived.."s")
 		end
 
 		local ent = ents.Create("ate_cash")
@@ -350,7 +349,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 			ply:SystemMessage("Remember to cash in your bounties regularly, this specifically means if you have high bounty!", Color(255,205,205), true)
 		end
 	else
-		print(ply:Nick().." has died with "..ply.Bounty.." bounty and survived for "..math.floor(survived).."s")
+		print(ply:Nick().." has died with "..ply.Bounty.." bounty and survived for "..survived.."s")
 	end
 
 	if IsValid(attacker) then
@@ -384,8 +383,11 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 	end
 	ply.DeathCause = nil
 
-	ply:SetStatisticPoint("BestSurvivalTime", math.floor(math.max(ply:GetStatisticPoints("BestSurvivalTime"), survived)))
+	if ply:GetStatisticPoints("BestSurvivalTime") > survived then
+		ply:SetStatisticPoint("BestSurvivalTime", survived)
+	end
 	ply.SurvivalTime = CurTime()
+
 /* 
 	if attacker:IsPlayer() and (ply:Team() == attacker:Team()) and attacker != ply and not (ply:Team() == TEAM_LONER or attacker:Team() == TEAM_LONER) then
 		attacker:AddFrags(-1)

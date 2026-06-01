@@ -974,7 +974,7 @@ function GM:PlayerShouldTakeDamage(ply, attacker)
 	if !ply:Alive() then return false end
 
 	if ply:IsSZProtected() then
-		if attacker:IsPlayer() then
+		if attacker:IsPlayer() and ply ~= attacker then
 			pvpmsg(attacker, "Target is in safezone! You can't damage them!")
 		end
 		return false

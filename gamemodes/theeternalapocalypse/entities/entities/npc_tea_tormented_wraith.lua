@@ -39,7 +39,7 @@ function ENT:SetUpStats()
 
 	self.ZombieStats = {
 --refer to entites/entities/npc_tea_basic.lua
-		["Damage"] = 22,
+		["Damage"] = 13,
 		["PropDamage"] = 25,
 		["Force"] = 180,
 		["Infection"] = 12,
@@ -49,7 +49,7 @@ function ENT:SetUpStats()
 
 		["Health"] = 400,
 		["MoveSpeedWalk"] = 65,
-		["MoveSpeedRun"] = 200,
+		["MoveSpeedRun"] = 150,
 		["VisionRange"] = 1200,
 		["LoseTargetRange"] = 1500,
 

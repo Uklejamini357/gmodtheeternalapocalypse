@@ -171,10 +171,10 @@ GM.EconomyDifficultyAffectsXPGain = true
 -- Highly recommended to have reasonable limits when Inflation setting is enabled.
 
 -- Max sell cost mul
-GM.MaxSellCostMul = 0.3
+GM.MaxSellCostMul = 0.4
 
 -- Min buy cost mul
-GM.MinBuyCostMul = 0.5
+GM.MinBuyCostMul = 0.45
 
 -- Work in progress!
 -- Time it takes after entering the safezone for the protection to fully apply. Spawning inside the safezone applies protection measures immediately.

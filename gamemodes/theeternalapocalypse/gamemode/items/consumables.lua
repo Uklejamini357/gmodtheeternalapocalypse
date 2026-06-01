@@ -18,7 +18,7 @@ GM:CreateItem(itemid, {
 
 
 local i = GM:CreateItem("item_bandage", {
-	Cost = 55,
+	Cost = 35,
 	Model = "models/wick/wrbstalker/anomaly/items/wick_dev_bandage.mdl",
 	Weight = 0.06,
 	Supply = 0,
@@ -29,6 +29,7 @@ local i = GM:CreateItem("item_bandage", {
     ConsumableStats = {
         UseTime = 3,
         Health = 11,
+        FastUsable = true,
     },
     UseSound = "theeternalapocalypse/items/inv_bandages.ogg",
 
@@ -36,7 +37,7 @@ local i = GM:CreateItem("item_bandage", {
 })
 
 i = GM:CreateItem("item_medkit", {
-    Cost = 175,
+    Cost = 150,
     Model = "models/wick/wrbstalker/anomaly/items/wick_dev_aptechka_low.mdl",
     Weight = 0.5,
     Supply = 30,
@@ -55,7 +56,7 @@ i = GM:CreateItem("item_medkit", {
 })
 
 i = GM:CreateItem("item_armymedkit", {
-    Cost = 300,
+    Cost = 220,
     Model = "models/wick/wrbstalker/anomaly/items/wick_dev_aptechka_high.mdl",
     Weight = 0.6,
     Supply = 10,
@@ -74,7 +75,7 @@ i = GM:CreateItem("item_armymedkit", {
 })
 
 i = GM:CreateItem("item_scientificmedkit", {
-    Cost = 500,
+    Cost = 350,
     Model = "models/wick/wrbstalker/anomaly/items/wick_dev_aptechka_mid.mdl",
     Weight = 0.5,
     Supply = 8,
@@ -93,7 +94,7 @@ i = GM:CreateItem("item_scientificmedkit", {
 })
 
 i = GM:CreateItem("item_medbag_enhanced", {
-    Cost = 6000,
+    Cost = 3000,
     Model = "models/wick/wrbstalker/anomaly/items/wick_dev_med_bag.mdl",
     Weight = 1.4,
     Supply = 3,
@@ -172,15 +173,13 @@ GM:CreateItem("item_antidote", {
         Infection = -40,
     },
     UseSound = "items/medshot4.wav",
-
-    UseFunc = function(ply) local healing = UseFunc_HealInfection(ply, 3, 40, "items/medshot4.wav") return healing end,
 })
 
 GM:CreateItem("item_egg", {
     Cost = 10,
     Model = "models/props_phx/misc/egg.mdl",
     Weight = 0.08,
-    Supply = 0,
+    Supply = -1,
     Rarity = RARITY_GARBAGE,
     Category = ITEMCATEGORY_SUPPLIES,
 	ItemType = ITEMTYPE_FOOD,
@@ -191,8 +190,6 @@ GM:CreateItem("item_egg", {
         Thirst = -1,
     },
     UseSound = "npc/barnacle/barnacle_gulp2.wav",
-
-    UseFunc = function(ply) local food = UseFunc_Eat(ply, 1, 0, 4, -1, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
 })
 
 GM:CreateItem("item_milk", {
@@ -210,9 +207,6 @@ GM:CreateItem("item_milk", {
         Thirst = 20,
     },
     UseSound = "npc/barnacle/barnacle_gulp2.wav",
-
-
-    UseFunc = function(ply) local food = UseFunc_Drink(ply, 4, 0, 3, 20, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
 })
 
 GM:CreateItem("item_soda", {
@@ -233,8 +227,6 @@ GM:CreateItem("item_soda", {
         Fatigue = -0.5,
     },
     UseSound = "theeternalapocalypse/items/inv_drink_can2.ogg",
-
-    UseFunc = function(ply) local food = UseFunc_Drink(ply, 3, 1, 3, 35, 5, -0.5, "theeternalapocalypse/items/inv_drink_can2.ogg") return food end,
 })
 
 GM:CreateItem("item_waterbottle", {
@@ -255,8 +247,6 @@ GM:CreateItem("item_waterbottle", {
         Fatigue = -1,
     },
     UseSound = "theeternalapocalypse/items/inv_water.ogg",
-
-    UseFunc = function(ply) local food = UseFunc_Drink(ply, 5, 1, 4, 80, 5, -1, "theeternalapocalypse/items/inv_water.ogg") return food end,
 })
 
 GM:CreateItem("item_energydrink", {
@@ -275,10 +265,10 @@ GM:CreateItem("item_energydrink", {
         Thirst = 30,
         Stamina = 55,
         Fatigue = -6,
+
+        FastUsable = true,
     },
     UseSound = "theeternalapocalypse/items/inv_drink_can.ogg",
-
-    UseFunc = function(ply) local food = UseFunc_Drink(ply, 4, 1, 2, 30, 55, -6, "theeternalapocalypse/items/inv_drink_can.ogg") return food end,
 })
 
 GM:CreateItem("item_energydrink_nonstop", {
@@ -297,10 +287,10 @@ GM:CreateItem("item_energydrink_nonstop", {
         Thirst = 32,
         Stamina = 85,
         Fatigue = -8,
+
+        FastUsable = true,
     },
     UseSound = "theeternalapocalypse/items/inv_drink_can.ogg",
-
-    UseFunc = function(ply) local food = UseFunc_Drink(ply, 4, 2, 3, 32, 85, -8, "theeternalapocalypse/items/inv_drink_can.ogg") return food end,
 })
 
 GM:CreateItem("item_beerbottle", {
@@ -321,8 +311,6 @@ GM:CreateItem("item_beerbottle", {
         Fatigue = 10,
     },
     UseSound = "npc/barnacle/barnacle_gulp2.wav",
-
-    UseFunc = function(ply) local food = UseFunc_Drink(ply, 5, 1, 9, 5, -15, 10, "npc/barnacle/barnacle_gulp2.wav") return food end,
 })
 
 GM:CreateItem("item_tinnedfood", {
@@ -343,8 +331,6 @@ GM:CreateItem("item_tinnedfood", {
         Fatigue = 0,
     },
     UseSound = "npc/barnacle/barnacle_gulp2.wav",
-
-    UseFunc = function(ply) local food = UseFunc_Eat(ply, 2, 3, 20, -10, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
 })
 
 GM:CreateItem("item_potato", {
@@ -365,8 +351,6 @@ GM:CreateItem("item_potato", {
         Fatigue = 0,
     },
     UseSound = "npc/barnacle/barnacle_gulp2.wav",
-
-    UseFunc = function(ply) local food = UseFunc_Eat(ply, 2, 2, 22, -8, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
 })
 
 GM:CreateItem("item_traderfood", {
@@ -387,8 +371,6 @@ GM:CreateItem("item_traderfood", {
         Fatigue = 0,
     },
     UseSound = "npc/barnacle/barnacle_gulp2.wav",
-
-    UseFunc = function(ply) local food = UseFunc_Eat(ply, 5, 4, 47, -15, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
 })
 
 GM:CreateItem("item_trout", {
@@ -409,8 +391,6 @@ GM:CreateItem("item_trout", {
         Fatigue = 0,
     },
     UseSound = "npc/barnacle/barnacle_gulp2.wav",
-
-    UseFunc = function(ply) local food = UseFunc_Eat(ply, 6, 5, 65, -4, 0, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
 })
 
 GM:CreateItem("item_melon", {
@@ -431,8 +411,6 @@ GM:CreateItem("item_melon", {
         Fatigue = 0,
     },
     UseSound = "npc/barnacle/barnacle_gulp2.wav",
-
-    UseFunc = function(ply) local food = UseFunc_Eat(ply, 7, 7, 85, 20, 3, 0, "npc/barnacle/barnacle_gulp2.wav") return food end,
 })
 
 GM:CreateItem("item_burger", {
@@ -454,7 +432,6 @@ GM:CreateItem("item_burger", {
     },
     UseSound = "vo/npc/male01/yeah02.wav",
 
-    UseFunc = function(ply) local food = UseFunc_Eat(ply, 5, 30, 100, 15, 90, -15, "vo/npc/male01/yeah02.wav") return food end,
     OnSell = function(ply, amt)
         ply:PrintMessage(3, "bruh did you really SELL THE BURGER WHAT IS WRONG WITH YOU?!?!?")
         timer.Simple(math.Rand(60,180), function()
@@ -489,8 +466,6 @@ GM:CreateItem("item_hotdog", {
         Fatigue = -15,
     },
     UseSound = "vo/npc/male01/nice.wav",
-
-    UseFunc = function(ply) local food = UseFunc_Eat(ply, 5, 20, 80, 10, 40, -15, "vo/npc/male01/nice.wav") return food end,
 })
 
 GM:CreateItem("item_donut", {
@@ -511,8 +486,6 @@ GM:CreateItem("item_donut", {
         Fatigue = -1,
     },
     UseSound = "npc/barnacle/barnacle_gulp2.wav",
-
-    UseFunc = function(ply) local food = UseFunc_Eat(ply, 3, 2, 25, -7, 5, -1, "npc/barnacle/barnacle_gulp2.wav") return food end,
 })
 
 GM:CreateItem("item_bed", {
@@ -550,7 +523,7 @@ GM:CreateItem("item_amnesiapills", {
 })
 
 GM:CreateItem("item_armorbattery", {
-    Cost = 600,
+    Cost = 420,
     Model = "models/Items/battery.mdl",
     Weight = 0.35,
     Supply = 6,
@@ -561,15 +534,13 @@ GM:CreateItem("item_armorbattery", {
     ConsumableStats = {
         UseTime = 2,
         Battery = 50,
-        Armor = 15,
+        Armor = 25,
     },
     UseSound = "items/battery_pickup.wav",
-
-    UseFunc = function(ply) local armor = UseFunc_Armor(ply, 2, 50, 15, "items/battery_pickup.wav") return armor end,
 })
 
 GM:CreateItem("item_armorkevlar", {
-    Cost = 1500,
+    Cost = 800,
     Model = "models/wick/wrbstalker/anomaly/items/dez_kevlar.mdl",
     Weight = 1.13,
     Supply = 3,
@@ -580,11 +551,9 @@ GM:CreateItem("item_armorkevlar", {
     ConsumableStats = {
         UseTime = 4,
         Battery = 0,
-        Armor = 35,
+        Armor = 55,
     },
     UseSound = "npc/combine_soldier/zipline_hitground2.wav",
-
-    UseFunc = function(ply) local armor = UseFunc_Armor(ply, 4, 0, 35, "npc/combine_soldier/zipline_hitground2.wav") return armor end,
 })
 
 -- S.T.A.L.K.E.R.
