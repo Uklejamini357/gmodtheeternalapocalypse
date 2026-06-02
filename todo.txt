@@ -4,27 +4,34 @@ v0.12.7:
 Add more masteries -- moved from v0.12.5 update (still wip)
 Fix thirdperson camera noclipping
 
+(2nd June: Moved by +1ver due to many changes)
+
 v0.12.8:
 Add more translation strings (More translation support yay)
+
+v0.12.9:
+EVEN MORE TRANSLATION STRINGS!
 Make death screen more animated
 
 
-v0.12.9
+v0.12.10
 - Make it possible to assign multiple tasks at a time (up to 3 tasks at once)
 - Add confirmation to cancel a task (already done for v0.12.8)
 - Make tasks cancellable anywhere
 - Add new special event: Zombie Fog
 
-v0.12.10:
+v0.12.11:
 Expand admin system and logging... maybe?
 New admin command to force map transition -- moved from v0.12.7
 Add ULX commands
 Add CAMI permissions
 
-v0.12.11:
+v0.12.12:
 Add more tasks -- moved from v0.12.5, then v0.12.7
 And finish the elite variants
 
+v0.12.13:
+Rework Trader UI
 
 
 --------

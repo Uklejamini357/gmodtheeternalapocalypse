@@ -266,6 +266,11 @@ function GM:Think()
 			gamemode.Call("SaveTimer")
 		end
 
+		if self.NextInflationCalc < ct then
+			self:SetInflationMeter(self:CalcInflationMeter())
+			self.NextInflationCalc = ct + 3600
+		end
+
 		local noregen_thirst = 3000
 		local noregen_hunger = 3000
 		local noregen_fatigue = 7000
@@ -556,6 +561,7 @@ function GM:Initialize()
 	self.NextInfectionDecrease = 0
 	self.InfectionDecreasedTimes = 0
 	self.NextSave = 0
+	self.NextInflationCalc = 0
 	self.DebugLogs = {}
 	self.StatTracker = {}
 

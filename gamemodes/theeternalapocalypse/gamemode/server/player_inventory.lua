@@ -466,6 +466,22 @@ function meta:InvStripWeapon(item)
 			if clip1 > 0 then self:GiveAmmo(clip1, wep:GetPrimaryAmmoType()) end
 			if clip2 > 0 then self:GiveAmmo(clip2, wep:GetSecondaryAmmoType()) end
 		end
+
+		if ArcCW then
+			if self.ArcCW_AttInv then
+				local atts = {}
+				for att,count in pairs(self.ArcCW_AttInv) do
+					atts[att] = count
+				end
+			end
+
+			if wep.Attachments and wep.Detach then
+				for id,att in ipairs(wep.Attachments) do
+					if !att.Installed then continue end
+					wep:Detach(id, true, true)
+				end
+			end
+		end
 		self:StripWeapon(item)
 	end
 end
