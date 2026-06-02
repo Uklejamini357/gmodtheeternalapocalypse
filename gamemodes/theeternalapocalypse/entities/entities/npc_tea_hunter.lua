@@ -34,7 +34,7 @@ function ENT:SetUpStats()
 
 	self.ZombieStats = {
 --refer to entites/entities/npc_tea_basic.lua
-		["Damage"] = 14,
+		["Damage"] = 11,
 		["PropDamage"] = 18,
 		["Force"] = 40,
 		["Infection"] = 13,
@@ -42,9 +42,9 @@ function ENT:SetUpStats()
 		["StrikeDelay"] = 0.15,
 		["AfterStrikeDelay"] = 0.25,
 
-		["Health"] = 1850,
+		["Health"] = 1450,
 		["MoveSpeedWalk"] = 60,
-		["MoveSpeedRun"] = 135, -- it already got a 2x mul so that's why it got a bit lower speed. (doesn't get any speed buffs so it doesn't get any faster)
+		["MoveSpeedRun"] = 125, -- it already got a 2x mul so that's why it got a bit lower speed. (doesn't get any speed buffs so it doesn't get any faster)
 		["VisionRange"] = 1200,
 		["LoseTargetRange"] = 1500,
 

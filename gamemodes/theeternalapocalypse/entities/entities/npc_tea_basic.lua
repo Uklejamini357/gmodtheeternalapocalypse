@@ -105,16 +105,38 @@ function ENT:SetUpStats()
 	self.Ability1CD = CurTime()
 end
 
-function ENT:CanSeeTarget()
+
+function ENT:CanSeeTarget(move)
 	if !self:IsValid() then return false end
 
 	if self.target then
+		local function trfilter(ent)
+			return ent == self.target or string.sub(ent:GetClass(), 1, 5) == "prop_"
+			--ent == self.target or ent == NULL end
+		end
+
 		local tracedata = {}
 		tracedata.start = self:GetPos() + self:OBBCenter()
 		tracedata.endpos = self.target:GetPos() + self.target:OBBCenter()
-		tracedata.filter = function(ent) return ent == self.target or string.sub(ent:GetClass(), 1, 5) == "prop_" end --ent == self.target or ent == NULL end
+		tracedata.filter = trfilter
 		local trace = util.TraceLine(tracedata)
-		return not trace.HitWorld and (self.target == trace.Entity)
+		if not trace.HitWorld and (self.target == trace.Entity) then return true end
+
+		if move then
+			tracedata = {}
+			tracedata.start = self:GetPos()
+			tracedata.endpos = self.target:GetPos()
+			tracedata.filter = trfilter
+			trace = util.TraceLine(tracedata)
+			if not trace.HitWorld and (self.target == trace.Entity) then return true end
+
+			tracedata = {}
+			tracedata.start = self:GetPos() + self:OBBCenter()*2
+			tracedata.endpos = self.target:GetPos() + self.target:OBBCenter()*2
+			tracedata.filter = trfilter
+			trace = util.TraceLine(tracedata)
+			if not trace.HitWorld and (self.target == trace.Entity) then return true end
+		end
 	end
 
 	return false
@@ -445,7 +467,7 @@ function ENT:GotoPos(pos)
 			reachpos = nav:GetClosestPointOnArea(target:GetPos())
 		end
 	end
-	if self:CanSeeTarget() and self:GetRangeTo(target) < 800 or not nav then
+	if self:CanSeeTarget(true) and self:GetRangeTo(target) < 800 or not nav then
 		self.loco:FaceTowards(pos)
 		self.loco:Approach(pos, 1)
 	elseif reachpos then

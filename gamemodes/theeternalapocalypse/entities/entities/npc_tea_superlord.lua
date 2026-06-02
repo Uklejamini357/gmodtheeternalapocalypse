@@ -35,7 +35,7 @@ function ENT:SetUpStats()
 
 	self.ZombieStats = {
 	--refer to entites/entities/npc_tea_basic.lua
-	["Damage"] = 65,
+	["Damage"] = 55,
 	["PropDamage"] = 200,
 	["Force"] = 1125,
 	["Infection"] = 100,

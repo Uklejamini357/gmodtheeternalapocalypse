@@ -269,6 +269,20 @@ function GM:StartCommand(ply, cmd)
 		-- end
 	end
 
+	if ply:IsUsingItem() then
+		if cmd:KeyDown(IN_ATTACK) then
+			keys = keys - IN_ATTACK
+		end
+
+		if cmd:KeyDown(IN_ATTACK2) then
+			keys = keys - IN_ATTACK2
+		end
+
+		if cmd:KeyDown(IN_RELOAD) then
+			keys = keys - IN_RELOAD
+		end
+	end
+
 	if (ply:IsUsingItem() and not ply.UsingItemCanMove) or ply:IsSleeping() then
 		cmd:ClearButtons()
 		cmd:ClearMovement()

@@ -6,14 +6,14 @@ Fix thirdperson camera noclipping
 
 v0.12.8:
 Add more translation strings (More translation support yay)
-Zombie fog special event
 Make death screen more animated
 
 
-v0.12.9: Tasks QOL
+v0.12.9
 - Make it possible to assign multiple tasks at a time (up to 3 tasks at once)
-- Add confirmation to cancel a task
+- Add confirmation to cancel a task (already done for v0.12.8)
 - Make tasks cancellable anywhere
+- Add new special event: Zombie Fog
 
 v0.12.10:
 Expand admin system and logging... maybe?

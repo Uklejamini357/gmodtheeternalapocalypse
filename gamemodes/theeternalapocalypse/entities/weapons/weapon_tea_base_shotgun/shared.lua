@@ -12,89 +12,91 @@ SWEP.Penetration			= false
 SWEP.Ricochet			= false
 
 function SWEP:Think()
+	local owner = self:GetOwner()
 
-	if self.Weapon:Clip1() > self.Primary.ClipSize then
-		self.Weapon:SetClip1(self.Primary.ClipSize)
+	if self:Clip1() > self.Primary.ClipSize then
+		self:SetClip1(self.Primary.ClipSize)
 	end
 
-	if self.Weapon:GetNetworkedBool("Reloading") == true then
-		if self.Weapon:GetNetworkedInt("ReloadTime") < CurTime() then
-			if (self.Weapon:Clip1() >= self.Primary.ClipSize or self.Owner:GetAmmoCount(self.Primary.Ammo) <= 0) then
-				self.Weapon:SetNextPrimaryFire(CurTime() + self.ShotgunFinish)
-				self.Weapon:SetNextSecondaryFire(CurTime() + self.ShotgunFinish)
-				self.Weapon:SetNetworkedBool("Reloading", false)
-				self.Weapon:SendWeaponAnim(ACT_SHOTGUN_RELOAD_FINISH)
+	if self:GetNetworkedBool("Reloading") == true then
+		if self:GetNetworkedInt("ReloadTime") < CurTime() then
+			if (self:Clip1() >= self.Primary.ClipSize or owner:GetAmmoCount(self.Primary.Ammo) <= 0) then
+				self:SetNextPrimaryFire(CurTime() + self.ShotgunFinish)
+				self:SetNextSecondaryFire(CurTime() + self.ShotgunFinish)
+				self:SetNetworkedBool("Reloading", false)
+				self:SendWeaponAnim(ACT_SHOTGUN_RELOAD_FINISH)
 
-				if (IsValid(self.Owner) and self.Owner:GetViewModel()) then
-					self:IdleAnimation(self.Owner:GetViewModel():SequenceDuration())
+				if (IsValid(owner) and owner:GetViewModel()) then
+					self:IdleAnimation(owner:GetViewModel():SequenceDuration())
 				end
 			else
-				self.Weapon:SetNetworkedInt("ReloadTime", CurTime() + 0.45)
-				self.Weapon:SendWeaponAnim(ACT_VM_RELOAD)
-				self.Owner:RemoveAmmo(1, self.Primary.Ammo, false)
-				self.Weapon:SetClip1(self.Weapon:Clip1() + 1)
-				self.Weapon:SetNextPrimaryFire(CurTime() + 0.5)
-				self.Weapon:SetNextSecondaryFire(CurTime() + 0.5)
+				self:SetNetworkedInt("ReloadTime", CurTime() + 0.45)
+				self:SendWeaponAnim(ACT_VM_RELOAD)
+				owner:RemoveAmmo(1, self.Primary.Ammo, false)
+				self:SetClip1(self:Clip1() + 1)
+				self:SetNextPrimaryFire(CurTime() + 0.5)
+				self:SetNextSecondaryFire(CurTime() + 0.5)
 
-				if (self.Weapon:Clip1() >= self.Primary.ClipSize or self.Owner:GetAmmoCount(self.Primary.Ammo) <= 0) then
-					self.Weapon:SetNextPrimaryFire(CurTime() + 1.5)
-					self.Weapon:SetNextSecondaryFire(CurTime() + 1.5)
+				if (self:Clip1() >= self.Primary.ClipSize or owner:GetAmmoCount(self.Primary.Ammo) <= 0) then
+					self:SetNextPrimaryFire(CurTime() + 1.5)
+					self:SetNextSecondaryFire(CurTime() + 1.5)
 				else
-					self.Weapon:SetNextPrimaryFire(CurTime() + 0.5)
-					self.Weapon:SetNextSecondaryFire(CurTime() + 0.5)
+					self:SetNextPrimaryFire(CurTime() + 0.5)
+					self:SetNextSecondaryFire(CurTime() + 0.5)
 				end
 			end
 		end
 	end
 
-	if (self.Owner:KeyPressed(IN_ATTACK)) and (self.Weapon:GetNWBool("Reloading", true)) then
-		self.Weapon:SetNextPrimaryFire(CurTime() + self.ShotgunFinish)
-		self.Weapon:SetNextPrimaryFire(CurTime() + self.ShotgunFinish)
-		self.Weapon:SetNetworkedInt("ReloadTime", CurTime() + self.ShotgunFinish)
-		self.Weapon:SetNetworkedBool("Reloading", false)
+	if (owner:KeyPressed(IN_ATTACK)) and (self:GetNWBool("Reloading", true)) then
+		self:SetNextPrimaryFire(CurTime() + self.ShotgunFinish)
+		self:SetNextPrimaryFire(CurTime() + self.ShotgunFinish)
+		self:SetNetworkedInt("ReloadTime", CurTime() + self.ShotgunFinish)
+		self:SetNetworkedBool("Reloading", false)
 
-		timer.Simple(self.Owner:GetViewModel():SequenceDuration(), function()
-			if not self.Owner then return end
-			self.Weapon:SendWeaponAnim(ACT_SHOTGUN_RELOAD_FINISH)
+		timer.Simple(owner:GetViewModel():SequenceDuration(), function()
+			if !self:IsValid() or !owner then return end
 
-			if (IsValid(self.Owner) and self.Owner:GetViewModel()) then
-				self:IdleAnimation(self.Owner:GetViewModel():SequenceDuration())
+			self:SendWeaponAnim(ACT_SHOTGUN_RELOAD_FINISH)
+
+			if (IsValid(owner) and owner:GetViewModel()) then
+				self:IdleAnimation(owner:GetViewModel():SequenceDuration())
 			end
 		end)
 	end
 
 	self:SecondThink()
 
-	if self.IdleDelay < CurTime() and self.IdleApply and self.Weapon:Clip1() > 0 then
-		local WeaponModel = self.Weapon:GetOwner():GetActiveWeapon():GetClass()
+	if self.IdleDelay < CurTime() and self.IdleApply and self:Clip1() > 0 then
+		local WeaponModel = owner:GetActiveWeapon():GetClass()
 
-		if self.Weapon:GetOwner():GetActiveWeapon():GetClass() == WeaponModel and self.Owner:Alive() then
-			if self.Weapon:GetDTBool(3) and self.Type == 2 then
-				self.Weapon:SendWeaponAnim(ACT_VM_IDLE_SILENCED)
+		if owner:GetActiveWeapon():GetClass() == WeaponModel and owner:Alive() then
+			if self:GetDTBool(3) and self.Type == 2 then
+				self:SendWeaponAnim(ACT_VM_IDLE_SILENCED)
 			else
-				self.Weapon:SendWeaponAnim(ACT_VM_IDLE)
+				self:SendWeaponAnim(ACT_VM_IDLE)
 			end
 
-			if self.AllowPlaybackRate and not self.Weapon:GetDTBool(1) then
-				self.Owner:GetViewModel():SetPlaybackRate(1)
+			if self.AllowPlaybackRate and not self:GetDTBool(1) then
+				owner:GetViewModel():SetPlaybackRate(1)
 			else
-				self.Owner:GetViewModel():SetPlaybackRate(0)
+				owner:GetViewModel():SetPlaybackRate(0)
 			end	
 		end
 
 		self.IdleApply = false
-	elseif self.Weapon:Clip1() <= 0 then
+	elseif self:Clip1() <= 0 then
 		self.IdleApply = false
 	end
 
-	if self.Weapon:GetDTBool(2) and self.Owner:KeyDown(IN_SPEED) then
+	if self:GetDTBool(2) and owner:KeyDown(IN_SPEED) then
 		self:SetIronsights(false)
 	end
 
 	// If you're running or if your weapon is holsted, the third person animation is going to change
-	if self.Owner:KeyDown(IN_SPEED) or self.Weapon:GetDTBool(0) then
+	if owner:KeyDown(IN_SPEED) or self:GetDTBool(0) then
 		if self.Rifle or self.Sniper or self.Shotgun then
-			if self.Owner:KeyDown(IN_DUCK) then
+			if owner:KeyDown(IN_DUCK) then
 				self:SetHoldType("normal")
 			else
 				self:SetHoldType("passive")
@@ -107,14 +109,14 @@ function SWEP:Think()
 		self:SetHoldType(self.HoldType)
 	end
 
-	if self.Weapon:GetDTBool(3) and self.Type == 3 then
+	if self:GetDTBool(3) and self.Type == 3 then
 		if self.BurstTimer + self.BurstDelay < CurTime() then
 			if self.BurstCounter > 0 then
 				self.BurstCounter = self.BurstCounter - 1
 				self.BurstTimer = CurTime()
 				
 				if self:CanPrimaryAttack() then
-					self.Weapon:EmitSound(self.Primary.Sound)
+					self:EmitSound(self.Primary.Sound)
 					self:ShootBulletInformation()
 					self:TakePrimaryAmmo(1)
 				end
@@ -129,24 +131,27 @@ function SWEP:Reload()
 
 	if (self.ActionDelay > CurTime()) then return end 
 
-	if (self.Weapon:GetNWBool("Reloading") or self.ShotgunReloading) then return end
+	if (self:GetNWBool("Reloading") or self.ShotgunReloading) then return end
 
-	if (self.Weapon:Clip1() < self.Primary.ClipSize and self.Owner:GetAmmoCount(self.Primary.Ammo) > 0) then
+	local owner = self:GetOwner()
+
+	if (self:Clip1() < self.Primary.ClipSize and owner:GetAmmoCount(self.Primary.Ammo) > 0) then
 		self.ShotgunReloading = true
-		self.Weapon:SetNextPrimaryFire(CurTime() + self.ShotgunBeginReload + 0.1)
-		self.Weapon:SetNextSecondaryFire(CurTime() + self.ShotgunBeginReload + 0.1)
-		self.Weapon:SendWeaponAnim(ACT_SHOTGUN_RELOAD_START)
+		self:SetNextPrimaryFire(CurTime() + self.ShotgunBeginReload + 0.1)
+		self:SetNextSecondaryFire(CurTime() + self.ShotgunBeginReload + 0.1)
+		self:SendWeaponAnim(ACT_SHOTGUN_RELOAD_START)
 
 		timer.Simple(self.ShotgunBeginReload, function()
+			if !self:IsValid() then return end
 			self.ShotgunReloading = false
-			self.Weapon:SetNetworkedBool("Reloading", true)
-			self.Weapon:SetVar("ReloadTime", CurTime() + 1)
-			self.Weapon:SetNextPrimaryFire(CurTime() + 0.5)
-			self.Weapon:SetNextSecondaryFire(CurTime() + 0.5)
+			self:SetNetworkedBool("Reloading", true)
+			self:SetVar("ReloadTime", CurTime() + 1)
+			self:SetNextPrimaryFire(CurTime() + 0.5)
+			self:SetNextSecondaryFire(CurTime() + 0.5)
 		end)
 
 		if (SERVER) then
-			self.Owner:SetFOV( 0, 0.15 )
+			owner:SetFOV( 0, 0.15 )
 			self:SetIronsights(false)
 		end
 	end
@@ -155,20 +160,22 @@ end
 function SWEP:Deploy()
 
 	self.ShotgunReloading = false
-	self.Weapon:SetNetworkedBool("Reloading", false)
+	self:SetNetworkedBool("Reloading", false)
 
-	self.Weapon:SendWeaponAnim(ACT_VM_DRAW)
+	self:SendWeaponAnim(ACT_VM_DRAW)
 
-	self.Weapon:SetNextPrimaryFire(CurTime() + self.DeployDelay)
-	self.Weapon:SetNextSecondaryFire(CurTime() + self.DeployDelay)
+	self:SetNextPrimaryFire(CurTime() + self.DeployDelay)
+	self:SetNextSecondaryFire(CurTime() + self.DeployDelay)
 	self.ActionDelay = (CurTime() + self.DeployDelay)
 
 	if (SERVER) then
 		self:SetIronsights(false)
 	end
 
-	if (IsValid(self.Owner) and self.Owner:GetViewModel()) then
-		self:IdleAnimation(self.Owner:GetViewModel():SequenceDuration())
+	local owner = self:GetOwner()
+
+	if (IsValid(owner) and owner:GetViewModel()) then
+		self:IdleAnimation(owner:GetViewModel():SequenceDuration())
 	end
 
 	return true

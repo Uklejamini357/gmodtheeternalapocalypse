@@ -117,7 +117,7 @@ function MT_ENTITY:ProcessDamage(dmginfo)
 	local directdmg = bit.band(DMG_DIRECT, dmginfo:GetDamageType()) ~= 0
 	if attacker:IsPlayer() then
 		if IsMeleeDamage(dmginfo:GetDamageType()) then
-			dmginfo:ScaleDamage(1 + (0.01 * attacker.StatStrength) + (0.005 * attacker:GetMasteryEffectiveStat("Melee")))
+			dmginfo:ScaleDamage(1 + (0.01 * attacker.StatStrength) + attacker:GetMasteryEffectiveStat("Melee"))
 		end
 		if IsMeleeDamage(dmginfo:GetDamageType()) and attacker:HasPerk("weightboost3") then
 			dmginfo:ScaleDamage(1.05)
