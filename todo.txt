@@ -8,7 +8,12 @@ Rework Trader:
 - Add alternative traders
 - Add Trader Item list table for separate traders
 - Rework the entire UI
-- Move the weapons from MAD Base to M9k base
+Move the weapons from MAD Base to M9k base
+Make props not disappear when its owner leaves
+Make props save between sessions
+Add max props per map
+Make factions persist between sessions and add more cool features and progression to factions
+
 
 Add a lot more ArcCW Attachments
 
