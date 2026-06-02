@@ -8,6 +8,7 @@ Rework Trader:
 - Add alternative traders
 - Add Trader Item list table for separate traders
 - Rework the entire UI
+- Move the weapons from MAD Base to M9k base
 
 Add a lot more ArcCW Attachments
 
