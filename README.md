@@ -10,15 +10,21 @@ Comes with many more features, including:
 - Mastery,
 - Quests,
 - Dynamic difficulty scaling,
+- ArcCW weapons and attachments support,
 - and many more!
 
 ### For which game is this for?
 Garry's Mod.
 
-### How to download?!
+### Known issues:
+- **Zombies lag the server sometimes.** It's been like that for many years. I tried as much as I could to reduce lag with the zombies. Although it still happens occasionally. Best solution: Limit max and use optimized navmesh.
+- **Aim down scope on some weapons block almost the entire screen.** Unfortunately, the issue just randomly appeared there after some time. I thought it only affected me, but it affects everyone else too. I assume it was because of the gmod update. I will move the weapons to m9k base in the future. But for now, just trust your crosshair.
+
+### How to install?!
 > Option 1: Code > Download Zip > Extract to garrysmod/addons
 
 > Option 2:
+Download git, then use this command in cmd or terminal in garrysmod/addons directory.
 ```
 git clone https://github.com/Uklejamini357/gmodtheeternalapocalypse.git
 ```
