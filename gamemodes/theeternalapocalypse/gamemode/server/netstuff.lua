@@ -130,7 +130,7 @@ end
 
 
 function GM:SystemBroadcast(msg, color, sys) -- same as system message, just broadcasts it to everybody instead of accepting a ply argument
-	for k, v in pairs(player.GetAll()) do
+	for k, v in ipairs(player.GetAll()) do
 		net.Start("SystemMessage")
 		net.WriteString(msg)
 		net.WriteColor(color or Color(255,255,255))
@@ -139,8 +139,8 @@ function GM:SystemBroadcast(msg, color, sys) -- same as system message, just bro
 	end
 end
 
-function GM:SystemTranslatedBroadcast(sys, color, msg, ...) -- same as system broadcast, except sends a translated string to everyone
-	for k, v in pairs(player.GetAll()) do
+function GM:SystemTranslatedBroadcast(msg, color, sys, ...) -- same as system broadcast, except sends a translated string to everyone
+	for k, v in ipairs(player.GetAll()) do
 		net.Start("SystemMessage")
 		net.WriteString(translate.ClientFormat(v, msg, ...))
 		net.WriteColor(color or Color(255,255,255))
@@ -151,7 +151,7 @@ end
 
 function GM:RadioBroadcast(time, msg, sender, rad)
 	timer.Simple(time, function()
-		for k, v in pairs(player.GetAll()) do
+		for k, v in ipairs(player.GetAll()) do
 			net.Start("RadioMessage")
 			net.WriteString(sender)
 			net.WriteString(msg)
@@ -163,7 +163,7 @@ end
 
 function GM:RadioTranslatedBroadcast(time, sender, rad, msg, ...)
 	timer.Simple(time, function(...)
-		for k, v in pairs(player.GetAll()) do
+		for k, v in ipairs(player.GetAll()) do
 			net.Start("RadioMessage")
 			net.WriteString(sender)
 			net.WriteString(translate.ClientFormat(v, msg, ...))

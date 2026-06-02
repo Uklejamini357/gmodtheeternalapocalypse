@@ -133,7 +133,7 @@ function GM:SpawnAirdrop(plycountoverride, silent, delay)
 		v:SendLua("surface.PlaySound(\"ambient/overhead/hel1.wav\")")
 	end
 
-	self:SystemBroadcast("An airdrop crate has appeared!", Color(127,255,255), false)
+	self:SystemTranslatedBroadcast("airdrop_appeared", Color(127,255,255), false)
 end
 
 function GM:CallAirdrop(plycountoverride, silent, delay)
@@ -149,7 +149,7 @@ function GM:SpawnAirdrops(plycountoverride, silent, delay)
 
 	local count = plycountoverride >= 15 and 3 or plycountoverride >= 8 and 2 or 1
 	if count > 1 then
-		self:SystemBroadcast(count.." airdrops have been spotted // First airdrop appears in 10 seconds", Color(191,255,255), false)
+		self:SystemTranslatedBroadcast("x_airdrops_spotted", Color(191,255,255), false, count)
 	end
 
 	for i=1,count do

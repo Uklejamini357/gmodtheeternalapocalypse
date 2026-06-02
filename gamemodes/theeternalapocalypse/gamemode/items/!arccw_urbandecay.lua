@@ -91,7 +91,7 @@ GM:CreateItem("arccw_ud_mini14", {
 
 GM:CreateItem("arccw_ud_870", {
     Name = "Remington 870",
-    Description = "Classic pump-action shotgun, renowned for its high quality parts and assembly. A simple firearm with a simple purpose. Marketed primarily to civilians for use in hunting game and self-defense, but it has found popularity among police departments for a relatively innocuous appearance and ability to accept custom loaded less-lethal shells.",
+    Description = "Classic pump-action shotgun, renowned for its high quality parts and assembly. A simple firearm with a simple purpose.\nMarketed primarily to civilians for use in hunting game and self-defense, but it has found popularity among police departments for a relatively innocuous appearance and ability to accept custom loaded less-lethal shells.",
     Cost = 21660,
     Model = "models/weapons/arccw/c_ud_870.mdl",
     Material = "entities/arccw_ud_870.png",
@@ -268,4 +268,52 @@ GM:CreateItem("arccw_ur_spas12", {
     WeaponType = "arccw_ur_spas12",
 
     ArcCWCompatible = true
+})
+
+
+
+
+
+
+
+GM:CreateItem("arccw_acwatt_ud_m1014_tube_ext", {
+    Name = "M4 Super 90 7 Shell Tube",
+    Description = "Attachment for Benneli M4 allowing to increase magazine capacity to 7 rounds.",
+    Cost = 950,
+    Model = "models/Items/BoxSRounds.mdl",
+    Material = "entities/att/acwatt_ud_m1014_tube_ext.png",
+    Weight = 0.3,
+    Supply = -1,
+    Rarity = RARITY_RARE,
+    Category = ITEMCATEGORY_MISCELLANEOUS,
+	ItemType = ITEMTYPE_WEAPON,
+    UseFunc = function(pl,_,item) ArcCW:PlayerGiveAtt(pl, "ud_m1014_tube_ext", 1) ArcCW:PlayerSendAttInv(pl) return true end
+})
+
+GM:CreateItem("arccw_acwatt_ud_m1014_barrel_sport", {
+    Name = "M4 Super 90 19'' Competition Barrel",
+    Description = "Attachment for Benneli M4.",
+    Cost = 500,
+    Model = "models/Items/BoxSRounds.mdl",
+    Material = "entities/att/acwatt_ud_m1014_barrel_sport.png",
+    Weight = 0.3,
+    Supply = -1,
+    Rarity = RARITY_RARE,
+    Category = ITEMCATEGORY_MISCELLANEOUS,
+	ItemType = ITEMTYPE_WEAPON,
+    UseFunc = function(pl,_,item) ArcCW:PlayerGiveAtt(pl, "ud_m1014_barrel_sport", 1) ArcCW:PlayerSendAttInv(pl) return true end
+})
+
+GM:CreateItem("arccw_acwatt_uc_fg_autotrigger", {
+    Name = "Forced Reset Trigger",
+    Description = "Attachment for ArcCW weapons allowing for automatic fire.",
+    Cost = 1800,
+    Model = "models/Items/BoxSRounds.mdl",
+    Material = "entities/att/acwatt_uc_fg_autotrigger.png",
+    Weight = 0.3,
+    Supply = -1,
+    Rarity = RARITY_RARE,
+    Category = ITEMCATEGORY_MISCELLANEOUS,
+	ItemType = ITEMTYPE_WEAPON,
+    UseFunc = function(pl,_,item) ArcCW:PlayerGiveAtt(pl, "uc_fg_autotrigger", 1) ArcCW:PlayerSendAttInv(pl) return true end
 })

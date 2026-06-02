@@ -1145,7 +1145,10 @@ LANG.sleep_thirsty = "You are thirsty, you should drink something."
 LANG.sleep_infected = "You are infected, find a cure."
 LANG.sleep_bedobstructed = "This bed is obstructed!"
 LANG.sleep_now_sleeping = "You are now asleep."
+
+LANG.airdrop_appeared = "An airdrop crate has appeared!"
 LANG.opening_airdrop = "Opening airdrop crate... It will take %d seconds to open."
+LANG.x_airdrops_spotted = "%d airdrops have been spotted // First airdrop appears in 10 seconds"
 
 LANG.you_picked_up_a_lootcache = "You picked up a loot cache containing"
 LANG.you_picked_up_a_lootcache_boss = "You picked up a boss loot cache containing"

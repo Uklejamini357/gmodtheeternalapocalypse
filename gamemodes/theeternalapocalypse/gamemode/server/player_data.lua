@@ -188,6 +188,28 @@ function GM:SavePlayer(ply, force, nolastsession)
 				lastsessioninfo["heldweapon"] = activewep:GetClass()
 			end
 
+			if ArcCW then
+				if ply.ArcCW_AttInv then
+					local atts = {}
+					for att,count in pairs(ply.ArcCW_AttInv) do
+						atts[att] = count
+					end
+
+					lastsessioninfo["arccw_attachments"] = atts
+				end
+
+				lastsessioninfo["arccw_wep_atts"] = {}
+				for k,v in pairs(ply:GetWeapons()) do
+					if !v.Attachments then continue end
+					lastsessioninfo["arccw_wep_atts"][v:GetClass()] = {}
+
+					for id,att in ipairs(v.Attachments) do
+						if !att.Installed then continue end
+						lastsessioninfo["arccw_wep_atts"][v:GetClass()][id] = att.Installed
+					end
+				end
+			end
+
 			if ply.TransitioningMap and ply.TransitioningPos then
 				lastsessioninfo["istransitioning"] = true
 			end
@@ -882,6 +904,42 @@ function meta:LoadLastSession()
 
 		if self.LastSessionInfo["heldweapon"] then
 			self:SelectWeapon(self.LastSessionInfo["heldweapon"])
+		end
+
+		if ArcCW then
+			if self.ArcCW_AttInv and self.LastSessionInfo["arccw_attachments"] then
+				for att,count in pairs(self.LastSessionInfo["arccw_attachments"]) do
+					ArcCW:PlayerGiveAtt(self, att, count)
+				end
+				ArcCW:PlayerSendAttInv(self)
+			end
+
+			local atts = self.LastSessionInfo["arccw_wep_atts"]
+			if atts then
+				for k,v in pairs(atts) do
+					local wep = self:GetWeapon(k)
+					wep:SetNWBool("ArcCW_DisableAutosave", true)
+					self.ArcCW_DisableAutosave = true	
+
+					for k, v in pairs(wep.Attachments) do
+						wep:Detach(k, true, true)
+					end
+
+					wep.Attachments.BaseClass = nil -- AGHHHHHHHHHH
+					if wep and wep:IsValid() and wep.Attachments and wep.Attach then
+						for id,att in pairs(v) do
+							print(id, att)
+							ArcCW:PlayerGiveAtt(self, att, 1)
+							wep:Attach(id, att, true, true)
+						end
+					end
+					wep:AdjustAtts()
+					wep:RefreshBGs()
+					wep:NetworkWeapon()
+			        wep:SetupModel(false)
+			        wep:SetupModel(true)
+				end
+			end
 		end
 
 		self.LastSessionInfo = nil
