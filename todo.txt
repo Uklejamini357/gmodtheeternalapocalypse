@@ -1,13 +1,19 @@
 todo:
 
-v0.12.7:
-Add more masteries -- moved from v0.12.5 update (still wip)
-Fix thirdperson camera noclipping
+(2nd June: Moved by +1 update due to many changes)
 
-(2nd June: Moved by +1ver due to many changes)
+Uncategorized:
+Rework Trader:
+- Add subcategories
+- Add alternative traders
+- Add Trader Item list table for separate traders
+- Rework the entire UI
+
+Add a lot more ArcCW Attachments
 
 v0.12.8:
 Add more translation strings (More translation support yay)
+Add confirmation to cancel a task (originally should be done for 0.12.9)
 
 v0.12.9:
 EVEN MORE TRANSLATION STRINGS!
@@ -16,7 +22,6 @@ Make death screen more animated
 
 v0.12.10
 - Make it possible to assign multiple tasks at a time (up to 3 tasks at once)
-- Add confirmation to cancel a task (already done for v0.12.8)
 - Make tasks cancellable anywhere
 - Add new special event: Zombie Fog
 
