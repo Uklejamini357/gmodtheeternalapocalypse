@@ -43,6 +43,10 @@ And finish the elite variants
 
 v0.12.13:
 Rework Trader UI
+Add item SubCategories
+
+v0.12.14:
+Rework Trader (Separate traders)
 
 
 --------

@@ -43,7 +43,7 @@ function ENT:SetUpStats()
 	["StrikeDelay"] = 0.6,
 	["AfterStrikeDelay"] = 1.5,
 
-	["Health"] = 4000,
+	["Health"] = 3100,
 	["MoveSpeedWalk"] = 65,
 	["MoveSpeedRun"] = 95,
 	["VisionRange"] = 1200,
@@ -162,7 +162,7 @@ function ENT:OnInjured(dmginfo)
 		self:Teleport()
 		self.Ouchies = 0
 	end
-	if self:Health() - dmg <= 1500 and self.IsEnraged == 0 then
+	if (self:Health() - dmg) <= self:GetMaxHealth()*0.35 and self.IsEnraged == 0 then
 		for k,v in pairs(ents.FindInSphere(self:GetPos(), 1500)) do
 			if v:IsPlayer() then
 				v:SystemMessage("Superlord has enraged!", Color(255,230,230,255), false)

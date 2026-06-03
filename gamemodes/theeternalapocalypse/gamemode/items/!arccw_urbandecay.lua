@@ -272,47 +272,73 @@ GM:CreateItem("arccw_ur_spas12", {
 
 
 
+-- Other
 
 
 
-GM:CreateItem("arccw_acwatt_ud_m1014_tube_ext", {
-    Name = "M4 Super 90 7 Shell Tube",
-    Description = "Attachment for Benneli M4 allowing to increase magazine capacity to 7 rounds.",
-    Cost = 950,
-    Model = "models/Items/BoxSRounds.mdl",
-    Material = "entities/att/acwatt_ud_m1014_tube_ext.png",
-    Weight = 0.3,
-    Supply = 1,
-    Rarity = RARITY_RARE,
-    Category = ITEMCATEGORY_MISCELLANEOUS,
+GM:CreateItem("midnights_gso_xm8", {
+    Name = "XM-8",
+    Description = "",
+    Cost = 1,
+    Model = "models/weapons/arccw/c_ur_spas12.mdl",
+    Material = "entities/midnights_gso_xm8.png",
+    Weight = 4.4,
+    Supply = -1,
+    Rarity = RARITY_LEGENDARY,
+    Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
-    UseFunc = function(pl,_,item) ArcCW:PlayerGiveAtt(pl, "ud_m1014_tube_ext", 1) ArcCW:PlayerSendAttInv(pl) return true end
+    WeaponType = "midnights_gso_xm8",
+
+    ArcCWCompatible = true
 })
 
-GM:CreateItem("arccw_acwatt_ud_m1014_barrel_sport", {
-    Name = "M4 Super 90 19'' Competition Barrel",
-    Description = "Attachment for Benneli M4.",
-    Cost = 500,
-    Model = "models/Items/BoxSRounds.mdl",
-    Material = "entities/att/acwatt_ud_m1014_barrel_sport.png",
-    Weight = 0.3,
-    Supply = 1,
-    Rarity = RARITY_RARE,
-    Category = ITEMCATEGORY_MISCELLANEOUS,
+
+GM:CreateItem("arccw_uc_usp", {
+    Name = "USP",
+    Description = "",
+    Cost = 1,
+    Model = "models/weapons/arccw/c_ur_spas12.mdl",
+    Material = "entities/arccw_uc_usp.png",
+    Weight = 4.4,
+    Supply = -1,
+    Rarity = RARITY_LEGENDARY,
+    Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
-    UseFunc = function(pl,_,item) ArcCW:PlayerGiveAtt(pl, "ud_m1014_barrel_sport", 1) ArcCW:PlayerSendAttInv(pl) return true end
+    WeaponType = "arccw_uc_usp",
+
+    ArcCWCompatible = true
 })
 
-GM:CreateItem("arccw_acwatt_uc_fg_autotrigger", {
-    Name = "Forced Reset Trigger",
-    Description = "Attachment for ArcCW weapons allowing for automatic fire.",
-    Cost = 1800,
-    Model = "models/Items/BoxSRounds.mdl",
-    Material = "entities/att/acwatt_uc_fg_autotrigger.png",
-    Weight = 0.3,
-    Supply = 1,
-    Rarity = RARITY_RARE,
-    Category = ITEMCATEGORY_MISCELLANEOUS,
+
+GM:CreateItem("arccw_midnightwolf_type20", {
+    Name = "Type 20",
+    Description = "",
+    Cost = 1,
+    Model = "models/weapons/arccw/c_ur_spas12.mdl",
+    Material = "entities/arccw_midnightwolf_type20.png",
+    Weight = 4.4,
+    Supply = -1,
+    Rarity = RARITY_LEGENDARY,
+    Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
-    UseFunc = function(pl,_,item) ArcCW:PlayerGiveAtt(pl, "uc_fg_autotrigger", 1) ArcCW:PlayerSendAttInv(pl) return true end
+    WeaponType = "arccw_midnightwolf_type20",
+
+    ArcCWCompatible = true
+})
+
+
+GM:CreateItem("arccw_myt_uc_scar", {
+    Name = "Scar-H",
+    Description = "",
+    Cost = 1,
+    Model = "models/weapons/arccw/c_ur_spas12.mdl",
+    Material = "entities/arccw_myt_uc_scar.png",
+    Weight = 4.4,
+    Supply = -1,
+    Rarity = RARITY_LEGENDARY,
+    Category = ITEMCATEGORY_WEAPONS,
+	ItemType = ITEMTYPE_WEAPON,
+    WeaponType = "arccw_myt_uc_scar",
+
+    ArcCWCompatible = true
 })
