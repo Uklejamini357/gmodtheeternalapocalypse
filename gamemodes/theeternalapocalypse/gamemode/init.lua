@@ -814,7 +814,7 @@ function GM:EntityTakeDamage(ent, dmginfo)
 		return true
 	end
 
-	if attacker:isPlayer() and ent:GetClass() == "tea_trader" and ent.LastHurtBy then
+	if attacker:IsPlayer() and ent:GetClass() == "tea_trader" and ent.LastHurtBy then
 		if !ent.LastHurtBy[attacker] or ent.LastHurtBy[attacker]+5 < CurTime() then
 			local txt = table.Random({
 				"Hey, watch it! I'm not immmortal, don't you know that?",
