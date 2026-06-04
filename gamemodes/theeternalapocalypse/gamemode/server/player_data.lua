@@ -111,6 +111,19 @@ function GM:LoadPlayer(ply, id)
 		ply:SetNWInt("PlyLevel", ply.Level)
 		ply:SetNWInt("PlyPrestige", ply.Prestige)
 		ply:SetNWString("ArmorType", ply.EquippedArmor)
+
+
+		for k,v in pairs(ply.Inventory) do
+			if self.ItemsList[k] then continue end
+			ply.InvalidInventory[k] = v
+			ply.Inventory[k] = nil
+		end
+		for k,v in pairs(ply.InvalidInventory) do
+			if !self.ItemsList[k] then continue end
+			ply.InvalidInventory[k] = nil
+			ply.Inventory[k] = v
+		end
+
 		
 		self:DebugLog("Loading player data: "..ply:Nick().." ("..ply:SteamID()..") Level: "..tostring(ply.Level).." Cash: $"..tostring(ply.Money).." XP Total: "..tostring(ply.XP).." Armor Equipped: "..tostring(ply.EquippedArmor))
 		self:DebugLog("Loaded player: ".. ply:Nick() .." ("..ply:SteamID()..") from file: "..filedir_ply)
@@ -262,63 +275,6 @@ function GM:DeletePlayerData(ply)
 	ply:KillSilent()
 	gamemode.Call("SetStartingVariables", ply)
 	ply:Spawn()
-end
-
-function GM:LoadPlayerInventory(ply)
-	if !ply:IsValid() or !ply:IsPlayer() then Error("The Eternal Apocalypse: Tried to load a player inventory file that doesn't exist!") return end
-	ply.Inventory = {}
-
-	local LoadedData
-	local InvalidData
-	local fs = self.Config["FileSystem"]
-	if fs == "Legacy" then
-		if (file.Exists(self.DataFolder.."/players/"..string.lower(string.gsub(ply:SteamID(), ":", "_")).."/inventory.txt", "DATA")) then
-			LoadedData = file.Read(self.DataFolder.."/players/"..string.lower(string.gsub( ply:SteamID(), ":", "_").."/inventory.txt"), "DATA")
-		end
-		if (file.Exists(self.DataFolder.."/players/"..string.lower(string.gsub(ply:SteamID(), ":", "_")).."/invalid_inventory.txt", "DATA")) then
-			InvalidData = file.Read(self.DataFolder.."/players/"..string.lower(string.gsub( ply:SteamID(), ":", "_").."/invalid_inventory.txt"), "DATA")
-		end
-	elseif fs == "PData" then
-		LoadedData = ply:GetPData("tea_playerinventory")
-		InvalidData = ply:GetPData("tea_invalidinventory")
-	else
-		print("Bruh, did you try to setup incorrectly? Set your damned filesystem option to a proper setting in sh_config.lua")
-	end
-
-	if LoadedData then 
-		local method = self.Config.SFS and sfs.decode or util.JSONToTable
-		local formatted = method(LoadedData)
-		local invaliditems = {}
-		if InvalidData then
-			invaliditems = method(InvalidData) --save invalid items just in case
-		end
-		for k,v in pairs(formatted) do
-			if !self.ItemsList[k] then
-				invaliditems[k] = formatted[k]
-				formatted[k] = nil
-			end
-		end
-		for k,v in pairs(invaliditems) do
-			if self.ItemsList[k] then
-				formatted[k] = invaliditems[k]
-				invaliditems[k] = nil
-			end
-		end
-		if self:GetDebug() >= DEBUGGING_ADVANCED then
-			print("Loading Inventory\n\n")
-			PrintTable(formatted)
-			print("\nInvalid Items:")
-			PrintTable(invaliditems)
-		end
-		ply.Inventory = formatted
-		ply.InvalidInventory = invaliditems
-	else
-		ply.Inventory = table.Copy(self.Config["NewbieGear"])
-	end
-
-	timer.Simple(1, function()
-		GAMEMODE:SendInventory(ply)
-	end)
 end
 
 --[[
@@ -918,6 +874,7 @@ function meta:LoadLastSession()
 			if atts then
 				for k,v in pairs(atts) do
 					local wep = self:GetWeapon(k)
+					if !IsValid(wep) then continue end
 					wep:SetNWBool("ArcCW_DisableAutosave", true)
 					self.ArcCW_DisableAutosave = true	
 

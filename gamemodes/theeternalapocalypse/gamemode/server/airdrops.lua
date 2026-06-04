@@ -12,7 +12,18 @@ function GM:LoadAD()
 			local v = string.Explode(";", str)
 			local pos = util.StringToType(v[1], "Vector")
 			local ang = util.StringToType(v[2], "Angle")
-			local hitpos = util.StringToType(v[3], "Vector")
+			local hitpos = v[3] and util.StringToType(v[3], "Vector")
+
+			if !hitpos then
+				local tr = util.TraceLine({
+					start = pos + Vector(0,0,1),
+					endpos = pos + Vector(0, 0, 90000),
+					mask = MASK_SOLID_BRUSHONLY,
+				})
+
+				if !tr or !tr.HitSky then continue end
+				hitpos = tr.HitPos - Vector(0, 0, 80)
+			end
 
 			table.insert(tbl, {pos, ang, hitpos})
 		end
@@ -104,10 +115,10 @@ function GM:GetRandomAirdropLoot(plycountoverride)
 end
 
 function GM:PreSpawnAirdrop(plycountoverride, silent, delay)
-	self:RadioBroadcast(0, "Christmas has come early ladies!", "Shamus", true)
-	self:RadioBroadcast(3, "I've got a little present for y'all to entertain yourselves with!", "Shamus", false)
-	self:RadioBroadcast(11, "Attention survivors! That airdrop crate is fitted with an IFF jammer.", "Watchdog", false)
-	self:RadioBroadcast(16.5, "In addition, if you go near it you'll need to watch your back or risk being shot by other loot hunters!", "Watchdog", false)
+	self:RadioTranslatedBroadcast(0, "airdrop_msg1", "sender_shamus", true)
+	self:RadioTranslatedBroadcast(3, "airdrop_msg2", "sender_shamus", false)
+	self:RadioTranslatedBroadcast(11, "airdrop_msg3", "sender_watchdog", false)
+	self:RadioTranslatedBroadcast(16.5, "airdrop_msg4", "sender_watchdog", false)
 end
 
 function GM:SpawnAirdrop(plycountoverride, silent, delay)
@@ -128,12 +139,6 @@ function GM:SpawnAirdrop(plycountoverride, silent, delay)
 
 	dropent:Spawn()
 	dropent:Activate()
-
-	for k, v in ipairs(player.GetAll()) do
-		v:SendLua("surface.PlaySound(\"ambient/overhead/hel1.wav\")")
-	end
-
-	self:SystemTranslatedBroadcast("airdrop_appeared", Color(127,255,255), false)
 end
 
 function GM:CallAirdrop(plycountoverride, silent, delay)
@@ -159,7 +164,11 @@ function GM:SpawnAirdrops(plycountoverride, silent, delay)
 
 			if count and i < count then
 				local last = i+1 >= count
-				self:SystemBroadcast((last and "Last" or "Next").." airdrop appears in 60 seconds"..(last and "" or " ("..count - i.." remaining)"), Color(255,255,127), false)
+				if last then
+					self:SystemTranslatedBroadcast("last_airdrop_in_x", Color(255,255,127), false)
+				else
+					self:SystemTranslatedBroadcast("next_airdrop_in_x", Color(255,255,127), false, count - i)
+				end
 			end
 		end)
 	end

@@ -90,7 +90,10 @@ function SWEP:PrimaryAttack()
 		bullet.Force  = 1
 		bullet.HullSize = 4
 		bullet.Damage = trace.Entity:IsPlayer() and self.Primary.PlayerDamage or self.Primary.Damage
-		self.Owner:FireBullets(bullet) 
+		bullet.Callback = function(ent, tr, dmginfo)
+			dmginfo:SetDamageType(DMG_CLUB)
+		end
+		self.Owner:FireBullets(bullet)
 		self:EmitSound("physics/flesh/flesh_impact_bullet"..math.random(3,5)..".wav")
 	else
 		self:EmitSound("weapons/iceaxe/iceaxe_swing1.wav")

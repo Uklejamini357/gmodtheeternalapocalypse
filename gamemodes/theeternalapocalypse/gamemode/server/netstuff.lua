@@ -161,11 +161,11 @@ function GM:RadioBroadcast(time, msg, sender, rad)
 	end)
 end
 
-function GM:RadioTranslatedBroadcast(time, sender, rad, msg, ...)
+function GM:RadioTranslatedBroadcast(time, msg, sender, rad, ...)
 	timer.Simple(time, function(...)
 		for k, v in ipairs(player.GetAll()) do
 			net.Start("RadioMessage")
-			net.WriteString(sender)
+			net.WriteString(translate.ClientGet(v, sender))
 			net.WriteString(translate.ClientFormat(v, msg, ...))
 			net.WriteBool(rad)
 			net.Send(v)

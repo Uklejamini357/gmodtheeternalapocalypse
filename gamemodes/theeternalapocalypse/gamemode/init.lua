@@ -195,11 +195,11 @@ function GM:Think()
 			end
 
 			if allowbloodmoon and self.SpecialEventChance >= math.Rand(0,1) then
-				gamemode.Call("ManageSpecialEvent", EVENTTYPE_BLOODMOON, true)
+				gamemode.Call("ManageSpecialEvent", EVENTTYPE_SPECIAL_BLOODMOON, true)
 			end
 		elseif self.BloodMoonActive and ct > tonumber(self.SpecialEventEndTime) then
 			self.NextSpecialEvent = ct + tonumber(self.SpecialEventInterval)
-			gamemode.Call("ManageSpecialEvent", EVENTTYPE_BLOODMOON, false)
+			gamemode.Call("ManageSpecialEvent", EVENTTYPE_SPECIAL_BLOODMOON, false)
 		end
 
 		if ct > tonumber(self.NextLootSpawn) then
@@ -625,6 +625,9 @@ function GM:InitPostEntity()
 		hook.Remove("Think", "loyal") -- causes issues with player relationships with other VJ stalker npc's
 	end
 
+	-- load again, in case of errors or so
+	self:LoadAD()
+
 	self:SpawnTraders()
 	self:SpawnTaskDealers()
 	self:SpawnLevelTransitions()
@@ -811,6 +814,21 @@ function GM:EntityTakeDamage(ent, dmginfo)
 		return true
 	end
 
+	if ent:GetClass() == "tea_trader" and ent.LastHurtBy then
+		if !ent.LastHurtBy[attacker] or ent.LastHurtBy[attacker]+5 < CurTime() then
+			local txt = table.Random({
+				"Hey, watch it! I'm not immmortal, don't you know that?",
+				"Watch your fire! I don't want to get hurt.",
+				"I'm not against anyone! Hold your fire!!",
+				"Stop! For god's sake I'm only giving you goods and nothing else!",
+			})
+
+			attacker:SendLua('chat.AddText(Color(255,255,255), "[", Color(155,255,155), "Trader", Color(255,255,255), "]: ", Color(255,205,205), "'..txt..'")')
+		end
+
+		ent.LastHurtBy[attacker] = CurTime()
+	end
+
 	if ent.ProcessDamage and not ent:ProcessDamage(dmginfo) then return true end
 	if ent:IsPlayer() and not gamemode.Call("PlayerShouldTakeDamage", ent, dmginfo:GetAttacker()) then return true end
 	if ent.ProcessPlayerDamage and not ent:ProcessPlayerDamage(dmginfo) then return true end
@@ -831,6 +849,8 @@ function GM:EntityTakeDamage(ent, dmginfo)
 		Attacker = dmginfo:GetAttacker(),
 		Inflictor = dmginfo:GetInflictor(),
 		Weapon = dmginfo:GetWeapon(),
+
+		BulletDamage = dmginfo:IsBulletDamage()
 	}
 end
 
@@ -840,9 +860,12 @@ function GM:PostEntityTakeDamage(ent, dmginfo, tookdmg)
 	self:ProcessPostDamage(ent, dmginfo, tookdmg)
 end
 
+-- gosh, this one is really difficult to code.
+-- things would have been easier if OnNPCKilled caller AFTER PostEntityTakeDamage
 function GM:ProcessPostDamage(ent, dmginfo, tookdmg)
 	local dmg, dmgtype, dmgpos, dmgorigin
 	local attacker, inflictor, weapon
+	local bulletdmg
 	if istable(dmginfo) then
 		dmg = dmginfo.Damage
 		dmgtype = dmginfo.DamageType
@@ -852,6 +875,8 @@ function GM:ProcessPostDamage(ent, dmginfo, tookdmg)
 		attacker = dmginfo.Attacker
 		inflictor = dmginfo.Inflictor
 		weapon = dmginfo.Weapon
+
+		bulletdmg = dmginfo.BulletDamage
 	elseif dmginfo then
 		dmg = dmginfo:GetDamage()
 		dmgtype = dmginfo:GetDamageType()
@@ -861,6 +886,8 @@ function GM:ProcessPostDamage(ent, dmginfo, tookdmg)
 		attacker = dmginfo:GetAttacker()
 		inflictor = dmginfo:GetInflictor()
 		weapon = dmginfo:GetWeapon()
+
+		bulletdmg = dmginfo:IsBulletDamage()
 	else return
 	end
 
@@ -893,7 +920,7 @@ function GM:ProcessPostDamage(ent, dmginfo, tookdmg)
 	if attacker:IsPlayer() then
 		if ent:IsNextBot() or ent:IsNPC() or ent:IsPlayer() then
 			if ent.HeadShotDamagedBy then
-				if ent.HeadShotDamagedBy == attacker then
+				if ent.HeadShotDamagedBy == attacker and bulletdmg then
 					attacker.MMasteryGunneryHeadshotDamage = (attacker.MMasteryGunneryHeadshotDamage or 0) + (effective_dmg^0.65)/10
 
 					timer.Create("TEA.GunneryMasteryTimer", 3, 1, function()
@@ -1549,8 +1576,8 @@ function GM:RecalcPlayerSpeed(ply)
 	local armorspeedmul = 1
 	local walkspeed = self.Config["WalkSpeed"]
 	local runspeed = self.Config["RunSpeed"]
-	local walkspeedbonus = ply.StatSpeed * 3
-	local runspeedbonus = ply.StatSpeed * 7
+	local walkspeedbonus = ply.StatSpeed * 2.5
+	local runspeedbonus = ply.StatSpeed * 6
 	local plyarmor = ply:GetNWString("ArmorType")
 	local slowdown = tonumber(ply.SlowDown or 0)
 
@@ -1756,7 +1783,7 @@ function GM:AddWSResources()
 end
 
 function GM:ManageSpecialEvent(eventType, shouldStart)
-	if eventType == EVENTTYPE_BLOODMOON then
+	if eventType == EVENTTYPE_SPECIAL_BLOODMOON then
 		if shouldStart then
 			self.BloodMoonActive = true
 			self.SpecialEventEndTime = CurTime() + math.Rand(600,900)
@@ -1773,4 +1800,48 @@ function GM:ManageSpecialEvent(eventType, shouldStart)
 	net.WriteUInt(eventType, 4)
 	net.WriteBool(shouldStart)
 	net.Broadcast()
+end
+
+function GM:BreakDoor(ent)
+	ent:EmitSound("physics/wood/wood_plank_break"..math.random(1, 4)..".wav", 100, math.random(90, 100))
+
+	local effect = EffectData()
+	local position = ent:LocalToWorld(ent:OBBCenter()) + ent:GetRight()*math.random(-16, 16) + ent:GetUp()*math.random(-16, 16)
+	effect:SetStart(position)
+	effect:SetOrigin(position)
+	util.Effect("GlassImpact", effect)
+
+	util.ScreenShake(ent:GetPos(), 5, 5, math.Rand(0.2, 0.4), 360)
+
+	local pos = ent:GetPos()
+	local ang = ent:GetAngles()
+	local model = ent:GetModel()
+	local skin = ent:GetSkin()
+
+	ent:Fire("open", "", 0.1)
+	ent:SetNotSolid(true)
+	ent:SetNoDraw(true)
+
+	local function ResetDoor(door, fakedoor)
+		if door:IsValid() and fakedoor:IsValid() then
+			door.doorhealth = tonumber(self.Config["DoorHealth"])
+			door:SetNotSolid(false)
+			door:SetNoDraw(false)
+			fakedoor:Remove()
+		end
+	end
+
+	local push = self:GetPos():Normalize()
+	local fakeent = ents.Create("prop_physics")
+
+	fakeent:SetPos(pos)
+	fakeent:SetAngles(ang)
+	fakeent:SetModel(model)
+	fakeent:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
+	if(skin) then
+		fakeent:SetSkin(skin)
+	end
+	fakeent:Spawn()
+
+	timer.Simple(tonumber(self.Config["DoorResetTime"]), function() ResetDoor(ent, fakeent) end)
 end

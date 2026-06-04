@@ -55,6 +55,7 @@ function ENT:Initialize( )
 
 	self:AddFlags(FL_NOTARGET)
 	self.LastTimeUsed = 0
+	self.LastHurtBy = {}
 	local PhysAwake = self.Entity:GetPhysicsObject( )
 	if PhysAwake:IsValid( ) then
 		PhysAwake:Wake()

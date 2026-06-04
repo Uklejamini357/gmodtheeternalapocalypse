@@ -254,10 +254,10 @@ GM.Config = {
 	-- vault size in kg
 	["VaultSize"] = 200,
 
-	-- remember that the speed skill increases your walk speed by 3.5 for each level, so at 140 walkspeed players can reach a possible maximum of 175 walk speed
-	["WalkSpeed"] = 155,
+	-- remember that the speed skill increases your walk speed by 3 for each level, so at 140 walkspeed players can reach a possible maximum of 175 walk speed
+	["WalkSpeed"] = 165,
 	-- speed skill increases your running speed by 7 per skill level, so if default is 280, players can reach max of 350 run speed
-	["RunSpeed"] = 270,
+	["RunSpeed"] = 285,
 
 	-- Cycles inflation. (real-time days)
 	["InflationCycleTime"] = 28,

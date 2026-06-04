@@ -377,9 +377,13 @@ end)
 
 net.Receive("tea_events", function(len)
 	local eventType = net.ReadUInt(4)
-	local start = net.ReadBool()
+	
+	if eventType == EVENTTYPE_AIRDROP then
+		surface.PlaySound("ambient/overhead/hel1.wav")
 
-	if eventType == EVENTTYPE_BLOODMOON then
+		chat.AddText(Color(127,255,255), translate.Get("airdrop_appeared"))
+	elseif eventType == EVENTTYPE_SPECIAL_BLOODMOON then
+		local start = net.ReadBool()
 		GAMEMODE.BloodMoonActive = start
 		if start then
 			GAMEMODE.BloodMoonStart = CurTime()

@@ -610,4 +610,13 @@ GM.AdminTools = {
 			explode:Fire("Explode")
 		end
 	},
+
+	BreakDoor = {
+		Spawn = function(owner, swep, tr, pos)
+			local ent = tr.Entity
+			if IsValid(ent) and (ent:GetClass() == "prop_door" or ent:GetClass() == "prop_door_rotating") then
+				GAMEMODE:BreakDoor(ent)
+			end
+		end
+	},
 }
