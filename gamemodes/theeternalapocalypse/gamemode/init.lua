@@ -906,6 +906,7 @@ function GM:ProcessPostDamage(ent, dmginfo, tookdmg)
 		if ent:Alive() then
 			if ent.MMasterySurvivorDamageTook and ent.MMasterySurvivorDamageTook > 0 then
 				timer.Create("TEA.MSurvivor_"..ent:EntIndex(), 10, 1, function()
+					if !IsValid(ent) then return end
 					if ent:Alive() then
 						ent:GainMasteryXP(ent.MMasterySurvivorDamageTook, "Survivor")
 					end

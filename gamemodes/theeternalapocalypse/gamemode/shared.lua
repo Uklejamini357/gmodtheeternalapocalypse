@@ -109,34 +109,21 @@ function GM:CreateTeams()
 end
 
 
-function GM:IsSpecialPerson(ply, image)
-	local img, tooltip
+function GM:IsSpecialPerson(ply)
 --i know this was copied from zombiesurvival gamemode but i was too lazy to make one by myself anyway
 --you can add new special person table by yourself but you must keep the original ones and the new ones must be after steamid
 	if ply:SteamID64() == "76561198274314803" then
-		img = "icon16/award_star_gold_3.png"
-		tooltip = "The Eternal Apocalypse Dev"
+		return "icon16/award_star_gold_3.png", "The Eternal Apocalypse Dev"
 	elseif ply:SteamID64() == "76561198028288732" then
-		img = "icon16/medal_gold_3.png"
-		tooltip = "LegendofRobbo\nCreator of After The End"
+		return "icon16/medal_gold_3.png", "LegendofRobbo\nCreator of After The End"
 	elseif ply:IsBot() then
-		img = "icon16/plugin.png"
-		tooltip = "Bot\n\nJust a bot"
+		return "icon16/plugin.png", "Bot\n\nJust a bot"
 	elseif SuperAdminCheck(ply) then
-		img = "icon16/shield_add.png"
-		tooltip = "Super Admin"
+		return "icon16/shield_add.png", "Super Admin"
 	elseif AdminCheck(ply) then
-		img = "icon16/shield.png"
-		tooltip = "Admin"
+		return "icon16/shield.png", "Admin"
 	end
 
-	if img then
-		if CLIENT then
-			image:SetImage(img)
-			image:SetTooltip(tooltip)
-		end
-		return true
-	end
 	return false
 end
 

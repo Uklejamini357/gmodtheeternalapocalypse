@@ -35,8 +35,8 @@ function GM:CreateScoreboardInv()
 	end
 	pScoreBoard.SysTimeCreated = SysTime()
 	self.ScoreboardFrame = pScoreBoard
-	
-	
+
+
 -----------------------------------------Main Sheet---------------------------------------------------------------
 	local PropertySheet = vgui.Create("DPropertySheet", pScoreBoard)
 	PropertySheet:SetPos(0, 0)
@@ -52,26 +52,31 @@ function GM:CreateScoreboardInv()
 		end
 	end
 
-	local Scores = vgui.Create("DPanelList", PropertySheet)
-	Scores:SetSize(wide, tall - 20)
-	Scores:SetPadding(5)
-	Scores:SetSpacing(5)
-	Scores:EnableHorizontal(false)
-	Scores:EnableVerticalScrollbar(true)
-	Scores:SetPos(10, 30)
-	Scores:SetName("")
+	local Scores = vgui.Create("DScrollPanel", PropertySheet)
+	Scores:Dock(FILL)
+	Scores.PlayerPanels = {}
 
+	local plrsOnline = vgui.Create("DLabel", Scores)
+	plrsOnline:SetZPos(-1)
+	plrsOnline:SetText(string.format("Players online: %d/%d", player.GetCount(), game.MaxPlayers()))
+	plrsOnline:SetTooltip("TEA.HUDFont")
+	plrsOnline:Dock(TOP)
+	plrsOnline:DockMargin(5, 2, 5, 2)
 
 	local function SetUpScoreBoard()
 		for k, v in pairs(player.GetAll()) do
+			if Scores.PlayerPanels[v] then continue end
 			local plypanel = vgui.Create("DPanel", Scores)
-			plypanel:SetPos(0, 100)
-			plypanel:SetSize(wide - 20, 60)
-			plypanel.Paint = function() -- Paint function
-				draw.RoundedBoxEx(8,1,1,plypanel:GetWide(),plypanel:GetTall(),Color(0, 0, 0, 150), false, false, false, false)
+			plypanel:SetTall(60)
+			plypanel:Dock(TOP)
+			plypanel:DockMargin(5, 5, 5, 5)
+			plypanel.Paint = function(panel) -- Paint function
+				draw.RoundedBoxEx(8,1,1,panel:GetWide(),panel:GetTall(),Color(0, 0, 0, 150), false, false, false, false)
 				surface.SetDrawColor(150, 75, 75 ,255)
-				surface.DrawOutlinedRect(1, 1, plypanel:GetWide() - 1 , plypanel:GetTall() - 1)
+				surface.DrawOutlinedRect(1, 1, panel:GetWide() - 1 , panel:GetTall() - 1)
 			end
+			plypanel:SetZPos(v:EntIndex())
+			Scores.PlayerPanels[v] = plypanel
 
 			local plyname = vgui.Create("DLabel", plypanel)
 			plyname:SetPos(62, 22)
@@ -135,28 +140,12 @@ function GM:CreateScoreboardInv()
 			av:SetSize(40, 40)
 			av:SetPlayer(v)
 
-			local avbutton = vgui.Create("DButton", av)
-			avbutton:SetSize(40, 40)
-			avbutton:SetText("")
-			avbutton.Paint = function()
-			end
-			avbutton.DoClick = function()
-			end
-		
 			plypanel.m_img = vgui.Create("DImage", plypanel)
 			plypanel.m_img:SetPos(1, 22)
 			plypanel.m_img:SetSize(16, 16)
-			plypanel.m_img:SetMouseInputEnabled(true)
-			plypanel.m_img:SetVisible(false)
-			if gamemode.Call("IsSpecialPerson", v, plypanel.m_img) then
-				plypanel.m_img:SetVisible(true)
-			else
-				plypanel.m_img:SetTooltip()
-				plypanel.m_img:SetVisible(false)
-			end
 
 			local plypanelAction = vgui.Create("DButton", plypanel)
-			plypanelAction:SetSize(plypanel:GetWide(), plypanel:GetTall())
+			plypanelAction:Dock(FILL)
 			plypanelAction:SetText("")
 			plypanelAction.Paint = function(panel, w, h)
 				if v == me then
@@ -207,6 +196,18 @@ function GM:CreateScoreboardInv()
 				return true
 			end
 
+			if me == v then
+				plypanelAction:SetTooltip("This is you!")
+			end
+
+			local img, txt = gamemode.Call("IsSpecialPerson", v)
+			if img and txt then
+				plypanelAction:SetTooltip((plypanelAction:GetTooltip() or "").."\n"..txt)
+				plypanel.m_img:SetImage(img)
+			else
+				plypanel.m_img:SetVisible(false)
+			end
+
 
 			local mutechat = vgui.Create("DButton", plypanel)
 			mutechat:SetSize(wide*0.05, 23)
@@ -255,14 +256,20 @@ function GM:CreateScoreboardInv()
 					end
 				end
 			end
-			Scores:AddItem(plypanel)
 		end
 	end
 	SetUpScoreBoard()
-	local function RefreshScores() 
-		timer.Simple(2, function()
-			if !IsValid(Scores) then return end
-			Scores:Clear()
+	local function RefreshScores()
+		timer.Simple(1, function()
+			if !IsValid(Scores) or !Scores:IsVisible() then return end
+
+			plrsOnline:SetText(string.format("Players online: %d/%d", player.GetCount(), game.MaxPlayers()))
+
+			for pl,pnl in pairs(Scores.PlayerPanels) do
+				if pl:IsValid() then pnl:SetZPos(pl:EntIndex()) continue end
+				pnl:Remove()
+				Scores.PlayerPanels[pl] = nil
+			end
 			SetUpScoreBoard()
 			RefreshScores()
 		end)
@@ -419,7 +426,7 @@ function GM:CreateScoreboardInv()
 		end
 		sFactions:AddItem(pFaction)
 	end
-	
+
 --------------------------Help Form------------------------------------
 
 	local HelpForm = vgui.Create("DPanel", PropertySheet)
@@ -537,3 +544,4 @@ function GM:ScoreboardHide()
 	pScoreBoard:SetMouseInputEnabled(false)
 	pScoreBoard:AlphaTo(0, time, 0)
 end
+
