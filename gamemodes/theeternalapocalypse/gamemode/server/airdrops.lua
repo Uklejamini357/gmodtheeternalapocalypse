@@ -139,6 +139,10 @@ function GM:SpawnAirdrop(plycountoverride, silent, delay)
 
 	dropent:Spawn()
 	dropent:Activate()
+
+	net.Start("tea_events")
+	net.WriteUInt(EVENTTYPE_AIRDROP, 4)
+	net.Broadcast()
 end
 
 function GM:CallAirdrop(plycountoverride, silent, delay)

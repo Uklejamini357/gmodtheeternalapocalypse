@@ -288,6 +288,13 @@ function GM:UseItem(ply, item, use, targetply)
 					ply:GiveAmmo(ref.AmmoAmount, ref.AmmoType)
 				end
 
+				if ArcCW and ref.ArcCWAtt then
+					shouldremove = true
+
+					ArcCW:PlayerGiveAtt(ply, ref.ArcCWAtt, 1)
+					ArcCW:PlayerSendAttInv(ply)
+				end
+
 
 				if ref.UseSound then
 					ply:EmitSound(ref.UseSound, 100, 100)

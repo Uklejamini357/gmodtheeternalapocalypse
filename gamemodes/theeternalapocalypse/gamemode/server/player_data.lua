@@ -883,18 +883,18 @@ function meta:LoadLastSession()
 					end
 
 					wep.Attachments.BaseClass = nil -- AGHHHHHHHHHH
-					if wep and wep:IsValid() and wep.Attachments and wep.Attach then
+					if wep.Attachments and wep.Attach then
 						for id,att in pairs(v) do
-							print(id, att)
 							ArcCW:PlayerGiveAtt(self, att, 1)
 							wep:Attach(id, att, true, true)
 						end
+
+						wep:AdjustAtts()
+						wep:RefreshBGs()
+						wep:NetworkWeapon()
+						wep:SetupModel(false)
+						wep:SetupModel(true)
 					end
-					wep:AdjustAtts()
-					wep:RefreshBGs()
-					wep:NetworkWeapon()
-			        wep:SetupModel(false)
-			        wep:SetupModel(true)
 				end
 			end
 		end

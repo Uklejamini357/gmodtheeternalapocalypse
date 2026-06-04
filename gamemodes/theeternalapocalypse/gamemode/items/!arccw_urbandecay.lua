@@ -276,23 +276,6 @@ GM:CreateItem("arccw_ur_spas12", {
 
 
 
-GM:CreateItem("midnights_gso_xm8", {
-    Name = "XM-8",
-    Description = "",
-    Cost = 1,
-    Model = "models/weapons/arccw/c_ur_spas12.mdl",
-    Material = "entities/midnights_gso_xm8.png",
-    Weight = 4.4,
-    Supply = -1,
-    Rarity = RARITY_LEGENDARY,
-    Category = ITEMCATEGORY_WEAPONS,
-	ItemType = ITEMTYPE_WEAPON,
-    WeaponType = "midnights_gso_xm8",
-
-    ArcCWCompatible = true
-})
-
-
 GM:CreateItem("arccw_uc_usp", {
     Name = "USP",
     Description = "",
@@ -342,3 +325,23 @@ GM:CreateItem("arccw_myt_uc_scar", {
 
     ArcCWCompatible = true
 })
+
+
+-- XM8
+
+GM:CreateItem("midnights_gso_xm8", {
+    Name = "XM-8",
+    Description = "",
+    Cost = 1,
+    Model = "models/weapons/arccw/c_ur_spas12.mdl",
+    Material = "entities/midnights_gso_xm8.png",
+    Weight = 4.4,
+    Supply = -1,
+    Rarity = RARITY_LEGENDARY,
+    Category = ITEMCATEGORY_WEAPONS,
+	ItemType = ITEMTYPE_WEAPON,
+    WeaponType = "midnights_gso_xm8",
+
+    ArcCWCompatible = true
+})
+

@@ -1178,3 +1178,4 @@ LANG.i_cant_pick_this_up = "I can't pick this up!"
 
 -- Edited
 
+LANG.toggling_pvp = "Toggling PvP in 5 seconds..."

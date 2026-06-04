@@ -5,7 +5,7 @@ function GM:TogglePVP(ply)
 	if (ply.PvPNoToggle or 0) > CurTime() then ply:SystemMessage(translate.ClientGet(ply, "pvp_unabletotoggle"), Color(255,205,205,255), true) return false end
 
 	ply:SetPvPGuarded(2)
-	ply:SystemMessage("Toggling PvP in 5 seconds...", Color(205,205,255,255), true)
+	ply:SystemMessage(translate.Get("toggling_pvp"), Color(205,205,255,255), true)
 	ply:EmitSound("npc/attack_helicopter/aheli_mine_drop1.wav", 100, 100)
 
 	local nearby = ents.FindInSphere(ply:GetPos(), 800)
