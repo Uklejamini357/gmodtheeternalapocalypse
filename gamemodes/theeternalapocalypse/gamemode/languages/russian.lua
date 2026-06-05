@@ -17,6 +17,7 @@ translate.AddLanguage("ru", "Russian")
 LANG.health = "Здоровье: %s / %s"
 LANG.armor = "Броня: %s / %s"
 LANG.money = "Деньги: %s"
+LANG.xp = "XP: %s"
 LANG.level = "%s-й уровень"
 LANG.prestige = "%s-й престиж"
 LANG.timesurvived = "Время выживания: %ss"
@@ -64,6 +65,7 @@ LANG.dropcash = "Выбросить деньги"
 LANG.togglepvp = "Игрок против игрока"
 LANG.emotes = "Эмоции"
 LANG.perks = "Perks"
+LANG.thirdperson = "Third Person"
 LANG.clearingprops = "Удаление объектов..."
 LANG.doit = "Сделай это!"
 LANG.doprestige1 = "Престиж"
@@ -77,6 +79,7 @@ LANG.infection_level_effective = "Effective: %s%%"
 LANG.dropping_cash = "Dropping Money..."
 LANG.drop_cash_prompt = "How much cash do you want to drop?"
 
+LANG.item_type = "Item type: %s"
 LANG.wep_name = "Оружие в руках: %s"
 LANG.wep_class = "Класс оружия: %s"
 LANG.wep_damage = "Damage: %s (Max DPS: %s)"
@@ -218,6 +221,84 @@ LANG.loottaken = "Найден предмет: %s"
 LANG.tr_itemsold = "Продан предмет \"%s\" (%dx) за %d (%ss)!"
 LANG.tr_itembought = "Куплен предмет \"%s\" за %d (%ss)!"
 
+-- Statistics
+
+LANG.your_statistics = "Your statistics"
+LANG.plr_statistics = "%s's statistics"
+
+LANG.Stats_BestSurvivalTime = "Best survival time"
+LANG.Stats_TimePlayed = "Total time played"
+LANG.Stats_TimesJoined = "Times joined"
+LANG.Stats_MapsTransitioned = "Maps transitioned"
+
+LANG.Stats_ItemsUsedHeal = "Heal items used"
+LANG.Stats_ItemsUsedDrink = "Drink items used"
+LANG.Stats_ItemsUsedFood = "Food items used"
+LANG.Stats_ItemsUsedAmmo = "Ammo items used"
+LANG.Stats_ItemsUsedMisc = "Misc items used"
+
+LANG.Stats_ZombieKills = "Zombie kills"
+LANG.Stats_ZombieKillAssists = "Zombie kill assists"
+LANG.Stats_BossKills = "Boss kills"
+LANG.Stats_BossKillAssists = "Boss kill assists"
+LANG.Stats_ZombieDamageDealt = "Damage dealt to zombies"
+
+LANG.Stats_LootFound = "Loot caches found"
+LANG.Stats_LootCommonFound = "Common loot caches found"
+LANG.Stats_LootUncommonFound = "Uncommon loot caches found"
+LANG.Stats_LootRareFound = "Rare loot caches found"
+LANG.Stats_LootEpicFound = "Epic loot caches found"
+LANG.Stats_LootLegendaryFound = "Legendary loot caches found"
+LANG.Stats_LootFactionFound = "Faction loot caches found"
+LANG.Stats_LootBossFound = "Boss loot caches found"
+
+LANG.Stats_PlayersKilled = "Players killed"
+
+LANG.Stats_CashGainedByItemSell = "Cash gained from selling items"
+LANG.Stats_CashGainedByBounty = "Cash gained from bounties"
+LANG.Stats_CashGainedByLvlup = "Cash gained from leveling up"
+LANG.Stats_CashGainedByMastery = "Cash gained from masteries"
+
+LANG.Stats_CashSpentByItemBuy = "Cash spent by buying items"
+LANG.Stats_CashSpentByPerkResets = "Cash spent by resetting perks"
+
+LANG.Stats_Deaths = "Deaths"
+
+-- Masteries
+
+LANG.masteries = "Masteries"
+
+LANG.StatsM_Melee = "Melee"
+LANG.StatsM_Melee_Desc = "With each swing of your melee weapon, you become better at it."
+LANG.StatsM_Melee_GainHelpDesc = "XP is gained by inflicting damage with melee weapons."
+LANG.StatsM_Melee_RewardDesc = "+0.5% melee damage per level, max +5%."
+LANG.StatsM_Melee_EffRewardDesc = "+%s%% melee damage"
+
+LANG.StatsM_PvP = "PvP"
+LANG.StatsM_PvP_Desc = "Your skills become no match against other survivors."
+LANG.StatsM_PvP_GainHelpDesc = "Gained by killing other players. The higher their level and prestige, the more XP is gained."
+LANG.StatsM_PvP_RewardDesc = "No actual boost, only cash gain."
+LANG.StatsM_PvP_EffRewardDesc = "None"
+
+LANG.StatsM_Survivor = "Survivor"
+LANG.StatsM_Survivor_Desc = "The excess damage has been making your body getting used to it, resulting it in becoming more resilient."
+LANG.StatsM_Survivor_GainHelpDesc = "Earned by surviving damage while on <10% health."
+LANG.StatsM_Survivor_RewardDesc = "Increases damage resistance by +0.25% per level, max +2.5%."
+LANG.StatsM_Survivor_EffRewardDesc = "+%s%% damage resistance"
+
+LANG.StatsM_Gunnery = "Gunnery"
+LANG.StatsM_Gunnery_Desc = "Wielding guns has never been any better before."
+LANG.StatsM_Gunnery_GainHelpDesc = "Earned by inflicting headshots with guns."
+LANG.StatsM_Gunnery_RewardDesc = "+0.5% to base headshot damage per level, max +5%"
+LANG.StatsM_Gunnery_EffRewardDesc = "+%s%% base headshot damage"
+
+LANG.StatsM_Medic = "Medic"
+LANG.StatsM_Medic_Desc = "Medicine is very important especially in this apocalyptic world."
+LANG.StatsM_Medic_GainHelpDesc = "Earned by healing neutral/friendly players."
+LANG.StatsM_Medic_RewardDesc = "+1% more effective healing to others per level, max +10%"
+LANG.StatsM_Medic_EffRewardDesc = "+%s%% healing efficiency to others"
+
+
 --Admin menu
 LANG.admin_panel = "Admin Panel"
 LANG.toggle_admin_mode = "Toggle Admin Mode"
@@ -281,6 +362,9 @@ LANG.zombies_b = "Boss Zombies"
 
 LANG.yes = "Yes"
 LANG.no = "No"
+LANG.accept = "Accept"
+LANG.cancel = "Cancel"
+LANG.finish = "Finish"
 
 
 --Items
@@ -787,8 +871,10 @@ LANG.item_armor_beril5m_n = "Beril-5M Military Armor"
 LANG.item_armor_beril5m_d = "A Berill-5M special forces suit modified for the Zone environment. It includes a PSZ-9a military bulletproof vest with beryllium coating and a Sphere-08 helmet.\nIt is designed for assault operations in areas with high background radiation. Its level of environmental protection is low."
 LANG.item_armor_merc_sunrise_n = "Mercenary Sunrise Armor"
 LANG.item_armor_merc_sunrise_d = "Mercenary Sunrise Armor, made by the mercenaries which have been inspired by the stalkers armor, became popular in use by the mercenaries.\nHas a decent protection from the cuts and bullets, as well as from the environmental hazards."
+LANG.item_armor_stalker_seva_n = "SEVA Protection Suit"
+LANG.item_armor_stalker_seva_d = ""
 LANG.item_armor_army_seva_n = "Military SEVA Protection Suit"
-LANG.item_armor_army_seva_d = "SEVA Protection Suit"
+LANG.item_armor_army_seva_d = ""
 LANG.item_armor_svoboda_seva_n = "Freedom SEVA Protection Suit"
 LANG.item_armor_svoboda_seva_d = ""
 LANG.item_armor_dolg_seva_n = "Duty SEVA Protection Suit"
@@ -889,23 +975,23 @@ LANG.dmgtaken = "Урона получено: %s"
 
 -- Tips
 
-LANG.Tip1 = "Остерегайтесь боссов, они очень сильны своими уникальными способностями, но могут выпадать хорошие трофеи."
-LANG.Tip2 = "Побродите по карте. Вы можете найти какой-нибудь тайник с добычей, содержащий либо обычные, либо хорошие предметы."
-LANG.Tip3 = "Помните, если у вас большие деньги за вознаграждение, обналичивайте их у торговцев. В противном случае, если вы умёте, вы потеряете 30-40% от этого за смерть."
-LANG.Tip4 = "Убивайте зомби. Они дают хорошее количество опыта и налички, особенно те, кто сильнее."
+LANG.Tip1 = "Остерегайтесь боссов, они очень сильны своими уникальными способностями, но могут выпадать хорошие трофеи." -- need re-translate
+LANG.Tip2 = "Побродите по карте. Вы можете найти какой-нибудь тайник с добычей, содержащий либо обычные, либо хорошие предметы." -- need re-translate
+LANG.Tip3 = "Помните, если у вас большие деньги за вознаграждение, обналичивайте их у торговцев. В противном случае, если вы умёте, вы потеряете 30-40% от этого за смерть." -- need re-translate
+LANG.Tip4 = "Убивайте зомби. Они дают хорошее количество опыта и налички, особенно те, кто сильнее." -- need re-translate
 LANG.Tip5 = "Если вам становится скучно и вы устали убивать зомби снова и снова, включите урон между игроками и убивайте других выживших!"
 LANG.Tip6 = "Если вам нужно что-то уникальное, подумайте о создании фракции. Вы можете создавать особые постройки фракций, даже склады боеприпасов."
-LANG.Tip7 = "Совет, который следует запомнить: если вы умрёте, вы выбросите своё оружие, которое держали в руках. Сюда не входят кулаки или ваш инструмент сборки."
-LANG.Tip8 = "Если вы находитесь рядом с воздушным грузом, то автоматически включается урон между игроками. Остерегайтесь других выживших при нахождении рядом с грузом, вы не сможете убить выживших, если у них урон между игроками не включён!"
-LANG.Tip9 = "Подумайте о покупке хорошей брони. Броня обеспечивает защиту от зомби и окружающей среды, но вы не потеряете её, даже если она надета."
-LANG.Tip10 = "При победе над боссом, игрок, нанёсший ему наибольший урон, сможет забрать добычу. Старайтесь нанести боссам как можно больше урона!"
+LANG.Tip7 = "Совет, который следует запомнить: если вы умрёте, вы выбросите своё оружие, которое держали в руках. Сюда не входят кулаки или ваш инструмент сборки." -- need re-translate
+LANG.Tip8 = "Если вы находитесь рядом с воздушным грузом, то автоматически включается урон между игроками. Остерегайтесь других выживших при нахождении рядом с грузом, вы не сможете убить выживших, если у них урон между игроками не включён!" -- need re-translate
+LANG.Tip9 = "Подумайте о покупке хорошей брони. Броня обеспечивает защиту от зомби и окружающей среды, но вы не потеряете её, даже если она надета." -- need re-translate
+LANG.Tip10 = "При победе над боссом, игрок, нанёсший ему наибольший урон, сможет забрать добычу. Старайтесь нанести боссам как можно больше урона!" -- need re-translate
 LANG.Tip11 = "Если зомби продолжат приближаться к вам, подумайте о том, чтобы соорудить баррикаду. Не забудьте взять с собой гаечный ключ строителя, чтобы вы могли её построить и ремонтировать!"
-LANG.Tip12 = "Если вы достигнете максимального уровня, подумайте над активацией престижа. Ваши уровни, опыт, навыки будут сброшены, но вы получите хорошую способность, которая помогает в выживании, или в деньгах, в зависимости от вашего престижа."
+LANG.Tip12 = "Если вы достигнете максимального уровня, подумайте над активацией престижа. Ваши уровни, опыт, навыки будут сброшены, но вы получите хорошую способность, которая помогает в выживании, или в деньгах, в зависимости от вашего престижа." -- need re-translate
 LANG.Tip13 = "Если у вас достаточно наличных на лучшее оружие, убедитесь, что у вас также есть деньги на боеприпасы для него!"
-LANG.Tip14 = "Обдумывайте каждый навык, для какого вы используете очко навыка. Сначала стоит максимально улучшить навык знания."
-LANG.Tip15 = "Подумайте о создании некоторых предметов, если вы получите немного добычи. Вы можете сэкономить немного денег."
+LANG.Tip14 = "Обдумывайте каждый навык, для какого вы используете очко навыка. Сначала стоит максимально улучшить навык знания." -- need re-translate
+LANG.Tip15 = "Подумайте о создании некоторых предметов, если вы получите немного добычи. Вы можете сэкономить немного денег." -- need re-translate
 LANG.Tip16 = "Попробуйте овладеть некоторыми навыками, такими как ближний бой. Вы можете получить некоторое преимущество и деньги, если повысите уровень мастерства."
-LANG.Tip17 = "Фракции автоматически распускаются, когда количество участников фракции достигает нуля!"
+LANG.Tip17 = "Фракции автоматически распускаются, когда количество участников фракции достигает нуля!" -- need re-translate
 LANG.Tip18 = "Press ESCAPE button while having trader panel open to quickly close it!"
 LANG.Tip19 = "Keep an eye on infection level. Zombies become more dangerous, but more rewarding as it goes up..."
 
@@ -988,6 +1074,10 @@ LANG.task_finished1 = "You have finished a task "
 LANG.task_cancelled1 = "You cancelled task "
 LANG.task_cancelled2 = ". You have "
 LANG.task_cancelled3 = " hours cooldown before you are able to accept this task again!"
+LANG.task_cancel_confirm1 = "Are you sure you want to cancel this task?"
+LANG.task_cancel_confirm2 = "Cancel task confirm"
+LANG.taskslist_n = "Tasks list"
+LANG.taskslist_d = "Complete your tasks and get some juicy rewards!"
 
 -- New
 
@@ -1052,5 +1142,30 @@ LANG.wakeup_cause_rested = "You wake up feeling rested!"
 LANG.i_cant_pick_this_up = "I can't pick this up!"
 
 
--- Edited
+LANG.toggling_pvp = "Toggling PvP in 5 seconds..."
+LANG.toggling_pvp = "Toggling PvP in 5 seconds..."
+LANG.cant_drop_money_cd = "Wait before you drop more money!"
+LANG.cant_drop_money_dead = "You can't drop money when dead!"
+LANG.cant_drop_money_low = "Invalid drop amount, must be at least 1 %s!"
+LANG.insufficient_money_drop = "You don't have that many %s(s)!"
+LANG.dropped_money = "You dropped %d %s(s)!"
 
+LANG.fac_name_exists = "A faction with this name already exists!"
+LANG.fac_need_faction_inv = "You need to be in a faction to invite somebody else to join you!"
+LANG.fac_kick_attempt_not_leader = "You can't kick somebody if you aren't the faction leader!"
+LANG.fac_no_create_in_faction = "You can't create a new faction while in a faction!"
+LANG.fac_no_create_no_name = "You can't create a faction with no name!"
+LANG.fac_no_create_too_dark = "You can't create a faction with a black colour! Try a brighter colour instead!"
+LANG.fac_no_create_expensive = "You can't afford to make a faction! Making a faction costs %s %ss!"
+LANG.fac_no_create_too_long = "Your faction name cannot be longer than %d characters!"
+LANG.fac_no_join_already_in_fac = "You can't join a faction while already in a faction!"
+LANG.fac_no_join_already_in_this_fac = "You are already in this faction!"
+LANG.fac_no_join_private = "This faction is not public! You must be invited to join it."
+LANG.fac_not_leader = "You are not the leader of your faction!"
+LANG.fac_cant_kick_self = "You can't kick yourself! Use the leave faction or disband faction command instead!"
+LANG.fac_joined = "You joined the faction %s"
+LANG.fac_created = "%s has created a faction named: %s"
+LANG.fac_kicked_plr = "You have kicked %s from your faction!"
+LANG.fac_kicked_from = "%s has kicked you out from the faction!"
+LANG.fac_already_loner = "You are already a loner!"
+LANG.fac_cant_leave_pvp = "You cannot leave faction as you have damaged or you took damage from another player within the last 60 seconds!"

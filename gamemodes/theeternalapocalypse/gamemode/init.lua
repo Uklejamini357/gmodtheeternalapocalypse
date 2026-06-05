@@ -810,10 +810,6 @@ end
 function GM:EntityTakeDamage(ent, dmginfo)
 	local attacker = dmginfo:GetAttacker()
 
-	if self.SafezoneGrindingPrevention == 1 and (ent:IsNPC() or ent:IsNextBot()) and ent.IsZombie and attacker:IsValid() and attacker:IsPlayer() and attacker:IsSZProtected() then
-		return true
-	end
-
 	if attacker:IsPlayer() and ent:GetClass() == "tea_trader" and ent.LastHurtBy then
 		if !ent.LastHurtBy[attacker] or ent.LastHurtBy[attacker]+5 < CurTime() then
 			local txt = table.Random({
@@ -827,6 +823,11 @@ function GM:EntityTakeDamage(ent, dmginfo)
 		end
 
 		ent.LastHurtBy[attacker] = CurTime()
+		return true
+	end
+
+	if self.SafezoneGrindingPrevention == 1 and (ent:IsNPC() or ent:IsNextBot()) and ent.IsZombie and attacker:IsValid() and attacker:IsPlayer() and attacker:IsSZProtected() then
+		return true
 	end
 
 	if ent.ProcessDamage and not ent:ProcessDamage(dmginfo) then return true end
@@ -899,7 +900,7 @@ function GM:ProcessPostDamage(ent, dmginfo, tookdmg)
 	end
 
 	if ent:IsPlayer() then
-		if (attacker:IsNPC() or attacker:IsNextBot() or attacker:IsPlayer()) and ent:Health() <= ent:GetMaxHealth()*0.1 and ent:Alive() then
+		if (attacker:IsNPC() or attacker:IsNextBot() or attacker:IsPlayer()) and ent:Health() <= ent:GetMaxHealth()*0.15 and ent:Alive() then
 			ent.MMasterySurvivorDamageTook = (ent.MMasterySurvivorDamageTook or 0) + effective_dmg
 		end
 
@@ -918,7 +919,7 @@ function GM:ProcessPostDamage(ent, dmginfo, tookdmg)
 		end
 	end
 
-	if attacker:IsPlayer() then
+	if attacker:IsPlayer() and attacker:CanGrind() then
 		if ent:IsNextBot() or ent:IsNPC() or ent:IsPlayer() then
 			if ent.HeadShotDamagedBy then
 				if ent.HeadShotDamagedBy == attacker and bulletdmg then
@@ -947,8 +948,7 @@ function GM:ProcessPostDamage(ent, dmginfo, tookdmg)
 		end
 	end
 
-	if (ent:IsNextBot() or ent:IsNPC()) and attacker:IsPlayer() and
-	not (self.SafezoneGrindingPrevention == 2 and attacker:IsSZProtected()) then
+	if (ent:IsNextBot() or ent:IsNPC()) and attacker:IsPlayer() and attacker:CanGrind() then
 		ent.LastAttacker = attacker
 		if !ent.BossMonster then
 			timer.Create("TEAZombieLastAttacker_"..ent:EntIndex(), 15, 1, function()

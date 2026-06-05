@@ -110,8 +110,8 @@ function GM:NetUpdatePlayerStatistics(ply, target)
 	net.Start("UpdateTargetStats")
 	net.WriteTable(target.Statistics)
 	for mType in SortedPairs(self.MasterySkillStats) do
-		net.WriteFloat(ply.MasterySkills[mType].XP)
-		net.WriteUInt(ply.MasterySkills[mType].Level, 8)
+		net.WriteFloat(target.MasterySkills[mType].XP)
+		net.WriteUInt(target.MasterySkills[mType].Level, 8)
 	end
 	net.Send(ply)
 end

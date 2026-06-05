@@ -489,7 +489,7 @@ function GM:PostDrawHUD()
 
 	--XP, Money & Mastery gain texts
 	cam.Start2D()
-	draw.SimpleText(translate.Format("masteryxpgained", MasteryXPGained, MasteryType), "TEA.HUDFontSmall", self.HUDStyle == HUDSTYLE_ATE and 330 or 140, 40, MasteryColor, 0, 1)
+	draw.SimpleText(translate.Format("masteryxpgained", MasteryXPGained, MasteryType), "TEA.HUDFontSmall", 140, 40, MasteryColor, 0, 1)
 
 	if !me:Alive() and self:GetEvent() == EVENT_NONE then
 		if hud and hud.DrawDead then

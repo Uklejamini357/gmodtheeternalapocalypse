@@ -421,6 +421,10 @@ function meta:GetLifeStatisticPoints(var, value)
 	return self.LifeStats[var] or 0
 end
 
+function meta:CanGrind()
+	return not (GAMEMODE.SafezoneGrindingPrevention == 2 and self:IsSZProtected())
+end
+
 function meta:GetMaxBattery()
 	local armorstr = self:GetNWString("ArmorType") or "none"
 	local armortype = GAMEMODE.ItemsList[armorstr]

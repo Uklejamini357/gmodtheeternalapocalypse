@@ -250,7 +250,7 @@ if CLIENT then
 		GAMEMODE:OnConVarChanged(cvar, old, new)
 	end, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_cl_nopvphud")
 
-	GM.DrawZombiesInfo = CreateClientConVar("tea_cl_drawzinfo", 0, true, false, "Draw zombie info? (Name, Health and its' purpose (or what does it do)) Currently not working", 0, 1):GetBool()
+	GM.DrawZombiesInfo = CreateClientConVar("tea_cl_drawzinfo", 1, true, false, "Draw zombie info? (Name, Health and its' purpose (or what does it do)) Currently not working", 0, 1):GetBool()
 	cvars.AddChangeCallback("tea_cl_drawzinfo", function(cvar,old,new)
 		GAMEMODE.DrawZombiesInfo = tobool(new)
 		GAMEMODE:OnConVarChanged(cvar, old, new)

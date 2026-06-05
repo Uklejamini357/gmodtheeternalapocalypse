@@ -65,6 +65,7 @@ function SWEP:UpdateNextIdle()
 end
 
 function SWEP:PrimaryAttack()
+	if !IsFirstTimePredicted() then return end
 	local ct = CurTime()
 	local owner = self:GetOwner()
 

@@ -896,8 +896,10 @@ LANG.item_armor_beril5m_n = "Armadura Militar Beril-5M"
 LANG.item_armor_beril5m_d = "Un traje de las fuerzas especiales Berill-5M modificado para el entorno de la Zona. Incluye un chaleco antibalas militar PSZ-9a con revestimiento de berilio y un casco Sphere-08.\nEstá diseñado para operaciones de asalto en areas con alta radiación ambiental. Su nivel de protección ambiental es bajo."
 LANG.item_armor_merc_sunrise_n = "Armadura Sunrise de Mercenario"
 LANG.item_armor_merc_sunrise_d = "Armadura Sunrise de Mercenario, hecha por los mercenarios que han sido inspirados por la armadura de los acechadores, se volvió popular en uso por los mercenarios.\nTiene una protección decente de los cortes y balas, como también de los peligros ambientales."
+LANG.item_armor_stalker_seva_n = "Traje de Protección SEVA"
+LANG.item_armor_stalker_seva_d = ""
 LANG.item_armor_army_seva_n = "Traje de Protección SEVA Militar"
-LANG.item_armor_army_seva_d = "Traje de Protección SEVA"
+LANG.item_armor_army_seva_d = ""
 LANG.item_armor_svoboda_seva_n = "Traje de Protección SEVA Freedom"
 LANG.item_armor_svoboda_seva_d = ""
 LANG.item_armor_dolg_seva_n = "Traje de Protección SEVA de Servicio"
@@ -998,23 +1000,23 @@ LANG.dmgtaken = "Daño recibido: %s"
 
 -- Tips
 
-LANG.Tip1 = "Cuidado con los jefes, son muy fuertes con sus capacidades únicas, pero pueden soltar un buen botín."
-LANG.Tip2 = "Pasea por el mapa. Podrías encontrar algunas cajas de botín, que contienen objetos o comunes, o buenos."
-LANG.Tip3 = "Recuerda, si tienes una recompensa alta, canajeala en los mercaderes. De lo contrario, soltarás el 30-40% de esta como una fuente de recompensa si mueres."
-LANG.Tip4 = "Mata a los zombis. Dan una buena cantidad de PE y pasta, especialmente los más fuertes."
+LANG.Tip1 = "Cuidado con los jefes, son muy fuertes con sus capacidades únicas, pero pueden soltar un buen botín." -- need re-translate
+LANG.Tip2 = "Pasea por el mapa. Podrías encontrar algunas cajas de botín, que contienen objetos o comunes, o buenos." -- need re-translate
+LANG.Tip3 = "Recuerda, si tienes una recompensa alta, canajeala en los mercaderes. De lo contrario, soltarás el 30-40% de esta como una fuente de recompensa si mueres." -- need re-translate
+LANG.Tip4 = "Mata a los zombis. Dan una buena cantidad de PE y pasta, especialmente los más fuertes." -- need re-translate
 LANG.Tip5 = "Si te estás aburriendo y cansando de matar zombis sin parar, ¡activa tu JvJ y mata a otros supervivientes!"
 LANG.Tip6 = "Si necesitas algo único, considera crear una facción. Puedes construir estructuras de facción, incluso Pilas de Munición."
-LANG.Tip7 = "Un consejo a recordar, si mueres, sueltas el arma que estabas sosteniendo. Esto no incluye los puños o tu herramienta de construcción."
-LANG.Tip8 = "Si estás cerca del suministro aéreo, tu JvJ está forzado. ¡Cuidado con los otros supervivvientes cuando tengas el JvJ Forzado, no puedes matarles si no lo tienen forzado/activado!"
-LANG.Tip9 = "Considera comprar una buena armadura. La armadura otorga protección de los zombis y el entorno, pero no la perderás, incluso si la tienes equipada."
-LANG.Tip10 = "Si el jefe es derrotado, el jugador que le ha hecho más daño será capaz de recoger el botín. ¡Intenta hacerle tanto daño a los jefes como sea posible!"
+LANG.Tip7 = "Un consejo a recordar, si mueres, sueltas el arma que estabas sosteniendo. Esto no incluye los puños o tu herramienta de construcción." -- need re-translate
+LANG.Tip8 = "Si estás cerca del suministro aéreo, tu JvJ está forzado. ¡Cuidado con los otros supervivvientes cuando tengas el JvJ Forzado, no puedes matarles si no lo tienen forzado/activado!" -- need re-translate
+LANG.Tip9 = "Considera comprar una buena armadura. La armadura otorga protección de los zombis y el entorno, pero no la perderás, incluso si la tienes equipada." -- need re-translate
+LANG.Tip10 = "Si el jefe es derrotado, el jugador que le ha hecho más daño será capaz de recoger el botín. ¡Intenta hacerle tanto daño a los jefes como sea posible!" -- need re-translate
 LANG.Tip11 = "Si los zombis siguen alcanzándote, considera hacer una barricada. ¡Recuerda tener la llave inglesa del constructor para que puedas construir, y repararlas!"
-LANG.Tip12 = "Si alcanzas el nivel máximo, prestigia. Tus niveles, PE, habilidades serán reiniciados, pero ganarás una buena ventaja que ayuda a sobrevivir, o algo de pasta, dependiendo de tu prestigio."
+LANG.Tip12 = "Si alcanzas el nivel máximo, prestigia. Tus niveles, PE, habilidades serán reiniciados, pero ganarás una buena ventaja que ayuda a sobrevivir, o algo de pasta, dependiendo de tu prestigio." -- need re-translate
 LANG.Tip13 = "Si tienes suficiente pasta para un arma mejor, ¡asegúrate de que también tienes dinero para la munición!"
-LANG.Tip14 = "Asegúrate de planear en que habilidad vas a usar un punto de habilidad. Vale la pena llevar la habilidad de Conocimiento al máximo primero."
-LANG.Tip15 = "Considera elaborar algunos objetos, si consigues algo de botín. Podrías ahorrarte algo de dinero."
+LANG.Tip14 = "Asegúrate de planear en que habilidad vas a usar un punto de habilidad. Vale la pena llevar la habilidad de Conocimiento al máximo primero." -- need re-translate
+LANG.Tip15 = "Considera elaborar algunos objetos, si consigues algo de botín. Podrías ahorrarte algo de dinero." -- need re-translate
 LANG.Tip16 = "Intenta dominar algunas habilidades, tales como Cuerpo a Cuerpo. Podrías ganar alguna ventaja y dinero si la habilidad de Maestría se sube de nivel."
-LANG.Tip17 = "¡Las facciones se disuelven automaticamente cuando el contador de miembros de facción llega a 0!"
+LANG.Tip17 = "¡Las facciones se disuelven automaticamente cuando el contador de miembros de facción llega a 0!" -- need re-translate
 LANG.Tip18 = "¡Pulsa el botón de ESCAPE mientras tienes el panel del comerciante abierto para cerrarlo rápidamente!"
 LANG.Tip19 = "Ten un ojo puesto en el nivel de infección. Los zombis se vuelven más peligrosos, pero también más provechosos mientas más sube..."
 
@@ -1166,5 +1168,30 @@ LANG.wakeup_cause_rested = "¡Te despiertas sintiéndote descansado!"
 
 LANG.i_cant_pick_this_up = "¡No puedo recoger esto!"
 
--- Edited
 
+LANG.toggling_pvp = "Toggling PvP in 5 seconds..."
+LANG.cant_drop_money_cd = "Wait before you drop more money!"
+LANG.cant_drop_money_dead = "You can't drop money when dead!"
+LANG.cant_drop_money_low = "Invalid drop amount, must be at least 1 %s!"
+LANG.insufficient_money_drop = "You don't have that many %s(s)!"
+LANG.dropped_money = "You dropped %d %s(s)!"
+
+LANG.fac_name_exists = "A faction with this name already exists!"
+LANG.fac_need_faction_inv = "You need to be in a faction to invite somebody else to join you!"
+LANG.fac_kick_attempt_not_leader = "You can't kick somebody if you aren't the faction leader!"
+LANG.fac_no_create_in_faction = "You can't create a new faction while in a faction!"
+LANG.fac_no_create_no_name = "You can't create a faction with no name!"
+LANG.fac_no_create_too_dark = "You can't create a faction with a black colour! Try a brighter colour instead!"
+LANG.fac_no_create_expensive = "You can't afford to make a faction! Making a faction costs %s %ss!"
+LANG.fac_no_create_too_long = "Your faction name cannot be longer than %d characters!"
+LANG.fac_no_join_already_in_fac = "You can't join a faction while already in a faction!"
+LANG.fac_no_join_already_in_this_fac = "You are already in this faction!"
+LANG.fac_no_join_private = "This faction is not public! You must be invited to join it."
+LANG.fac_not_leader = "You are not the leader of your faction!"
+LANG.fac_cant_kick_self = "You can't kick yourself! Use the leave faction or disband faction command instead!"
+LANG.fac_joined = "You joined the faction %s"
+LANG.fac_created = "%s has created a faction named: %s"
+LANG.fac_kicked_plr = "You have kicked %s from your faction!"
+LANG.fac_kicked_from = "%s has kicked you out from the faction!"
+LANG.fac_already_loner = "You are already a loner!"
+LANG.fac_cant_leave_pvp = "You cannot leave faction as you have damaged or you took damage from another player within the last 60 seconds!"

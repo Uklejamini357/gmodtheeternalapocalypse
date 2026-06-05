@@ -27,9 +27,10 @@ Make death screen more animated
 
 
 v0.12.10
-- Make it possible to assign multiple tasks at a time (up to 3 tasks at once)
-- Make tasks cancellable anywhere
-- Add new special event: Zombie Fog
+Make it possible to assign multiple tasks at a time (up to 3 tasks at once)
+Make tasks cancellable anywhere
+Add new special event: Zombie Fog
+
 
 v0.12.11:
 Expand admin system and logging... maybe?
@@ -42,11 +43,15 @@ Add more tasks -- moved from v0.12.5, then v0.12.7
 And finish the elite variants
 
 v0.12.13:
-Rework Trader UI
-Add item SubCategories
+Rework Trader:
+- UI overhaul
+- Categories on the side rather than on top
+- Add item SubCategories
 
 v0.12.14:
-Rework Trader (Separate traders)
+Rework Trader:
+- Separate traders, selling different goods
+
 
 
 --------

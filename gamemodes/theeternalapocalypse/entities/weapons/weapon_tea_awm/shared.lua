@@ -35,7 +35,7 @@ SWEP.IronSightsAng = Vector(0, 0, 0)
 SWEP.RunArmOffset = Vector(9.527, 0, 0)
 
 SWEP.RunArmAngle = Vector(-9.094, 22.874, 0)
-SWEP.ScopeZooms			= {12}
+SWEP.ScopeZooms			= {5} -- FUCKING ZOOM SENSITIVITY!!
 
 SWEP.BoltActionSniper		= true
 

@@ -173,7 +173,7 @@ net.Receive("RecvFactions", function(length, client)
 	-- put the loner faction back in since it can never be deleted
 	LocalFactions["Loner"] = {
 		["index"] = TEAM_LONER,
-		["color"] = Color(100, 50, 50, 255),
+		["color"] = TEAM_COLOR_LONER,
 		["public"] = true,
 		["leader"] = nil
 	}

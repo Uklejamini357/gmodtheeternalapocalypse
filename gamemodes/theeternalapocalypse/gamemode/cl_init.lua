@@ -171,7 +171,7 @@ function GM:Think()
 				{Color(165, 223, 209), "Tip12"},
 				{Color(239, 223, 223), "Tip13"},
 				{Color(207, 191, 255), "Tip14"},
-				{Color(0, 223, 255), "Tip15"},
+				-- {Color(0, 223, 255), "Tip15"}, -- out of date
 				{Color(31, 223, 223), "Tip16"},
 				{Color(31, 223, 223), "Tip17"},
 				{Color(63, 255, 191), "Tip18"},

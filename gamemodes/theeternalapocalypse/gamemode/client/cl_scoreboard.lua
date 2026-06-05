@@ -6,7 +6,7 @@ LocalFactions = LocalFactions or {}
 if !LocalFactions["Loner"] then
 	LocalFactions["Loner"] = {
 		["index"] = TEAM_LONER,
-		["color"] = Color(100, 50, 50, 255),
+		["color"] = TEAM_COLOR_LONER,
 		["public"] = true,
 		["leader"] = nil
 	}

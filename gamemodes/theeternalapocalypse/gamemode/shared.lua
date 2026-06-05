@@ -105,7 +105,7 @@ include("player_class/player_ate.lua")
 include("mad/mad_shared.lua") -- ????
 
 function GM:CreateTeams()
-	team.SetUp(TEAM_LONER, "Loner", Color(100, 50, 50, 255))
+	team.SetUp(TEAM_LONER, "Loner", TEAM_COLOR_LONER)
 end
 
 

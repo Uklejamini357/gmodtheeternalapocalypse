@@ -61,7 +61,7 @@ function MT_PLAYER:ProcessPlayerDamage(dmginfo)
 		dmginfo:ScaleDamage(1.45)
 	end
 
-	if attacker != self and attacker:IsPlayer() and IsMeleeDamage(dmginfo:GetDamageType()) then
+	if attacker != self and attacker:IsPlayer() and IsMeleeDamage(dmginfo:GetDamageType()) and attacker:CanGrind() then
 		attacker.MeleeDamageDealt = attacker.MeleeDamageDealt + math.Clamp(0.035 * dmginfo:GetDamage(), 0, 0.035 * self:Health())
 		timer.Create("MeleeMasteryGain"..attacker:EntIndex(), 5, 1, function()
 			if attacker:IsValid() then attacker:GainMasteryXP(attacker.MeleeDamageDealt, "Melee") attacker.MeleeDamageDealt = 0 end
@@ -122,7 +122,7 @@ function MT_ENTITY:ProcessDamage(dmginfo)
 		if IsMeleeDamage(dmginfo:GetDamageType()) and attacker:HasPerk("weightboost3") then
 			dmginfo:ScaleDamage(1.05)
 		end
-		if self:IsNextBot() or self:IsNPC() then
+		if self:IsNextBot() or self:IsNPC() and attacker:CanGrind() then
 			if IsMeleeDamage(dmginfo:GetDamageType()) then
 				attacker.MeleeDamageDealt = attacker.MeleeDamageDealt + math.Clamp(0.05 * dmginfo:GetDamage(), 0, 0.05 * self:Health())
 				timer.Create("MeleeMasteryGain"..attacker:EntIndex(), 5, 1, function() if attacker:IsValid() then attacker:GainMasteryXP(attacker.MeleeDamageDealt, "Melee") attacker.MeleeDamageDealt = 0 end end)
@@ -348,8 +348,6 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 		if ply:GetInfoNum("tea_cl_nobountytipmessage", 0) < 1 then
 			ply:SystemMessage("Remember to cash in your bounties regularly, this specifically means if you have high bounty!", Color(255,205,205), true)
 		end
-	else
-		print(ply:Nick().." has died with "..ply.Bounty.." bounty and survived for "..survived.."s")
 	end
 
 	if IsValid(attacker) then
