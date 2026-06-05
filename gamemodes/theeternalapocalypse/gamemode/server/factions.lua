@@ -174,7 +174,7 @@ function GM:LeaveFaction(ply)
 	if ply:Team() == TEAM_LONER then ply:SystemMessage(translate.ClientGet(ply, "fac_already_loner"), COLOR_WARN, true) return end
 	if timer.Exists("pvpnominge_"..ply:EntIndex()) then ply:SystemMessage(translate.ClientGet(ply, "fac_cant_leave_pvp"), COLOR_WARN, true) return end
 
-	ply:SystemMessage("You have left your faction and you are now a loner.", COLOR_ACTION, true)
+	ply:SystemMessage(translate.ClientGet(ply, "fac_left_faction"), COLOR_ACTION, true)
 
 	local plyfaction = team.GetName(ply:Team())
 	if team.NumPlayers(ply:Team()) > 1 && Factions[plyfaction]["leader"] == ply then
@@ -203,14 +203,14 @@ function GM:InviteFaction(ply, target)
 
 	local plyfaction = team.GetName(ply:Team())
 
-	if ply == target then ply:SystemMessage("You can't invite yourself to a faction!", COLOR_WARN, true) return end
-	if Factions[plyfaction]["leader"] != ply then ply:SystemMessage("You are not the leader of your faction!", COLOR_WARN, true) return end
-	if team.GetName(ply:Team()) == team.GetName(target:Team()) then ply:SystemMessage(target:Nick().." is already in your faction!", COLOR_ACTION, true) return end
-	if table.HasValue(target.InvitedTo, plyfaction) then ply:SystemMessage("You have already sent a faction invite to "..target:Nick().."!", COLOR_WARN, true) return end
+	if ply == target then ply:SystemMessage(translate.ClientGet(ply, "fac_cant_invite_self"), COLOR_WARN, true) return end
+	if Factions[plyfaction]["leader"] != ply then ply:SystemMessage(translate.ClientGet(ply, "fac_not_leader"), COLOR_WARN, true) return end
+	if team.GetName(ply:Team()) == team.GetName(target:Team()) then ply:SystemMessage(translate.ClientFormat(ply, "fac_plr_already_in_your_fac", target:Nick()), COLOR_ACTION, true) return end
+	if table.HasValue(target.InvitedTo, plyfaction) then ply:SystemMessage(translate.ClientFormat(ply, "fac_already_sent_invite" target:Nick()), COLOR_WARN, true) return end
 
 	table.insert(target.InvitedTo, plyfaction)
-	ply:SystemMessage("You have invited: "..target:Nick().." to join your faction", COLOR_ACTION, true)
-	target:SystemMessage(ply:Nick().." has invited you to join their faction '"..team.GetName(ply:Team()).."'. Navigate to the factions tab in your inventory window to join.", COLOR_ACTION, true)
+	ply:SystemMessage(translate.ClientFormat(ply, "fac_invited_plr", target:Nick()), COLOR_ACTION, true)
+	target:SystemMessage(translate.ClientFormat(target, "fac_got_invite", ply:Nick(), team.GetName(ply:Team())), COLOR_ACTION, true)
 
 	net.Start("RecvFactions")
 	net.WriteTable(Factions)
@@ -222,7 +222,7 @@ function GM:SelectRandomLeader(fac)
 	if !Factions[fac] then return end
 	local index = Factions[fac]["index"]
 	Factions[fac]["leader"] = table.Random(team.GetPlayers(index))
-	self:SystemBroadcast(translate.Format("factionnewleader", Factions[fac]["leader"]:Nick(), fac), COLOR_ACTION, true)
+	self:SystemTranslatedBroadcast("factionnewleader", COLOR_ACTION, true, Factions[fac]["leader"]:Nick(), fac)
 
 	net.Start("RecvFactions")
 	net.WriteTable(Factions)
@@ -232,8 +232,8 @@ end
 
 function GM:GiveLeader(ply, target)
 	if !ply:IsValid() or !target:IsValid() then return end
-	if ply == target then ply:SystemMessage("You cannot give faction leadership to yourself!", COLOR_WARN, true) return end
-	if ply:Team() == TEAM_LONER or target:Team() == TEAM_LONER then ply:SystemMessage("You apparently tried to give leadership to a loner, You dun goof'd mate", COLOR_WARN, true) return end
+	if ply:Team() == TEAM_LONER or target:Team() == TEAM_LONER then return end
+	if ply == target then ply:SystemMessage(translate.ClientGet(ply, "fac_cant_give_leader_self"), COLOR_WARN, true) return end
 	if ply:Team() != target:Team() then ply:SystemMessage("You cannot give leadership to somebody that isn't in your faction!", COLOR_WARN, true) return end
 	local plyfaction = team.GetName(ply:Team())
 	if Factions[plyfaction]["leader"] != ply then ply:SystemMessage("You are not the leader of your faction!", COLOR_WARN, true) return end

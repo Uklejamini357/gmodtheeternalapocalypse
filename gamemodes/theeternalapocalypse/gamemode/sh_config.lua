@@ -13,10 +13,10 @@ GM.LevelsPerPrestige = 3
 GM.MaxZombies = 45
 
 -- Max distance from players in hammer units zombies can spawn. Default: 6000
-GM.MaxZombieSpawnDistance = 6000
+GM.MaxZombieSpawnDistance = 4500
 
 -- Max distance from players that zombies can wander from nearest players. If zombies are too far away, they are removed. Default: 7000
-GM.MaxZombieWanderingDistance = 7000
+GM.MaxZombieWanderingDistance = 5500
 
 -- Should give ammo back that remain in clip?
 -- If enabled, dropping weapon from inventory will give ammo that remains in clip, if having weapon.
@@ -160,7 +160,7 @@ World Crisis	- DIFFICULTY_INFLATION_WORLDCRISIS
 
 Refer to difficulties.txt for more information.
 ---]]
-GM.EconomyInflationMode = DIFFICULTY_INFLATION_OFF
+GM.EconomyInflationMode = DIFFICULTY_INFLATION_MEDIUM
 
 -- If enabled, Higher economy difficulty will grant more XP from zombies. Set it to false to disable this setting.
 GM.EconomyDifficultyAffectsXPGain = true
@@ -254,7 +254,7 @@ GM.Config = {
 	-- vault size in kg
 	["VaultSize"] = 200,
 
-	-- remember that the speed skill increases your walk speed by 3 for each level, so at 140 walkspeed players can reach a possible maximum of 175 walk speed
+	-- remember that the speed skill increases your walk speed by 3.5 for each level, so at 140 walkspeed players can reach a possible maximum of 175 walk speed
 	["WalkSpeed"] = 165,
 	-- speed skill increases your running speed by 7 per skill level, so if default is 280, players can reach max of 350 run speed
 	["RunSpeed"] = 285,
@@ -297,7 +297,7 @@ end
 GM.Config["ZombieClasses"] = {
 	["npc_tea_basic"] = {		-- table name must be the entclass name of the zombie, see garrysmod/gamemodes/theeternalapocalypse/entities for entclasses (or you can add other zombie types by yourself)
 		Name = "Shambler Zombie",	-- Name for the zombie, used in death notice/killfeed
-		SpawnChance = 66.65,	-- spawn chance in % (there is a helper function that will tell you how much the current total spawn chance for zombies is)
+		SpawnChance = 66.90,	-- spawn chance in % (there is a helper function that will tell you how much the current total spawn chance for zombies is)
 		XPReward = 48,		-- xp reward for killing this zombie, varies with the convar tea_server_xpreward convar
 		MoneyReward = 22,	-- money reward for killing this zombie, varies with the convar tea_server_moneyreward convar
 		InfectionRate = 0.03,	-- Infection Level increase if the zombie is killed by player (Affected by player count!)
@@ -360,7 +360,7 @@ GM.Config["ZombieClasses"] = {
 
 	["npc_tea_tormented_wraith"] = {
 		Name = "Tormented Wraith",
-		SpawnChance = 1.25,
+		SpawnChance = 1,
 		XPReward = 185,
 		MoneyReward = 150,
 		InfectionRate = 0.1,
@@ -894,11 +894,11 @@ GM.PerksList = {
 
 GM.MasterySkillStats = {
 	["Melee"] = { -- Identifier for the mastery skill!
-		-- Name = "Melee", -- Name for the mastery
-		-- Description = "With each swing of your melee weapon, you become better at it.", -- Give it a description!
-		-- GainHelpDesc = "XP is gained by inflicting damage with melee weapons.", -- How to gain it?
-		-- RewardDesc = "+0.5% melee damage per level, max +5%.", -- What does it do?
-		-- EffRewardDesc = "+%s%% melee damage", -- Currently effective% for the stat
+		Name = "Melee", -- Name for the mastery
+		Description = "With each swing of your melee weapon, you become better at it.", -- Give it a description!
+		GainHelpDesc = "XP is gained by inflicting damage with melee weapons.", -- How to gain it?
+		RewardDesc = "+0.5% melee damage per level, max +5%.", -- What does it do?
+		EffRewardDesc = "+%s%% melee damage", -- Currently effective% for the stat
 		MaxLevel = 20, -- Max level for the mastery
 		XPReq = function(self, pl, mlvl) -- XP Required for the mastery. Return the value inside the function.
 			if !mlvl then
@@ -928,11 +928,11 @@ GM.MasterySkillStats = {
 
 	-- Might get removed in future update. (Potentially v0.13.0)
 	["PvP"] = {
-		-- Name = "PVP",
-		-- Description = "Your skills against other survivors become no match.",
-		-- GainHelpDesc = "Gained by killing other players. The higher their level and prestige, the more XP is gained.",
-		-- RewardDesc = "No actual boost, only cash gain.",
-		-- EffRewardDesc = "None",
+		Name = "PVP",
+		Description = "Your skills against other survivors become no match.",
+		GainHelpDesc = "Gained by killing other players. The higher their level and prestige, the more XP is gained.",
+		RewardDesc = "No actual boost, only cash gain.",
+		EffRewardDesc = "None",
 		MaxLevel = 20,
 		XPReq = function(self, pl, mlvl)
 			if !mlvl then
@@ -957,11 +957,11 @@ GM.MasterySkillStats = {
 	},
 
 	["Survivor"] = {
-		-- Name = "Survivor",
-		-- Description = "The excess damage has been making your body getting used to it, resulting it in becoming more resilient.",
-		-- GainHelpDesc = "Earned by surviving damage while on <10% health.",
-		-- RewardDesc = "Increases damage resistance by +0.25% per level, max +2.5%.",
-		-- EffRewardDesc = "+%s%% damage resistance",
+		Name = "Survivor",
+		Description = "The excess damage has been making your body getting used to it, resulting it in becoming more resilient.",
+		GainHelpDesc = "Earned by surviving damage while on <25% health.",
+		RewardDesc = "Increases damage resistance by +0.25% per level, max +2.5%.",
+		EffRewardDesc = "+%s%% damage resistance",
 		MaxLevel = 20,
 		XPReq = function(self, pl, mlvl)
 			if !mlvl then
@@ -972,7 +972,7 @@ GM.MasterySkillStats = {
 				end
 			end
 
-			return math.floor(1391 + (mlvl * 106) ^ 1.217)
+			return math.floor(791 + (mlvl * 96) ^ 1.217)
 		end,
 		OnLevelup = function(self, pl, oldlvl, newlvl)
 		    pl:SystemMessage("Your 'Survivor' mastery is now level "..newlvl.."! Gained "..self:CashGain(pl, newlvl).." cash.", Color(130, 255, 130, 255), false)
@@ -990,11 +990,11 @@ GM.MasterySkillStats = {
 	},
 
 	["Gunnery"] = {
-		-- Name = "Gunnery",
-		-- Description = "Wielding guns has never been any better before.",
-		-- GainHelpDesc = "Earned by inflicting headshots with guns.",
-		-- RewardDesc = "+0.5% to base headshot damage per level, max +5%",
-		-- EffRewardDesc = "+%s%% base headshot damage",
+		Name = "Gunnery",
+		Description = "Wielding guns has never been any better before.",
+		GainHelpDesc = "Earned by inflicting headshots with guns.",
+		RewardDesc = "+0.5% to base headshot damage per level, max +5%",
+		EffRewardDesc = "+%s%% base headshot damage",
 		MaxLevel = 20,
 		XPReq = function(self, pl, mlvl)
 			if !mlvl then
@@ -1023,11 +1023,11 @@ GM.MasterySkillStats = {
 	},
 
 	["Medic"] = {
-		-- Name = "Medic",
-		-- Description = "Medicine is very important especially in this apocalyptic world.",
-		-- GainHelpDesc = "Earned by healing neutral/friendly players.",
-		-- RewardDesc = "+1% more effective healing to others per level, max +10%",
-		-- EffRewardDesc = "+%s%% healing efficiency to others",
+		Name = "Medic",
+		Description = "Medicine is very important especially in this apocalyptic world.",
+		GainHelpDesc = "Earned by healing neutral/friendly players.",
+		RewardDesc = "+1% more effective healing to others per level, max +10%",
+		EffRewardDesc = "+%s%% healing efficiency to others",
 		MaxLevel = 20,
 		XPReq = function(self, pl, mlvl)
 			if !mlvl then
@@ -1044,7 +1044,7 @@ GM.MasterySkillStats = {
 		    pl:SystemMessage("Your 'Medic' mastery is now level "..newlvl.."! Gained "..self:CashGain(pl, newlvl).." cash.", Color(130, 255, 130, 255), false)
 			
 			if self:GetStatEffectiveVal(pl, oldlvl) ~= self:GetStatEffectiveVal(pl, newlvl) then
-		    	pl:SystemMessage("New Medic damage mult. boost: +"..math.Round(self:GetStatEffectiveVal(pl, newlvl)*100, 1).."%", Color(130, 255, 130, 255), false)
+		    	pl:SystemMessage("New Medic healing effectiveness boost: +"..math.Round(self:GetStatEffectiveVal(pl, newlvl)*100, 1).."%", Color(130, 255, 130, 255), false)
 			end
 		end,
 		CashGain = function(self, pl, new)
