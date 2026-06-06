@@ -189,13 +189,13 @@ function SWEP:DrawHUD()
 	/*
 			// Draw the crosshair
 			if not (self.RedDot) then
-				surface.SetDrawColor(0, 0, 0, 255)
+				surface.SetDrawCOLOR_BLACK
 				surface.DrawLine(self.CrossHairTable.x11, self.CrossHairTable.y11, self.CrossHairTable.x12, self.CrossHairTable.y12)
 				surface.DrawLine(self.CrossHairTable.x21, self.CrossHairTable.y21, self.CrossHairTable.x22, self.CrossHairTable.y22)
 			end
 
 			// Put the texture
-			surface.SetDrawColor(0, 0, 0, 255)
+			surface.SetDrawCOLOR_BLACK
 
 			if (self.RedDot) then
 				surface.SetTexture(surface.GetTextureID("scope/scope_reddot"))
@@ -206,7 +206,7 @@ function SWEP:DrawHUD()
 			surface.DrawTexturedRect(self.LensTable.x, self.LensTable.y, self.LensTable.w, self.LensTable.h)
 
 			// Fill in everything else
-			surface.SetDrawColor(0, 0, 0, 255)
+			surface.SetDrawCOLOR_BLACK
 			surface.DrawRect(self.QuadTable.x1 - 2.5, self.QuadTable.y1 - 2.5, self.QuadTable.w1 + 5, self.QuadTable.h1 + 5)
 			surface.DrawRect(self.QuadTable.x2 - 2.5, self.QuadTable.y2 - 2.5, self.QuadTable.w2 + 5, self.QuadTable.h2 + 5)
 			surface.DrawRect(self.QuadTable.x3 - 2.5, self.QuadTable.y3 - 2.5, self.QuadTable.w3 + 5, self.QuadTable.h3 + 5)

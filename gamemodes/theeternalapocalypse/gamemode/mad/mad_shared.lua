@@ -11,8 +11,6 @@
 MAD = {}
 
 include("mad_ammo.lua")
-include("mad_falldamage.lua")
-include("mad_npcs.lua")
 include("mad_player.lua")
 	
 if SERVER then

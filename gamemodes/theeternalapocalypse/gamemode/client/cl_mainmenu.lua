@@ -106,7 +106,7 @@ function GM:LoadMainMenu()
 
 	end
 	self.MainMenuPanel.Paint = function(self)
-		surface.SetDrawColor(0, 0, 0, 255)
+		surface.SetDrawCOLOR_BLACK
 		surface.DrawRect(0, 0, ScrW(), ScrH())
 
 /*
@@ -371,7 +371,7 @@ hook.Add("DrawOverlay", "TEA_DrawOverlay", function()
 	end
 
 	cam.Start2D()
-	surface.SetDrawColor(0, 0, 0, 255)
+	surface.SetDrawCOLOR_BLACK
 	surface.DrawRect(0, 0, ScrW(), ScrH())
 	draw.DrawText(translate.Get("loading"), "TEA.HUDFont", ScrW()/2, ScrH()/3, Color(255,255,255), TEXT_ALIGN_CENTER)
 --	draw.DrawText(randomtip, "TEA.HUDFontSmall", ScrW()/2, ScrH()/1.5, Color(255,255,255), TEXT_ALIGN_CENTER)

@@ -4,11 +4,6 @@
 -- Additional note: I added few strings here
 -- Also, please do not change language ID strings.
 
---[[Examples"
-LANG.gamemodename = "The Eternal Apocalypse"
-translate.Get("gamemodename")
-]]
-
 translate.AddLanguage("ru", "Russian")
 
 

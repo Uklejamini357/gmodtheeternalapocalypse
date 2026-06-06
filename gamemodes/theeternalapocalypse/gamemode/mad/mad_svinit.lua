@@ -1,7 +1,5 @@
 AddCSLuaFile("mad_player.lua")
 AddCSLuaFile("mad_shared.lua")
 AddCSLuaFile("mad_ammo.lua")
-AddCSLuaFile("mad_falldamage.lua")
-AddCSLuaFile("mad_npcs.lua")
 AddCSLuaFile("client/mad_client.lua")
 AddCSLuaFile("client/mad_menu.lua")

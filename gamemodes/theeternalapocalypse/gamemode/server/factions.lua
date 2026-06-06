@@ -233,8 +233,9 @@ end
 function GM:GiveLeader(ply, target)
 	if !ply:IsValid() or !target:IsValid() then return end
 	if ply:Team() == TEAM_LONER or target:Team() == TEAM_LONER then return end
+	if ply:Team() ~= target:Team() then return end
 	if ply == target then ply:SystemMessage(translate.ClientGet(ply, "fac_cant_give_leader_self"), COLOR_WARN, true) return end
-	if ply:Team() != target:Team() then ply:SystemMessage("You cannot give leadership to somebody that isn't in your faction!", COLOR_WARN, true) return end
+
 	local plyfaction = team.GetName(ply:Team())
 	if Factions[plyfaction]["leader"] != ply then ply:SystemMessage("You are not the leader of your faction!", COLOR_WARN, true) return end
 	
@@ -251,32 +252,33 @@ end
 
 function GM:PlayerDisbandFaction(ply, fac)
 	if !Factions[fac] or !ply:IsValid() then return end
-	if ply:Team() == TEAM_LONER then ply:SystemMessage("You are not in a faction!", COLOR_WARN, true) return end
-	if Factions[fac]["leader"] != ply then ply:SystemMessage("You cannot disband a faction as you are not the leader of that faction!", COLOR_WARN, true) return end
+	if ply:Team() == TEAM_LONER then ply:SystemMessage(translate.ClientGet(ply, not_in_faction), COLOR_WARN, true) return end
+	if Factions[fac]["leader"] != ply then ply:SystemMessage(translate.ClientGet(ply, "fac_cant_disband_not_leader"), COLOR_WARN, true) return end
 	local plyfaction = team.GetName(ply:Team())
 
-	for k, v in pairs(team.GetPlayers(tonumber(Factions[fac]["index"]))) do
-		v:SetTeam(1)
+	for k, v in pairs(team.GetPlayers(ply:Team())) do
+		v:SetTeam(TEAM_LONER)
 		gamemode.Call("ClearFactionStructures", v)
 		if ply == v then
-			v:SystemMessage(Format("You have disbanded your faction \"%s\"!", plyfaction), COLOR_WARN, true)
+			v:SystemMessage(translate.ClientFormat(v, "fac_you_disbanded_fac", plyfaction), COLOR_WARN, true)
 		else
-			v:SystemMessage(Format("Your faction \"%s\" has been disbanded by \"%s\"!", plyfaction, ply:Nick()), COLOR_WARN, true)
+			v:SystemMessage(translate.ClientFormat(v, "fac_your_fac_is_disbanded", plyfaction, ply:Nick()), COLOR_WARN, true)
 		end
-		gamemode.Call("AutoDisbandFaction", plyfaction)
 	end
+	gamemode.Call("AutoDisbandFaction", plyfaction)
 	Factions[fac] = nil
 
-	net.Start("RecvFactions")
-	net.WriteTable(Factions)
-	net.Broadcast()
+	-- wtf net message.
+	-- net.Start("RecvFactions")
+	-- net.WriteTable(Factions)
+	-- net.Broadcast()
 end
 
 
 function GM:AutoDisbandFaction(fac)
 	if !Factions[fac] then return end
 	Factions[fac] = nil
-	self:SystemBroadcast("The faction: "..fac.." has no more members and has been disbanded", COLOR_ACTION, true)
+	self:SystemTranslatedBroadcast("fac_disbanded", COLOR_ACTION, true, fac)
 
 	net.Start("RecvFactions")
 	net.WriteTable(Factions)

@@ -360,7 +360,7 @@ function GM:CreateScoreboardInv()
 			draw.RoundedBoxEx(8,1,1,pFaction:GetWide(),pFaction:GetTall(),Color(0, 0, 0, 150), false, false, false, false)
 			surface.SetDrawColor(150, 150, 0 ,255)
 			surface.DrawOutlinedRect(1, 1, pFaction:GetWide() - 1 , pFaction:GetTall() - 1)
-			surface.SetDrawColor(0,0,0,255)
+			surface.SetDrawCOLOR_BLACK
 			surface.DrawOutlinedRect(4, 4, 32, 32)
 		end
 

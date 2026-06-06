@@ -65,13 +65,6 @@ cvars.AddChangeCallback("tea_server_dbsaving", function(cvar,old,new)
 	GAMEMODE:OnConVarChanged(cvar, old, new)
 end, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_server_dbsaving")
 
-GM.BonusPerksEnabled = CreateConVar("tea_server_bonusperks", 1, FCVAR_REPLICATED + FCVAR_ARCHIVE, "Should bonus XP and bonus Cash perks for special players be enabled?", 0, 1):GetBool()
-cvars.AddChangeCallback("tea_server_bonusperks", function(cvar,old,new)
-	GAMEMODE.BonusPerksEnabled = tobool(new)
-	BroadcastLua(Format("GAMEMODE.BonusPerksEnabled = %s", tobool(new)))
-	GAMEMODE:OnConVarChanged(cvar, old, new)
-end, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_server_bonusperks")
-
 GM.MaxCaches = CreateConVar("tea_config_maxcaches", 10, FCVAR_REPLICATED + FCVAR_ARCHIVE, "How many caches should there be at any given time?", 0, 250):GetInt()
 cvars.AddChangeCallback("tea_config_maxcaches", function(cvar,old,new)
 	GAMEMODE.MaxCaches = math.floor(tonumber(new))

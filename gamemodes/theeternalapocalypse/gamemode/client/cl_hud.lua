@@ -122,7 +122,6 @@ function GM:DrawNames()
 		local headPos = (ent:GetShootPos() + Vector(0,0,18)):ToScreen()
 		surface_SetFont("TEA.HUDFont")
 
-		
 		local message = ent:Nick()
 		local wo, ho = surface_GetTextSize(message)
 		
@@ -158,13 +157,13 @@ function GM:DrawNames()
 			draw.SimpleTextOutlined("C", "CSSTextFont", headPos.x - 25, headPos.y - 60, Color(255, 50, 0, 255), 0, 0, 2, Color(50, 0, 0, 255))
 		end
 
-		draw.SimpleTextOutlined(ent:Nick(), "TEA.HUDFont", headPos.x - (wo /2), headPos.y - 40, Color(255, 255, 255, 255), 0, 0, 2, Color(0, 0, 0, 255))
-		draw.SimpleTextOutlined(translate.Format("health", stats[1], stats[2]), "TEA.HUDFontSmall", headPos.x - (wo2 / 2), headPos.y - 20, Color(255, math.Clamp(((ent:Health() * 100) / ent:GetMaxHealth()) * 2.5, 0, 255), math.Clamp(((ent:Health() * 100) / ent:GetMaxHealth()) * 2.5, 0, 255), 255), 0, 0, 1, Color(0, 0, 0, 255))
-		draw.SimpleTextOutlined(translate.Format("armor", stats[3], stats[4]), "TEA.HUDFontSmall", headPos.x - (wo3 / 2), headPos.y - 7, Color(math.Clamp((50 + (ent:Armor() * 100) / ent:GetMaxArmor()), 0, 255), math.Clamp((50 + (ent:Armor() * 100) / ent:GetMaxArmor()), 0, 255), 255, 255), 0, 0, 1, Color(0, 0, 0, 255))
+		draw.SimpleTextOutlined(ent:Nick(), "TEA.HUDFont", headPos.x - (wo /2), headPos.y - 40, Color(255, 255, 255, 255), 0, 0, 2, COLOR_BLACK)
+		draw.SimpleTextOutlined(translate.Format("health", stats[1], stats[2]), "TEA.HUDFontSmall", headPos.x - (wo2 / 2), headPos.y - 20, Color(255, math.Clamp(((ent:Health() * 100) / ent:GetMaxHealth()) * 2.5, 0, 255), math.Clamp(((ent:Health() * 100) / ent:GetMaxHealth()) * 2.5, 0, 255), 255), 0, 0, 1, COLOR_BLACK)
+		draw.SimpleTextOutlined(translate.Format("armor", stats[3], stats[4]), "TEA.HUDFontSmall", headPos.x - (wo3 / 2), headPos.y - 7, Color(math.Clamp((50 + (ent:Armor() * 100) / ent:GetMaxArmor()), 0, 255), math.Clamp((50 + (ent:Armor() * 100) / ent:GetMaxArmor()), 0, 255), 255, 255), 0, 0, 1, COLOR_BLACK)
 		local prestige_color = stats[6] >= 100 and HSVToColor(CurTime() * math.min(stats[6] * 0.4, 100) % 360, 0.5, 1) or Color(255, 205, 255, 255)
-		draw.SimpleTextOutlined(translate.Format("level_prestige", stats[5], stats[6]), "TEA.HUDFontSmall", headPos.x - (wo4 / 2) - 2, headPos.y + 7, prestige_color, 0, 0, 1, Color(0, 0, 0, 255))
-		draw.SimpleTextOutlined(translate.Format("bounty", stats[7]), "TEA.HUDFontSmall", headPos.x - (wo5 / 2) - 2, headPos.y + 20, Color(255, 64, 64, 255), 0, 0, 1, Color(0, 0, 0, 255))
-		draw.SimpleTextOutlined(translate.Format("faction", stats[8]), "TEA.HUDFontSmall", headPos.x - (wo6 / 2) - 2, headPos.y + 33, team.GetColor(ent:Team()), 0, 0, 1, Color(0, 0, 0, 255))
+		draw.SimpleTextOutlined(translate.Format("level_prestige", stats[5], stats[6]), "TEA.HUDFontSmall", headPos.x - (wo4 / 2) - 2, headPos.y + 7, prestige_color, 0, 0, 1, COLOR_BLACK)
+		draw.SimpleTextOutlined(translate.Format("bounty", stats[7]), "TEA.HUDFontSmall", headPos.x - (wo5 / 2) - 2, headPos.y + 20, Color(255, 64, 64, 255), 0, 0, 1, COLOR_BLACK)
+		draw.SimpleTextOutlined(translate.Format("faction", stats[8]), "TEA.HUDFontSmall", headPos.x - (wo6 / 2) - 2, headPos.y + 33, team.GetColor(ent:Team()), 0, 0, 1, COLOR_BLACK)
 
 	end
 

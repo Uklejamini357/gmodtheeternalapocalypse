@@ -2,5 +2,3 @@
 -- I REMOVED IT AGAIN!!
 
 translate.AddLanguage("pl", "Polish")
-
---HUD translations

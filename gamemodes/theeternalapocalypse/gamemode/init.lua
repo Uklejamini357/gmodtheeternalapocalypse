@@ -1286,7 +1286,7 @@ function GM:PlayerInitialSpawn(ply, transition)
 	end
 
 	if !ply:IsBot() then
-		timer.Simple(0.01, function()
+		timer.Simple(0, function()
 			ply:KillSilent()
 			ply:SetPos(Vector(0,0,100000)) -- for main menu
 		end)
@@ -1305,6 +1305,7 @@ function GM:PlayerInitialSpawn(ply, transition)
 	ply:ArmorEquip(ply.EquippedArmor)
 
 	ply:AddStatisticPoints("TimesJoined", 1)
+
 
 	if VJ then
 		ply.StalkerFaction = "stalker"
@@ -1336,6 +1337,7 @@ end
 function GM:PlayerSay(ply, text, team)
 	return text
 end
+
 
 hook.Add("PlayerSay", "TheEternalApocalypse.PlayerSay", function(ply, text, team)
 	if ply:IsValid() and string.Explode(" ", text)[1] == "!help" then
@@ -1388,6 +1390,7 @@ local function FindGoodSpawnPoint(e)
 		e:GetPos() + e:GetAngles():Up() * 35,
 		e:GetPos() + e:GetAngles():Up() * -20,
 	}
+
 	local goodspawn = false
 	for k, v in pairs(tests) do
 		if !IsPosBlocked(v) then goodspawn = v break end
@@ -1425,12 +1428,6 @@ function GM:PlayerSpawn(ply)
 
 	gamemode.Call("RecalcPlayerSpeed", ply)
 
-	for i=1,20 do -- There is some kind of annoying-ass inf speed in my gmod instance, so meh. Let it be like it is for now
-		timer.Simple(engine.TickInterval()*i, function()
-			gamemode.Call("RecalcPlayerSpeed", ply)
-		end)
-	end
-
 	timer.Simple(1, function()
 		gamemode.Call("RecalcPlayerSpeed", ply)
 	end)
@@ -1462,6 +1459,12 @@ function GM:PlayerSpawn(ply)
 	end
 end
 
+function GM:GetFallDamage(ply, vel)
+	local start = 580
+	vel = vel - start
+	return vel*(100/(1024-start))
+end
+
 function GM:PlayerLoadout(ply)
 	if ply.AdminMode then
 		ply:Give("weapon_physgun")
@@ -1474,7 +1477,8 @@ function GM:PlayerLoadout(ply)
 		ply:Give("tea_buildtool")
 		ply:SelectWeapon("tea_fists")
 	end
-	if ply:HasPerk("starting_ammo_upgrade") then
+
+	if ply:HasPerk("starting_ammunition") then
 		ply:GiveAmmo(200, "Pistol")
 		ply:GiveAmmo(150, "ammo_rifle")
 		ply:GiveAmmo(100, "Buckshot")

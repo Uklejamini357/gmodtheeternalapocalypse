@@ -568,7 +568,6 @@ concommand.Add("tea_sv_performplayerdataimport", function(ply)
 end)
 
 
---Bonus multipliers for various supporters (and the dev)
 function GM:XPBonus(ply)
 	if !ply:IsValid() then return 0 end
 	local xpmul = 1
@@ -578,16 +577,7 @@ function GM:XPBonus(ply)
 	if ply:HasPerk("xpboost2") then
 		xpmul = xpmul + 0.15
 	end
-	
-	if self.BonusPerksEnabled then
-		if ply:SteamID64() == "76561198274314803" then
-			xpmul = xpmul * 1.25
-		elseif ply:SteamID64() == "76561198028288732" then
-			xpmul = xpmul * 1.15
-		elseif ply:SteamID64() == "76561198112950441" then
-			xpmul = xpmul * 1.05
-		end
-	end
+
 	return xpmul
 end
 
@@ -600,12 +590,7 @@ function GM:CashBonus(ply)
 	if ply:HasPerk("cashboost2") then
 		cashmul = cashmul + 0.08
 	end
-	
-	if self.BonusPerksEnabled then
-		if ply:SteamID64() == "76561198112950441" then
-			cashmul = cashmul * 0.95
-		end
-	end
+
 	return cashmul
 end
 

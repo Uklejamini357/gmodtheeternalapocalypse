@@ -270,13 +270,10 @@ function MakeServerOptions()
 	local check = CreateCheckLabel(pan, list, "Enable Database Saving", "tea_server_dbsaving")
 	check = CreateCheckLabel(pan, list, "Enable Spawn Protection", "tea_server_spawnprotection")
 	check:SetToolTip("Enable temporary protection from damage upon spawning")
-	
+
 	check = CreateCheckLabel(pan, list, "Enable Voluntary PvP", "tea_server_voluntarypvp")
 	check:SetToolTip("Disabled = Forced PvP (100% PvP, players can kill each other freely as long as they don't have their pvp guarded)\nEnabled = PvP is voluntary (Players are free to toggle their PvP)\nNote: Factions don't have friendly fire")
-	
-	check = CreateCheckLabel(pan, list, "Enable Bonus Perks for special players", "tea_server_bonusperks")
-	check:SetToolTip("Should enable bonus XP and cash gaining depending on special player?\nIf enabled, uses functions from file server/player_data.lua to increase gaining rewards")
-	
+
 	check = CreateCheckLabel(pan, list, "Enable Prop Spawning Cost", "tea_config_propcostenabled")
 	check:SetToolTip("Should spawning props cost money?\nNote: This also disables gaining cash from salvaging props if this option is disabled")
 	
