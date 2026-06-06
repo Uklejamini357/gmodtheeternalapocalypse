@@ -122,7 +122,7 @@ function MT_ENTITY:ProcessDamage(dmginfo)
 		if IsMeleeDamage(dmginfo:GetDamageType()) and attacker:HasPerk("weightboost3") then
 			dmginfo:ScaleDamage(1.05)
 		end
-		if self:IsNextBot() or self:IsNPC() and attacker:CanGrind() then
+		if (self:IsNextBot() or self:IsNPC()) and attacker:CanGrind() then
 			if IsMeleeDamage(dmginfo:GetDamageType()) then
 				attacker.MeleeDamageDealt = attacker.MeleeDamageDealt + math.Clamp(0.05 * dmginfo:GetDamage(), 0, 0.05 * self:Health())
 				timer.Create("MeleeMasteryGain"..attacker:EntIndex(), 5, 1, function() if attacker:IsValid() then attacker:GainMasteryXP(attacker.MeleeDamageDealt, "Melee") attacker.MeleeDamageDealt = 0 end end)
