@@ -24,7 +24,7 @@ net.Receive("CreateFaction", function(length, pl)
 	end
 	local col = Color(col.r, col.g, col.b)
 
-	gamemode.Call("CreateFaction", client, name, col, public)
+	gamemode.Call("CreateFaction", pl, name, col, public)
 end)
 
 net.Receive("JoinFaction", function(length, pl)
@@ -46,7 +46,7 @@ net.Receive("InviteFaction", function(length, pl)
 		return
 	end
 
-	gamemode.Call("InviteFaction", client, target)
+	gamemode.Call("InviteFaction", pl, target)
 end)
 
 net.Receive("KickFromFaction", function(length, pl)
@@ -57,7 +57,7 @@ net.Receive("KickFromFaction", function(length, pl)
 		return
 	end
 
-	gamemode.Call("BootFromFaction", client, target)
+	gamemode.Call("BootFromFaction", pl, target)
 end)
 
 net.Receive("GiveLeader", function(length, pl)
@@ -67,11 +67,11 @@ net.Receive("GiveLeader", function(length, pl)
 	gamemode.Call("GiveLeader", pl, target)
 end)
 
-net.Receive("DisbandFaction", function(length, client)
-	if !client:IsValid() then return end
-	local plyfaction = team.GetName(client:Team())
+net.Receive("DisbandFaction", function(length, pl)
+	if !pl:IsValid() then return end
+	local plyfaction = team.GetName(pl:Team())
 
-	gamemode.Call("PlayerDisbandFaction", client, plyfaction)
+	gamemode.Call("PlayerDisbandFaction", pl, plyfaction)
 end)
 
 

@@ -327,7 +327,7 @@ function GM:CreateScoreboardInv()
 	end
 	pManageFaction.DoClick = function()
 		surface.PlaySound("buttons/button9.wav")
-		RunConsoleCommand("tea_managecaction")
+		RunConsoleCommand("tea_managefaction")
 		self:ScoreboardHide()
 	end
 
