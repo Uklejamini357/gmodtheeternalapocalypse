@@ -271,6 +271,7 @@ function GM:Think()
 			self.NextInflationCalc = ct + 3600
 		end
 
+
 		local noregen_thirst = 3000
 		local noregen_hunger = 3000
 		local noregen_fatigue = 7000
@@ -427,7 +428,9 @@ function GM:Think()
 				ply.Battery = math.Clamp(ply.Battery - 1*ft, 0, ply:GetMaxBattery())
 			end
 		else
+*/
 			ply.Battery = math.Clamp(ply.Battery + 1.35*ft, 0, ply:GetMaxBattery())
+/*
 		end
 */
 
@@ -813,17 +816,17 @@ function GM:EntityTakeDamage(ent, dmginfo)
 	if attacker:IsPlayer() and ent:GetClass() == "tea_trader" and ent.LastHurtBy then
 		if !ent.LastHurtBy[attacker] or ent.LastHurtBy[attacker]+5 < CurTime() then
 			local txt = table.Random({
-				"Hey, watch it! I'm not immmortal, don't you know that?",
+				"Hey, watch it! I'm not immortal, don't you know that?",
 				"Watch your fire! I don't want to get hurt.",
 				"I'm not against anyone! Hold your fire!!",
 				"Stop! For god's sake I'm only giving you goods and nothing else!",
+				"Stop attacking immediately!"
 			})
 
 			attacker:SendLua('chat.AddText(Color(255,255,255), "[", Color(155,255,155), "Trader", Color(255,255,255), "]: ", Color(255,205,205), "'..txt..'")')
 		end
 
 		ent.LastHurtBy[attacker] = CurTime()
-		return true
 	end
 
 	if self.SafezoneGrindingPrevention == 1 and (ent:IsNPC() or ent:IsNextBot()) and ent.IsZombie and attacker:IsValid() and attacker:IsPlayer() and attacker:IsSZProtected() then
@@ -872,7 +875,7 @@ function GM:ProcessPostDamage(ent, dmginfo, tookdmg)
 		dmgtype = dmginfo.DamageType
 		dmgpos = dmginfo.DamagePos
 		dmgorigin = dmginfo.DamageOrigin
-		
+
 		attacker = dmginfo.Attacker
 		inflictor = dmginfo.Inflictor
 		weapon = dmginfo.Weapon
@@ -900,8 +903,8 @@ function GM:ProcessPostDamage(ent, dmginfo, tookdmg)
 	end
 
 	if ent:IsPlayer() then
-		if (attacker:IsNPC() or attacker:IsNextBot() or attacker:IsPlayer()) and ent:Health() <= ent:GetMaxHealth()*0.15 and ent:Alive() then
-			ent.MMasterySurvivorDamageTook = (ent.MMasterySurvivorDamageTook or 0) + effective_dmg
+		if (attacker:IsNPC() or attacker:IsNextBot() or attacker:IsPlayer()) and ent:Health() <= ent:GetMaxHealth()*0.25 and ent:Alive() then
+			ent.MMasterySurvivorDamageTook = (ent.MMasterySurvivorDamageTook or 0) + effective_dmg*1.2
 		end
 
 		if ent:Alive() then
@@ -1306,7 +1309,6 @@ function GM:PlayerInitialSpawn(ply, transition)
 
 	ply:AddStatisticPoints("TimesJoined", 1)
 
-
 	if VJ then
 		ply.StalkerFaction = "stalker"
 		ply.friclass = "CLASS_STALKER"
@@ -1337,7 +1339,6 @@ end
 function GM:PlayerSay(ply, text, team)
 	return text
 end
-
 
 hook.Add("PlayerSay", "TheEternalApocalypse.PlayerSay", function(ply, text, team)
 	if ply:IsValid() and string.Explode(" ", text)[1] == "!help" then
@@ -1390,7 +1391,6 @@ local function FindGoodSpawnPoint(e)
 		e:GetPos() + e:GetAngles():Up() * 35,
 		e:GetPos() + e:GetAngles():Up() * -20,
 	}
-
 	local goodspawn = false
 	for k, v in pairs(tests) do
 		if !IsPosBlocked(v) then goodspawn = v break end
@@ -1836,7 +1836,6 @@ function GM:BreakDoor(ent)
 		end
 	end
 
-	local push = self:GetPos():Normalize()
 	local fakeent = ents.Create("prop_physics")
 
 	fakeent:SetPos(pos)

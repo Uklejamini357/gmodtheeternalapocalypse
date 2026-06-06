@@ -3,7 +3,7 @@ AddCSLuaFile()
 ENT.Base = "npc_tea_basic"
 ENT.PrintName = "Zombie Superlord" --Superlord as a miniboss
 ENT.Category = "TEA Zombies"
-ENT.Purpose = "Miniboss: Can enrage if drop below ~40% health and teleport"
+ENT.Purpose = "Miniboss: Enrages if drops below ~35% health, can teleport"
 ENT.Author = "Uklejamini"
 
 list.Set("NPC", "npc_tea_superlord", {
@@ -58,7 +58,7 @@ function ENT:SetUpStats()
 
 
 	self.AttackSounds = {"npc/ichthyosaur/attack_growl1.wav",
-	"npc/ichthyosaur/attack_growl2.wav",  
+	"npc/ichthyosaur/attack_growl2.wav",
 	}
 
 	self.AlertSounds = {"npc/antlion_guard/angry1.wav", "npc/antlion_guard/angry2.wav", "npc/antlion_guard/angry3.wav"}
@@ -71,13 +71,13 @@ function ENT:SetUpStats()
 
 	self.PainSounds = {
 		"npc/stalker/stalker_pain1.wav",
-		"npc/stalker/stalker_pain2.wav", 
-		"npc/stalker/stalker_pain3.wav", 
+		"npc/stalker/stalker_pain2.wav",
+		"npc/stalker/stalker_pain3.wav",
 	}
 
 	self.DieSounds = {
 		"npc/zombie/zombie_die1.wav",
-		"npc/zombie/zombie_die2.wav", 
+		"npc/zombie/zombie_die2.wav",
 		"npc/zombie/zombie_die3.wav"
 	}
 
@@ -120,7 +120,7 @@ end
 function ENT:ApplyPlayerDamage(ply, damage, hitforce, infection)
 	if !ply:Alive() then return end
 	local dmg1 = tonumber(damage)
-	
+
 	local dmginfo = DamageInfo()
 	dmginfo:SetAttacker(self)
 	dmginfo:SetInflictor(self)
@@ -139,9 +139,11 @@ function ENT:ApplyPlayerDamage(ply, damage, hitforce, infection)
 
 	ply:TakeDamageInfo(dmginfo)
 --ply:EmitSound(self.Hit, 100, math.random(80, 110))
-	ply:ViewPunch(VectorRand():Angle() * 0.05)
 	ply:SetVelocity(force)
-	ply:AddInfection(math.random(60,1000))
+	if ply:IsPlayer() then
+		ply:ViewPunch(VectorRand():Angle() * 0.05)
+		ply:AddInfection(math.random(60,1000))
+	end
 end
 
 

@@ -398,8 +398,8 @@ GM:CreateItem("m9k_fg42", {
 GM:CreateItem("m9k_minigun", {
     Cost = 325175,
     Model = "models/weapons/w_m134_minigun.mdl",
-    Weight = 5.2,
-    Supply = 0,
+    Weight = 35.2,
+    Supply = -1,
     Rarity = RARITY_MYTHIC,
     Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,

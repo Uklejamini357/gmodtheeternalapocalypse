@@ -39,7 +39,7 @@ function ENT:SetUpStats()
 		["Health"] = 29000,
 		["MoveSpeedWalk"] = 80,
 		["MoveSpeedRun"] = 85,
-		["VisionRange"] = 1200,
+		["VisionRange"] = 0,
 		["LoseTargetRange"] = 1500,
 
 		["Ability1"] = false,
@@ -122,4 +122,17 @@ function ENT:Think()
 	local col = math.sin(30 * (CurTime() - self.SpawnTime))
 	self:SetColor(Color(127,0,col * 255,col * 255))
 	self:SetMaterial("models/effects/vol_lightmask01")
+end
+
+function ENT:OnInjured(dmginfo)
+	if self.ZombieStats.VisionRange == 0 then
+		PrintMessage(3, "you fucked up.")
+		self.ZombieStats.VisionRange = 1200
+	end
+	self.BaseClass.OnInjured(self, dmginfo)
+end
+
+function ENT:OnKilled(dmginfo)
+	self.BaseClass.OnKilled(self, dmginfo)
+	GAMEMODE:SystemBroadcast("HOW DID YOU KILL IT?!?! IT WAS SUPPOSED TO BE UNSTOPPABLE!!!!", Color(255,0,0))
 end

@@ -5,6 +5,7 @@ local save = true
 local all_attachments = save and util.JSONToTable(file.Read("uc_attachments_tblload.txt") or "{}") or {}
 for k,v in SortedPairs(ArcCW.AttachmentTable) do
     if all_attachments[k] then continue end
+    if v.Free then continue end
     local icon = v.Icon
 
     if icon then

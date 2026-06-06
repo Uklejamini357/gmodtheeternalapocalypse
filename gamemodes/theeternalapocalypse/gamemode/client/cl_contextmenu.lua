@@ -84,8 +84,8 @@ function GM:CMenu()
 				local usemulshots = numshots and numshots ~= 0 and numshots ~= 1
 				local dmg,dmgmin = wep.DamageMax or wep.Damage or wep_prim.Damage or 0, wep.DamageMin
 				draw.DrawText(translate.Format("wep_damage",
-					usemulshots and (dmgmin and math.Round(dmgmin, 2).."~"..math.Round(dmg, 2) or math.Round(dmg, 2).." x ".. numshots) or 
-					dmgmin and math.Round(dmgmin, 2).."~"..math.Round(dmg, 2) or 
+					usemulshots and (dmgmin and math.Round(dmgmin, 2).."~"..math.Round(dmg, 2) or math.Round(dmg, 2).." x ".. numshots) or
+					dmgmin and math.Round(dmgmin, 2).."~"..math.Round(dmg, 2) or
 					math.Round(dmg, 2), math.Round((usemulshots and dmg * (numshots) or dmg or 0) / (delay), 2)
 				), "TEA.HUDFontSmall", 205, sch / 2 - y, raretbl.col, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 				y = y - 15

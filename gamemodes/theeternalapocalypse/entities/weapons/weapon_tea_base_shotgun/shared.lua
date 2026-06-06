@@ -81,7 +81,7 @@ function SWEP:Think()
 				owner:GetViewModel():SetPlaybackRate(1)
 			else
 				owner:GetViewModel():SetPlaybackRate(0)
-			end	
+			end
 		end
 
 		self.IdleApply = false
@@ -114,7 +114,7 @@ function SWEP:Think()
 			if self.BurstCounter > 0 then
 				self.BurstCounter = self.BurstCounter - 1
 				self.BurstTimer = CurTime()
-				
+
 				if self:CanPrimaryAttack() then
 					self:EmitSound(self.Primary.Sound)
 					self:ShootBulletInformation()
@@ -129,7 +129,7 @@ end
 
 function SWEP:Reload()
 
-	if (self.ActionDelay > CurTime()) then return end 
+	if (self.ActionDelay > CurTime()) then return end
 
 	if (self:GetNWBool("Reloading") or self.ShotgunReloading) then return end
 

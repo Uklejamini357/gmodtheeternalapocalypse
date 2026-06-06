@@ -6,7 +6,7 @@ Uncategorized:
 Rework Trader:
 - Add subcategories
 - Add alternative traders
-- Add Trader Item list table for separate traders
+- Add Trader Item list table for separate traders (Which items each trader sells, which items traders buy from player)
 - Rework the entire UI
 Move the weapons from MAD Base to M9k base
 Make props not disappear when its owner leaves

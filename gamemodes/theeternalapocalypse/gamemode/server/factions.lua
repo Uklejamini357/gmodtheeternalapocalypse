@@ -112,7 +112,7 @@ function GM:CreateFaction(ply, name, col, public)
 		["public"] = public,
 		["leader"] = ply,
 	}
-	
+
 	team.SetUp(FactionIndex, tostring(name), Color(col.r, col.g, col.b, 255))
 	ply:SetTeam(FactionIndex)
 	ply.Money = ply.Money - self.FactionCost
@@ -206,7 +206,7 @@ function GM:InviteFaction(ply, target)
 	if ply == target then ply:SystemMessage(translate.ClientGet(ply, "fac_cant_invite_self"), COLOR_WARN, true) return end
 	if Factions[plyfaction]["leader"] != ply then ply:SystemMessage(translate.ClientGet(ply, "fac_not_leader"), COLOR_WARN, true) return end
 	if team.GetName(ply:Team()) == team.GetName(target:Team()) then ply:SystemMessage(translate.ClientFormat(ply, "fac_plr_already_in_your_fac", target:Nick()), COLOR_ACTION, true) return end
-	if table.HasValue(target.InvitedTo, plyfaction) then ply:SystemMessage(translate.ClientFormat(ply, "fac_already_sent_invite" target:Nick()), COLOR_WARN, true) return end
+	if table.HasValue(target.InvitedTo, plyfaction) then ply:SystemMessage(translate.ClientFormat(ply, "fac_already_sent_invite", target:Nick()), COLOR_WARN, true) return end
 
 	table.insert(target.InvitedTo, plyfaction)
 	ply:SystemMessage(translate.ClientFormat(ply, "fac_invited_plr", target:Nick()), COLOR_ACTION, true)
@@ -238,7 +238,7 @@ function GM:GiveLeader(ply, target)
 
 	local plyfaction = team.GetName(ply:Team())
 	if Factions[plyfaction]["leader"] != ply then ply:SystemMessage("You are not the leader of your faction!", COLOR_WARN, true) return end
-	
+
 	Factions[plyfaction]["leader"] = target
 	ply:SystemMessage("You have ceded leadership of your faction to: "..target:Nick(), COLOR_ACTION, true)
 	target:SystemMessage(ply:Nick().." has given faction leader to you! You now own the faction: "..plyfaction, COLOR_ACTION, true)

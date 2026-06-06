@@ -388,6 +388,12 @@ function GM:NPCReward(ent)
 				local hasbountyhunter = attacker:HasPerk("bountyhunter")
 				local xp = ent.XPReward * self.XPGainMul * math.Round(1 + (attacker.StatKnowledge * 0.03), 3)
 				local cash = ent.MoneyReward * self.CashGainMul * (self:CashBonus(attacker) or 1) * math.Round(1 + (attacker.StatSalvage * 0.03), 3)
+
+				if self.BloodMoonActive then
+					xp = xp * 1.35
+					cash = cash * 1.25
+				end
+
 				GAMEMODE:Payout(attacker,
 					xp * (hasbountyhunter and isvariant and 1.1 or 1) * tonumber(math.min(dmg, ent:GetMaxHealth()) / ent:GetMaxHealth()),
 					cash * (hasbountyhunter and isvariant and 1.15 or 1) * tonumber(math.min(dmg, ent:GetMaxHealth()) / ent:GetMaxHealth())

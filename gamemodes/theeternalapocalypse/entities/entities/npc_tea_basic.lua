@@ -121,7 +121,7 @@ function ENT:CanSeeTarget(move)
 		tracedata.filter = trfilter
 		local trace = util.TraceLine(tracedata)
 		if not trace.HitWorld and (self.target == trace.Entity) then return true end
-
+/*
 		if move then
 			tracedata = {}
 			tracedata.start = self:GetPos()
@@ -137,6 +137,7 @@ function ENT:CanSeeTarget(move)
 			trace = util.TraceLine(tracedata)
 			if not trace.HitWorld and (self.target == trace.Entity) then return true end
 		end
+*/
 	end
 
 	return false

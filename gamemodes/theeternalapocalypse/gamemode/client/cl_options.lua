@@ -183,7 +183,11 @@ function GM:MakeOptions()
 		end
 	end
 	local convarvalue = GetConVar("tea_cl_hudstyle"):GetInt()
-	dropdown:SetText(self.HUDs[self.HUDStyle].Name)
+	if self.HUDs[self.HUDStyle] then
+		dropdown:SetText(self.HUDs[self.HUDStyle].Name)
+	else
+		dropdown:SetText("Unknown hud style")
+	end
 	dropdown:SetTextColor(color_black)
 	list:AddItem(dropdown)
 

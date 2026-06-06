@@ -1,7 +1,7 @@
 function GM:SetStartingVariables(ply)
 	ply.Money = tonumber(self.Config["StartMoney"])
 	ply.ChosenModel = "models/player/kleiner.mdl"
-	ply.XP = 0 
+	ply.XP = 0
 	ply.Level = 1
 	ply.Prestige = 0
 	ply.StatPoints = 0
@@ -112,7 +112,6 @@ function GM:LoadPlayer(ply, id)
 		ply:SetNWInt("PlyPrestige", ply.Prestige)
 		ply:SetNWString("ArmorType", ply.EquippedArmor)
 
-
 		for k,v in pairs(ply.Inventory) do
 			if self.ItemsList[k] then continue end
 			ply.InvalidInventory[k] = v
@@ -124,7 +123,6 @@ function GM:LoadPlayer(ply, id)
 			ply.Inventory[k] = v
 		end
 
-		
 		self:DebugLog("Loading player data: "..ply:Nick().." ("..ply:SteamID()..") Level: "..tostring(ply.Level).." Cash: $"..tostring(ply.Money).." XP Total: "..tostring(ply.XP).." Armor Equipped: "..tostring(ply.EquippedArmor))
 		self:DebugLog("Loaded player: ".. ply:Nick() .." ("..ply:SteamID()..") from file: "..filedir_ply)
 
@@ -245,7 +243,7 @@ function GM:SavePlayer(ply, force, nolastsession)
 
 
 	self:DebugLog("Saving player data: "..ply:Nick().." ("..ply:SteamID().."), Level: "..tostring(ply.Level)..", Cash: $"..tostring(ply.Money)..", XP Total: "..tostring(ply.XP)..", Armor Equipped: "..tostring(ply.EquippedArmor))
-	
+
 	if self:GetDebug() >= DEBUGGING_NORMAL then
 		print("✓ ".. ply:Nick() .." profile saved")
 	end
@@ -277,118 +275,6 @@ function GM:DeletePlayerData(ply)
 	ply:Spawn()
 end
 
---[[
-function GM:SavePlayerInventory(ply, force)
-	if !ply:IsValid() then return end
-	if not force and (ply.NoDataSave or not self.DatabaseSaving) then return end
-
-	if self.Config["FileSystem"] == "Legacy" then
-		local data = util.TableToJSON(ply.Inventory)
-		local invaliddata = util.TableToJSON(ply.InvalidInventory)
-		file.Write(self.DataFolder.."/players/"..string.lower(string.gsub(ply:SteamID(), ":", "_")).."/inventory.txt", data)
-		file.Write(self.DataFolder.."/players/"..string.lower(string.gsub(ply:SteamID(), ":", "_")).."/invalid_inventory.txt", invaliddata)
-		if self:GetDebug() >= DEBUGGING_NORMAL then
-			print(Format("✓ %s inventory saved", ply:Nick()))
-		end
-	elseif self.Config["FileSystem"] == "PData" then
-		local formatted = util.TableToJSON(ply.Inventory)
-		local invaliddata = util.TableToJSON(ply.InvalidInventory)
-		ply:SetPData("tea_playerinventory", formatted)
-		ply:SetPData("tea_invalidinventory", invaliddata)
-		if self:GetDebug() >= DEBUGGING_NORMAL then
-			print(Format("✓ %s inventory saved", ply:Nick()))
-		end
-	else
-		print("Bruh, did you try to setup incorrectly? Set your damned filesystem option to a proper setting in sh_config.lua")
-	end
-end
-function GM:LoadPlayerPerks(ply)
-	if !ply:IsValid() or !ply:IsPlayer() then Error("The Eternal Apocalypse: Tried to load a player perks file that doesn't exist!") return end
-	ply.UnlockedPerks = {}
-
-	local LoadedData
-	if self.Config["FileSystem"] == "Legacy" then
-		if (file.Exists(self.DataFolder.."/players/"..string.lower(string.gsub(ply:SteamID(), ":", "_")).."/perks.txt", "DATA")) then
-			LoadedData = file.Read(self.DataFolder.."/players/"..string.lower(string.gsub( ply:SteamID(), ":", "_").."/perks.txt"), "DATA")
-		end
-	elseif self.Config["FileSystem"] == "PData" then
-		LoadedData = ply:GetPData("tea_playerperks")
-	else
-		print("Bruh, did you try to setup incorrectly? Set your damned filesystem option to a proper setting in sh_config.lua")
-	end
-
-	if LoadedData then 
-		local formatted = util.JSONToTable(LoadedData)
-
-        if self:GetDebug() >= DEBUGGING_ADVANCED then
-			print("Loading perks:\n\n")
-			PrintTable(formatted)
-		end
-		ply.UnlockedPerks = formatted
-	end
-end
-
-
-function GM:SavePlayerPerks(ply, force)
-	if !ply:IsValid() then return end
-	if not force and (ply.NoDataSave or not self.DatabaseSaving) then return end
-
-	if self.Config["FileSystem"] == "Legacy" then
-		local data = util.TableToJSON(ply.UnlockedPerks)
-		file.Write(self.DataFolder.."/players/"..string.lower(string.gsub(ply:SteamID(), ":", "_")).."/perks.txt", data)
-        if self:GetDebug() >= DEBUGGING_NORMAL then
-            print(Format("✓ %s perks saved", ply:Nick()))
-        end
-	elseif self.Config["FileSystem"] == "PData" then
-		local formatted = util.TableToJSON(ply.UnlockedPerks)
-		ply:SetPData("tea_playerperks", formatted)
-        if self:GetDebug() >= DEBUGGING_NORMAL then
-            print(Format("✓ %s perks saved", ply:Nick()))
-        end
-	else
-		print("Bruh, did you try to setup incorrectly? Set your damned filesystem option to a proper setting in sh_config.lua")
-	end
-end
-
-function GM:LoadPlayerVault(ply)
-	local LoadedData
-	if self.Config["FileSystem"] == "Legacy" then
-		if file.Exists(self.DataFolder.."/players/".. string.lower(string.gsub( ply:SteamID(), ":", "_").."/vault.txt"), "DATA") then
-			LoadedData = file.Read(self.DataFolder.."/players/".. string.lower(string.gsub( ply:SteamID(), ":", "_").."/vault.txt"), "DATA")
-		end
-	elseif self.Config["FileSystem"] == "PData" then
-		LoadedData = ply:GetPData("ate_playervault")
-	else
-		print("Bruh, did you try to setup incorrectly? Set your damned filesystem option to a proper setting in sh_config.lua")
-	end
-
-	if LoadedData then 
-		local formatted = util.JSONToTable(LoadedData)
-		ply.Vault = formatted
-	else
-		ply.Vault = table.Copy(self.Config["NewbieVault"])
-	end
-
-	timer.Simple(1, function() gamemode.Call("SendVault", ply) end)
-	timer.Simple(2, function() gamemode.Call("SavePlayerVault", ply) end)
-end
-
-
-function GM:SavePlayerVault(ply)
-	if not force and (ply.NoDataSave or not self.DatabaseSaving) then return end
-
-	if self.Config["FileSystem"] == "Legacy" then
-		local data = util.TableToJSON(ply.Vault)
-		file.Write(self.DataFolder.."/players/"..string.lower(string.gsub(ply:SteamID(), ":", "_").."/vault.txt"), data)
-	elseif self.Config["FileSystem"] == "PData" then
-		local formatted = util.TableToJSON(ply.Vault)
-		ply:SetPData("ate_playervault", formatted)
-	else
-		print("Bruh, did you try to setup incorrectly? Set your damned filesystem option to a proper setting in sh_config.lua")
-	end
-	print("✓ ".. ply:Nick() .." vault saved")
-end
-]]
 local count,maxcount = 0, 0
 local importing
 function GM:Import_Player_Saves_From_0_11_3a_And_Below(ply)
@@ -422,7 +308,7 @@ function GM:Import_Player_Saves_From_0_11_3a_And_Below(ply)
 					else
 						str = str..", [["..var.."]]"
 					end
-				
+
 				end
 
 			end
@@ -442,7 +328,7 @@ function GM:Import_Player_Saves_From_0_11_3a_And_Below(ply)
 		end
 		return
 	end
-	
+
 	local id = IsValid(ply) and ply:EntIndex() or 0
 
 	if not timer.Exists("TEA.ImportSavesConfirmation_"..id) then
@@ -544,8 +430,8 @@ function GM:Import_Player_Saves_From_0_11_3a_And_Below(ply)
 			end
 			deleteFile(searchdir)
 			MsgC(Color(255,0,0), "Done!")
-			
-			
+
+
 			MsgC(Color(255,0,0), "Processing the newly imported data...")
 			time(engine.TickInterval(), function()
 				count = count + 1
@@ -821,7 +707,7 @@ function meta:LoadLastSession()
 					local clip1, clip2 = wep[2], wep[3]
 					w:SetClip1(clip1)
 					w:SetClip2(clip2)
-					
+
 					-- ArcCW/ARC9 compatibility
 					if GAMEMODE.ItemsList[wep[1]] and GAMEMODE.ItemsList[wep[1]].ArcCWCompatible then
 						w.ForceDefaultAmmo = 0
@@ -861,19 +747,19 @@ function meta:LoadLastSession()
 					local wep = self:GetWeapon(k)
 					if !IsValid(wep) then continue end
 					wep:SetNWBool("ArcCW_DisableAutosave", true)
-					self.ArcCW_DisableAutosave = true	
+					self.ArcCW_DisableAutosave = true
 
 					for k, v in pairs(wep.Attachments) do
 						wep:Detach(k, true, true)
 					end
 
 					wep.Attachments.BaseClass = nil -- AGHHHHHHHHHH
-					if wep.Attachments and wep.Attach then
+					if wep and wep:IsValid() and wep.Attachments and wep.Attach then
 						for id,att in pairs(v) do
+							print(id, att)
 							ArcCW:PlayerGiveAtt(self, att, 1)
 							wep:Attach(id, att, true, true)
 						end
-
 						wep:AdjustAtts()
 						wep:RefreshBGs()
 						wep:NetworkWeapon()
@@ -920,7 +806,7 @@ function GM:GetPlayerCharacters(ply)
 	if !self.PlayerCharactersTest then return end
 	local tbl = {}
 	for i=1,3 do
-		
+
 		local t = {}
 		local filedir = self.DataFolder.."/players/"..string.lower(string.gsub(ply:SteamID(), ":", "_") .."/characters/"..tostring(id))
 		local filedir_ply = self.DataFolder.."/players/".. string.lower(string.gsub(ply:SteamID(), ":", "_") .."/profile.txt")
@@ -928,20 +814,20 @@ function GM:GetPlayerCharacters(ply)
 		if (file.Exists(filedir_ply, "DATA")) then
 			local TheFile = file.Read(filedir_ply, "DATA")
 			local DataPieces = string.Explode("\n", TheFile)
-	
+
 			local Output = {}
 			local perkpoints
-	
+
 			for k, v in pairs(DataPieces) do
 				local TheLine = string.Explode(";", v)
 
 				t[TheLine[1]] = TheLine[2]
-	
+
 				if TheLine[1] == "PerkPoints" then
 					perkpoints = true
 				end
 			end
-	
+
 			if !perkpoints then
 				t.PerkPoints = t.Prestige
 			end

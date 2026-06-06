@@ -3,8 +3,8 @@ GM.AltName	= "After The End Reborn" -- yes, it's a fork. what else did you expec
 GM.Author	= "Uklejamini"
 GM.Email	= ""
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.12.8"
-GM.DateVer	= "02.06.2026" -- Follows the DD.MM.YYYY format.
+GM.Version	= "0.12.9b"
+GM.DateVer	= "06.06.2026" -- Follows the DD.MM.YYYY format.
 GM.Credits = {
 	{"LegendOfRobbo",			"Created After The End gamemode",											"Back in 2015. It's such a great gamemode!"},
 
@@ -486,8 +486,8 @@ function GM:GetItemDescription(id, ply) -- ply is for the server
 
 		if dmg then
 			desc = desc.."\n"..translate.ClientFormat(ply, "wep_damage",
-			(dmgmin and math.Round(dmgmin, 2).."~"..math.Round(dmg, 2) or math.Round(dmg, 2))..(numshots and numshots ~= 1 and "x"..numshots or ""),
-			math.Round(dmg * numshots / delay, 2))
+			(dmgmin and math.Round(dmgmin, 2).."~"..math.Round(dmg, 2) or math.Round(dmg, 2))..(numshots and numshots ~= 0 and numshots ~= 1 and "x"..numshots or ""),
+			math.Round(dmg * math.Clamp(numshots, 1, clipsize) / delay, 2))
 		end
 
 		if delay then
@@ -519,7 +519,7 @@ function GM:GetItemDescription(id, ply) -- ply is for the server
 
 		if wep_prim.Ammo and wep_prim.Ammo ~= "none" and wep_prim.Ammo ~= "" then
 			desc = desc.."\nUsed ammo: "..(ammonames[wep_prim.Ammo] or ammonames[string.lower(wep_prim.Ammo)] or language.GetPhrase(wep_prim.Ammo))
-		end	
+		end
 	end
 
 	local armorstats = item.ArmorStats
@@ -583,7 +583,7 @@ function GM:GetItemDescription(id, ply) -- ply is for the server
 		if consum.Infection and consum.Infection ~= 0 then
 			desc = desc.."\nInfection: "..(consum.Infection > 0 and "+"..consum.Infection or consum.Infection).."%"
 		end
-		
+
 		if consum.Stamina and consum.Stamina ~= 0 then
 			desc = desc.."\nStamina: "..(consum.Stamina > 0 and "+"..consum.Stamina or consum.Stamina).."%"
 		end

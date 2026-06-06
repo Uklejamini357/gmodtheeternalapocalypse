@@ -139,6 +139,20 @@ function GM:Think()
 	end
 
 	if me:Alive() then
+		if self.NightVisionEnabled then
+			local light = DynamicLight(me:EntIndex())
+			if (light) then
+				light.Pos = (me:GetPos() + me:EyePos()) / 2
+				light.r = 100
+				light.g = 100
+				light.b = 255
+				light.Brightness = -4
+				light.Decay = 500
+				light.Size = 5000
+				light.DieTime = CurTime() + 0.5
+			end
+		end
+
 		self.tea_screenfadeout = math.Clamp(self.tea_screenfadeout - frametime * (3 * 1.175), 0, 255)
 		self.tea_deathtext_a = math.Clamp(self.tea_deathtext_a - frametime * (5 * 1.175), 0, 255)
 		self.tea_survivalstats_a = math.Clamp(self.tea_survivalstats_a - frametime * (5 * 1.175), 0, 255)
@@ -171,7 +185,7 @@ function GM:Think()
 				{Color(165, 223, 209), "Tip12"},
 				{Color(239, 223, 223), "Tip13"},
 				{Color(207, 191, 255), "Tip14"},
-				-- {Color(0, 223, 255), "Tip15"}, -- out of date
+-- 				{Color(0, 223, 255), "Tip15"},
 				{Color(31, 223, 223), "Tip16"},
 				{Color(31, 223, 223), "Tip17"},
 				{Color(63, 255, 191), "Tip18"},

@@ -34,13 +34,13 @@ net.Receive("tea_player_ready_spawn", function()
 	if !GAMEMODE.DisableTips then
 		timer.Simple(1, function()
 			local notbound = "[NOT BOUND]"
-			local score = string.upper(input.LookupBinding("+showscores")) or notbound
-			local qmenu = string.upper(input.LookupBinding("+menu")) or notbound
-			local cmenu = string.upper(input.LookupBinding("+menu_context")) or notbound
-			local f1 = string.upper(input.LookupBinding("gm_showhelp")) or notbound
-			local f2 = string.upper(input.LookupBinding("gm_showteam")) or notbound
-			local f3 = string.upper(input.LookupBinding("gm_showspare1")) or notbound
-			local f4 = string.upper(input.LookupBinding("gm_showspare2")) or notbound
+			local score = string.upper(input.LookupBinding("+showscores") or notbound)
+			local qmenu = string.upper(input.LookupBinding("+menu") or notbound)
+			local cmenu = string.upper(input.LookupBinding("+menu_context") or notbound)
+			local f1 = string.upper(input.LookupBinding("gm_showhelp") or notbound)
+			local f2 = string.upper(input.LookupBinding("gm_showteam") or notbound)
+			local f3 = string.upper(input.LookupBinding("gm_showspare1") or notbound)
+			local f4 = string.upper(input.LookupBinding("gm_showspare2") or notbound)
 
 			chat.AddText(Color(255,255,155), "---- Helpful gamemode commands ----")
 			chat.AddText(Color(255,255,155), score..": Open scoreboard and factions")
@@ -106,7 +106,7 @@ function GM:LoadMainMenu()
 
 	end
 	self.MainMenuPanel.Paint = function(self)
-		surface.SetDrawCOLOR_BLACK
+		surface.SetDrawColor(0, 0, 0, 255)
 		surface.DrawRect(0, 0, ScrW(), ScrH())
 
 /*
@@ -361,17 +361,18 @@ hook.Add("DrawOverlay", "TEA_DrawOverlay", function()
 	-- just in case.
 	if LocalPlayer and LocalPlayer() and IsValid(LocalPlayer()) and !GAMEMODE.HasInitialized then
 		if !can then
-			timer.Simple(1, function()
+			timer.Simple(0, function()
 				if GAMEMODE.HasInitialized then return end
 				GAMEMODE:InitPostEntity()
+				can = true
 			end)
-			can = true
+		else
+			return
 		end
-		return
 	end
 
 	cam.Start2D()
-	surface.SetDrawCOLOR_BLACK
+	surface.SetDrawColor(0, 0, 0, 255)
 	surface.DrawRect(0, 0, ScrW(), ScrH())
 	draw.DrawText(translate.Get("loading"), "TEA.HUDFont", ScrW()/2, ScrH()/3, Color(255,255,255), TEXT_ALIGN_CENTER)
 --	draw.DrawText(randomtip, "TEA.HUDFontSmall", ScrW()/2, ScrH()/1.5, Color(255,255,255), TEXT_ALIGN_CENTER)

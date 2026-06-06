@@ -430,7 +430,7 @@ net.Receive("SellItem", function(len, ply)
 
 	local item = GAMEMODE.ItemsList[str]
 	local cash = tonumber(ply.Money)
-	local sellprice = item["Cost"] * ply:GetItemSellCostMul(item) * amt
+	local sellprice = math.floor(item["Cost"] * ply:GetItemSellCostMul(item)) * amt
 
 	if ply.Inventory[str] then
 		if item.IsGrenade then
@@ -447,8 +447,7 @@ net.Receive("SellItem", function(len, ply)
 		ply:ArmorUnequip()
 	end
 
-	local gains = math.floor(cash + sellprice)
-	ply.Money = gains -- base sell price 20% of the original buy price plus 0.5% per barter level to max of 25%
+	ply.Money = ply.Money + sellprice
 	ply:EmitSound("physics/cardboard/cardboard_box_break3.wav", 100, 100)
 	ply:PrintTranslatedMessage(HUD_PRINTCONSOLE, "tr_itemsold", GAMEMODE:GetItemName(str, ply), amt, sellprice, GAMEMODE.Config["Currency"])
 	if item.OnSell then

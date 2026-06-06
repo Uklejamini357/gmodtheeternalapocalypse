@@ -31,7 +31,7 @@ GM:CreateItem("arccw_ud_glock", {
     Model = "models/weapons/arccw/c_ud_glock.mdl",
     Material = "entities/arccw_ud_glock.png",
     Weight = 1.01,
-    Supply = 1,
+    Supply = 0,
     Rarity = RARITY_RARE,
     Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
@@ -75,7 +75,7 @@ GM:CreateItem("arccw_ud_m79", {
 GM:CreateItem("arccw_ud_mini14", {
     Name = "Mini-14",
     Description = "Autoloading rifle designed for better accuracy than competing models. Due to its appearance, it is sometimes exempted from gun control laws targeting \"Assault Weapons\" despite its identical ability to kill. This has helped it find success despite its higher cost and non-standard magazine well.\n\nWhile it can perform well in close-quarters combat, its high accuracy excels in mid-range engagements.",
-    Cost = 22960,
+    Cost = 13960,
     Model = "models/weapons/arccw/c_ud_mini14.mdl",
     Material = "entities/arccw_ud_mini14.png",
     Weight = 2.9,
@@ -125,7 +125,8 @@ GM:CreateItem("arccw_ud_uzi", {
 
 GM:CreateItem("arccw_ur_ak", {
     Name = "AKM",
-    Description = [[One of the first assault rifles, wielded around the world to this day for its cheap price, quick production, ease of maintenance, and infallible reliability. Consequently, it has become the most popular rifle ever; a constant of freedom fighters and third-world armies virtually everywhere. One fifth of all small arms in existence can be traced to this design.
+    Description = [[One of the first assault rifles, wielded around the world to this day for its cheap price, quick production, ease of maintenance, and infallible reliability.
+    Consequently, it has become the most popular rifle ever; a constant of freedom fighters and third-world armies virtually everywhere. One fifth of all small arms in existence can be traced to this design.
 
 The default pattern is well-rounded and hard-hitting, but kicks harder than other weapons of its class.]],
     Cost = 32535,
@@ -148,7 +149,7 @@ GM:CreateItem("arccw_ur_aw", {
     Model = "models/weapons/arccw/c_ur_aw.mdl",
     Material = "entities/arccw_ur_aw.png",
     Weight = 7.3,
-    Supply = 1,
+    Supply = -1,
     Rarity = RARITY_LEGENDARY,
     Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
@@ -164,7 +165,7 @@ GM:CreateItem("arccw_ur_deagle", {
     Model = "models/weapons/arccw/c_ud_deagle.mdl",
     Material = "entities/arccw_ur_deagle.png",
     Weight = 1.77,
-    Supply = 1,
+    Supply = 0,
     Rarity = RARITY_SUPERRARE,
     Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
@@ -176,11 +177,11 @@ GM:CreateItem("arccw_ur_deagle", {
 GM:CreateItem("arccw_ur_g3", {
     Name = "G3A3",
     Description = "Heckler & Koch's earliest major weapon design, conceived in collaboration with Spanish research group CETME. As a pioneer of the roller-delay system, its success within the Bundeswehr inspired HK to derive subsequent designs from its layout, including the MP5 submachine gun.\n\nWell known for its excellent accuracy and range, but its powerful cartridge makes sustained fire difficult.",
-    Cost = 41655,
+    Cost = 93255,
     Model = "models/weapons/arccw/c_ur_g3.mdl",
     Material = "entities/arccw_ur_g3.png",
     Weight = 4.38,
-    Supply = 1,
+    Supply = -1,
     Rarity = RARITY_MYTHIC,
     Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
@@ -212,7 +213,7 @@ GM:CreateItem("arccw_ur_m1911", {
     Model = "models/weapons/arccw/c_ur_m1911.mdl",
     Material = "entities/arccw_ur_m1911.png",
     Weight = 1.1,
-    Supply = 1,
+    Supply = 0,
     Rarity = RARITY_RARE,
     Category = ITEMCATEGORY_WEAPONS,
 	ItemType = ITEMTYPE_WEAPON,
@@ -278,15 +279,15 @@ GM:CreateItem("arccw_ur_spas12", {
 
 GM:CreateItem("arccw_uc_usp", {
     Name = "USP",
-    Description = "",
+    Description = "An iocnic German Pistol chambered in various calibers, but you just can't get this out of your head, you've seen it before.",
     Cost = 1,
-    Model = "models/weapons/arccw/c_ur_spas12.mdl",
+    Model = "models/weapons/arccw/c_uc_usp.mdl",
     Material = "entities/arccw_uc_usp.png",
     Weight = 0.86,
     Supply = -1,
     Rarity = RARITY_LEGENDARY,
     Category = ITEMCATEGORY_WEAPONS,
-	ItemType = ITEMTYPE_WEAPON,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "arccw_uc_usp",
 
     ArcCWCompatible = true
@@ -297,13 +298,13 @@ GM:CreateItem("arccw_midnightwolf_type20", {
     Name = "Type 20",
     Description = "",
     Cost = 1,
-    Model = "models/weapons/arccw/c_ur_spas12.mdl",
+    Model = "models/weapons/arccw/midnightwolf/type20.mdl",
     Material = "entities/arccw_midnightwolf_type20.png",
     Weight = 3.5,
     Supply = -1,
     Rarity = RARITY_LEGENDARY,
     Category = ITEMCATEGORY_WEAPONS,
-	ItemType = ITEMTYPE_WEAPON,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "arccw_midnightwolf_type20",
 
     ArcCWCompatible = true
@@ -314,13 +315,13 @@ GM:CreateItem("arccw_myt_uc_scar", {
     Name = "Scar-H",
     Description = "",
     Cost = 1,
-    Model = "models/weapons/arccw/c_ur_spas12.mdl",
+    Model = "models/weapons/arccw_go/v_rif_scar.mdl",
     Material = "entities/arccw_myt_uc_scar.png",
     Weight = 3.58,
     Supply = -1,
     Rarity = RARITY_LEGENDARY,
     Category = ITEMCATEGORY_WEAPONS,
-	ItemType = ITEMTYPE_WEAPON,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "arccw_myt_uc_scar",
 
     ArcCWCompatible = true
@@ -331,15 +332,15 @@ GM:CreateItem("arccw_myt_uc_scar", {
 
 GM:CreateItem("midnights_gso_xm8", {
     Name = "XM-8",
-    Description = "",
+    Description = "A prototype highly modular rifle made in partnership with the US and Germany, but was never mass-produced due to the unavailability of polymers, though it showed massive promise against the horde when used in combat against them.",
     Cost = 1,
-    Model = "models/weapons/arccw/c_ur_spas12.mdl",
+    Model = "models/props/cs_office/Cardboard_box01.mdl",
     Material = "entities/midnights_gso_xm8.png",
     Weight = 2.6,
     Supply = -1,
     Rarity = RARITY_LEGENDARY,
     Category = ITEMCATEGORY_WEAPONS,
-	ItemType = ITEMTYPE_WEAPON,
+    ItemType = ITEMTYPE_WEAPON,
     WeaponType = "midnights_gso_xm8",
 
     ArcCWCompatible = true

@@ -17,7 +17,7 @@ function HUD:DrawHealth(pl, w, h, swep)
     local cansprint = pl:GetCanSprint()
 
 ---------------- HEALTH ----------------
-    surface_SetDrawCOLOR_BLACK
+    surface_SetDrawColor(0, 0, 0, 255)
     surface_DrawOutlinedRect(20, h - 200, 200, 8)
     draw_SimpleText(translate.Format("health", hp, mhp), "TEA.HUDFontSmall", 21, h - 210, Color(205,205,205,255), 0, 1)
 
@@ -29,7 +29,7 @@ function HUD:DrawHealth(pl, w, h, swep)
     end
 
 ---------------- ARMOR ----------------
-    surface_SetDrawCOLOR_BLACK
+    surface_SetDrawColor(0, 0, 0, 255)
     surface_DrawOutlinedRect(20, h - 170, 200, 8)
     draw_SimpleText(translate.Format("armor", ap, map), "TEA.HUDFontSmall", 21, h - 180, Color(205,205,205,255),0,1)
     surface_DrawRectColor(20, h - 170, 200, 8, Color(0,0,50,210))
@@ -59,7 +59,7 @@ function HUD:DrawHealth(pl, w, h, swep)
         end
     end
 -------------- EXperience --------------
-    surface_SetDrawCOLOR_BLACK
+    surface_SetDrawColor(0, 0, 0, 255)
     surface_DrawOutlinedRect(w - 250, h - 50, 200, 8)
     draw_SimpleText(Format("XP: %s/%s (%s%%)", math.floor(MyXP), pl:GetReqXP(), math.Round(math.floor(MyXP) * 100 / pl:GetReqXP())), "TEA.HUDFontSmall", w - 250, h - 60, Color(205, 205, 205, 255), 0, 1)
     surface_DrawRectColor(w - 250, h - 50, 200, 8, Color(50,0,0,75))
@@ -68,7 +68,7 @@ function HUD:DrawHealth(pl, w, h, swep)
     surface_DrawRectColor(w - 250, h - 50, xpbarclamp, 8, Color(150,0,0,160))
 
 -------------- Stamina -------------- 
-    surface_SetDrawCOLOR_BLACK
+    surface_SetDrawColor(0, 0, 0, 255)
     surface_DrawOutlinedRect(20, h - 140, 200, 8)
     draw_SimpleText(translate.Format("stamina", math.Round(pl.Stamina, GAMEMODE.HUDDecimalValues and 1 or 0)), "TEA.HUDFontSmall", 20, h - 150, Color(205,205,205,255), 0, 1)
     surface_DrawRectColor(20, h - 140, 200, 8, Color(50,50,0,75))
@@ -78,7 +78,7 @@ function HUD:DrawHealth(pl, w, h, swep)
         surface_DrawRectColor(20, h - 136, staminabarclamp, 4, Color(220, 170, 0, 160))
     end
 -------------- Thirst --------------
-    surface_SetDrawCOLOR_BLACK
+    surface_SetDrawColor(0, 0, 0, 255)
     surface_DrawOutlinedRect(20, h - 110, 200, 8)
     draw_SimpleText(translate.Format("thirst", math.Round(pl.Thirst / 100, GAMEMODE.HUDDecimalValues and 1 or 0)), "TEA.HUDFontSmall", 20, h - 120, Color(205,205,205,255), 0, 1)
     surface_DrawRectColor(20, h - 110, 200, 8, Color(50,75,100,75))
@@ -89,7 +89,7 @@ function HUD:DrawHealth(pl, w, h, swep)
     end
 
 -------------- Hunger --------------
-    surface_SetDrawCOLOR_BLACK
+    surface_SetDrawColor(0, 0, 0, 255)
     surface_DrawOutlinedRect(20, h - 80, 200, 8)
     draw_SimpleText(translate.Format("hunger", math.Round(pl.Hunger / 100, GAMEMODE.HUDDecimalValues and 1 or 0)), "TEA.HUDFontSmall", 20, h - 90, Color(205,205,205,255), 0, 1)
     surface_DrawRectColor(20, h - 80, 200, 8, Color(0,50,0,75))
@@ -100,7 +100,7 @@ function HUD:DrawHealth(pl, w, h, swep)
     end
 
 -------------- Fatigue --------------
-    surface_SetDrawCOLOR_BLACK
+    surface_SetDrawColor(0, 0, 0, 255)
     surface_DrawOutlinedRect(20, h - 50, 200, 8)
     draw_SimpleText(translate.Format("fatigue", math.Round(pl.Fatigue / 100, GAMEMODE.HUDDecimalValues and 1 or 0)), "TEA.HUDFontSmall", 20, h - 60, Color(205,205,205,255), 0, 1)
     surface_DrawRectColor(20, h - 50, 200, 8, Color(75,75,75,75))
@@ -111,7 +111,7 @@ function HUD:DrawHealth(pl, w, h, swep)
     end
 
 -------------- Infection --------------
-    surface_SetDrawCOLOR_BLACK
+    surface_SetDrawColor(0, 0, 0, 255)
     surface_DrawOutlinedRect(20, h - 20, 200, 8)
     draw_SimpleText(translate.Format("infection", math.Round(pl.Infection / 100, GAMEMODE.HUDDecimalValues and 1 or 0)), "TEA.HUDFontSmall", 20, h - 30, Color(205,205,205,255), 0, 1)
     surface_DrawRectColor(20, h - 20, 200, 8, Color(75,0,0,75))

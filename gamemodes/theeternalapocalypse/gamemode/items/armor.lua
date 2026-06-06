@@ -28,7 +28,7 @@ GM:CreateItem(itemid, {
 
 -- Armor
 GM:CreateItem("item_armor_jacket_leather", {
-	Cost = 4000,
+	Cost = 1200,
 	Model = "models/player/group03/male_07.mdl",
 	Weight = 1.1,
 	Supply = 0,
@@ -48,7 +48,7 @@ GM:CreateItem("item_armor_jacket_leather", {
 })
 
 GM:CreateItem("item_armor_chainmail", {
-	Cost = 6500,
+	Cost = 1950,
 	Model = "models/player/group03/male_05.mdl",
 	Weight = 1.6,
 	Supply = 0,
@@ -68,7 +68,7 @@ GM:CreateItem("item_armor_chainmail", {
 })
 
 GM:CreateItem("item_armor_jacket_bandit", {
-	Cost = 8000,
+	Cost = 2650,
 	Model = "models/player/stalker/bandit_backpack.mdl",
 	Weight = 1.4,
 	Supply = 0,
@@ -87,7 +87,7 @@ GM:CreateItem("item_armor_jacket_bandit", {
 })
 
 GM:CreateItem("item_armor_scrap", {
-	Cost = 10000,
+	Cost = 3250,
 	Model = "models/player/group03/male_05.mdl",
 	Weight = 3.8,
 	Supply = 0,
@@ -106,7 +106,7 @@ GM:CreateItem("item_armor_scrap", {
 })
 
 GM:CreateItem("item_armor_trenchcoat_brown", {
-	Cost = 11750,
+	Cost = 4500,
 	Model = "models/player/stalker/bandit_brown.mdl",
 	Weight = 2.28,
 	Supply = 0,
@@ -125,7 +125,7 @@ GM:CreateItem("item_armor_trenchcoat_brown", {
 })
 
 GM:CreateItem("item_armor_trenchcoat_black", {
-	Cost = 15500,
+	Cost = 5500,
 	Model = "models/player/stalker/bandit_black.mdl",
 	Weight = 2.9,
 	Supply = 0,
@@ -144,7 +144,7 @@ GM:CreateItem("item_armor_trenchcoat_black", {
 })
 
 GM:CreateItem("item_armor_mercenary_guerilla", {
-	Cost = 19000,
+	Cost = 7000,
 	Model = "models/player/guerilla.mdl",
 	Weight = 3.2,
 	Supply = 0,
@@ -163,7 +163,7 @@ GM:CreateItem("item_armor_mercenary_guerilla", {
 })
 
 GM:CreateItem("item_armor_mercenary_arctic", {
-	Cost = 21500,
+	Cost = 8650,
 	Model = "models/player/arctic.mdl",
 	Weight = 3.35,
 	Supply = 0,
@@ -182,7 +182,7 @@ GM:CreateItem("item_armor_mercenary_arctic", {
 })
 
 GM:CreateItem("item_armor_mercenary_leet", {
-	Cost = 20000,
+	Cost = 7600,
 	Model = "models/player/leet.mdl",
 	Weight = 3,
 	Supply = 0,
@@ -201,7 +201,7 @@ GM:CreateItem("item_armor_mercenary_leet", {
 })
 
 GM:CreateItem("item_armor_mercenary_phoenix", {
-	Cost = 23500,
+	Cost = 9280,
 	Model = "models/player/phoenix.mdl",
 	Weight = 4.15,
 	Supply = 0,
@@ -220,7 +220,7 @@ GM:CreateItem("item_armor_mercenary_phoenix", {
 })
 
 GM:CreateItem("item_armor_police_gasmask", {
-	Cost = 27500,
+	Cost = 11000,
 	Model = "models/player/gasmask.mdl",
 	Weight = 5.5,
 	Supply = 0,
@@ -239,7 +239,7 @@ GM:CreateItem("item_armor_police_gasmask", {
 })
 
 GM:CreateItem("item_armor_police_riot", {
-	Cost = 29000,
+	Cost = 11750,
 	Model = "models/player/riot.mdl",
 	Weight = 5.8,
 	Supply = 0,
@@ -258,7 +258,7 @@ GM:CreateItem("item_armor_police_riot", {
 })
 
 GM:CreateItem("item_armor_police_swat", {
-	Cost = 28000,
+	Cost = 11500,
 	Model = "models/player/swat.mdl",
 	Weight = 5.8,
 	Supply = 0,
@@ -277,7 +277,7 @@ GM:CreateItem("item_armor_police_swat", {
 })
 
 GM:CreateItem("item_armor_police_urban", {
-	Cost = 31000,
+	Cost = 12250,
 	Model = "models/player/urban.mdl",
 	Weight = 6.5,
 	Supply = 0,
@@ -296,7 +296,7 @@ GM:CreateItem("item_armor_police_urban", {
 })
 
 GM:CreateItem("item_armor_sunrise", {
-	Cost = 42500,
+	Cost = 15500,
 	Model = "models/player/stalker/loner_vet.mdl",
 	Weight = 5.5,
 	Supply = 0,
@@ -315,7 +315,7 @@ GM:CreateItem("item_armor_sunrise", {
 })
 
 GM:CreateItem("item_armor_sunrise_dolg", {
-	Cost = 61000,
+	Cost = 20000,
 	Model = "models/player/stalker/duty_vet.mdl",
 	Weight = 7.1,
 	Supply = 0,
@@ -334,7 +334,7 @@ GM:CreateItem("item_armor_sunrise_dolg", {
 })
 
 GM:CreateItem("item_armor_sunrise_svoboda", {
-	Cost = 46000,
+	Cost = 15650,
 	Model = "models/player/stalker/freedom_vet.mdl",
 	Weight = 5,
 	Supply = 0,
@@ -353,7 +353,7 @@ GM:CreateItem("item_armor_sunrise_svoboda", {
 })
 
 GM:CreateItem("item_armor_sunrise_monolith", {
-	Cost = 58750,
+	Cost = 18500,
 	Model = "models/player/stalker/monolith_vet.mdl",
 	Weight = 6,
 	Supply = 3,
@@ -372,7 +372,7 @@ GM:CreateItem("item_armor_sunrise_monolith", {
 })
 
 GM:CreateItem("item_armor_military_green", {
-	Cost = 100000,
+	Cost = 35000,
 	Model = "models/player/stalker/military_spetsnaz_green.mdl",
 	Weight = 12,
 	Supply = 0,
@@ -391,7 +391,7 @@ GM:CreateItem("item_armor_military_green", {
 })
 
 GM:CreateItem("item_armor_military_black", {
-	Cost = 140000,
+	Cost = 45000,
 	Model = "models/player/stalker/military_spetsnaz_black.mdl",
 	Weight = 15,
 	Supply = 0,
@@ -410,7 +410,7 @@ GM:CreateItem("item_armor_military_black", {
 })
 
 GM:CreateItem("item_armor_exo", {
-	Cost = 190000,
+	Cost = 66750,
 	Model = "models/player/stalker/loner_exo.mdl",
 	Weight = 25,
 	Supply = 0,
@@ -429,7 +429,7 @@ GM:CreateItem("item_armor_exo", {
 })
 
 GM:CreateItem("item_armor_exo_merc", {
-	Cost = 172500,
+	Cost = 68500,
 	Model = "models/player/stalker/merc_exo.mdl",
 	Weight = 23.75,
 	Supply = 0,
@@ -448,7 +448,7 @@ GM:CreateItem("item_armor_exo_merc", {
 })
 
 GM:CreateItem("item_armor_exo_dolg", {
-	Cost = 212500,
+	Cost = 80000,
 	Model = "models/player/stalker/duty_exo.mdl",
 	Weight = 27.5,
 	Supply = 0,
@@ -467,7 +467,7 @@ GM:CreateItem("item_armor_exo_dolg", {
 })
 
 GM:CreateItem("item_armor_exo_svoboda", {
-	Cost = 185000,
+	Cost = 71000,
 	Model = "models/player/stalker/freedom_exo.mdl",
 	Weight = 22.5,
 	Supply = 0,
@@ -486,7 +486,7 @@ GM:CreateItem("item_armor_exo_svoboda", {
 })
 
 GM:CreateItem("item_armor_exo_monolith", {
-	Cost = 207500,
+	Cost = 73500,
 	Model = "models/player/stalker/monolith_exo.mdl",
 	Weight = 25,
 	Supply = 0,
@@ -505,7 +505,7 @@ GM:CreateItem("item_armor_exo_monolith", {
 })
 
 GM:CreateItem("item_armor_cs2_goggles", {
-	Cost = 400000,
+	Cost = 150000,
 	Model = "models/stalkertnb/cs2_goggles.mdl",
 	Weight = 13.5,
 	Supply = 0,
@@ -527,7 +527,7 @@ GM:CreateItem("item_armor_cs2_goggles", {
 
 
 GM:CreateItem("item_armor_beril5m", {
-	Cost = 70000,
+	Cost = 24000,
 	Model = "models/stalkertnb/beri_mili.mdl",
 	Weight = 9,
 	Supply = 0,
@@ -547,7 +547,7 @@ GM:CreateItem("item_armor_beril5m", {
 
 
 GM:CreateItem("item_armor_merc_sunrise", {
-	Cost = 65000,
+	Cost = 17850,
 	Model = "models/stalkertnb/sunrise_merc.mdl",
 	Weight = 6.7,
 	Supply = 0,
@@ -566,7 +566,7 @@ GM:CreateItem("item_armor_merc_sunrise", {
 })
 
 GM:CreateItem("item_armor_army_seva", {
-	Cost = 140000,
+	Cost = 53500,
 	Model = "models/stalkertnb/beri_seva.mdl",
 	Weight = 13,
 	Supply = 0,
@@ -586,7 +586,7 @@ GM:CreateItem("item_armor_army_seva", {
 })
 
 GM:CreateItem("item_armor_stalker_seva", {
-	Cost = 125000,
+	Cost = 50000,
 	Model = "models/stalkertnb/seva_lone.mdl",
 	Weight = 10,
 	Supply = 0,
@@ -606,7 +606,7 @@ GM:CreateItem("item_armor_stalker_seva", {
 })
 
 GM:CreateItem("item_armor_svoboda_seva", {
-	Cost = 125000,
+	Cost = 46500,
 	Model = "models/stalkertnb/seva_free.mdl",
 	Weight = 10,
 	Supply = 0,
@@ -626,7 +626,7 @@ GM:CreateItem("item_armor_svoboda_seva", {
 })
 
 GM:CreateItem("item_armor_dolg_seva", {
-	Cost = 130000,
+	Cost = 53000,
 	Model = "models/stalkertnb/seva_duty.mdl",
 	Weight = 10,
 	Supply = 0,
@@ -646,7 +646,7 @@ GM:CreateItem("item_armor_dolg_seva", {
 })
 
 GM:CreateItem("item_armor_monolith_seva_heavy", {
-	Cost = 195000,
+	Cost = 80000,
 	Model = "models/stalkertnb/seva_monolith_heavy.mdl",
 	Weight = 16.5,
 	Supply = 0,
@@ -666,7 +666,7 @@ GM:CreateItem("item_armor_monolith_seva_heavy", {
 })
 
 GM:CreateItem("item_armor_exo_dolg_heavy", {
-	Cost = 475000,
+	Cost = 185000,
 	Model = "models/stalkertnb/exo_skat_duty_heavy.mdl",
 	Weight = 35,
 	Supply = 0,
@@ -685,7 +685,7 @@ GM:CreateItem("item_armor_exo_dolg_heavy", {
 })
 
 GM:CreateItem("item_armor_rad_svoboda", {
-	Cost = 130000,
+	Cost = 49080,
 	Model = "models/stalkertnb/rad_free.mdl",
 	Weight = 18,
 	Supply = 0,
@@ -704,7 +704,7 @@ GM:CreateItem("item_armor_rad_svoboda", {
 })
 
 GM:CreateItem("item_armor_rad_monolith_boss", {
-	Cost = 250000,
+	Cost = 93570,
 	Model = "models/stalkertnb/rad_monoboss.mdl",
 	Weight = 23,
 	Supply = 0,

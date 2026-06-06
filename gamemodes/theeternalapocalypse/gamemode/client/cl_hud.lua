@@ -122,6 +122,7 @@ function GM:DrawNames()
 		local headPos = (ent:GetShootPos() + Vector(0,0,18)):ToScreen()
 		surface_SetFont("TEA.HUDFont")
 
+
 		local message = ent:Nick()
 		local wo, ho = surface_GetTextSize(message)
 		
@@ -563,7 +564,8 @@ function GM:RenderScreenspaceEffects()
 	local color = 1
 	local contrast = 1
 	local hp = math.max(((ply:GetMaxHealth() * 0.4) - ply:Health()) * (1 / (ply:GetMaxHealth() * 0.4)))
-	
+	local mulb, addb = 0, 0
+
 	if (ply:Health() < ply:GetMaxHealth() * 0.4) then
 		if (ply:Alive()) then
 			color = math.Clamp(color - hp, 0, color)
@@ -579,6 +581,12 @@ function GM:RenderScreenspaceEffects()
 		contrast = contrast * (1 - self.SleepVisionAffect*0.98)
 	end
 
+	local nvg = GAMEMODE.NightVisionEnabled
+	if nvg then
+		contrast = contrast * 1.8
+		mulb = 2
+		addb = 0.15
+	end
 
 	if GAMEMODE.WraithAlpha > 220 then DrawMotionBlur(0.4, 0.8, 0.01) end
 
@@ -596,26 +604,26 @@ function GM:RenderScreenspaceEffects()
 		{
 			["$pp_colour_addr"] = 0.15*bloodmoon,
 			["$pp_colour_addg"] = -0.05*bloodmoon,
-			["$pp_colour_addb"] = -0.05*bloodmoon,
-			["$pp_colour_brightness"] = 0,
+			["$pp_colour_addb"] = -0.05*bloodmoon + (addb),
+			["$pp_colour_brightness"] = nvg and 0.06 or 0,
 			["$pp_colour_contrast"] = contrast * alive * (1-bloodmoon*0.45),
 			["$pp_colour_colour"] = color,
 			["$pp_colour_mulr"] = 0.5*bloodmoon,
 			["$pp_colour_mulg"] = 0,
-			["$pp_colour_mulb"] = 0
+			["$pp_colour_mulb"] = mulb
 		},
 
 
 		{ -- horror
 			["$pp_colour_addr"] = 0,
 			["$pp_colour_addg"] = 0,
-			["$pp_colour_addb"] = 0,
+			["$pp_colour_addb"] = addb,
 			["$pp_colour_brightness"] = -0.045,
 			["$pp_colour_contrast"] = contrast * 1.15 * alive,
 			["$pp_colour_colour"] = math.max(0, color - 0.725),
 			["$pp_colour_mulr"] = 0,
 			["$pp_colour_mulg"] = 0,
-			["$pp_colour_mulb"] = 0
+			["$pp_colour_mulb"] = mulb
 		},
 
 		{ -- colorless (black and white)
@@ -627,7 +635,7 @@ function GM:RenderScreenspaceEffects()
 			["$pp_colour_colour"] = 0,
 			["$pp_colour_mulr"] = 0,
 			["$pp_colour_mulg"] = 0,
-			["$pp_colour_mulb"] = 0
+			["$pp_colour_mulb"] = mulb
 		},
 	}
 
@@ -749,6 +757,20 @@ function GM:DrawMiscThings()
 		local pickup = ent:GetNWEntity("pickup")
 
 		local typ = ent:GetNWInt("loottype")
+
+		-- Prevent OP loot at start for new players
+		if self.PreventGoodLootRNGForNewPlayers then
+			if me:GetTEAPrestige() == 0 and me:GetTEALevel() < 25 then
+				if me:GetTEALevel() < 5 then
+					lrarity = math.min(lrarity, LOOTRARITY_UNCOMMON)
+				elseif me:GetTEALevel() < 10 then
+					lrarity = math.min(lrarity, LOOTRARITY_RARE)
+				else
+					lrarity = math.min(lrarity, LOOTRARITY_EPIC)
+				end
+			end
+		end
+
 		if !typ or typ == 0 then return end
 		local col = typ == LOOTTYPE_BOSS and Color(125,23,23) or typ == LOOTTYPE_FACTION and Color(240,120,172) or self:GetLootRarityColor(lrarity)
 		local name = self:GetLootRarityName(lrarity)

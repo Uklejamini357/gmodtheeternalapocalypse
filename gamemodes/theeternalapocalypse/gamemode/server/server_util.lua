@@ -431,7 +431,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 			if weapon_name == v then nodrop = true break end
 		end
 
-		if !nodrop and self.ItemsList[weapon_name] and ply.Inventory[weapon_name] and
+		if !ply:IsNewbie() and !nodrop and self.ItemsList[weapon_name] and ply.Inventory[weapon_name] and
 		(self.DropActiveWeaponOnDeath and not ((!attacker:IsPlayer() or attacker:IsPlayer() and attacker == ply) and ply:HasPerk("dead_luck"))) then
 			self:SystemRemoveItem(ply, weapon_name)
 

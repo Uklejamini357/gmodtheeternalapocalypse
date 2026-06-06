@@ -62,7 +62,7 @@ end
 function SWEP:Reload()
 
 	// When the weapon is already doing an animation, just return end because we don't want to interrupt it
-	if (self.ActionDelay > CurTime()) then return end 
+	if (self.ActionDelay > CurTime()) then return end
 
 	// Need to call the default reload before the real reload animation
 	self:DefaultReload(ACT_VM_RELOAD)

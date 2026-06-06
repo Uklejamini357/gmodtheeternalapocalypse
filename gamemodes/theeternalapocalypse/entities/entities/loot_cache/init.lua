@@ -46,10 +46,10 @@ function ENT:Use(activator, caller)
 
 	-- Prevent OP loot at start for new players
 	if GAMEMODE.PreventGoodLootRNGForNewPlayers then
-		if caller:GetTEAPrestige() == 0 then
-			if caller:GetTEALevel() < 10 then
+		if caller:GetTEAPrestige() == 0 and caller:GetTEALevel() < 25 then
+			if caller:GetTEALevel() < 5 then
 				lootrarity = math.min(lootrarity, LOOTRARITY_UNCOMMON)
-			elseif caller:GetTEALevel() < 20 then
+			elseif caller:GetTEALevel() < 10 then
 				lootrarity = math.min(lootrarity, LOOTRARITY_RARE)
 			else
 				lootrarity = math.min(lootrarity, LOOTRARITY_EPIC)

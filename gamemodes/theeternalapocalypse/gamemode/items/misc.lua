@@ -317,7 +317,7 @@ i = GM:CreateItem("item_airdropradio", {
     Cost = 30000,
     Model = "models/wick/wrbstalker/anomaly/items/wick_dev_detector_09.mdl",
     Weight = 0.7,
-    Supply = -1,
+    Supply = 0,
     Rarity = RARITY_LEGENDARY,
     Category = ITEMCATEGORY_MISCELLANEOUS,
 	ItemType = ITEMTYPE_OTHER,
@@ -340,7 +340,7 @@ i = GM:CreateItem("item_bossdetector", {
     Cost = 30000,
     Model = "models/wick/wrbstalker/anomaly/items/wick_dev_detector_8.mdl",
     Weight = 0.55,
-    Supply = -1,
+    Supply = 0,
     Rarity = RARITY_LEGENDARY,
     Category = ITEMCATEGORY_MISCELLANEOUS,
 	ItemType = ITEMTYPE_OTHER,
@@ -397,7 +397,7 @@ i = GM:CreateItem("item_airdropdetector", {
     Cost = 35000,
     Model = "models/wick/wrbstalker/anomaly/items/wick_dev_detector_8.mdl",
     Weight = 0.55,
-    Supply = -1,
+    Supply = 0,
     Rarity = RARITY_LEGENDARY,
     Category = ITEMCATEGORY_MISCELLANEOUS,
 	ItemType = ITEMTYPE_OTHER,
@@ -433,6 +433,36 @@ i = GM:CreateItem("item_airdropdetector", {
         end)
 
         return false
+    end,
+
+    IgnoreCostModifiers = true,
+})
+
+i = GM:CreateItem("item_nightvisiongoggles", {
+    Name = "Night vision Goggles",
+    Description = "Allows you to see in the darkness, although it might blind your eyes.\nNot the right .mdl lmao",
+    Cost = 12000,
+    Model = "models/wick/wrbstalker/anomaly/items/dez_goggles.mdl",
+    Weight = 0.45,
+    Supply = 0,
+    Rarity = RARITY_LEGENDARY,
+    Category = ITEMCATEGORY_MISCELLANEOUS,
+	ItemType = ITEMTYPE_OTHER,
+    UseFunc = function(ply)
+        ply.NightVisionEnabled = !ply.NightVisionEnabled
+
+        ply:PrintMessage(3, "Night vision "..(ply.NightVisionEnabled and "ON" or "OFF")..".")
+        ply:SendLua("GAMEMODE.NightVisionEnabled = "..tostring(ply.NightVisionEnabled))
+        if ply.NightVisionEnabled then
+            ply:EmitSound("theeternalapocalypse/items/nv_start.ogg", 60)
+        else
+            ply:EmitSound("theeternalapocalypse/items/nv_off.ogg", 60)
+        end
+        return false
+    end,
+    OnItemDropped = function(ply, item)
+        ply.NightVisionEnabled = false
+        ply:SendLua("GAMEMODE.NightVisionEnabled = false")
     end,
 
     IgnoreCostModifiers = true,

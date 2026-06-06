@@ -168,12 +168,12 @@ function GM:TraderMenu()
 	VaultPanel:EnableVerticalScrollbar(true)
 	VaultPanel:EnableHorizontal(true)
 	VaultPanel:SetSpacing(10)
-	
+
 	local Specials = vgui.Create("DPanelList")
 	Specials:SetTall(635)
 	Specials:SetWide(890)
 	Specials:SetPos(5, 25)
-	
+
 	local LWeight = vgui.Create("DLabel", TraderFrame)
 	LWeight:SetFont("TEA.HUDFontSmall")
 	LWeight:SetColor(Color(255,255,255,255))
@@ -212,7 +212,7 @@ function GM:TraderMenu()
 		this:SetText(txt)
 		this:SizeToContents()
 	end
-	
+
 	local backbutton = vgui.Create("DButton", TraderFrame)
 	backbutton:SetSize(120, 45)
 	backbutton:SetText("Back")
@@ -228,11 +228,11 @@ function GM:TraderMenu()
 		GAMEMODE:OpenTraderMenu()
 	end
 
-	
+
 
 	--------------------------------------------supplies-------------------------------------------------------------
-	
-	
+
+
 	DoTraderList = function(cat, parent)
 		for k, v in SortedPairsByMemberValue(GAMEMODE.ItemsList, "Cost") do
 			if v.Supply <= -1 or v.Category != cat then continue end -- skip items with -1 supply or that are in the wrong category
@@ -352,16 +352,16 @@ function GM:TraderMenu()
 			end
 
 			local itIcon
-			if v.Material then
+			if item.Material then
 				itIcon = vgui.Create("DImageButton", ItemBackground)
-				itIcon:SetMaterial(v.Material)
+				itIcon:SetMaterial(item.Material)
 			else
 				itIcon = vgui.Create("SpawnIcon", ItemBackground)
-				itIcon:SetModel(v.Model)
+				itIcon:SetModel(item.Model)
 			end
 			itIcon:SetPos(8, 8)
-			if v.ModelColor then
-				itIcon:SetColor(v.ModelColor)
+			if item.ModelColor then
+				itIcon:SetColor(item.ModelColor)
 			end
 			itIcon:SetToolTip(GAMEMODE:GetItemDescription(k))
 			itIcon:SetSize(64,64)
@@ -371,7 +371,7 @@ function GM:TraderMenu()
 			itIcon.OnMousePressed = function()
 				return false
 			end
-			
+
 
 			local ItemName = vgui.Create("DLabel", ItemBackground)
 			ItemName:SetPos(80, 10)
@@ -489,8 +489,9 @@ function GM:TraderMenu()
 		if !IsValid(TraderFrame) then return end
 		VaultPanel:Clear()
 		for k, v in SortedPairsByMemberValue(LocalVault, "Weight", true) do
-			if !GAMEMODE.ItemsList[k] then continue end -- ignore invalid items
-			
+			local item = GAMEMODE.ItemsList[k]
+			if !item then continue end -- ignore invalid items
+
 			local raretbl = gamemode.Call("CheckItemRarity", v.Rarity)
 			local ItemBackground = vgui.Create("DPanel")
 			ItemBackground:SetPos(5, 5)
@@ -503,16 +504,16 @@ function GM:TraderMenu()
 			end
 
 			local itIcon
-			if v.Material then
+			if item.Material then
 				itIcon = vgui.Create("DImageButton", ItemBackground)
-				itIcon:SetMaterial(v.Material)
+				itIcon:SetMaterial(item.Material)
 			else
 				itIcon = vgui.Create("SpawnIcon", ItemBackground)
-				itIcon:SetModel(v.Model)
+				itIcon:SetModel(item.Model)
 			end
 			itIcon:SetPos(8, 8)
-			if v.ModelColor then
-				itIcon:SetColor(v.ModelColor)
+			if item.ModelColor then
+				itIcon:SetColor(item.ModelColor)
 			end
 			itIcon:SetToolTip(GAMEMODE:GetItemDescription(k))
 			itIcon:SetSize(64,64)
@@ -529,7 +530,7 @@ function GM:TraderMenu()
 			ItemName:SetTextColor(raretbl.col)
 			if raretbl.keeprefresh then
 				ItemName.Think = function()
-					local tbl_rarity = gamemode.Call("CheckItemRarity", v.Rarity)
+					local tbl_rarity = gamemode.Call("CheckItemRarity", item.Rarity)
 					ItemName:SetTextColor(tbl_rarity.col)
 				end
 			end

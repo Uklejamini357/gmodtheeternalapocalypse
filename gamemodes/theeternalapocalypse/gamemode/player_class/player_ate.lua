@@ -63,7 +63,7 @@ end
 
 function PLAYER:ShouldDrawLocal() 
 
-	if (self.TauntCam:ShouldDrawLocalPlayer(self.Player, self.Player:IsPlayingTaunt())) then return true end
+-- 	if (self.TauntCam:ShouldDrawLocalPlayer(self.Player, self.Player:IsPlayingTaunt())) then return true end
 
 end
 
