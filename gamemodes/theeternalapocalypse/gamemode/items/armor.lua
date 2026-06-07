@@ -382,7 +382,7 @@ GM:CreateItem("item_armor_military_green", {
 	ArmorStats = {
 		reduction = 45,
 		env_reduction = 25,
-		speedloss_percent = 11,
+		speedloss_percent = 8,
 		slots = 2,
 		battery = 100,
 		carryweight = 0,
@@ -391,7 +391,7 @@ GM:CreateItem("item_armor_military_green", {
 })
 
 GM:CreateItem("item_armor_military_black", {
-	Cost = 45000,
+	Cost = 55000,
 	Model = "models/player/stalker/military_spetsnaz_black.mdl",
 	Weight = 15,
 	Supply = 0,
@@ -399,9 +399,9 @@ GM:CreateItem("item_armor_military_black", {
 	Category = ITEMCATEGORY_ARMOR,
     ItemType = ITEMTYPE_ARMOR,
 	ArmorStats = {
-		reduction = 50,
-		env_reduction = 27.5,
-		speedloss_percent = 13,
+		reduction = 55,
+		env_reduction = 30,
+		speedloss_percent = 10,
 		slots = 2,
 		battery = 125,
 		carryweight = 5,
@@ -418,7 +418,7 @@ GM:CreateItem("item_armor_exo", {
 	Category = ITEMCATEGORY_ARMOR,
     ItemType = ITEMTYPE_ARMOR,
 	ArmorStats = {
-		reduction = 60,
+		reduction = 65,
 		env_reduction = 25,
 		speedloss_percent = 28,
 		slots = 3,
@@ -437,7 +437,7 @@ GM:CreateItem("item_armor_exo_merc", {
 	Category = ITEMCATEGORY_ARMOR,
     ItemType = ITEMTYPE_ARMOR,
 	ArmorStats = {
-		reduction = 57.5,
+		reduction = 62,
 		env_reduction = 25,
 		speedloss_percent = 28,
 		slots = 3,
@@ -456,7 +456,7 @@ GM:CreateItem("item_armor_exo_dolg", {
 	Category = ITEMCATEGORY_ARMOR,
     ItemType = ITEMTYPE_ARMOR,
 	ArmorStats = {
-		reduction = 65,
+		reduction = 68,
 		env_reduction = 25,
 		speedloss_percent = 29,
 		slots = 3,
@@ -475,7 +475,7 @@ GM:CreateItem("item_armor_exo_svoboda", {
 	Category = ITEMCATEGORY_ARMOR,
     ItemType = ITEMTYPE_ARMOR,
 	ArmorStats = {
-		reduction = 55,
+		reduction = 65,
 		env_reduction = 25,
 		speedloss_percent = 28,
 		slots = 3,
@@ -494,7 +494,7 @@ GM:CreateItem("item_armor_exo_monolith", {
 	Category = ITEMCATEGORY_ARMOR,
     ItemType = ITEMTYPE_ARMOR,
 	ArmorStats = {
-		reduction = 62.5,
+		reduction = 66,
 		env_reduction = 30,
 		speedloss_percent = 28,
 		slots = 3,
@@ -547,7 +547,7 @@ GM:CreateItem("item_armor_beril5m", {
 
 
 GM:CreateItem("item_armor_merc_sunrise", {
-	Cost = 17850,
+	Cost = 19850,
 	Model = "models/stalkertnb/sunrise_merc.mdl",
 	Weight = 6.7,
 	Supply = 0,
@@ -574,7 +574,7 @@ GM:CreateItem("item_armor_army_seva", {
 	Category = ITEMCATEGORY_ARMOR,
     ItemType = ITEMTYPE_ARMOR,
 	ArmorStats = {
-		reduction = 45,
+		reduction = 52,
 		env_reduction = 60,
 		speedloss_percent = 11,
 		oxygen_capacity = 4.25,
@@ -606,7 +606,7 @@ GM:CreateItem("item_armor_stalker_seva", {
 })
 
 GM:CreateItem("item_armor_svoboda_seva", {
-	Cost = 46500,
+	Cost = 44500,
 	Model = "models/stalkertnb/seva_free.mdl",
 	Weight = 10,
 	Supply = 0,
@@ -614,7 +614,7 @@ GM:CreateItem("item_armor_svoboda_seva", {
 	Category = ITEMCATEGORY_ARMOR,
     ItemType = ITEMTYPE_ARMOR,
 	ArmorStats = {
-		reduction = 45,
+		reduction = 40,
 		env_reduction = 60,
 		speedloss_percent = 10,
 		oxygen_capacity = 4,
@@ -634,7 +634,7 @@ GM:CreateItem("item_armor_dolg_seva", {
 	Category = ITEMCATEGORY_ARMOR,
     ItemType = ITEMTYPE_ARMOR,
 	ArmorStats = {
-		reduction = 45,
+		reduction = 50,
 		env_reduction = 60,
 		speedloss_percent = 10,
 		oxygen_capacity = 4,
@@ -654,7 +654,7 @@ GM:CreateItem("item_armor_monolith_seva_heavy", {
 	Category = ITEMCATEGORY_ARMOR,
     ItemType = ITEMTYPE_ARMOR,
 	ArmorStats = {
-		reduction = 45,
+		reduction = 58,
 		env_reduction = 60,
 		speedloss_percent = 16,
 		oxygen_capacity = 4.5,
@@ -674,9 +674,9 @@ GM:CreateItem("item_armor_exo_dolg_heavy", {
 	Category = ITEMCATEGORY_ARMOR,
     ItemType = ITEMTYPE_ARMOR,
 	ArmorStats = {
-		reduction = 70,
-		env_reduction = 40,
-		speedloss_percent = 44,
+		reduction = 78,
+		env_reduction = 45,
+		speedloss_percent = 34,
 		slots = 4,
 		battery = 150,
 		carryweight = 30,
@@ -712,8 +712,8 @@ GM:CreateItem("item_armor_rad_monolith_boss", {
 	Category = ITEMCATEGORY_ARMOR,
     ItemType = ITEMTYPE_ARMOR,
 	ArmorStats = {
-		reduction = 60,
-		env_reduction = 45,
+		reduction = 68,
+		env_reduction = 46,
 		speedloss_percent = 16,
 		slots = 3,
 		battery = 150,
