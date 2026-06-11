@@ -361,6 +361,24 @@ net.Receive("tea_perksreset", function(len, pl)
 	GAMEMODE:NetUpdatePeriodicStats(pl)
 end)
 
+net.Receive("tea_playerevent", function(len, pl)
+	local typ = net.ReadUInt(4)
+
+	if typ == SVPLAYEREVENT_UNEQUIPARMOR then
+		if !pl:IsValid() or !pl:Alive() then return end
+		if pl:GetEquippedArmor() == "none" then return end
+		if pl:IsSleeping() then pl:SendChat(translate.ClientGet(pl, "itemnousesleeping")) return end
+		if pl:IsUsingItem() then pl:SendChat(translate.ClientGet(pl, "itemnousecooldown")) return end
+
+		-- pl:SendUseDelay(3, "Unequipping Armor...")
+		-- pl:EmitSound("npc/combine_soldier/zipline_hitground2.wav")
+		-- timer.Simple(3, function()
+			-- if !pl:IsValid() or !pl:Alive() then return end
+			pl:ArmorUnequip()
+		-- end)
+	end
+end)
+
 net.Receive("tea_admin_tool", function(len, pl)
 	if !SuperAdminCheck(pl) then return end
 	local t = net.ReadString()

@@ -82,7 +82,7 @@ net.Receive("AddVault", function(length, ply)
 	if !GAMEMODE.ItemsList[str] then return false end -- if the item doesnt exist
 	GAMEMODE:AddToVault(ply, str, amt)
 
-	if ply.EquippedArmor == str then
+	if ply:GetEquippedArmor() == str and !ply.Inventory[str] then
 		ply:ArmorUnequip()
 	end
 	gamemode.Call("SendInventory", ply)

@@ -35,7 +35,7 @@ function MT_PLAYER:ProcessPlayerDamage(dmginfo)
 
 	local attackerclass = attacker:GetClass()
 	local armorvalue = 0
-	local plyarmor = self:GetNWString("ArmorType")
+	local plyarmor = self:GetEquippedArmor()
 	
 	if attacker:IsPlayer() then
 		dmginfo:SetDamage(dmginfo:GetDamage() * self:GetArmorDamageMultiplier())

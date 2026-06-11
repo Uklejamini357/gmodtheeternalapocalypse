@@ -180,7 +180,7 @@ function UseFunc_Armor(ply, usetime, battery, armor, snd)
 			ply:SendChat(translate.ClientGet(ply, "your_armor_is_at_full_condition"))
 			return false
 		end
-		local armorstr = ply:GetNWString("ArmorType") or "none"
+		local armorstr = ply:GetEquippedArmor()
 		local armortype = GAMEMODE.ItemsList[armorstr]
 		ply.Battery = math.Clamp(ply.Battery + battery, 0, ply:GetMaxBattery())
 		ply:SetArmor(math.Clamp(ply:Armor() + (armor * (1 + (ply.StatEngineer * 0.02))), 0, ply:GetMaxArmor()))

@@ -68,7 +68,7 @@ GM:CreateItem("m9k_coltpython", {
 })
 
 GM:CreateItem("m9k_glock", {
-    Cost = 3000,
+    Cost = 1950,
     Model = "models/weapons/w_dmg_glock.mdl",
     Weight = 1.56,
     Supply = 0,
@@ -79,7 +79,7 @@ GM:CreateItem("m9k_glock", {
 })
 
 GM:CreateItem("m9k_hk45", {
-    Cost = 2400,
+    Cost = 1200,
     Model = "models/weapons/w_hk45c.mdl",
     Weight = 0.96,
     Supply = 0,
@@ -101,7 +101,7 @@ GM:CreateItem("m9k_m92beretta", {
 })
 
 GM:CreateItem("m9k_luger", {
-    Cost = 2500,
+    Cost = 1220,
     Model = "models/weapons/w_luger_p08.mdl",
     Weight = 1.09,
     Supply = 0,
@@ -123,7 +123,7 @@ GM:CreateItem("m9k_ragingbull", {
 })
 
 GM:CreateItem("m9k_scoped_taurus", {
-    Cost = 2500,
+    Cost = 1850,
     Model = "models/weapons/w_raging_bull_scoped.mdl",
     Weight = 2.56,
     Supply = 0,
@@ -134,7 +134,7 @@ GM:CreateItem("m9k_scoped_taurus", {
 })
 
 GM:CreateItem("m9k_remington1858", {
-    Cost = 1680,
+    Cost = 880,
     Model = "models/weapons/w_remington_1858.mdl",
     Weight = 1.46,
     Supply = 0,
@@ -145,7 +145,7 @@ GM:CreateItem("m9k_remington1858", {
 })
 
 GM:CreateItem("m9k_model3russian", {
-    Cost = 1120,
+    Cost = 620,
     Model = "models/weapons/w_model_3_rus.mdl",
     Weight = 1.38,
     Supply = 0,
@@ -156,7 +156,7 @@ GM:CreateItem("m9k_model3russian", {
 })
 
 GM:CreateItem("m9k_model500", {
-    Cost = 2020,
+    Cost = 1020,
     Model = "models/weapons/w_sw_model_500.mdl",
     Weight = 1.86,
     Supply = -1,
@@ -178,7 +178,7 @@ GM:CreateItem("m9k_model627", {
 })
 
 GM:CreateItem("m9k_sig_p229r", {
-    Cost = 1330,
+    Cost = 1130,
     Model = "models/weapons/w_sig_229r.mdl",
     Weight = 1.31,
     Supply = 0,

@@ -12,12 +12,12 @@ end
 
 -- make sure on client are the same!!
 function GM:CalculateMaxWeight(ply)
-	local armorstr = ply:GetNWString("ArmorType") or "none"
+	local armorstr = ply:GetEquippedArmor()
 	local armortype = self.ItemsList[armorstr]
 	if ply.StatsPaused then return 1e300 end
 
 	return self.Config["MaxCarryWeight"] + (ply.UnlockedPerks["weightboost"] and 1.5 or 0) + (ply.UnlockedPerks["weightboost2"] and 2.5 or 0) + (ply.UnlockedPerks["weightboost3"] and 3.5 or 0)
-		+ ((ply.StatStrength or 0) * 1.53) + (ply:GetNWString("ArmorType") ~= "none" and armortype["ArmorStats"]["carryweight"] or 0)
+		+ ((ply.StatStrength or 0) * 1.53) + (ply:GetEquippedArmor() ~= "none" and armortype["ArmorStats"]["carryweight"] or 0)
 end
 
 function GM:CalculateRemainingInventoryWeight(ply, weight)
@@ -122,6 +122,8 @@ function GM:UseItem(ply, item, use, targetply)
 	if ply:IsUsingItem() then ply:SendChat(translate.ClientGet(ply, "itemnousecooldown")) return false end
 
 	if ply.Inventory[item] and ply.Inventory[item] > 0 then
+		if ply ~= targetply and !targetply:Alive() then ply:SystemMessage("wtf you can't use items on a dead player!!!!", Color(255,0,0)) return false end
+
 		if ftoggle == "UseFunc" then
 			local itemtype = ref.ItemType
 			if ref.UseFunc then
@@ -177,13 +179,8 @@ function GM:UseItem(ply, item, use, targetply)
 						ply:SelectWeapon(gun)
 					end
 				elseif ref.ArmorStats then
-					if ply.EquippedArmor ~= "none" and ply.EquippedArmor == item then
-						ply:SendUseDelay(3, "Unequipping Armor...")
-						ply:EmitSound("npc/combine_soldier/zipline_hitground2.wav")
-						timer.Simple(3, function()
-							if !ply:IsValid() or !ply:Alive() then return false end
-							ply:ArmorUnequip()
-						end)
+					if ply:GetEquippedArmor() == item then
+						ply:PrintMessage(3, "You already have this armor equipped!")
 					else
 						ply:SendUseDelay(3, "Equipping Armor...")
 						ply:EmitSound("npc/combine_soldier/zipline_hitground1.wav")
@@ -319,7 +316,7 @@ function GM:UseItem(ply, item, use, targetply)
 				
 				local armor = ref.ArmorStats and ref.Category == ITEMCATEGORY_ARMOR
 				local hasmorethan1 = ply.Inventory[item] > 1
-				if armor and !hasmorethan1 and !timer.Exists("Plywantstodropequippedarmor"..ply:EntIndex()) and ply:GetNWString("ArmorType") == item then
+				if armor and !hasmorethan1 and !timer.Exists("Plywantstodropequippedarmor"..ply:EntIndex()) and ply:GetEquippedArmor() == item then
 					ply:SendChat(translate.ClientFormat(ply, "warning_about_to_drop_equipped_armor", 10))
 					timer.Create("Plywantstodropequippedarmor"..ply:EntIndex(), 10, 1, function() end)
 					return false
@@ -351,7 +348,7 @@ function GM:UseItem(ply, item, use, targetply)
 					phys:AddVelocity(ply:GetVelocity() + ply:GetAimVector()*60 + Vector(0,0,60))
 				end
 
-				if !hasmorethan1 and armor and ply.EquippedArmor == tostring(item) then
+				if !hasmorethan1 and armor and ply:GetEquippedArmor() == item then
 					ply:ArmorUnequip()
 				end
 			end
@@ -443,7 +440,7 @@ net.Receive("SellItem", function(len, ply)
 		return false
 	end
 
-	if ply.EquippedArmor == str and !ply.Inventory[str] then
+	if ply:GetEquippedArmor() == str and !ply.Inventory[str] then
 		ply:ArmorUnequip()
 	end
 

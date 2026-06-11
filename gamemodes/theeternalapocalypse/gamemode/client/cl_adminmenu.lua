@@ -455,24 +455,6 @@ function GM:AdminMenu()
 				end
 			end
 		end
-		if TEADevCheck(pl) then
-			if TEADevCheck(pl) and cat == ITEMCATEGORY_ARMOR then
-				local UnequipButton = vgui.Create("DButton", SpawnMenuProperties)
-				UnequipButton:SetSize(100, 20)
-				UnequipButton:SetPos(860, 5)
-				UnequipButton:SetText(translate.Get("unequip_armor"))
-				UnequipButton:SetToolTip("THIS WORKS ONLY FOR DEVS!!")
-				UnequipButton:SetTextColor(Color(255, 255, 255))
-				UnequipButton.Paint = function(panel)
-					surface.SetDrawColor(0, 150, 0 ,255)
-					surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
-					draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(0, 50, 0, 130))
-				end
-				UnequipButton.DoClick = function()
-					RunConsoleCommand("tea_dev_forceequiparmor")
-				end
-			end
-		end
 	end
 	for i=1,6 do
 		RefreshItemList(i, buypanel[i])

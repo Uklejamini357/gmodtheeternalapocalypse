@@ -178,14 +178,14 @@ function meta:CalculateWeight()
 end
 
 function meta:CalculateMaxWeight()
-	local armorstr = self:GetNWString("ArmorType") or "none"
+	local armorstr = self:GetEquippedArmor()
 	local armortype = GAMEMODE.ItemsList[armorstr]
 
 	local baseweight = GAMEMODE.Config["MaxCarryWeight"]
 	local perksweight = (self:HasPerk("weightboost") and 1.5 or 0) + (self:HasPerk("weightboost2") and 2.5 or 0) + (self:HasPerk("weightboost3") and 3.5 or 0)
 	if self.StatsPaused then return math.huge end
 
-	return (baseweight + perksweight + ((self.StatStrength or 0) * 1.53) + (self:GetNWString("ArmorType") ~= "none" and armortype["ArmorStats"]["carryweight"] or 0)) *
+	return (baseweight + perksweight + ((self.StatStrength or 0) * 1.53) + (self:GetEquippedArmor() ~= "none" and armortype["ArmorStats"]["carryweight"] or 0)) *
 	(GAMEMODE.GameplayDifficulty == DIFFICULTY_GAMEPLAY_HELL and 0.9 or GAMEMODE.GameplayDifficulty == DIFFICULTY_GAMEPLAY_IMPOSSIBLE and 0.75 or 1)
 end
 
@@ -278,60 +278,74 @@ function meta:GetTimeSurvived()
 	return self.SZSurvivalTime or CurTime() - self.SurvivalTime
 end
 
-function meta:GetArmorProtection(defense)
-	local armorvalue = 0
-	local plyarmor = self:GetNWString("ArmorType")
-
-	if plyarmor and plyarmor != "none" then
-		local armortype = GAMEMODE.ItemsList[plyarmor]
-		armorvalue = tonumber((armortype["ArmorStats"].reduction) / 100)
-	end
-
-	if defense then
-		armorvalue = armorvalue + (self.StatDefense*0.02 + self:GetMasteryEffectiveStat("Survivor")) * (1 - armorvalue)
-	end
-
-	return armorvalue
+function meta:SetEquippedArmor(armorType)
+	self:SetNWString("ArmorType", armorType or "none")
 end
 
-function meta:GetArmorEnvProtection(defense)
-	local armorvalue = 0
-	local plyarmor = self:GetNWString("ArmorType")
+function meta:GetEquippedArmor()
+	return self:GetNWString("ArmorType", "none")
+end
 
-	if plyarmor and plyarmor != "none" then
-		local armortype = GAMEMODE.ItemsList[plyarmor]
-		armorvalue = tonumber((armortype["ArmorStats"].env_reduction) / 100)
-	end
+function meta:GetArmorProtection()
+	local plyarmor = self:GetEquippedArmor()
 
-	if defense then
-		armorvalue = armorvalue + (self.StatDefense*0.015 + self:GetMasteryEffectiveStat("Survivor")) *  (1 - armorvalue)
-	end
+	if plyarmor == "none" then return 0 end
+	local armortype = GAMEMODE.ItemsList[plyarmor]
+	return tonumber((armortype["ArmorStats"].reduction) / 100)
+end
 
-	return armorvalue
+function meta:GetDefenseProtection()
+	return self.StatDefense*0.02 + self:GetMasteryEffectiveStat("Survivor")
+end
+
+function meta:GetTotalProtection()
+	local a = self:GetArmorProtection()
+
+	return a + self:GetDefenseProtection()*(1-a)
+end
+
+function meta:GetArmorEnvProtection()
+	local plyarmor = self:GetEquippedArmor()
+
+	if plyarmor == "none" then return 0 end
+
+	local armortype = GAMEMODE.ItemsList[plyarmor]
+	return tonumber((armortype["ArmorStats"].env_reduction) / 100)
+end
+
+function meta:GetDefenseEnvProtection()
+	return self.StatDefense*0.015 + self:GetMasteryEffectiveStat("Survivor")
+end
+
+function meta:GetTotalEnvProtection()
+	local a = self:GetArmorEnvProtection()
+
+	return a + self:GetDefenseEnvProtection()*(1-a)
 end
 
 function meta:GetArmorDamageMultiplier()
-	return 1 - self:GetArmorProtection(true)
+	return 1 - self:GetTotalProtection()
 end
 
 function meta:GetArmorEnvDamageMultiplier()
-	return 1 - self:GetArmorEnvProtection(true)
+	return 1 - self:GetTotalEnvProtection()
 end
 
 function meta:GetArmorSpeedMultiplier()
-	local speedmul = 1
-	local armorstr = self:GetNWString("ArmorType") or "none"
+	local armorstr = self:GetEquippedArmor()
 	local armortype = GAMEMODE.ItemsList[armorstr]
+	if !armortype then return 1 end
+
 	if armortype["ArmorStats"]["speedloss_percent"] then
-		speedmul = 100 - armortype["ArmorStats"]["speedloss_percent"]
+		return (100 - armortype["ArmorStats"]["speedloss_percent"])/100
 	end
 
-	return speedmul
+	return 1
 end
 
 function meta:GetArmorCarryWeight()
 	local weightbonus = 0
-	local armorstr = self:GetNWString("ArmorType") or "none"
+	local armorstr = self:GetEquippedArmor()
 	local armortype = GAMEMODE.ItemsList[armorstr]
 
 	if armortype and armortype["ArmorStats"].carryweight then
@@ -426,7 +440,7 @@ function meta:CanGrind()
 end
 
 function meta:GetMaxBattery()
-	local armorstr = self:GetNWString("ArmorType") or "none"
+	local armorstr = self:GetEquippedArmor()
 	local armortype = GAMEMODE.ItemsList[armorstr]
 
 	return 100 + (armorstr and armortype and armortype["ArmorStats"]["battery"] or 0)

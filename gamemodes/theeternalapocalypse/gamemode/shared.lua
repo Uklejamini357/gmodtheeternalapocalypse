@@ -3,8 +3,8 @@ GM.AltName	= "After The End Reborn" -- yes, it's a fork. what else did you expec
 GM.Author	= "Uklejamini"
 GM.Email	= ""
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.12.9b"
-GM.DateVer	= "06.06.2026" -- Follows the DD.MM.YYYY format.
+GM.Version	= "0.12.9"
+GM.DateVer	= "11.06.2026" -- Follows the DD.MM.YYYY format.
 GM.Credits = {
 	{"LegendOfRobbo",			"Created After The End gamemode",											"Back in 2015. It's such a great gamemode!"},
 
@@ -101,7 +101,7 @@ include("sh_taskslist.lua")
 
 include("minigames/shared.lua")
 
-include("player_class/player_ate.lua")
+-- include("player_class/player_ate.lua")
 include("mad/mad_shared.lua") -- ????
 
 function GM:CreateTeams()
@@ -246,6 +246,9 @@ function GM:StartCommand(ply, cmd)
 	end
 
 	cmd:SetButtons(keys)
+end
+
+function GM:SetupMove(pl, move, cmd)
 end
 
 function GM:Move(ply, mv)

@@ -6,8 +6,7 @@ function GM:SetStartingVariables(ply)
 	ply.Prestige = 0
 	ply.StatPoints = 0
 	ply.PerkPoints = 0
-	ply.EquippedArmor = "none"
-	ply:SetNWString("ArmorType", ply.EquippedArmor)
+	ply:SetEquippedArmor("none")
 	ply.StatsReset = 0
 	ply.CurrentTask = ""
 	ply.CurrentTaskProgress = 0
@@ -101,6 +100,8 @@ function GM:LoadPlayer(ply, id)
 
 			if var == "BestSurvivalTime" or var == "ZKills" or var == "playerskilled" or var == "playerdeaths" then
 				ply.Statistics[var] = value
+			elseif var == "EquippedArmor" then
+				ply:SetEquippedArmor(value)
 			else
 				ply[var] = value
 			end
@@ -110,7 +111,6 @@ function GM:LoadPlayer(ply, id)
 
 		ply:SetNWInt("PlyLevel", ply.Level)
 		ply:SetNWInt("PlyPrestige", ply.Prestige)
-		ply:SetNWString("ArmorType", ply.EquippedArmor)
 
 		for k,v in pairs(ply.Inventory) do
 			if self.ItemsList[k] then continue end
@@ -123,7 +123,7 @@ function GM:LoadPlayer(ply, id)
 			ply.Inventory[k] = v
 		end
 
-		self:DebugLog("Loading player data: "..ply:Nick().." ("..ply:SteamID()..") Level: "..tostring(ply.Level).." Cash: $"..tostring(ply.Money).." XP Total: "..tostring(ply.XP).." Armor Equipped: "..tostring(ply.EquippedArmor))
+		self:DebugLog("Loading player data: "..ply:Nick().." ("..ply:SteamID()..") Level: "..tostring(ply.Level).." Cash: $"..tostring(ply.Money).." XP Total: "..tostring(ply.XP).." Armor Equipped: "..tostring(ply:GetEquippedArmor()))
 		self:DebugLog("Loaded player: ".. ply:Nick() .." ("..ply:SteamID()..") from file: "..filedir_ply)
 
 		self:NetUpdatePerks(ply)
@@ -149,7 +149,7 @@ function GM:SavePlayer(ply, force, nolastsession)
 	Data["Money"] = ply.Money
 	Data["StatPoints"] = ply.StatPoints
 	Data["PerkPoints"] = ply.PerkPoints
-	Data["EquippedArmor"] = ply.EquippedArmor
+	Data["EquippedArmor"] = ply:GetEquippedArmor()
 	Data["ChosenModel"] = ply.ChosenModel
 	Data["StatsReset"] = ply.StatsReset
 	Data["ChosenModelColor"] = tostring(ply.ChosenModelColor)
@@ -242,7 +242,7 @@ function GM:SavePlayer(ply, force, nolastsession)
 	end
 
 
-	self:DebugLog("Saving player data: "..ply:Nick().." ("..ply:SteamID().."), Level: "..tostring(ply.Level)..", Cash: $"..tostring(ply.Money)..", XP Total: "..tostring(ply.XP)..", Armor Equipped: "..tostring(ply.EquippedArmor))
+	self:DebugLog("Saving player data: "..ply:Nick().." ("..ply:SteamID().."), Level: "..tostring(ply.Level)..", Cash: $"..tostring(ply.Money)..", XP Total: "..tostring(ply.XP)..", Armor Equipped: "..tostring(ply:GetEquippedArmor()))
 
 	if self:GetDebug() >= DEBUGGING_NORMAL then
 		print("✓ ".. ply:Nick() .." profile saved")
@@ -578,7 +578,7 @@ end
 
 function GM:PrepareStats(ply)
 	if !ply:IsValid() then return false end
-	local armorstr = ply:GetNWString("ArmorType") or "none"
+	local armorstr = ply:GetEquippedArmor()
 	local armortype = self.ItemsList[armorstr]
 -- set the stats to default values for a fresh spawn
 	ply.Stamina = 100
@@ -756,7 +756,10 @@ function meta:LoadLastSession()
 					wep.Attachments.BaseClass = nil -- AGHHHHHHHHHH
 					if wep and wep:IsValid() and wep.Attachments and wep.Attach then
 						for id,att in pairs(v) do
-							print(id, att)
+							if self:GetDebug() >= DEBUGGING_NORMAL then
+								print(id, att)
+							end
+
 							ArcCW:PlayerGiveAtt(self, att, 1)
 							wep:Attach(id, att, true, true)
 						end
@@ -776,28 +779,36 @@ end
 
 function meta:ArmorEquip(item)
 	if item == "none" then return end
-	self.EquippedArmor = tostring(item)
-	self:SetNWString("ArmorType", tostring(item))
+	self:SetEquippedArmor(item)
 	self:OnEquippedArmor(item)
 end
 
 function meta:ArmorUnequip()
-	local item = self.EquippedArmor
-	self.EquippedArmor = "none"
-	self:SetNWString("ArmorType", "none")
-	gamemode.Call("RecalcPlayerModel", self)
-	gamemode.Call("RecalcPlayerSpeed", self)
+	local item = self:GetEquippedArmor()
+	self:SetEquippedArmor()
 	self:OnUnequippedArmor(item)
 end
 
 function meta:OnEquippedArmor(item)
+	net.Start("tea_playerevent")
+	net.WriteUInt(PLAYEREVENT_ARMORSWITCHED, 4)
+	net.WriteString(item)
+	net.Send(self)
+
 	self:SystemMessage("You equipped "..GAMEMODE:GetItemName(item, self)..".", Color(205,255,205,255), false)
 	gamemode.Call("RecalcPlayerModel", self)
 	gamemode.Call("RecalcPlayerSpeed", self)
 end
 
 function meta:OnUnequippedArmor(item)
+	net.Start("tea_playerevent")
+	net.WriteUInt(PLAYEREVENT_ARMORSWITCHED, 4)
+	net.WriteString("none")
+	net.Send(self)
+
 	self:SystemMessage(Format("You unequipped %s.", GAMEMODE:GetItemName(item, self)), Color(205,255,205,255), false)
+	gamemode.Call("RecalcPlayerModel", self)
+	gamemode.Call("RecalcPlayerSpeed", self)
 end
 
 

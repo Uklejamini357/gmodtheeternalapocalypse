@@ -56,8 +56,8 @@ function GM:ModelMenu()
 --ModelForm:AddItem( mList )
 
 		local tab = GAMEMODE.DefaultModels
-		if pl:GetNWString("ArmorType") != "none" then
-			local armor = pl:GetNWString("ArmorType")
+		if pl:GetEquippedArmor() != "none" then
+			local armor = pl:GetEquippedArmor()
 			if GAMEMODE.ItemsList[armor]["ArmorStats"]["allowmodels"] != nil then
 				tab = GAMEMODE.ItemsList[armor]["ArmorStats"]["allowmodels"]
 			end

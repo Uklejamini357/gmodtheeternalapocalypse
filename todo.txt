@@ -3,12 +3,7 @@ todo:
 (2nd June: Moved by +1 update due to many changes)
 
 Uncategorized:
-Rework Trader:
-- Add subcategories
-- Add alternative traders
-- Add Trader Item list table for separate traders (Which items each trader sells, which items traders buy from player)
-- Rework the entire UI
-Move the weapons from MAD Base to M9k base
+RMove the weapons from MAD Base to M9k base
 Make props not disappear when its owner leaves
 Make props save between sessions
 Add max props per map
@@ -23,8 +18,6 @@ Add confirmation to cancel a task (originally should be done for 0.12.9)
 
 v0.12.9:
 EVEN MORE TRANSLATION STRINGS!
-Make death screen more animated
-
 
 v0.12.10
 Make it possible to assign multiple tasks at a time (up to 3 tasks at once)
@@ -33,24 +26,45 @@ Add new special event: Zombie Fog
 
 
 v0.12.11:
-Expand admin system and logging... maybe?
 New admin command to force map transition -- moved from v0.12.7
 Add ULX commands
-Add CAMI permissions
 
 v0.12.12:
 Add more tasks -- moved from v0.12.5, then v0.12.7
 And finish the elite variants
 
+
 v0.12.13:
+Translation strings, again!
+Make death screen more animated
+
+
+
+v0.13.0:
 Rework Trader:
 - UI overhaul
-- Categories on the side rather than on top
 - Add item SubCategories
+- Add separate traders
+- Add Trader Item list table for separate traders (Which items each trader sells, which items traders buy from player)
+- Categories on the side rather than on top
+Expand admin system and logging...?
+Add CAMI permissions
 
-v0.12.14:
-Rework Trader:
-- Separate traders, selling different goods
+v0.13.1:
+Rework armor protection:
+Replace "Protection" with "Physical Protection" (Bullets, melee, explosions)
+Replace "Environmental Protection" with: (multiple damage types are even'ed)
+- Burn Protection (DMG_BURN, DMG_SLOWBURN)
+- Shock Protection (DMG_SHOCK, DMG_SONIC)
+- Chemical Protection (DMG_POISON, DMG_ACID)
+- Radioactive Protection (DMG_RADIATION)
+
+v0.13.2:
+Add status effects system (weight, poison, etc.)
+Add new items
+
+v0.13.3:
+Items dropping on death (not just for currently holding weapons, but also in inventory) <-- having a % chance to drop on death, not making as hardcore like in dayz. Thankfully it'll be toggleable
 
 
 
@@ -61,7 +75,6 @@ Rework Trader:
 v1.0.0:
 Add Human SNPC's spawns
 Add Reputation system (Affects NPC's only, but also some players)
-Items dropping on death (not just for currently holding weapons, but also in inventory) <-- having a % chance to drop on death, not making as hardcore like in dayz. Thankfully it'll be toggleable
 Add achievements (Oh, NOW ADDING THEM?!)
 
 v1.0.1:

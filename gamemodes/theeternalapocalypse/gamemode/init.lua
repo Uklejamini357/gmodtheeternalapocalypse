@@ -418,7 +418,7 @@ function GM:Think()
 
 		end
 	
-		local armorstr = ply:GetNWString("ArmorType") or "none"
+		local armorstr = ply:GetEquippedArmor()
 		local armortype = self.ItemsList[armorstr]
 /*	-- maybe another time
 		if ply:FlashlightIsOn() then
@@ -1084,7 +1084,6 @@ function GM:HandlePlayerArmorReduction(ply, dmginfo)
 end
 
 function GM:PlayerInitialSpawn(ply, transition)
-	self.BaseClass:PlayerInitialSpawn(ply)
 	ply:AllowFlashlight(true)
 	
 	-------- Survival Stats --------
@@ -1228,7 +1227,6 @@ function GM:PlayerInitialSpawn(ply, transition)
 	ply.SelectedProp = "models/props_debris/wood_board04a.mdl"
 	ply.ChosenModel = "models/player/kleiner.mdl"
 	ply.Territory = "none"
-	ply.EquippedArmor = "none"
 	ply.CurrentTask = ""
 	ply.CurrentTaskProgress = 0
 
@@ -1302,10 +1300,7 @@ function GM:PlayerInitialSpawn(ply, transition)
 
 	ply:SetPvPGuarded(0)
 	ply:SetNWBool("pvp", false)
-	ply:SetNWString("ArmorType", "none")
 	ply:SetTeam(TEAM_LONER)
-
-	ply:ArmorEquip(ply.EquippedArmor)
 
 	ply:AddStatisticPoints("TimesJoined", 1)
 
@@ -1400,9 +1395,7 @@ end
 
 
 function GM:PlayerSpawn(ply)
-	self.BaseClass:PlayerSpawn(ply)
-	player_manager.SetPlayerClass(ply, "player_ate")
-	gamemode.Call("RecalcPlayerModel", ply)
+	ply:UnSpectate()
 
 	for k, v in pairs(ents.FindByClass("bed")) do
 		if v.Owner and v.Owner:IsValid() and v.Owner == ply then
@@ -1447,6 +1440,9 @@ function GM:PlayerSpawn(ply)
 	gamemode.Call("PrepareStats", ply)
 	gamemode.Call("FullyUpdatePlayer", ply)
 
+	ply:SetupHands()
+	hook.Run("PlayerLoadout", ply)
+
 	-- give them a new gun if they are still levels under Newbie Level and are at prestige 0
 	local newgun = self.Config["NewbieWeapon"]
 	if ply:IsNewbie() and !ply.Inventory[newgun] then
@@ -1455,6 +1451,7 @@ function GM:PlayerSpawn(ply)
 	end
 
 	if ply.AdminMode then
+		ply:GodEnable()
 		ply:SetNoTarget(true)
 	end
 end
@@ -1530,50 +1527,51 @@ end
 
 -- not like setplayermodel, just reads their model and colour settings and sets them to it
 function GM:RecalcPlayerModel(ply)
+	local gmod_hands = ply:GetHands()
+	if !IsValid(gmod_hands) then return end
+
 	if !ply.ChosenModel then ply.ChosenModel = "models/player/kleiner.mdl" end
 	if !ply.ChosenModelColor then ply.ChosenModelColor = Vector(0.25, 0, 0) end
-	local gmod_hands
-	for _,ent in pairs(ents.FindByClass("gmod_hands")) do -- without this, causes LUA ERRORS if spawning in the first time with armor
-		if ent:GetOwner() == ply then
-			gmod_hands = ent
-			break
-		end
-	end
 
 	if type(ply.ChosenModelColor) == "string" then ply.ChosenModelColor = Vector(ply.ChosenModelColor) end
 	ply:SetPlayerColor(ply.ChosenModelColor)
 
-	if ply:IsAdmin() and ply.EquippedArmor == "none" then
+	if ply:IsAdmin() and ply:GetEquippedArmor() == "none" then
 		ply:SetModel(player_manager.TranslatePlayerModel(ply:GetInfo("cl_playermodel")))
+		ply:SetupHands()
 		return false
 	end
 
-	if !self.ItemsList[ply.EquippedArmor] or self.ItemsList[ply.EquippedArmor]["ArmorStats"]["allowmodels"] == nil then
+	if !self.ItemsList[ply:GetEquippedArmor()] or !self.ItemsList[ply:GetEquippedArmor()]["ArmorStats"]["allowmodels"] then
 		if !table.HasValue(self.DefaultModels, ply.ChosenModel) then
 			ply.ChosenModel = table.Random(self.DefaultModels)
 		end
 		ply:SetModel(ply.ChosenModel)
-		if gmod_hands and gmod_hands:IsValid() then
-			ply:SetupHands()
-		end
+		ply:SetupHands()
 		return true
 	end
 
-	local models = self.ItemsList[ply.EquippedArmor]["ArmorStats"]["allowmodels"]
+	local models = self.ItemsList[ply:GetEquippedArmor()]["ArmorStats"]["allowmodels"]
 	if !table.HasValue(models, ply.ChosenModel) then
 		ply.ChosenModel = table.Random(models)
 		ply:SetModel(ply.ChosenModel)
-		if gmod_hands and gmod_hands:IsValid() then
-			ply:SetupHands()
-		end
+		ply:SetupHands()
 		return false
 	else
 		ply:SetModel(ply.ChosenModel)
-		if gmod_hands and gmod_hands:IsValid() then
-			ply:SetupHands()
-		end
+		ply:SetupHands()
 		return true
 	end
+end
+
+function GM:PlayerSetHandsModel(pl, ent)
+   local simplemodel = player_manager.TranslateToPlayerModelName(pl:GetModel())
+   local info = player_manager.TranslatePlayerHands(simplemodel)
+   if info then
+      ent:SetModel(info.model)
+      ent:SetSkin(info.skin)
+      ent:SetBodyGroups(info.body)
+   end
 end
 
 function GM:RecalcPlayerSpeed(ply)
@@ -1583,7 +1581,7 @@ function GM:RecalcPlayerSpeed(ply)
 	local runspeed = self.Config["RunSpeed"]
 	local walkspeedbonus = ply.StatSpeed * 2.5
 	local runspeedbonus = ply.StatSpeed * 6
-	local plyarmor = ply:GetNWString("ArmorType")
+	local plyarmor = ply:GetEquippedArmor()
 	local slowdown = tonumber(ply.SlowDown or 0)
 
 	if plyarmor and plyarmor != "none" then

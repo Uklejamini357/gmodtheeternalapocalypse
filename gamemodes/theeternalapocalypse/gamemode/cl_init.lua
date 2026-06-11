@@ -207,22 +207,27 @@ function GM:Think()
 
 			local files = file.Find("sound/music/ambient/*.mp3", "GAME")
 
-			if self.LastAmbientMusic then -- tries not to repeat last music
-				table.RemoveByValue(files, self.LastAmbientMusic)
+			if #files == 0 then
+				print("what the frick how you don't have soundtracks for ambient music")
+				self.AmbientMusicEnabled = false
+			else
+				if self.LastAmbientMusic then -- tries not to repeat last music
+					table.RemoveByValue(files, self.LastAmbientMusic)
+				end
+
+				local snd = table.Random(files)
+				local sndfile = "music/ambient/"..snd
+				self.AmbientMusic = CreateSound(me, "#"..sndfile)
+				self.AmbientMusic:PlayEx(0.3, 100)
+
+				self.LastAmbientMusic = snd
+				if self:GetDebug() >= DEBUGGING_NORMAL then
+					PrintTable(files)
+					print("Playing "..snd..". Duration: "..SoundDuration(sndfile).."s")
+				end
+
+				self.NextAmbientMusic = CurTime() + SoundDuration(sndfile) + 15
 			end
-
-			local snd = table.Random(files)
-			local sndfile = "music/ambient/"..snd
-			self.AmbientMusic = CreateSound(me, "#"..sndfile)
-			self.AmbientMusic:PlayEx(0.3, 100)
-
-			self.LastAmbientMusic = snd
-			if self:GetDebug() >= DEBUGGING_NORMAL then
-				PrintTable(files)
-				print("Playing "..snd..". Duration: "..SoundDuration(sndfile).."s")
-			end
-
-			self.NextAmbientMusic = CurTime() + SoundDuration(sndfile) + 15
 		end
 	end
 
@@ -634,6 +639,12 @@ end
 local ang
 function GM:CreateMove(cmd)
 	local ply = LocalPlayer()
+
+	if ply:IsPlayingTaunt() and ply:Alive() then
+		cmd:ClearButtons()
+		cmd:ClearMovement()
+		return
+	end
 
 	if ((ply:IsUsingItem() and not ply.UsingItemCanMove) or ply:IsSleeping()) and ang then
 		cmd:SetViewAngles(ang)

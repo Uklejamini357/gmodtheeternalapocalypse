@@ -846,6 +846,7 @@ function GM:Emotes()
 end
 
 local thirdperson = false
+local taunting
 local lastcam
 function GM:ToggleThirdPerson()
 	local pl = LocalPlayer()
@@ -855,7 +856,16 @@ function GM:ToggleThirdPerson()
 end
 
 hook.Add("CalcView", "TEA.ThirdPerson", function(pl, origin, angles, fov)
-	if !thirdperson then return end
+	if !thirdperson and !(pl:Alive() and pl:IsPlayingTaunt()) then taunting = nil return end
+
+	if pl:IsPlayingTaunt() and !taunting then
+		taunting = true
+		lastcam = origin
+	end
+
+	if !lastcam then
+		lastcam = origin
+	end
 
 	local viewpos = origin + angles:Forward() * -50 + Vector(0, 0, 15)
 	lastcam = lastcam + (viewpos-lastcam)*math.min(1, FrameTime()*10)
@@ -873,6 +883,7 @@ end)
 
 hook.Add("ShouldDrawLocalPlayer", "TEA.ThirdPerson", function(pl)
 	if thirdperson then return true end
+	if pl:IsPlayingTaunt() and pl:Alive() then return true end
 end)
 
 local function draw_Circle( x, y, radius, seg )

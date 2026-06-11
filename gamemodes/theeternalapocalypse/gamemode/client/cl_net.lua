@@ -398,9 +398,17 @@ net.Receive("tea_events", function(len)
 end)
 
 net.Receive("tea_playerevent", function(len)
+	local pl = LocalPlayer()
 	local eventType = net.ReadUInt(4)
 
 	if eventType == PLAYEREVENT_INITSPAWN then
 		GAMEMODE.SkyBoxCameraPos = net.ReadVector()
+	elseif eventType == PLAYEREVENT_ARMORSWITCHED then
+		local armor = net.ReadString()
+
+		pl:SetEquippedArmor(armor)
+		if IsValid(pInvPanel) then
+			pInvPanel:UpdateEquippedArmor(armor, true)
+		end
 	end
 end)

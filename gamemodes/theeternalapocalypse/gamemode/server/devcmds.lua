@@ -107,10 +107,7 @@ function GM:DevCmds_ForceEquipArmor(ply, cmd, args)
 	local name = args[1]
 	local item = GAMEMODE.ItemsList[name]
 
-	if !item then
-		ply:ArmorUnequip()
-		ply:SystemMessage("You removed equipped armor for yourself!", Color(155,255,155,255), true)
-	else
+	if item then
 		ply:ArmorEquip(name)
 		ply:SystemMessage("You equipped armor '"..GAMEMODE:GetItemName(name, ply).."' for yourself!", Color(155,255,155,255), true)
 	end
