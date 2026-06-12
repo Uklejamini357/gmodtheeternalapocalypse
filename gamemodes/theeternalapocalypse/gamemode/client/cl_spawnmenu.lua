@@ -36,11 +36,11 @@ local function DoInvPanel()
 		local itPanel = vgui.Create("DPanel", pInvPanel)
 		itPanel:SetPos(5, 5)
 		itPanel:SetSize(345, 65)
-		itPanel.Paint = function(panel) -- Paint function
+		itPanel.Paint = function(panel, w, h)
 			surface.SetDrawColor(75, 75, 75 ,255)
-			surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
+			surface.DrawOutlinedRect(0, 0, w, h)
 			surface.SetDrawColor(0, 0, 0 ,200)
-			surface.DrawRect(0, 0, panel:GetWide(), panel:GetTall())
+			surface.DrawRect(0, 0, w, h)
 		end
 
 		local itIcon
@@ -153,44 +153,6 @@ local function DoInvPanel()
 			return true
 		end
 
-
---[[
-		local EquipButton = vgui.Create("DButton", itPanel)
-		EquipButton:SetSize(80, 20)
-		EquipButton:SetPos(80, 35)
-		EquipButton:SetText(translate.Get("use"))
-		EquipButton:SetTextColor(Color(255, 255, 255, 255))
-		EquipButton.Paint = function(panel)
-			surface.SetDrawColor(0, 150, 0 ,255)
-			surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
-			draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(0, 50, 0, 130))
-		end
-		EquipButton.DoClick = function()
-			net.Start("UseItem")
-			net.WriteString(k)
-			net.WriteBool(true)
-			net.SendToServer()
-		end
-		EquipButton.DoDoubleClick = EquipButton.DoClick
-
-		local DropButton = vgui.Create("DButton", itPanel)
-		DropButton:SetSize(80, 20)
-		DropButton:SetPos(170, 35)
-		DropButton:SetText(translate.Get("drop"))
-		DropButton:SetTextColor(Color(255, 255, 255, 255))
-		DropButton.Paint = function(panel)
-			surface.SetDrawColor(150, 75, 0 ,255)
-			surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
-			draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(50, 25, 0, 130))
-		end
-		DropButton.DoClick = function()
-			net.Start("UseItem")
-			net.WriteString(k)
-			net.WriteBool(false)
-			net.SendToServer()
-		end
-		DropButton.DoDoubleClick = DropButton.DoClick
-]]
 		pInvPanel.InvList:AddItem(itPanel)
 	end
 end
@@ -252,6 +214,39 @@ end)
 
 
 
+local function CreateLabel(parent, text)
+	local lbl = vgui.Create("DLabel", parent)
+	lbl:SetFont("TEA.HUDFontSmall")
+	lbl:SetText(text)
+	lbl:Dock(TOP)
+
+	return lbl
+end
+
+local function UpdateEquippedArmor(p, item, refreshed)
+	local self = GAMEMODE
+	local ply = LocalPlayer()
+
+	-- the way the model is determined is by prediction. There is no way to tell how, unless the selected playermodel from the armor is networked too. So it's a bit buggy.
+	p.SidePanel.ModelPanel.PMPanelInfo:SetModel(refreshed and table.Random(self.ItemsList[item] and self.ItemsList[item].ArmorStats["allowmodels"] or self.DefaultModels) or ply:GetModel())
+	p.SidePanel.ModelPanel.UnequipBtn:SetVisible(ply:GetEquippedArmor() ~= "none")
+	p.SidePanel.ArmorPanel.curarmor:SetText(ply:GetEquippedArmor() ~= "none" and translate.Format("cur_armor", self:GetItemName(ply:GetEquippedArmor())) or translate.Get("noarmor"))
+	p.SidePanel.ArmorPanel.curarmor:SetTooltip(p.SidePanel.ArmorPanel.curarmor:GetText())
+	if GAMEMODE.ExpandedArmorProtTest then
+		p.SidePanel.ArmorPanel.prot:SetText("Physical protection: "..math.Round(ply:GetArmorProtection()*100, 1).."%")
+		p.SidePanel.ArmorPanel.burnprot:SetText("Burn protection: "..math.Round(ply:GetArmorEnvProtection()*100, 1).."%")
+		p.SidePanel.ArmorPanel.shockprot:SetText("Shock protection: "..math.Round(ply:GetArmorEnvProtection()*100, 1).."%")
+		p.SidePanel.ArmorPanel.chemprot:SetText("Chem protection: "..math.Round(ply:GetArmorEnvProtection()*100, 1).."%")
+		p.SidePanel.ArmorPanel.radprot:SetText("Radiation protection: "..math.Round(ply:GetArmorEnvProtection()*100, 1).."%")
+	else
+		p.SidePanel.ArmorPanel.prot:SetText(translate.Format("armorprot", math.Round(ply:GetArmorProtection()*100, 1), math.Round(ply:GetTotalProtection()*100, 1)))
+		p.SidePanel.ArmorPanel.envprot:SetText(translate.Format("armor_envprot", math.Round(ply:GetArmorEnvProtection()*100, 1), math.Round(ply:GetTotalEnvProtection()*100, 1)))
+	end
+	p.SidePanel.ArmorPanel.speed:SetText(translate.Get("armorspeed")..": ".. ply:GetArmorSpeedMultiplier() * 100 .."%")
+	p.SidePanel.ArmorPanel.carryweight:SetText(translate.Format("armor_max_weight", ply:GetArmorCarryWeight() >= 0 and "+" or "", ply:GetArmorCarryWeight()))
+
+end
+
 function GM:InvMenu()
 	if pInvPanel and pInvPanel:IsValid() then
 		pInvPanel:SetAlpha(0)
@@ -263,68 +258,420 @@ function GM:InvMenu()
 	local ply = LocalPlayer()
 	local wide, tall = 1000, 700
 
-	pInvPanel = vgui.Create("DFrame")
+	pInvPanel = vgui.Create("DPanel")
 	pInvPanel:SetSize(wide, tall)
 	pInvPanel:Center()
 	pInvPanel:SetAlpha(0)
 	pInvPanel:AlphaTo(255, 0.2, 0)
-	pInvPanel:SetTitle("")
-	pInvPanel:SetDraggable(false)
-	pInvPanel:ShowCloseButton(false)
-	pInvPanel.Paint = function(panel)
+	pInvPanel.Paint = function(panel, w, h)
 		Derma_DrawBackgroundBlur(pInvPanel, SysTime()-0.2)
 
-		draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(0, 0, 0, 200))
+		draw.RoundedBox(2, 0, 0, w, h, Color(0, 0, 0, 200))
 		surface.SetDrawColor(150, 150, 0 ,255)
-		surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
-		surface.DrawOutlinedRect(panel:GetWide() - 260, 25, 250, 200)
-		surface.DrawOutlinedRect(panel:GetWide() - 260, 230, 250, 100)
-		surface.SetDrawColor(0, 0, 0 ,155)
-		surface.DrawRect(panel:GetWide() - 260, 25, 250, 205)
-		surface.DrawRect(panel:GetWide() - 260, 230, 250, 100)
-		local armorstr = ply:GetNWString("ArmorType") or "none"
-		local armortype = GAMEMODE.ItemsList[armorstr]
+		surface.DrawOutlinedRect(0, 0, w, h)
 
-		local prot, protdef = math.Round(ply:GetArmorProtection(false)*100, 1), math.Round(ply:GetArmorProtection(true)*100, 1)
-		local env_prot, env_protdef = math.Round(ply:GetArmorEnvProtection(false)*100, 1), math.Round(ply:GetArmorEnvProtection(true)*100, 1)
-		local armorcarryweight = math.Round(ply:GetArmorCarryWeight(), 2)
-		if armorstr and armortype then
-			draw.SimpleText(translate.Format("cur_armor", GAMEMODE:GetItemName(armorstr)), "TEA.HUDFontSmall", panel:GetWide() - 255, 235, Color(255,255,255,255))
-			draw.SimpleText(translate.Format("armorprot", prot, protdef), "TEA.HUDFontSmall", panel:GetWide() - 255, 250, Color(205,255,205,255))
-			draw.SimpleText(translate.Format("armor_envprot", env_prot, env_protdef), "TEA.HUDFontSmall", panel:GetWide() - 255, 265, Color(255,230,255,255))
-			draw.SimpleText(translate.Get("armorspeed")..": "..ply:GetArmorSpeedMultiplier().."%", "TEA.HUDFontSmall", panel:GetWide() - 255, 280, Color(205,205,255,255))
-			draw.SimpleText(translate.Format("armor_max_weight", armorcarryweight >= 0 and "+" or "", armorcarryweight), "TEA.HUDFontSmall", panel:GetWide() - 255, 295, Color(255,255,175,255))
-		else
-			draw.SimpleText(translate.Get("noarmor"), "TEA.HUDFontSmall", panel:GetWide() - 255, 235, Color(255,255,255))
-			draw.SimpleText(translate.Format("armorprot", 0, protdef), "TEA.HUDFontSmall", panel:GetWide() - 255, 250, Color(205,255,205))
-			draw.SimpleText(translate.Format("armor_envprot", 0, env_protdef), "TEA.HUDFontSmall", panel:GetWide() - 255, 265, Color(255,230,255))
-			draw.SimpleText(translate.Get("armorspeed")..": None", "TEA.HUDFontSmall", panel:GetWide() - 255, 280, Color(205,205,255))
-			draw.SimpleText(translate.Format("armor_max_weight", "+", "0"), "TEA.HUDFontSmall", panel:GetWide() - 255, 295, Color(255,235,205))
-		end
-		draw.SimpleText(translate.Format("skillpoints", math.floor(MySP)), "TEA.HUDFontSmall", panel:GetWide() - 255, 310, Color(205, 205, 205))
 	end
 	pInvPanel.Think = function()
 	end
 	pInvPanel:MakePopup()
 	pInvPanel:SetKeyboardInputEnabled(false)
+	pInvPanel.UpdateEquippedArmor = UpdateEquippedArmor
 
 	self.InvMenuPanel = pInvPanel
 
-	local tea_config_propcostenabled = self.PropCostEnabled
-	local InvSheet1 = vgui.Create("DPropertySheet", pInvPanel)
-	InvSheet1:SetPos(5, 5)
-	InvSheet1:SetSize(wide - 275, tall - 10)
-	InvSheet1.Paint = function(panel)
-		surface.SetDrawColor(0, 0, 0, 100)
-		surface.DrawRect(0, 0, panel:GetWide(), panel:GetTall())
-		if not tea_config_propcostenabled then
-			local text1 = vgui.Create("DLabel", pInvPanel)
-			text1:SetFont("TEA.HUDFontSmall")
-			text1:SetText("Prop spawning cost disabled (excluding faction structures)")
-			text1:SetColor(Color(205,205,205,255))
-			text1:SetPos(400, 10)
-			text1:SizeToContents()
+	local spnl = vgui.Create("Panel", pInvPanel)
+	spnl:Dock(RIGHT)
+	spnl:DockMargin(5, 25, 5, 5)
+	spnl:SetWide(250)
+	spnl.Paint = function(panel, w, h)
+	end
+	pInvPanel.SidePanel = spnl
+
+	local modelpnl = vgui.Create("Panel", spnl)
+	modelpnl:Dock(TOP)
+	modelpnl:DockMargin(0, 0, 0, 0)
+	modelpnl:SetTall(200)
+	modelpnl.Paint = function(panel, w, h)
+		surface.SetDrawColor(150, 150, 0, 255)
+		surface.DrawOutlinedRect(0, 0, w, h)
+		surface.SetDrawColor(0, 0, 0, 155)
+		surface.DrawRect(0, 0, w, h)
+	end
+	spnl.ModelPanel = modelpnl
+
+	local mInfo = vgui.Create("DModelPanel", modelpnl)
+	modelpnl.PMPanelInfo = mInfo
+	mInfo:SetSize(200, 200)
+	mInfo:SetPos(25, 0)
+	mInfo:SetAnimSpeed(1)
+	mInfo:SetAnimated(true)
+	mInfo:SetAmbientLight(Color(50, 50, 50))
+	mInfo:SetDirectionalLight(BOX_TOP, Color(255, 255, 255))
+	mInfo:SetDirectionalLight(BOX_FRONT, Color(255, 255, 255))
+	mInfo:SetCamPos(Vector(50, 0, 50))
+	mInfo:SetLookAt(Vector(0, 0, 40))
+	mInfo:SetFOV(80)
+
+	local mButton = vgui.Create("DButton", modelpnl)
+	mButton:SetSize(90, 20)
+	mButton:SetPos(spnl:GetWide()-mButton:GetWide(), 0)
+	mButton:SetText(translate.Get("changemodel"))
+	mButton:SetToolTip(translate.Get("changemodel_d"))
+	mButton:SetTextColor(COLOR_WHITE)
+	mButton.Paint = function(panel, w, h)
+		surface.SetDrawColor(150, 150, 0 ,255)
+		surface.DrawOutlinedRect(0, 0, w, h)
+		draw.RoundedBox(2, 0, 0, w, h, Color(50, 50, 0, 130))
+	end
+	mButton.DoClick = function()
+		RunConsoleCommand("tea_changemodel")
+		self:CloseInvMenu()
+	end
+
+	local unEqBtn = vgui.Create("DButton", modelpnl)
+	modelpnl.UnequipBtn = unEqBtn
+	unEqBtn:SetSize(90, 20)
+	unEqBtn:SetPos(spnl:GetWide()-unEqBtn:GetWide(), 20)
+	unEqBtn:SetText("Unequip armor")
+	unEqBtn:SetTextColor(COLOR_WHITE)
+	unEqBtn.Paint = function(panel, w, h)
+		surface.SetDrawColor(150, 150, 0 ,255)
+		surface.DrawOutlinedRect(0, 0, w, h)
+		draw.RoundedBox(2, 0, 0, w, h, Color(50, 50, 0, 130))
+	end
+	unEqBtn.DoClick = function()
+		net.Start("tea_playerevent")
+		net.WriteUInt(SVPLAYEREVENT_UNEQUIPARMOR, 4)
+		net.SendToServer()
+	end
+
+	local y1, y2 = self.ExpandedArmorProtTest and 50 or 35, self.ExpandedArmorProtTest and 125 or 80
+
+	local armorpnl = vgui.Create("Panel", spnl)
+	spnl.ArmorPanel = armorpnl
+	armorpnl:Dock(TOP)
+	armorpnl:DockMargin(0, 5, 0, 0)
+	armorpnl:SetTall(y1)
+	armorpnl.Think = function(panel, w, h)
+		if (panel:IsHovered() or panel:IsChildHovered()) and !panel.m_Hovered then
+			panel:SizeTo(panel:GetWide(), y2, 0.6, 0, 0.3)
+			panel.m_Hovered = true
+		elseif !panel:IsHovered() and !panel:IsChildHovered() then
+			panel:SizeTo(panel:GetWide(), y1, 0.6, 0, 0.7)
+			panel.m_Hovered = false
 		end
+	end
+	armorpnl.Paint = function(panel, w, h)
+		surface.SetDrawColor(0, 0, 0, 155)
+		surface.DrawRect(0, 0, w, h)
+		surface.SetDrawColor(150, 150, 0, 255)
+		surface.DrawOutlinedRect(0, 0, w, h)
+
+		
+		if panel:GetTall() ~= y2 then
+			local y_add = math.floor(12 * (panel:GetTall() - y1)/(y2-y1))
+			surface.SetDrawColor(0, 0, 0, 155)
+			surface.DrawRect(0, h-12 + y_add, w, h)
+
+			surface.SetDrawColor(255, 255, 255, 200)
+			draw.NoTexture()
+			surface.DrawPoly({
+				{x = w/2 - 5, y = h - 10 + y_add},
+				{x = w/2 + 5, y = h - 10 + y_add},
+				{x = w/2, y = h - 1 + y_add},
+			})
+		end
+	end
+
+	armorpnl.curarmor = CreateLabel(armorpnl, "")
+	armorpnl.curarmor:SetMouseInputEnabled(true)
+	armorpnl.curarmor:SetTextColor(Color(255, 210, 114))
+	armorpnl.curarmor:DockMargin(5, 0, 0, -5)
+
+	if self.ExpandedArmorProtTest then
+		armorpnl.prot = CreateLabel(armorpnl, "")
+		armorpnl.prot:SetMouseInputEnabled(true)
+		armorpnl.prot:SetTextColor(Color(93, 206, 255))
+		armorpnl.prot:SetTooltip("Total: "..math.Round(ply:GetTotalProtection()*100, 1).."%")
+		armorpnl.prot:DockMargin(5, 0, 0, -5)
+
+		armorpnl.burnprot = CreateLabel(armorpnl, "")
+		armorpnl.burnprot:SetMouseInputEnabled(true)
+		armorpnl.burnprot:SetTooltip("Total: "..math.Round(ply:GetTotalEnvProtection()*100, 1).."%")
+		armorpnl.burnprot:DockMargin(5, 0, 0, -5)
+
+		armorpnl.shockprot = CreateLabel(armorpnl, "")
+		armorpnl.shockprot:SetMouseInputEnabled(true)
+		armorpnl.shockprot:SetTooltip("Total: "..math.Round(ply:GetTotalEnvProtection()*100, 1).."%")
+		armorpnl.shockprot:DockMargin(5, 0, 0, -5)
+
+		armorpnl.chemprot = CreateLabel(armorpnl, "")
+		armorpnl.chemprot:SetMouseInputEnabled(true)
+		armorpnl.chemprot:SetTooltip("Total: "..math.Round(ply:GetTotalEnvProtection()*100, 1).."%")
+		armorpnl.chemprot:DockMargin(5, 0, 0, -5)
+
+		armorpnl.radprot = CreateLabel(armorpnl, "")
+		armorpnl.radprot:SetMouseInputEnabled(true)
+		armorpnl.radprot:SetTooltip("Total: "..math.Round(ply:GetTotalEnvProtection()*100, 1).."%")
+		armorpnl.radprot:DockMargin(5, 0, 0, -5)
+	else
+		armorpnl.prot = CreateLabel(armorpnl, "")
+		armorpnl.prot:SetMouseInputEnabled(true)
+		armorpnl.prot:SetTooltip("Protection from bullets, explosions, melee attacks, zombies, etc.")
+		armorpnl.prot:SetFont("TEA.HUDFontSmall")
+		armorpnl.prot:SetTextColor(Color(96, 206, 255))
+		armorpnl.prot:Dock(TOP)
+		armorpnl.prot:DockMargin(5, 0, 0, -5)
+
+		armorpnl.envprot = CreateLabel(armorpnl, "")
+		armorpnl.envprot:SetMouseInputEnabled(true)
+		armorpnl.envprot:SetTooltip("Protection from environmental hazards.")
+		armorpnl.envprot:SetFont("TEA.HUDFontSmall")
+		armorpnl.envprot:SetTextColor(Color(166, 206, 255))
+		armorpnl.envprot:Dock(TOP)
+		armorpnl.envprot:DockMargin(5, 0, 0, -5)
+	end
+
+
+	armorpnl.speed = CreateLabel(armorpnl, "")
+	armorpnl.speed:SetMouseInputEnabled(true)
+	armorpnl.speed:SetTooltip("Movement speed from your armor.")
+	armorpnl.speed:SetFont("TEA.HUDFontSmall")
+	armorpnl.speed:SetTextColor(Color(186, 255, 76))
+	armorpnl.speed:Dock(TOP)
+	armorpnl.speed:DockMargin(5, 0, 0, -5)
+
+	armorpnl.carryweight = CreateLabel(armorpnl, "")
+	armorpnl.carryweight:SetMouseInputEnabled(true)
+	armorpnl.carryweight:SetTooltip("Additional max inventory carry weight, allowing you to carry more items")
+	armorpnl.carryweight:SetFont("TEA.HUDFontSmall")
+	armorpnl.carryweight:SetTextColor(Color(255, 255, 200))
+	armorpnl.carryweight:Dock(TOP)
+	armorpnl.carryweight:DockMargin(5, 0, 0, -5)
+
+	spnl.sp = vgui.Create("DLabel", spnl)
+	spnl.sp:SetFont("TEA.HUDFontSmall")
+	spnl.sp:SetText(translate.Format("skillpoints", math.floor(MySP)))
+	spnl.sp.Think = function(panel)
+		local tx = translate.Format("skillpoints", math.floor(MySP))
+		if tx == panel:GetText() then return end
+		panel:SetText(tx)
+	end
+	spnl.sp:Dock(TOP)
+	spnl.sp:DockMargin(5, 0, 0, 10)
+
+	UpdateEquippedArmor(pInvPanel, ply:GetEquippedArmor())
+
+
+	-----------------------------------------Stats Sheet---------------------------------------------------------------
+	InvSheet2 = vgui.Create("DPropertySheet", spnl)
+	InvSheet2:Dock(FILL)
+	InvSheet2.Paint = function(panel, w, h)
+		draw.RoundedBox(2, 0, 0, w, h, Color(0, 0, 0, 100))
+		for k, v in pairs(panel.Items) do
+			if (!v.Tab) then continue end
+			v.Tab.Paint = function(self,w,h)
+				draw.RoundedBox(0, 0, 0, w, h, Color(50,50,25))
+			end
+		end
+	end
+
+
+	local invSkills = vgui.Create("DScrollPanel", spnl)
+	invSkills:Dock(FILL)
+	invSkills.Paint = function(panel, w, h)
+		surface.SetDrawColor(0, 0, 0 ,100)
+		surface.DrawRect(0, 0, w, h)
+	end
+	invSkills.VBar.Paint = function(panel, w, h)
+		draw.RoundedBox(2, 0, 0, w, h, Color(30, 30, 30, 50))
+	end
+	invSkills.VBar.btnGrip.Paint = function(panel, w, h)
+		draw.RoundedBox(2, 0, 0, w, h, Color(40, 40, 0, 50))
+	end
+
+
+
+
+	local function DoStatsList()
+		for k, v in SortedPairs(self.StatConfigs) do
+			local descr = translate.Format("skill_descr", GAMEMODE:GetSkillDescription(k), v.Cost, v.Max, v.PerkMaxIncrease or 0)
+
+			local skpnl = vgui.Create("Panel", invSkills)
+			skpnl:SetMouseInputEnabled(true)
+			skpnl:SetToolTip(descr)
+			skpnl:Dock(TOP)
+			skpnl:SetTall(50)
+			skpnl:DockMargin(5, 0, 5, 2)
+
+			local txt = vgui.Create("DLabel", skpnl)
+			txt:SetText(translate.Get(k)..": "..ply["Stat"..k])
+			txt:Dock(TOP)
+			txt:DockMargin(0, 0, 0, 2)
+
+			local btn = vgui.Create("DButton", skpnl)
+			btn:SetTextColor(COLOR_WHITE)
+			btn:SetText(translate.Format("inc1stat", translate.Get(k)))
+			btn:Dock(TOP)
+
+			local function applypoint(num)
+				net.Start("UpgradePerk")
+				net.WriteString(k)
+				net.WriteUInt(num, 16)
+				net.SendToServer()
+				timer.Simple(0.3, function()
+					if invSkills:IsValid() then
+						invSkills:Clear()
+						DoStatsList()
+					end
+				end)
+			end
+
+			btn.DoClick = function(panel)
+				applypoint(1)
+			end
+			btn.DoDoubleClick = function(panel)
+				applypoint(1)
+			end
+			btn.DoRightClick = function(panel)
+				local d = DermaMenu()
+				d:AddOption("Confirm", function()
+					applypoint(math.Clamp(math.floor(MySP), 1, math.min(MySP, 65535)))
+				end)
+				d:Open()
+			end
+			btn.Paint = function(panel, w, h)
+				draw.RoundedBox(0, 0, 0, w, h, Color(30, 30, 30, 50))
+				draw.RoundedBox(0, 0, 0, ply["Stat"..k] * 225 / v.Max, panel:GetTall(), Color(100, 100, 0, 150))
+				if ply["Stat"..k] > v.Max and v.PerkMaxIncrease then -- Empowered Skills
+					draw.RoundedBox(0, 0, 0, (ply["Stat"..k]-v.Max) * 225 / (v.PerkMaxIncrease), panel:GetTall(), Color(200, 0, 0, 150))
+				end
+				surface.SetDrawColor(100, 100, 0 ,255)
+				surface.DrawOutlinedRect(0, 0, w, h)
+			end
+		end
+	end
+	DoStatsList()
+
+
+-----------------------------------------Stats Form---------------------------------------------------------------
+	local invStats = vgui.Create("DScrollPanel", InvSheet2)
+	invStats:Dock(FILL)
+	invStats.Paint = function(panel, w, h)
+		surface.SetDrawColor(0, 0, 0 ,100)
+		surface.DrawRect(0, 0, w, h)
+	end
+	invStats.VBar.Paint = function(panel, w, h)
+		draw.RoundedBox(2, 0, 0, w, h, Color(30, 30, 30, 50))
+	end
+	invStats.VBar.btnGrip.Paint = function(panel, w, h)
+		draw.RoundedBox(2, 0, 0, w, h, Color(40, 40, 0, 50))
+	end
+
+	local txt = vgui.Create("DLabel", invStats)
+	txt:Dock(TOP)
+	txt:DockMargin(5, 5, 5, 0)
+	txt:SetText("Survival Time: "..string.format("%d:%02d", ply:GetTimeSurvived()/60, ply:GetTimeSurvived()%60))
+	txt:SetFont("TEA.HUDFontSmall")
+	txt.Think = function(panel)
+		panel:SetText("Survival Time: "..string.format("%d:%02d", ply:GetTimeSurvived()/60, ply:GetTimeSurvived()%60))
+	end
+
+	local txt = vgui.Create("DLabel", invStats)
+	txt:Dock(TOP)
+	txt:DockMargin(5, 5, 5, 0)
+	txt:SetText("Battery: "..string.format("%d/%d", ply.Battery, ply:GetMaxBattery()))
+	txt:SetFont("TEA.HUDFontSmall")
+	txt.Think = function(panel)
+		panel:SetText("Battery: "..string.format("%d/%d", ply.Battery, ply:GetMaxBattery()))
+	end
+
+	local txt = vgui.Create("DLabel", invStats)
+	txt:Dock(TOP)
+	txt:DockMargin(5, 5, 5, 0)
+	txt:SetText("Walkspeed: "..ply:GetWalkSpeed())
+	txt:SetFont("TEA.HUDFontSmall")
+	txt.Think = function(panel)
+		panel:SetText("Walkspeed: "..ply:GetWalkSpeed())
+	end
+
+	local txt = vgui.Create("DLabel", invStats)
+	txt:Dock(TOP)
+	txt:DockMargin(5, 5, 5, 0)
+	txt:SetText("Runspeed: "..ply:GetRunSpeed())
+	txt:SetFont("TEA.HUDFontSmall")
+	txt.Think = function(panel)
+		panel:SetText("Runspeed: "..ply:GetRunSpeed())
+	end
+
+-----------------------------------------Active tasks---------------------------------------------------------------
+	local tasksList = vgui.Create("DScrollPanel", InvSheet2)
+	tasksList:Dock(FILL)
+	tasksList.Paint = function(panel, w, h)
+		surface.SetDrawColor(0, 0, 0 ,100)
+		surface.DrawRect(0, 0, w, h)
+	end
+	tasksList.VBar.Paint = function(panel, w, h)
+		draw.RoundedBox(2, 0, 0, w, h, Color(30, 30, 30, 50))
+	end
+	tasksList.VBar.btnGrip.Paint = function(panel, w, h)
+		draw.RoundedBox(2, 0, 0, w, h, Color(40, 40, 0, 50))
+	end
+
+	for k,v in pairs(ply.CurrentTasks) do
+		local tl = self.Tasks[k]
+		if !tl then continue end
+		local tpnl = vgui.Create("Panel", tasksList)
+		tpnl:Dock(TOP)
+		tpnl:SetTall(70)
+		tpnl:DockMargin(5, 5, 5, 5)
+		tpnl.Paint = function(panel, w, h)
+			surface.SetDrawColor(100, 0, 0, 200)
+			surface.DrawOutlinedRect(0, 0, w, h)
+		end
+		tpnl.Task = k
+
+		local tName = vgui.Create("DLabel", tpnl)
+		tName:SetFont("TEA.HUDFont")
+		tName:SetText(tl.Name)
+		tName:Dock(TOP)
+
+		local tName = vgui.Create("DLabel", tpnl)
+		tName:SetFont("TEA.HUDFontSmall")
+		tName:SetText("Progress: "..tostring(v).."/"..tl.ReqProgress)
+		tName:Dock(TOP)
+
+		local cancel = vgui.Create("DButton", tpnl)
+		cancel:Dock(TOP)
+		cancel:SetText(translate.Get("cancel"))
+		cancel:SetTextColor(COLOR_WHITE)
+		cancel.Paint = function(panel)
+			surface.SetDrawColor(200, 0, 0, 255)
+			surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
+			draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(50, 0, 0, 130))
+		end
+		cancel.DoClick = function()
+			Derma_Query(translate.Get("task_cancel_confirm1"), translate.Get("task_cancel_confirm2"), translate.Get("yes"), function()
+				net.Start("tea_taskcancel")
+				net.WriteString(tpnl.Task)
+				net.SendToServer()
+
+				tpnl:Remove()
+			end, translate.Get("no"))
+		end
+	end
+
+	InvSheet2:AddSheet(translate.Get("my_skills"), invSkills, "icon16/heart.png", false, false, translate.Get("my_skills_d"))
+	InvSheet2:AddSheet("Stats", invStats, "icon16/user_red.png", false, false, "Your stats.")
+	InvSheet2:AddSheet("Active Tasks", tasksList, "icon16/user.png", false, false, "Your current tasks.")
+
+
+
+	local InvSheet1 = vgui.Create("DPropertySheet", pInvPanel)
+	InvSheet1:Dock(FILL)
+	InvSheet1:DockMargin(5, 5, 0, 5)
+	InvSheet1:InvalidateParent()
+	InvSheet1.Paint = function(panel, w, h)
 		for k, v in pairs(InvSheet1.Items) do
 			if (!v.Tab) then continue end
 			v.Tab.Paint = function(self,w,h)
@@ -337,16 +684,14 @@ function GM:InvMenu()
 -----------------------------------------Inventory---------------------------------------------------------------
 
 
-	local InvForm = vgui.Create("DPanel", InvSheet1)
-	InvForm:SetSize(wide-325, tall)
-	InvForm:SetName("Items")
-	InvForm.Paint = function(panel)
-		draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(0, 0, 0, 100))
-	end
+	local InvForm = vgui.Create("Panel", InvSheet1)
+	InvForm:Dock(FILL)
+	InvForm.Paint = function(panel, w, h) end
 
 	local InvWeightText = vgui.Create("DLabel", InvForm)
 	InvWeightText:SizeToContents()
-	InvWeightText:SetPos(5, 5)
+	InvWeightText:Dock(TOP)
+	InvWeightText:DockMargin(5, 0, 5, 5)
 	InvWeightText.Think = function(this)
 		local changetxt = translate.Format("inv_weight", ply:CalculateWeight(), WEIGHT_UNIT, ply:CalculateMaxWeight(), WEIGHT_UNIT, ply:CalculateMaxWalkWeight(), WEIGHT_UNIT)
 		if changetxt == this:GetText() then return end
@@ -355,14 +700,14 @@ function GM:InvMenu()
 		this:SetTextColor(ply:CalculateWeight() >= ply:CalculateMaxWalkWeight() and Color(255,0,0) or ply:CalculateWeight() >= ply:CalculateMaxWeight() and Color(255,255,0) or Color(255,255,255))
 	end
 	InvWeightText:Think()
---	InvWeightText:SetFont()
+	InvWeightText:SetFont("TEA.HUDFontSmall")
 
 	pInvPanel.InvList = vgui.Create("DPanelList", InvForm)
-	pInvPanel.InvList:SetSize(wide-20, tall-65)
-	pInvPanel.InvList:SetPos(5, 25)
+	pInvPanel.InvList:Dock(FILL)
 	pInvPanel.InvList:EnableVerticalScrollbar(true)
 	pInvPanel.InvList:EnableHorizontal(true)
 	pInvPanel.InvList:SetSpacing(5)
+	pInvPanel.InvList:SetPadding(5)
 
 	DoInvPanel()
 
@@ -372,21 +717,19 @@ function GM:InvMenu()
 -----------------Craft Form-----------------------
 
 
-	local CraftForm = vgui.Create("DPanel", InvSheet1)
-	CraftForm:SetSize(675, 700)
-	CraftForm.Paint = function(self,w,h)
+
+	local pCraftables = vgui.Create("DPanelList", InvSheet1)
+	pCraftables:Dock(FILL)
+	pCraftables:DockMargin(5,5,5,5)
+	pCraftables:EnableVerticalScrollbar(true)
+	pCraftables:EnableHorizontal(true)
+	pCraftables:SetSpacing(5)
+	pCraftables:SetPadding(5)
+	pCraftables.Paint = function(_, w, h)
 		draw.RoundedBox(2, 0, 0, w, h, Color(0,0,0,100))
 		surface.SetDrawColor(150, 150, 0 ,255)
 		surface.DrawOutlinedRect(0, 0, w, h)
 	end
-
-	local pCraftables = vgui.Create("DPanelList", CraftForm)
-	pCraftables:SetTall(635)
-	pCraftables:SetWide(755)
-	pCraftables:SetPos(5, 10)
-	pCraftables:EnableVerticalScrollbar(true)
-	pCraftables:EnableHorizontal(true)
-	pCraftables:SetSpacing(5)
 
 	local function DoCraftablesList()
 		for k,v in SortedPairs(GAMEMODE.ItemsList) do
@@ -397,10 +740,10 @@ function GM:InvMenu()
 			local itBackground = vgui.Create("DPanel", pCraftables)
 			itBackground:SetPos(5, 5)
 			itBackground:SetSize(345, 80)
-			itBackground.Paint = function(panel) -- Paint function
-				draw.RoundedBoxEx(8, 1, 1, panel:GetWide() - 2, panel:GetTall() - 2, Color(0, 0, 0, 50), false, false, false, false)
+			itBackground.Paint = function(panel, w, h)
+				draw.RoundedBoxEx(8, 1, 1, w - 2, h - 2, Color(0, 0, 0, 50), false, false, false, false)
 				surface.SetDrawColor(50, 50, 50 ,255)
-				surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
+				surface.DrawOutlinedRect(0, 0, w, h)
 			end
 
 			local itIcon
@@ -455,11 +798,11 @@ function GM:InvMenu()
 			itRequirements:SetPos(235, 20)
 			itRequirements:SetText(translate.Get("requirements"))
 			itRequirements:SetToolTip(translate.Get("requirements_d"))
-			itRequirements:SetTextColor(Color(255, 255, 255, 255))
-			itRequirements.Paint = function(panel)
+			itRequirements:SetTextColor(COLOR_WHITE)
+			itRequirements.Paint = function(panel, w, h)
 				surface.SetDrawColor(0, 150, 0 ,255)
-				surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
-				draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(0, 50, 0, 130))
+				surface.DrawOutlinedRect(0, 0, w, h)
+				draw.RoundedBox(2, 0, 0, w, h, Color(0, 50, 0, 130))
 			end
 			itRequirements.DoClick = function()
 				chat.AddText(Color(0,192,192), translate.Format("required_items_to_craft", GAMEMODE:GetItemName(k)))
@@ -473,11 +816,11 @@ function GM:InvMenu()
 			itCraft:SetPos(235, 50)
 			itCraft:SetText(translate.Get("craft_item"))
 			itCraft:SetToolTip(translate.Get("craft_item_d"))
-			itCraft:SetTextColor(Color(255, 255, 255, 255))
-			itCraft.Paint = function(panel)
+			itCraft:SetTextColor(COLOR_WHITE)
+			itCraft.Paint = function(panel, w, h)
 				surface.SetDrawColor(0, 150, 0 ,255)
-				surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
-				draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(0, 50, 0, 130))
+				surface.DrawOutlinedRect(0, 0, w, h)
+				draw.RoundedBox(2, 0, 0, w, h, Color(0, 50, 0, 130))
 			end
 			itCraft.DoClick = function()
 				net.Start("CraftItem")
@@ -490,170 +833,12 @@ function GM:InvMenu()
 	DoCraftablesList()
 
 
----------------Statistics Form------------------
 
-	local y = 10
-
-	local stats = vgui.Create("DPanel", InvSheet1)
-	stats:SetSize(0, 0)
-
-
-
-
------------------------------------------Stats Sheet---------------------------------------------------------------
-	InvSheet2 = vgui.Create("DPropertySheet")
-	InvSheet2:SetParent(pInvPanel)
-	InvSheet2:SetPos(pInvPanel:GetWide() - 260, 330)
-	InvSheet2:SetSize(250, pInvPanel:GetTall() - 335)
-	InvSheet2.Paint = function(panel)
-		draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(0, 0, 0, 100))
-		for k, v in pairs(panel.Items) do
-			if (!v.Tab) then continue end
-			v.Tab.Paint = function(self,w,h)
-				draw.RoundedBox(0, 0, 0, w, h, Color(50,50,25))
-			end
-		end
-	end
-
-
------------------------------------------Stats Form---------------------------------------------------------------
-	local invSkills = vgui.Create("DPanelList", pInvPanel)
-	invSkills:SetSize(675, 600)
-	invSkills:SetPos(0, 0)
-	invSkills:EnableVerticalScrollbar(true)
-	invSkills:SetSpacing(10)
-	invSkills.Paint = function(panel)
-		surface.SetDrawColor(0, 0, 0 ,100)
-		surface.DrawRect(0, 0, panel:GetWide(), panel:GetTall())
-	end
-	invSkills.VBar.Paint = function(panel)
-		draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(30, 30, 30, 50))
-	end
-	invSkills.VBar.btnGrip.Paint = function(panel)
-		draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(40, 40, 0, 50))
-	end
-
-	local mInfo = vgui.Create("DModelPanel", pInvPanel)
-	mInfo:SetSize(200, 200)
-	mInfo:SetPos(pInvPanel:GetWide() - 240, 25)
-	mInfo:SetModel(ply:GetModel())
-	mInfo:SetAnimSpeed(1)
-	mInfo:SetAnimated(true)
-	mInfo:SetAmbientLight(Color(50, 50, 50))
-	mInfo:SetDirectionalLight(BOX_TOP, Color(255, 255, 255))
-	mInfo:SetDirectionalLight(BOX_FRONT, Color(255, 255, 255))
-	mInfo:SetCamPos(Vector(50, 0, 50))
-	mInfo:SetLookAt(Vector(0, 0, 40))
-	mInfo:SetFOV(80)
-
-	local mButton = vgui.Create("DButton", pInvPanel)
-	mButton:SetSize(90, 20)
-	mButton:SetPos(pInvPanel:GetWide() - 100, 25)
-	mButton:SetText(translate.Get("changemodel"))
-	mButton:SetToolTip(translate.Get("changemodel_d"))
-	mButton:SetTextColor(Color(255, 255, 255, 255))
-	mButton.Paint = function(panel)
-		surface.SetDrawColor(150, 150, 0 ,255)
-		surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
-		draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(50, 50, 0, 130))
-	end
-	mButton.DoClick = function()
-		RunConsoleCommand("tea_changemodel")
-		self:CloseInvMenu()
-	end
-
-	-- local pInvArmorStats = vgui.Create("DPanel", pInvPanel)
-	-- pInvArmorStats:SetSize(250, 200)
-	-- pInvArmorStats:SetPos(wide - 260, 25)
-	-- pInvArmorStats.Paint = function(panel, w, h)
-	-- end
-
-
-	local function DoStatsList()
-		for k, v in SortedPairs(self.StatConfigs) do
-			local descr = translate.Format("skill_descr", GAMEMODE:GetSkillDescription(k), v.Cost, v.Max, v.PerkMaxIncrease or 0)
-			local LabelDefense = vgui.Create("DLabel")
-			LabelDefense:SetPos(50, 50)
-			LabelDefense:SetText(translate.Get(k)..": "..ply["Stat"..k])
-			LabelDefense:SetToolTip(descr)
-			LabelDefense:SizeToContents()
-			invSkills:AddItem(LabelDefense)
-
-			local Button = vgui.Create("DButton")
-			Button:SetPos(50, 100)
-			Button:SetSize(10, 20)
-			Button:SetTextColor(Color(255, 255, 255, 255))
-			Button:SetText(translate.Format("inc1stat", translate.Get(k)))
-			Button:SetToolTip(descr)
-
-			local function applypoint(num)
-				net.Start("UpgradePerk")
-				net.WriteString(k)
-				net.WriteUInt(num, 16)
-				net.SendToServer()
-				timer.Simple(0.3, function()
-					if invSkills:IsValid() then
-						invSkills:Clear()
-						DoStatsList()
-					end
-				end)
-			end
-
-			Button.DoClick = function(Button)
-				applypoint(1)
-			end
-			Button.DoDoubleClick = function(Button)
-				applypoint(1)
-			end
-			Button.DoRightClick = function(Button)
-				local d = DermaMenu()
-				d:AddOption("Confirm", function()
-					applypoint(math.Clamp(math.floor(MySP), 1, math.min(MySP, 65535)))
-				end)
-				d:Open()
-			end
-			Button.Paint = function(panel)
-				draw.RoundedBox(0, 0, 0, panel:GetWide(), panel:GetTall(), Color(30, 30, 30, 50))
-				draw.RoundedBox(0, 0, 0, ply["Stat"..k] * 225 / v.Max, panel:GetTall(), Color(100, 100, 0, 150))
-				if ply["Stat"..k] > v.Max and v.PerkMaxIncrease then -- Empowered Skills
-					draw.RoundedBox(0, 0, 0, (ply["Stat"..k]-v.Max) * 225 / (v.PerkMaxIncrease), panel:GetTall(), Color(200, 0, 0, 150))
-				end
-				surface.SetDrawColor(100, 100, 0 ,255)
-				surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
-			end
-			invSkills:AddItem(Button)
-		end
-	end
-	DoStatsList()
-
-
------------------------------------------Stats Form---------------------------------------------------------------
-	local invStats = vgui.Create("DScrollPanel", pInvPanel)
-	invStats:SetSize(675, 600)
-	invStats.Paint = function(panel)
-		surface.SetDrawColor(0, 0, 0 ,100)
-		surface.DrawRect(0, 0, panel:GetWide(), panel:GetTall())
-	end
-	invStats.VBar.Paint = function(panel)
-		draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(30, 30, 30, 50))
-	end
-	invStats.VBar.btnGrip.Paint = function(panel)
-		draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(40, 40, 0, 50))
-	end
-
-	local txt = vgui.Create("DLabel", invStats)
-	txt:Dock(TOP)
-	txt:SetText("Survival Time: "..string.format("%d:%02d", ply:GetTimeSurvived()/60, ply:GetTimeSurvived()%60))
-	txt:SetFont("TEA.HUDFontSmall")
-	txt.Think = function(panel)
-		panel:SetText("Survival Time: "..string.format("%d:%02d", ply:GetTimeSurvived()/60, ply:GetTimeSurvived()%60))
-	end
-
+	local stats = vgui.Create("Panel", InvSheet1)
 	local props = vgui.Create("Panel", InvSheet1)
-	props:SetSize(0,0)
 	
 	InvSheet1:AddSheet(translate.Get("inventory"), InvForm, "icon16/basket.png", false, false, translate.Get("inventory_d"))
-	InvSheet1:AddSheet(translate.Get("crafting"), CraftForm, "icon16/wrench_orange.png", false, false, translate.Get("crafting_d"))
+	InvSheet1:AddSheet(translate.Get("crafting"), pCraftables, "icon16/wrench_orange.png", false, false, translate.Get("crafting_d"))
 	local tab = InvSheet1:AddSheet(translate.Get("statistics"), stats, "icon16/user.png", false, false, translate.Get("statistics_d"))
 	tab.Tab.DoClick = function()
 		self:CloseInvMenu()
@@ -667,11 +852,6 @@ function GM:InvMenu()
 		self:CloseInvMenu()
 		self:OpenPropMenu()
 	end
-
-
-
-	InvSheet2:AddSheet(translate.Get("my_skills"), invSkills, "icon16/heart.png", false, false, translate.Get("my_skills_d"))
-	InvSheet2:AddSheet("Stats", invStats, "icon16/user_red.png", false, false, "Your stats.")
 
 	return pInvPanel
 end
@@ -693,12 +873,12 @@ function GM:PropMenu()
 	pPropPanel:SetDraggable(false)
 	pPropPanel:ShowCloseButton(false)
 	pPropPanel:SetDeleteOnClose(false)
-	pPropPanel.Paint = function(panel)
+	pPropPanel.Paint = function(panel, w, h)
 		Derma_DrawBackgroundBlur(pPropPanel, SysTime()-0.2)
 
-		draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(0, 0, 0, 200))
+		draw.RoundedBox(2, 0, 0, w, h, Color(0, 0, 0, 200))
 		surface.SetDrawColor(150, 150, 0 ,255)
-		surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
+		surface.DrawOutlinedRect(0, 0, w, h)
 	end
 	pPropPanel.Think = function()
 	end
@@ -708,20 +888,13 @@ function GM:PropMenu()
 	self.PropMenuPanel = pPropPanel
 
 	local tea_config_propcostenabled = self.PropCostEnabled
+
 	local propSheet = vgui.Create("DPropertySheet", pPropPanel)
 	propSheet:SetPos(5, 5)
 	propSheet:SetSize(wide - 20, tall - 10)
-	propSheet.Paint = function(panel)
+	propSheet.Paint = function(panel, w, h)
 		surface.SetDrawColor(0, 0, 0, 100)
-		surface.DrawRect(0, 0, panel:GetWide(), panel:GetTall())
-		if not tea_config_propcostenabled then
-			local text1 = vgui.Create("DLabel", pPropPanel)
-			text1:SetFont("TEA.HUDFontSmall")
-			text1:SetText("Prop spawning cost disabled (excluding faction structures)")
-			text1:SetColor(Color(205,205,205,255))
-			text1:SetPos(400, 10)
-			text1:SizeToContents()
-		end
+		surface.DrawRect(0, 0, w, h)
 		for k, v in pairs(propSheet.Items) do
 			if (!v.Tab) then continue end
 			v.Tab.Paint = function(self,w,h)
@@ -730,16 +903,25 @@ function GM:PropMenu()
 		end
 	end
 
+	if not tea_config_propcostenabled then
+		local text1 = vgui.Create("DLabel", pPropPanel)
+		text1:SetFont("TEA.HUDFontSmall")
+		text1:SetText("Prop spawning cost disabled (excluding faction structures)")
+		text1:SetColor(Color(205,205,205,255))
+		text1:SetPos(400, 10)
+		text1:SizeToContents()
+	end
+
 	local propRefresh = vgui.Create("DButton", propSheet)
 	propRefresh:SetText("Refresh Panel")
 	propRefresh:SetTextColor(Color(255,255,230))
 	propRefresh:SetToolTip("In case if something is wrong with this panel, click this button.\nIf this didn't work, report the problem to the author.")
 	propRefresh:SetPos(800, 5)
 	propRefresh:SetSize(120,20)
-	propRefresh.Paint = function(panel)
+	propRefresh.Paint = function(panel, w, h)
 		surface.SetDrawColor(150, 150, 0 ,255)
-		surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
-		draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(50, 50, 0, 130))
+		surface.DrawOutlinedRect(0, 0, w, h)
+		draw.RoundedBox(2, 0, 0, w, h, Color(50, 50, 0, 130))
 	end
 	propRefresh.DoClick = function()
 		proppanelalpha = pPropPanel:GetAlpha()
@@ -764,10 +946,10 @@ function GM:PropMenu()
 		itPanel:SetPos(5, 5)
 		itPanel:SetSize(150, 150)
 		itPanel:SetToolTip(Format("Prop health: %s HP", 500 * v.Toughness))
-		itPanel.Paint = function(panel) -- Paint function
-			draw.RoundedBoxEx(8,1,1,panel:GetWide()-2,panel:GetTall()-2,Color(0, 0, 0, 50), false, false, false, false)
+		itPanel.Paint = function(panel, w, h)
+			draw.RoundedBoxEx(8,1,1,w-2,h-2,Color(0, 0, 0, 50), false, false, false, false)
 			surface.SetDrawColor(50, 50, 50 ,255)
-			surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
+			surface.DrawOutlinedRect(0, 0, w, h)
 		end
 
 		local itIcon = vgui.Create("SpawnIcon", itPanel)
@@ -834,7 +1016,7 @@ function GM:PropMenu()
 		ItemClicker:SetText("")
 		ItemClicker:SetPos(0, 0)
 		ItemClicker:SetSize(itPanel:GetWide(), itPanel:GetTall())
-		ItemClicker.Paint = function() -- Paint function
+		ItemClicker.Paint = function()
 			return false
 		end
 		ItemClicker.DoClick = function()
@@ -861,10 +1043,10 @@ function GM:PropMenu()
 		itPanel:SetPos(5, 5)
 		itPanel:SetSize(150, 150)
 		itPanel:SetToolTip(Format("Prop health: %s HP", 500 * v.Toughness))
-		itPanel.Paint = function(panel) -- Paint function
+		itPanel.Paint = function(panel, w, h)
 			draw.RoundedBoxEx(8,1,1,panel:GetWide()-2,panel:GetTall()-2,Color(0, 0, 0, 50), false, false, false, false)
 			surface.SetDrawColor(50, 50, 50 ,255)
-			surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
+			surface.DrawOutlinedRect(0, 0, w, h)
 		end
 
 		local itIcon = vgui.Create("SpawnIcon", itPanel)
@@ -932,7 +1114,7 @@ function GM:PropMenu()
 		ItemClicker:SetText("")
 		ItemClicker:SetPos(0, 0)
 		ItemClicker:SetSize(itPanel:GetWide(), itPanel:GetTall())
-		ItemClicker.Paint = function() -- Paint function
+		ItemClicker.Paint = function()
 			return false
 		end
 		ItemClicker.DoClick = function()
@@ -955,10 +1137,10 @@ function GM:PropMenu()
 		SpecialPanel:AddItem(itPanel)
 		itPanel:SetPos(5, 5)
 		itPanel:SetSize(150, 150)
-		itPanel.Paint = function(panel) -- Paint function
-			draw.RoundedBoxEx(8,1,1,panel:GetWide()-2,panel:GetTall()-2,Color(0, 0, 0, 50), false, false, false, false)
+		itPanel.Paint = function(panel, w, h)
+			draw.RoundedBoxEx(8,1,1,w-2,h-2,Color(0, 0, 0, 50), false, false, false, false)
 			surface.SetDrawColor(50, 50, 50 ,255)
-			surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
+			surface.DrawOutlinedRect(0, 0, w, h)
 		end
 
 		local itIcon = vgui.Create("SpawnIcon", itPanel)
@@ -997,11 +1179,11 @@ function GM:PropMenu()
 		ItemClicker:SetTextColor(Color(255,255,255,255))
 		ItemClicker:SetText(translate.Get("placeblueprint"))
 		ItemClicker:SetSize(120, 20)
-		ItemClicker.Paint = function(panel) -- Paint function
+		ItemClicker.Paint = function(panel, w, h)
 			surface.SetDrawColor(20, 20, 60 ,200)
-			surface.DrawRect(0, 0, panel:GetWide(), panel:GetTall())
+			surface.DrawRect(0, 0, w, h)
 			surface.SetDrawColor(0, 0, 150 ,255)
-			surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
+			surface.DrawOutlinedRect(0, 0, w, h)
 		end
 		ItemClicker.DoClick = function()
 			input.SelectWeapon(ply:GetWeapon("tea_buildtool"))
@@ -1038,7 +1220,7 @@ local handler = "TEA.InvPanelRemove"
 
 function GM:OnSpawnMenuOpen()
 	---------------- Gmod spawnmenu ----------------
-	if IsValid(pInvPanel) then pInvPanel:Close() end
+	if IsValid(pInvPanel) then pInvPanel:Remove() end
 	if SuperAdminCheck(LocalPlayer()) and input.IsShiftDown() then
 		SpawnMenuOpen(self)
 		return true

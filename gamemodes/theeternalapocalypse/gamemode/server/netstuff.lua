@@ -47,7 +47,7 @@ util.AddNetworkString("tea_opentasksmenu")
 util.AddNetworkString("tea_taskassign")
 util.AddNetworkString("tea_taskprogress")
 util.AddNetworkString("tea_taskcancel")
-util.AddNetworkString("tea_taskcomplete")
+-- util.AddNetworkString("tea_taskcomplete")
 util.AddNetworkString("tea_taskfinish")
 
 util.AddNetworkString("tea_survivalstatsupdate")
@@ -210,6 +210,7 @@ net.Receive("UpgradePerk", function(len, ply)
 	local mul = 1--(skill.Cost or 1) * (curskillamt >= skill.Max and 2 or 1)
 	local max = skill.Max + (ply:HasPerk("empowered_skills") and skill.PerkMaxIncrease or 0)
 	amt = math.min(amount, math.max(1, ply.StatPoints), max - curskillamt)
+
 	local new = curskillamt + amt
 	local cost = (amt * mul) + math.max(0, new - math.max(curskillamt, skill.Max))
 	amt = math.min(amt, math.floor(ply.StatPoints-(cost-amt)), max - curskillamt)
@@ -233,7 +234,9 @@ net.Receive("UpgradePerk", function(len, ply)
 	if GAMEMODE:GetDebug() >= DEBUGGING_ADVANCED then print(ply:Nick().." used "..amt * mul.." skill point(s) on "..perk.." skill ("..tonumber(ply.StatPoints).." skill points remaining)") end
 	ply:SendChat(translate.ClientFormat(ply, "perkincreased", perk, amt))
 	GAMEMODE:RecalcPlayerSpeed(ply)
-	GAMEMODE:FullyUpdatePlayer(ply)
+
+	GAMEMODE:NetUpdatePeriodicStats(ply)
+	GAMEMODE:NetUpdatePerks(ply)
 end)
 
 

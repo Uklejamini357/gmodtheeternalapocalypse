@@ -217,6 +217,6 @@ COLOR_ACTION = Color(205,205,255)
 --- ↓ Do. Not. Touch. ↓
 --- It's not even implemented yet. ---
 
-GM.ExpandedArmorProtTest = true
+GM.ExpandedArmorProtTest = false
 
 GM.PlayerCharactersTest = false

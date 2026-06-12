@@ -8,8 +8,7 @@ function GM:SetStartingVariables(ply)
 	ply.PerkPoints = 0
 	ply:SetEquippedArmor("none")
 	ply.StatsReset = 0
-	ply.CurrentTask = ""
-	ply.CurrentTaskProgress = 0
+	ply.CurrentTasks = {}
 	ply.TaskCooldowns = {}
 	ply.LastSessionInfo = nil
 	for stat,_ in pairs(ply.Statistics) do
@@ -58,6 +57,12 @@ function GM:CorrectPlayerDataFromPreviousVersions(ply, prevdata)
 		}
 		ply.MasteryPvPXP = nil
 		ply.MasteryPvPLevel = nil
+	end
+
+	if ply.CurrentTask and ply.CurrentTask ~= "" and ply.CurrentTaskProgress then
+		ply.CurrentTasks = {[ply.CurrentTask] = ply.CurrentTaskProgress}
+		ply.CurrentTask = nil
+		ply.CurrentTaskProgress = nil
 	end
 
 	if !prevdata.perkpoints then
@@ -153,8 +158,7 @@ function GM:SavePlayer(ply, force, nolastsession)
 	Data["ChosenModel"] = ply.ChosenModel
 	Data["StatsReset"] = ply.StatsReset
 	Data["ChosenModelColor"] = tostring(ply.ChosenModelColor)
-	Data["CurrentTask"] = ply.CurrentTask
-	Data["CurrentTaskProgress"] = ply.CurrentTaskProgress
+	Data["CurrentTasks"] = ply.CurrentTasks
 	Data["TaskCooldowns"] = ply.TaskCooldowns
 
 	Data["Inventory"] = ply.Inventory

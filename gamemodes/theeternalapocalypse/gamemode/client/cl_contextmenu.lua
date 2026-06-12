@@ -120,19 +120,24 @@ function GM:CMenu()
 
 		local y2 = 155
 
-		local tasktbl = self.Tasks[self.CurrentTask]
-		if tasktbl then
-			surface.SetDrawColor(0, 0, 0, 105)
-			surface.DrawRect(scw/2 - 160, 150, 320, 100)
-			surface.SetDrawColor(150, 150, 0, 105)
-			surface.DrawOutlinedRect(scw/2 - 160, 150, 320, 100)
+		local exists = false
+		for id, progress in pairs(pl.CurrentTasks) do
+			local taskl = self.Tasks[id]
+			if !taskl then continue end
+			if !exists then
+				exists = true
+				surface.SetDrawColor(0, 0, 0, 105)
+				surface.DrawRect(scw/2 - 160, 150, 320, 100)
+				surface.SetDrawColor(150, 150, 0, 105)
+				surface.DrawOutlinedRect(scw/2 - 160, 150, 320, 100)
 
-			draw.DrawText(translate.Format("current_task", tasktbl.Name), "TEA.HUDFontSmall", scw/2 - 155, y2, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+				draw.DrawText(translate.Get("current_tasks"), "TEA.HUDFontSmall", scw/2 - 155, y2, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+				y2 = y2 + 15
+			end
+
+
+			draw.DrawText(taskl.Name.." (".. progress.."/"..taskl.ReqProgress..")", "TEA.HUDFontSmall", scw/2 - 155, y2, pl:HasCompletedTask(id) and Color(155,255,155) or color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 			y2 = y2 + 15
-
-			draw.DrawText(translate.Format("task_progress", self.CurrentTaskProgress, tasktbl.ReqProgress), "TEA.HUDFontSmall", scw/2 - 155, y2, LocalPlayer():HasCompletedTask() and Color(155,255,155) or color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-			y2 = y2 + 15
-
 		end
 
 		if self.InfectionLevelEnabled then

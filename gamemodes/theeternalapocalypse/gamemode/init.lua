@@ -1227,8 +1227,7 @@ function GM:PlayerInitialSpawn(ply, transition)
 	ply.SelectedProp = "models/props_debris/wood_board04a.mdl"
 	ply.ChosenModel = "models/player/kleiner.mdl"
 	ply.Territory = "none"
-	ply.CurrentTask = ""
-	ply.CurrentTaskProgress = 0
+	ply.CurrentTasks = {}
 
 	ply.Inventory = {}
 	ply.Vault = {}
@@ -1238,6 +1237,7 @@ function GM:PlayerInitialSpawn(ply, transition)
 	ply.Achievements = {}
 	ply.AchProgress = {}
 	ply.TaskCooldowns = {}
+	ply.TaskCompletions = {}
 	ply.CharactersData = {}
 	ply.AdminEyes = {}
 
@@ -1584,9 +1584,11 @@ function GM:RecalcPlayerSpeed(ply)
 	local plyarmor = ply:GetEquippedArmor()
 	local slowdown = tonumber(ply.SlowDown or 0)
 
-	if plyarmor and plyarmor != "none" then
+	if plyarmor and plyarmor ~= "none" then
 		local armortype = self.ItemsList[plyarmor]
-		armorspeedmul = 1 - armortype.ArmorStats["speedloss_percent"]*0.01
+		if armortype then
+			armorspeedmul = 1 - armortype.ArmorStats["speedloss_percent"]*0.01
+		end
 	end
 	
 	local totalwspeed = math.max(1, (walkspeed + walkspeedbonus) * (1 - slowdown)) * armorspeedmul -- walk

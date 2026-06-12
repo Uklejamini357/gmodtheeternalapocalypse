@@ -107,19 +107,19 @@ function meta:HasPerk(perk)
 	return self.UnlockedPerks and self.UnlockedPerks[perk] or CLIENT and GAMEMODE.LocalPerks[perk]
 end
 
-function meta:HasCompletedTask()
-	local task = self.CurrentTask or GAMEMODE.CurrentTask or ""
+function meta:HasCompletedTask(id)
+	local task = id
 	local taskl = GAMEMODE.Tasks[task]
 
 	if !taskl then return false end
-	return taskl.GetCompleted and taskl.GetCompleted(self) or !taskl.GetCompleted and tonumber(self.CurrentTaskProgress or GAMEMODE.CurrentTaskProgress or 0) >= taskl.ReqProgress
+	return taskl.GetCompleted and taskl.GetCompleted(self) or !taskl.GetCompleted and tonumber(self.CurrentTasks[id] or 0) >= taskl.ReqProgress
 end
 
 function meta:GetReqXP()
 	local plyprestige = SERVER and self.Prestige or self:GetTEAPrestige()
 	local plylevel = SERVER and self.Level or self:GetTEALevel()
 
-	local xp = (509 + (plylevel  * 97) * (1 + (plyprestige * (0.0072 + math.min(20, plyprestige) * 0.0003)))) ^ 1.1129
+	local xp = (509 + (plylevel * 97) * (1 + (plyprestige * (0.0072 + math.min(20, plyprestige) * 0.0003)))) ^ 1.1129
 	return math.floor(xp * math.max(1, 1+(plylevel-30)*0.01))
 end
 
@@ -279,7 +279,7 @@ function meta:GetTimeSurvived()
 end
 
 function meta:SetEquippedArmor(armorType)
-	self:SetNWString("ArmorType", armorType or "none")
+	self:SetNWString("ArmorType", GAMEMODE.ItemsList[armorType] and GAMEMODE.ItemsList[armorType].ArmorStats and armorType or "none")
 end
 
 function meta:GetEquippedArmor()

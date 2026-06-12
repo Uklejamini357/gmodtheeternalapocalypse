@@ -1,5 +1,5 @@
 -------------------------------- tasks Menu --------------------------------
--- THIS IS STILL UNFINISHED
+-- THIS IS STILL UNFINISHED...?
 
 net.Receive("tea_opentasksmenu", function()
 	GAMEMODE:OpenTasksMenu()
@@ -9,6 +9,7 @@ local DoTasksList
 
 function GM:OpenTasksMenu()
 	if IsValid(self.TasksPanel) then self.TasksPanel:Remove() end
+	local pl = LocalPlayer()
 	local tasks = vgui.Create("DFrame")
 	tasks:SetSize(600, 700)
 	tasks:Center()
@@ -59,19 +60,16 @@ function GM:OpenTasksMenu()
 
 	DoTasksList = function(parent)
 		for k, v in pairs(GAMEMODE.Tasks) do
-			local selected = GAMEMODE.CurrentTask == k
-			local completed = selected and LocalPlayer():HasCompletedTask()
-
 			local taskpanel = vgui.Create("DPanel")
 			parent:AddItem(taskpanel)
 			taskpanel:SetPos(5, 5)
 			taskpanel:SetSize(570, 85)
 			taskpanel.Paint = function() -- Paint function
 				draw.RoundedBoxEx(8,1,1,taskpanel:GetWide()-2,taskpanel:GetTall()-2,Color(0, 0, 0, 50), false, false, false, false)
-				if completed then
+				if LocalPlayer():HasCompletedTask(k) then
 					surface.SetDrawColor(50, 250, 50,15)
 					surface.DrawRect(0, 0, taskpanel:GetWide(), taskpanel:GetTall())
-				elseif selected then
+				elseif pl.CurrentTasks[k] then
 					surface.SetDrawColor(250, 250, 50,15)
 					surface.DrawRect(0, 0, taskpanel:GetWide(), taskpanel:GetTall())
 				end
@@ -111,7 +109,7 @@ function GM:OpenTasksMenu()
 			local viewb = vgui.Create("DButton", taskpanel)
 			viewb:SetSize(80, 40)
 			viewb:SetPos(450, 30)
-			viewb:SetText(completed and translate.Get("finish") or selected and translate.Get("cancel") or translate.Get("accept"))
+			viewb:SetText(LocalPlayer():HasCompletedTask(k) and translate.Get("finish") or pl.CurrentTasks[k] and translate.Get("cancel") or translate.Get("accept"))
 			viewb:SetTextColor(Color(255, 255, 255, 255))
 			viewb.Paint = function(panel)
 				surface.SetDrawColor(0, 150, 0,255)
@@ -119,11 +117,11 @@ function GM:OpenTasksMenu()
 				draw.RoundedBox(2, 0, 0, viewb:GetWide(), viewb:GetTall(), Color(0, 50, 0, 130))
 			end
 			viewb.DoClick = function()
-				if completed then
+				if LocalPlayer():HasCompletedTask(k) then
 					net.Start("tea_taskfinish")
 					net.WriteString(taskpanel.Task)
 					net.SendToServer()
-				elseif selected then
+				elseif pl.CurrentTasks[k] then
 					Derma_Query(translate.Get("task_cancel_confirm1"), translate.Get("task_cancel_confirm2"), translate.Get("yes"), function()
 						net.Start("tea_taskcancel")
 						net.WriteString(taskpanel.Task)

@@ -29,7 +29,7 @@ net.Receive("SystemMessage", function(length, client)
 	local sys = net.ReadBool()
 
 	if sys then
-		chat.AddText(Color(255,255,255), "[System] ", col, msg)
+		chat.AddText(COLOR_WHITE, "[System] ", col, msg)
 	else
 		chat.AddText(col, msg)
 	end
@@ -73,62 +73,67 @@ end)
 
 
 net.Receive("tea_taskassign", function(len)
-	local task = net.ReadString()
+	local id = net.ReadString()
+	local taskl = GAMEMODE.Tasks[id]
+	local pl = LocalPlayer()
+	if !pl:IsValid() then return end
 
-	local taskl = GAMEMODE.Tasks[task]
+	pl.CurrentTasks[id] = 0
 
-	GAMEMODE.CurrentTask = task
-
-	chat.AddText(Color(255,255,255), translate.Get("you_assigned_new_task1"), Color(255,255,127), taskl.Name, Color(255,255,255), translate.Get("you_assigned_new_task2"))
+	chat.AddText(COLOR_WHITE, translate.Get("you_assigned_new_task1"), Color(255,255,127), taskl.Name, COLOR_WHITE, translate.Get("you_assigned_new_task2"))
 end)
 
 net.Receive("tea_taskprogress", function(len)
 	local task = net.ReadString()
 	local value = net.ReadFloat()
 
-	local taskl = GAMEMODE.Tasks[task]
+	local pl = LocalPlayer()
+	if !pl:IsValid() then return end
 
-	GAMEMODE.CurrentTaskProgress = value
-
-	-- chat.AddText(Color(255,255,255), "Task progress ", Color(255,255,127), taskl.Name, Color(255,255,255), ": ", Color(255,255,63), value.." / "..taskl.ReqProgress)
-end)
-
-net.Receive("tea_taskcomplete", function(len)
-	local task = net.ReadString()
+	pl.CurrentTasks[id] = value
 
 	local taskl = GAMEMODE.Tasks[task]
-
-	chat.AddText(Color(255,255,255), translate.Get("task_complete1"), Color(255,255,127), taskl.Name, Color(255,255,255), translate.Get("task_complete2"))
+	-- chat.AddText(COLOR_WHITE, "Task progress ", Color(255,255,127), taskl.Name, COLOR_WHITE, ": ", Color(255,255,63), value.." / "..taskl.ReqProgress)
 end)
+
+-- net.Receive("tea_taskcomplete", function(len)
+-- 	local id = net.ReadString()
+
+-- 	local taskl = GAMEMODE.Tasks[id]
+
+-- 	chat.AddText(COLOR_WHITE, translate.Get("task_complete1"), Color(255,255,127), taskl.Name, COLOR_WHITE, translate.Get("task_complete2"))
+-- end)
 
 net.Receive("tea_taskfinish", function(len)
-	local task = net.ReadString()
+	local id = net.ReadString()
+	local taskl = GAMEMODE.Tasks[id]
 
-	local taskl = GAMEMODE.Tasks[task]
+	local pl = LocalPlayer()
+	if !pl:IsValid() then return end
+	pl.CurrentTasks[id] = nil
 
-	GAMEMODE.CurrentTask = ""
-	GAMEMODE.CurrentTaskProgress = nil
-
-	chat.AddText(Color(255,255,255), translate.Get("task_finished1"), Color(255,255,127), taskl.Name, Color(255,255,255), "!")
+	chat.AddText(COLOR_WHITE, translate.Get("task_finished1"), Color(255,255,127), taskl.Name, COLOR_WHITE, "!")
 end)
 
 net.Receive("tea_taskcancel", function(len)
-	local task = net.ReadString()
+	local id = net.ReadString()
+	local taskl = GAMEMODE.Tasks[id]
 
-	local taskl = GAMEMODE.Tasks[task]
+	local pl = LocalPlayer()
+	if !pl:IsValid() then return end
+	pl.CurrentTasks[id] = nil
 
-	GAMEMODE.CurrentTask = ""
-	GAMEMODE.CurrentTaskProgress = nil
-
-	chat.AddText(Color(255,255,255), translate.Get("task_cancelled1"), Color(255,255,127), taskl.Name, Color(255,255,255), translate.Get("task_cancelled2"), Color(255,127,127), taskl.CancelCooldown / TIME_HOUR, Color(255,255,255), translate.Get("task_cancelled3"))
+	chat.AddText(COLOR_WHITE, translate.Get("task_cancelled1"), Color(255,255,127), taskl.Name, COLOR_WHITE, translate.Get("task_cancelled2"), Color(255,127,127), taskl.Cooldown / TIME_HOUR, COLOR_WHITE, translate.Get("task_cancelled3"))
 end)
 
 net.Receive("tea_taskstatsupdate", function(len)
-	local task = net.ReadString()
-	local value = net.ReadFloat()
+	local tasks = net.ReadTable()
 
-	GAMEMODE.CurrentTask = task
-	GAMEMODE.CurrentTaskProgress = value
+	local pl = LocalPlayer()
+	if !pl:IsValid() then return end
+	if !pl.CurrentTasks then return end
+	table.Empty(pl.CurrentTasks)
+	table.Merge(pl.CurrentTasks, tasks)
 end)
 
 net.Receive("tea_perksupdate", function(len)

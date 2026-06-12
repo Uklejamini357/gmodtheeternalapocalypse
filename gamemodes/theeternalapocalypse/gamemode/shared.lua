@@ -3,8 +3,8 @@ GM.AltName	= "After The End Reborn" -- yes, it's a fork. what else did you expec
 GM.Author	= "Uklejamini"
 GM.Email	= ""
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.12.9"
-GM.DateVer	= "11.06.2026" -- Follows the DD.MM.YYYY format.
+GM.Version	= "0.12.10b"
+GM.DateVer	= "12.06.2026" -- Follows the DD.MM.YYYY format.
 GM.Credits = {
 	{"LegendOfRobbo",			"Created After The End gamemode",											"Back in 2015. It's such a great gamemode!"},
 
@@ -827,11 +827,11 @@ function GM:GetDiffCashMul()
 end
 
 function GM:GetZombieLvlMin()
-	return math.floor(#player.GetAll()+self:GetInfectionLevel()/5)
+	return math.floor(#player.GetAll()+self:GetEffectiveInfectionLevel()/5)
 end
 
 function GM:GetZombieLvlMax()
-	return math.floor(#player.GetAll()+9+self:GetInfectionLevel()/3)
+	return math.floor(#player.GetAll()+9+self:GetEffectiveInfectionLevel()/3)
 end
 
 function GM:GetLootTypeName(id)

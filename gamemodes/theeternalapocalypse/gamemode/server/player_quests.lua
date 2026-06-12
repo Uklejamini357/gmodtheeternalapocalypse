@@ -1,47 +1,46 @@
 function GM:GiveTask(pl, task)
     local taskl = self.Tasks[task]
-    if pl.CurrentTask ~= "" then return end
+    if pl.CurrentTasks[task] then return end
 	if pl.TaskCooldowns[task] and pl.TaskCooldowns[task] > os.time() then pl:SystemMessage("This task is still on cooldown! Becomes available in: ".. string.NiceTime(pl.TaskCooldowns[task] - os.time())..".", Color(255,155,155), true) return end
 	if taskl.LevelReq > tonumber(pl.Level) then pl:SystemMessage("You need to be level "..taskl.LevelReq.." to take this task!", Color(255,155,155), true) return end
+	if table.Count(pl.CurrentTasks) >= 3 then pl:SystemMessage("You have too many tasks assigned! Finish them first before taking on the next one.", Color(255,155,155), true) return end
 
-    pl.CurrentTask = task
-    pl.CurrentTaskProgress = 0
+    pl.CurrentTasks[task] = 0
 
     net.Start("tea_taskassign")
-    net.WriteString(pl.CurrentTask)
+    net.WriteString(task)
     net.Send(pl)
 
-	pl:RefreshTasksStats()
+	-- pl:RefreshTasksStats()
 end
 
 function GM:GiveTaskProgress(pl, task, amt)
     local taskl = self.Tasks[task]
-    if pl.CurrentTask ~= task or !taskl then return end
+	local prevprogress = pl.CurrentTasks[task]
+    if !prevprogress or !taskl then return end -- does the player have this task active?
 
-	local prevprogress = pl.CurrentTaskProgress
-	pl.CurrentTaskProgress = math.Clamp(prevprogress + amt, 0, taskl.ReqProgress)
+	pl.CurrentTasks[task] = math.Clamp(prevprogress + amt, 0, taskl.ReqProgress)
     if prevprogress < taskl.ReqProgress then
-        pl.CurrentTaskProgress = math.min(taskl.ReqProgress, pl.CurrentTaskProgress)
+        pl.CurrentTasks[task] = math.min(taskl.ReqProgress, pl.CurrentTasks[task])
 	else return
 	end
 
 	net.Start("tea_taskprogress")
 	net.WriteString(task)
-	net.WriteFloat(pl.CurrentTaskProgress)
+	net.WriteFloat(pl.CurrentTasks[task])
 	net.Send(pl)
 
-	pl:RefreshTasksStats()
+	-- pl:RefreshTasksStats()
 end
 
 function GM:FinishTask(pl, task)
     local taskl = self.Tasks[task]
-    if pl.CurrentTask ~= task or !taskl or !pl:HasCompletedTask() or tonumber(pl.CurrentTaskProgress) < taskl.ReqProgress then return end
+    if !pl.CurrentTasks[task] or !taskl or !pl:HasCompletedTask(task) or tonumber(pl.CurrentTasks[task]) < taskl.ReqProgress then return end
 
 	pl.TaskCooldowns[task] = os.time() + taskl.Cooldown
-    pl.CurrentTask = ""
-    pl.CurrentTaskProgress = 0
+	pl.CurrentTasks[task] = nil
 
-    if taskl.Callback then
+	if taskl.Callback then
         taskl.Callback(pl)
     end
 
@@ -49,26 +48,24 @@ function GM:FinishTask(pl, task)
     net.WriteString(task)
     net.Send(pl)
 
-	self:FullyUpdatePlayer(pl)
 	-- pl:RefreshTasksStats()
 end
 
 function GM:CancelTask(pl, task)
     local taskl = self.Tasks[task]
-    if pl.CurrentTask ~= task or !taskl or pl:HasCompletedTask() then return end
+    if !pl.CurrentTasks[task] or !taskl or pl:HasCompletedTask(task) then return end
 
 	-- for tasks,_ in pairs(self.Tasks) do
 	-- 	pl.TaskCooldowns[tasks] = os.time() + TIME_HOUR -- 1 hour before they can assign new task
 	-- end
-	pl.TaskCooldowns[task] = os.time() + taskl.CancelCooldown
-    pl.CurrentTask = ""
-    pl.CurrentTaskProgress = 0
+	pl.TaskCooldowns[task] = os.time() + taskl.Cooldown
+	pl.CurrentTasks[task] = nil
 
     net.Start("tea_taskcancel")
     net.WriteString(task)
     net.Send(pl)
 
-	pl:RefreshTasksStats()
+	-- pl:RefreshTasksStats()
 end
 
 
@@ -174,12 +171,6 @@ net.Receive("tea_taskassign", function(len, pl)
 end)
 
 net.Receive("tea_taskcancel", function(len, pl)
-	local taskdealer = false
-	for k, v in ipairs(ents.FindInSphere(pl:GetPos(), 150)) do
-		if v:GetClass() == "tea_taskdealer" then taskdealer = true break end
-	end
-	if !taskdealer then pl:SystemMessage("You are not near a task dealer!", Color(255,205,205), true) return false end
-
 	local task = net.ReadString()
 
 	gamemode.Call("CancelTask", pl, task)
@@ -202,7 +193,6 @@ if not meta then return end
 
 function meta:RefreshTasksStats()
 	net.Start("tea_taskstatsupdate")
-	net.WriteString(self.CurrentTask)
-	net.WriteFloat(self.CurrentTaskProgress)
+	net.WriteTable(self.CurrentTasks)
 	net.Send(self)
 end
