@@ -2,6 +2,7 @@ function GM:CalculateVaultWeight(ply)
 	local totalweight = 0
 	for k, v in pairs(ply.Vault) do
 		local ref = self.ItemsList[k]
+		if !ref then ErrorNoHalt("CalculateWeight error on "..ply:Nick().."! They must have a corrupt vault (file) or something. ("..k..")\n") continue end
 		totalweight = totalweight + (ref.Weight * v)
 	end
 	return totalweight
@@ -45,11 +46,7 @@ function GM:AddToVault(ply, str, amt)
 		ply.Vault[str] = amt
 	end
 
-	if item["IsGrenade"] then
-		self:SystemRemoveItem(ply, str, false, amt)
-	else
-		self:SystemRemoveItem(ply, str, true, amt)
-	end
+	self:SystemRemoveItem(ply, str, !item.IsGrenade, amt)
 end
 
 function GM:WithdrawFromVault(ply, str, amt)

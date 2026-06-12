@@ -756,7 +756,7 @@ function meta:LoadLastSession()
 					wep.Attachments.BaseClass = nil -- AGHHHHHHHHHH
 					if wep and wep:IsValid() and wep.Attachments and wep.Attach then
 						for id,att in pairs(v) do
-							if self:GetDebug() >= DEBUGGING_NORMAL then
+							if GAMEMODE:GetDebug() >= DEBUGGING_NORMAL then
 								print(id, att)
 							end
 
