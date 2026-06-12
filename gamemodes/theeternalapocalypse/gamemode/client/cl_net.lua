@@ -84,7 +84,7 @@ net.Receive("tea_taskassign", function(len)
 end)
 
 net.Receive("tea_taskprogress", function(len)
-	local task = net.ReadString()
+	local id = net.ReadString()
 	local value = net.ReadFloat()
 
 	local pl = LocalPlayer()
@@ -92,8 +92,10 @@ net.Receive("tea_taskprogress", function(len)
 
 	pl.CurrentTasks[id] = value
 
-	local taskl = GAMEMODE.Tasks[task]
-	-- chat.AddText(COLOR_WHITE, "Task progress ", Color(255,255,127), taskl.Name, COLOR_WHITE, ": ", Color(255,255,63), value.." / "..taskl.ReqProgress)
+	local taskl = GAMEMODE.Tasks[id]
+	if pl:HasCompletedTask(id) then
+		chat.AddText(COLOR_WHITE, "The task ", Color(255,255,127), taskl.Name, COLOR_WHITE, " is now complete, go back to task dealer for the reward!")
+	end
 end)
 
 -- net.Receive("tea_taskcomplete", function(len)

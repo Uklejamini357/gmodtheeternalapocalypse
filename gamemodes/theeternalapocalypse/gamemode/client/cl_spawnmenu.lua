@@ -589,19 +589,19 @@ function GM:InvMenu()
 	local txt = vgui.Create("DLabel", invStats)
 	txt:Dock(TOP)
 	txt:DockMargin(5, 5, 5, 0)
-	txt:SetText("Walkspeed: "..ply:GetWalkSpeed())
+	txt:SetText("Walkspeed: "..math.Round(ply:GetWalkSpeed(), 2))
 	txt:SetFont("TEA.HUDFontSmall")
 	txt.Think = function(panel)
-		panel:SetText("Walkspeed: "..ply:GetWalkSpeed())
+		panel:SetText("Walkspeed: "..math.Round(ply:GetWalkSpeed(), 2))
 	end
 
 	local txt = vgui.Create("DLabel", invStats)
 	txt:Dock(TOP)
 	txt:DockMargin(5, 5, 5, 0)
-	txt:SetText("Runspeed: "..ply:GetRunSpeed())
+	txt:SetText("Runspeed: "..math.Round(ply:GetRunSpeed(), 2))
 	txt:SetFont("TEA.HUDFontSmall")
 	txt.Think = function(panel)
-		panel:SetText("Runspeed: "..ply:GetRunSpeed())
+		panel:SetText("Runspeed: "..math.Round(ply:GetRunSpeed(), 2))
 	end
 
 -----------------------------------------Active tasks---------------------------------------------------------------

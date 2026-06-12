@@ -280,12 +280,12 @@ GM:CreateItem("arccw_ur_spas12", {
 GM:CreateItem("arccw_uc_usp", {
     Name = "USP",
     Description = "An iocnic German Pistol chambered in various calibers, but you just can't get this out of your head, you've seen it before.",
-    Cost = 1,
+    Cost = 4630,
     Model = "models/weapons/arccw/c_uc_usp.mdl",
     Material = "entities/arccw_uc_usp.png",
     Weight = 0.86,
     Supply = -1,
-    Rarity = RARITY_LEGENDARY,
+    Rarity = RARITY_SUPERRARE,
     Category = ITEMCATEGORY_WEAPONS,
     ItemType = ITEMTYPE_WEAPON,
     WeaponType = "arccw_uc_usp",
@@ -293,11 +293,11 @@ GM:CreateItem("arccw_uc_usp", {
     ArcCWCompatible = true
 })
 
-
+-- has fucking broken scopes
 GM:CreateItem("arccw_midnightwolf_type20", {
     Name = "Type 20",
     Description = "",
-    Cost = 1,
+    Cost = 19250,
     Model = "models/weapons/arccw/midnightwolf/type20.mdl",
     Material = "entities/arccw_midnightwolf_type20.png",
     Weight = 3.5,
@@ -313,8 +313,8 @@ GM:CreateItem("arccw_midnightwolf_type20", {
 
 GM:CreateItem("arccw_myt_uc_scar", {
     Name = "Scar-H",
-    Description = "",
-    Cost = 1,
+    Description = "A highly modular rifle platform designed to be used by expeditionary forces. Configurable for urban combat, marksmanship, and more.\n\nThis alteration is permanently half baked in sun light.",
+    Cost = 102645,
     Model = "models/weapons/arccw_go/v_rif_scar.mdl",
     Material = "entities/arccw_myt_uc_scar.png",
     Weight = 3.58,
@@ -333,7 +333,7 @@ GM:CreateItem("arccw_myt_uc_scar", {
 GM:CreateItem("midnights_gso_xm8", {
     Name = "XM-8",
     Description = "A prototype highly modular rifle made in partnership with the US and Germany, but was never mass-produced due to the unavailability of polymers, though it showed massive promise against the horde when used in combat against them.",
-    Cost = 1,
+    Cost = 37265,
     Model = "models/props/cs_office/Cardboard_box01.mdl",
     Material = "entities/midnights_gso_xm8.png",
     Weight = 2.6,

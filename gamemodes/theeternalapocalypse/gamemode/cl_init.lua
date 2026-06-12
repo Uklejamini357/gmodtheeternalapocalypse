@@ -430,7 +430,7 @@ function GM:InitializeLocalPlayer()
 	if not pl.Statistics then
 		pl.Statistics = {}
 	end
-	if not pl.Statistics then
+	if not pl.CurrentTasks then
 		pl.CurrentTasks = {}
 	end
 	pl.LifeZKills = 0
