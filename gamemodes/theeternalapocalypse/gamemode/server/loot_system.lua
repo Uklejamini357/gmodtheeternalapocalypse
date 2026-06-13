@@ -286,7 +286,7 @@ function GM:RollLootTable(params, maxrolls)
 	local rolls = 0
 	local rolled = {}
 	for k, v in pairs(params) do
-		if !self.AirdropLootTable[k] then ErrorNoHalt("---=== FUNCTION RollLootTable ERROR: ===---\n"..k.." IS NOT A VALID LOOT TABLE! See gamemode/sh_loot.lua for more info\n---======---\n") continue end
+		if !self.AirdropLootTable[k] then ErrorNoHaltWithStack("---=== FUNCTION RollLootTable ERROR: ===---\n"..k.." IS NOT A VALID LOOT TABLE! See gamemode/sh_loot.lua for more info\n---======---\n") continue end
 		if rolls >= maxrolls and maxrolls >= 0 then continue end
 		for i = 1, v[1] do
 			local item = table.Random(self.AirdropLootTable[k])

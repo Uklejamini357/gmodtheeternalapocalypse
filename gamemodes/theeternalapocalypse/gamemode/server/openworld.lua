@@ -10,18 +10,27 @@ function GM:OpenworldTransition(tomapid)
     PrintMessage(3, "Transitioning to "..map.."...")
 
     timer.Create("TEA.OpenworldMapchange", 5, 1, function()
-		for _,pl in player.Iterator() do
-			pl.TransitioningMap = map
-			pl.TransitioningPos = data.StartPos
-			pl.TransitioningAng = data.StartAng
-
-            if pl.Statistics then
-                pl:AddStatisticPoints("MapsTransitioned", 1)
-            end
-		end
-	
-        RunConsoleCommand("changelevel", map)
+        self:DoOpenworldTransition(tomapid)
     end)
+end
+
+function GM:DoOpenworldTransition(tomapid)
+    local data = self.OpenworldTransitions[tomapid]
+    if !data then return end
+    local map = data.Map
+    if !file.Exists("maps/"..map..".bsp", "GAME") then print("WHAT THE HELL!! THERE IS NO MAP FOR THE TRANSITION!!") return end
+
+    for _,pl in player.Iterator() do
+        pl.TransitioningMap = map
+        pl.TransitioningPos = data.StartPos
+        pl.TransitioningAng = data.StartAng
+
+        if pl.Statistics then
+            pl:AddStatisticPoints("MapsTransitioned", 1)
+        end
+    end
+
+    RunConsoleCommand("changelevel", map)
 end
 
 function GM:OpenworldPlayerJoinTransition(ply, ent)
@@ -107,7 +116,7 @@ end
 function GM:SendMapTransitionsInfo(pl)
 	local tbl = {}
 	for _,map in pairs(self.OpenworldTransitions) do
-		if map.Map == game.GetMap() then
+		if map.Map == game.GetMap() and map.LinkedTo then
 			table.insert(tbl, {
                 Map = map.Map,
                 AreaMin = map.AreaMin,
@@ -300,6 +309,12 @@ net.Receive("tea_openworld_level", function(len, pl)
             
             GAMEMODE:DeleteTransition(id)
             pl:PrintMessage(3, "Deleted transition ID #"..id..".")
+        elseif typ == OPENWORLD_NETTYPE_FORCEMAPTRANSITION then
+            local id = net.ReadUInt(8)
+            if !GAMEMODE.OpenworldTransitions[id] then pl:PrintMessage(3, "Transition does not exist.") return end
+            
+            pl:PrintMessage(3, "Forcing a map transition.")
+            GAMEMODE:DoOpenworldTransition(id)
         end
     end
 

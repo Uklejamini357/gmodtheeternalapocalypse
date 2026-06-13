@@ -66,8 +66,8 @@ function GM:DropCash(ply, cmd, args)
 	local cash = math.floor(args[1])
 	local plycash = tonumber(ply.Money)
 
-	if cash < 1 then ply:SystemMessage(translate.ClientFormat("cant_drop_money_low", self.Config["Currency"]), COLOR_WARN, true) return false end
-	if plycash < cash then ply:SystemMessage(translate.ClientFormat("insufficient_money_drop", self.Config["Currency"]), COLOR_WARN, true) return false end
+	if cash < 1 then ply:SystemMessage(translate.ClientFormat(ply, "cant_drop_money_low", self.Config["Currency"]), COLOR_WARN, true) return false end
+	if plycash < cash then ply:SystemMessage(translate.ClientFormat(ply, "insufficient_money_drop", self.Config["Currency"]), COLOR_WARN, true) return false end
 	ply.Money = plycash - cash
 
 	self:DebugLog(ply:Nick().." has dropped "..cash.." "..self.Config["Currency"].."(s)!")
@@ -86,7 +86,7 @@ function GM:DropCash(ply, cmd, args)
 	EntDrop:Spawn()
 	EntDrop:Activate()
 
-	ply:SystemMessage(translate.ClientFormat("dropped_money", cash, self.Config["Currency"]), COLOR_SUCCESS, true)
+	ply:SystemMessage(translate.ClientFormat(ply, "dropped_money", cash, self.Config["Currency"]), COLOR_SUCCESS, true)
 	self:NetUpdatePeriodicStats(ply)
 end
 concommand.Add("tea_dropcash", function(ply, cmd, args)

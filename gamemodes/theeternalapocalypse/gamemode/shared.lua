@@ -4,7 +4,7 @@ GM.Author	= "Uklejamini"
 GM.Email	= ""
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
 GM.Version	= "0.12.10b"
-GM.DateVer	= "12.06.2026" -- Follows the DD.MM.YYYY format.
+GM.DateVer	= "13.06.2026" -- Follows the DD.MM.YYYY format.
 GM.Credits = {
 	{"LegendOfRobbo",			"Created After The End gamemode",											"Back in 2015. It's such a great gamemode!"},
 
@@ -602,6 +602,10 @@ function GM:GetItemDescription(id, ply) -- ply is for the server
 		if consum.Fatigue and consum.Fatigue ~= 0 then
 			desc = desc.."\nFatigue: "..(consum.Fatigue > 0 and "+"..consum.Fatigue or consum.Fatigue).."%"
 		end
+	end
+
+	if item.ModOrigin then
+		desc = desc.."\nMod Origin: "..item.ModOrigin
 	end
 
 	if item.AmmoType and item.AmmoAmount then

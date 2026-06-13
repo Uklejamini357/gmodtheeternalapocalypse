@@ -44,7 +44,9 @@ function GM:FinishTask(pl, task)
         taskl.Callback(pl)
     end
 
-    net.Start("tea_taskfinish")
+	pl.TaskCompletions[task] = (pl.TaskCompletions[task] or 0) + 1
+
+	net.Start("tea_taskfinish")
     net.WriteString(task)
     net.Send(pl)
 

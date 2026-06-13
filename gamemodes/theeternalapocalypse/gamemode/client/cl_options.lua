@@ -203,6 +203,19 @@ function GM:MakeOptions()
 	dropdown:SetTooltip("Rejoin is recommended for the language to apply in 100%.")
 	list:AddItem(dropdown)
 
+	if ArcCW then
+		list:AddItem(EasyLabel(pan, "\n↓ ArcCW Settings: ↓", "TEA.HUDFontSmall", color_white))
+
+		check = CreateCheckLabel(pan, list, "Enable health HUD", "arccw_hud_showhealth")
+		check = CreateCheckLabel(pan, list, "Enable ammo HUD", "arccw_hud_showammo")
+		check = CreateCheckLabel(pan, list, "Enable 3D ArcCW ammo display", "arccw_hud_3dfun")
+		check = CreateCheckLabel(pan, list, "Display Firemode bars", "arccw_hud_fcgbars")
+		check = CreateCheckLabel(pan, list, "Enable backup hud (firemodes)", "arccw_hud_minimal")
+		check = CreateCheckLabel(pan, list, "Enable attachments autosaving (Disabling may help with weapon attachment issues)", "arccw_autosave")
+
+		list:AddItem(EasyLabel(pan, "\n↑                 ↑", "TEA.HUDFontSmall", color_white))
+	end
+
 	if AdminCheck(LocalPlayer()) then
 
 		local button = vgui.Create("DButton", pan)

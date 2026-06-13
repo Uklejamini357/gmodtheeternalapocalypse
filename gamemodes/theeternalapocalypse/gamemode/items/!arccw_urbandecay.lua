@@ -8,6 +8,8 @@
 -- balance issue lmao
 -- Realistic weights for weapons are used
 
+local modOrigin = "[ArcCW] Urban Decay"
+
 GM:CreateItem("arccw_ud_m1014", {
     Name = "Benelli M1014",
     Description = "Semi-automatic shotgun designed for close-quarters urban warfare. Uses an innovative short-stroke gas system that eliminates complex mechanisms found on most gas-operated automatic weapons. Its main use is in destroying locked doors.\n\nDevastating damage output, but control is required to avoid spending more time reloading than fighting.",
@@ -21,6 +23,7 @@ GM:CreateItem("arccw_ud_m1014", {
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "arccw_ud_m1014",
 
+    ModOrigin = modOrigin,
     ArcCWCompatible = true
 })
 
@@ -37,6 +40,7 @@ GM:CreateItem("arccw_ud_glock", {
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "arccw_ud_glock",
 
+    ModOrigin = modOrigin,
     ArcCWCompatible = true
 })
 
@@ -53,6 +57,7 @@ GM:CreateItem("arccw_ud_m16", {
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "arccw_ud_m16",
 
+    ModOrigin = modOrigin,
     ArcCWCompatible = true
 })
 
@@ -69,6 +74,7 @@ GM:CreateItem("arccw_ud_m79", {
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "arccw_ud_m79",
 
+    ModOrigin = modOrigin,
     ArcCWCompatible = true
 })
 
@@ -85,6 +91,7 @@ GM:CreateItem("arccw_ud_mini14", {
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "arccw_ud_mini14",
 
+    ModOrigin = modOrigin,
     ArcCWCompatible = true
 })
 
@@ -101,6 +108,7 @@ GM:CreateItem("arccw_ud_870", {
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "arccw_ud_870",
 
+    ModOrigin = modOrigin,
     ArcCWCompatible = true
 })
 
@@ -117,11 +125,13 @@ GM:CreateItem("arccw_ud_uzi", {
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "arccw_ud_uzi",
 
+    ModOrigin = modOrigin,
     ArcCWCompatible = true
 })
 
 -- Urban Renewal --
 
+local modOrigin = "[ArcCW] Urban Renewal"
 
 GM:CreateItem("arccw_ur_ak", {
     Name = "AKM",
@@ -139,6 +149,7 @@ The default pattern is well-rounded and hard-hitting, but kicks harder than othe
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "arccw_ur_ak",
 
+    ModOrigin = modOrigin,
     ArcCWCompatible = true
 })
 
@@ -155,6 +166,7 @@ GM:CreateItem("arccw_ur_aw", {
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "arccw_ur_aw",
 
+    ModOrigin = modOrigin,
     ArcCWCompatible = true
 })
 
@@ -171,6 +183,7 @@ GM:CreateItem("arccw_ur_deagle", {
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "arccw_ur_deagle",
 
+    ModOrigin = modOrigin,
     ArcCWCompatible = true
 })
 
@@ -187,6 +200,7 @@ GM:CreateItem("arccw_ur_g3", {
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "arccw_ur_g3",
 
+    ModOrigin = modOrigin,
     ArcCWCompatible = true
 })
 
@@ -203,6 +217,7 @@ GM:CreateItem("arccw_ur_db", {
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "arccw_ur_db",
 
+    ModOrigin = modOrigin,
     ArcCWCompatible = true
 })
 
@@ -219,6 +234,7 @@ GM:CreateItem("arccw_ur_m1911", {
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "arccw_ur_m1911",
 
+    ModOrigin = modOrigin,
     ArcCWCompatible = true
 })
 
@@ -235,6 +251,7 @@ GM:CreateItem("arccw_ur_329", {
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "arccw_ur_329",
 
+    ModOrigin = modOrigin,
     ArcCWCompatible = true
 })
 
@@ -251,6 +268,7 @@ GM:CreateItem("arccw_ur_mp5", {
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "arccw_ur_mp5",
 
+    ModOrigin = modOrigin,
     ArcCWCompatible = true
 })
 
@@ -267,6 +285,7 @@ GM:CreateItem("arccw_ur_spas12", {
 	ItemType = ITEMTYPE_WEAPON,
     WeaponType = "arccw_ur_spas12",
 
+    ModOrigin = modOrigin,
     ArcCWCompatible = true
 })
 
@@ -275,7 +294,7 @@ GM:CreateItem("arccw_ur_spas12", {
 
 -- Other
 
-
+local modOrigin = "[ArcCW] Urban Coalition"
 
 GM:CreateItem("arccw_uc_usp", {
     Name = "USP",
@@ -290,6 +309,7 @@ GM:CreateItem("arccw_uc_usp", {
     ItemType = ITEMTYPE_WEAPON,
     WeaponType = "arccw_uc_usp",
 
+    ModOrigin = modOrigin,
     ArcCWCompatible = true
 })
 
@@ -307,6 +327,7 @@ GM:CreateItem("arccw_midnightwolf_type20", {
     ItemType = ITEMTYPE_WEAPON,
     WeaponType = "arccw_midnightwolf_type20",
 
+    ModOrigin = modOrigin,
     ArcCWCompatible = true
 })
 
@@ -324,6 +345,7 @@ GM:CreateItem("arccw_myt_uc_scar", {
     ItemType = ITEMTYPE_WEAPON,
     WeaponType = "arccw_myt_uc_scar",
 
+    ModOrigin = modOrigin,
     ArcCWCompatible = true
 })
 
@@ -343,6 +365,7 @@ GM:CreateItem("midnights_gso_xm8", {
     ItemType = ITEMTYPE_WEAPON,
     WeaponType = "midnights_gso_xm8",
 
+    ModOrigin = modOrigin,
     ArcCWCompatible = true
 })
 

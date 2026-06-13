@@ -1,7 +1,6 @@
 -- Extra Armors --
 -- Sometimes, the fallout power/tesla armor is just far stronger than STALKER armors...
 
-
 -- https://steamcommunity.com/sharedfiles/filedetails/?id=1478903778
 -- Special ability: Absorbs 30% of incoming damage, for each 1 damage absorbed uses up 1 battery point.
 GM:CreateItem("item_armor_marine_combat", {
@@ -22,15 +21,17 @@ GM:CreateItem("item_armor_marine_combat", {
 		battery = 250,
 		carryweight = 5,
 		allowmodels = {"models/kuma96/marinecombatarmor_male/marinecombatarmor_male_pm.mdl"}
-	}
+	},
+
+	ModOrigin = "Fallout 4"
 })
 
--- https://steamcommunity.com/sharedfiles/filedetails/?id=2779522895
+-- https://steamcommunity.com/sharedfiles/filedetails/?id=1432299222 (replaced with lighter addon)
 GM:CreateItem("item_armor_x01_tesla", {
 	Name = "X-01 Power Armor",
 	Description = "X-01 Power Armor from Fallout 4. Incredibly overpowered.",
 	Cost = 1260235,
-	Model = "models/1000shells/research_cooperative/x01powerarmor.mdl",
+	Model = "models/models/frix/x01/xo1_powerarmor.mdl",
 	Weight = 41.73,
 	Supply = -1,
 	Rarity = RARITY_GODLY,
@@ -43,16 +44,18 @@ GM:CreateItem("item_armor_x01_tesla", {
 		slots = 3,
 		battery = 2500,
 		carryweight = 10,
-		allowmodels = {"models/1000shells/research_cooperative/x01powerarmor.mdl"}
-	}
+		allowmodels = {"models/models/frix/x01/xo1_powerarmor.mdl"}
+	},
+
+	ModOrigin = "Fallout 4"
 })
 
 
 -- https://steamcommunity.com/sharedfiles/filedetails/?id=3259876543
 -- Special ability: deflects 5 + 10% of received melee damage (NYI)
-GM:CreateItem("item_armor_enclave_tesla", {
-	Name = "Enclave Tesla Armor",
-	Description = "Enclave Tesla Armor",
+GM:CreateItem("item_armor_power_tesla", {
+	Name = "Tesla Power Armor",
+	Description = "Tesla Power Armor",
 	Cost = 128450,
 	Model = "models/player/enc/tesla_power_armor.mdl",
 	Weight = 18.14,
@@ -68,7 +71,9 @@ GM:CreateItem("item_armor_enclave_tesla", {
 		battery = 650,
 		carryweight = 10,
 		allowmodels = {"models/player/enc/tesla_power_armor.mdl"}
-	}
+	},
+
+	ModOrigin = "Fallout 3"
 })
 
 -- https://steamcommunity.com/sharedfiles/filedetails/?id=175697854
@@ -90,7 +95,9 @@ GM:CreateItem("item_armor_daedric", {
 		battery = 100,
 		carryweight = 20,
 		allowmodels = {"models/player/daedric.mdl"}
-	}
+	},
+
+	ModOrigin = "The Elder Scrolls V: Skyrim"
 })
 
 -- https://steamcommunity.com/sharedfiles/filedetails/?id=1681584444
@@ -112,7 +119,9 @@ GM:CreateItem("item_armor_juggernaut", {
 		battery = 150,
 		carryweight = 10,
 		allowmodels = {"models/mw2guy/riot/juggernaut.mdl"}
-	}
+	},
+
+	ModOrigin = "Call of Duty: Modern Warfare 2"
 })
 
 -- https://steamcommunity.com/sharedfiles/filedetails/?id=1739786965
@@ -135,7 +144,9 @@ GM:CreateItem("item_armor_razorback", {
 		battery = 250,
 		carryweight = 10,
 		allowmodels = {"models/player/keitho/razorback.mdl", "models/player/keitho/razormajor.mdl", "models/player/keitho/razorlight.mdl", "models/player/keitho/razorgrunt.mdl"}
-	}
+	},
+
+	-- ModOrigin = "Unknown"
 })
 
 -- https://steamcommunity.com/sharedfiles/filedetails/?id=3237166759
@@ -157,7 +168,9 @@ GM:CreateItem("item_armor_t45d", {
 		battery = 750,
 		carryweight = 10,
 		allowmodels = {"models/player/fallout_3/slow_t45d.mdl"}
-	}
+	},
+
+	ModOrigin = "Fallout 3"
 })
 
 

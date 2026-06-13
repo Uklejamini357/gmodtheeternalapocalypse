@@ -160,6 +160,7 @@ function GM:SavePlayer(ply, force, nolastsession)
 	Data["ChosenModelColor"] = tostring(ply.ChosenModelColor)
 	Data["CurrentTasks"] = ply.CurrentTasks
 	Data["TaskCooldowns"] = ply.TaskCooldowns
+	Data["TaskCompletions"] = ply.TaskCompletions
 
 	Data["Inventory"] = ply.Inventory
 	Data["InvalidInventory"] = ply.InvalidInventory
@@ -751,7 +752,7 @@ function meta:LoadLastSession()
 					local wep = self:GetWeapon(k)
 					if !IsValid(wep) then continue end
 					wep:SetNWBool("ArcCW_DisableAutosave", true)
-					self.ArcCW_DisableAutosave = true
+					-- self.ArcCW_DisableAutosave = true -- commenting this may cause issues with arccw wepaon attachments from last session, but uncommenting can also cause issues with loading presets. I dunno which is better
 
 					for k, v in pairs(wep.Attachments) do
 						wep:Detach(k, true, true)
