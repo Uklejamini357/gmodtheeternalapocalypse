@@ -185,9 +185,9 @@ end
 local ai_disabled = GetConVar("ai_disabled")
 
 function ENT:Initialize()
-	self:SetCollisionBounds(Vector(-12,-12, 0), Vector(12, 12, 64))
 	self:SetModel(self.Model)
 	self:PhysicsInitShadow(true)
+	self:SetCollisionBounds(Vector(-12,-12, 0), Vector(12, 12, 64))
 	local phys = self:GetPhysicsObject()
 	if phys and phys:IsValid() then
 		phys:EnableMotion(false)
