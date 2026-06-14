@@ -1132,10 +1132,10 @@ LANG.sleep_now_sleeping = "Ahora estás dormido."
 LANG.sender_shamus = "Shamus"
 LANG.sender_watchdog = "Perro Guardián"
 
-LANG.airdrop_msg1 = "¡La Navidad ha llegado pronto!
+LANG.airdrop_msg1 = "¡La Navidad ha llegado pronto!"
 LANG.airdrop_msg2 = "¡Tengo un pequeño regalo para todos vosotros para que os entretengáis!"
 LANG.airdrop_msg3 = "¡Tened cuidado supervivientes! Esa caja de suministro aéreo está cerrada con un bloqueador IFF."
-LANG.airdrop_msg4 = "¡Si os acercáis a ella necesitaréis cubriros las espaldas, o arriesgaros a ser disparados por otros saqueadores de botín!
+LANG.airdrop_msg4 = "¡Si os acercáis a ella necesitaréis cubriros las espaldas, o arriesgaros a ser disparados por otros saqueadores de botín!"
 
 LANG.airdrop_appeared = "¡Ha aparecido una caja de suministro aéreo!"
 LANG.opening_airdrop = "Abriendo caja de suministro aéreo... Tardará %d segundos en abrirse."
