@@ -4,49 +4,33 @@ local wholestring = ""
 local save = false
 local all_attachments = save and util.JSONToTable(file.Read("arccw_genweps_tblload.txt") or "{}") or {}
 local weps = {}
+local weps_models = {}
 for k,v in pairs(LocalPlayer():GetWeapons()) do
     weps[v:GetClass()] = v:GetTable()
+    weps_models[v:GetClass()] = v:GetModel()
 end
 
-for k,v in pairs(weps) do
-    local icon = v.Icon
-
-    if icon then
-        local s,e = string.find(tostring(icon), "entities/*")
-
-        local a
-        if s and e then
-            a = string.sub(tostring(icon), s)
-        end
-        icon = ""
-
-        if a then
-            if a[#a] == "]" then
-                a = string.sub(a, 1, #a-1)
-                a = a..".png"
-            end
-            
-            icon = string.format("\
-    Material = \"%s\",", a)
-        end
-    else
-        icon = ""
-    end
+for k,v in SortedPairs(weps) do
+    if !v.Trivia_Desc then continue end
+    local icon = string.format("\
+    Material = \"%s\",", "entities/"..k..".png")
 
 
 local s = string.format([[GM:CreateItem("%s", {
     Name = "%s",
     Description = %s,
     Cost = 1000,
-    Model = "models/Items/BoxSRounds.mdl",%s
+    Model = "%s",%s
     Weight = 0.3,
     Supply = 0,
     Rarity = RARITY_RARE,
-    Category = ITEMCATEGORY_MISCELLANEOUS,
-    ItemType = ITEMTYPE_ARCCW_WEAPONATT,
+    Category = ITEMCATEGORY_WEAPONS,
+    ItemType = ITEMTYPE_WEAPON,
 
-    ArcCWAtt = "%s"
-})]], k, string.Replace(v.PrintName, "\"", "\\\""), #string.Explode("\n", v.Description) == 1 and "\""..string.Replace(v.Description, "\"", "\\\"").."\"" or "[["..v.Description.."]]", icon, k)
+    WeaponType = "%s",
+    ArcCWCompatible = true,
+    ModOrigin = modOrigin
+})]], k, string.Replace(v.PrintName, "\"", "\\\""), #string.Explode("\n", v.Trivia_Desc) == 1 and "\""..string.Replace(v.Trivia_Desc, "\"", "\\\"").."\"" or "[["..v.Trivia_Desc.."]]", weps_models[k], icon, k)
 
     s = s.."\n\n"
 

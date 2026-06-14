@@ -4,7 +4,6 @@ todo:
 
 Uncategorized:
 RMove the weapons from MAD Base to M9k base
-Make props not disappear when its owner leaves
 Make props save between sessions
 Add max props per map
 Make factions persist between sessions and add more cool features and progression to factions
@@ -22,17 +21,17 @@ EVEN MORE TRANSLATION STRINGS!
 v0.12.10
 Make it possible to assign multiple tasks at a time (up to 3 tasks at once)
 Make tasks cancellable anywhere
+New admin command to force map transition (done in v0.12.10, meant to be done in v0.12.11)
 Add new special event: Zombie Fog
 
-
 v0.12.11:
-New admin command to force map transition -- moved from v0.12.7
 Add ULX commands
+And add map configuration (max zombies, zombie distance, etc.)
 
 v0.12.12:
 Add more tasks -- moved from v0.12.5, then v0.12.7
 And finish the elite variants
-
+Add passive income for Faction Base Core
 
 v0.12.13:
 Translation strings, again!
@@ -64,6 +63,11 @@ Add status effects system (weight, poison, etc.)
 Add new items
 
 v0.13.3:
+Make props no longer remove on player disconnect, by making a SteamID.
+Make faction structures no longer disappear upon leaving the faction/disconnecting, just make them unclaimed/deactivated instead.
+
+
+v0.13.4:
 Items dropping on death (not just for currently holding weapons, but also in inventory) <-- having a % chance to drop on death, not making as hardcore like in dayz. Thankfully it'll be toggleable
 
 
