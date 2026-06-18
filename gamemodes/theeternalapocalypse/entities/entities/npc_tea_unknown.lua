@@ -106,8 +106,11 @@ function ENT:SetUpStats()
 end
 
 function ENT:Think()
-	if !SERVER then return end
 	if !IsValid(self) then return end
+	local col = math.sin(30 * (CurTime() - self.SpawnTime))
+	self:SetColor(Color(127,0,col * 255,col * 255))
+	self:SetMaterial("models/effects/vol_lightmask01")
+	if !SERVER then return end
 
 -- need to drown them in water otherwise the stupid fucks will just skip happily along the sea floor
 	if self:WaterLevel() >= 3 then
@@ -119,9 +122,6 @@ function ENT:Think()
 		drown:SetDamageForce(Vector(0, 0, 0))
 		self:TakeDamageInfo(drown)
 	end
-	local col = math.sin(30 * (CurTime() - self.SpawnTime))
-	self:SetColor(Color(127,0,col * 255,col * 255))
-	self:SetMaterial("models/effects/vol_lightmask01")
 end
 
 function ENT:OnInjured(dmginfo)

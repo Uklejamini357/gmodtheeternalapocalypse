@@ -165,8 +165,8 @@ function SWEP:PrimaryAttack()
 
 	if (self:Clip1() < 1 and not self:GetDTBool(1)) then
 		timer.Simple(self.Primary.Delay + 0.1, function()
-			if owner:GetActiveWeapon():GetClass() == WeaponModel and owner:Alive() then
-				self:Reload() 
+			if self:IsValid() and owner:IsValid() and owner:GetActiveWeapon() == self then
+				self:Reload()
 			end
 		end)
 	end

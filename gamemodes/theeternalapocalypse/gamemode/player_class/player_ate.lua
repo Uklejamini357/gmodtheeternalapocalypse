@@ -63,7 +63,7 @@ end
 
 function PLAYER:ShouldDrawLocal() 
 
--- 	if (self.TauntCam:ShouldDrawLocalPlayer(self.Player, self.Player:IsPlayingTaunt())) then return true end
+	if (self.TauntCam:ShouldDrawLocalPlayer(self.Player, self.Player:IsPlayingTaunt())) then return true end
 
 end
 
@@ -71,9 +71,9 @@ end
 -- Allow player class to create move
 --
 function PLAYER:CreateMove(cmd)
-
-	if (self.TauntCam:CreateMove(cmd, self.Player, self.Player:IsPlayingTaunt())) then return true end
-
+	if self:Alive() and self:IsPlayingTaunt() then
+		return true
+	end
 end
 
 --

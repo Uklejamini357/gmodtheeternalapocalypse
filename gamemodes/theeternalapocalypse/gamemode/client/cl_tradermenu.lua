@@ -242,10 +242,10 @@ function GM:TraderMenu()
 			local ItemBackground = vgui.Create("DPanel")
 			ItemBackground:SetPos(5, 5)
 			ItemBackground:SetSize(280, 80)
-			ItemBackground.Paint = function() -- Paint function
-				draw.RoundedBoxEx(8,1,1,ItemBackground:GetWide()-2,ItemBackground:GetTall()-2,Color(0, 0, 0, 50), false, false, false, false)
+			ItemBackground.Paint = function(panel, w, h) -- Paint function
+				draw.RoundedBoxEx(8,1,1,w-2,h-2,Color(0, 0, 0, 50), false, false, false, false)
 				surface.SetDrawColor(50, 50, 50,255)
-				surface.DrawOutlinedRect(0, 0, ItemBackground:GetWide(), ItemBackground:GetTall())
+				surface.DrawOutlinedRect(0, 0, w, h)
 			end
 
 			local itIcon
@@ -308,10 +308,10 @@ function GM:TraderMenu()
 			BuyButton:SetPos(210, 30)
 			BuyButton:SetText("Buy")
 			BuyButton:SetTextColor(Color(255, 255, 255, 255))
-			BuyButton.Paint = function(panel)
+			BuyButton.Paint = function(panel, w, h)
 				surface.SetDrawColor(0, 150, 0,255)
-				surface.DrawOutlinedRect(0, 0, BuyButton:GetWide(), BuyButton:GetTall())
-				draw.RoundedBox(2, 0, 0, BuyButton:GetWide(), BuyButton:GetTall(), Color(0, 50, 0, 130))
+				surface.DrawOutlinedRect(0, 0, w, h)
+				draw.RoundedBox(2, 0, 0, w, h, Color(0, 50, 0, 130))
 			end
 			BuyButton.DoClick = function()
 				net.Start("BuyItem")
@@ -344,11 +344,11 @@ function GM:TraderMenu()
 			local ItemBackground = vgui.Create("DPanel")
 			ItemBackground:SetPos(5, 5)
 			ItemBackground:SetSize(350, 70)
-			ItemBackground.Paint = function() -- Paint function
+			ItemBackground.Paint = function(panel, w, h) -- Paint function
 				surface.SetDrawColor(50, 50, 50,255)
-				surface.DrawOutlinedRect(0, 0, ItemBackground:GetWide(), ItemBackground:GetTall())
+				surface.DrawOutlinedRect(0, 0, w, h)
 				surface.SetDrawColor(0, 0, 0,200)
-				surface.DrawRect(0, 0, ItemBackground:GetWide(), ItemBackground:GetTall())
+				surface.DrawRect(0, 0, w, h)
 			end
 
 			local itIcon
@@ -408,10 +408,10 @@ function GM:TraderMenu()
 				EquipButton:SetPos(80, 40)
 				EquipButton:SetText("Sell For:")
 				EquipButton:SetTextColor(Color(255, 255, 255, 255))
-				EquipButton.Paint = function(panel)
+				EquipButton.Paint = function(panel, w, h)
 					surface.SetDrawColor(0, 150, 0,255)
-					surface.DrawOutlinedRect(0, 0, EquipButton:GetWide(), EquipButton:GetTall())
-					draw.RoundedBox(2, 0, 0, EquipButton:GetWide(), EquipButton:GetTall(), Color(0, 50, 0, 130))
+					surface.DrawOutlinedRect(0, 0, w, h)
+					draw.RoundedBox(2, 0, 0, w, h, Color(0, 50, 0, 130))
 				end
 				local function SellItems(amt)
 --					surface.PlaySound("buttons/button15.wav")
@@ -496,11 +496,11 @@ function GM:TraderMenu()
 			local ItemBackground = vgui.Create("DPanel")
 			ItemBackground:SetPos(5, 5)
 			ItemBackground:SetSize(350, 65)
-			ItemBackground.Paint = function() -- Paint function
+			ItemBackground.Paint = function(panel, w, h) -- Paint function
 				surface.SetDrawColor(50, 50, 50,255)
-				surface.DrawOutlinedRect(0, 0, ItemBackground:GetWide(), ItemBackground:GetTall())
+				surface.DrawOutlinedRect(0, 0, w, h)
 				surface.SetDrawColor(0, 0, 0,200)
-				surface.DrawRect(0, 0, ItemBackground:GetWide(), ItemBackground:GetTall())
+				surface.DrawRect(0, 0, w, h)
 			end
 
 			local itIcon
@@ -559,10 +559,10 @@ function GM:TraderMenu()
 			EquipButton:SetPos(80, 35)
 			EquipButton:SetText("Withdraw")
 			EquipButton:SetTextColor(Color(255, 255, 255, 255))
-			EquipButton.Paint = function(panel)
+			EquipButton.Paint = function(panel, w, h)
 				surface.SetDrawColor(0, 150, 0,255)
-				surface.DrawOutlinedRect(0, 0, EquipButton:GetWide(), EquipButton:GetTall())
-				draw.RoundedBox(2, 0, 0, EquipButton:GetWide(), EquipButton:GetTall(), Color(0, 50, 0, 130))
+				surface.DrawOutlinedRect(0, 0, w, h)
+				draw.RoundedBox(2, 0, 0, w, h, Color(0, 50, 0, 130))
 			end
 			EquipButton.DoClick = function()
 				local menu = DermaMenu()

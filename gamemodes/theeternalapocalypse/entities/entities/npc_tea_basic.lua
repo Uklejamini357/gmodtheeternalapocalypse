@@ -109,35 +109,28 @@ end
 function ENT:CanSeeTarget(move)
 	if !self:IsValid() then return false end
 
-	if self.target then
+	local target = self.target
+	if target then
 		local function trfilter(ent)
-			return ent == self.target or string.sub(ent:GetClass(), 1, 5) == "prop_"
-			--ent == self.target or ent == NULL end
+			return ent == target or string.sub(ent:GetClass(), 1, 5) == "prop_"
+			--ent == target or ent == NULL end
 		end
 
 		local tracedata = {}
-		tracedata.start = self:GetPos() + self:OBBCenter()
-		tracedata.endpos = self.target:GetPos() + self.target:OBBCenter()
 		tracedata.filter = trfilter
-		local trace = util.TraceLine(tracedata)
-		if not trace.HitWorld and (self.target == trace.Entity) then return true end
-/*
 		if move then
-			tracedata = {}
 			tracedata.start = self:GetPos()
-			tracedata.endpos = self.target:GetPos()
-			tracedata.filter = trfilter
-			trace = util.TraceLine(tracedata)
-			if not trace.HitWorld and (self.target == trace.Entity) then return true end
-
-			tracedata = {}
-			tracedata.start = self:GetPos() + self:OBBCenter()*2
-			tracedata.endpos = self.target:GetPos() + self.target:OBBCenter()*2
-			tracedata.filter = trfilter
-			trace = util.TraceLine(tracedata)
-			if not trace.HitWorld and (self.target == trace.Entity) then return true end
+			tracedata.endpos = target:GetPos()
+			tracedata.mins = self:OBBCenter()*0.25 + self:OBBMins()*0.75
+			tracedata.maxs = self:OBBCenter()*1.5 + (self:OBBMaxs()*0.75) - Vector(0,0,self:OBBMaxs().z*0.75)
+		else
+			tracedata.start = self:GetPos() + self:OBBCenter()
+			tracedata.endpos = target:GetPos() + target:OBBCenter()
 		end
-*/
+
+
+		local trace = move and util.TraceHull(tracedata) or util.TraceLine(tracedata)
+		if not trace.HitWorld and (target == trace.Entity) then return true end
 	end
 
 	return false
@@ -185,6 +178,8 @@ end
 local ai_disabled = GetConVar("ai_disabled")
 
 function ENT:Initialize()
+	self.SpawnTime = CurTime()
+
 	self:SetModel(self.Model)
 	self:PhysicsInitShadow(true)
 	self:SetCollisionBounds(Vector(-12,-12, 0), Vector(12, 12, 64))
@@ -310,8 +305,9 @@ function ENT:RunBehaviour()
 
 		local target = self.target
 		local selfpos = self:GetPos()
-		local targettable = cantarget(self, target)
+		if !self:IsValid() then return end
 
+		local targettable = cantarget(self, target)
 		if targettable and (self:GetRangeTo(target) <= (1500 * self.RageLevel) or GAMEMODE.ZombieApocalypse) then
 			self.loco:FaceTowards(target:GetPos())
 
@@ -347,7 +343,6 @@ function ENT:RunBehaviour()
 
 -- check if we have a player within arms reach and bash them if they are
 			if (self:GetRangeTo(target) <= self.ZombieStats["Reach"] * 0.8 && self:CanSeeTarget()) then
-
 				self:AttackPlayer(target)
 
 				self:StartActivity(self.AttackAnim)
@@ -420,7 +415,7 @@ function ENT:RunBehaviour()
 				self.NxtTick = self.NxtTick - 1
 			end
 
--- find ourselves a new target
+-- and after all that wandering, find ourselves a new target
 			if (!self.target) then
 				self:FindTarget()
 			end
@@ -468,7 +463,9 @@ function ENT:GotoPos(pos)
 			reachpos = nav:GetClosestPointOnArea(target:GetPos())
 		end
 	end
-	if self:CanSeeTarget(true) and self:GetRangeTo(target) < 800 or not nav then
+	local zdifference = math.abs(self:GetPos().z - target:GetPos().z)
+	local seetarget = self:CanSeeTarget(true)
+	if seetarget and self:GetRangeTo(target) < 800 and zdifference < 150 or not nav then
 		self.loco:FaceTowards(pos)
 		self.loco:Approach(pos, 1)
 	elseif reachpos then

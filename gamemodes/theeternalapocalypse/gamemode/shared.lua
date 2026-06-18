@@ -401,7 +401,7 @@ end
 function GM:GetEliteVariantSpawnChance(boss)
 	local chance = self:GetCurrentSeasonalEvent() != SEASONAL_EVENT_HALLOWEEN and (boss and 10 or 1) or
 	self:GetCurrentSeasonalEvent() == SEASONAL_EVENT_HALLOWEEN and (boss and 35 or 5)
-	return chance
+	return chance + math.min(boss and 10 or 4, self:GetEffectiveInfectionLevel()/(boss and 15 or 25))
 end
 
 function GM:GetDebug()
@@ -831,11 +831,19 @@ function GM:GetDiffCashMul()
 end
 
 function GM:GetZombieLvlMin()
-	return math.floor(#player.GetAll()+self:GetEffectiveInfectionLevel()/5)
+	local val = math.floor(#player.GetAll()+self:GetEffectiveInfectionLevel()/5)
+	if self.ZombieFogActive then
+		val = val + math.random(15, 20)
+	end
+	return val
 end
 
 function GM:GetZombieLvlMax()
-	return math.floor(#player.GetAll()+9+self:GetEffectiveInfectionLevel()/3)
+	local val = math.floor(#player.GetAll()+9+self:GetEffectiveInfectionLevel()/3)
+	if self.ZombieFogActive then
+		val = val + math.random(15, 20)
+	end
+	return val
 end
 
 function GM:GetLootTypeName(id)

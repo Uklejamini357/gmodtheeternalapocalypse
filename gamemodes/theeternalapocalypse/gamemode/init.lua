@@ -177,29 +177,34 @@ function GM:Think()
 			end
 		end
 
-		if !self.BloodMoonActive and ct > tonumber(self.NextSpecialEvent) then
+		if !self.ZombieFogActive and !self.BloodMoonActive and ct > tonumber(self.NextSpecialEvent) then
 			self.NextSpecialEvent = ct + tonumber(self.SpecialEventInterval)
 
-			local allowbloodmoon = 0
+			local allowspecialevent = 0
 			for _,pl in player.Iterator() do
 				if pl:GetTEAPrestige() > 0 then
-					allowbloodmoon = true
+					allowspecialevent = true
 					break
 				end
 
-				allowbloodmoon = allowbloodmoon + pl:GetTEALevel()
+				allowspecialevent = allowspecialevent + pl:GetTEALevel()
 			end
 
-			if isnumber(allowbloodmoon) then
-				allowbloodmoon = (allowbloodmoon / player.GetCount()) >= 20
+			if isnumber(allowspecialevent) then
+				allowspecialevent = (allowspecialevent / player.GetCount()) >= 20
 			end
 
-			if allowbloodmoon and self.SpecialEventChance >= math.Rand(0,1) then
-				gamemode.Call("ManageSpecialEvent", EVENTTYPE_SPECIAL_BLOODMOON, true)
+			if allowspecialevent and self.SpecialEventChance >= math.Rand(0,1) then
+				gamemode.Call("ManageSpecialEvent", table.Random({EVENTTYPE_SPECIAL_ZOMBIEFOG, EVENTTYPE_SPECIAL_BLOODMOON}), true)
 			end
-		elseif self.BloodMoonActive and ct > tonumber(self.SpecialEventEndTime) then
-			self.NextSpecialEvent = ct + tonumber(self.SpecialEventInterval)
-			gamemode.Call("ManageSpecialEvent", EVENTTYPE_SPECIAL_BLOODMOON, false)
+		elseif ct > tonumber(self.SpecialEventEndTime) then
+			if self.ZombieFogActive then
+				self.NextSpecialEvent = ct + tonumber(self.SpecialEventInterval)
+				gamemode.Call("ManageSpecialEvent", EVENTTYPE_SPECIAL_ZOMBIEFOG, false)
+			elseif self.BloodMoonActive then
+				self.NextSpecialEvent = ct + tonumber(self.SpecialEventInterval)
+				gamemode.Call("ManageSpecialEvent", EVENTTYPE_SPECIAL_BLOODMOON, false)
+			end
 		end
 
 		if ct > tonumber(self.NextLootSpawn) then
@@ -523,14 +528,14 @@ end
 
 function GM:PlayerConnect(name, ip)
 	for _, ply in player.Iterator() do
-		ply:SystemMessage(translate.ClientFormat(ply, "pljoined", name), Color(255,255,155,255), false)
-		-- ply:SystemMessage(Format("#tea.chat_message.pljoined", name), Color(255,255,155,255), false)
+		ply:SystemMessage(translate.ClientFormat(ply, "pljoined", name), Color(255,255,155), false)
+		-- ply:SystemMessage(Format("#tea.chat_message.pljoined", name), Color(255,255,155), false)
 	end
 end
 
 function GM:PlayerDisconnected(ply)
 	for _, pl in player.Iterator() do
-		pl:SystemMessage(translate.ClientFormat(pl, "plleft", ply:Name()), Color(255,255,155,255), false)
+		pl:SystemMessage(translate.ClientFormat(pl, "plleft", ply:Name()), Color(255,255,155), false)
 	end
 
 	gamemode.Call("SavePlayer", ply)
@@ -1788,7 +1793,18 @@ function GM:AddWSResources()
 end
 
 function GM:ManageSpecialEvent(eventType, shouldStart)
-	if eventType == EVENTTYPE_SPECIAL_BLOODMOON then
+	if eventType == EVENTTYPE_SPECIAL_ZOMBIEFOG then
+		if shouldStart then
+			self.ZombieFogActive = true
+			self.SpecialEventEndTime = CurTime() + math.Rand(600,900)
+			engine.LightStyle(0, "d")
+			BroadcastLua([[render.RedownloadAllLightmaps()]])
+		else
+			self.ZombieFogActive = false
+			engine.LightStyle(0, "m")
+			BroadcastLua([[render.RedownloadAllLightmaps()]])
+		end
+	elseif eventType == EVENTTYPE_SPECIAL_BLOODMOON then
 		if shouldStart then
 			self.BloodMoonActive = true
 			self.SpecialEventEndTime = CurTime() + math.Rand(600,900)

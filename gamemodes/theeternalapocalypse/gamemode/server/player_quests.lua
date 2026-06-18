@@ -35,7 +35,7 @@ end
 
 function GM:FinishTask(pl, task)
     local taskl = self.Tasks[task]
-    if !pl.CurrentTasks[task] or !taskl or !pl:HasCompletedTask(task) or tonumber(pl.CurrentTasks[task]) < taskl.ReqProgress then return end
+    if !pl.CurrentTasks[task] or !taskl or !pl:HasCompletedTask(task) then return end
 
 	pl.TaskCooldowns[task] = os.time() + taskl.Cooldown
 	pl.CurrentTasks[task] = nil

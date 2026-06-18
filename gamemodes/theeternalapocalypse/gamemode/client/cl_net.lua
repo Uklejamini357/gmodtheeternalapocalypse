@@ -389,12 +389,25 @@ net.Receive("tea_events", function(len)
 		surface.PlaySound("ambient/overhead/hel1.wav")
 
 		chat.AddText(Color(127,255,255), translate.Get("airdrop_appeared"))
+	elseif eventType == EVENTTYPE_SPECIAL_ZOMBIEFOG then
+		local start = net.ReadBool()
+		GAMEMODE.ZombieFogActive = start
+		if start then
+			GAMEMODE.ZombieFogStart = CurTime()
+			chat.AddText(Color(0,190,0), "A zombie fog is forming, and it's getting more difficult to breathe...")
+			chat.AddText(Color(0,255,0), "The zombies become stronger, and the infection level seems to be increasing...")
+			-- chat.AddText(Color(0,255,0), "The poisoned air also seems to be affecting survivors...")
+		else
+			GAMEMODE.ZombieFogEnd = CurTime()
+			chat.AddText(Color(95,190,0), "The zombie fog fades away...")
+			chat.AddText(Color(125,255,0), "The air is breathable again, and the zombies no longer gain boosts.")
+		end
 	elseif eventType == EVENTTYPE_SPECIAL_BLOODMOON then
 		local start = net.ReadBool()
 		GAMEMODE.BloodMoonActive = start
 		if start then
 			GAMEMODE.BloodMoonStart = CurTime()
-			chat.AddText(Color(190,0,0), "A blood moon is rising...")
+			chat.AddText(Color(190,0,0), "The blood moon is rising...")
 			chat.AddText(Color(255,0,0), "The zombies are greatly influenced by the blood moon, making them faster and stronger!")
 		else
 			GAMEMODE.BloodMoonEnd = CurTime()

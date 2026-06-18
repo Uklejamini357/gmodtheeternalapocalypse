@@ -592,24 +592,22 @@ function GM:RenderScreenspaceEffects()
 
 
 	local alive = !ply:Alive() and math.Clamp(1 + (self.LastAliveTime + 5 - CurTime()) * 0.2, 0.05, 1) or 1
-	if !self.BloodMoonStart then
-		self.BloodMoonStart = CurTime()
-	end
-	if !self.BloodMoonEnd then
-		self.BloodMoonEnd = CurTime()
-	end
+	local zombiefog = (self.ZombieFogActive and math.Clamp(CurTime() - (self.ZombieFogStart or 0), 0, 3) / 3 or
+	!self.ZombieFogActive and self.ZombieFogEnd+3 > CurTime() and math.Clamp(3 + self.ZombieFogEnd - CurTime(), 0, 3) / 3 or 0) * alive
+
 	local bloodmoon = (self.BloodMoonActive and math.Clamp(CurTime() - (self.BloodMoonStart or 0), 0, 3) / 3 or
 	!self.BloodMoonActive and self.BloodMoonEnd+3 > CurTime() and math.Clamp(3 + self.BloodMoonEnd - CurTime(), 0, 3) / 3 or 0) * alive
+
 	local filters = {
 		{
-			["$pp_colour_addr"] = 0.15*bloodmoon,
-			["$pp_colour_addg"] = -0.05*bloodmoon,
-			["$pp_colour_addb"] = -0.05*bloodmoon + (addb),
+			["$pp_colour_addr"] = 0.15*bloodmoon -0.04*zombiefog,
+			["$pp_colour_addg"] = -0.05*bloodmoon + 0.15*zombiefog,
+			["$pp_colour_addb"] = -0.05*bloodmoon -0.04*zombiefog + (addb),
 			["$pp_colour_brightness"] = nvg and 0.06 or 0,
-			["$pp_colour_contrast"] = contrast * alive * (1-bloodmoon*0.45),
+			["$pp_colour_contrast"] = contrast * alive * (1-bloodmoon*0.45-0.2*zombiefog),
 			["$pp_colour_colour"] = color,
 			["$pp_colour_mulr"] = 0.5*bloodmoon,
-			["$pp_colour_mulg"] = 0,
+			["$pp_colour_mulg"] = 0.6*zombiefog,
 			["$pp_colour_mulb"] = mulb
 		},
 

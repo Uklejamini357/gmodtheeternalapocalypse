@@ -352,7 +352,7 @@ function GM:AdminMenu()
 			local itIcon
 			if v.Material then
 				itIcon = vgui.Create("DImageButton", ItemBackground)
-				itIcon:SetMaterial(v.Material)
+				itIcon:SetMaterial(self.LoadedMaterials[v.Material] or v.Material)
 			else
 				itIcon = vgui.Create("SpawnIcon", ItemBackground)
 				itIcon:SetModel(v.Model)
@@ -662,6 +662,15 @@ function GM:AdminMenu()
 						net.WriteUInt(OPENWORLD_NETTYPE_GETTRANSITIONSINFO, 4)
 						net.SendToServer()
 					end)
+				end)
+
+				derma:AddOption("Force a map transition", function()
+					Derma_Query(Format("This will force a map transition to %s. Confirm?", v.Map), "Force map transition", translate.Get("yes"), function()
+						net.Start("tea_openworld_level")
+						net.WriteUInt(OPENWORLD_NETTYPE_FORCEMAPTRANSITION, 4)
+						net.WriteUInt(id, 8)
+						net.SendToServer()
+					end, translate.Get("no"))
 				end)
 
 				-- derma:AddOption("Edit...", function()

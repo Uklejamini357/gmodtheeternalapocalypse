@@ -368,6 +368,9 @@ function GM:PreGamemodeLoaded()
 
 end
 
+-- for between loading materials so it wont have to take as long as before
+GM.LoadedMaterials = {}
+
 function GM:Initialize()
 	self.BaseClass:Initialize()
 
@@ -384,6 +387,10 @@ function GM:Initialize()
 	self.BloodMoonActive = false
 	self.BloodMoonStart = 0
 	self.BloodMoonEnd = 0
+
+	self.ZombieFogActive = false
+	self.ZombieFogStart = 0
+	self.ZombieFogEnd = 0
 
 	self.WraithAlpha = 0
 	self.tea_screenfadeout = 0
@@ -656,6 +663,13 @@ function GM:CreateMove(cmd)
 	end
 end
 
+local zfog = {
+	color = {0, 1000, 0},
+	density = 1,
+	start = -1000,
+	endpos = 1500,
+}
+
 local fog = {
 	color = {30, 0, 0},
 	density = 1,
@@ -675,52 +689,84 @@ end
 
 function GM:SetupWorldFog()
 	if !fog then return end
-	if not (self.BloodMoonActive or !self.BloodMoonActive and self.BloodMoonEnd and self.BloodMoonEnd+3 > CurTime()) then return end
-	render.FogColor(fog.color[1], fog.color[2], fog.color[3])
-	render.FogMaxDensity(fog.density)
-	render.FogStart(fog.start)
-	render.FogEnd(fog.endpos + 6000*(
-		self.BloodMoonActive and math.Clamp(3 + (self.BloodMoonStart or 0) - CurTime(), 0, 3) / 3 or
-		!self.BloodMoonActive and self.BloodMoonEnd+3 > CurTime() and math.Clamp(CurTime() - self.BloodMoonEnd, 0, 3) / 3
-	))
-	render.FogMode(MATERIAL_FOG_LINEAR)
+	if (self.ZombieFog or !self.ZombieFog and self.ZombieFogEnd and self.ZombieFogEnd+3 > CurTime()) then
+		render.FogColor(zfog.color[1], zfog.color[2], zfog.color[3])
+		render.FogMaxDensity(zfog.density)
+		render.FogStart(zfog.start)
+		render.FogEnd(zfog.endpos + 6000*(
+			self.ZombieFog and math.Clamp(3 + (self.ZombieFogStart or 0) - CurTime(), 0, 3) / 3 or
+			!self.ZombieFog and self.ZombieFogEnd+3 > CurTime() and math.Clamp(CurTime() - self.ZombieFogEnd, 0, 3) / 3
+		))
+		render.FogMode(MATERIAL_FOG_LINEAR)
+	elseif (self.BloodMoonActive or !self.BloodMoonActive and self.BloodMoonEnd and self.BloodMoonEnd+3 > CurTime()) then
+		render.FogColor(fog.color[1], fog.color[2], fog.color[3])
+		render.FogMaxDensity(fog.density)
+		render.FogStart(fog.start)
+		render.FogEnd(fog.endpos + 6000*(
+			self.BloodMoonActive and math.Clamp(3 + (self.BloodMoonStart or 0) - CurTime(), 0, 3) / 3 or
+			!self.BloodMoonActive and self.BloodMoonEnd+3 > CurTime() and math.Clamp(CurTime() - self.BloodMoonEnd, 0, 3) / 3
+		))
+		render.FogMode(MATERIAL_FOG_LINEAR)
+	end
 
 	return true
 end
 
 function GM:SetupSkyboxFog()
 	if !fog then return end
-	if not (self.BloodMoonActive or !self.BloodMoonActive and self.BloodMoonEnd and self.BloodMoonEnd+3 > CurTime()) then return end
-	render.FogColor(fog.color[1], fog.color[2], fog.color[3])
-	render.FogMaxDensity(fog.density)
-	render.FogStart(fog.start)
-	render.FogEnd((fog.endpos + 6000*(
-		self.BloodMoonActive and math.Clamp(3 + (self.BloodMoonStart or 0) - CurTime(), 0, 3) / 3 or
-		!self.BloodMoonActive and self.BloodMoonEnd+3 > CurTime() and math.Clamp(CurTime() - self.BloodMoonEnd, 0, 3) / 3
-	))/16)
-	render.FogMode(MATERIAL_FOG_LINEAR)
+	if (self.ZombieFogActive or !self.ZombieFogActive and self.ZombieFogEnd and self.ZombieFogEnd+3 > CurTime()) then
+		render.FogColor(fog.color[1], fog.color[2], fog.color[3])
+		render.FogMaxDensity(fog.density)
+		render.FogStart(fog.start)
+		render.FogEnd((fog.endpos + 6000*(
+			self.ZombieFogActive and math.Clamp(3 + (self.ZombieFogStart or 0) - CurTime(), 0, 3) / 3 or
+			!self.ZombieFogActive and self.ZombieFogEnd+3 > CurTime() and math.Clamp(CurTime() - self.ZombieFogEnd, 0, 3) / 3
+		))/16)
+		render.FogMode(MATERIAL_FOG_LINEAR)
+	elseif (self.BloodMoonActive or !self.BloodMoonActive and self.BloodMoonEnd and self.BloodMoonEnd+3 > CurTime()) then
+		render.FogColor(fog.color[1], fog.color[2], fog.color[3])
+		render.FogMaxDensity(fog.density)
+		render.FogStart(fog.start)
+		render.FogEnd((fog.endpos + 6000*(
+			self.BloodMoonActive and math.Clamp(3 + (self.BloodMoonStart or 0) - CurTime(), 0, 3) / 3 or
+			!self.BloodMoonActive and self.BloodMoonEnd+3 > CurTime() and math.Clamp(CurTime() - self.BloodMoonEnd, 0, 3) / 3
+		))/16)
+		render.FogMode(MATERIAL_FOG_LINEAR)
+	end
 
 	return true
 end
 
 local constructmat = Material("gm_construct/color_room")
 hook.Add("PreDrawOpaqueRenderables", "TEA.BloodMoonSkyBox", function(depth, skybox)
-	if not (GAMEMODE.BloodMoonActive or !GAMEMODE.BloodMoonActive and GAMEMODE.BloodMoonEnd and GAMEMODE.BloodMoonEnd+3 > CurTime()) then return end
 	if not GAMEMODE.SkyBoxCameraPos then return end
-
 	local ply = LocalPlayer()
 	local view = render.GetViewSetup()
 	local lookdir = view.angles
 	local lookpos = view.origin
 	local looknorm = Vector(1,0,0)
+	
 	looknorm:Rotate(lookdir)
-	local fogend = 20000
-	local fpsfog_r = 30
-	local fpsfog_g = 0
-	local fpsfog_b = 0
+	if (GAMEMODE.ZombieFogActive or !GAMEMODE.ZombieFogActive and GAMEMODE.ZombieFogEnd and GAMEMODE.ZombieFogEnd+3 > CurTime()) then
+		local fogend = 20000
+		local fpsfog_r = 0
+		local fpsfog_g = 100
+		local fpsfog_b = 0
 
-	if skybox then
-		render.SetMaterial(constructmat)
-		render.DrawQuadEasy((lookpos + looknorm * fogend) / 16 + GAMEMODE.SkyBoxCameraPos, looknorm * -1, 1000000, 1000000, Color(fpsfog_r, fpsfog_g, fpsfog_b))
-	end
+		if skybox then
+			render.SetMaterial(constructmat)
+			render.DrawQuadEasy((lookpos + looknorm * fogend) / 16 + GAMEMODE.SkyBoxCameraPos, looknorm * -1, 1000000, 1000000, Color(fpsfog_r, fpsfog_g, fpsfog_b))
+		end	
+	elseif (GAMEMODE.BloodMoonActive or !GAMEMODE.BloodMoonActive and GAMEMODE.BloodMoonEnd and GAMEMODE.BloodMoonEnd+3 > CurTime()) then
+		local fogend = 20000
+		local fpsfog_r = 30
+		local fpsfog_g = 0
+		local fpsfog_b = 0
+
+		if skybox then
+			render.SetMaterial(constructmat)
+			render.DrawQuadEasy((lookpos + looknorm * fogend) / 16 + GAMEMODE.SkyBoxCameraPos, looknorm * -1, 1000000, 1000000, Color(fpsfog_r, fpsfog_g, fpsfog_b))
+		end
+	end	
+
 end)

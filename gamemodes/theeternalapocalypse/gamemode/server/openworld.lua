@@ -5,20 +5,22 @@ function GM:OpenworldTransition(tomapid)
     local data = self.OpenworldTransitions[tomapid]
     if !data then return end
     local map = data.Map
-    if !file.Exists("maps/"..map..".bsp", "GAME") then print("WHAT THE HELL!! THERE IS NO MAP FOR THE TRANSITION!!") return end
+    if !file.Exists("maps/"..map..".bsp", "GAME") then print("WHAT THE HELL!! THERE IS NO MAP FOR THE TRANSITION!!") return false end
 
     PrintMessage(3, "Transitioning to "..map.."...")
 
     timer.Create("TEA.OpenworldMapchange", 5, 1, function()
         self:DoOpenworldTransition(tomapid)
     end)
+
+    return true
 end
 
 function GM:DoOpenworldTransition(tomapid)
     local data = self.OpenworldTransitions[tomapid]
     if !data then return end
     local map = data.Map
-    if !file.Exists("maps/"..map..".bsp", "GAME") then print("WHAT THE HELL!! THERE IS NO MAP FOR THE TRANSITION!!") return end
+    if !file.Exists("maps/"..map..".bsp", "GAME") then print("WHAT THE HELL!! THERE IS NO MAP FOR THE TRANSITION!!") return false, "There is no map file for this!" end
 
     for _,pl in player.Iterator() do
         pl.TransitioningMap = map
@@ -31,6 +33,8 @@ function GM:DoOpenworldTransition(tomapid)
     end
 
     RunConsoleCommand("changelevel", map)
+
+    return true
 end
 
 function GM:OpenworldPlayerJoinTransition(ply, ent)
@@ -313,8 +317,12 @@ net.Receive("tea_openworld_level", function(len, pl)
             local id = net.ReadUInt(8)
             if !GAMEMODE.OpenworldTransitions[id] then pl:PrintMessage(3, "Transition does not exist.") return end
             
-            pl:PrintMessage(3, "Forcing a map transition.")
-            GAMEMODE:DoOpenworldTransition(id)
+            pl:PrintMessage(3, "Forcing a map transition...")
+
+            local success,msg = GAMEMODE:DoOpenworldTransition(id)
+            if !success and msg then
+                pl:SystemMessage(msg, COLOR_WARN, true)
+            end
         end
     end
 

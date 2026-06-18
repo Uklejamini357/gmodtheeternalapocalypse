@@ -212,6 +212,8 @@ function GM:MakeOptions()
 		check = CreateCheckLabel(pan, list, "Display Firemode bars", "arccw_hud_fcgbars")
 		check = CreateCheckLabel(pan, list, "Enable backup hud (firemodes)", "arccw_hud_minimal")
 		check = CreateCheckLabel(pan, list, "Enable attachments autosaving (Disabling may help with weapon attachment issues)", "arccw_autosave")
+		check:SetMouseInputEnabled(true)
+		check:SetTooltip(check:GetText())
 
 		list:AddItem(EasyLabel(pan, "\n↑                 ↑", "TEA.HUDFontSmall", color_white))
 	end
