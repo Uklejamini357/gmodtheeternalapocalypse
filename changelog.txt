@@ -135,7 +135,15 @@ Nope.
 + Added SFS saving method
 + Added NEW FONTS
 
+= Increase Heavy Tank's movespeed 45 -> 55
+= Reduce Hunter zombie's normal movespeed 320 -> 270
+= Reduce Leaper zombie's normal movespeed 198 -> 185
+= Nerfed Tormented Wraith's slowdown: 30% -> 15%
+= Ammo Pile structure cooldown reduced: 40s -> 30s
 
+/ Ammo given now shows up when using Ammo Pile structure
+
+; Reworked the sleeping system
 
 -------- v0.11.3b of 7th June 2025 --------
 + Fists now have a passive mode
