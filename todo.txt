@@ -27,6 +27,7 @@ Add new special event: Zombie Fog
 v0.12.11:
 Add ULX commands
 And add map configuration (max zombies, zombie distance, etc.)
+PLACEHOLDER change: Make zombie spawns not work if a player is inside a 600 radius sphere on the zspawn. 
 
 v0.12.12:
 Add more tasks -- moved from v0.12.5, then v0.12.7
@@ -40,14 +41,14 @@ Make death screen more animated
 
 
 v0.13.0:
-Rework Trader:
+Rework Traders:
 - UI overhaul
 - Add item SubCategories
 - Add separate traders
 - Add Trader Item list table for separate traders (Which items each trader sells, which items traders buy from player)
 - Categories on the side rather than on top
-Expand admin system and logging...?
-Add CAMI permissions
+Expand admin system and logging...? (Maybe not..)
+Add CAMI permissions (I don't think so...)
 
 v0.13.1:
 Rework armor protection:
@@ -60,16 +61,23 @@ Replace "Environmental Protection" with: (multiple damage types are even'ed)
 
 v0.13.2:
 Add status effects system (weight, poison, etc.)
-Add new items
+Add new items (Hercules, Antidote [another variation])
+Add perk-exclusive "Exhaustion" stat, and rework the Enduring Endurance perk (1.6x now, but overusing this perk raises "Exhaustion" stat, which reduces perk's effectiveness.)
 
 v0.13.3:
-Make props no longer remove on player disconnect, by making a SteamID.
+Make props no longer remove on player disconnect, by applying a SteamID on them to identify the owner.
 Make faction structures no longer disappear upon leaving the faction/disconnecting, just make them unclaimed/deactivated instead.
+Items dropping on death (not just for currently holding weapons, but also in inventory) <-- having a % chance to drop on death, not making as hardcore like in dayz. Thankfully it'll be toggleable
 
 
 v0.13.4:
-Items dropping on death (not just for currently holding weapons, but also in inventory) <-- having a % chance to drop on death, not making as hardcore like in dayz. Thankfully it'll be toggleable
+Rework Zombie vision (No longer have X-Ray vision, unless already have target. Have significantly increased vision instead.)
+Make TEA zombies call other zombies when they got injured.
+Make Lord Zombies only give other zombies temporary buffs (15s)
 
+v0.13.5
+Make zombies have 1/10 chance to wander around when not having a target.
+Make zombie spawns spread out in a circle radius.
 
 
 --------
@@ -110,7 +118,3 @@ Add backpacks
 
 v1.1.2:
 Add armor attachments
-
-
-v1.2.0:
-Add support for ArcCW attachments
