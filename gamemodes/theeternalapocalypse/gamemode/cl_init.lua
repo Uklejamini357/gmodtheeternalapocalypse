@@ -736,8 +736,10 @@ function GM:SetupSkyboxFog()
 end
 
 local constructmat = Material("gm_construct/color_room")
-hook.Add("PreDrawOpaqueRenderables", "TEA.BloodMoonSkyBox", function(depth, skybox)
+hook.Add("PreDrawOpaqueRenderables", "TEA.BloodMoonSkyBox", function(depth, skybox, skybox3d)
 	if not GAMEMODE.SkyBoxCameraPos then return end
+	if not skybox3d then return end
+
 	local ply = LocalPlayer()
 	local view = render.GetViewSetup()
 	local lookdir = view.angles

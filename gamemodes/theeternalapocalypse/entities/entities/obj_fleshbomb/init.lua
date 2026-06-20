@@ -31,7 +31,16 @@ function ENT:OnTakeDamage(dmginfo)
 	return false
 end
 
-function ENT:Splode()
+local function doDamage(self, ent)
+	if ent:IsPlayer() then
+		ent:TakeDamage(4.2 * ent:GetArmorDamageMultiplier(), self:GetOwner())
+	elseif ent:GetClass() == "prop_flimsy" or ent:GetClass() == "prop_strong" then
+		ent:TakeDamage(6, self:GetOwner())
+	elseif !ent.IsZombie and (ent:IsNPC() or ent:IsNextBot()) then
+		ent:TakeDamage(6, self:GetOwner())
+	end
+end
+function ENT:Splode(hit)
 	local damagedents = ents.FindInSphere(self:GetPos(), 40)
 --	local effectdata = EffectData()
 --	effectdata:SetOrigin(self:GetPos())
@@ -44,18 +53,16 @@ function ENT:Splode()
 	gas:SetScale(1)
 	util.Effect("poison_splat", gas)
 
+	doDamage(self, hit)
 	for _,v in pairs(damagedents) do
-		if v:IsPlayer() then
-			v:TakeDamage(4.2 * v:GetArmorDamageMultiplier(), self.Owner)
-		elseif v:GetClass() == "prop_flimsy" or v:GetClass() == "prop_strong" then
-			v:TakeDamage(6, self.Owner)
-		end
+		if v == hit then continue end
+		doDamage(self, v)
 	end
 	self:Remove()
 end
 
 function ENT:PhysicsCollide(data, physobj)
-	self:Splode()
+	self:Splode(data.HitEntity)
 	return true
 end
 

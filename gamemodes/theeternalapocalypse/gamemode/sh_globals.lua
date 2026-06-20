@@ -214,6 +214,8 @@ COLOR_WARN = Color(255,205,205)
 COLOR_INFO = Color(205,205,205)
 COLOR_ACTION = Color(205,205,255)
 
+VECTOR_ZERO = Vector(0,0,0)
+
 
 --- ↓ Do. Not. Touch. ↓
 --- It's not even implemented yet. ---

@@ -86,21 +86,20 @@ function GM:GetRandomZombieSpawn()
 	return pos
 end
 
--- note: added the ability to create bosses with this function, setting isboss to true will make the monster distribute its xp reward to all attackers and announce its death
-function GM:CreateZombie(class, pos, ang, xp, cash, infectionrate, forcelevel, isboss)
+function GM:CreateZombie(class, pos, ang, xp, cash, infectionrate, level, isboss)
 	local isboss = isboss or false
 	local class = tostring(class)
 
 	local ent = ents.Create(class)
 	if !ent:IsValid() then return NULL end
 
-	local lvl = forcelevel or math.random(self:GetZombieLvlMin(), self:GetZombieLvlMax())
+	local lvl = level or math.random(self:GetZombieLvlMin(), self:GetZombieLvlMax())
 
 	ent:SetPos(pos)
 	ent:SetAngles(ang)
-	ent.XPReward = xp*(0.75+lvl*0.025)
-	ent.MoneyReward = cash*(0.85+lvl*0.015)
-	ent.InfectionRate = infectionrate
+	ent.XPReward = FORCED_LVL and xp or xp*(0.75+lvl*0.025)
+	ent.MoneyReward = FORCED_LVL and cash or cash*(0.85+lvl*0.015)
+	ent.InfectionRate = FORCED_LVL and infectionrate or infectionrate*(0.9+lvl*0.01)
 	ent.IsZombie = true
 	ent.BossMonster = isboss
 	ent.DamagedBy = {}
@@ -113,6 +112,42 @@ function GM:CreateZombie(class, pos, ang, xp, cash, infectionrate, forcelevel, i
 	ent:Activate()
 	if self:GetDebug() >= DEBUGGING_ADVANCED then print("Zombie spawned:", "\n"..class, pos, ang, "XPReward: "..xp, "MoneyReward: "..cash, isboss and "Isboss: true" or "Isboss: false") end
 	return ent -- used for SpawnZombie command
+end
+
+function GM:ApplyEliteVariant(ent, elite)
+	local mult,xp,cash,inf = 1,1,1,1
+	if elite == VARIANT_POISONOUS then
+		ent:SetColor(Color(0,255,0))
+		mult,xp,cash,inf = 1.2, 1.15, 1.1, 1.1
+	elseif elite == VARIANT_SHOCK then
+		ent:SetColor(Color(64,128,255))
+		mult,xp,cash,inf = 1.15, 1.2, 1.25, 1.2
+	elseif elite == VARIANT_OVERPOWERED then
+		ent:SetColor(Color(64,128,255))
+		mult,xp,cash,inf = 1.4, 1.35, 1.3, 1.45
+	elseif elite == VARIANT_REFLECTOR then
+		ent:SetColor(Color(255,128,0))
+		mult,xp,cash,inf = 1.25, 1.25, 1.3, 1.4
+	elseif elite == VARIANT_INFECTIVE then
+		ent:SetColor(Color(255,128,128))
+		mult,xp,cash,inf = 1.25, 1.2, 1.15, 1.15
+	elseif elite == VARIANT_SICKNESS then
+		ent:SetColor(Color(255,128,255))
+		mult,xp,cash,inf = 1.25, 1.25, 1.15, 1.1
+	elseif elite == VARIANT_LEECH then
+		ent:SetColor(Color(127,255,127))
+		mult,xp,cash,inf = 1.3, 1.25, 1.15, 1.2
+	elseif elite == VARIANT_ENRAGED then
+		ent:SetColor(Color(255,255,95))
+		mult,xp,cash,inf = 1.25, 1.25, 1.2, 1.25
+	end
+
+	ent:SetEliteVariant(elite)
+	ent:SetHealth(ent:Health() * mult)
+	ent:SetMaxHealth(ent:GetMaxHealth() * mult)
+	ent.XPReward = (ent.XPReward or 0) * xp
+	ent.MoneyReward = (ent.MoneyReward or 0) * cash
+	ent.InfectionRate = (ent.InfectionRate or 0) * inf
 end
 
 timer.Create("TEARemoveLonelyZombies", 30, 0, function()
@@ -139,11 +174,12 @@ end
 
 function GM:SpawnRandomZombie(pos, ang, tier)
 	local maxchance = 0
-	for _,z in pairs(self.Config["ZombieClasses"]) do if !z.Disabled then maxchance = maxchance + z.SpawnChance end end
+	local iter,tbl,cons = pairs(self.Config["ZombieClasses"])
+	for _,z in iter,tbl,cons do if !z.Disabled then maxchance = maxchance + z.SpawnChance end end
 
 	local dice = math.Rand(0, maxchance)
 	local total = 0
-	for k, v in pairs(self.Config["ZombieClasses"]) do
+	for k, v in iter,tbl,cons do
 		if v.Disabled then continue end
 		total = total + v.SpawnChance
 		if total >= dice then
@@ -155,43 +191,8 @@ function GM:SpawnRandomZombie(pos, ang, tier)
 			local ent = self:CreateZombie(k, pos, ang, v.XPReward * self:GetDiffXPMul(), v.MoneyReward * self:GetDiffCashMul(), v.InfectionRate, math.random(self:GetZombieLvlMin(), self:GetZombieLvlMax()) + (tier and tier-1 or 0)*5, false)
 
 			if elite and v.AllowEliteVariants then
-				local elite_variant = math.random(8)
-				local mult,xp,cash,inf = 1,1,1,1
-				if elite_variant == VARIANT_POISONOUS then
-					ent:SetColor(Color(0,255,0))
-					mult,xp,cash,inf = 1.2, 1.15, 1.1, 1.1
-				elseif elite_variant == VARIANT_SHOCK then
-					ent:SetColor(Color(64,128,255))
-					mult,xp,cash,inf = 1.15, 1.2, 1.25, 1.2
-				elseif elite_variant == VARIANT_OVERPOWERED then
-					ent:SetColor(Color(64,128,255))
-					mult,xp,cash,inf = 1.4, 1.35, 1.3, 1.45
-				elseif elite_variant == VARIANT_REFLECTOR then
-					ent:SetColor(Color(255,128,0))
-					mult,xp,cash,inf = 1.25, 1.25, 1.3, 1.4
-				elseif elite_variant == VARIANT_INFECTIVE then
-					ent:SetColor(Color(255,128,128))
-					mult,xp,cash,inf = 1.25, 1.2, 1.15, 1.15
-				elseif elite_variant == VARIANT_SICKNESS then
-					ent:SetColor(Color(255,128,255))
-					mult,xp,cash,inf = 1.25, 1.25, 1.15, 1.1
-				elseif elite_variant == VARIANT_LEECH then
-					ent:SetColor(Color(127,255,127))
-					mult,xp,cash,inf = 1.3, 1.25, 1.15, 1.2
-				elseif elite_variant == VARIANT_ENRAGED then
-					ent:SetColor(Color(255,255,95))
-					mult,xp,cash,inf = 1.25, 1.25, 1.2, 1.25
-				end
-
-				ent:SetEliteVariant(elite_variant)
-				ent:SetHealth(ent:Health() * mult)
-				ent:SetMaxHealth(ent:GetMaxHealth() * mult)
-				ent.XPReward = (ent.XPReward or 0) * xp
-				ent.MoneyReward = (ent.MoneyReward or 0) * cash
-				ent.InfectionRate = (ent.InfectionRate or 0) * inf
-				--PrintMessage(3, tostring(ent).." has become elite variant "..elite_variant)
+				self:ApplyEliteVariant(ent, math.random(8))
 			end
-
 
 			break
 		end
@@ -202,63 +203,35 @@ function GM:SpawnRandomBoss(pos, ang, plycountoverride, nonotify)
 	local maxchance = 0
 	plycountoverride = plycountoverride or #player.GetAll()
 
-	for _,z in pairs(self.Config["BossClasses"]) do if !z.Disabled then maxchance = maxchance + z.SpawnChance end end
+	local iter,tbl,cons = pairs(self.Config["BossClasses"])
+	for _,z in iter,tbl,cons do if !z.Disabled then maxchance = maxchance + z.SpawnChance end end
 
 	local dice = math.Rand(0, 100)
 	local total = 0
-	for k, v in pairs(self.Config["BossClasses"]) do
+	for k, v in iter,tbl,cons do
 		if v.Disabled then continue end
 		total = total + v.SpawnChance
 		if total >= dice then
 			v.BroadCast(nonotify)
 			timer.Simple(tonumber(v.SpawnDelay), function()
 				self:SystemBroadcast(v.AnnounceMessage, Color(255,105,105), false)
-				BroadcastLua([[if GetConVar("tea_cl_soundboss"):GetInt() >= 1 then RunConsoleCommand("playgamesound", "music/stingers/hl1_stinger_song8.mp3") end]])
 
+				net.Start("tea_events")
+				net.WriteUInt(EVENTTYPE_BOSS, 4)
+				net.Broadcast()
+				
 				local elitechance = math.Rand(0, 100)
 				local elite = elitechance ~= 0 and elitechance <= self:GetEliteVariantSpawnChance(true)
 				local ent = self:CreateZombie(k, pos, ang, v.XPReward * self:GetDiffXPMul(), v.MoneyReward * self:GetDiffCashMul(), v.InfectionRate, math.random(self:GetZombieLvlMin(), self:GetZombieLvlMax()) + (tier and tier-1 or 0)*5, true)
 
 				if elite and v.AllowEliteVariants then
-					local elite_variant = 8--math.random(8)
-					local mult,xp,cash,inf = 1,1,1,1
-					if elite_variant == VARIANT_POISONOUS then
-						ent:SetColor(Color(0,255,0))
-						mult,xp,cash,inf = 1.2,1.15,1.1,1
-					elseif elite_variant == VARIANT_SHOCK then
-						ent:SetColor(Color(64,128,255))
-						mult,xp,cash,inf = 1.15,1.2,1.25,1
-					elseif elite_variant == VARIANT_OVERPOWERED then
-						ent:SetColor(Color(64,128,255))
-						mult,xp,cash,inf = 1.4,1.35,1.3,1
-					elseif elite_variant == VARIANT_REFLECTOR then
-						ent:SetColor(Color(255,128,0))
-						mult,xp,cash,inf = 1.25,1.15,1.2,1
-					elseif elite_variant == VARIANT_INFECTIVE then
-						ent:SetColor(Color(255,128,128))
-						mult,xp,cash,inf = 1.25,1.2,1.15,1
-					elseif elite_variant == VARIANT_SICKNESS then
-						ent:SetColor(Color(255,128,255))
-						mult,xp,cash,inf = 1.25,1.25,1.15,1
-					elseif elite_variant == VARIANT_LEECH then
-						ent:SetColor(Color(127,255,127))
-						mult,xp,cash,inf = 1.3, 1.25, 1.15, 1.2
-					elseif elite_variant == VARIANT_ENRAGED then
-						ent:SetColor(Color(255,255,95))
-						mult,xp,cash,inf = 1.25, 1.25, 1.2, 1.25
-					end
+					self:ApplyEliteVariant(ent, math.random(8))
 
-					ent:SetEliteVariant(elite_variant)
-					ent:SetHealth(ent:Health() * mult)
-					ent:SetMaxHealth(ent:GetMaxHealth() * mult)
-					ent.XPReward = (ent.XPReward or 0) * xp
-					ent.MoneyReward = (ent.MoneyReward or 0) * cash
-					ent.InfectionRate = (ent.InfectionRate or 0) * inf
 					self:SystemBroadcast("ALERT! BOSS HAS SPAWNED AS AN ELITE VARIANT, GOOD LUCK...", Color(255,55,55), true)
 				end
 
 				if plycountoverride > 4 then
-					local mul = math.max(1, 0.80 + plycountoverride*0.05)
+					local mul = math.max(1, 0.8 + plycountoverride*0.05)
 					ent:SetHealth(ent:Health() * mul)
 					ent:SetMaxHealth(ent:GetMaxHealth() * mul)
 					ent.XPReward = (ent.XPReward or 0) * mul

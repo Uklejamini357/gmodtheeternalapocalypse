@@ -260,6 +260,20 @@ function ENT:Think()
 		self:TakeDamageInfo(drown)
 		self.LastAttacker = nil -- if you try killing zombies by water, don't think about it.
 	end
+
+	if !IsValid(self.target) then return end
+	if self.ZombieStats["Ability1"] and self.ZombieStats["Ability1AnyTime"] and self:GetRangeTo(self.target) <= self.ZombieStats["Ability1Range"] then
+		if self.Ability1CD <= CurTime() then
+			if self.CanSpecialSkill1 and self:CanSpecialSkill1() or not self.CanSpecialSkill1 then
+				timer.Simple(self.ZombieStats["Ability1TrigDelay"], function()
+					if !self:IsValid() then return false end
+					self:SpecialSkill1()
+				end)
+				self.Ability1CD = CurTime() + self.ZombieStats["Ability1Cooldown"]
+			end
+		end
+	end
+
 end
 
 
@@ -311,6 +325,19 @@ function ENT:RunBehaviour()
 		if targettable and (self:GetRangeTo(target) <= (1500 * self.RageLevel) or GAMEMODE.ZombieApocalypse) then
 			self.loco:FaceTowards(target:GetPos())
 
+-- run our first ability
+			if self.ZombieStats["Ability1"] and self:GetRangeTo(target) <= self.ZombieStats["Ability1Range"] then
+				if self.Ability1CD <= CurTime() then
+					if self.CanSpecialSkill1 and self:CanSpecialSkill1() or not self.CanSpecialSkill1 then
+						timer.Simple(self.ZombieStats["Ability1TrigDelay"], function()
+							if !self:IsValid() then return false end
+							self:SpecialSkill1()
+						end)
+						self.Ability1CD = CurTime() + self.ZombieStats["Ability1Cooldown"]
+					end
+				end
+			end
+
 -- check if we are obstructed by props and smash them if we are
 			local breakshit = ents.FindInSphere(selfpos + self:GetAngles():Up() * 55, 45)
 
@@ -327,19 +354,7 @@ function ENT:RunBehaviour()
 			end
 
 
--- run our first ability
-			if self.ZombieStats["Ability1"] and self:GetRangeTo(target) <= self.ZombieStats["Ability1Range"] then
-
-				if self.Ability1CD <= CurTime() then
-					if self.CanSpecialSkill1 and self:CanSpecialSkill1() or not self.CanSpecialSkill1 then
-						timer.Simple(self.ZombieStats["Ability1TrigDelay"], function()
-							if !self:IsValid() then return false end
-							self:SpecialSkill1()
-						end)
-						self.Ability1CD = CurTime() + self.ZombieStats["Ability1Cooldown"]
-					end
-				end
-			end
+			if !IsValid(target) then continue end
 
 -- check if we have a player within arms reach and bash them if they are
 			if (self:GetRangeTo(target) <= self.ZombieStats["Reach"] * 0.8 && self:CanSeeTarget()) then

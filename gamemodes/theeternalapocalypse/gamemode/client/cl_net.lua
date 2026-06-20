@@ -389,6 +389,10 @@ net.Receive("tea_events", function(len)
 		surface.PlaySound("ambient/overhead/hel1.wav")
 
 		chat.AddText(Color(127,255,255), translate.Get("airdrop_appeared"))
+	elseif eventType == EVENTTYPE_BOSS then
+		if GAMEMODE.BossSound then
+			surface.PlaySound("music/stingers/hl1_stinger_song8.mp3")
+		end
 	elseif eventType == EVENTTYPE_SPECIAL_ZOMBIEFOG then
 		local start = net.ReadBool()
 		GAMEMODE.ZombieFogActive = start

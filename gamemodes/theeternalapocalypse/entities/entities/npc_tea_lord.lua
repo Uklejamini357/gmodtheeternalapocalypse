@@ -51,6 +51,7 @@ function ENT:SetUpStats()
 		["Ability1Range"] = 800,
 		["Ability1Cooldown"] = 25,
 		["Ability1TrigDelay"] = 0,
+		["Ability1AnyTime"] = true,
 
 	}
 

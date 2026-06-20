@@ -602,15 +602,27 @@ GM.AdminMapSpawnables = {
 
 GM.AdminTools = {
 	Explode = {
-		Spawn = function(owner, swep, tr, pos)
+		Spawn = function(owner, swep, tr, pos, opt)
 			local explode = ents.Create("env_explosion")
-			explode:SetKeyValue("iMagnitude", 100)
+			explode:SetKeyValue("iMagnitude", opt.Damage or 100)
+			explode:SetKeyValue("iRadiusOverride", opt.Radius or 100)
 			explode:SetPos(pos)
 			explode:Spawn()
 			explode:Fire("Explode")
-		end
+		end,
+		Options = {
+			Damage = {
+				Type = "number",
+				Min = 1,
+				Max = 5000,
+			},
+			Radius = {
+				Type = "number",
+				Min = 1,
+				Max = 5000,
+			}
+		}
 	},
-
 	BreakDoor = {
 		Spawn = function(owner, swep, tr, pos)
 			local ent = tr.Entity

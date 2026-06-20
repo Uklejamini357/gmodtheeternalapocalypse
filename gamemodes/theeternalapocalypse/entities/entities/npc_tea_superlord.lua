@@ -53,6 +53,7 @@ function ENT:SetUpStats()
 	["Ability1Range"] = 2500,
 	["Ability1Cooldown"] = math.Rand(10,15),
 	["Ability1TrigDelay"] = 0,
+	["Ability1AnyTime"] = true,
 
 	}
 

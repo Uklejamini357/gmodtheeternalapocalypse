@@ -3,7 +3,7 @@ GM.AltName	= "After The End Reborn" -- yes, it's a fork. what else did you expec
 GM.Author	= "Uklejamini"
 GM.Email	= ""
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.12.10"
+GM.Version	= "0.12.11b"
 GM.DateVer	= "20.06.2026" -- Follows the DD.MM.YYYY format.
 GM.Credits = {
 	{"LegendOfRobbo",			"Created After The End gamemode",											"Back in 2015. It's such a great gamemode!"},
@@ -19,7 +19,29 @@ GM.Credits = {
 
 	{"You",						"For playing the gamemode!",												""},
 }
+local color_add = Color(210,255,210)
+local color_del = Color(255,210,210)
+local color_change = Color(255,210,255)
+local color_balance = Color(255,255,210)
+local color_fix = Color(210,255,255)
 GM.RecentChangelogs = {
+	{"+ Added a new variable for zombies to be able to activate a special ability, whenever possible at any given time (Now applies to Puker, Lord, Superlord and Tormented Wraith)", color_add},
+	{"+ Added ULX commands (There are only a few atm, but it works)", color_add},
+	{"+ Added \"Force Elite Variant\" option for Admin tool on Zombies spawning type", color_add},
+	{"+ Added \"Choices\" for admin tool menu", color_add},
+	{"+ Zombie levels now affect infection level gainrate", color_add},
+	{"+ Added new options for \"Explode\" admin tool", color_add},
+
+	{"= Tormented Wraith's ability now activates at 650 range and also gives +10% speed instead of +5%", color_balance},
+
+	{"/ Puker zombie's now damage non-zombie NPC's/nextbots", color_change},
+	{"/ Tweaked effective infection level, now has gradually reducing infection level effectiveness, while also making infection level more lenient for newcomers (low level players)", color_change},
+	
+	{"* Fixed a bug with puker zombie's projectile which could eventually cause \"Too many emitters\" error.", color_fix},
+	{"* Fixed random errors for zombies causing them to stay in place", color_fix},
+	{"* Spawning zombies with forced level, xp/money/infection gainrate gain will no longer be affected by zombie level if xp/money/ilvl gain variables are set", color_fix},
+	
+
 	{"Too much to put it all here", Color(210,210,255)},
 }
 
@@ -328,30 +350,39 @@ end
 
 function GM:GetEffectiveInfectionLevel(bypass)
 	local lvl = self:GetInfectionLevel()
+	local addlvl = 0
 
 	if GetGlobalBool("TEA.IgnoreEffLevel") then return lvl end
 
 	local avgp, totalp = 0, 0
-	local max = 50
+	local max = 10
 	for c,ply in player.Iterator() do
 		if c ~= 1 then
-			lvl = lvl + 0.2
+			addlvl = addlvl + 0.2
 		end
 
-		local a = math.min(20, ply:GetTEAPrestige()) + math.sqrt(math.max(0, ply:GetTEAPrestige()-20))
+		local a = math.min(20, ply:GetTEAPrestige() + ply:GetProgressToPrestige()) + math.sqrt(math.max(0, ply:GetTEAPrestige()-20))
 		avgp = avgp + a
 		totalp = totalp + a
 	end
 	avgp = avgp / player.GetCount()
 
+	if avgp > 0 then
+		max = max + 25*math.min(1, avgp)
+	end
+	if totalp > 0 then
+		max = max + 15*math.min(1, totalp)
+	end
+
 	max = max + (totalp*5)^0.85
 
 	if avgp > 0 then
-		lvl = lvl + math.min(20, math.floor(avgp)*5)
+		addlvl = addlvl + math.min(50, avgp*5)
 	end
 
-	if GetGlobalBool("TEA.IgnoreMaxInfLvl") then return lvl end
-	return math.min(max, lvl)
+	if GetGlobalBool("TEA.IgnoreMaxInfLvl") then return lvl + addlvl end
+
+	return math.min(max, lvl + addlvl * ((max-lvl)/max))
 end
 
 function GM:SetInfectionLevel(value, bypass)
@@ -401,7 +432,8 @@ end
 function GM:GetEliteVariantSpawnChance(boss)
 	local chance = self:GetCurrentSeasonalEvent() != SEASONAL_EVENT_HALLOWEEN and (boss and 10 or 1) or
 	self:GetCurrentSeasonalEvent() == SEASONAL_EVENT_HALLOWEEN and (boss and 35 or 5)
-	return chance + math.min(boss and 10 or 4, self:GetEffectiveInfectionLevel()/(boss and 15 or 25))
+
+	return chance + math.min(boss and 20 or 9, self:GetEffectiveInfectionLevel()/(boss and 15 or 25))
 end
 
 function GM:GetDebug()
@@ -833,7 +865,7 @@ end
 function GM:GetZombieLvlMin()
 	local val = math.floor(#player.GetAll()+self:GetEffectiveInfectionLevel()/5)
 	if self.ZombieFogActive then
-		val = val + math.random(15, 20)
+		val = val + 15
 	end
 	return val
 end
@@ -841,7 +873,7 @@ end
 function GM:GetZombieLvlMax()
 	local val = math.floor(#player.GetAll()+9+self:GetEffectiveInfectionLevel()/3)
 	if self.ZombieFogActive then
-		val = val + math.random(15, 20)
+		val = val + 20
 	end
 	return val
 end

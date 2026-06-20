@@ -238,7 +238,9 @@ function ENT:RunBehaviour()
 			else
 				self.NxtTick = self.NxtTick - 1
 			end
-			
+
+			if !IsValid(target) then continue end
+
 			if (self:GetRangeTo(target) <= 400 && self.nextslam < CurTime() && self:HasLOS()) then 
 				self:StartActivity(ACT_RANGE_ATTACK1)
 				self:SetPlaybackRate((self.IsEnraged and 1.3 or 1) * self:GetTEAZombieAttackRateMul())

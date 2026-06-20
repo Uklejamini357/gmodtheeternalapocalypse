@@ -1,6 +1,23 @@
 There's been a lot missed out...
 WORKING ON THIS, even tho progress on this is slow asf
 
+-------- v0.12.11 --------
++ Added a new variable for zombies to be able to activate a special ability, whenever possible at any given time (Now applies to Puker, Lord, Superlord and Tormented Wraith)
++ Added ULX commands (There are only a few atm, but it works)
++ Added "Force Elite Variant" option for Admin tool on Zombies spawning type
++ Added "Choices" for admin tool menu
++ Zombie levels now affect infection level gainrate
++ Added new options for "Explode" admin tool
+
+= Tormented Wraith's ability now activates at 650 range and also gives +10% speed instead of +5%
+
+/ Puker zombie's now damage non-zombie NPC's/nextbots
+/ Tweaked effective infection level, now has gradually reducing infection level effectiveness, while also making infection level more lenient for newcomers (low level players)
+
+* Fixed a bug with puker zombie's projectile which could eventually cause "Too many emitters" error.
+* Fixed random errors for zombies causing them to stay in place
+* Spawning zombies with forced level, xp/money/infection gainrate gain will no longer be affected by zombie level if xp/money/ilvl gain variables are set
+
 -------- v0.12.10 --------
 and no
 

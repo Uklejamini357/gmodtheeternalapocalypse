@@ -54,9 +54,10 @@ function ENT:SetUpStats()
 		["LoseTargetRange"] = 1500,
 
 		["Ability1"] = true,
-		["Ability1Range"] = 500,
+		["Ability1Range"] = 650,
 		["Ability1Cooldown"] = 5,
 		["Ability1TrigDelay"] = 0,
+		["Ability1AnyTime"] = true,
 
 	}
 
@@ -108,7 +109,7 @@ function ENT:SpecialSkill1()
 	effectdata:SetOrigin(self:GetPos() + Vector(0, 0, 60))
 	util.Effect("zw_master_pulse", effectdata)
 	self:EmitSound("ambient/machines/thumper_hit.wav", 120, 70)
-	if self.SpeedBuff < 2 then self.SpeedBuff = math.Clamp(self.SpeedBuff + 0.05, 1, 2) end
+	if self.SpeedBuff < 2 then self.SpeedBuff = math.Clamp(self.SpeedBuff + 0.1, 1, 2) end
 	self.Ability1CD = CurTime() + self.ZombieStats["Ability1Cooldown"]
 end
 

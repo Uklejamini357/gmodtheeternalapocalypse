@@ -108,7 +108,12 @@ function SWEP:SpawnIn(spawning, owner, tr, ang)
     if CLIENT then return end
     if self:GetSpawningType() == ADMINTOOL_SPAWNTYPE_ZOMBIE then
         local zm = GAMEMODE.Config["ZombieClasses"][spawning] or GAMEMODE.Config["BossClasses"][spawning]
+        FORCED_LVL = true
         local ent = GAMEMODE:CreateZombie(spawning, RoundPos(tr.HitPos), Angle(0,ang.yaw,0), self.SetOptions.XPReward or zm.XPReward, self.SetOptions.CashReward or zm.MoneyReward, self.SetOptions.InfectionRate or zm.InfectionRate, self.SetOptions.ForceLevel, self.SetOptions.BossZombie)
+        if self.SetOptions.ForceEliteVariant and self.SetOptions.ForceEliteVariant ~= 0 then
+            GAMEMODE:ApplyEliteVariant(ent, self.SetOptions.ForceEliteVariant)
+        end
+        FORCED_LVL = nil
         if ent and ent:IsValid() then
             ent:SetPos(ent:GetPos() + Vector(0,0,8))
             ent:DropToFloor()

@@ -7,10 +7,10 @@ function EFFECT:Init(data)
 			local particle = self.Emitter:Add( "particle/smokesprites_000"..math.random(1,9), pos)
 			if (particle) then
 				particle:SetVelocity( VectorRand():GetNormalized()*math.Rand(50, 150) )
-				if i == 1 or i == 2 or i == 3 or i == 5 then 
-				particle:SetDieTime( 3 )
+				if i < 4 then 
+					particle:SetDieTime( 3 )
 				else
-				particle:SetDieTime( math.Rand( 1, 3 ) )
+					particle:SetDieTime( math.Rand( 1, 3 ) )
 				end
 				particle:SetStartAlpha( math.Rand( 40, 60 ) )
 				particle:SetEndAlpha( 0 )
@@ -26,6 +26,7 @@ function EFFECT:Init(data)
 			end
 		end
 	end
+	self.Emitter:Finish()
 end
 
 function EFFECT:Think()

@@ -1120,6 +1120,11 @@ function GM:OpenAdminToolMenuOptions(wep)
 
 	local tbl = {}
 	if wep:GetSpawningType() == ADMINTOOL_SPAWNTYPE_ZOMBIE then
+		local variants = self.VariantNames--{}
+		-- for _,v in pairs(self.VariantNames) do
+		-- 	variants[""]
+		-- end
+
 		tbl = {
 			CashReward = {
 				Name = "Cash gain",
@@ -1137,6 +1142,11 @@ function GM:OpenAdminToolMenuOptions(wep)
 				Name = "Force level",
 				Type = "number"
 			},
+			ForceEliteVariant = {
+				Name = "Force Elite Variant",
+				Type = "choices",
+				Choices = variants
+			},
 			BossZombie = {
 				Name = "Boss zombie",
 				Type = "bool"
@@ -1144,6 +1154,8 @@ function GM:OpenAdminToolMenuOptions(wep)
 		}
 	elseif wep:GetSpawningType() == ADMINTOOL_SPAWNTYPE_MAPSPAWNS then
 		tbl = GAMEMODE.AdminMapSpawnables[wep:GetSpawning()].Options
+	elseif wep:GetSpawningType() == ADMINTOOL_SPAWNTYPE_TOOL then
+		tbl = GAMEMODE.AdminTools[wep:GetSpawning()].Options or {}
 	end
 
 
@@ -1167,8 +1179,9 @@ function GM:OpenAdminToolMenuOptions(wep)
 		elseif v.Type == "bool" then
 			local b1 = vgui.Create("DCheckBoxLabel", atm)
 			b1:SetText(v.Name or id)
+			b1:SetChecked(optionstbl[id])
 			b1:Dock(TOP)
-			b1:DockMargin(5,0,0,0)
+			b1:DockMargin(5,5,0,5)
 			b1.Paint = function(self,w,h)
 				surface.SetDrawColor(0,0,0,100)
 				surface.DrawRect(0,0,w,h)
@@ -1177,6 +1190,26 @@ function GM:OpenAdminToolMenuOptions(wep)
 			end
 			b1.OnChange = function(self, val)
 				optionstbl[id] = val
+				updateoptions(optionstbl)
+			end
+		elseif v.Type == "choices" then
+			local b2 = vgui.Create("DLabel", atm)
+			b2:SetText(v.Name or id)
+			b2:Dock(TOP)
+			b2:SizeToContents()
+
+			local b1 = vgui.Create("DComboBox", atm)
+			b1:Dock(TOP)
+			b1:DockMargin(5, 10, 5, 0)
+			b1:SetValue(v.Choices[optionstbl[id]] or "None")
+			b1:SetSortItems(false)
+			b1:AddChoice("None", 0)
+			b1:AddSpacer()
+			for id,choice in pairs(v.Choices) do
+				b1:AddChoice(choice, id)
+			end
+			b1.OnSelect = function(self, index, value, data)
+				optionstbl[id] = data
 				updateoptions(optionstbl)
 			end
 		end
@@ -1188,13 +1221,17 @@ function GM:OpenAdminToolMenuOptions(wep)
 		b1:Dock(TOP)
 		b1:DockMargin(5,0,0,0)
 	else
-		for id,v in pairs(tbl) do
-			if v.Type ~= "number" then continue end
-			thing(id, v)
-		end
-		for id,v in pairs(tbl) do
-			if v.Type ~= "bool" then continue end
-			thing(id, v)
+		local types = {
+			number = true,
+			bool = true,
+			choices = true
+		}
+
+		for idtype,_ in pairs(types) do
+			for id,v in pairs(tbl) do
+				if idtype ~= v.Type then continue end
+				thing(id, v)
+			end
 		end
 	end
 end

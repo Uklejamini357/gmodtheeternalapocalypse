@@ -174,6 +174,8 @@ function GM:CMenu()
 			draw.SimpleText(translate.Format("zm_xpreward", 100*math.Round(0.75+minlvl*0.025, 4), 100*math.Round(0.75+maxlvl*0.025, 4)), "TEA.HUDFontSmall", scw - 590, y, color, 0, 0)
 			y = y + 15
 			draw.SimpleText(translate.Format("zm_speed", math.Round(100*math.Clamp(1 + (minlvl-20)*0.01, 1, 1.25), 2), math.Round(100*math.Clamp(1 + (maxlvl-20), 1, 1.25), 2)), "TEA.HUDFontSmall", scw - 590, y, color, 0, 0)
+			y = y + 15
+			draw.SimpleText(Format("Zombies Infection level gainrate: %s%%~%s%%", 100*math.Round(0.9+minlvl*0.01, 4), 100*math.Round(0.9+maxlvl*0.01, 4)), "TEA.HUDFontSmall", scw - 590, y, color, 0, 0)
 			y = y + 20
 			draw.SimpleText(translate.Format("zm_ev_spawn_chance", math.Round(self:GetEliteVariantSpawnChance(false), 4)), "TEA.HUDFontSmall", scw - 590, y, color, 0, 0)
 			y = y + 15
