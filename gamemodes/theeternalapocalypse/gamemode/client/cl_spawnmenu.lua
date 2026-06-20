@@ -46,7 +46,7 @@ local function DoInvPanel()
 		local itIcon
 		if item.Material then
 			itIcon = vgui.Create("DImage", itPanel)
-			itIcon:SetMaterial(GAMEMODE.LoadedMaterials[v.Material] or item.Material)
+			itIcon:SetMaterial(item.Material)
 		else
 			itIcon = vgui.Create("SpawnIcon", itPanel)
 			itIcon:SetModel(item.Model)
@@ -749,7 +749,7 @@ function GM:InvMenu()
 			local itIcon
 			if v.Material then
 				itIcon = vgui.Create("DImageButton", itBackground)
-				itIcon:SetMaterial(self.LoadedMaterials[v.Material] or v.Material)
+				itIcon:SetMaterial(v.Material)
 			else
 				itIcon = vgui.Create("SpawnIcon", itBackground)
 				itIcon:SetModel(v.Model)

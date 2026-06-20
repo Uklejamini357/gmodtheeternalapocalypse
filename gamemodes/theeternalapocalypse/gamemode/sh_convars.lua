@@ -65,7 +65,7 @@ cvars.AddChangeCallback("tea_server_dbsaving", function(cvar,old,new)
 	GAMEMODE:OnConVarChanged(cvar, old, new)
 end, "TEA_GAMEMODE.ConVarsChangeCallbacks.tea_server_dbsaving")
 
-GM.MaxCaches = CreateConVar("tea_config_maxcaches", 10, FCVAR_REPLICATED + FCVAR_ARCHIVE, "How many caches should there be at any given time?", 0, 250):GetInt()
+GM.MaxCaches = CreateConVar("tea_config_maxcaches", 50, FCVAR_REPLICATED + FCVAR_ARCHIVE, "How many caches should there be at any given time?", 0, 250):GetInt()
 cvars.AddChangeCallback("tea_config_maxcaches", function(cvar,old,new)
 	GAMEMODE.MaxCaches = math.floor(tonumber(new))
 	BroadcastLua(Format("GAMEMODE.MaxCaches = %s", tonumber(new)))

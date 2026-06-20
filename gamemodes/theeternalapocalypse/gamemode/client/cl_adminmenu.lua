@@ -352,7 +352,7 @@ function GM:AdminMenu()
 			local itIcon
 			if v.Material then
 				itIcon = vgui.Create("DImageButton", ItemBackground)
-				itIcon:SetMaterial(self.LoadedMaterials[v.Material] or v.Material)
+				itIcon:SetMaterial(v.Material)
 			else
 				itIcon = vgui.Create("SpawnIcon", ItemBackground)
 				itIcon:SetModel(v.Model)

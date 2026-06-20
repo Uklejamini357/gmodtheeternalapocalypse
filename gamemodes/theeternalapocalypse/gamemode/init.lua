@@ -182,16 +182,16 @@ function GM:Think()
 
 			local allowspecialevent = 0
 			for _,pl in player.Iterator() do
-				if pl:GetTEAPrestige() > 0 then
+				if pl:GetTEAPrestige() > 3 then
 					allowspecialevent = true
 					break
 				end
 
-				allowspecialevent = allowspecialevent + pl:GetTEALevel()
+				allowspecialevent = allowspecialevent + (pl:GetTEAPrestige() + pl:GetProgressToPrestige())
 			end
 
 			if isnumber(allowspecialevent) then
-				allowspecialevent = (allowspecialevent / player.GetCount()) >= 20
+				allowspecialevent = (allowspecialevent / player.GetCount()) >= 1
 			end
 
 			if allowspecialevent and self.SpecialEventChance >= math.Rand(0,1) then

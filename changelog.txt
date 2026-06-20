@@ -1,5 +1,14 @@
 There's been a lot missed out...
-WORKING ON THIS CURRENTLY. even tho progress is slow asf
+WORKING ON THIS, even tho progress on this is slow asf
+
+-------- v0.12.10 --------
+and no
+
+-------- v0.12.9 --------
+no
+
+-------- v0.12.8 --------
+no
 
 -------- v0.12.7 --------
 + Added new function for getting masteries XP
