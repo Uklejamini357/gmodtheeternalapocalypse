@@ -664,7 +664,7 @@ function GM:CreateMove(cmd)
 end
 
 local zfog = {
-	color = {0, 1000, 0},
+	color = {0, 100, 0},
 	density = 1,
 	start = -1000,
 	endpos = 1500,
@@ -688,17 +688,17 @@ function GM:PostDraw2DSkyBox()
 end
 
 function GM:SetupWorldFog()
-	if !fog then return end
-	if (self.ZombieFog or !self.ZombieFog and self.ZombieFogEnd and self.ZombieFogEnd+3 > CurTime()) then
+	if zfog and (self.ZombieFogActive or !self.ZombieFogActive and self.ZombieFogEnd and self.ZombieFogEnd+3 > CurTime()) then
 		render.FogColor(zfog.color[1], zfog.color[2], zfog.color[3])
 		render.FogMaxDensity(zfog.density)
 		render.FogStart(zfog.start)
 		render.FogEnd(zfog.endpos + 6000*(
-			self.ZombieFog and math.Clamp(3 + (self.ZombieFogStart or 0) - CurTime(), 0, 3) / 3 or
-			!self.ZombieFog and self.ZombieFogEnd+3 > CurTime() and math.Clamp(CurTime() - self.ZombieFogEnd, 0, 3) / 3
+			self.ZombieFogActive and math.Clamp(3 + (self.ZombieFogStart or 0) - CurTime(), 0, 3) / 3 or
+			!self.ZombieFogActive and self.ZombieFogEnd+3 > CurTime() and math.Clamp(CurTime() - self.ZombieFogEnd, 0, 3) / 3
 		))
 		render.FogMode(MATERIAL_FOG_LINEAR)
-	elseif (self.BloodMoonActive or !self.BloodMoonActive and self.BloodMoonEnd and self.BloodMoonEnd+3 > CurTime()) then
+		return true
+	elseif fog and (self.BloodMoonActive or !self.BloodMoonActive and self.BloodMoonEnd and self.BloodMoonEnd+3 > CurTime()) then
 		render.FogColor(fog.color[1], fog.color[2], fog.color[3])
 		render.FogMaxDensity(fog.density)
 		render.FogStart(fog.start)
@@ -707,23 +707,22 @@ function GM:SetupWorldFog()
 			!self.BloodMoonActive and self.BloodMoonEnd+3 > CurTime() and math.Clamp(CurTime() - self.BloodMoonEnd, 0, 3) / 3
 		))
 		render.FogMode(MATERIAL_FOG_LINEAR)
+		return true
 	end
-
-	return true
 end
 
 function GM:SetupSkyboxFog()
-	if !fog then return end
-	if (self.ZombieFogActive or !self.ZombieFogActive and self.ZombieFogEnd and self.ZombieFogEnd+3 > CurTime()) then
-		render.FogColor(fog.color[1], fog.color[2], fog.color[3])
-		render.FogMaxDensity(fog.density)
-		render.FogStart(fog.start)
-		render.FogEnd((fog.endpos + 6000*(
+	if zfog and (self.ZombieFogActive or !self.ZombieFogActive and self.ZombieFogEnd and self.ZombieFogEnd+3 > CurTime()) then
+		render.FogColor(zfog.color[1], zfog.color[2], zfog.color[3])
+		render.FogMaxDensity(zfog.density)
+		render.FogStart(zfog.start)
+		render.FogEnd((zfog.endpos + 6000*(
 			self.ZombieFogActive and math.Clamp(3 + (self.ZombieFogStart or 0) - CurTime(), 0, 3) / 3 or
 			!self.ZombieFogActive and self.ZombieFogEnd+3 > CurTime() and math.Clamp(CurTime() - self.ZombieFogEnd, 0, 3) / 3
 		))/16)
 		render.FogMode(MATERIAL_FOG_LINEAR)
-	elseif (self.BloodMoonActive or !self.BloodMoonActive and self.BloodMoonEnd and self.BloodMoonEnd+3 > CurTime()) then
+		return true
+	elseif fog and (self.BloodMoonActive or !self.BloodMoonActive and self.BloodMoonEnd and self.BloodMoonEnd+3 > CurTime()) then
 		render.FogColor(fog.color[1], fog.color[2], fog.color[3])
 		render.FogMaxDensity(fog.density)
 		render.FogStart(fog.start)
@@ -732,9 +731,8 @@ function GM:SetupSkyboxFog()
 			!self.BloodMoonActive and self.BloodMoonEnd+3 > CurTime() and math.Clamp(CurTime() - self.BloodMoonEnd, 0, 3) / 3
 		))/16)
 		render.FogMode(MATERIAL_FOG_LINEAR)
+		return true
 	end
-
-	return true
 end
 
 local constructmat = Material("gm_construct/color_room")

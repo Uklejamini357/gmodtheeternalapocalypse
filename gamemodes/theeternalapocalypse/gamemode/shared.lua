@@ -4,7 +4,7 @@ GM.Author	= "Uklejamini"
 GM.Email	= ""
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
 GM.Version	= "0.12.10b"
-GM.DateVer	= "13.06.2026" -- Follows the DD.MM.YYYY format.
+GM.DateVer	= "20.06.2026" -- Follows the DD.MM.YYYY format.
 GM.Credits = {
 	{"LegendOfRobbo",			"Created After The End gamemode",											"Back in 2015. It's such a great gamemode!"},
 
@@ -347,7 +347,7 @@ function GM:GetEffectiveInfectionLevel(bypass)
 	max = max + (totalp*5)^0.85
 
 	if avgp > 0 then
-		lvl = lvl + math.min(20, math.floor(avgp))
+		lvl = lvl + math.min(20, math.floor(avgp)*5)
 	end
 
 	if GetGlobalBool("TEA.IgnoreMaxInfLvl") then return lvl end
