@@ -1,5 +1,7 @@
-There's been a lot missed out...
-WORKING ON THIS, even tho progress on this is slow asf
+These changelogs are a part of the gamemode's history of how it evolved over the course of few years.
+
+
+Latest commit to check: Patch 6
 
 -------- v0.12.11 --------
 + Added a new variable for zombies to be able to activate a special ability, whenever possible at any given time (Now applies to Puker, Lord, Superlord and Tormented Wraith)
@@ -159,6 +161,10 @@ Nope.
 
 -------- v0.11.4 of 5th August 2025 --------
 
++ Added a new tooltip that looks slightly different, but also appears immediately upon hovering a panel with tooltip 
++ Use GLOBAL variables for each item rarity, category and type
++ Add further detailed description for items.
+
 - Immunity skill no longer affects changes chance of getting infection from zombies. (oof)
 
 = Slightly reduced stamina regen and reduced stamina drain on sprinting by 25%
@@ -169,15 +175,20 @@ Nope.
 = Buffed Salvage and Knowledge skills (Effectiveness: 2.5% -> 3%)
 = Nerfed Enduring Endurance (Effectiveness: 1.5x -> 1.3x)
 = Buffed Defense skill: 1.5% -> 2% to protection, 1% -> 1.5% to environmental protection
+= Significantly buff Leapers attack speed (oh no.)
 
 / Made sleeping no longer possible when in water. (Funny text occurs when you manage to do it somehow)
 / Taking damage while sleeping now wakes the player up instantly.
 / Changed damage for thirst, hunger, fatigue, now the damage build up if the player is dying from multiple causes. (No longer instakills suddenly.)
 / Added sleep delay.
+/ Also made non-boss zombies split rewards for each player, rewards are based on total damage dealt to the killed zombies.
+/ Move the Health gain on item use and its refering stats to ConsumableStats table
+/ Reduced infection level gain reduction on higher infection levels
 
 * Fixed errors with translation functions affecting some loot caches and airdrops.
 * Armor Protection now shows up in rounded values up to 1 decimal and Carry weight rounded up to 2 decimals
 * Fixed being able to duplicate perk points. (What the actual frick, how did I miss that..)
+* Other fixes.
 
 -------- Pre-v0.11.4 of 16th June 2025 --------
 + Added SFS saving method
