@@ -98,16 +98,12 @@ GM.WeaponDamageVsZombiesMul = {
 -- Zombies don't target players if they're in trader area. This also means that they can't damage zombies to prevent farming! Default: false (not working)
 GM.TraderAreaProtectsFromZombies = false
 
--- Rules for server. Please keep the default ones! (You can still change them)
+-- Rules for server. Please keep the default ones! (You can still change them) -- non-functional atm.
 GM.ServerRules = {
--- Default rules
 	"You may not block off spawn area nor traders with your props. You can still build it as a fort against zombies.",
 	"Do not block off loot spawns so that only you can access it. Unless you're building a base.",
 	"Building a base just to claim airdrop spots is not allowed. You can still build near it, but not in it.",
 	"Faction Base cores are only for basing and NOT for trolling, do NOT use the base core to kill players near spawn!",
-
--- Put your rules below
-
 }
 
 

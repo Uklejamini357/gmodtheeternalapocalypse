@@ -8,6 +8,11 @@ Make props save between sessions
 Add max props per map
 Make factions persist between sessions and add more cool features and progression to factions
 
+Add map configuration (max zombies, zombie distance, etc.):
+To be fair, no. Not this time.
+
+
+
 
 Add a lot more ArcCW Attachments
 
@@ -26,7 +31,6 @@ Add new special event: Zombie Fog
 
 v0.12.11:
 Add ULX commands
-And add map configuration (max zombies, zombie distance, etc.)
 PLACEHOLDER change: Make zombie spawns not work if a player is inside a 600 radius sphere on the zspawn. 
 
 v0.12.12:

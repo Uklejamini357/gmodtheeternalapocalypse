@@ -79,6 +79,7 @@ include("server/openworld.lua") -- Openworld implementation
 include("server/safezones.lua") -- Safezones
 
 include("server_data/data_saving.lua")
+-- include("server_data/mapconfig.lua")
 
 include("minigames/init.lua")
 include("minigames/shared.lua")

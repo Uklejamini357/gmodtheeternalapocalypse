@@ -300,18 +300,22 @@ function GM:SpawnZombies()
 		local ang = v[2]
 		local tier = v[3]
 
-		local inzedrange = true
+		local nospawn = false
 		for _, v in ipairs(ents.FindInSphere(pos, 200)) do
 			-- ignore spawnpoints that are obstructed by zombies or players
-			if v:IsNextBot() or v:IsNPC() or v:IsPlayer() then inzedrange = false break end
+			if v:IsNextBot() or v:IsNPC() or v:IsPlayer() then nospawn = true break end
 		end
-		if !inzedrange then continue end
+		if nospawn then continue end
+		for _, v in ipairs(ents.FindInSphere(pos, 600)) do
+			if v:IsPlayer() then nospawn = true break end
+		end
+		if nospawn then continue end
 
-		local inplyrange = false
+		nospawn = true
 		for _, v in ipairs(ents.FindInSphere(pos, tonumber(self.MaxZombieSpawnDistance))) do
-			if v:IsPlayer() then inplyrange = true break end
+			if v:IsPlayer() then nospawn = false break end
 		end
-		if !inplyrange then continue end
+		if nospawn then continue end
 
 
 		self:SpawnRandomZombie(pos + Vector(0, 0, 10), ang, tier)
@@ -336,11 +340,16 @@ function GM:SpawnBoss(plycountoverride, nonotify)
 		local pos = v[1]
 		local ang = v[2]
 
-		local inzedrange = true
+		local dontspawn = false
 		for _, v in ipairs(ents.FindInSphere(pos, 200)) do
-			if v:IsNextBot() or v:IsNPC() or v:IsPlayer() then inzedrange = false break end -- ignore spawnpoints that are obstructed by zombies or players
+			if v:IsNextBot() or v:IsNPC() or v:IsPlayer() then dontspawn = false break end
 		end
-		if !inzedrange then continue end
+		if dontspawn then continue end
+		for _, v in ipairs(ents.FindInSphere(pos, 1000)) do
+			if v:IsPlayer() then dontspawn = false break end
+		end
+		if dontspawn then continue end
+
 		self:SpawnRandomBoss(pos + Vector(0, 0, 40), ang, plycountoverride, nonotify)
 		break
 	end
