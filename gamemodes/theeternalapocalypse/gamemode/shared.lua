@@ -377,7 +377,8 @@ function GM:GetEffectiveInfectionLevel(bypass)
 	max = max + (totalp*5)^0.85
 
 	if avgp > 0 then
-		addlvl = addlvl + math.min(50, avgp*5)
+		max = max + math.min(75, avgp*5)
+		addlvl = addlvl + math.min(45, (avgp*3)^0.9)
 	end
 
 	if GetGlobalBool("TEA.IgnoreMaxInfLvl") then return lvl + addlvl end

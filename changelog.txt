@@ -158,18 +158,71 @@ Nope.
 -------- v0.11.4a of 24th August 2025 --------
 
 -------- v0.11.4 of 5th August 2025 --------
+
+- Immunity skill no longer affects changes chance of getting infection from zombies. (oof)
+
+= Slightly reduced stamina regen and reduced stamina drain on sprinting by 25%
+= MedSkill now has effectiveness for HPRegen increased to 7.5% -> 8% per point
+= Nerfed Immunity skill. (WHY?!?!?!?)
+= Buffed Endurance skill (Now reduces Oxygen drain)
+= Nerfed Speed skill (walkspeed: 3.5 -> 3 per point)
+= Buffed Salvage and Knowledge skills (Effectiveness: 2.5% -> 3%)
+= Nerfed Enduring Endurance (Effectiveness: 1.5x -> 1.3x)
+= Buffed Defense skill: 1.5% -> 2% to protection, 1% -> 1.5% to environmental protection
+
+/ Made sleeping no longer possible when in water. (Funny text occurs when you manage to do it somehow)
+/ Taking damage while sleeping now wakes the player up instantly.
+/ Changed damage for thirst, hunger, fatigue, now the damage build up if the player is dying from multiple causes. (No longer instakills suddenly.)
+/ Added sleep delay.
+
+* Fixed errors with translation functions affecting some loot caches and airdrops.
+* Armor Protection now shows up in rounded values up to 1 decimal and Carry weight rounded up to 2 decimals
+* Fixed being able to duplicate perk points. (What the actual frick, how did I miss that..)
+
+-------- Pre-v0.11.4 of 16th June 2025 --------
 + Added SFS saving method
 + Added NEW FONTS
++ Added tips upon spawning in
++ Add ability to Destroy items in Inventory (Mostly for junk items)
++ Added new death message (Drown)
++ Added backpack, misc and consumable items (which are not obtainable or fully functional atm)
++ Added ability to bulk upgrade skills
+
+- Removed few dev commands
+- Amnesia Pills no longer has 1-day cooldown between each use.
+
++- Remove Use/Drop buttons in inventory for each item and instead make a popup menu with choices (Use/Drop/Destroy) upon clicking on an item.
+(Holding shift and clicking will quick-use an item, Holding Ctrl and clicking will drop an item)
 
 = Increase Heavy Tank's movespeed 45 -> 55
 = Reduce Hunter zombie's normal movespeed 320 -> 270
 = Reduce Leaper zombie's normal movespeed 198 -> 185
 = Nerfed Tormented Wraith's slowdown: 30% -> 15%
 = Ammo Pile structure cooldown reduced: 40s -> 30s
+= Armor efficiency doubled, now has 2 effective hp for each armor point, instead of 1 effective hp.
+= Nerfed Enduring Endurance, now has 1.5x effectiveness instead of 2x.
 
 / Ammo given now shows up when using Ammo Pile structure
+/ Updated Help menu
+/ Changed inventory, statistics and crafting locations to Q menu, props can now be found as a category in Q menu which upon clicking it opens new window
+/ Landing from a height no longer drains stamina, this time JUMPING takes uses up stamina. (fucked up mechanic that had to be replaced.)
+/ Autosave interval changed to occur every 5min instead of 4min
+/ Admins have their own model if they were chosen from sandbox if they had no armor. (Not intentional)
+/ Changed "Reflector" elite variant color to not have the same color as "Overpowered" variant
+/ Added player meta functions for armor
+/ Changed default vault size from 175kg to 200kg
 
 ; Reworked the sleeping system
+; Highly reworked using items:
+    - Added new popup no longer taking control over mouse and keyboard,
+    - Prevent motion when using certain items,
+    - Greatly reworked mechanic of using items,
+; Significantly reworked stamina mechanic, now stamina constantly regenerates, and walking/running drains it. More fatigue also causes less stamina regen.
+; Reworked Defense skill, now applies resistances multiplicatively instead of additively (60% protection armor with 10 defense skill [+15% defense prot.] applies +6% prot. instead of +15%, resulting it in total prot. being 66% instead of 75%)
+
+? Could also name it as OVERHAUL Update...
+? Does not include patches, check above for list of patches.
+
 
 -------- v0.11.3b of 7th June 2025 --------
 + Fists now have a passive mode

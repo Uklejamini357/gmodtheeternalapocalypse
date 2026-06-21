@@ -246,7 +246,7 @@ function GM:Think()
 				self.NextInfectionDecrease = ct + math.max(1, 9/(1+self.InfectionDecreasedTimes*0.03))
 				self.InfectionDecreasedTimes = math.max(self.InfectionDecreasedTimes + 1, 0)
 			
-				self:SetInfectionLevel(math.max(0, self:GetInfectionLevel() - (0.045 + math.Clamp(self.InfectionDecreasedTimes, 0, 60) * 0.0072)))
+				self:SetInfectionLevel(math.max(0, self:GetInfectionLevel() - (0.05 * (10 + math.Clamp(self.InfectionDecreasedTimes, 0, 90))/10)))
 			end
 		else
 			local averagelevelprogress = 0

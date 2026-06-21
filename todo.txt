@@ -47,6 +47,11 @@ Rework Traders:
 - Add separate traders
 - Add Trader Item list table for separate traders (Which items each trader sells, which items traders buy from player)
 - Categories on the side rather than on top
+Add functionality to mark items as X:
+- "Favorite" highlights items as yellow, and adds a confirmation before selling them, while also not allowing you to destroy the item.
+- "Sell" disables destroying item and marks them as green for selling.
+- "Junk" items can be destroyed without confirmation, marks them as gray.
+- Marked items are saved clientside, and are saved by bitcode. (1 = Favorite, 2 = Sell, 4 = Junk, 7 = Favorite + Sell + Junk)
 Expand admin system and logging...? (Maybe not..)
 Add CAMI permissions (I don't think so...)
 
@@ -75,9 +80,17 @@ Rework Zombie vision (No longer have X-Ray vision, unless already have target. H
 Make TEA zombies call other zombies when they got injured.
 Make Lord Zombies only give other zombies temporary buffs (15s)
 
-v0.13.5
+v0.13.5:
 Make zombies have 1/10 chance to wander around when not having a target.
 Make zombie spawns spread out in a circle radius.
+
+v0.13.6:
+Upgradable vault:
+    Vault capacity starts at 50kg.
+    Starting cost for an upgrade is 1000.
+    Cost for vault upgrade is 1000 * count + (count * 500*((count-1)/2))
+    (count = Amount of times a player has upgraded their vault)
+    Max is 250kg.
 
 
 --------
