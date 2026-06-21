@@ -36,6 +36,7 @@ GM.RecentChangelogs = {
 
 	{"/ Puker zombie's now damage non-zombie NPC's/nextbots", color_change},
 	{"/ Tweaked effective infection level, now has gradually reducing infection level effectiveness, while also making infection level more lenient for newcomers (low level players)", color_change},
+	{"/ Change zombie spawning exclusion radius for players to 600 hammer units (1000 hu for boss zombies)", color_change},
 	
 	{"* Fixed a bug with puker zombie's projectile which could eventually cause \"Too many emitters\" error.", color_fix},
 	{"* Fixed random errors for zombies causing them to stay in place", color_fix},
