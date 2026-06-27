@@ -124,10 +124,14 @@ function GM:Think()
 		self.SleepVisionAffect = 0
 	end
 
-	if self.WraithAlpha > 220 then
-		self.WraithAlpha = self.WraithAlpha - (frametime * 4.95)
-	elseif self.WraithAlpha > 0 then
-		self.WraithAlpha = self.WraithAlpha - (frametime * 30)
+	-- if self.WraithAlpha > 220 then
+	-- 	self.WraithAlpha = self.WraithAlpha - (frametime * 4.95)
+	-- elseif self.WraithAlpha > 0 then
+	-- 	self.WraithAlpha = self.WraithAlpha - (frametime * 30)
+	-- end
+
+	if self.WraithBlindness > 0 then
+		self.WraithBlindness = math.max(self.WraithBlindness-0.2*frametime, 0)
 	end
 
 	if self.DeathSoundEffectEnabled and self.ActiveDeathSound and self.ActiveDeathSound:IsPlaying() and (!self.DeathSoundCanStop or self.DeathSoundCanStop < CurTime()) and (!self.ActiveDeathSoundTime or self.ActiveDeathSoundTime > CurTime()) then
@@ -392,7 +396,7 @@ function GM:Initialize()
 	self.ZombieFogStart = 0
 	self.ZombieFogEnd = 0
 
-	self.WraithAlpha = 0
+	self.WraithBlindness = 0
 	self.tea_screenfadeout = 0
 	self.tea_deathtext_a = 0
 	self.tea_survivalstats_a = 0

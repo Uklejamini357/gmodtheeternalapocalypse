@@ -41,6 +41,7 @@ Add passive income for Faction Base Core
 v0.12.13:
 Translation strings, again!
 Make death screen more animated
+Add an in-game tutorial
 
 
 

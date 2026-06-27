@@ -10,11 +10,11 @@ SWEP.HoldType 			= "melee2"
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= false
 
-SWEP.StaminaNeeded			= 11.5
+SWEP.StaminaNeeded			= 6.5
 SWEP.HitDistance			= 75
 
 SWEP.Primary.Recoil		= 5
-SWEP.Primary.Damage		= 183
+SWEP.Primary.Damage		= 233
 SWEP.Primary.PlayerDamage	= 84
 SWEP.Primary.NumShots	= 0
 SWEP.Primary.Cone		= 0.075

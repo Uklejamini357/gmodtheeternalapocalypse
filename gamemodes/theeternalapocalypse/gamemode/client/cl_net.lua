@@ -63,7 +63,7 @@ end)
 
 net.Receive("WraithBlind", function()
 	local value = net.ReadInt(10)
-	GAMEMODE.WraithAlpha = math.max(GAMEMODE.WraithAlpha, value)
+	GAMEMODE.WraithBlindness = math.min(GAMEMODE.WraithBlindness+value, 10)
 end)
 
 net.Receive("tea_survivalstatsupdate", function(len)

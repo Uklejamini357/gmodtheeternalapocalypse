@@ -70,6 +70,7 @@ GM:AddItemLootTable(GM.LootTable, LOOTRARITY_UNCOMMON, "item_beer", 1)
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_UNCOMMON, "item_hamradio", 1)
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_UNCOMMON, "weapon_tea_grenade_frag", 2)
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_UNCOMMON, "m9k_model500", 1)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_UNCOMMON, "weapon_tea_bosch", 1)
 
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_RARE, "item_rocketammo", 2)
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_RARE, "item_armorkevlar", 1)
@@ -79,17 +80,17 @@ GM:AddItemLootTable(GM.LootTable, LOOTRARITY_RARE, "weapon_tea_grenade_frag", 3)
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_RARE, "weapon_tea_dual", 1)
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_RARE, "weapon_tea_satan", 1)
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_RARE, "weapon_tea_k8c", 1)
-GM:AddItemLootTable(GM.LootTable, LOOTRARITY_RARE, "weapon_tea_bosch", 1)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_RARE, "weapon_tea_shredder", 1)
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_RARE, "item_armor_jacket_leather", 1)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_RARE, "weapon_tea_blackhawk", 1)
 
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_EPIC, "weapon_tea_807", 1)
-GM:AddItemLootTable(GM.LootTable, LOOTRARITY_EPIC, "weapon_tea_shredder", 1)
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_EPIC, "weapon_tea_l303", 1)
-GM:AddItemLootTable(GM.LootTable, LOOTRARITY_EPIC, "weapon_tea_blackhawk", 1)
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_EPIC, "weapon_tea_combinepistol", 1)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_EPIC, "weapon_tea_ar2", 1)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_EPIC, "m9k_mp7", 1)
+GM:AddItemLootTable(GM.LootTable, LOOTRARITY_EPIC, "m9k_uzi", 1)
 
-GM:AddItemLootTable(GM.LootTable, LOOTRARITY_LEGENDARY, "weapon_tea_ar2", 1)
-GM:AddItemLootTable(GM.LootTable, LOOTRARITY_LEGENDARY, "m9k_mp7", 1)
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_LEGENDARY, "m9k_tar21", 1)
 GM:AddItemLootTable(GM.LootTable, LOOTRARITY_LEGENDARY, "m9k_uzi", 1)
 
@@ -98,7 +99,6 @@ GM:AddItemLootTable(GM.LootTableBoss, nil, "weapon_tea_scar", 1)
 GM:AddItemLootTable(GM.LootTableBoss, nil, "weapon_tea_minigun", 1)
 GM:AddItemLootTable(GM.LootTableBoss, nil, "weapon_tea_scrapcrossbow", 1)
 GM:AddItemLootTable(GM.LootTableBoss, nil, "weapon_tea_punisher", 1)
-GM:AddItemLootTable(GM.LootTableBoss, nil, "weapon_tea_blackhawk", 1)
 GM:AddItemLootTable(GM.LootTableBoss, nil, "item_burger", 1)
 GM:AddItemLootTable(GM.LootTableBoss, nil, "weapon_tea_germanator", 1)
 
@@ -192,8 +192,6 @@ GM.AirdropLootTable.TyrantWeapons = {
 	"weapon_tea_minigun",
 	"weapon_tea_scrapcrossbow",
 	"weapon_tea_punisher",
-	"weapon_tea_blackhawk",
-	"weapon_tea_k8c",
 	"weapon_tea_germanator",
 	"item_burger",
 }

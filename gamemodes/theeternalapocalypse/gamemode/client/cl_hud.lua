@@ -588,7 +588,7 @@ function GM:RenderScreenspaceEffects()
 		addb = 0.15
 	end
 
-	if GAMEMODE.WraithAlpha > 220 then DrawMotionBlur(0.4, 0.8, 0.01) end
+	-- if GAMEMODE.WraithAlpha > 220 then DrawMotionBlur(0.4, 0.8, 0.01) end
 
 
 	local alive = !ply:Alive() and math.Clamp(1 + (self.LastAliveTime + 5 - CurTime()) * 0.2, 0.05, 1) or 1
@@ -798,12 +798,9 @@ function GM.ScreenEffects()
 	local me = LocalPlayer()
 	if me:GetObserverMode() ~= OBS_MODE_NONE then return end
 	if me:Alive() then
-		if GAMEMODE.WraithAlpha <= 0 then return end
-
-		surface_SetDrawColor(0, 0, 0, math.Round(GAMEMODE.WraithAlpha * (me:IsNewbie() and 0.8 or 1)))
-		surface_DrawRect(-1, -1, ScrW() + 1, ScrH() + 1)
-	else
-		GAMEMODE.WraithAlpha = 0
+		if GAMEMODE.WraithBlindness > 1 then
+			DrawToyTown(GAMEMODE.WraithBlindness, ScrH())
+		end
 	end
 end
 hook.Add("RenderScreenspaceEffects", "tea_VariousEffects", GM.ScreenEffects)
