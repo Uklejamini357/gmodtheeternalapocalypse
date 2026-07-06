@@ -4,33 +4,43 @@ include( 'shared.lua' )
 
 
 function ENT:Think() 
+	if !self.IsBuilt then return false end
+	local owner = self:GetNWEntity("owner")
+	local people = ents.FindInSphere(self:GetPos(), 900)
 
-if !self.IsBuilt then return false end
-local owner = self:GetNWEntity("owner")
-local people = ents.FindInSphere(self:GetPos(), 900)
+	for k,v in ipairs(people) do
+		if v:IsValid() and v:IsPlayer() and v:Alive() and owner:IsValid() and (v:Team() != owner:Team())then
+			v.Territory = team.GetName(owner:Team())
 
-for k, v in pairs(people) do
-	if v:IsValid() and v:IsPlayer() and v:Alive() and owner:IsValid() and (v:Team() != owner:Team())then
+			timer.Create("factimer"..v:EntIndex(), 1, 1, function() 
+				if !v:IsValid() then return false end
+				v.Territory = "none"
+			end)
+		end
+	end
 
-		v.Territory = team.GetName(owner:Team())
-
-		timer.Create("factimer"..v:EntIndex(), 1, 1, function() 
-		if !v:IsValid() then return false end
-			v.Territory = "none"
-		end)
+	if self.NextCashGen < CurTime() then
+		self.NextCashGen = CurTime() + 300
+		
+		if !IsValid(owner) then return end
+		owner:SystemMessage("Your faction base core has generated money and XP! Press the use key on your base core to claim rewards!", COLOR_INFO, true)
+		self.CachedMoney = self.CachedMoney + 350
+		self.CachedXP = self.CachedXP + 500
 	end
 end
 
-end
-
 function ENT:Initialize()
-
 	local selfent = self.Entity
 	self.IsBuilt = false
 	self.BuildLevel = 0
 	self.Attacked = 0
 	self.integrity = 2000
 	self.maxinteg = 2000
+
+	self.NextCashGen = 0
+	self.CachedMoney = 0
+	self.CachedXP = 0
+
 	self.Entity:PhysicsInit( SOLID_VPHYSICS )
 	self.Entity:SetMoveType( MOVETYPE_VPHYSICS )
 	self.Entity:SetSolid( SOLID_VPHYSICS )
@@ -69,16 +79,24 @@ end)
 end
 
 function ENT:Use(activator, caller)
+	if activator ~= self:GetNWEntity("owner") then return end
+	if self.CachedXP == 0 and self.CachedMoney == 0 then return end
 
-end 
+	activator.Money = activator.Money + self.CachedMoney
+	gamemode.Call("Payout", activator, self.CachedXP, 0)
+	activator:SystemMessage(Format("Withdrawn %d XP and %d money.", self.CachedXP, self.CachedMoney), COLOR_SUCCESS)
+	self.CachedXP = 0
+	self.CachedMoney = 0
+end
 
 function ENT:FinishBuild()
-if self:IsValid() then
-self:SetMaterial("")
-self:SetColor(Color(255, 255, 255, 255))
-self.IsBuilt = true
-self:SetCollisionGroup( COLLISION_GROUP_NONE )
-end
+	if self:IsValid() then
+		self:SetMaterial("")
+		self:SetColor(COLOR_WHITE)
+		self.IsBuilt = true
+		self.NextCashGen = CurTime() + 300
+		self:SetCollisionGroup( COLLISION_GROUP_NONE )
+	end
 end
 
 
