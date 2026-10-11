@@ -39,7 +39,7 @@ local RDStext = {
 }
 
 local function CheckAttacker(attacker)
-	if GAMEMODE.Config["ZombieClasses"][attacker] then attacker = GAMEMODE.Config["ZombieClasses"][attacker]["Name"]
+	if GAMEMODE.ZombieClasses[attacker] then attacker = GAMEMODE.ZombieClasses[attacker]["Name"]
 	elseif GAMEMODE.Config["BossClasses"][attacker] then attacker = GAMEMODE.Config["BossClasses"][attacker]["Name"]
 	elseif attacker == "npc_zombie" then attacker = "Zombie"
 	elseif attacker == "npc_fastzombie" then attacker = "Fast Zombie"
@@ -98,7 +98,7 @@ local function CheckLocalPlayerDeath(victim, attacker, dmg, dmgtype, msgoverride
 			GAMEMODE.DeathMessage = table.Random(suicidetable)
 		elseif IsValid(attacker) and attacker:IsPlayer() then
 			GAMEMODE.DeathMessage = Format(table.Random(killedbyplayer), attacker:Name(), attacker:Health())
-		elseif GAMEMODE.Config["ZombieClasses"][attacker] then
+		elseif GAMEMODE.ZombieClasses[attacker] then
 			GAMEMODE.DeathMessage = Format(table.Random(killedbyzombie), CheckAttacker(attacker))
 		elseif GAMEMODE.Config["BossClasses"][attacker] then
 			GAMEMODE.DeathMessage = Format(table.Random(killedbyboss), CheckAttacker(attacker))

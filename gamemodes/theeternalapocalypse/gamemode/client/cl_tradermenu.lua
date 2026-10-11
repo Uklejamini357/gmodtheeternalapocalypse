@@ -322,10 +322,6 @@ function GM:TraderMenu()
 			parent:AddItem(ItemBackground)
 		end
 	end
-	for i=1,6 do
-		if i == ITEMCATEGORY_JUNK then continue end
-		DoTraderList(i, buypanel[i])
-	end
 
 
 --------------------------------------------sell panel-------------------------------------------------------------
@@ -474,7 +470,6 @@ function GM:TraderMenu()
 				SellPanel:AddItem(ItemBackground)
 			end
 		end
-		DoSellPanel()
 
 
 
@@ -583,9 +578,25 @@ function GM:TraderMenu()
 			VaultPanel:AddItem(ItemBackground)
 		end
 	end
-	DoVaultPanel()
 
 
+
+	local function MakeTabBtn(tab, idOrFunc)
+		tab.BaseThink = tab.Think
+		tab.Think = function(self)
+			self:BaseThink()
+
+			if self:IsActive() then
+				self.Think = self.BaseThink
+
+				if type(idOrFunc) == "function" then
+					idOrFunc(self)
+				else
+					DoTraderList(idOrFunc, buypanel[idOrFunc])
+				end
+			end
+		end
+	end
 
 	local icons = {
 		"icon16/ammo_three.png",
@@ -597,10 +608,17 @@ function GM:TraderMenu()
 	}
 	for i=1,#buypanel do
 		if !buypanel[i] then continue end
-		PropertySheet:AddSheet(translate.Get("items_category_"..i), buypanel[i], icons[i], false, false, translate.Get("items_category_"..i.."_d"))
+		local tab = PropertySheet:AddSheet(translate.Get("items_category_"..i), buypanel[i], icons[i], false, false, translate.Get("items_category_"..i.."_d"))
+		MakeTabBtn(tab.Tab, i)
 	end
-	PropertySheet:AddSheet("My Items", SellPanel, "icon16/money_dollar.png", false, false, "Sell your items that you don't need for cash")
-	PropertySheet:AddSheet("Item Vault", VaultPanel, "icon16/building.png", false, false, "Store your stuff that you don't need")
+	local tab = PropertySheet:AddSheet("My Items", SellPanel, "icon16/money_dollar.png", false, false, "Sell your items that you don't need for cash")
+	MakeTabBtn(tab.Tab, function()
+		DoSellPanel()
+	end)
+	tab = PropertySheet:AddSheet("Item Vault", VaultPanel, "icon16/building.png", false, false, "Store your stuff that you don't need")
+	MakeTabBtn(tab.Tab, function()
+		DoVaultPanel()
+	end)
 /*
 	PropertySheet:AddSheet("Special Functions", Specials, "icon16/star.png", false, false, "Use this menu to trade in your bounty and speak to the trader about various issues")
 */

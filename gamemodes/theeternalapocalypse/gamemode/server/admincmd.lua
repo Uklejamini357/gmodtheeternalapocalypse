@@ -125,7 +125,7 @@ function GM:AdminCmds_ClearZeds(ply, cmd, args)
 		self:DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has cleaned up all NPCs and nextbots! ("..c.." entities removed)")
 		ply:SystemMessage("Cleaned up all nextbots and NPCs! ("..c.." entities removed)", Color(180,255,180,255), true)
 	else
-		for k, v in pairs(self.Config["ZombieClasses"]) do
+		for k, v in pairs(self.ZombieClasses) do
 			for _, ent in pairs(ents.FindByClass(k)) do ent.LastAttacker = nil c = c + 1 ent:Remove() end
 		end
 		self:DebugLog("[ADMIN COMMAND USED] "..ply:Nick().." has cleaned up all zombies! ("..c.." zombies removed)")
@@ -456,6 +456,21 @@ concommand.Add("tea_clearspawns", function(pl, _, args)
 				end
 				gm:DeleteZombieSpawnpoint(tonumber(id))
 				sendmsg(pl, "Deleted zombie spawnpoint ID #"..id..".")
+			end
+		end,
+		["bosses"] = function(pl, id)
+			if id == "all" then
+				gm:ClearBossSpawnpoints()
+				sendmsg(pl, "Deleted all the boss spawnpoints on this map.")
+			elseif !tonumber(id) then
+				sendmsg(pl, "Invalid spawnpoint ID. (Not a number)")
+			elseif id then
+				if !gm.ZombieSpawnpoints[tonumber(id)] then
+					sendmsg(pl, "Invalid spawnpoint ID. (Invalid spawnpoint)")
+					return
+				end
+				gm:DeleteBossSpawnpoint(tonumber(id))
+				sendmsg(pl, "Deleted boss spawnpoint ID #"..id..".")
 			end
 		end,
 		["loot"] = function(pl, id)

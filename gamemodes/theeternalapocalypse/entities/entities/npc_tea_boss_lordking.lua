@@ -159,8 +159,7 @@ end
 local function cantarget(self, ent)
 	if self == ent then return false end
 	if !IsValid(ent) then return false end
-	if GAMEMODE.Config["ZombieClasses"][ent:GetClass()] then return false end
-	if GAMEMODE.Config["BossClasses"][ent:GetClass()] then return false end
+	if ent.IsZombie then return false end
 
 	if (ent:IsNPC() or ent:IsNextBot()) and !ent.IsZombie and ent:Health() > 0 then
 		if ent.VJ_NPC_Class then
@@ -198,7 +197,7 @@ function ENT:Think()
 
 		for k, v in pairs(ents.FindInSphere(self:GetPos(), 2000)) do
 --			v.Type == "nextbot"
-			if (self != v and (GAMEMODE.Config["ZombieClasses"][v:GetClass()] or GAMEMODE.Config["BossClasses"][v:GetClass()])) then
+			if (self != v and (GAMEMODE.ZombieClasses[v:GetClass()] or GAMEMODE.Config["BossClasses"][v:GetClass()])) then
 				if (v.RageLevel or 0) < 4 then
 					v.RageLevel = 4
 				end
@@ -401,7 +400,7 @@ end
 
 function ENT:FindTarget()
 	local targets = {}
-	for _, ent in pairs(ents.FindInSphere(self:GetPos(), 1200 * self.RageLevel)) do
+	for _, ent in pairs(ents.FindInSphere(self:GetPos(), 2500 * self.RageLevel)) do
 		if cantarget(self, ent) then
 			targets[ent] = self:GetRangeTo(ent)
 		end

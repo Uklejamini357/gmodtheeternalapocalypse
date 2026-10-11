@@ -261,8 +261,8 @@ GM.Config = {
 	-- set to Legacy or PData
 	-- legacy saves player data as text files under garrysmod/data/theeternalapocalypse/profiles/(players steamid)/
 	-- Pdata saves their data to the servers sql file (garrysmod/sv.db)
-	-- Use the pdata system if you are having issues with text file saving/loading or if you prefer everything to be in the sql file.
-	-- No there isn't support for MySQL and there proably won't be unless you code it yourself. (Hmm.. Now that I think about it, I might consider doing that)
+	-- Use the PData system if you are having issues with text file saving/loading or if you prefer everything to be in the sql file.
+	-- SQL or MySQL methods are currently not supported in this version - although it may appear in the future.
 	["FileSystem"] = "Legacy",
 
 	-- Srlion's Fast Binary Serializer
@@ -290,160 +290,144 @@ for i=1,10 do
 	unknown_name = unknown_name..utf8.char(math.random(60, 1000))
 end
 
-GM.Config["ZombieClasses"] = {
-	["npc_tea_basic"] = {		-- table name must be the entclass name of the zombie, see garrysmod/gamemodes/theeternalapocalypse/entities for entclasses (or you can add other zombie types by yourself)
-		Name = "Shambler Zombie",	-- Name for the zombie, used in death notice/killfeed
-		SpawnChance = 66.90,	-- spawn chance in % (there is a helper function that will tell you how much the current total spawn chance for zombies is)
-		XPReward = 48,		-- xp reward for killing this zombie, varies with the convar tea_server_xpreward convar
-		MoneyReward = 22,	-- money reward for killing this zombie, varies with the convar tea_server_moneyreward convar
-		InfectionRate = 0.03,	-- Infection Level increase if the zombie is killed by player (Affected by player count!)
-		AllowEliteVariants = true,	-- Some zombies may not like being as elite variant as it confuses between colors - Only allow some! (By default, it's true)
-		Miniboss = false,	-- If it is true, they are not spawned unless Infection Level is 25% or more, or if the player count is less than 3! Instead, they will be rerolled as a basic zombie.
-		-- (in that case, if minibosses can't spawn then there is slightly higher chance for basics to spawn)
-		Tier = 1,			-- (NYI) Spawn Tier for the zombie. Higher tier zombies are less likely to spawn on tier 1 zombie spawns!
-		-- Meant for higher threat zombies to spawn less frequently in safer areas while higher threat zombies spawn more frequently on areas.
-	},
+GM.ZombieClasses = {}
+function GM:AddZombieClass(id, tbl)
+	self.ZombieClasses[id] = tbl
+end
 
-	["npc_tea_leaper"] = {
-		Name = "Leaper Zombie",
-		SpawnChance = 18.75,
-		XPReward = 55,
-		MoneyReward = 30,
-		InfectionRate = 0.035,
-		AllowEliteVariants = true,
-		Tier = 1,
-	},
+GM:AddZombieClass("npc_tea_basic", {		-- table name must be the entclass name of the zombie, see garrysmod/gamemodes/theeternalapocalypse/entities for entclasses (or you can add other zombie types by yourself)
+	Name = "Shambler Zombie",	-- Name for the zombie, used in death notice/killfeed
+	XPReward = 48,		-- xp reward for killing this zombie, varies with the convar tea_server_xpreward convar
+	MoneyReward = 22,	-- money reward for killing this zombie, varies with the convar tea_server_moneyreward convar
+	InfectionRate = 0.03,	-- Infection Level increase if the zombie is killed by player (Affected by player count!)
+	AllowEliteVariants = true,	-- Some zombies may not like being as elite variant as it confuses between colors - Only allow some! (By default, it's true)
+	Miniboss = false,	-- If it is true, they are not spawned unless Infection Level is 25% or more, or if the player count is less than 3! Instead, they will be rerolled as a basic zombie.
+	-- (in that case, if minibosses can't spawn then there is slightly higher chance for basics to spawn)
+	Tier = 1,			-- (NYI) Spawn Tier for the zombie. Higher tier zombies are less likely to spawn on tier 1 zombie spawns!
+	-- Meant for higher threat zombies to spawn less frequently in safer areas while higher threat zombies spawn more frequently on areas.
+})
 
-	["npc_tea_wraith"] = {
-		Name = "Wraith Zombie",
-		SpawnChance = 5,
-		XPReward = 80,
-		MoneyReward = 45,
-		InfectionRate = 0.048,
-		AllowEliteVariants = true,
-		Tier = 2,
-	},
+GM:AddZombieClass("npc_tea_leaper", {
+	Name = "Leaper Zombie",
+	XPReward = 55,
+	MoneyReward = 30,
+	InfectionRate = 0.035,
+	AllowEliteVariants = true,
+	Tier = 1,
+})
 
-	["npc_tea_tank"] = {
-		Name = "Tank Zombie",
-		SpawnChance = 4,
-		XPReward = 220,
-		MoneyReward = 90,
-		InfectionRate = 0.07,
-		AllowEliteVariants = true,
-		Tier = 2,
-	},
+GM:AddZombieClass("npc_tea_wraith", {
+	Name = "Wraith Zombie",
+	XPReward = 80,
+	MoneyReward = 45,
+	InfectionRate = 0.048,
+	AllowEliteVariants = true,
+	Tier = 2,
+})
 
-	["npc_tea_puker"] = {
-		Name = "Puker Zombie",
-		SpawnChance = 2.25,
-		XPReward = 240,
-		MoneyReward = 105,
-		InfectionRate = 0.062,
-		AllowEliteVariants = true,
-		Tier = 2,
-	},
+GM:AddZombieClass("npc_tea_tank", {
+	Name = "Tank Zombie",
+	XPReward = 220,
+	MoneyReward = 90,
+	InfectionRate = 0.07,
+	AllowEliteVariants = true,
+	Tier = 2,
+})
 
-	["npc_tea_lord"] = {
-		Name = "Zombie Lord",
-		SpawnChance = 1.5,
-		XPReward = 450,
-		MoneyReward = 320,
-		InfectionRate = 0.135,
-		AllowEliteVariants = true,
-		Tier = 3,
-	},
+GM:AddZombieClass("npc_tea_puker", {
+	Name = "Puker Zombie",
+	XPReward = 240,
+	MoneyReward = 105,
+	InfectionRate = 0.062,
+	AllowEliteVariants = true,
+	Tier = 2,
+})
 
-	["npc_tea_tormented_wraith"] = {
-		Name = "Tormented Wraith",
-		SpawnChance = 1,
-		XPReward = 185,
-		MoneyReward = 150,
-		InfectionRate = 0.1,
-		AllowEliteVariants = true,
-		Tier = 3,
-	},
+GM:AddZombieClass("npc_tea_lord", {
+	Name = "Zombie Lord",
+	XPReward = 450,
+	MoneyReward = 320,
+	InfectionRate = 0.135,
+	AllowEliteVariants = true,
+	Tier = 3,
+})
 
-	["npc_tea_superlord"] = {
-		Name = "Zombie Superlord",
-		SpawnChance = 0.2,
-		XPReward = 850,
-		MoneyReward = 700,
-		InfectionRate = 1.05,
-		AllowEliteVariants = true,
-		Miniboss = true,
-		Tier = 4,
-	},
+GM:AddZombieClass("npc_tea_tormented_wraith", {
+	Name = "Tormented Wraith",
+	XPReward = 185,
+	MoneyReward = 150,
+	InfectionRate = 0.1,
+	AllowEliteVariants = true,
+	Tier = 3,
+})
 
-	["npc_tea_heavy_tank"] = {
-		Name = "Heavy Tank Zombie",
-		SpawnChance = 0.25,
-		XPReward = 750,
-		MoneyReward = 650,
-		InfectionRate = 0.9,
-		AllowEliteVariants = true,
-		Miniboss = true,
-		Tier = 4,
-	},
+GM:AddZombieClass("npc_tea_superlord", {
+	Name = "Zombie Superlord",
+	XPReward = 850,
+	MoneyReward = 700,
+	InfectionRate = 1.05,
+	AllowEliteVariants = true,
+	Miniboss = true,
+	Tier = 4,
+})
 
-	["npc_tea_hunter"] = {
-		Name = "Hunter Zombie",
-		SpawnChance = 0.15,
-		XPReward = 900,
-		MoneyReward = 800,
-		InfectionRate = 1.3,
-		AllowEliteVariants = true,
-		Miniboss = true,
-		Tier = 4,
-	},
+GM:AddZombieClass("npc_tea_heavy_tank", {
+	Name = "Heavy Tank Zombie",
+	XPReward = 750,
+	MoneyReward = 650,
+	InfectionRate = 0.9,
+	AllowEliteVariants = true,
+	Miniboss = true,
+	Tier = 4,
+})
 
-	-- Not ready yet.
+GM:AddZombieClass("npc_tea_hunter", {
+	Name = "Hunter Zombie",
+	XPReward = 900,
+	MoneyReward = 800,
+	InfectionRate = 1.3,
+	AllowEliteVariants = true,
+	Miniboss = true,
+	Tier = 4,
+})
 
-	["npc_tea_ghoul"] = {
-		Name = "Ghoul Zombie",
-		SpawnChance = 0,
-		XPReward = 220,
-		MoneyReward = 150,
-		InfectionRate = 0.125,
-		AllowEliteVariants = true,
-		Tier = 3,
-		Disabled = true
-	},
+-- Not ready yet.
 
-	["npc_tea_nightmare"] = {
-		Name = "Nightmare",
-		SpawnChance = 0,
-		XPReward = 220,
-		MoneyReward = 150,
-		InfectionRate = 0.125,
-		AllowEliteVariants = true,
-		Tier = 3,
-		Disabled = true
-	},
+GM:AddZombieClass("npc_tea_ghoul", {
+	Name = "Ghoul Zombie",
+	XPReward = 220,
+	MoneyReward = 150,
+	InfectionRate = 0.125,
+	AllowEliteVariants = true,
+	Tier = 3
+})
 
-	["npc_tea_unknown"] = {
-		Name = unknown_name,
-		SpawnChance = 0,--0.0001, -- 1 in a million!!
-		XPReward = 66666,
-		MoneyReward = 666,
-		InfectionRate = 6.66,
-		AllowEliteVariants = false,
-		Tier = 666,
-		Disabled = true
-	},
+GM:AddZombieClass("npc_tea_nightmare", {
+	Name = "Nightmare",
+	XPReward = 220,
+	MoneyReward = 150,
+	InfectionRate = 0.125,
+	AllowEliteVariants = true,
+	Tier = 3
+})
 
-	["npc_tea_zombine"] = {
-		Name = "Zombine",
-		SpawnChance = 0,
-		XPReward = 220,
-		MoneyReward = 150,
-		InfectionRate = 0.125,
-		AllowEliteVariants = true,
-		Tier = 3,
-		Disabled = true
-	},
+GM:AddZombieClass("npc_tea_unknown", {
+	Name = unknown_name,
+	XPReward = 66666,
+	MoneyReward = 666,
+	InfectionRate = 6.66,
+	AllowEliteVariants = false,
+	Tier = 666
+})
 
-}
+GM:AddZombieClass("npc_tea_zombine", {
+	Name = "Zombine",
+	XPReward = 220,
+	MoneyReward = 150,
+	InfectionRate = 0.125,
+	AllowEliteVariants = true,
+	Tier = 3
+})
 
 ---- Boss Classes ----
 
@@ -484,6 +468,208 @@ GM.Config["BossClasses"] = {
 		AllowEliteVariants = true,
 	},
 }
+
+
+-- Spawns presets..
+
+GM.ZombieSpawnPresets = {}
+GM.ZombieSpawnPresets["default"] = { -- KEEP THE DEFAULT TABLE!!! ERRORS HAPPEN IF IT'S NOT THERE.
+	["npc_tea_basic"] = {
+		SpawnChance = 66.90,	-- spawn chance in % (there is a helper function that will tell you how much the current total spawn chance for zombies is)
+	},
+
+	["npc_tea_leaper"] = {
+		SpawnChance = 18.75,
+	},
+
+	["npc_tea_wraith"] = {
+		SpawnChance = 5,
+		AllowEliteVariants = true,
+		Tier = 2,
+	},
+
+	["npc_tea_tank"] = {
+		SpawnChance = 4,
+		AllowEliteVariants = true,
+		Tier = 2,
+	},
+
+	["npc_tea_puker"] = {
+		SpawnChance = 2.25,
+		AllowEliteVariants = true,
+		Tier = 2,
+	},
+
+	["npc_tea_lord"] = {
+		SpawnChance = 1.5,
+		AllowEliteVariants = true,
+		Tier = 3,
+	},
+
+	["npc_tea_tormented_wraith"] = {
+		SpawnChance = 1,
+		AllowEliteVariants = true,
+		Tier = 3,
+	},
+
+	["npc_tea_superlord"] = {
+		SpawnChance = 0.2,
+		AllowEliteVariants = true,
+		Miniboss = true,
+		Tier = 4,
+	},
+
+	["npc_tea_heavy_tank"] = {
+		SpawnChance = 0.25,
+		AllowEliteVariants = true,
+		Miniboss = true,
+		Tier = 4,
+	},
+
+	["npc_tea_hunter"] = {
+		SpawnChance = 0.15,
+		AllowEliteVariants = true,
+		Miniboss = true,
+		Tier = 4,
+	}
+}
+
+GM:AddZombieClass("npc_vj_f3r_ghoul_swamp", {
+	Name = "Feral Ghoul",
+	Description = "Is that a zombie?",
+	XPReward = 54,
+	MoneyReward = 28,
+	InfectionRate = 0.02,
+	AllowEliteVariants = true,
+	Tier = 1,
+	DamageMul = 1,
+	HealthMul = 2.5,
+})
+
+GM:AddZombieClass("npc_vj_f3r_mirelurkswamp", {
+	Name = "Swamplurk",
+	Description = "A creature that lurks in the swamps.",
+	XPReward = 89,
+	MoneyReward = 33,
+	InfectionRate = 0.03,
+	AllowEliteVariants = true,
+	Tier = 1,
+	DamageMul = 1,
+	HealthMul = 2.5,
+})
+
+GM:AddZombieClass("npc_vj_f3r_swamplurkhunt", {
+	Name = "Swamplurk Hunter",
+	Description = "Like Swamplurk, but stronger.",
+	XPReward = 265,
+	MoneyReward = 150,
+	InfectionRate = 0.075,
+	AllowEliteVariants = true,
+	Tier = 2,
+	DamageMul = 0.8,
+	HealthMul = 3,
+})
+
+GM:AddZombieClass("npc_vj_f3r_mirelurkswampque", {
+	Name = "Swamplurk Queen",
+	Description = "Shoots out radioactive projectiles.",
+	XPReward = 455,
+	MoneyReward = 150,
+	InfectionRate = 0.1,
+	AllowEliteVariants = true,
+	Tier = 3,
+	DamageMul = 1.3,
+	HealthMul = 2,
+})
+
+GM:AddZombieClass("npc_vj_f3r_radscor_glow", {
+	Name = "Glowing Radscorpion",
+	Description = "Be careful around it!",
+	XPReward = 495,
+	MoneyReward = 250,
+	InfectionRate = 0.08,
+	AllowEliteVariants = true,
+	Tier = 3,
+	HealthMul = 2,
+	DamageMul = 1.25,
+})
+
+GM:AddZombieClass("npc_vj_f3r_deathclawalpha", {
+	Name = "Deathclaw Alphamale",
+	Description = "This one's going to fuck you up.",
+	XPReward = 850,
+	MoneyReward = 575,
+	InfectionRate = 0.2,
+	AllowEliteVariants = true,
+	Tier = 4,
+	Miniboss = true,
+	DamageMul = 0.16,
+	HealthMul = 3.5,
+})
+
+GM.ZombieSpawnPresets["fo3swamp"] = {
+	["npc_vj_f3r_ghoul_swamp"] = {
+		SpawnChance = 66,
+	},
+
+	["npc_vj_f3r_mirelurkswamp"] = {
+		SpawnChance = 20,
+	},
+
+	["npc_vj_f3r_swamplurkhunt"] = {
+		SpawnChance = 7,
+	},
+
+	["npc_vj_f3r_mirelurkswampque"] = {
+		SpawnChance = 2.5,
+	},
+
+	["npc_vj_f3r_radscor_glow"] = {
+		SpawnChance = 3.5,
+	},
+
+	["npc_vj_f3r_deathclawalpha"] = {
+		SpawnChance = 1,
+	},
+}
+
+
+-- stalker
+
+GM:AddZombieClass("npc_vj_st_snork", {
+	Name = "Snork",
+	Description = "This creature does not like messing you with it!",
+	XPReward = 575,
+	MoneyReward = 265,
+	InfectionRate = 0.08,
+	AllowEliteVariants = true,
+	Tier = 3,
+	DamageMul = 0.4,
+})
+
+GM:AddZombieClass("npc_vj_st_pseudogiant", {
+	Name = "Pseudogiant",
+	Description = "Watch out!! This one's hell of a giant!",
+	XPReward = 3250,
+	MoneyReward = 1875,
+	InfectionRate = 0.5,
+	AllowEliteVariants = true,
+	Tier = 4,
+	Miniboss = true,
+	DamageMul = 0.28,
+	HealthMul = 1,
+})
+
+GM.ZombieSpawnPresets["stalker2"] = {
+	["npc_vj_st_snork"] = {
+		SpawnChance = 6.5,
+	},
+
+	["npc_vj_st_pseudogiant"] = {
+		SpawnChance = 1,
+	},
+}
+
 
 
 ---- Human spawns ----

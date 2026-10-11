@@ -168,8 +168,8 @@ function GM:DrawNames()
 
 	end
 
-	if npcent and npcent:IsValid() and (npcent:IsNPC() or npcent:IsNextBot()) and (self.Config["ZombieClasses"][npcent:GetClass()] or self.Config["BossClasses"][npcent:GetClass()]) and self.DrawZombiesInfo then
-		if ent and ent:IsValid() and (ent:IsNPC() or ent:IsNextBot()) and (self.Config["ZombieClasses"][ent:GetClass()] or self.Config["BossClasses"][ent:GetClass()]) then
+	if npcent and npcent:IsValid() and (npcent:IsNPC() or npcent:IsNextBot()) and (self.ZombieClasses[npcent:GetClass()] or self.Config["BossClasses"][npcent:GetClass()]) and self.DrawZombiesInfo then
+		if ent and ent:IsValid() and (ent:IsNPC() or ent:IsNextBot()) and (self.ZombieClasses[ent:GetClass()] or self.Config["BossClasses"][ent:GetClass()]) then
 			lastent = ent
 			lastdraw = CurTime()
 		end
@@ -179,11 +179,12 @@ function GM:DrawNames()
 		surface_SetDrawColor(90,0,0,colormult * 155)
 		surface_DrawOutlinedRect((ScrW() / 2) - 170, 210, 340, 75)
 
-		local class = self.Config["ZombieClasses"][npcent:GetClass()] or self.Config["BossClasses"][npcent:GetClass()]
+		local class = self.ZombieClasses[npcent:GetClass()] or self.Config["BossClasses"][npcent:GetClass()]
 		draw.SimpleText(class.Name..(npcent:GetEliteVariant() ~= 0 and " (Elite variant: "..(self.VariantNames[npcent:GetEliteVariant()] or "N/A")..")" or ""), "TEA.HUDFontSmall", (ScrW() / 2) - 160, 224, Color(108,108,108,colormult * 255), 0, 1)
 		draw.SimpleText(translate.Format("health", npcent:Health(), npcent:GetMaxHealth()), "TEA.HUDFontSmall", (ScrW() / 2) - 160, 242, Color(math.Clamp(255 * (npcent:Health() / npcent:GetMaxHealth()), 127, 255),48,48,colormult * 255), 0, 1)
 		draw.SimpleText("Level: "..npcent:GetZombieLevel(), "TEA.HUDFontSmall", (ScrW() / 2) - 160, 260, Color(255, 127, 255, colormult * 255), 0, 1)
-		draw.SimpleText(tostring(npcent.Purpose), "DefaultFontSmall", (ScrW() / 2) - 160, 276, Color(148,148,148,colormult * 255), 0, 1)
+		-- draw.SimpleText(tostring(npcent.Purpose), "DefaultFontSmall", (ScrW() / 2) - 160, 276, Color(148,148,148,colormult * 255), 0, 1)
+		draw.SimpleText(class.Description or tostring(npcent.Purpose), "DefaultFontSmall", (ScrW() / 2) - 160, 276, Color(148,148,148,colormult * 255), 0, 1)
 	end
 end
 
@@ -357,7 +358,7 @@ function GM:DrawVitals()
 	local i = 0
 	
 	for _,ent in pairs(ents.FindInSphere(me:GetPos(), 1150)) do
-		if self.Config["ZombieClasses"][ent:GetClass()] then
+		if self.ZombieClasses[ent:GetClass()] then
 			i = i + 1
 --			if i >= 6 then break end
 		end

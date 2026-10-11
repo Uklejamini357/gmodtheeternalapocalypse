@@ -3,8 +3,8 @@ GM.AltName	= "After The End Reborn" -- yes, it's a fork. what else did you expec
 GM.Author	= "Uklejamini"
 GM.Email	= ""
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
-GM.Version	= "0.12.11"
-GM.DateVer	= "21.06.2026" -- Follows the DD.MM.YYYY format.
+GM.Version	= "0.13.0b"
+GM.DateVer	= "11.10.2026" -- Follows the DD.MM.YYYY format.
 GM.Credits = {
 	{"LegendOfRobbo",			"Created After The End gamemode",											"Back in 2015. It's such a great gamemode!"},
 
@@ -25,25 +25,16 @@ local color_change = Color(255,210,255)
 local color_balance = Color(255,255,210)
 local color_fix = Color(210,255,255)
 GM.RecentChangelogs = {
-	{"+ Added a new variable for zombies to be able to activate a special ability, whenever possible at any given time (Now applies to Puker, Lord, Superlord and Tormented Wraith)", color_add},
-	{"+ Added ULX commands (There are only a few atm, but it works)", color_add},
-	{"+ Added \"Force Elite Variant\" option for Admin tool on Zombies spawning type", color_add},
-	{"+ Added \"Choices\" for admin tool menu", color_add},
-	{"+ Zombie levels now affect infection level gainrate", color_add},
-	{"+ Added new options for \"Explode\" admin tool", color_add},
+	{"I can't add all of my changelogs at the moment. You're gonna wait a bit till I release changelogs fully.", color_add},
 
-	{"= Tormented Wraith's ability now activates at 650 range and also gives +10% speed instead of +5%", color_balance},
+	-- {"= Tormented Wraith's ability now activates at 650 range and also gives +10% speed instead of +5%", color_balance},
 
-	{"/ Puker zombie's now damage non-zombie NPC's/nextbots", color_change},
-	{"/ Tweaked effective infection level, now has gradually reducing infection level effectiveness, while also making infection level more lenient for newcomers (low level players)", color_change},
-	{"/ Change zombie spawning exclusion radius for players to 600 hammer units (1000 hu for boss zombies)", color_change},
+	-- {"/ Puker zombie's now damage non-zombie NPC's/nextbots", color_change},
 	
-	{"* Fixed a bug with puker zombie's projectile which could eventually cause \"Too many emitters\" error.", color_fix},
-	{"* Fixed random errors for zombies causing them to stay in place", color_fix},
-	{"* Spawning zombies with forced level, xp/money/infection gainrate gain will no longer be affected by zombie level if xp/money/ilvl gain variables are set", color_fix},
+	-- {"* ", color_fix},
 	
 
-	{"Too much to put it all here", Color(210,210,255)},
+	-- {"Too much to put it all here", Color(210,210,255)},
 }
 
 if !GM.NoSandbox then
@@ -117,8 +108,8 @@ include("sh_convars.lua")
 include("sh_player.lua") -- function for player
 include("sh_items.lua") -- items for inventory
 include("sh_loot.lua") -- for loots
-include("sh_spawnables.lua") -- spawnable props with build tool
 include("sh_config.lua") -- gamemode config
+include("sh_spawnables.lua") -- spawnable props with build tool
 include("sh_crafting.lua") -- list for craftable items
 include("sh_achievements.lua") -- achievements
 include("sh_deathsounds.lua") -- death sounds used for various player models
@@ -517,7 +508,7 @@ function GM:GetItemDescription(id, ply) -- ply is for the server
 	if wep and wep.Primary then
 		local wep_prim = wep.Primary
 		local dmg,dmgmin = wep.DamageMax or wep.Damage or wep_prim.Damage or 0, wep.DamageMin
-		local numshots = wep.Num or wep_prim.NumberOfShots or wep_prim.NumShots
+		local numshots = wep.Num or wep_prim.NumberOfShots or wep_prim.NumberofShots or wep_prim.NumShots or 1
 		local delay = (wep.Delay or wep_prim.Delay or wep.RPM or wep_prim.RPM) and math.Round(wep.Delay or wep_prim.Delay or 1 / ((wep.RPM or wep_prim.RPM or 1) / 60) or 1, 3)
 		local clipsize = wep.ClipSize or wep_prim.ClipSize
 		local recoil = wep.Recoil or wep_prim.Recoil

@@ -40,7 +40,7 @@ function GM.ZS.EndEvent(noplyfrespawn)
 	GAMEMODE.ZombieApocalypse = GAMEMODE.ZS.LastZombieApocalypse
 	BroadcastLua(GAMEMODE.ZS.LastZombieApocalypse and "GAMEMODE.ZombieApocalypse = true" or "GAMEMODE.ZombieApocalypse = false")
 	GAMEMODE.ZS.ZombiesWaveActive = false
-	for k, v in pairs(GAMEMODE.Config["ZombieClasses"]) do
+	for k, v in pairs(GAMEMODE.ZombieClasses) do
 		for _, ent in pairs(ents.FindByClass(k)) do
 			if !ent.BossMonster then
 				ent:SetHealth(0)

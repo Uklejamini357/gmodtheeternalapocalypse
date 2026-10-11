@@ -86,6 +86,15 @@ function GM:MakeOptions()
 		surface.DrawOutlinedRect(0, 0, pan:GetWide(), pan:GetTall())
 	end
 	pOptions = pan
+	pan.OnRemove = function(self)
+		hook.Remove("OnPauseMenuShow", self)
+	end
+	hook.Add("OnPauseMenuShow", pan, function()
+		if pan and pan:IsValid() and pan:IsVisible() then
+			pan:Close()
+			return false
+		end
+	end)
 
 	local y = 8
 
@@ -269,6 +278,15 @@ function MakeServerOptions()
 		surface.DrawOutlinedRect(0, 0, pan:GetWide(), pan:GetTall())
 	end
 	pSVOptions = pan
+	pan.OnRemove = function(self)
+		hook.Remove("OnPauseMenuShow", self)
+	end
+	hook.Add("OnPauseMenuShow", pan, function()
+		if pan and pan:IsValid() and pan:IsVisible() then
+			pan:Close()
+			return false
+		end
+	end)
 
 	local y = 8
 

@@ -97,7 +97,7 @@ function ENT:SpecialSkill1()
 	self:EmitSound("ambient/machines/thumper_hit.wav", 120, 70)
 
 	for k, v in pairs(ents.FindInSphere(self:GetPos(), 2000)) do
-		if (self != v and (GAMEMODE.Config["ZombieClasses"][v:GetClass()] or GAMEMODE.Config["BossClasses"][v:GetClass()])) then
+		if (self != v and (GAMEMODE.ZombieClasses[v:GetClass()] or GAMEMODE.Config["BossClasses"][v:GetClass()])) then
 			if (v.RageLevel or 0) < 2.5 then
 				v.RageLevel = 2.5
 			end

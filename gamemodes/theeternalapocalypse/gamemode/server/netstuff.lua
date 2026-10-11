@@ -427,7 +427,7 @@ net.Receive("tea_admin_tool", function(len, pl)
 	if t == "selectspawner" then
 		local spawning = net.ReadString()
 
-		if GAMEMODE.Config["ZombieClasses"][spawning] or GAMEMODE.Config["BossClasses"][spawning] then
+		if GAMEMODE.ZombieClasses[spawning] or GAMEMODE.Config["BossClasses"][spawning] then
 			wep:SetSpawningType(ADMINTOOL_SPAWNTYPE_ZOMBIE)
 		elseif GAMEMODE.FlimsyProps[spawning] then
 			wep:SetSpawningType(ADMINTOOL_SPAWNTYPE_PROPSFLIMSY)

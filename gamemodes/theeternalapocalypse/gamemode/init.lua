@@ -152,6 +152,7 @@ local infectionupdaterate = {
 function GM:Think()
 	local ct = CurTime()
 	local ft = FrameTime()
+	local statusFx = self.StatusEffectsTable
 
 	if NextTick < ct then
 		NextTick = ct + 1
@@ -223,7 +224,7 @@ function GM:Think()
 				for _,ply in player.Iterator() do ply:SendLua("surface.PlaySound(\"buttons/button15.wav\")") end
 			end
 			timer.Simple(1, function()
-				for k,o in pairs(self.Config["ZombieClasses"]) do
+				for k,o in pairs(self.ZombieClasses) do
 					for _, ent in pairs(ents.FindByClass(k)) do
 						ent:Remove()
 					end
@@ -316,6 +317,12 @@ function GM:Think()
 			if ply.BloodLustMeleeHealCap > 0 and ply.BloodLustLastMeleeHit + 5 < CurTime() then
 				ply.BloodLustMeleeHealCap = math.max(0, ply.BloodLustMeleeHealCap - 0.1 * math.Clamp(CurTime() - (ply.BloodLustLastMeleeHit + 5), 0, 10))
 			end
+
+			if StormFox2 then -- for wind status
+				if StormFox2.Wind.GetForce() > 10 and StormFox2.Wind.IsEntityInWind(ply) then
+					-- ply:GiveStatusEffect("winds")
+				end
+			end
 		end
 	end
 
@@ -389,13 +396,12 @@ function GM:Think()
 				local fatiguedying = ply.Fatigue >= 10000
 				local infectiondying = self.GameplayDifficulty == DIFFICULTY_GAMEPLAY_IMPOSSIBLE and ply.Infection > 1000 or self.GameplayDifficulty == DIFFICULTY_GAMEPLAY_HELL and ply.Infection > 5000 or ply.Infection >= 10000
 
-				if hungerdying then dmg = dmg + 2*ft end
-				if thirstdying then dmg = dmg + 2*ft end
-				if fatiguedying then dmg = dmg + 2*ft end
+				if hungerdying then dmg = dmg + ft end
+				if thirstdying then dmg = dmg + ft end
+				if fatiguedying then dmg = dmg + ft end
 				if infectiondying then
-					dmg = dmg + (self.GameplayDifficulty == DIFFICULTY_GAMEPLAY_IMPOSSIBLE and math.min(2, (ply.Infection-1000)/2000) or 2)*ft
+					dmg = dmg + (self.GameplayDifficulty == DIFFICULTY_GAMEPLAY_IMPOSSIBLE and math.min(2, (ply.Infection-1000)/2000) or 1)*ft
 				end
-				dmg = dmg + 1*ft
 
 				ply.StatsDyingDamage = dmg
 				if dmg >= 1 then
@@ -577,6 +583,7 @@ function GM:Initialize()
 	self.ServerInitOsTime = os.time()
 
 	self.ZombieSpawnpoints = {}
+	self.BossSpawnpoints = {}
 	self.AirdropSpawnpoints = {}
 	self.LootSpawnpoints = {}
 	self.TaskDealerSpawnpoints = {}
@@ -597,6 +604,7 @@ function GM:Initialize()
 	self:LoadLoot()
 	self:LoadAD()
 	self:LoadZombies()
+	self:LoadBossSpawns()
 	self:LoadTraders()
 	self:LoadPlayerSpawns()
 	self:LoadTaskDealers()
@@ -604,7 +612,7 @@ function GM:Initialize()
 	self:LoadTransitionsData()
 	self:LoadSafezonesData()
 
-	self:CheckSpawnChanceErrors()
+	-- self:CheckSpawnChanceErrors()
 
 	self:SetInflationMeter(self:CalcInflationMeter())
 end
@@ -679,10 +687,11 @@ function GM:OnReloaded()
 	self:LoadLoot()
 	self:LoadAD()
 	self:LoadZombies()
+	self:LoadBossSpawns()
 	self:LoadTraders()
 	self:LoadPlayerSpawns()
 	self:LoadTaskDealers()
-	self:CheckSpawnChanceErrors()
+	-- self:CheckSpawnChanceErrors()
 end
 
 function GM:ShutDown()
@@ -738,6 +747,12 @@ local function ProcessLastDmgInfo(tbl)
 	return dmg
 end
 
+function GM:OnEntityCreated(ent)
+	if !IsValid(ent) then return end
+	if ent:IsPlayer() then return end
+	if not (ent:IsNPC() or ent:IsNextBot()) then return end
+	ent.StatusEffects = {}
+end
 
 function GM:OnNPCKilled(ent, attacker, inflictor)
 	self:ProcessPostDamage(ent, ent.LastDmgInfo)
@@ -771,7 +786,7 @@ function GM:OnNPCKilled(ent, attacker, inflictor)
 	if npcrewards[entclass] then
 		local xp = npcrewards[entclass][1]
 		local cash = npcrewards[entclass][2]
-		if !self.Config["ZombieClasses"][entclass] and !ent.XPReward and !ent.MoneyReward then
+		if !self.ZombieClasses[entclass] and !ent.XPReward and !ent.MoneyReward then
 			self:Payout(attacker, xp*self:GetEconomyXPGainMul(), cash)
 		end
 	elseif !ent.TEA_DeadNPC then
@@ -981,6 +996,7 @@ function GM:ProcessPostDamage(ent, dmginfo, tookdmg)
 	if ent:GetClass() == "prop_physics" and ent.prophealth then
 		if ent.prophealth then
 			ent.prophealth = ent.prophealth - dmg
+			ent:SetHealth(ent.prophealth)
 		end
 		-- local ColorAmount = ((ent:Health() / ent.maxhealth) * 255)
 		-- ent:SetColor(Color(ColorAmount, ColorAmount, ColorAmount, 255))
@@ -1107,6 +1123,11 @@ function GM:PlayerInitialSpawn(ply, transition)
 	ply.Money = 0
 	ply.Bounty = 0
 	----------------
+
+
+	-- below stats are not simulated.
+	-- 
+	ply.CoreTemperature = 36.6
 
 --[[ -- Maybe sometime soon... when the Realism/Hardcore update comes.. (in 2026/2027 or so). Don't intend to make it 100% realistic though.
 
@@ -1616,9 +1637,10 @@ function GM:RecalcPlayerSpeed(ply)
 	ply:SetSlowWalkSpeed(math.max(1, totalswspeed * weightpenalty))
 end
 
+/* -- useless information
 function GM:CheckSpawnChanceErrors()
 	local chance = 0
-	for k, v in pairs(self.Config["ZombieClasses"]) do
+	for k, v in pairs(self.ZombieClasses) do
 		chance = chance + v.SpawnChance
 	end
 	MsgC(Color(191,191,255,255), "Total normal zombie spawn chance: "..chance.."%\n")
@@ -1629,6 +1651,7 @@ function GM:CheckSpawnChanceErrors()
 	end
 	MsgC(Color(191,191,255,255), "Total boss zombies spawn chance: "..chance.."%\n")
 end
+*/
 
 function GM:SetUpSeasonalEvents()
 	local function n_date(format, time)

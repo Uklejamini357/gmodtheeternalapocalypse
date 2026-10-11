@@ -186,6 +186,7 @@ GM.SpecialStructureSpawns = {
 --------------------------------
 
 local color_red = Color(255,0,0,60)
+local color_orange = Color(255,160,0,60)
 local color_yellow = Color(255,255,0,60)
 local color_lime = Color(159,255,160,60)
 local color_cyan = Color(120,255,210,60)
@@ -194,6 +195,7 @@ local color_purple = Color(205,53,255,60)
 local color_blue = Color(93,123,255,60)
 
 local tcolor_red = Color(255,0,0,255)
+local tcolor_orange = Color(255,160,0,255)
 local tcolor_yellow = Color(255,255,0,255)
 local tcolor_lime = Color(159,255,160,255)
 local tcolor_cyan = Color(120,255,210,255)
@@ -204,7 +206,7 @@ GM.AdminMapSpawnables = {
 	Zombie = {
 		Name = "zombies",
 		Spawn = function(owner, swep, tr, pos, options)
-			gamemode.Call("AddZombieSpawnpoint", pos, owner:EyeAngles().yaw, options.Tier or 1)
+			gamemode.Call("AddZombieSpawnpoint", pos, options.RandomAngle or owner:EyeAngles().yaw, options.Tier or 1, options.ZSpawnPreset)
 			owner:PrintMessage(3, "Added zombie spawnpoint")
 		end,
 		View = function(owner, var)
@@ -215,6 +217,7 @@ GM.AdminMapSpawnables = {
 				cam.Start3D2D(v.Pos+Vector(0,0,80), Angle(0, ownang.yaw - 90, 90 - ownang.Pitch), math.Clamp(owner:GetPos():Distance(v.Pos)/750, 0.5, 5))
 				draw.DrawText("Zombie spawn #"..id, "TEA.HUDFont", 0, 0, tcolor_red, TEXT_ALIGN_LEFT)
 				draw.DrawText("Tier: "..v.Tier, "TEA.HUDFontSmall", 0, 20, tcolor_red, TEXT_ALIGN_LEFT)
+				draw.DrawText("Preset: "..v.Preset, "TEA.HUDFontSmall", 0, 40, tcolor_red, TEXT_ALIGN_LEFT)
 				cam.End3D2D()
 			end
 			cam.IgnoreZ(false)
@@ -228,7 +231,8 @@ GM.AdminMapSpawnables = {
 				tbl[id] = {
 					Pos = v[1],
 					Ang = v[2],
-					Tier = v[3]
+					Tier = v[3],
+					Preset = v[4]
 				}
 			end
 
@@ -246,9 +250,54 @@ GM.AdminMapSpawnables = {
 				Type = "number",
 				Min = 0,
 				Max = 2000,
+			},
+
+			ZSpawnPreset = {
+				Name = "Zombie spawn presets",
+				Type = "choices",
+				Choices = GM.ZombieSpawnPresets,
+				ChoicesByID = true,
+				Default = "default"
+			},
+
+			RandomAngle = {
+				Name = "Random spawn angle",
+				Type = "bool",
 			}
 		}
+	},
 
+	Bosses = {
+		Name = "bosses",
+		Spawn = function(owner, swep, tr, pos, options)
+			gamemode.Call("AddBossSpawnpoint", pos, owner:EyeAngles().yaw)
+			owner:PrintMessage(3, "Added boss spawnpoint")
+		end,
+		View = function(owner, var)
+			cam.IgnoreZ(true)
+			local ownang = owner:EyeAngles()
+			for id,v in pairs(var) do
+				render.DrawLine(v.Pos+Vector(0,0,80), v.Pos,tcolor_orange,true)
+				cam.Start3D2D(v.Pos+Vector(0,0,80), Angle(0, ownang.yaw - 90, 90 - ownang.Pitch), math.Clamp(owner:GetPos():Distance(v.Pos)/750, 0.5, 5))
+				draw.DrawText("Boss spawn #"..id, "TEA.HUDFont", 0, 0, tcolor_orange, TEXT_ALIGN_LEFT)
+				cam.End3D2D()
+			end
+			cam.IgnoreZ(false)
+		end,
+		Get = function()
+			return GAMEMODE.BossSpawnpoints
+		end,
+		GetAdminEyes = function(owner)
+			local tbl = {}
+			for id,v in pairs(GAMEMODE.BossSpawnpoints) do
+				tbl[id] = {
+					Pos = v[1],
+					Ang = v[2]
+				}
+			end
+
+			return tbl
+		end,
 	},
 
 	Loot = {

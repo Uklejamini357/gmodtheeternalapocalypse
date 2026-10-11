@@ -315,25 +315,6 @@ function GM:AdminMenu()
 		end
 	end
 
-	local buypanel = {}
-	for i=1,6 do
-		buypanel[i] = vgui.Create("DPanelList")
-		buypanel[i]:Dock(FILL)
-		buypanel[i]:DockMargin(0, 5, 0, 0)
-		buypanel[i]:EnableVerticalScrollbar(true)
-		buypanel[i]:EnableHorizontal(true)
-		buypanel[i]:SetSpacing(10)
-	end
-
-	SpawnMenuProperties:AddSheet(translate.Get("items_category_1"), buypanel[1], "icon16/ammo_three.png", false, false, translate.Get("items_category_1_d"))
-	SpawnMenuProperties:AddSheet(translate.Get("items_category_2"), buypanel[2], "icon16/box.png", false, false, translate.Get("items_category_2_d"))
-	SpawnMenuProperties:AddSheet(translate.Get("items_category_3"), buypanel[3], "icon16/gun.png", false, false, translate.Get("items_category_3_d"))
-	SpawnMenuProperties:AddSheet(translate.Get("items_category_4"), buypanel[4], "icon16/shield.png", false, false, translate.Get("items_category_4_d"))
-	SpawnMenuProperties:AddSheet(translate.Get("items_category_5"), buypanel[5], "icon16/bin.png", false, false, translate.Get("items_category_5_d"))
-	SpawnMenuProperties:AddSheet(translate.Get("items_category_6"), buypanel[6], "icon16/basket.png", false, false, translate.Get("items_category_6_d"))
-	-- SpawnMenuProperties:AddSheet(translate.Get("items_category_7"), buypanel[7], "icon16/basket.png", false, false, translate.Get("items_category_7_d"))
-
-
 	local function RefreshItemList(cat, parent)
 		for k,v in SortedPairsByMemberValue(GAMEMODE.ItemsList, "Cost") do
 			if v.Category != cat or v.IsSecret then continue end
@@ -456,10 +437,48 @@ function GM:AdminMenu()
 			end
 		end
 	end
+
+	local buypanel = {}
 	for i=1,6 do
-		RefreshItemList(i, buypanel[i])
+		buypanel[i] = vgui.Create("DPanelList")
+		buypanel[i]:Dock(FILL)
+		buypanel[i]:DockMargin(0, 5, 0, 0)
+		buypanel[i]:EnableVerticalScrollbar(true)
+		buypanel[i]:EnableHorizontal(true)
+		buypanel[i]:SetSpacing(10)
 	end
-	RefreshPanel()
+
+	local function MakeTabBtn(tab, idOrFunc)
+		tab.BaseThink = tab.Think
+		tab.Think = function(self)
+			self:BaseThink()
+
+			if self:IsActive() then
+				self.Think = self.BaseThink
+
+				if type(idOrFunc) == "function" then
+					idOrFunc(self)
+				else
+					RefreshItemList(idOrFunc, buypanel[idOrFunc])
+				end
+			end
+		end
+	end
+
+	local tab = SpawnMenuProperties:AddSheet(translate.Get("items_category_1"), buypanel[1], "icon16/ammo_three.png", false, false, translate.Get("items_category_1_d"))
+	MakeTabBtn(tab.Tab, 1)
+	local tab = SpawnMenuProperties:AddSheet(translate.Get("items_category_2"), buypanel[2], "icon16/box.png", false, false, translate.Get("items_category_2_d"))
+	MakeTabBtn(tab.Tab, 2)
+	local tab = SpawnMenuProperties:AddSheet(translate.Get("items_category_3"), buypanel[3], "icon16/gun.png", false, false, translate.Get("items_category_3_d"))
+	MakeTabBtn(tab.Tab, 3)
+	local tab = SpawnMenuProperties:AddSheet(translate.Get("items_category_4"), buypanel[4], "icon16/shield.png", false, false, translate.Get("items_category_4_d"))
+	MakeTabBtn(tab.Tab, 4)
+	local tab = SpawnMenuProperties:AddSheet(translate.Get("items_category_5"), buypanel[5], "icon16/bin.png", false, false, translate.Get("items_category_5_d"))
+	MakeTabBtn(tab.Tab, 5)
+	local tab = SpawnMenuProperties:AddSheet(translate.Get("items_category_6"), buypanel[6], "icon16/basket.png", false, false, translate.Get("items_category_6_d"))
+	MakeTabBtn(tab.Tab, 6)
+	-- SpawnMenuProperties:AddSheet(translate.Get("items_category_7"), buypanel[7], "icon16/basket.png", false, false, translate.Get("items_category_7_d"))
+
 
 	local MapConfig = vgui.Create("DPanel", PropertySheet)
 	MapConfig:Dock(FILL)
@@ -483,6 +502,10 @@ function GM:AdminMenu()
 		local d = DermaMenu(true)
 		d:AddOption(translate.Get("zombies"), function() Derma_Query("Are you sure about that?", "Confirm", translate.Get("yes"), function()
 				RunConsoleCommand("tea_clearspawns", "zombies", "all")
+			end, translate.Get("no"))
+		end)
+		d:AddOption(translate.Get("bosses"), function() Derma_Query("Are you sure about that?", "Confirm", translate.Get("yes"), function()
+				RunConsoleCommand("tea_clearspawns", "bosses", "all")
 			end, translate.Get("no"))
 		end)
 		d:AddOption(translate.Get("loot"), function() RunConsoleCommand("tea_clearspawns", "loot", "all") end)
@@ -510,6 +533,11 @@ function GM:AdminMenu()
 		d:AddOption(translate.Get("zombies"), function()
 			Derma_StringRequest(translate.Get("warning"), translate.Get("select_zmid_remove"), "", function(id)
 				RunConsoleCommand("tea_clearspawns", "zombies", id)
+			end)
+		end)
+		d:AddOption(translate.Get("bosses"), function()
+			Derma_StringRequest(translate.Get("warning"), translate.Get("select_bossid_remove"), "", function(id)
+				RunConsoleCommand("tea_clearspawns", "bosses", id)
 			end)
 		end)
 		d:AddOption(translate.Get("loot"), function()
@@ -901,7 +929,7 @@ function GM:OpenAdminToolMenu(wep)
 		end
 	end
 
-	atm.panel = vgui.Create("EditablePanel", atm.Categories)
+	atm.panel = vgui.Create("DScrollPanel", atm.Categories)
 	atm.panel:Dock(FILL)
 	local shtbl = atm.Categories:AddSheet(translate.Get("zombies"), atm.panel)
 	shtbl.Button.Paint = atm.Categories.Paint
@@ -929,7 +957,7 @@ function GM:OpenAdminToolMenu(wep)
 	atm.panel.Text:SetFont("TEA.HUDFont")
 	atm.panel.Text:SizeToContents()
 
-	for class,tbl in SortedPairsByMemberValue(self.Config["ZombieClasses"], "Tier") do
+	for class,tbl in SortedPairsByMemberValue(self.ZombieClasses, "Tier") do
 		if tbl.Miniboss then continue end
 		makezmpanel(class, tbl)
 	end
@@ -940,7 +968,7 @@ function GM:OpenAdminToolMenu(wep)
 	atm.panel.Text:SetFont("TEA.HUDFont")
 	atm.panel.Text:SizeToContents()
 
-	for class,tbl in SortedPairs(self.Config["ZombieClasses"]) do
+	for class,tbl in SortedPairs(self.ZombieClasses) do
 		if !tbl.Miniboss then continue end
 		makezmpanel(class, tbl)
 	end
@@ -1173,7 +1201,31 @@ function GM:OpenAdminToolMenuOptions(wep)
 			b1:Dock(TOP)
 			b1:DockMargin(5, 10, 5, 0)
 			b1.OnValueChange = function(self, newvalue)
-				optionstbl[id] = tonumber(newvalue)
+				if newvalue ~= "" then
+					optionstbl[id] = tonumber(newvalue)
+				else
+					optionstbl[id] = nil
+				end
+				updateoptions(optionstbl)
+			end
+		elseif v.Type == "string" then
+			local b2 = vgui.Create("DLabel", atm)
+			b2:SetText(v.Name or id)
+			b2:Dock(TOP)
+			b2:SizeToContents()
+
+			local b1 = vgui.Create("DTextEntry", atm)
+			b1:SetTooltip("Set to an empty value to make it default.")
+			b1:SetText(optionstbl[id] or "")
+			b1:SetUpdateOnType(true)
+			b1:Dock(TOP)
+			b1:DockMargin(5, 10, 5, 0)
+			b1.OnValueChange = function(self, newvalue)
+				if newvalue ~= "" then
+					optionstbl[id] = newvalue
+				else
+					optionstbl[id] = nil
+				end
 				updateoptions(optionstbl)
 			end
 		elseif v.Type == "bool" then
@@ -1201,12 +1253,14 @@ function GM:OpenAdminToolMenuOptions(wep)
 			local b1 = vgui.Create("DComboBox", atm)
 			b1:Dock(TOP)
 			b1:DockMargin(5, 10, 5, 0)
-			b1:SetValue(v.Choices[optionstbl[id]] or "None")
+			b1:SetValue(v.Default or v.Choices and v.Choices[optionstbl[id]] or "None")
 			b1:SetSortItems(false)
-			b1:AddChoice("None", 0)
-			b1:AddSpacer()
+			if not v.Default then
+				b1:AddChoice("None", 0)
+				b1:AddSpacer()
+			end
 			for id,choice in pairs(v.Choices) do
-				b1:AddChoice(choice, id)
+				b1:AddChoice(v.ChoicesByID and id or choice, id)
 			end
 			b1.OnSelect = function(self, index, value, data)
 				optionstbl[id] = data
@@ -1222,6 +1276,7 @@ function GM:OpenAdminToolMenuOptions(wep)
 		b1:DockMargin(5,0,0,0)
 	else
 		local types = {
+			string = true,
 			number = true,
 			bool = true,
 			choices = true

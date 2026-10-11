@@ -3,7 +3,7 @@
 
 function GM:ZombieCount()
 	local AliveZombies = 0
-	for k, v in pairs(self.Config["ZombieClasses"]) do
+	for k, v in pairs(self.ZombieClasses) do
 		for _, ent in ipairs(ents.FindByClass(k)) do AliveZombies = AliveZombies + 1 end
 	end
 
@@ -22,10 +22,11 @@ function GM:LoadZombies()
 		for _,str in pairs(string.Explode("\n", self.ZombieSpawnpoints)) do
 			local v = string.Explode(";", str)
 			local pos = util.StringToType(v[1], "Vector")
-			local ang = util.StringToType(v[2], "Angle")
+			local ang = v[2] == "random" and true or util.StringToType(v[2], "Angle")
 			local tier = tonumber(v[3] or 1)
+			local spawntable = v[4] or "default"
 
-			table.insert(tbl, {pos, ang, tier})
+			table.insert(tbl, {pos, ang, tier, spawntable})
 		end
 		self.ZombieSpawnpoints = tbl
 
@@ -35,9 +36,9 @@ function GM:LoadZombies()
 	end
 end
 
-function GM:AddZombieSpawnpoint(pos, yaw, tier)
-	table.insert(self.ZombieSpawnpoints, {pos, Angle(0, yaw, 0), tier})
-	
+function GM:AddZombieSpawnpoint(pos, yaw, tier, preset)
+	table.insert(self.ZombieSpawnpoints, {pos, yaw == true and true or Angle(0, yaw, 0), tier, preset or "default"})
+
 	self:SaveZombieSpawnpoints()
 	self:UpdateAdminEyes("Zombie")
 	return true
@@ -63,7 +64,7 @@ end
 function GM:SaveZombieSpawnpoints()
 	local ftext = ""
 	for _,var in pairs(self.ZombieSpawnpoints) do
-		ftext = ftext..(ftext=="" and "" or "\n")..tostring(var[1])..";"..tostring(var[2])..";"..(var[3] or 1)
+		ftext = ftext..(ftext=="" and "" or "\n")..tostring(var[1])..";"..tostring(var[2] == true and "random" or var[2])..";"..(var[3] or 1)..";"..(var[4] or "default")
 	end
 
 	if ftext == "" then
@@ -75,9 +76,74 @@ function GM:SaveZombieSpawnpoints()
 end
 
 
+function GM:LoadBossSpawns()
+	if not file.IsDir(self.DataFolder.."/spawns/"..string.lower(game.GetMap()), "DATA") then
+	   file.CreateDir(self.DataFolder.."/spawns/"..string.lower(game.GetMap()))
+	end
+	if file.Exists(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/bosses.txt", "DATA") then
+		self.BossSpawnpoints = file.Read(self.DataFolder.."/spawns/" .. string.lower(game.GetMap()) .. "/bosses.txt", "DATA")
+
+		local tbl = {}
+		for _,str in pairs(string.Explode("\n", self.BossSpawnpoints)) do
+			local v = string.Explode(";", str)
+			local pos = util.StringToType(v[1], "Vector")
+			local ang = util.StringToType(v[2], "Angle")
+			local tier = tonumber(v[3] or 1)
+			local spawntable = v[4] or "default"
+
+			table.insert(tbl, {pos, ang, tier})
+		end
+		self.BossSpawnpoints = tbl
+
+		print("Boss spawnpoints loaded")
+	else
+		print("No boss spawnpoints found for this map")
+	end
+end
+
+function GM:AddBossSpawnpoint(pos, yaw)
+	table.insert(self.BossSpawnpoints, {pos, Angle(0, yaw, 0)})
+	
+	self:SaveZombieSpawnpoints()
+	self:UpdateAdminEyes("Bosses")
+	return true
+end
+
+function GM:DeleteBossSpawnpoint(id)
+	if self.BossSpawnpoints[id] then
+		self.BossSpawnpoints[id] = nil
+
+		self:SaveBossSpawnpoints()
+		self:UpdateAdminEyes("Bosses")
+	end
+end
+
+function GM:ClearBossSpawnpoints()
+	self.BossSpawnpoints = {}
+	if file.Exists(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/bosses.txt", "DATA") then
+		file.Delete(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/bosses.txt")
+	end
+	self:UpdateAdminEyes("Bosses")
+end
+
+function GM:SaveBossSpawnpoints()
+	local ftext = ""
+	for _,var in pairs(self.BossSpawnpoints) do
+		ftext = ftext..(ftext=="" and "" or "\n")..tostring(var[1])..";"..tostring(var[2])
+	end
+
+	if ftext == "" then
+		file.Delete(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/bosses.txt")
+		return
+	end
+
+	file.Write(self.DataFolder.."/spawns/"..string.lower(game.GetMap()).."/bosses.txt", ftext)
+end
+
+
 -- Not used currently.
 function GM:GetRandomZombieSpawn()
-	if table.Count(self.ZombieSpawnpoints) == 0 then return end
+	if #self.ZombieSpawnpoints == 0 then return end
 
 	local zombiespawn = table.Random(self.ZombieSpawnpoints)
 	local pos = zombiespawn[1] + Vector(0, 0, 5)
@@ -86,7 +152,7 @@ function GM:GetRandomZombieSpawn()
 	return pos
 end
 
-function GM:CreateZombie(class, pos, ang, xp, cash, infectionrate, level, isboss)
+function GM:CreateZombie(class, pos, ang, xp, cash, infectionrate, level, isboss, tbl)
 	local isboss = isboss or false
 	local class = tostring(class)
 
@@ -106,10 +172,30 @@ function GM:CreateZombie(class, pos, ang, xp, cash, infectionrate, level, isboss
 
 	ent:SetZombieLevel(lvl)
 
+	local hpmul = self.ZombieHealthMultiplier * self:GetDiffZombieHealthMul() * (0.75+lvl*0.025)
+	if tbl then
+		if tbl.HealthMul then
+			hpmul = hpmul * tbl.HealthMul
+		end
+
+		if tbl.DamageMul then
+			ent.m_DamageMult = tbl.DamageMul
+		end
+	end
+
 	ent:Spawn()
-	ent:SetHealth(ent:Health() * self.ZombieHealthMultiplier * self:GetDiffZombieHealthMul() * (0.75+lvl*0.025))
-	ent:SetMaxHealth(ent:GetMaxHealth() * self.ZombieHealthMultiplier * self:GetDiffZombieHealthMul() * (0.75+lvl*0.025))
+	ent:SetHealth(ent:Health() * hpmul)
+	ent:SetMaxHealth(ent:GetMaxHealth() * hpmul)
 	ent:Activate()
+
+	if VJ then
+		if ent.VJ_NPC_Class then
+			table.insert(ent.VJ_NPC_Class, "CLASS_ZOMBIE")
+		else
+			ent.VJ_NPC_Class = {"CLASS_ZOMBIE"}
+		end
+	end
+
 	if self:GetDebug() >= DEBUGGING_ADVANCED then print("Zombie spawned:", "\n"..class, pos, ang, "XPReward: "..xp, "MoneyReward: "..cash, isboss and "Isboss: true" or "Isboss: false") end
 	return ent -- used for SpawnZombie command
 end
@@ -151,12 +237,12 @@ function GM:ApplyEliteVariant(ent, elite)
 end
 
 timer.Create("TEARemoveLonelyZombies", 30, 0, function()
-	for k, v in pairs(GAMEMODE.Config["ZombieClasses"]) do
+	for k, v in pairs(GAMEMODE.ZombieClasses) do
 		for _, ent in ipairs(ents.FindByClass(k)) do GAMEMODE:CheckIfDesertedArea(ent) end
 	end
 end)
 
--- delete zombies every 30 seconds if there are no players nearby within radius of 5500 (in source units)
+-- delete zombies every 30 seconds if there are no players nearby
 function GM:CheckIfDesertedArea(ent)
 	if !ent:IsValid() then return end
 
@@ -172,23 +258,29 @@ function GM:CheckIfDesertedArea(ent)
 end
 
 
-function GM:SpawnRandomZombie(pos, ang, tier)
+function GM:SpawnRandomZombie(pos, ang, tier, spawntable)
 	local maxchance = 0
-	local iter,tbl,cons = pairs(self.Config["ZombieClasses"])
-	for _,z in iter,tbl,cons do if !z.Disabled then maxchance = maxchance + z.SpawnChance end end
+	local iter,tbl,cons = pairs(spawntable)
+	local canminibossspawn = player.GetCount() >= 3 or self:GetInfectionLevel() > 25
+	for _,z in iter,tbl,cons do
+		if !canminibossspawn and v.Miniboss then continue end
+		maxchance = maxchance + z.SpawnChance
+	end
 
 	local dice = math.Rand(0, maxchance)
 	local total = 0
 	for k, v in iter,tbl,cons do
-		if v.Disabled then continue end
+		if !canminibossspawn and v.Miniboss then continue end
 		total = total + v.SpawnChance
 		if total >= dice then
-			k = v.Miniboss and (#player.GetAll() >= 3 or self:GetInfectionLevel() > 25) and k or !v.Miniboss and k or "npc_tea_basic"
-			v = self.Config["ZombieClasses"][k]
+			v = self.ZombieClasses[k]
 
 			local elitechance = math.Rand(0, 100)
 			local elite = elitechance ~= 0 and elitechance <= self:GetEliteVariantSpawnChance(false)
-			local ent = self:CreateZombie(k, pos, ang, v.XPReward * self:GetDiffXPMul(), v.MoneyReward * self:GetDiffCashMul(), v.InfectionRate, math.random(self:GetZombieLvlMin(), self:GetZombieLvlMax()) + (tier and tier-1 or 0)*5, false)
+			local t = {}
+			t.HealthMul = v.HealthMul
+			t.DamageMul = v.DamageMul
+			local ent = self:CreateZombie(k, pos, ang, v.XPReward * self:GetDiffXPMul(), v.MoneyReward * self:GetDiffCashMul(), v.InfectionRate, math.random(self:GetZombieLvlMin(), self:GetZombieLvlMax()) + (tier and tier-1 or 0)*5, false, t)
 
 			if elite and v.AllowEliteVariants then
 				self:ApplyEliteVariant(ent, math.random(8))
@@ -204,12 +296,11 @@ function GM:SpawnRandomBoss(pos, ang, plycountoverride, nonotify)
 	plycountoverride = plycountoverride or #player.GetAll()
 
 	local iter,tbl,cons = pairs(self.Config["BossClasses"])
-	for _,z in iter,tbl,cons do if !z.Disabled then maxchance = maxchance + z.SpawnChance end end
+	for _,z in iter,tbl,cons do maxchance = maxchance + z.SpawnChance end
 
 	local dice = math.Rand(0, 100)
 	local total = 0
 	for k, v in iter,tbl,cons do
-		if v.Disabled then continue end
 		total = total + v.SpawnChance
 		if total >= dice then
 			v.BroadCast(nonotify)
@@ -284,21 +375,22 @@ function GM:SpawnZombies()
 				end
 			end
 
-			self:SpawnRandomZombie(spawnpos + Vector(0, 0, 10), Angle(0,math.random(-180,180),0), 1)
+			self:SpawnRandomZombie(spawnpos + Vector(0, 0, 10), Angle(0,math.random(-180,180),0), 1, "default")
 
 		end
 		return true
 	end
 
 
-	if table.Count(self.ZombieSpawnpoints) == 0 then return end
+	if #self.ZombieSpawnpoints == 0 then return end
 
 	for k, v in RandomPairs(self.ZombieSpawnpoints) do
 		if self:ZombieCount() >= self.MaxZombies then break end
 
 		local pos = v[1] + Vector(0, 0, 5)
-		local ang = v[2]
+		local ang = v[2] == true and Angle(0,math.random(-180,180),0) or v[2]
 		local tier = v[3]
+		local spawntable = self.ZombieSpawnPresets[v[4] or "default"]
 
 		local nospawn = false
 		for _, v in ipairs(ents.FindInSphere(pos, 200)) do
@@ -318,7 +410,7 @@ function GM:SpawnZombies()
 		if nospawn then continue end
 
 
-		self:SpawnRandomZombie(pos + Vector(0, 0, 10), ang, tier)
+		self:SpawnRandomZombie(pos + Vector(0, 0, 10), ang, tier, spawntable)
 	end
 end
 concommand.Add("tea_dev_spawnzombies", function(ply, cmd)
@@ -331,27 +423,39 @@ concommand.Add("tea_dev_spawnzombies", function(ply, cmd)
 end)
 
 
+local function spawnBossFunc(k, v, plycountoverride, nonotify)
+	local pos = v[1]
+	local ang = v[2] == true and Angle(0,math.random(-180,180),0) or v[2]
+
+	local dontspawn = false
+	for _, v in ipairs(ents.FindInSphere(pos, 200)) do
+		if v:IsNextBot() or v:IsNPC() or v:IsPlayer() then dontspawn = false break end
+	end
+	if dontspawn then return false end
+	for _, v in ipairs(ents.FindInSphere(pos, 1000)) do
+		if v:IsPlayer() then dontspawn = false break end
+	end
+	if dontspawn then return false end
+
+	GAMEMODE:SpawnRandomBoss(pos + Vector(0, 0, 40), ang, plycountoverride, nonotify)
+	return true
+end
+
 function GM:SpawnBoss(plycountoverride, nonotify)
 	plycountoverride = plycountoverride or #player.GetAll()
 
-	if table.Count(self.ZombieSpawnpoints) == 0 then return end
+	if #self.BossSpawnpoints == 0 then goto zspawn end
+
+	for k, v in RandomPairs(self.BossSpawnpoints) do
+		if spawnBossFunc(k, v, plycountoverride, nonotify) then return end
+	end
+
+	::zspawn::
+
+	if #self.ZombieSpawnpoints == 0 then return end
 
 	for k, v in RandomPairs(self.ZombieSpawnpoints) do
-		local pos = v[1]
-		local ang = v[2]
-
-		local dontspawn = false
-		for _, v in ipairs(ents.FindInSphere(pos, 200)) do
-			if v:IsNextBot() or v:IsNPC() or v:IsPlayer() then dontspawn = false break end
-		end
-		if dontspawn then continue end
-		for _, v in ipairs(ents.FindInSphere(pos, 1000)) do
-			if v:IsPlayer() then dontspawn = false break end
-		end
-		if dontspawn then continue end
-
-		self:SpawnRandomBoss(pos + Vector(0, 0, 40), ang, plycountoverride, nonotify)
-		break
+		if spawnBossFunc(k, v, plycountoverride, nonotify) then return end
 	end
 end
 

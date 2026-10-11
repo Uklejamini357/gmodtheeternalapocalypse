@@ -158,8 +158,7 @@ end
 local function cantarget(self, ent)
 	if self == ent then return false end
 	if !IsValid(ent) then return false end
-	if GAMEMODE.Config["ZombieClasses"][ent:GetClass()] then return false end
-	if GAMEMODE.Config["BossClasses"][ent:GetClass()] then return false end
+	if ent.IsZombie then return false end
 
 	if (ent:IsNPC() or ent:IsNextBot()) and !ent.IsZombie and ent:Health() > 0 then
 		if ent.VJ_NPC_Class then
@@ -265,7 +264,7 @@ function ENT:RunBehaviour()
 					local slammed = ents.FindInSphere(self:GetPos(), 1000)
 
 					for k, v in pairs(slammed) do
-						if v:IsPlayer() and v:Alive() and v:IsOnGround() then 
+						if cantarget(self, v) and v:IsOnGround() then 
 							local dmginfo = DamageInfo()
 							dmginfo:SetAttacker(self)
 							dmginfo:SetInflictor(self)
@@ -391,20 +390,8 @@ function ENT:RunBehaviour()
 			})
 
 			if (!self.target) then
-				for k, v in player.Iterator() do
-					if (v:Alive() and (self:GetRangeTo(v) <= (2500 * self.RageLevel) or GAMEMODE.ZombieApocalypse) and not (v:IsFlagSet(FL_NOTARGET) or v.AdminMode)) then
---						self:AlertNearby(v)
-						self.target = v
---						self:PlaySequenceAndWait("wave_smg1", 0.9)
-						if self.CanScream == true then
-							self:EmitSound("npc/ichthyosaur/attack_growl1.wav", 100, 100)
-							self.CanScream = false
-						end
-						break
-					end
-				end
+				self:FindTarget()
 			end
-
 
 --idk what this one does
 --			if (math.random(1, 8) == 2) then
@@ -419,13 +406,14 @@ function ENT:RunBehaviour()
 --			end
 
 		end
+
 		coroutine.yield()
 	end
 end
 
 function ENT:FindTarget()
 	local targets = {}
-	for _, ent in pairs(ents.FindInSphere(self:GetPos(), 1200 * self.RageLevel)) do
+	for _, ent in pairs(ents.FindInSphere(self:GetPos(), 2500 * self.RageLevel)) do
 		if cantarget(self, ent) then
 			targets[ent] = self:GetRangeTo(ent)
 		end

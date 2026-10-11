@@ -21,11 +21,11 @@ end)
 
 function GM:SaveLog()
 	if self.Config["DebugLogging"] ~= true then return end
+	if #self.DebugLogs == 0 then return end
 
 	local TimeStr = os.date("%H:%M:%S")
 	local DateStr = os.date("%d/%m/%Y")
 	local filename = string.Replace(DateStr, "/", "_")..".txt"
-	self:DebugLog("Logs have been saved.\n")
 
 	local StringToWrite = ""
 	for k, v in pairs(self.DebugLogs) do
@@ -42,8 +42,9 @@ function GM:SaveLog()
 		file.Write(self.DataFolder.."/logs/"..filename, StringToWrite )
 	end
 
+	self:DebugLog("Logs have been saved.\n")
 	print("The Eternal Apocalypse: Saved logs at "..TimeStr.." to data/"..self.DataFolder.."/logs/"..filename)
-	self.DebugLogs = {}
+	table.Empty(self.DebugLogs)
 end
 timer.Create("ate_savelogs_timer", 480, 0, function()
 	gamemode.Call("SaveLog")

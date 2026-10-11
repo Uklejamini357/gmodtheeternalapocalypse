@@ -15,9 +15,10 @@ local diffdamage = {
 }
 local env_classes = {"trigger_hurt", "point_hurt", "entityflame", "env_fire"}
 
+local bit_band = bit.band
 function MT_PLAYER:ProcessPlayerDamage(dmginfo)
 	local attacker = dmginfo:GetAttacker()
-	local directdmg = bit.band(DMG_DIRECT, dmginfo:GetDamageType()) ~= 0
+	local directdmg = bit_band(DMG_DIRECT, dmginfo:GetDamageType()) ~= 0
 
 	if self.SpawnProtected then
 		dmginfo:SetDamage(0)
@@ -37,22 +38,25 @@ function MT_PLAYER:ProcessPlayerDamage(dmginfo)
 	local armorvalue = 0
 	local plyarmor = self:GetEquippedArmor()
 	
-	if attacker:IsPlayer() then
-		dmginfo:SetDamage(dmginfo:GetDamage() * self:GetArmorDamageMultiplier())
-	elseif env_classes[dmginfo:GetAttacker():GetClass()] then
-		dmginfo:SetDamage(dmginfo:GetDamage() * self:GetArmorEnvDamageMultiplier())
-	elseif bit.band(dmginfo:GetDamageType(), DMG_BULLET) ~= 0 or bit.band(dmginfo:GetDamageType(), DMG_SLASH) ~= 0 or bit.band(dmginfo:GetDamageType(), DMG_BLAST) ~= 0 then
-		dmginfo:SetDamage(dmginfo:GetDamage() * self:GetArmorDamageMultiplier())
-	end
+	if !directdmg then
+		if attacker:IsPlayer() then
+			dmginfo:SetDamage(dmginfo:GetDamage() * self:GetArmorDamageMultiplier())
+		elseif env_classes[dmginfo:GetAttacker():GetClass()] then
+			dmginfo:SetDamage(dmginfo:GetDamage() * self:GetArmorEnvDamageMultiplier())
+		elseif bit_band(dmginfo:GetDamageType(), DMG_BULLET) ~= 0 or bit_band(dmginfo:GetDamageType(), DMG_SLASH) ~= 0 or bit_band(dmginfo:GetDamageType(), DMG_BLAST) ~= 0
+		or bit_band(dmginfo:GetDamageType(), DMG_BLAST_SURFACE) ~= 0 or bit_band(dmginfo:GetDamageType(), DMG_NEVERGIB) ~= 0 or bit_band(dmginfo:GetDamageType(), DMG_ALWAYSGIB) ~= 0 then
+			dmginfo:SetDamage(dmginfo:GetDamage() * self:GetArmorDamageMultiplier())
+		end
 
-	if dmginfo:GetDamageType() == DMG_CRUSH and attackerclass == "obj_bigrock" then
-		dmginfo:SetDamage(1 + (dmginfo:GetDamage() * 0.01))
-	elseif dmginfo:GetDamageType() == DMG_CRUSH then
-		dmginfo:ScaleDamage(0.5)
-	end
+		if dmginfo:GetDamageType() == DMG_CRUSH and attackerclass == "obj_bigrock" then
+			dmginfo:SetDamage(1 + (dmginfo:GetDamage() * 0.01))
+		elseif dmginfo:GetDamageType() == DMG_CRUSH then
+			dmginfo:ScaleDamage(0.5)
+		end
 
-	if !directdmg and self:HasPerk("damageresistance") then
-		dmginfo:ScaleDamage(0.925)
+		if self:HasPerk("damageresistance") then
+			dmginfo:ScaleDamage(0.925)
+		end
 	end
 
 
@@ -114,7 +118,12 @@ end
 
 function MT_ENTITY:ProcessDamage(dmginfo)
 	local attacker = dmginfo:GetAttacker()
-	local directdmg = bit.band(DMG_DIRECT, dmginfo:GetDamageType()) ~= 0
+	local directdmg = bit_band(DMG_DIRECT, dmginfo:GetDamageType()) ~= 0
+
+	if attacker.m_DamageMult then
+		dmginfo:ScaleDamage(attacker.m_DamageMult)
+	end
+
 	if attacker:IsPlayer() then
 		if IsMeleeDamage(dmginfo:GetDamageType()) then
 			dmginfo:ScaleDamage(1 + (0.01 * attacker.StatStrength) + attacker:GetMasteryEffectiveStat("Melee"))
@@ -149,7 +158,7 @@ end
 function MT_ENTITY:ProcessNPCDamage(dmginfo)
 	local attacker = dmginfo:GetAttacker()
 	local inflictor = dmginfo:GetInflictor()
-	local directdmg = bit.band(DMG_DIRECT, dmginfo:GetDamageType()) ~= 0
+	local directdmg = bit_band(DMG_DIRECT, dmginfo:GetDamageType()) ~= 0
 	if attacker == NULL then return true end
 	if attacker:GetClass() == "tea_trader" or attacker:GetClass() == "tea_taskdealer" then return false end
 

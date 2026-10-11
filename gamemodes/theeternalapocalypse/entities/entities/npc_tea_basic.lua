@@ -286,8 +286,7 @@ end
 local function cantarget(self, ent)
 	if self == ent then return false end
 	if !IsValid(ent) then return false end
-	if GAMEMODE.Config["ZombieClasses"][ent:GetClass()] then return false end
-	if GAMEMODE.Config["BossClasses"][ent:GetClass()] then return false end
+	if ent.IsZombie then return false end
 
 	if (ent:IsNPC() or ent:IsNextBot()) and !ent.IsZombie and ent:Health() > 0 then
 		if ent.VJ_NPC_Class then
