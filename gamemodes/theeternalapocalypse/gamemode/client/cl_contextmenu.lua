@@ -80,7 +80,7 @@ function GM:CMenu()
 				local class = wep:GetClass()
 				local delay = math.Round(wep.Delay or wep_prim.Delay or 1 / ((wep.RPM or wep_prim.RPM or 1) / 60) or 1, 3)
 
-				local numshots = wep.Num or wep_prim.NumberOfShots or (wep_prim.NumberofShots + wep.SGNOSLossAmount) or wep_prim.NumShots
+				local numshots = wep.Num or wep_prim.NumberOfShots or wep_prim.NumShots or (wep_prim.NumberofShots or 0) + (wep.SGNOSLossAmount or 0)
 				local usemulshots = numshots and numshots ~= 0 and numshots ~= 1
 				local dmg,dmgmin = wep.DamageMax or wep.Damage or wep_prim.Damage or wep_prim.DamageBalanced or 0, wep.DamageMin
 				draw.DrawText(translate.Format("wep_damage",

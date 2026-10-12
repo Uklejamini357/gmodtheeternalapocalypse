@@ -580,7 +580,7 @@ function GM:NPCReward(ent)
 end
 
 
-function GM:Payout(ply, xp, cash)
+function GM:Payout(ply, xp, cash, msg)
 	if !ply or !ply:IsValid() or !ply:IsPlayer() or ply == NULL then return end
 	local TXPGain = (xp * (self:XPBonus(ply) or 1))
 	local TMoneyGain = cash
@@ -601,6 +601,7 @@ function GM:Payout(ply, xp, cash)
 	net.Start("Payout")
 	net.WriteFloat(TXPGain)
 	net.WriteFloat(TMoneyGain)
+	net.WriteString(msg or "")
 	net.Send(ply)
 
 	if ply.MaxLevelTime < CurTime() and tonumber(ply.Level) >= ply:GetMaxLevel() then

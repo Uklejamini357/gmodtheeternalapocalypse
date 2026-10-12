@@ -235,6 +235,8 @@ function GM:Think()
 		end
 	end
 
+	self:NotificationThink()
+
 	if me:Alive() then
 		self.LastAliveTime = CurTime()
 		me.PlayerDead = nil
@@ -410,6 +412,61 @@ function GM:Initialize()
 	self.MyLastSurvivalStats.BestSurvivalTime = 0
 	self.MyLastSurvivalStats.PlayerKills = 0
 	self.MyLastSurvivalStats.ZombieKills = 0
+
+	self.NotificationsCounter = 0
+	self.NotificationsList = {}
+	self.NotificationsListDone = {}
+end
+
+function GM:AddNotification(msg, color)
+	self.NotificationsCounter = self.NotificationsCounter + 1
+	self.NotificationsList[self.NotificationsCounter] = {
+		Text = msg,
+		CurText = "",
+		TextTime = math.max(math.min(3, #msg/7), math.min(4, #msg/11)),
+		Col = (color and color or color_white):Copy(),
+		Time = SysTime()
+	}
+end
+
+function GM:NotificationThink()
+	for i, n in pairs(self.NotificationsListDone) do
+		if !n.Expire or n.Expire < SysTime() then
+			self.NotificationsListDone[i] = nil
+		elseif n.Expire and n.Expire < SysTime()+1 then
+			n.Col.a = math.min(255, 255 * (n.Expire - SysTime()))
+		end
+
+		break
+	end
+
+	for i, n in pairs(self.NotificationsList) do
+		if !n.Started then
+			n.Started = SysTime()
+		end
+
+		n.CurText = n.Text:sub(0, #n.Text * (SysTime() - n.Started)/n.TextTime)
+		if n.CurText == n.Text then
+			n.Expire = SysTime() + 10
+			self.NotificationsListDone[i] = n
+			self.NotificationsList[i] = nil
+			continue
+		end
+		break
+	end
+end
+
+function GM:NotificationDraw()
+	local y = 180
+	for i, n in pairs(self.NotificationsListDone) do
+		draw.DrawText(n.CurText, "TEA.HUDFont", ScrW()-20, ScrH() - y, n.Col, TEXT_ALIGN_RIGHT)
+		y = y + 25
+	end
+
+	for i, n in pairs(self.NotificationsList) do
+		draw.DrawText(n.CurText, "TEA.HUDFont", ScrW()-20, ScrH() - y, n.Col, TEXT_ALIGN_RIGHT)
+		y = y + 25
+	end
 end
 
 function GM:InitPostEntity()

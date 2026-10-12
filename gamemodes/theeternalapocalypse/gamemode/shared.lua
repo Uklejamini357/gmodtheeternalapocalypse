@@ -4,7 +4,7 @@ GM.Author	= "Uklejamini"
 GM.Email	= ""
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
 GM.Version	= "0.13.0b"
-GM.DateVer	= "11.10.2026" -- Follows the DD.MM.YYYY format.
+GM.DateVer	= "12.10.2026" -- Follows the DD.MM.YYYY format.
 GM.Credits = {
 	{"LegendOfRobbo",			"Created After The End gamemode",											"Back in 2015. It's such a great gamemode!"},
 
@@ -25,6 +25,7 @@ local color_change = Color(255,210,255)
 local color_balance = Color(255,255,210)
 local color_fix = Color(210,255,255)
 GM.RecentChangelogs = {
+	{"+ Added new notifications system that display on bottom-right (just above the ammo hud element)", color_add},
 	{"I can't add all of my changelogs at the moment. You're gonna wait a bit till I release changelogs fully.", color_add},
 
 	-- {"= Tormented Wraith's ability now activates at 650 range and also gives +10% speed instead of +5%", color_balance},
@@ -507,8 +508,8 @@ function GM:GetItemDescription(id, ply) -- ply is for the server
 	local wep = item.WeaponType and weapons.Get(item.WeaponType)
 	if wep and wep.Primary then
 		local wep_prim = wep.Primary
-		local dmg,dmgmin = wep.DamageMax or wep.Damage or wep_prim.Damage or 0, wep.DamageMin
-		local numshots = wep.Num or wep_prim.NumberOfShots or wep_prim.NumberofShots or wep_prim.NumShots or 1
+		local dmg,dmgmin = wep.DamageMax or wep.Damage or wep_prim.Damage or wep_prim.DamageBalanced or 0, wep.DamageMin
+		local numshots = wep.Num or wep_prim.NumberOfShots or wep_prim.NumberofShots or wep_prim.NumShots or (wep_prim.NumberofShots or 1) + (wep.SGNOSLossAmount or 0)
 		local delay = (wep.Delay or wep_prim.Delay or wep.RPM or wep_prim.RPM) and math.Round(wep.Delay or wep_prim.Delay or 1 / ((wep.RPM or wep_prim.RPM or 1) / 60) or 1, 3)
 		local clipsize = wep.ClipSize or wep_prim.ClipSize
 		local recoil = wep.Recoil or wep_prim.Recoil

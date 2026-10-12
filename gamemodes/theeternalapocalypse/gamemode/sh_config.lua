@@ -583,7 +583,7 @@ GM:AddZombieClass("npc_vj_f3r_mirelurkswampque", {
 })
 
 GM:AddZombieClass("npc_vj_f3r_radscor_glow", {
-	Name = "Glowing Radscorpion",
+	Name = "Giant Glowscorpion",
 	Description = "Be careful around it!",
 	XPReward = 495,
 	MoneyReward = 250,

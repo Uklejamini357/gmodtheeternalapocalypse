@@ -46,49 +46,30 @@ end)
 
 
 
-local XPColor = Color(255, 255, 255, 0)
-local XPGained = 0
-local TotalXPGained = 0
-local MoneyColor = Color(255, 255, 255, 0)
-local MoneyGained = 0
-local TotalMoneyGained = 0
-local MasteryType = 0
-local MasteryXPGained = 0
-local MasteryColor = Color(205, 205, 205, 0)
-
 function GM:HUDDrawTargetID()
 	return false
 end
 
 net.Receive("Payout", function(length)
-	XPGained = net.ReadFloat()
-	MoneyGained = net.ReadFloat()
+	local xp = net.ReadFloat()
+	local cash = net.ReadFloat()
+	local msg = net.ReadString()
 
-	TotalXPGained = TotalXPGained + XPGained
-	TotalMoneyGained = TotalMoneyGained + MoneyGained
-
-	if XPGained != 0 then
-		XPColor = Color(255,255,255,155)
+	if xp == 0 then -- cash
+		GAMEMODE:AddNotification(Format("You gained %d cash"..(msg ~= "" and " for "..msg.."!" or "!"), cash))
+	elseif cash == 0 then -- xp
+		GAMEMODE:AddNotification(Format("You gained %d XP"..(msg ~= "" and " for "..msg.."!" or "!"), xp))
+	else -- both
+		GAMEMODE:AddNotification(Format("You gained %d XP and %d cash"..(msg ~= "" and " for "..msg.."!" or "!"), xp, cash))
 	end
-	if MoneyGained != 0 then
-		MoneyColor = Color(255,255,255,155)
-	end
-	timer.Create("payout_timer", 2.75, 1, function()
-		XPColor = Color(255, 255, 255, 0)
-		TotalXPGained = 0
-		MoneyColor = Color(255, 255, 255, 0)
-		TotalMoneyGained = 0
-	end)
 end)
 
 net.Receive("GainMasteryProgress", function(length)
 	local masterytype = net.ReadString()
 	local masteryxpgain = net.ReadFloat()
+	local msg = net.ReadString()
 
-	MasteryType = masterytype
-	MasteryXPGained = masteryxpgain
-	if MasteryXPGained != 0 then MasteryColor = Color(205, 205, 205, 255) end
-	timer.Create("gainmasteryprogress_timer", 3.35, 1, function() MasteryColor = Color(205, 205, 205, 0) end)
+	GAMEMODE:AddNotification(Format("You gained %d %s Mastery XP"..(msg ~= "" and " for "..msg.."!" or "!"), masteryxpgain, masterytype))
 end)
 
 net.Receive("UpdateRespawnTimer", function(length)
@@ -490,7 +471,8 @@ function GM:PostDrawHUD()
 
 	--XP, Money & Mastery gain texts
 	cam.Start2D()
-	draw.SimpleText(translate.Format("masteryxpgained", MasteryXPGained, MasteryType), "TEA.HUDFontSmall", 140, 40, MasteryColor, 0, 1)
+
+	self:NotificationDraw()
 
 	if !me:Alive() and self:GetEvent() == EVENT_NONE then
 		if hud and hud.DrawDead then
@@ -525,9 +507,6 @@ function GM:PostDrawHUD()
 		draw.SimpleText("You might be forced to wake up if you get too thirsty, hungry or the infection is about to kill you.", "TEA.HUDFontSmall", ScrW() / 2, ScrH() / 2 + 40, Color(255,255,255,205), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 		draw.SimpleText("Estimated time until fatigue is replenished: "..math.Round(me.Fatigue/200).."s", "TEA.HUDFontSmall", ScrW() / 2, ScrH() / 2 + 80, Color(255,255,255,205), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 	end
-
-	draw.SimpleText(translate.Format("xpgained", XPGained, TotalXPGained), "TEA.HUDFont", ScrW() / 2 + 10, ScrH() / 2, XPColor, 0, 1)
-	draw.SimpleText(translate.Format("cashgained", MoneyGained, TotalMoneyGained), "TEA.HUDFont", ScrW() / 2 + 10, ScrH() / 2 + 18, MoneyColor, 0, 1)
 
 	if self.DrawVersionOnHUD then
 		local glow = 127 + math.abs(math.sin(CurTime() * 0.74) * 128)
