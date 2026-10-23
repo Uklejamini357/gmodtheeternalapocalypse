@@ -4,7 +4,7 @@ GM.Author	= "Uklejamini"
 GM.Email	= ""
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
 GM.Version	= "0.13.0b"
-GM.DateVer	= "12.10.2026" -- Follows the DD.MM.YYYY format.
+GM.DateVer	= "23.10.2026" -- Follows the DD.MM.YYYY format.
 GM.Credits = {
 	{"LegendOfRobbo",			"Created After The End gamemode",											"Back in 2015. It's such a great gamemode!"},
 
@@ -105,6 +105,7 @@ end
 include("sh_globals.lua") -- globals
 include("sh_translate.lua") -- translation file
 include("sh_convars.lua")
+include("sh_util.lua")
 
 include("sh_player.lua") -- function for player
 include("sh_items.lua") -- items for inventory
@@ -201,11 +202,11 @@ function GM:CheckItemRarity(rarity)
 		tbl.col = Color(252,98,56)
 		tbl.text = translate.Get("mythic")
 	elseif rarity == RARITY_GODLY then
-		tbl.col = Color(math.abs(math.sin(SysTime()))*255,0,155)
+		tbl.col = Color(math.abssin(SysTime())*255,0,155)
 		tbl.text = translate.Get("godly")
 		tbl.keeprefresh = true
 	elseif rarity == RARITY_EVENT then
-		tbl.col = Color(55,55,155+math.abs(math.sin(SysTime()))*100)
+		tbl.col = Color(55,55,155+math.abssin(SysTime())*100)
 		tbl.text = translate.Get("event")
 		tbl.keeprefresh = true
 	elseif rarity == RARITY_UNOBTAINABLE then

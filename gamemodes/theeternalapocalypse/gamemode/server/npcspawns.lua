@@ -104,7 +104,7 @@ end
 function GM:AddBossSpawnpoint(pos, yaw)
 	table.insert(self.BossSpawnpoints, {pos, Angle(0, yaw, 0)})
 	
-	self:SaveZombieSpawnpoints()
+	self:SaveBossSpawnpoints()
 	self:UpdateAdminEyes("Bosses")
 	return true
 end

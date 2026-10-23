@@ -778,6 +778,7 @@ function meta:LoadLastSession()
 			end
 		end
 
+		GAMEMODE:NetUpdatePeriodicStats(self)
 		self.LastSessionInfo = nil
 	end
 end

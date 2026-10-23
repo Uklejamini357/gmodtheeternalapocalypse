@@ -216,6 +216,23 @@ COLOR_ACTION = Color(205,205,255)
 
 VECTOR_ZERO = Vector(0,0,0)
 
+-- armor protection types (if a specific damage is multiple of, the multipliers add up, then divide by the amount of damage types.)
+DMGTYPE_BULLET = 1 -- Bullet damage (DMG_BULLET, DMG_AIRBOAT, DMG_BUCKSHOT, DMG_SNIPER)
+DMGTYPE_MELEE = 2 -- Melee damage (DMG_SLASH, DMG_CLUB)
+DMGTYPE_BLAST = 3 -- Explosive damage (DMG_BLAST, DMG_BLAST_SURFACE)
+DMGTYPE_PHYS = 4 -- Physical damage (DMG_CRUSH, DMG_VEHICLE)
+DMGTYPE_FIRE = 5 -- Fire damage. (DMG_BURN, DMG_SLOWBURN)
+DMGTYPE_ELECTRIC = 6 -- Electric damage. (DMG_SHOCK)
+DMGTYPE_POISON = 7 -- Poison damage. (DMG_POISON)
+DMGTYPE_CHEM = 8 -- Chemical damage. (DMG_ACID)
+DMGTYPE_RAD = 9 -- Radiation damage. (DMG_RADIATION)
+DMGTYPE_ENERGY = 10 -- Energy damage. (DMG_ENERGYBEAM, DMG_PLASMA) -- plasma counts as energy too, does it?
+
+STATS_STATE_SAFE = 0
+STATS_STATE_WARNING = 1
+STATS_STATE_SEVERE = 2 -- this one for infection
+STATS_STATE_CRITICAL = 3
+STATS_STATE_DYING = 4
 
 --- ↓ Do. Not. Touch. ↓
 --- It's not even implemented yet. ---

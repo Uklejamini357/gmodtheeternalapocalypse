@@ -16,11 +16,14 @@ function HUD:DrawHealth(pl, w, h, swep)
     local map = pl:GetMaxArmor()
     local cansprint = pl:GetCanSprint()
 
+    local time = SysTime()
+    local crittime = math.abssinpos(time * math.pi)
+
 ---------------- HEALTH ----------------
     draw_RoundedBox(1, 10, h - 110, 180, 100, Color(0, 0, 0, 175))
     surface_SetDrawColor(90, 0, 0, 255)
     surface_DrawOutlinedRect(10, h - 110, 180, 100)
-    draw_SimpleText(translate.Format("health", hp, mhp), "TEA.HUDFontSmall", 21, h - 96, Color(math.Clamp(255 * (hp / mhp), 127, 255),48,48,255), 0, 1)
+    draw_SimpleText(translate.Format("health", hp, mhp), "TEA.HUDFontSmall", 21, h - 96, Color(math.Clamp(255 * (hp / mhp), 127, 255),48,48), 0, 1)
     draw_RoundedBox(2, 20, h - 86, 160, 20, Color(50, 0, 0, 160))
     if hp > 0 then
         local hpbarclamp = math.Clamp(160 * (hp / mhp), 0, 160)
@@ -29,7 +32,7 @@ function HUD:DrawHealth(pl, w, h, swep)
     end
 
 ---------------- ARMOR ----------------
-    draw_SimpleText(translate.Format("armor", ap, map), "TEA.HUDFontSmall", 21, h - 50, Color(48,48,math.Clamp(255 * (ap / map), 127, 255),255), 0, 1)
+    draw_SimpleText(translate.Format("armor", ap, map), "TEA.HUDFontSmall", 21, h - 50, Color(48,48,math.Clamp(255 * (ap / map), 127, 255)), 0, 1)
     draw_RoundedBox(2, 20, h - 36, 160, 20, Color(0, 0, 50, 160))
     if ap > 0 then
         local armorbarclamp = math.Clamp(160 * (ap / map),0,160)
@@ -68,26 +71,30 @@ function HUD:DrawHealth(pl, w, h, swep)
     end
 
 -------------- Hunger --------------
-    draw_SimpleText(translate.Format("hunger", math.Round(pl.Hunger / 100, GAMEMODE.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 210, h - 150, Color(255, 205, 255, 255), 0, 1)
-    draw_RoundedBox(2, 210, h - 140, 160, 15, Color(50, 0, 50, 100))
+    draw_SimpleText(translate.Format("hunger", math.Round(pl.Hunger / 100, GAMEMODE.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 210, h - 150, Color(255, 205, 255):Lerp(Color(255,0,0), pl.FatigueState >= STATS_STATE_DYING and crittime or 0), 0, 1)
+    draw_RoundedBox(2, 210, h - 140, 160, 15, Color(50, 0, 50, 100):Lerp(Color(255,0,0,100), pl.HungerState >= STATS_STATE_CRITICAL and crittime or 0))
     if (pl.Hunger / 100) > 0 then
         local hungerbarclamp = math.Clamp((pl.Hunger / 100) * 1.6, 0, 160)
-        draw_RoundedBox(4, 210, h - 140, hungerbarclamp, 15, Color(90, 0, 120, 160))
-        draw_RoundedBox(4, 210, h - 140, hungerbarclamp, 8, Color(120, 0, 120, 80))
+        draw_RoundedBox(4, 210, h - 140, hungerbarclamp, 15, Color(90, 0, 120, 160):Lerp(Color(255,0,0,160), pl.HungerState >= STATS_STATE_CRITICAL and crittime or 0))
+        draw_RoundedBox(4, 210, h - 140, hungerbarclamp, 8, Color(120, 0, 120, 80):Lerp(Color(255,0,0,80), pl.HungerState >= STATS_STATE_CRITICAL and crittime or 0))
     end
 
 -------------- Thirst --------------
-    draw_SimpleText(translate.Format("thirst", math.Round(pl.Thirst / 100, GAMEMODE.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 210, h - 114, Color(155,155,255,255), 0, 1)
-    draw_RoundedBox(2, 210, h - 104, 160, 15, Color(45, 45, 75, 100))
+    local thcol = Color(155,155,255)
+    if pl.ThirstState == STATS_STATE_DYING then
+        thcol = thcol:Lerp(Color(255,0,0), crittime)
+    end
+    draw_SimpleText(translate.Format("thirst", math.Round(pl.Thirst / 100, GAMEMODE.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 210, h - 114, thcol, 0, 1)
+    draw_RoundedBox(2, 210, h - 104, 160, 15, Color(45,45,75,100):Lerp(Color(255,0,0,100), pl.ThirstState >= STATS_STATE_CRITICAL and crittime or 0))
     if (pl.Thirst / 100) > 0 then
         local thirstbarclamp = math.Clamp((pl.Thirst / 100) * 1.6, 0, 160)
-        draw_RoundedBox(4, 210, h - 104, thirstbarclamp, 15, Color(155,155,255,255))
-        draw_RoundedBox(4, 210, h - 104, thirstbarclamp, 8, Color(155,155,255,255))
+        draw_RoundedBox(4, 210, h - 104, thirstbarclamp, 15, thcol)
+        draw_RoundedBox(4, 210, h - 104, thirstbarclamp, 8, thcol)
     end
 
 -------------- Fatigue --------------
-    draw_SimpleText(translate.Format("fatigue", math.Round(pl.Fatigue / 100, GAMEMODE.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 210, h - 78, Color(205,205,255,255), 0, 1)
-    draw_RoundedBox(2, 210, h - 68, 160, 15, Color(0, 50, 50, 100))
+    draw_SimpleText(translate.Format("fatigue", math.Round(pl.Fatigue / 100, GAMEMODE.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 210, h - 78, Color(205,205,255):Lerp(Color(255,0,0), pl.FatigueState >= STATS_STATE_DYING and crittime or 0), 0, 1)
+    draw_RoundedBox(2, 210, h - 68, 160, 15, Color(0, 50, 50, 100):Lerp(Color(255,0,0,100), pl.FatigueState >= STATS_STATE_CRITICAL and crittime or 0))
     if (pl.Fatigue / 100) > 0 then
         local fatiguebarclamp = math.Clamp((pl.Fatigue / 100) * 1.6, 0, 160)
         draw_RoundedBox(4, 210, h - 68, fatiguebarclamp, 15, Color(0, 80, 80, 160))
@@ -95,8 +102,8 @@ function HUD:DrawHealth(pl, w, h, swep)
     end
 
 -------------- Infection --------------
-    draw_SimpleText(translate.Format("infection", math.Round(pl.Infection / 100, GAMEMODE.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 210, h - 42, Color(205, 105, 105, 255), 0, 1)
-    draw_RoundedBox(2, 210, h - 32, 160, 15, Color(80, 0, 0, 100))
+    draw_SimpleText(translate.Format("infection", math.Round(pl.Infection / 100, GAMEMODE.HUDDecimalValues and 1 or 0)), "TargetIDTiny", 210, h - 42, Color(205,105,105):Lerp(Color(255,0,100), pl.InfectionState >= STATS_STATE_DYING and crittime or 0), 0, 1)
+    draw_RoundedBox(2, 210, h - 32, 160, 15, Color(80, 0, 0, 100):Lerp(Color(255,0,100,250), pl.InfectionState >= STATS_STATE_CRITICAL and crittime or 0))
     if (pl.Infection / 100) > 0 then
         local infectionbarclamp = math.Clamp((pl.Infection / 100) * 1.6, 0, 160)
         draw_RoundedBox(4, 210, h - 32, infectionbarclamp, 15, Color(250, 0, 0, 160))

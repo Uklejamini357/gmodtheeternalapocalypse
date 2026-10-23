@@ -15,7 +15,9 @@ local diffdamage = {
 }
 local env_classes = {"trigger_hurt", "point_hurt", "entityflame", "env_fire"}
 
+
 local bit_band = bit.band
+
 function MT_PLAYER:ProcessPlayerDamage(dmginfo)
 	local attacker = dmginfo:GetAttacker()
 	local directdmg = bit_band(DMG_DIRECT, dmginfo:GetDamageType()) ~= 0
@@ -43,7 +45,7 @@ function MT_PLAYER:ProcessPlayerDamage(dmginfo)
 			dmginfo:SetDamage(dmginfo:GetDamage() * self:GetArmorDamageMultiplier())
 		elseif env_classes[dmginfo:GetAttacker():GetClass()] then
 			dmginfo:SetDamage(dmginfo:GetDamage() * self:GetArmorEnvDamageMultiplier())
-		elseif bit_band(dmginfo:GetDamageType(), DMG_BULLET) ~= 0 or bit_band(dmginfo:GetDamageType(), DMG_SLASH) ~= 0 or bit_band(dmginfo:GetDamageType(), DMG_BLAST) ~= 0
+		elseif bit_band(dmginfo:GetDamageType(), DMG_BULLET) ~= 0 or bit_band(dmginfo:GetDamageType(), DMG_SLASH) ~= 0 or bit_band(dmginfo:GetDamageType(), DMG_CLUB) ~= 0 or bit_band(dmginfo:GetDamageType(), DMG_BLAST) ~= 0
 		or bit_band(dmginfo:GetDamageType(), DMG_BLAST_SURFACE) ~= 0 or bit_band(dmginfo:GetDamageType(), DMG_NEVERGIB) ~= 0 or bit_band(dmginfo:GetDamageType(), DMG_ALWAYSGIB) ~= 0 then
 			dmginfo:SetDamage(dmginfo:GetDamage() * self:GetArmorDamageMultiplier())
 		end

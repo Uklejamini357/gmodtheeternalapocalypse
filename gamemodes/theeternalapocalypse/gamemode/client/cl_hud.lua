@@ -21,16 +21,161 @@ net.Receive("tea_updatestamina", function(len) -- this net message is received o
 	pl.Oxygen = net.ReadFloat()
 end)
 
+
+local color_death = Color(255,0,0)
+local color_critical = Color(255,47,0)
+local color_severe = Color(255,96,0)
+local color_warn = Color(255,192,0)
+
+local stateSafe = STATS_STATE_SAFE
+local stateWarning = STATS_STATE_WARNING
+local stateSevere = STATS_STATE_SEVERE
+local stateCritical = STATS_STATE_CRITICAL
+local stateDying = STATS_STATE_DYING
 net.Receive("UpdateStats", function(len) -- this net message is received once every second
 	local pl = LocalPlayer()
 
 	if not pl:IsValid() then return end
-	pl.Hunger = net.ReadFloat()
-	pl.Thirst = net.ReadFloat()
-	pl.Fatigue = net.ReadFloat()
-	pl.Infection = net.ReadFloat()
-	pl.SurvivalTime = net.ReadFloat()
-	pl.Battery = net.ReadFloat()
+	local newHunger = net.ReadFloat()
+	local newThirst = net.ReadFloat()
+	local newFatigue = net.ReadFloat()
+	local newInfection = net.ReadFloat()
+	local newBattery = net.ReadFloat()
+
+	if pl:Alive() then -- check stats whether they need attention
+		if pl.Hunger then
+			local low = 3000
+			local crit = 1000
+			local dying = 0
+
+			if newHunger > low then
+				pl.HungerState = stateSafe
+			elseif pl.Hunger > low and newThirst > crit then
+				if newHunger <= low then
+					GAMEMODE:AddNotification("Your hunger is running low. You should probably eat something.", color_warn)
+					pl.HungerState = stateWarning
+				end
+			elseif pl.Hunger > crit and newThirst > dying then
+				if newHunger <= crit then
+					GAMEMODE:AddNotification("Your hunger is critical. You should probably eat something now.", color_critical)
+					pl.HungerState = stateCritical
+				end
+				pl.HungerState = stateWarning
+			elseif pl.Hunger > dying then
+				if newHunger <= dying then
+					GAMEMODE:AddNotification("You are dying from hunger. Eat something immediately!", color_death)
+					pl.HungerState = stateDying
+				else
+					pl.HungerState = stateCritical
+				end
+			else
+				pl.HungerState = stateDying
+			end
+		end
+		
+		if pl.Thirst then
+			local low = 3000
+			local crit = 1000
+			local dying = 0
+
+			if newThirst > low then
+				pl.ThirstState = stateSafe
+			elseif pl.Thirst > low and newThirst > crit then
+				if newThirst <= low then
+					GAMEMODE:AddNotification("Your thirst is running low. You should probably get something to drink.", color_warn)
+					pl.ThirstState = stateWarning
+				end
+			elseif pl.Thirst > crit and newThirst > dying then
+				if newThirst <= crit then
+					GAMEMODE:AddNotification("Your thirst is critical. You should probably drink something now.", color_critical)
+					pl.ThirstState = stateCritical
+				end
+				pl.ThirstState = stateWarning
+			elseif pl.Thirst > dying then
+				if newThirst <= dying then
+					GAMEMODE:AddNotification("You are dying from thirst. Drink something immediately!", color_death)
+					pl.ThirstState = stateDying
+				else
+					pl.ThirstState = stateCritical
+				end
+			else
+				pl.ThirstState = stateDying
+			end
+		end
+		
+		if pl.Fatigue then
+			local high = 7000
+			local crit = 9000
+			local dying = 10000
+
+			if newFatigue < high then
+				pl.FatigueState = stateSafe
+			elseif pl.Fatigue < high and newFatigue < crit then
+				if newFatigue >= high then
+					GAMEMODE:AddNotification("You are feeling tired. You might want to find a safe place and sleep it out.", color_warn)
+					pl.FatigueState = stateWarning
+				end
+			elseif pl.Fatigue < crit and newFatigue < dying then
+				pl.FatigueState = stateCritical
+				if newFatigue >= crit then
+					GAMEMODE:AddNotification("Your fatigue is critical. You should probably go to sleep now.", color_critical)
+					pl.FatigueState = stateWarning
+				end
+			elseif pl.Fatigue < dying then
+				if newFatigue >= dying then
+					GAMEMODE:AddNotification("Your lack of sleep is zapping away all your remaining energy. Use the bed or a sleeping bag now!!", color_death)
+					pl.FatigueState = stateDying
+				else
+					pl.FatigueState = stateCritical
+				end
+			else
+				pl.FatigueState = stateDying
+			end
+		end
+		
+		if pl.Infection then
+			local low = 1000
+			local severe = 5000
+			local crit = 9000
+			local dying = 10000
+
+			if newInfection < low then
+				pl.InfectionState = stateSafe
+			elseif pl.Infection < low and newInfection < severe then
+				if newInfection >= low then
+					GAMEMODE:AddNotification("Your Infection has reached low severity threshold. You might want to find the cure for it.", color_warn)
+					pl.InfectionState = stateWarning
+				end
+			elseif pl.Infection < severe and newInfection < crit then
+				pl.InfectionState = stateWarning
+				if newInfection >= severe then
+					GAMEMODE:AddNotification("Your Infection has reached medium severity threshold. You should probably cure the infection.", color_severe)
+					pl.InfectionState = stateSevere
+				end
+			elseif pl.Infection < crit and newInfection < dying then
+				pl.InfectionState = stateSevere
+				if newInfection >= crit then
+					GAMEMODE:AddNotification("Your infection has reached critical severity threshold. Cure it now, else you'll succumb to infection!", color_critical)
+					pl.InfectionState = stateCritical
+				end
+			elseif pl.Infection < dying then
+				pl.InfectionState = stateCritical
+				if newInfection >= dying then
+					pl.InfectionState = stateDying
+					GAMEMODE:AddNotification("You are succumbing to infection, cure it NOW!!", color_death)
+				end
+			else
+				pl.InfectionState = stateDying
+			end
+		end
+		
+	end
+
+	pl.Hunger = newHunger
+	pl.Thirst = newThirst
+	pl.Fatigue = newFatigue
+	pl.Infection = newInfection
+	pl.Battery = newBattery
 end)
 
 net.Receive("UpdatePeriodicStats", function(len) -- this net message is only received when one of these values need to be updated
@@ -38,6 +183,7 @@ net.Receive("UpdatePeriodicStats", function(len) -- this net message is only rec
 
 	if not pl:IsValid() then return end
 	pl.Money = net.ReadFloat()
+	pl.SurvivalTime = net.ReadFloat()
 	MyXP = net.ReadFloat()
 	MySP = net.ReadFloat()
 	MyPerkPoints = net.ReadFloat()
@@ -196,29 +342,6 @@ function GM:DrawVitals()
 
 	local cansprint = me:GetCanSprint()
 	-- local DGradientCenter = surface.GetTextureID("gui/center_gradient")
-
-	local glow = math.abs(math.sin(CurTime() * 1.7) * 255)
-	local y = 300
-
-	if me.Infection > 9000 then
-		draw.SimpleText(translate.Get("infection_high"), "TEA.HUDFont", 21, scrh - y, Color(255, glow, glow, 230), 0, 1)
-		y = y + 20
-	end
-
-	if me.Fatigue > 9000 then
-		draw.SimpleText(translate.Get("fatigue_high"), "TEA.HUDFont", 21, scrh - y, Color(255, glow, glow, 230), 0, 1)
-		y = y + 20
-	end
-
-	if me.Thirst < 1000 then
-		draw.SimpleText(translate.Get("thirst_low"), "TEA.HUDFont", 21, scrh - y, Color(255, glow, glow, 230), 0, 1)
-		y = y + 20
-	end
-
-	if me.Hunger < 1000 then
-		draw.SimpleText(translate.Get("hunger_low"), "TEA.HUDFont", 21, scrh - y, Color(255, glow, glow, 230), 0, 1)
-	end
-
 
 	local hud = self.HUDs[self.HUDStyle] or self.HUDs[1]
 	if hud and hud.DrawHealth then

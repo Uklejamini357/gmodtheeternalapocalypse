@@ -1,8 +1,10 @@
 AddCSLuaFile("cl_init.lua") -- clientside init file
 AddCSLuaFile("shared.lua")
+
 AddCSLuaFile("sh_globals.lua")
 AddCSLuaFile("sh_translate.lua")
 AddCSLuaFile("sh_convars.lua")
+AddCSLuaFile("sh_util.lua")
 
 AddCSLuaFile("sh_player.lua")
 AddCSLuaFile("sh_items.lua")
