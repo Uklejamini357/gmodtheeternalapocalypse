@@ -2,12 +2,12 @@
 --- (stalker npc spawns, vj spawns, etc. as i managed to make zombies target other npc's)
 ---------------- Humans! ----------------
 
-do return end -- aint finished with it yet
-
+-- aint finished with it yet
+do return end
 
 function GM:NPCHumanCount()
 	local livingHumans = 0
-	for k, v in pairs(self.Config["HumanClasses"]) do
+	for k, v in pairs(self.HumanSpawnClasses) do
 		for _, ent in ipairs(ents.FindByClass(k)) do livingHumans = livingHumans + 1 end
 	end
 
@@ -27,9 +27,10 @@ function GM:LoadHumanSpawns()
 			local v = string.Explode(";", str)
 			local pos = util.StringToType(v[1], "Vector")
 			local ang = util.StringToType(v[2], "Angle")
-			local tier = tonumber(v[3] or 1)
+			local class = v[3]
+			local weapon = v[4]
 
-			table.insert(tbl, {pos, ang, tier})
+			table.insert(tbl, {pos, ang, class})
 		end
 		self.HumanSpawnpoints = tbl
 
@@ -39,7 +40,7 @@ function GM:LoadHumanSpawns()
 	end
 end
 
-function GM:AddHumanSpawnpoint(pos, yaw, tier)
+function GM:AddHumanSpawnpoint(pos, yaw, class, weapon)
 	table.insert(self.HumanSpawnpoints, {pos, Angle(0, yaw, 0), tier})
 	
 	self:SaveHumanSpawnpoints()

@@ -60,13 +60,10 @@ net.Receive("UpdateStats", function(len) -- this net message is received once ev
 					GAMEMODE:AddNotification("Your hunger is critical. You should probably eat something now.", color_critical)
 					pl.HungerState = stateCritical
 				end
-				pl.HungerState = stateWarning
 			elseif pl.Hunger > dying then
 				if newHunger <= dying then
 					GAMEMODE:AddNotification("You are dying from hunger. Eat something immediately!", color_death)
 					pl.HungerState = stateDying
-				else
-					pl.HungerState = stateCritical
 				end
 			else
 				pl.HungerState = stateDying
@@ -90,13 +87,10 @@ net.Receive("UpdateStats", function(len) -- this net message is received once ev
 					GAMEMODE:AddNotification("Your thirst is critical. You should probably drink something now.", color_critical)
 					pl.ThirstState = stateCritical
 				end
-				pl.ThirstState = stateWarning
 			elseif pl.Thirst > dying then
 				if newThirst <= dying then
 					GAMEMODE:AddNotification("You are dying from thirst. Drink something immediately!", color_death)
 					pl.ThirstState = stateDying
-				else
-					pl.ThirstState = stateCritical
 				end
 			else
 				pl.ThirstState = stateDying
@@ -116,17 +110,14 @@ net.Receive("UpdateStats", function(len) -- this net message is received once ev
 					pl.FatigueState = stateWarning
 				end
 			elseif pl.Fatigue < crit and newFatigue < dying then
-				pl.FatigueState = stateCritical
 				if newFatigue >= crit then
 					GAMEMODE:AddNotification("Your fatigue is critical. You should probably go to sleep now.", color_critical)
-					pl.FatigueState = stateWarning
+					pl.FatigueState = stateCritical
 				end
 			elseif pl.Fatigue < dying then
 				if newFatigue >= dying then
 					GAMEMODE:AddNotification("Your lack of sleep is zapping away all your remaining energy. Use the bed or a sleeping bag now!!", color_death)
 					pl.FatigueState = stateDying
-				else
-					pl.FatigueState = stateCritical
 				end
 			else
 				pl.FatigueState = stateDying
@@ -147,22 +138,19 @@ net.Receive("UpdateStats", function(len) -- this net message is received once ev
 					pl.InfectionState = stateWarning
 				end
 			elseif pl.Infection < severe and newInfection < crit then
-				pl.InfectionState = stateWarning
 				if newInfection >= severe then
 					GAMEMODE:AddNotification("Your Infection has reached medium severity threshold. You should probably cure the infection.", color_severe)
 					pl.InfectionState = stateSevere
 				end
 			elseif pl.Infection < crit and newInfection < dying then
-				pl.InfectionState = stateSevere
 				if newInfection >= crit then
 					GAMEMODE:AddNotification("Your infection has reached critical severity threshold. Cure it now, else you'll succumb to infection!", color_critical)
 					pl.InfectionState = stateCritical
 				end
 			elseif pl.Infection < dying then
-				pl.InfectionState = stateCritical
 				if newInfection >= dying then
-					pl.InfectionState = stateDying
 					GAMEMODE:AddNotification("You are succumbing to infection, cure it NOW!!", color_death)
+					pl.InfectionState = stateDying
 				end
 			else
 				pl.InfectionState = stateDying

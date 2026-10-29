@@ -4,7 +4,7 @@ GM.Author	= "Uklejamini"
 GM.Email	= ""
 GM.Website	= "https://github.com/Uklejamini357/gmodtheeternalapocalypse"
 GM.Version	= "0.13.0b"
-GM.DateVer	= "23.10.2026" -- Follows the DD.MM.YYYY format.
+GM.DateVer	= "29.10.2026" -- Follows the DD.MM.YYYY format.
 GM.Credits = {
 	{"LegendOfRobbo",			"Created After The End gamemode",											"Back in 2015. It's such a great gamemode!"},
 

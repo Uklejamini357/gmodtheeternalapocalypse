@@ -277,7 +277,7 @@ function GM:CMenu()
 		surface.SetDrawColor(150, 150, 200, 255)
 		surface.DrawOutlinedRect(0, 0, panel:GetWide(), panel:GetTall())
 		if pl:GetTEALevel() >= pl:GetMaxLevel() then
-			local white = math.abs(math.sin(SysTime()*math.pi)) * 175
+			local white = math.abssin(SysTime()*math.pi) * 175
 			draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(white,white,white,130))
 		else
 			draw.RoundedBox(2, 0, 0, panel:GetWide(), panel:GetTall(), Color(0, 0, 0, 130))

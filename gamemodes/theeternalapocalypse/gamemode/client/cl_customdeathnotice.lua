@@ -80,11 +80,6 @@ local function CheckLocalPlayerDeath(victim, attacker, dmg, dmgtype, msgoverride
 	local killedbynpc = {"Killed by NPC %s"}--[[{"You were killed by a NPC. (%s)"}]]
 	
 	local killedbydoor = {"KILLED BY DOOR WTF"}--[[{""}]]
-	
-	local killedbyenv = {"Environment"}--[[{"Better be careful next time.",
-		"Environment is harsh these days, be careful!"}]]
-
-	local killedbyother = {"Unknown cause"}--[[{"You were killed by an unknown cause."}]]
 
 	if victim == LocalPlayer() then
 		gamemode.Call("LocalPlayerDeath", attacker)
@@ -106,12 +101,14 @@ local function CheckLocalPlayerDeath(victim, attacker, dmg, dmgtype, msgoverride
 			GAMEMODE.DeathMessage = Format(table.Random(killedbynpc), CheckAttacker(attacker))
 		elseif attacker == "func_door" or attacker == "func_door_rotating" then
 			GAMEMODE.DeathMessage = table.Random(killedbydoor)
-		elseif attacker == "trigger_hurt" or attacker == "point_hurt" or attacker == "entityflame" or attacker == "env_fire" then
-			GAMEMODE.DeathMessage = table.Random(killedbyenv)
+		elseif attacker == "trigger_hurt" or attacker == "point_hurt" then
+			GAMEMODE.DeathMessage = "Environmental causes"
+		elseif attacker == "entityflame" or attacker == "env_fire" then
+			GAMEMODE.DeathMessage = "Burnt to death"
 		elseif attacker == "worldspawn" and dmgtype == DMG_FALL then
-			GAMEMODE.DeathMessage = "Fall damage ("..math.floor(dmg).." damage taken)"
+			GAMEMODE.DeathMessage = "Fell to death ("..math.floor(dmg).." damage)"
 		elseif attacker == "worldspawn" then
-			GAMEMODE.DeathMessage = table.Random(killedbyother)
+			GAMEMODE.DeathMessage = "Unknown causes"
 		else
 			GAMEMODE.DeathMessage = "Killed by "..language.GetPhrase(attacker)
 		end
@@ -241,7 +238,7 @@ net.Receive( "NPCKilledNPC", RecvNPCKilledNPC )
 
 
 function GM:AddDeathNotice( Victim, team1, Inflictor, Attacker, team2, dmg, dmgtype, msgoverride, deathmsg )
-	local Death = {}
+	local Death = {} -- this is hella confusing
 	Death.victim	= Victim
 	Death.attacker	= Attacker
 	Death.inflictor	= Inflictor
@@ -261,6 +258,14 @@ function GM:AddDeathNotice( Victim, team1, Inflictor, Attacker, team2, dmg, dmgt
 		Death.Message = "was blasted into pieces"
 	end
 
+	if dmgtype == DMG_BURN then
+		Death.Message = table.Random({"was incinerated", "was burnt to death"})
+	end
+
+	if dmgtype == DMG_SHOCK then
+		Death.Message = table.Random({"was electrified to death"})
+	end
+
 	if dmgtype == DMG_DROWN then
 		Death.SMessage = "has drowned"
 	end
@@ -270,10 +275,15 @@ function GM:AddDeathNotice( Victim, team1, Inflictor, Attacker, team2, dmg, dmgt
 		Death.left = nil
 	end
 
-	if attacker == "trigger_hurt" or attacker == "point_hurt" or attacker == "entityflame" or attacker == "env_fire" then
-		Death.SMessage = table.Random({"went missing"})
-		Death.left = nil
-	end
+	-- if Victim == "trigger_hurt" or Victim == "point_hurt" then
+	-- 	Death.SMessage = table.Random({"went missing"})
+	-- 	Death.left = nil
+	-- end
+
+	-- if Victim == "entityflame" or Victim == "env_fire" then
+	-- 	Death.SMessage = "underestimated the power of heat and was burnt to their death."
+	-- 	Death.left = nil
+	-- end
 
 	if deathmsg ~= "" then
 		Death.left = nil
